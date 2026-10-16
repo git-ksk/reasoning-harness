@@ -1,0 +1,122 @@
+{
+  "source_sha": "d647ca44d38958858a9ff4582f48ba6240d75241",
+  "source_file_sha256": "1abbec8d424d372a5713d57be7068af2dd231f1415ad6ad232f2b497e16baea6",
+  "historical_complete_equality": 597,
+  "original_audit": 14,
+  "known_seen_regression": {
+    "v2": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v3": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v4": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v5": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v6": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v7": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v8": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v9": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v10": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v12": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v13": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v14": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v15": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v16": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v18": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v19": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v20": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    }
+  },
+  "provider_calls": 0,
+  "fresh_independent_acceptance": false,
+  "core_rlib_sha256": "1c1df020a80f6c2bedec5ed3e5daec21a5886484d593af56d3d27a54ad6f86c4",
+  "focused_tests": 91,
+  "workspace": {
+    "passed": 1555,
+    "failed": 0,
+    "ignored": 8
+  },
+  "clippy": "PASS",
+  "fmt": "PASS",
+  "fixtures_cases": 20,
+  "original_archive_files": 13,
+  "root_compound_boundaries": {
+    "cases": 4,
+    "withheld": 4
+  },
+  "parent_unknown_owner_boundary": {
+    "cases": 4,
+    "withheld": 4
+  },
+  "literal_owner_development_variant": {
+    "current_v17_v30": "relevant",
+    "old_v29": "unchanged ambiguous",
+    "before_library_source": "fd091b1, not intermediate successor20"
+  },
+  "rejected_build_binding": "separate preserved folder, excluded from current validation",
+  "cli_adoption": "NO_GO",
+  "full_real_source_acceptance_complete": false
+}

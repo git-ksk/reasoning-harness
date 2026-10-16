@@ -1,0 +1,6 @@
+{
+  "base_source_sha256": "1abbec8d424d372a5713d57be7068af2dd231f1415ad6ad232f2b497e16baea6",
+  "instrumented_source_sha256": "a4af4b54ddb69944eedec101c6d6caa8800b7af6212460469200a8c23fa5438a",
+  "changes": "cfg(test) records before existing true returns; no return predicates changed",
+  "temporary_diagnostic_not_fresh_acceptance": true
+}

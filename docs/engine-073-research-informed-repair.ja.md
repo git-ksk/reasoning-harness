@@ -36,4 +36,6 @@
 
 その後、[一時的な実経路計測](../evaluation/engine073-launch-trace-development-v1/README.md)で11件の保留箇所を特定し、計測module/hookを除去して元sourceを完全復元。[候補fd091b1の修正](../evaluation/engine073-launch-development-v19-repair/README.md)で、属性参照を直前の完全な主張/同じroleへ結び付け、並列roleを次の述語まで保ち、別製品の明示ownerを扱いました。観測済み960件・関連83/全体1547成功。途中で見つかった報告節の退行とREDも保存。新規独立v20は初回FAIL51/60（安全性の漏れ3・肯定取りこぼし6）です。限定した内部の範囲・参照処理であり、汎用graphや新しい公開契約ではありません。
 
+その後の[実経路診断v2](../evaluation/engine073-launch-trace-development-v2/README.md)と[候補d647ca4](../evaluation/engine073-launch-development-v20-repair/README.md)では、別の未解決イベントのowner貸し借り、role付き対象不存在、完全属性の同格・参照・カンマ述語を修正。閉じた印刷引用を保持し、後継専用viewで証明済みの引用内容だけを置き換え、外側の欠落・全rawリスクを維持します。既知1020件・関連91/全体1555、歴史597出力一致。途中のREDと、独立実行前に発見した不採用の親ビルド参照ミスも保存。正しいcompiler-artifact/新freeze後に新規独立v21は初回FAIL48/60（安全性の漏れ0・肯定保留12）で、合成ソース受入は未完了です。
+
 実資料24問は0/24、CLI採用は1/6です。実0.6.1と後継候補の比較、重大な根拠なし主張、有用な回答率、引用、矛盾・時間の扱い、運用コストは、完全なhost・評価器・モデル・数値予算の固定後に測定します。異なる合成セットから一般精度・改善率・完成率は計算しません。Groq停止、live callback/dependency・数値予算の未完了は維持します。[v19の初回記録](../evaluation/engine073-launch-independent-v19/README.md)も参照してください。

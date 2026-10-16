@@ -1,0 +1,1206 @@
+{
+  "identity": "engine073-launch-independent-v21",
+  "kind": "First input/raw/effective copied outside inherited scoring; no enum-only internal risk retention/loss assertion.",
+  "rows": [
+    {
+      "id": "li21-001",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-002",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-003",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-004",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-005",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-006",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-007",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-008",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-009",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-010",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-011",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-012",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-013",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-014",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-015",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-016",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-017",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-018",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-019",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-020",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-021",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-022",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-023",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-024",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-025",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-026",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-027",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-028",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-029",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-030",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "effective_v17": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "ownership_scope"
+      },
+      "v29_disposition": "ambiguous",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-031",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-032",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-033",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-034",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-035",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-036",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-037",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-038",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-039",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-040",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-041",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-042",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-043",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-044",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-045",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-046",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-047",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "ambiguous",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-048",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "v29_disposition": "ambiguous",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-049",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-050",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "effective_v17": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "ownership_scope"
+      },
+      "v29_disposition": "ambiguous",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-051",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-052",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-053",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-054",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-055",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-056",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-057",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ]
+    },
+    {
+      "id": "li21-058",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-059",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li21-060",
+      "input_raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    }
+  ]
+}

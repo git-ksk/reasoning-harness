@@ -1,0 +1,2734 @@
+[
+  {
+    "id": "li21-001",
+    "policy": {
+      "policy_id": "li21-policy-01",
+      "target_id": "li21-target-01",
+      "target_question": "Was Aerial Cord launched?",
+      "entity": {
+        "canonical_id": "li21-target-01",
+        "canonical_name": "Aerial Cord",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-001-evidence",
+      "source_id": "li21-001-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the font of Violet House manual. We deny this Object. Item: the launch of Copper Grove. We withdraw this Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Aerial Cord was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-002",
+    "policy": {
+      "policy_id": "li21-policy-01",
+      "target_id": "li21-target-01",
+      "target_question": "Was Aerial Cord launched?",
+      "entity": {
+        "canonical_id": "li21-target-01",
+        "canonical_name": "Aerial Cord",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-002-evidence",
+      "source_id": "li21-002-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the font of Violet House manual. We deny this Object. Item: an unowned launch assertion. We withdraw this Item; its product owner is not available in this source."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Aerial Cord was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-003",
+    "policy": {
+      "policy_id": "li21-policy-02",
+      "target_id": "li21-target-02",
+      "target_question": "Was Bastion Meter launched?",
+      "entity": {
+        "canonical_id": "li21-target-02",
+        "canonical_name": "Bastion Meter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-003-evidence",
+      "source_id": "li21-003-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Bastion Meter was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the font assertion about the printed sentence \"Bastion Meter was launched\" on Amber Court guide. Only the font of that sentence is the withdrawn property."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-004",
+    "policy": {
+      "policy_id": "li21-policy-02",
+      "target_id": "li21-target-02",
+      "target_question": "Was Bastion Meter launched?",
+      "entity": {
+        "canonical_id": "li21-target-02",
+        "canonical_name": "Bastion Meter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-004-evidence",
+      "source_id": "li21-004-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Bastion Meter was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the sentence \"Bastion Meter was launched\" on Amber Court guide. The withdrawn object is the Bastion Meter event claim, not the guide font."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-005",
+    "policy": {
+      "policy_id": "li21-policy-03",
+      "target_id": "li21-target-03",
+      "target_question": "Was Cedarfield Hub launched?",
+      "entity": {
+        "canonical_id": "li21-target-03",
+        "canonical_name": "Cedarfield Hub",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-005-evidence",
+      "source_id": "li21-005-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the material of Cedarfield Hub base. Subject: the colour of Rowan Hall lid. Item: the launch of Silver Lodge. We deny the Object and the Subject and withdraw the Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Cedarfield Hub was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-006",
+    "policy": {
+      "policy_id": "li21-policy-03",
+      "target_id": "li21-target-03",
+      "target_question": "Was Cedarfield Hub launched?",
+      "entity": {
+        "canonical_id": "li21-target-03",
+        "canonical_name": "Cedarfield Hub",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-006-evidence",
+      "source_id": "li21-006-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the material of Cedarfield Hub base. Subject: the colour of Rowan Hall lid. Item: the launch of Cedarfield Hub and Silver Lodge. We deny the Object and the Subject and withdraw the Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Cedarfield Hub was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-007",
+    "policy": {
+      "policy_id": "li21-policy-04",
+      "target_id": "li21-target-04",
+      "target_question": "Was Drumlin Module launched?",
+      "entity": {
+        "canonical_id": "li21-target-04",
+        "canonical_name": "Drumlin Module",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-007-evidence",
+      "source_id": "li21-007-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Drumlin Module was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Publisher: Citrine Cabin"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the material of Citrine Cabin label plate. We deny the Object. Subject: an unowned launch claim. Owner of the Subject: Maple Atrium. We withdraw the Subject."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-008",
+    "policy": {
+      "policy_id": "li21-policy-04",
+      "target_id": "li21-target-04",
+      "target_question": "Was Drumlin Module launched?",
+      "entity": {
+        "canonical_id": "li21-target-04",
+        "canonical_name": "Drumlin Module",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-008-evidence",
+      "source_id": "li21-008-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Drumlin Module was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Publisher: Citrine Cabin"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the material of Citrine Cabin label plate. We deny the Object. Subject: an unowned launch claim. No product owner is identified for the Subject. We withdraw the Subject."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-009",
+    "policy": {
+      "policy_id": "li21-policy-05",
+      "target_id": "li21-target-05",
+      "target_question": "Was Estuary Box launched?",
+      "entity": {
+        "canonical_id": "li21-target-05",
+        "canonical_name": "Estuary Box",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-009-evidence",
+      "source_id": "li21-009-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the colour assertion about Lime Pavilion carton. We deny the launch of Lilac House. We also retract the font claim about Estuary Box guide."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Estuary Box was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-010",
+    "policy": {
+      "policy_id": "li21-policy-05",
+      "target_id": "li21-target-05",
+      "target_question": "Was Estuary Box launched?",
+      "entity": {
+        "canonical_id": "li21-target-05",
+        "canonical_name": "Estuary Box",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-010-evidence",
+      "source_id": "li21-010-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the colour assertion about Lime Pavilion carton. We deny the launch of Lilac House. We also retract the launch claim about Estuary Box."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Estuary Box was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-011",
+    "policy": {
+      "policy_id": "li21-policy-06",
+      "target_id": "li21-target-06",
+      "target_question": "Was Fallow Rail launched?",
+      "entity": {
+        "canonical_id": "li21-target-06",
+        "canonical_name": "Fallow Rail",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-011-evidence",
+      "source_id": "li21-011-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Fallow Rail was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the paper material of Fern Court booklet. We retract this Object while the author states that Sable Lodge does not exist."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-012",
+    "policy": {
+      "policy_id": "li21-policy-06",
+      "target_id": "li21-target-06",
+      "target_question": "Was Fallow Rail launched?",
+      "entity": {
+        "canonical_id": "li21-target-06",
+        "canonical_name": "Fallow Rail",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-012-evidence",
+      "source_id": "li21-012-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Fallow Rail was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the paper material of Fern Court booklet. We retract this Object while the author states that Fallow Rail does not exist."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-013",
+    "policy": {
+      "policy_id": "li21-policy-07",
+      "target_id": "li21-target-07",
+      "target_question": "Was Gale Socket launched?",
+      "entity": {
+        "canonical_id": "li21-target-07",
+        "canonical_name": "Gale Socket",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-013-evidence",
+      "source_id": "li21-013-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "\"The colour of Peach Grove case is blue.\" Author reply: I deny that Peach Grove case-colour claim. I withdraw the launch of Mauve House separately."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Gale Socket was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-014",
+    "policy": {
+      "policy_id": "li21-policy-07",
+      "target_id": "li21-target-07",
+      "target_question": "Was Gale Socket launched?",
+      "entity": {
+        "canonical_id": "li21-target-07",
+        "canonical_name": "Gale Socket",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-014-evidence",
+      "source_id": "li21-014-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "\"The colour of Peach Grove case is blue.\" Author reply: I deny that Peach Grove case-colour claim. I withdraw a separate launch claim whose product cannot be identified here."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Gale Socket was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-015",
+    "policy": {
+      "policy_id": "li21-policy-08",
+      "target_id": "li21-target-08",
+      "target_question": "Was Hazelcrest Panel launched?",
+      "entity": {
+        "canonical_id": "li21-target-08",
+        "canonical_name": "Hazelcrest Panel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-015-evidence",
+      "source_id": "li21-015-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Hazelcrest Panel was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "We deny the launch of Rose Lodge"
+        },
+        {
+          "kind": "excerpt",
+          "text": "The remaining claim we withdraw, the page-width assertion about Coral Court manual, is a document property."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-016",
+    "policy": {
+      "policy_id": "li21-policy-08",
+      "target_id": "li21-target-08",
+      "target_question": "Was Hazelcrest Panel launched?",
+      "entity": {
+        "canonical_id": "li21-target-08",
+        "canonical_name": "Hazelcrest Panel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-016-evidence",
+      "source_id": "li21-016-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Hazelcrest Panel was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "We deny the launch of Rose Lodge"
+        },
+        {
+          "kind": "excerpt",
+          "text": "The remaining claim we withdraw, the Hazelcrest Panel launch assertion, is a product event. A note calls all corrections foreign-only."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-017",
+    "policy": {
+      "policy_id": "li21-policy-09",
+      "target_id": "li21-target-09",
+      "target_question": "Was Inlet Reader launched?",
+      "entity": {
+        "canonical_id": "li21-target-09",
+        "canonical_name": "Inlet Reader",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-017-evidence",
+      "source_id": "li21-017-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Object: the font of Clover Lodge guide"
+        },
+        {
+          "kind": "heading",
+          "text": "Item: an unowned launch claim"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Owner of the Item: Indigo Court. We deny the Object in the source title and withdraw the Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Inlet Reader was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-018",
+    "policy": {
+      "policy_id": "li21-policy-09",
+      "target_id": "li21-target-09",
+      "target_question": "Was Inlet Reader launched?",
+      "entity": {
+        "canonical_id": "li21-target-09",
+        "canonical_name": "Inlet Reader",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-018-evidence",
+      "source_id": "li21-018-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Object: the font of Clover Lodge guide"
+        },
+        {
+          "kind": "heading",
+          "text": "Item: an unowned launch claim"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Owner of the Object: Indigo Court. We deny the Object in the source title and withdraw the Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Inlet Reader was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-019",
+    "policy": {
+      "policy_id": "li21-policy-10",
+      "target_id": "li21-target-10",
+      "target_question": "Was Jadecrest Clamp launched?",
+      "entity": {
+        "canonical_id": "li21-target-10",
+        "canonical_name": "Jadecrest Clamp",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-019-evidence",
+      "source_id": "li21-019-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Jadecrest Clamp was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the ink colour of the literal sentence \"Jadecrest Clamp does not exist\" printed in Topaz House booklet. We deny this Subject, only the ink-colour assertion about that sentence."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-020",
+    "policy": {
+      "policy_id": "li21-policy-10",
+      "target_id": "li21-target-10",
+      "target_question": "Was Jadecrest Clamp launched?",
+      "entity": {
+        "canonical_id": "li21-target-10",
+        "canonical_name": "Jadecrest Clamp",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-020-evidence",
+      "source_id": "li21-020-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Jadecrest Clamp was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the ink colour of Topaz House booklet. We deny this Subject. We also state that Jadecrest Clamp does not exist; that is a separate product assertion."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-021",
+    "policy": {
+      "policy_id": "li21-policy-11",
+      "target_id": "li21-target-11",
+      "target_question": "Was Knoll Unit launched?",
+      "entity": {
+        "canonical_id": "li21-target-11",
+        "canonical_name": "Knoll Unit",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-021-evidence",
+      "source_id": "li21-021-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the colour of Opal Court plate. Subject: the font of Lavender Lodge manual. We deny the Object and the Subject. Item: the launch of Sapphire House. We retract the Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Knoll Unit was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-022",
+    "policy": {
+      "policy_id": "li21-policy-11",
+      "target_id": "li21-target-11",
+      "target_question": "Was Knoll Unit launched?",
+      "entity": {
+        "canonical_id": "li21-target-11",
+        "canonical_name": "Knoll Unit",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-022-evidence",
+      "source_id": "li21-022-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the colour of Opal Court plate. Subject: the font of Lavender Lodge manual. We deny the Object and the Subject. Item: an unowned launch claim. We retract the Item, whose product name is absent."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Knoll Unit was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-023",
+    "policy": {
+      "policy_id": "li21-policy-12",
+      "target_id": "li21-target-12",
+      "target_question": "Was Lumen Tray launched?",
+      "entity": {
+        "canonical_id": "li21-target-12",
+        "canonical_name": "Lumen Tray",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-023-evidence",
+      "source_id": "li21-023-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Lumen Tray was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Publisher: Geranium Hall"
+        },
+        {
+          "kind": "excerpt",
+          "text": "\"The launch of Primrose Court occurred.\" We deny that Primrose Court event claim. I retract the material assertion about Geranium Hall cover."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-024",
+    "policy": {
+      "policy_id": "li21-policy-12",
+      "target_id": "li21-target-12",
+      "target_question": "Was Lumen Tray launched?",
+      "entity": {
+        "canonical_id": "li21-target-12",
+        "canonical_name": "Lumen Tray",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-024-evidence",
+      "source_id": "li21-024-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Lumen Tray was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Publisher: Geranium Hall"
+        },
+        {
+          "kind": "excerpt",
+          "text": "\"Lumen Tray was launched.\" We deny that Lumen Tray event claim. I retract the material assertion about Geranium Hall cover."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-025",
+    "policy": {
+      "policy_id": "li21-policy-13",
+      "target_id": "li21-target-13",
+      "target_question": "Was Moraine Sensor launched?",
+      "entity": {
+        "canonical_id": "li21-target-13",
+        "canonical_name": "Moraine Sensor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-025-evidence",
+      "source_id": "li21-025-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Publisher: Jasper House"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the material of Jasper House sleeve. We deny this Object. Subject: no actual launch of Periwinkle Court occurred. We maintain the Subject statement."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Moraine Sensor was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-026",
+    "policy": {
+      "policy_id": "li21-policy-13",
+      "target_id": "li21-target-13",
+      "target_question": "Was Moraine Sensor launched?",
+      "entity": {
+        "canonical_id": "li21-target-13",
+        "canonical_name": "Moraine Sensor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-026-evidence",
+      "source_id": "li21-026-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Publisher: Jasper House"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the material of Jasper House sleeve. We deny this Object. Subject: Moraine Sensor does not exist. We maintain the Subject statement."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Moraine Sensor was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-027",
+    "policy": {
+      "policy_id": "li21-policy-14",
+      "target_id": "li21-target-14",
+      "target_question": "Was Nacreline Stand launched?",
+      "entity": {
+        "canonical_id": "li21-target-14",
+        "canonical_name": "Nacreline Stand",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-027-evidence",
+      "source_id": "li21-027-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Nacreline Stand was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the launch of Willow Hall. Object: the font of Iolite Court card. We withdraw this Object. We retract the launch of Gold Lodge as a further event correction."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-028",
+    "policy": {
+      "policy_id": "li21-policy-14",
+      "target_id": "li21-target-14",
+      "target_question": "Was Nacreline Stand launched?",
+      "entity": {
+        "canonical_id": "li21-target-14",
+        "canonical_name": "Nacreline Stand",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-028-evidence",
+      "source_id": "li21-028-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Nacreline Stand was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the launch of Willow Hall. Object: the font of Iolite Court card. We withdraw this Object. We retract a further event claim whose launched product is not named in this source."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-029",
+    "policy": {
+      "policy_id": "li21-policy-15",
+      "target_id": "li21-target-15",
+      "target_question": "Was Orchard Key launched?",
+      "entity": {
+        "canonical_id": "li21-target-15",
+        "canonical_name": "Orchard Key",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-029-evidence",
+      "source_id": "li21-029-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Owner of the Subject: Poppy House"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the font of Cedar Court manual. Subject: an unowned launch claim. The heading supplies the Subject owner. We deny the Object and retract the Subject."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Orchard Key was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-030",
+    "policy": {
+      "policy_id": "li21-policy-15",
+      "target_id": "li21-target-15",
+      "target_question": "Was Orchard Key launched?",
+      "entity": {
+        "canonical_id": "li21-target-15",
+        "canonical_name": "Orchard Key",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-030-evidence",
+      "source_id": "li21-030-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "The Subject-owner heading is missing from this capture"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the font of Cedar Court manual. Subject: an unowned launch claim. The owner was in the unavailable heading. We deny the Object and retract the Subject."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Orchard Key was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "context_gap"
+    }
+  },
+  {
+    "id": "li21-031",
+    "policy": {
+      "policy_id": "li21-policy-16",
+      "target_id": "li21-target-16",
+      "target_question": "Was Palisade Arm launched?",
+      "entity": {
+        "canonical_id": "li21-target-16",
+        "canonical_name": "Palisade Arm",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-031-evidence",
+      "source_id": "li21-031-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Palisade Arm was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the colour and material of Lilac Court base. We deny the Item because we also withdraw the launch of Garnet Lodge."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-032",
+    "policy": {
+      "policy_id": "li21-policy-16",
+      "target_id": "li21-target-16",
+      "target_question": "Was Palisade Arm launched?",
+      "entity": {
+        "canonical_id": "li21-target-16",
+        "canonical_name": "Palisade Arm",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-032-evidence",
+      "source_id": "li21-032-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Palisade Arm was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the colour and material of Lilac Court base. We deny the Item because we also withdraw the launch of Palisade Arm."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-033",
+    "policy": {
+      "policy_id": "li21-policy-17",
+      "target_id": "li21-target-17",
+      "target_question": "Was Quay Device launched?",
+      "entity": {
+        "canonical_id": "li21-target-17",
+        "canonical_name": "Quay Device",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-033-evidence",
+      "source_id": "li21-033-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Object: the paper material of Vermilion House guide"
+        },
+        {
+          "kind": "heading",
+          "text": "Owner of the Subject: Hazel Court"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: an expressly unowned launch claim. The heading supplies its Subject owner. We deny the Object and withdraw the Subject."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Quay Device was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-034",
+    "policy": {
+      "policy_id": "li21-policy-17",
+      "target_id": "li21-target-17",
+      "target_question": "Was Quay Device launched?",
+      "entity": {
+        "canonical_id": "li21-target-17",
+        "canonical_name": "Quay Device",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-034-evidence",
+      "source_id": "li21-034-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Object: the paper material of Vermilion House guide"
+        },
+        {
+          "kind": "heading",
+          "text": "Owner of the Subject: Hazel Court"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the launch of Quay Device. The heading supplies a foreign Subject owner. We deny the Object and withdraw the Subject."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Quay Device was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-035",
+    "policy": {
+      "policy_id": "li21-policy-18",
+      "target_id": "li21-target-18",
+      "target_question": "Was Rill Frame launched?",
+      "entity": {
+        "canonical_id": "li21-target-18",
+        "canonical_name": "Rill Frame",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-035-evidence",
+      "source_id": "li21-035-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Rill Frame was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the font of the literal printed words \"no launch owner supplied\" on Sage Court label. We deny the accuracy of this Object, only its font assertion. We retract the launch of Fern House separately."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-036",
+    "policy": {
+      "policy_id": "li21-policy-18",
+      "target_id": "li21-target-18",
+      "target_question": "Was Rill Frame launched?",
+      "entity": {
+        "canonical_id": "li21-target-18",
+        "canonical_name": "Rill Frame",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-036-evidence",
+      "source_id": "li21-036-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Rill Frame was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: a launch assertion for which no launch owner is supplied. We deny this Object. We retract the launch of Fern House separately, as another event."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-037",
+    "policy": {
+      "policy_id": "li21-policy-19",
+      "target_id": "li21-target-19",
+      "target_question": "Was Sundial Capsule launched?",
+      "entity": {
+        "canonical_id": "li21-target-19",
+        "canonical_name": "Sundial Capsule",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-037-evidence",
+      "source_id": "li21-037-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Publisher: Ruby Court"
+        },
+        {
+          "kind": "excerpt",
+          "text": "The claim we withdraw, the material assertion about Sundial Capsule shell, is a physical property. We also deny the colour assertion about Ruby Court lid."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Sundial Capsule was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-038",
+    "policy": {
+      "policy_id": "li21-policy-19",
+      "target_id": "li21-target-19",
+      "target_question": "Was Sundial Capsule launched?",
+      "entity": {
+        "canonical_id": "li21-target-19",
+        "canonical_name": "Sundial Capsule",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-038-evidence",
+      "source_id": "li21-038-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Publisher: Ruby Court"
+        },
+        {
+          "kind": "excerpt",
+          "text": "The claim we withdraw, the launch assertion about Sundial Capsule, is a product event. We also deny the colour assertion about Ruby Court lid."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Sundial Capsule was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-039",
+    "policy": {
+      "policy_id": "li21-policy-20",
+      "target_id": "li21-target-20",
+      "target_question": "Was Thornleaf Dock launched?",
+      "entity": {
+        "canonical_id": "li21-target-20",
+        "canonical_name": "Thornleaf Dock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-039-evidence",
+      "source_id": "li21-039-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Thornleaf Dock was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the font claim about Elm Court manual and retract the colour assertion about Birch Lodge label. We also withdraw only the page-width claim about Thornleaf Dock guide."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-040",
+    "policy": {
+      "policy_id": "li21-policy-20",
+      "target_id": "li21-target-20",
+      "target_question": "Was Thornleaf Dock launched?",
+      "entity": {
+        "canonical_id": "li21-target-20",
+        "canonical_name": "Thornleaf Dock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-040-evidence",
+      "source_id": "li21-040-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Thornleaf Dock was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the font claim about Elm Court manual and retract the colour assertion about Birch Lodge label. We also withdraw this entire source, including Thornleaf Dock launch; a summary calls it foreign-only."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-041",
+    "policy": {
+      "policy_id": "li21-policy-21",
+      "target_id": "li21-target-21",
+      "target_question": "Was Umberline Pad launched?",
+      "entity": {
+        "canonical_id": "li21-target-21",
+        "canonical_name": "Umberline Pad",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-041-evidence",
+      "source_id": "li21-041-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the material of Mallow Court plate. Subject: the font of Marigold Lodge card. Item: the launch of Coral House. We deny the Object and the Subject and withdraw the Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Umberline Pad was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-042",
+    "policy": {
+      "policy_id": "li21-policy-21",
+      "target_id": "li21-target-21",
+      "target_question": "Was Umberline Pad launched?",
+      "entity": {
+        "canonical_id": "li21-target-21",
+        "canonical_name": "Umberline Pad",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-042-evidence",
+      "source_id": "li21-042-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the material of Mallow Court plate. Subject: the font of Marigold Lodge card. Item: the launch claim for Umberline Pad and Coral House. We deny the Object and the Subject and withdraw the Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Umberline Pad was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-043",
+    "policy": {
+      "policy_id": "li21-policy-22",
+      "target_id": "li21-target-22",
+      "target_question": "Was Vernal Console launched?",
+      "entity": {
+        "canonical_id": "li21-target-22",
+        "canonical_name": "Vernal Console",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-043-evidence",
+      "source_id": "li21-043-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Vernal Console was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "Owner of the Item: Azalea Court"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: an unowned launch claim. We withdraw the Item whose owner is in the heading."
+        },
+        {
+          "kind": "excerpt",
+          "text": "\"The title font of Holly House guide is large.\" Author reply: I deny that complete title-font claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-044",
+    "policy": {
+      "policy_id": "li21-policy-22",
+      "target_id": "li21-target-22",
+      "target_question": "Was Vernal Console launched?",
+      "entity": {
+        "canonical_id": "li21-target-22",
+        "canonical_name": "Vernal Console",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-044-evidence",
+      "source_id": "li21-044-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Vernal Console was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "Owner of the Item: Azalea Court"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: an unowned launch claim. We withdraw the Item whose owner is in the heading."
+        },
+        {
+          "kind": "excerpt",
+          "text": "\"Vernal Console was launched.\" Author reply: I deny that Vernal Console event claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-045",
+    "policy": {
+      "policy_id": "li21-policy-23",
+      "target_id": "li21-target-23",
+      "target_question": "Was Windward Gauge launched?",
+      "entity": {
+        "canonical_id": "li21-target-23",
+        "canonical_name": "Windward Gauge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-045-evidence",
+      "source_id": "li21-045-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the colour of Juniper Court cover. I withdraw the Object as the editor reports that Maple House does not exist. I also deny the font claim about Windward Gauge manual."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Windward Gauge was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-046",
+    "policy": {
+      "policy_id": "li21-policy-23",
+      "target_id": "li21-target-23",
+      "target_question": "Was Windward Gauge launched?",
+      "entity": {
+        "canonical_id": "li21-target-23",
+        "canonical_name": "Windward Gauge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-046-evidence",
+      "source_id": "li21-046-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the colour of Juniper Court cover. I withdraw the Object as the editor reports that Windward Gauge does not exist. I also deny the font claim about Windward Gauge manual."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Windward Gauge was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-047",
+    "policy": {
+      "policy_id": "li21-policy-24",
+      "target_id": "li21-target-24",
+      "target_question": "Was Starling Clip launched?",
+      "entity": {
+        "canonical_id": "li21-target-24",
+        "canonical_name": "Starling Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-047-evidence",
+      "source_id": "li21-047-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Starling Clip was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "Starling Clip full product name"
+        },
+        {
+          "kind": "excerpt",
+          "text": "The canonical name is Starling Clip. Object: the material of Starling Clip bracket. Subject: the font of the printed name \"Peridot Court\" on Opal House card. We deny the Object and withdraw the Subject."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-048",
+    "policy": {
+      "policy_id": "li21-policy-24",
+      "target_id": "li21-target-24",
+      "target_question": "Was Starling Clip launched?",
+      "entity": {
+        "canonical_id": "li21-target-24",
+        "canonical_name": "Starling Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-048-evidence",
+      "source_id": "li21-048-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Starling Clip was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "Starling Clip full product name"
+        },
+        {
+          "kind": "excerpt",
+          "text": "The canonical name is Starling Clip. Object: the material of Starling Clip bracket. We deny the Object and withdraw a separate launch claim; its product owner cannot be established from this source."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-049",
+    "policy": {
+      "policy_id": "li21-policy-25",
+      "target_id": "li21-target-25",
+      "target_question": "Was Yewcrest Plate launched?",
+      "entity": {
+        "canonical_id": "li21-target-25",
+        "canonical_name": "Yewcrest Plate",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-049-evidence",
+      "source_id": "li21-049-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "\"The colour of Amber House seal is red.\" We deny that Amber House seal-colour claim. Item: an unowned launch assertion. Owner of the Item: Aquamarine Court. We withdraw the Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Yewcrest Plate was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-050",
+    "policy": {
+      "policy_id": "li21-policy-25",
+      "target_id": "li21-target-25",
+      "target_question": "Was Yewcrest Plate launched?",
+      "entity": {
+        "canonical_id": "li21-target-25",
+        "canonical_name": "Yewcrest Plate",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-050-evidence",
+      "source_id": "li21-050-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "\"The colour of Amber House seal is red.\" We deny that Amber House seal-colour claim. Item: an unowned launch assertion. Its owner was in an event quotation omitted from this capture. We withdraw the Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Yewcrest Plate was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "context_gap"
+    }
+  },
+  {
+    "id": "li21-051",
+    "policy": {
+      "policy_id": "li21-policy-26",
+      "target_id": "li21-target-26",
+      "target_question": "Was Zirconia Latch launched?",
+      "entity": {
+        "canonical_id": "li21-target-26",
+        "canonical_name": "Zirconia Latch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-051-evidence",
+      "source_id": "li21-051-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Zirconia Latch was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Publisher: Violet Court"
+        },
+        {
+          "kind": "excerpt",
+          "text": "The claim, the page-width assertion about Violet Court handbook, is withdrawn by us. I deny the material assertion about Zirconia Latch grip."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-052",
+    "policy": {
+      "policy_id": "li21-policy-26",
+      "target_id": "li21-target-26",
+      "target_question": "Was Zirconia Latch launched?",
+      "entity": {
+        "canonical_id": "li21-target-26",
+        "canonical_name": "Zirconia Latch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-052-evidence",
+      "source_id": "li21-052-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Zirconia Latch was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Publisher: Violet Court"
+        },
+        {
+          "kind": "excerpt",
+          "text": "The claim, the Zirconia Latch launch assertion printed in Violet Court handbook, is withdrawn by us. I deny the material assertion about Zirconia Latch grip."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-053",
+    "policy": {
+      "policy_id": "li21-policy-27",
+      "target_id": "li21-target-27",
+      "target_question": "Was Asterleaf Shell launched?",
+      "entity": {
+        "canonical_id": "li21-target-27",
+        "canonical_name": "Asterleaf Shell",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-053-evidence",
+      "source_id": "li21-053-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "I deny the colour assertion about Jasper Court cover before I withdraw the font claim about Asterleaf Shell card. The editor also reports a denial of the launch of Onyx House."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Asterleaf Shell was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-054",
+    "policy": {
+      "policy_id": "li21-policy-27",
+      "target_id": "li21-target-27",
+      "target_question": "Was Asterleaf Shell launched?",
+      "entity": {
+        "canonical_id": "li21-target-27",
+        "canonical_name": "Asterleaf Shell",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-054-evidence",
+      "source_id": "li21-054-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "I deny the colour assertion about Jasper Court cover before I withdraw the font claim about Asterleaf Shell card. The editor also reports a denial of the launch of Asterleaf Shell."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Asterleaf Shell was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-055",
+    "policy": {
+      "policy_id": "li21-policy-28",
+      "target_id": "li21-target-28",
+      "target_question": "Was Brookfield Bench launched?",
+      "entity": {
+        "canonical_id": "li21-target-28",
+        "canonical_name": "Brookfield Bench",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-055-evidence",
+      "source_id": "li21-055-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Brookfield Bench was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Publisher: Silver Court"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the material of Silver Court plate. We deny the Object. Item: an unowned launch claim. Owner of the Item:\nLemon Hall. We withdraw the Item."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-056",
+    "policy": {
+      "policy_id": "li21-policy-28",
+      "target_id": "li21-target-28",
+      "target_question": "Was Brookfield Bench launched?",
+      "entity": {
+        "canonical_id": "li21-target-28",
+        "canonical_name": "Brookfield Bench",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-056-evidence",
+      "source_id": "li21-056-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Brookfield Bench was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Publisher: Silver Court"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the material of Silver Court plate. We deny the Object. Item: an unowned launch claim. Owner of the Object:\nLemon Hall. We withdraw the Item."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-057",
+    "policy": {
+      "policy_id": "li21-policy-29",
+      "target_id": "li21-target-29",
+      "target_question": "Was Cloverline Enclosure launched?",
+      "entity": {
+        "canonical_id": "li21-target-29",
+        "canonical_name": "Cloverline Enclosure",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-057-evidence",
+      "source_id": "li21-057-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the font of Iris House card. We deny the Object."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: no actual launch of Zinnia Court occurred. We maintain this Subject statement."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the material claim about Cloverline Enclosure base."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Cloverline Enclosure was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-058",
+    "policy": {
+      "policy_id": "li21-policy-29",
+      "target_id": "li21-target-29",
+      "target_question": "Was Cloverline Enclosure launched?",
+      "entity": {
+        "canonical_id": "li21-target-29",
+        "canonical_name": "Cloverline Enclosure",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-058-evidence",
+      "source_id": "li21-058-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the font of Iris House card. We deny the Object."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: Cloverline Enclosure does not exist. We maintain this Subject statement."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the material claim about Cloverline Enclosure base."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Cloverline Enclosure was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-059",
+    "policy": {
+      "policy_id": "li21-policy-30",
+      "target_id": "li21-target-30",
+      "target_question": "Was Dapplewood Lantern launched?",
+      "entity": {
+        "canonical_id": "li21-target-30",
+        "canonical_name": "Dapplewood Lantern",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-059-evidence",
+      "source_id": "li21-059-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Dapplewood Lantern was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Owner of the Subject: Peony Court"
+        },
+        {
+          "kind": "heading",
+          "text": "Subject: an unowned launch claim"
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the Subject whose owner is specified in the source title and deny the font assertion about Rowan House guide. We withdraw only the colour claim about Dapplewood Lantern shade."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li21-060",
+    "policy": {
+      "policy_id": "li21-policy-30",
+      "target_id": "li21-target-30",
+      "target_question": "Was Dapplewood Lantern launched?",
+      "entity": {
+        "canonical_id": "li21-target-30",
+        "canonical_name": "Dapplewood Lantern",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li21-060-evidence",
+      "source_id": "li21-060-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Dapplewood Lantern was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Owner of the Subject: Peony Court"
+        },
+        {
+          "kind": "heading",
+          "text": "Subject: an unowned launch claim"
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the Subject whose owner is specified in the source title and deny the font assertion about Rowan House guide. We withdraw this entire source, including Dapplewood Lantern launch."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  }
+]

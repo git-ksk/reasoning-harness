@@ -26,7 +26,7 @@ The central trust boundary remains unchanged: model output is an untrusted candi
 [First v2/v3 results](engine07-realworld-development-results.md) remain FAIL/incomplete. #535 diagnostic retention is merged; #537 operational bridge is merged; live acceptance remains pending. Groq daily exhaustion still blocks starts. No normal-answer utility gain or fresh independent acceptance is established; adoption1/6 records development comparison/limits/NO-GO only. Published CLI0.5.5 / Engine0.6.1 and #506 package acceptance remain separate.
 
 
-[#520 source repair](launch-retraction-520.md) remains Draft PR539: sourcefd091b1 passes960 consumed cases,83 related tests/workspace1547, with597 historical outputs byte-identical. Original independentv19 FAIL49/60 remains preserved; freshv20 first FAIL51/60 (unsafe3, positive misses6). [Research-guided diagnosis](engine-073-research-informed-repair.md) exposed actual blocking branches before repair. Safe runnerPR541 is merged with bounded offline/independent evidence; live budgets/dependency closure, fresh real24 and normal CLI utility remain open.
+[#520 source repair](launch-retraction-520.md) remains Draft PR539. Sourced647ca4 passes1020 seen cases/91 related/workspace1555 and597 historical outputs byte-identical. Originalv20 firstFAIL51/60 (unsafe3, positive misses6) is preserved; freshv21 firstFAIL48/60 (unsafe0, positive misses12). [Research-guided actual tracing and repair](engine-073-research-informed-repair.md) applied; correct rlib verified before fresh execution. RunnerPR541 merged. Live budgets/dependencies, real24 and ordinaryCLI utility remain open.
 
 ## What users can do today
 

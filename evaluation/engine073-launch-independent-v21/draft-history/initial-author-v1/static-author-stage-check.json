@@ -1,0 +1,20 @@
+{
+  "stage": "STATIC_AUTHOR_AST_ONLY",
+  "outcome": "PASS",
+  "checked_utc": "2026-10-16T23:24:56.855027+00:00",
+  "initial_author_sha256": "bdd7cca8dc4d52099f24ea39120ebe508b9c0d560258a60cc93bbd7e9ef4107e",
+  "AST_valid": true,
+  "literal_pairs": 30,
+  "planned_cases": 60,
+  "budget_literal": {
+    "max_model_attempts": 2,
+    "max_tokens": 192,
+    "max_elapsed_ms": 90000
+  },
+  "author_script_runs": 0,
+  "generated_inputs": 0,
+  "full_schema_checked": false,
+  "complete_manifest_frozen": false,
+  "Engine_scorer_observations": 0,
+  "scope_note": "Initial bare-role references would request grammar outside the explicit this/that/the finite-role wording; corrected before generation."
+}

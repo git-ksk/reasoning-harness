@@ -1,0 +1,4 @@
+{
+  "source_file_sha256": "7b0e9cf131952ec866185b481acd3488b8b306b63fa02759818d0b75dcb4015f",
+  "stage": "before bounded literal-risk followup; workspace/provider/clippy/fmt/fixtures/archive pass, not final candidate validation"
+}
