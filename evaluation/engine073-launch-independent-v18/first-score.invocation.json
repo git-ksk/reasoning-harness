@@ -1,0 +1,10 @@
+{
+  "ordinal": 1,
+  "utc": "2026-10-16T16:39:06.898413+00:00",
+  "returncode": 0,
+  "scorer_sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+  "first_results_sha256": "5c21ce2e2320c8f54896ce54d42b99a8d0f040abc19225e48503d5a441d9df5c",
+  "first_summary_sha256": "c448273162a5cfc3dd706a27b06a5fec4823deaf563fc243dc604dfc41f8a65b",
+  "retries": 0,
+  "rescore": false
+}
