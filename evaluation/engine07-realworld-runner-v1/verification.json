@@ -1,0 +1,20 @@
+{
+  "schema": "offline-runner-development-validation-v1",
+  "recorded_utc": "2026-10-16T09:24:29.763446+00:00",
+  "existing_guard_bridge_tests": 26,
+  "runner_subprocess_tests": 17,
+  "failures": 0,
+  "provider_model_api_calls": 0,
+  "semantic_acceptance": "NOT_SCORED",
+  "normal_engine_runtime_trace_complete": false,
+  "new_live_freeze_complete": false,
+  "full_issue_540_acceptance_complete": false,
+  "files": {
+    "README.md": "6b719ac7542e08c1d5c7f804f7854d5e24ed3e2d46ec275562334303db1b75f3",
+    "existing-controls-tests.log": "be5f799fffcda038209fe4c973d563cbba54f68e2b9964877546e131745e534a",
+    "fixture_child.py": "8895ce493b3d7ccb4565b39201bd3da823d08fee5e96be1d343ade88da87573f",
+    "runner-tests.log": "d08826aeaf30ab265382403c38b28a837d8416d698096f67e169266c7d741fa5",
+    "runner.py": "69d3bd9301a9c8a84e39f5d03d87f22039324eadcf850af24a87de3bbdd9a434",
+    "test_runner.py": "12f18bc9fd9f4aba275716ed5299618d6d516182817e099df9797597423cb6c6"
+  }
+}
