@@ -1,0 +1,26 @@
+{
+  "admission": {
+    "allowed": true,
+    "reason": null
+  },
+  "arm": "baseline",
+  "complete": false,
+  "contract": "normal",
+  "id": "group-cancel",
+  "operational_failure": "wall_timeout",
+  "outcome": {
+    "failure_class": "wall_timeout",
+    "provider_attempts": null,
+    "tokens": null
+  },
+  "partial_diagnostics_observed": {
+    "complete": false,
+    "usage_is_lower_bound": true
+  },
+  "reserve": 160,
+  "returncode": 1,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "8edd2fcbe3901bb1e9e53ffb2a233e0d6e678f5cb0d30e840069c262e0876ea4",
+  "termination": "sigint",
+  "wall_ms": 192
+}

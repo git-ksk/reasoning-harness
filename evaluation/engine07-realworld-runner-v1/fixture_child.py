@@ -31,6 +31,24 @@ def cancelled(signum, frame):
     Path('partial-trace.json').write_text(json.dumps({'cancelled': True}))
     raise SystemExit(1)
 
+if a.mode in ('descendant-on-cancel', 'descendant-on-exit'):
+    # A real descendant in the leader's new session, with no sockets/providers.
+    child = os.fork()
+    if child == 0:
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+        Path('descendant.pid').write_text(str(os.getpid()))
+        while True:
+            with Path('heartbeat.txt').open('a') as stream:
+                stream.write('alive\n')
+                stream.flush()
+                os.fsync(stream.fileno())
+            time.sleep(0.01)
+    while not Path('heartbeat.txt').exists():
+        time.sleep(0.005)
+    if a.mode == 'descendant-on-cancel':
+        signal.signal(signal.SIGINT, cancelled)
+        while True:
+            time.sleep(0.02)
 if a.mode in ('cooperative', 'hard'):
     signal.signal(signal.SIGINT, cancelled if a.mode == 'cooperative' else signal.SIG_IGN)
     while True:

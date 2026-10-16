@@ -1,0 +1,23 @@
+{
+  "admission": {
+    "allowed": true,
+    "reason": null
+  },
+  "arm": "candidate",
+  "complete": true,
+  "contract": "normal",
+  "id": "candidate",
+  "operational_failure": null,
+  "outcome": {
+    "failure_class": null,
+    "provider_attempts": 5,
+    "tokens": 150
+  },
+  "partial_diagnostics_observed": null,
+  "reserve": 150,
+  "returncode": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "c9f4f1dfe2782465b05386e8ab69841f9defef8dfad90f7d703ae1cb9101cec4",
+  "termination": null,
+  "wall_ms": 153
+}

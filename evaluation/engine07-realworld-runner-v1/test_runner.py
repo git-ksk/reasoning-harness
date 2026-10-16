@@ -200,6 +200,70 @@ class RunnerIntegration(unittest.TestCase):
         self.assertEqual(result['rows'][0]['operational_failure'], 'reservation_exceeded')
         self.assertFalse(result['complete'])
 
+    def test_plan_and_nested_jobs_are_detached_and_read_only(self):
+        plan = self.plan([self.job(1)])
+        providers = []
+        runner = OperationalRunner(plan, self.output, lambda provider: providers.append(provider) or {})
+        plan['provider'] = 'groq'
+        plan['jobs'][0]['argv'][-3] = 'groq'
+        plan['jobs'][0]['budget']['max_generations'] = 999
+        exposed = runner.plan
+        exposed['provider'] = 'groq'
+        exposed['jobs'].clear()
+        with self.assertRaises(AttributeError):
+            runner.plan = plan
+        result = runner.run()
+        saved = json.loads((self.output / 'plan.json').read_text())
+        self.assertEqual((saved['provider'], runner.plan['provider'], providers), ('google', 'google', ['google']))
+        self.assertTrue(result['complete'])
+        self.assertEqual(self.spawn_count(), 1)
+        self.assertEqual(result['charged_reservations'], 160)
+
+    def test_artifact_change_during_credentials_stops_before_spawn(self):
+        def mutate(provider):
+            self.credentials(provider)
+            self.fixture.write_text('raise RuntimeError("changed fixture must never execute")')
+            return {}
+        runner = OperationalRunner(self.plan([self.job(1), self.job(2, contract='helper')]), self.output, mutate)
+        result = runner.run()
+        self.assertEqual((self.credential_reads, self.spawn_count()), (1, 0))
+        self.assertFalse(result['complete'])
+        self.assertEqual(result['latch'], 'frozen_artifact_changed')
+        self.assertGreater(result['charged_reservations'], 0)
+        self.assertFalse(result['rows'][1]['admission']['allowed'])
+
+    def test_cancel_contains_descendant_even_after_leader_exits(self):
+        self.assert_descendant_contained('descendant-on-cancel', 'wall_timeout')
+
+    def test_normal_leader_exit_with_live_descendant_stops_and_contains_group(self):
+        self.assert_descendant_contained('descendant-on-exit', 'unknown_failure')
+
+    def assert_descendant_contained(self, mode, failure):
+        job = self.job(1, mode)
+        job.update(timeout_seconds=0.25, cancel_grace_seconds=0.12)
+        runner = OperationalRunner(self.plan([job, self.job(2, contract='helper')]), self.output, self.credentials)
+        result = None
+        try:
+            result = runner.run()
+            self.assertFalse(result['complete'])
+            self.assertEqual(self.spawn_count(), 1)
+            row = result['rows'][0]
+            self.assertEqual(row['operational_failure'], failure)
+            self.assertEqual(row['termination'], 'sigkill_after_grace')
+            heartbeat = self.output / 'row-1' / 'heartbeat.txt'
+            size = heartbeat.stat().st_size
+            time.sleep(0.1)
+            self.assertEqual(heartbeat.stat().st_size, size, 'descendant survived group cleanup')
+            self.assertFalse(result['rows'][1]['admission']['allowed'])
+        finally:
+            # On a regression, clean up only our isolated fixture process group.
+            path = self.output / 'row-1' / 'spawn.json'
+            if path.exists():
+                try:
+                    os.killpg(json.loads(path.read_text())['pid'], signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+
     def launch_runner(self, job):
         plan = self.plan([job, self.job(2, contract='helper')])
         plan_path = self.root / 'plan.json'

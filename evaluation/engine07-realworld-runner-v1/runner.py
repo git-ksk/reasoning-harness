@@ -96,8 +96,11 @@ def validate_plan(plan):
 
 class OperationalRunner:
     def __init__(self, plan, output, credential_loader):
+        # Copy the caller's mutable graph into immutable serialized storage.
+        # Each access returns a new tree, including nested jobs/argv/budgets.
+        self._plan_json = json.dumps(plan, sort_keys=True, allow_nan=False)
+        plan = self.plan
         validate_plan(plan)
-        self.plan = plan
         self.output = Path(output).resolve()
         self.load_credentials = credential_loader
         self.rows = []
@@ -127,6 +130,10 @@ class OperationalRunner:
                 self.guard.latch = 'known_daily_quota_exhausted'
         self.persist('created')
 
+    @property
+    def plan(self):
+        return json.loads(self._plan_json)
+
     def persist(self, event):
         self.sequence += 1
         state = {
@@ -148,23 +155,45 @@ class OperationalRunner:
         os.replace(temporary, self.output / 'state.json')
         sync_directory(self.output)
 
+    @staticmethod
+    def group_exists(proc):
+        try:
+            os.killpg(proc.pid, 0)
+            return True
+        except ProcessLookupError:
+            return False
+
     def stop_child(self, proc, grace):
         try:
             os.killpg(proc.pid, signal.SIGINT)
         except ProcessLookupError:
             pass
+        # A cooperating leader may exit while a descendant ignores SIGINT.
+        # Reap the leader, but grant/limit grace to its entire new-session group.
+        deadline = time.monotonic() + grace
+        while time.monotonic() < deadline:
+            proc.poll()
+            if not self.group_exists(proc):
+                proc.wait()
+                return 'sigint'
+            time.sleep(min(0.01, max(0, deadline - time.monotonic())))
         try:
-            proc.wait(timeout=grace)
-            return 'sigint'
-        except subprocess.TimeoutExpired:
-            try:
-                os.killpg(proc.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-            proc.wait()
-            return 'sigkill_after_grace'
+            os.killpg(proc.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        proc.wait()
+        return 'sigkill_after_grace'
 
     def process(self, job, env, directory):
+        # Credential loading can invoke host callbacks. Revalidate their entire
+        # frozen artifact set immediately before execution as well as pre-auth.
+        # This assumes the operator's cooperative filesystem freeze; it is not
+        # an atomic check/exec guarantee against a hostile concurrent writer.
+        try:
+            validate_plan(self.plan)
+        except (OSError, ValueError):
+            self.guard.latch = self.guard.latch or 'frozen_artifact_changed'
+            raise
         argv = [s.replace('{RUN_DIR}', str(directory)) for s in job['argv']]
         started = time.monotonic()
         failure = None
@@ -189,6 +218,11 @@ class OperationalRunner:
                         proc.wait(timeout=min(0.05, max(0.001, deadline - time.monotonic())))
                     except subprocess.TimeoutExpired:
                         pass
+                # Successful leader exit is insufficient if a resolver or
+                # descendant still owns the group. Contain it and stop the arm.
+                if failure is None and proc.poll() is not None and self.group_exists(proc):
+                    failure = failure or FailureClass.UNKNOWN
+                    termination = self.stop_child(proc, job['cancel_grace_seconds'])
             except BaseException:
                 self.cancelled = True
                 failure = FailureClass.CANCELLED

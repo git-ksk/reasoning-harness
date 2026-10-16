@@ -1,0 +1,24 @@
+{
+  "event": "created",
+  "state": {
+    "charged_reservations": 0,
+    "current_reserve": null,
+    "groq_state_sha256": null,
+    "guard": {
+      "events": [],
+      "inflight": false,
+      "latch": null,
+      "observed_tokens": 0,
+      "started_invocations": 0,
+      "token_budget": 1000
+    },
+    "known_provider_attempts": 0,
+    "known_total_tokens": 0,
+    "model": "offline-fixture",
+    "provider": "google",
+    "rows": [],
+    "schema": "engine07-durable-arm-v1",
+    "sequence": 1,
+    "unknown_usage_rows": 0
+  }
+}

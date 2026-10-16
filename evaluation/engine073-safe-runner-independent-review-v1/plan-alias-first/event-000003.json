@@ -1,0 +1,67 @@
+{
+  "event": "observed",
+  "state": {
+    "charged_reservations": 160,
+    "current_reserve": null,
+    "groq_state_sha256": null,
+    "guard": {
+      "events": [
+        {
+          "decision": {
+            "allowed": true,
+            "reason": null
+          },
+          "event": "admission",
+          "started_invocations": 1
+        },
+        {
+          "event": "observation",
+          "latch": null,
+          "observed_tokens": 11,
+          "outcome": {
+            "failure_class": null,
+            "provider_attempts": 1,
+            "tokens": 11
+          }
+        }
+      ],
+      "inflight": false,
+      "latch": null,
+      "observed_tokens": 11,
+      "started_invocations": 1,
+      "token_budget": 1000
+    },
+    "known_provider_attempts": 1,
+    "known_total_tokens": 11,
+    "model": "offline-fixture",
+    "provider": "groq",
+    "rows": [
+      {
+        "admission": {
+          "allowed": true,
+          "reason": null
+        },
+        "arm": "baseline",
+        "complete": true,
+        "contract": "normal",
+        "id": "plan-alias",
+        "operational_failure": null,
+        "outcome": {
+          "failure_class": null,
+          "provider_attempts": 1,
+          "tokens": 11
+        },
+        "partial_diagnostics_observed": null,
+        "reserve": 160,
+        "returncode": 0,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "ecd437d8f30c229123b8e02956abb97eea5316bafce96de36264cde6fe4051dc",
+        "termination": null,
+        "wall_ms": 66
+      }
+    ],
+    "schema": "engine07-durable-arm-v1",
+    "sequence": 3,
+    "unknown_usage_rows": 0
+  }
+}

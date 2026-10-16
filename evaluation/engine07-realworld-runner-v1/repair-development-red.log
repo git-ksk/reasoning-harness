@@ -1,0 +1,41 @@
+test_artifact_change_during_credentials_stops_before_spawn (test_runner.RunnerIntegration.test_artifact_change_during_credentials_stops_before_spawn) ... ok
+test_cancel_contains_descendant_even_after_leader_exits (test_runner.RunnerIntegration.test_cancel_contains_descendant_even_after_leader_exits) ... FAIL
+test_capacity_failures_carry_across_candidate_and_helper (test_runner.RunnerIntegration.test_capacity_failures_carry_across_candidate_and_helper) ... ok
+test_child_crash_and_unknown_failure_stop_following_requests (test_runner.RunnerIntegration.test_child_crash_and_unknown_failure_stop_following_requests) ... ok
+test_credential_exception_is_durable_and_does_not_leak_secret_text (test_runner.RunnerIntegration.test_credential_exception_is_durable_and_does_not_leak_secret_text) ... ok
+test_frozen_artifact_change_suppresses_every_planned_row (test_runner.RunnerIntegration.test_frozen_artifact_change_suppresses_every_planned_row) ... ok
+test_hard_kill_only_after_cancel_grace_remains_incomplete (test_runner.RunnerIntegration.test_hard_kill_only_after_cancel_grace_remains_incomplete) ... ok
+test_killed_parent_keeps_inflight_and_restart_spawns_nothing (test_runner.RunnerIntegration.test_killed_parent_keeps_inflight_and_restart_spawns_nothing) ... ok
+test_known_groq_exhaustion_blocks_before_credentials_for_any_model (test_runner.RunnerIntegration.test_known_groq_exhaustion_blocks_before_credentials_for_any_model) ... ok
+test_measured_success_does_not_refund_conservative_callback_reserve (test_runner.RunnerIntegration.test_measured_success_does_not_refund_conservative_callback_reserve) ... ok
+test_model_option_switch_or_duplicate_is_rejected_before_output_and_auth (test_runner.RunnerIntegration.test_model_option_switch_or_duplicate_is_rejected_before_output_and_auth) ... ok
+test_normal_baseline_candidate_and_helper_share_durable_reservations (test_runner.RunnerIntegration.test_normal_baseline_candidate_and_helper_share_durable_reservations) ... ok
+test_normal_leader_exit_with_live_descendant_stops_and_contains_group (test_runner.RunnerIntegration.test_normal_leader_exit_with_live_descendant_stops_and_contains_group) ... ok
+test_observed_callback_overshoot_stops_next_invocation (test_runner.RunnerIntegration.test_observed_callback_overshoot_stops_next_invocation) ... ok
+test_plan_and_nested_jobs_are_detached_and_read_only (test_runner.RunnerIntegration.test_plan_and_nested_jobs_are_detached_and_read_only) ... ok
+test_quota_stops_all_normal_helper_and_engine_transitions (test_runner.RunnerIntegration.test_quota_stops_all_normal_helper_and_engine_transitions) ... ok
+test_restart_refuses_even_completed_or_corrupt_previous_state (test_runner.RunnerIntegration.test_restart_refuses_even_completed_or_corrupt_previous_state) ... ok
+test_sigterm_parent_cancels_child_and_records_all_suppressed_rows (test_runner.RunnerIntegration.test_sigterm_parent_cancels_child_and_records_all_suppressed_rows) ... ok
+test_timeout_requests_sigint_and_preserves_lower_bound_trace (test_runner.RunnerIntegration.test_timeout_requests_sigint_and_preserves_lower_bound_trace) ... ok
+test_typed_protocol_failure_stops_even_with_measured_usage (test_runner.RunnerIntegration.test_typed_protocol_failure_stops_even_with_measured_usage) ... ok
+test_unknown_usage_is_unavailable_and_reservation_never_refunded (test_runner.RunnerIntegration.test_unknown_usage_is_unavailable_and_reservation_never_refunded) ... ok
+
+======================================================================
+FAIL: test_cancel_contains_descendant_even_after_leader_exits (test_runner.RunnerIntegration.test_cancel_contains_descendant_even_after_leader_exits)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/sawadakousuke/.codex/worktrees/engine073-safe-runner/reasoning-harness/evaluation/engine07-realworld-runner-v1/test_runner.py", line 236, in test_cancel_contains_descendant_even_after_leader_exits
+    self.assert_descendant_contained('descendant-on-cancel', 'wall_timeout')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sawadakousuke/.codex/worktrees/engine073-safe-runner/reasoning-harness/evaluation/engine07-realworld-runner-v1/test_runner.py", line 251, in assert_descendant_contained
+    self.assertEqual(row['operational_failure'], failure)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'interrupted_accounting' != 'wall_timeout'
+- interrupted_accounting
++ wall_timeout
+
+
+----------------------------------------------------------------------
+Ran 21 tests in 2.634s
+
+FAILED (failures=1)

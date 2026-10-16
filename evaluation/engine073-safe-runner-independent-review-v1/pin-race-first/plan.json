@@ -1,0 +1,38 @@
+{
+  "artifacts": {
+    "/opt/homebrew/opt/python@3.14/bin/python3.14": "e401ac7a95cda75dee34a0cfe1e4faf0a6df1a501cf67887f177fb78cd4eb60a",
+    "/private/tmp/engine073-safe-runner-independent-ggk7egjm/pinned_fixture.py": "8895ce493b3d7ccb4565b39201bd3da823d08fee5e96be1d343ade88da87573f"
+  },
+  "jobs": [
+    {
+      "argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/private/tmp/engine073-safe-runner-independent-ggk7egjm/pinned_fixture.py",
+        "--mode",
+        "success",
+        "--marker",
+        "/private/tmp/engine073-safe-runner-independent-ggk7egjm/pin-race-spawns.txt",
+        "--provider",
+        "google",
+        "--model",
+        "offline-fixture"
+      ],
+      "arm": "baseline",
+      "budget": {
+        "max_attempts_per_generation": 2,
+        "max_generations": 2,
+        "max_input_tokens_per_generation": 20,
+        "max_output_tokens_per_generation": 20
+      },
+      "cancel_grace_seconds": 0.1,
+      "contract": "normal",
+      "id": "pin-race",
+      "timeout_seconds": 2
+    }
+  ],
+  "model": "offline-fixture",
+  "provider": "google",
+  "schema": "engine07-operational-plan-v1",
+  "token_budget": 1000
+}
