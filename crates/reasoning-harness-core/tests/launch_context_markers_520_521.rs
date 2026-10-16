@@ -2302,3 +2302,140 @@ fn foreign_antecedent_cannot_bind_a_different_or_unknown_owned_launch() {
     }
     check(cases);
 }
+
+#[test]
+fn engine073_independent_v18_seen_replay_preserves_full_scope() {
+    // Keep v18's first FAIL unchanged. This replay is development evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-launch-independent-v18/cases.json"
+    ))
+    .unwrap();
+    let mut failures = Vec::new();
+    for case in corpus["cases"].as_array().unwrap() {
+        let input = &case["input"];
+        let policy = serde_json::from_value(input["policy"].clone()).unwrap();
+        let candidate = serde_json::from_value(input["candidate"].clone()).unwrap();
+        let proposal = serde_json::from_value(input["proposal"].clone()).unwrap();
+        let raw = serde_json::from_value(input["raw"].clone()).unwrap();
+        let qualification = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let assessment =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap();
+        if (qualification.relation_scope == Relation::RequestedRelation)
+            != case["expected"]["v17_requested_relation"]
+                .as_bool()
+                .unwrap()
+            || (assessment.disposition == Disposition::Relevant)
+                != case["expected"]["v30_relevant"].as_bool().unwrap()
+        {
+            failures.push(format!(
+                "{}: {qualification:?}, {:?}",
+                case["id"], assessment.disposition
+            ));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
+
+#[test]
+fn positive_reporting_modifiers_preserve_inner_nonexistence_and_source_denial() {
+    let mut cases = Vec::new();
+    for actor in ["we", "the editor", "the author"] {
+        for verb in ["report", "records", "states"] {
+            for modifier in ["", "also ", "explicitly ", "formally ", "clearly "] {
+                for denial in [
+                    "Silver Lens does not exist",
+                    "Silver Lens was not launched",
+                    "the whole source is retracted",
+                ] {
+                    cases.push(json!({"id":format!("{actor}:{modifier}{verb}:{denial}"),"signals":[{"kind":"excerpt","text":format!("Silver Lens was launched. Subject: the font of Silver Lens packing list. We deny that Subject although {actor} {modifier}{verb} that {denial}.")}],"expected_relevant":false}));
+                }
+            }
+        }
+    }
+    cases.push(json!({"id":"nested-positive-shells","signals":[{"kind":"excerpt","text":"Silver Lens was launched. We also state that the editor clearly records that Silver Lens does not exist."}],"expected_relevant":false}));
+    cases.push(json!({"id":"reporting-property-positive","signals":[{"kind":"excerpt","text":"Silver Lens was launched. We also state that the colour of Silver Lens cap is blue."}],"expected_relevant":true}));
+    check(cases);
+}
+
+#[test]
+fn literal_field_types_never_retype_target_propositions_or_appended_denials() {
+    let mut cases = Vec::new();
+    for object in [
+        "the font of the printed words \"Silver Lens was not launched\" on Silver Lens label",
+        "\"Silver Lens lid is not copper\", the lid-material claim",
+    ] {
+        cases.push(json!({"id":format!("literal-property:{object}"),"signals":[{"kind":"excerpt","text":format!("Silver Lens was launched. Object: {object}. We deny this Object.")}],"expected_relevant":true}));
+        for denial in [
+            "We also state that Silver Lens does not exist.",
+            "We withdraw the entire source.",
+            "The owner of that other launch claim is unknown.",
+        ] {
+            cases.push(json!({"id":format!("literal-with-adverse:{object}:{denial}"),"signals":[{"kind":"excerpt","text":format!("Silver Lens was launched. Object: {object}. We deny this Object. We withdraw that other launch claim. {denial}")}],"expected_relevant":false}));
+        }
+    }
+    for object in [
+        "\"Silver Lens was launched\", the lid-material claim",
+        "\"Silver Lens was not launched\", the font claim",
+    ] {
+        cases.push(json!({"id":format!("event-cannot-be-retyped:{object}"),"signals":[{"kind":"excerpt","text":format!("Silver Lens was launched. Object: {object}. We deny this Object.")}],"expected_relevant":false}));
+    }
+    check(cases);
+}
+
+#[test]
+fn every_coordinated_or_parenthetical_scope_requires_its_own_complete_type() {
+    let mut cases = Vec::new();
+    for (correction, expected) in [
+        (
+            "We withdraw the page-count claim about Silver Lens manual and the launch claim about Maple Queue.",
+            true,
+        ),
+        (
+            "We withdraw the launch claim about Maple Queue and the page-count claim about Silver Lens manual.",
+            true,
+        ),
+        (
+            "We withdraw the page-count claim about Silver Lens manual and the launch claim about Silver Lens.",
+            false,
+        ),
+        (
+            "We withdraw the page-count claim about Silver Lens manual and an unowned launch claim.",
+            false,
+        ),
+        (
+            "We withdraw the page-count claim about Silver Lens manual and the whole source.",
+            false,
+        ),
+        (
+            "Subject: the colour and font size of the printed title on Silver Lens guide. We retract the Subject, these two title-typography assertions.",
+            true,
+        ),
+        (
+            "Subject: the colour and launch of Silver Lens. We retract the Subject, these two title-typography assertions.",
+            false,
+        ),
+        (
+            "Subject: the colour and font size of the printed title on Silver Lens guide. We retract the Subject, these two launch assertions.",
+            false,
+        ),
+        (
+            "Object: the width of Silver Lens card. We deny that Object (the height of Silver Lens card is also withdrawn).",
+            true,
+        ),
+        (
+            "Object: the width of Silver Lens card. We deny that Object (we also state that Silver Lens does not exist).",
+            false,
+        ),
+    ] {
+        cases.push(json!({"id":correction,"signals":[{"kind":"excerpt","text":format!("Silver Lens was launched. {correction}")}],"expected_relevant":expected}));
+    }
+    cases.push(json!({"id":"canonical-both-word-cannot-be-stripped","entity":"Both Maple Queue","signals":[{"kind":"excerpt","text":"Both Maple Queue was launched. We withdraw both Maple Queue's launch claim and the page-count claim about Both Maple Queue manual."}],"expected_relevant":false}));
+    check(cases);
+}
