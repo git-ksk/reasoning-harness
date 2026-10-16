@@ -1,0 +1,21 @@
+{
+  "checked_utc": "2026-10-16T10:42:27.297813+00:00",
+  "old_review_original_and_archived50_each_match": true,
+  "old_review_anchor": "73c516640221334787ee19ee3cbdbb1653183c7c1863320e37038fea5afe36b9",
+  "CLI_proofs": {
+    "v1": {
+      "entries": 59,
+      "manifest_sha256": "c356d48e27cc5727172661125b07cf95f75bb4f9e29fb4d49f06a1e280936223",
+      "all_files_match": true
+    },
+    "v2": {
+      "entries": 30,
+      "manifest_sha256": "44c799f3bc3911cc37c5c0e66615b10f129cafccb2cc1bb5ff915f95f97200df",
+      "all_files_match": true
+    }
+  },
+  "repair_declared_code_log_hashes_match": true,
+  "source_content_read": false,
+  "provider_calls": 0,
+  "network_calls": 0
+}

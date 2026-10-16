@@ -1,0 +1,15 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "evaluation/engine07-realworld-runner-v1",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "returncode": 0
+}

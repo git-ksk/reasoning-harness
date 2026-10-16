@@ -1,0 +1,13 @@
+{
+  "admission": {
+    "allowed": true,
+    "reason": null
+  },
+  "arm": "baseline",
+  "complete": false,
+  "contract": "normal",
+  "host_exception_type": "ValueError",
+  "id": "credential-static-input-change",
+  "operational_failure": "interrupted_accounting",
+  "reserve": 160
+}

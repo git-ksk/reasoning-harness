@@ -1,0 +1,67 @@
+{
+  "event": "suppressed",
+  "state": {
+    "charged_reservations": 160,
+    "current_reserve": null,
+    "groq_state_sha256": null,
+    "guard": {
+      "events": [
+        {
+          "decision": {
+            "allowed": true,
+            "reason": null
+          },
+          "event": "admission",
+          "started_invocations": 1
+        },
+        {
+          "decision": {
+            "allowed": false,
+            "reason": "frozen_artifact_changed"
+          },
+          "event": "admission",
+          "started_invocations": 1
+        }
+      ],
+      "inflight": false,
+      "latch": "frozen_artifact_changed",
+      "observed_tokens": 0,
+      "started_invocations": 1,
+      "token_budget": 1000
+    },
+    "known_provider_attempts": 0,
+    "known_total_tokens": 0,
+    "model": "offline-fixture",
+    "provider": "google",
+    "rows": [
+      {
+        "admission": {
+          "allowed": true,
+          "reason": null
+        },
+        "arm": "baseline",
+        "complete": false,
+        "contract": "normal",
+        "host_exception_type": "ValueError",
+        "id": "credential-script-change",
+        "operational_failure": "interrupted_accounting",
+        "reserve": 160
+      },
+      {
+        "admission": {
+          "allowed": false,
+          "reason": "frozen_artifact_changed"
+        },
+        "arm": "helper",
+        "complete": false,
+        "contract": "helper",
+        "id": "credential-script-change-follow",
+        "operational_failure": "frozen_artifact_changed",
+        "reserve": 160
+      }
+    ],
+    "schema": "engine07-durable-arm-v1",
+    "sequence": 4,
+    "unknown_usage_rows": 1
+  }
+}

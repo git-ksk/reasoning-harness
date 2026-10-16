@@ -1,0 +1,25 @@
+# Independent repaired runner review v2
+
+**PASS within the bounded offline repair scope**, reviewed HEAD `93a9d5a3dba976f134395409037df7c1a73d7845`. No remaining implementation blocker was reproduced by the6 fresh boundaries and47 existing controls. This does not close #540/#531 or authorize a live provider run, CLI adoption or release.
+
+The three original P1 failures are repaired under the declared cooperative/POSIX assumptions:
+
+- R1: the caller plan and getter return detached nested trees. Provider/model/argv/budget mutations leave the saved and executed original identity unchanged; an initially blocked Groq plan cannot be cleared by changing the caller tree. Original Google reserve160 remains fixed.
+- R2: executable-script and static-input changes during credential loading both stop before child spawn. Reservations remain charged, usage remains unavailable, and later jobs are suppressed. This verifies the known credential callback window; it is not atomic check-exec security against a hostile concurrent filesystem writer.
+- R3: a leader that exits on SIGINT does not leave its SIGINT-ignoring descendant running. The owned new-session group reaches SIGKILL after grace, its heartbeat stops, and following work stays suppressed. An additional normal leader exit0 with a live descendant is also incomplete, contained and suppressed. Tests target only their own isolated groups; zombie state is distinguished from a running process.
+
+The initial independent aggregation script stopped after5 runner cases at a sandbox-denied `ps` diagnostic. Its frozen source, rc1/stderr, first stdout and all durable first rows/state are retained. That interruption was a diagnostic harness failure, not a runner PASS. A separately frozen continuation inspected those preserved first outputs without rerunning them and executed only the previously unexecuted normal-exit case in a new output. The report records the narrower durable evidence: the interrupted in-memory callback observations were not saved, so no independent callback-count claim is made for those first5 beyond durable admission/spawn markers. The separately preserved47 test logs verify callback suppression and pre-auth durable reserve. No first result was renamed, overwritten or rescored; final-save resumption executed no fixtures or tests.
+
+The original review remains **FAIL** at its unchanged50-file anchor `73c516640221334787ee19ee3cbdbb1653183c7c1863320e37038fea5afe36b9`, both in its original tmp location and repository archive. CLI preparationv1 has59 verified entries and v2 has30, all unchanged. The repaired runner's saved v2 pair has2 complete rows,300 synthetic reserved/known tokens, unknown0 and NOT_SCORED. Both arms have the identical fixed5 model request/response records, one resolver journal row/admission and the same grounded text `node.buffer.uint8array = true`. The actual pinned binaries/hash bundle matches the saved proof; the candidate binary contains development5edd, not source9a40. Positive counter controls365/446 show instrumentation operates, while this specific ordinary task has no relevance API log. No saved CLI experiment was replayed during this review.
+
+The code and evidence support durable reserve/inflight before authentication/spawn, create-new restart refusal, fsync/atomic state/journal, shared normal/helper/baseline/candidate guard within one plan, non-refund reservations, unknown usage distinct from known subtotal, and typed quota/cancel/failure stopping. These are operational controls, not proof of live numerical bounds or successful model semantics.
+
+Remaining gates:
+
+- Derive and freeze actual full-callback/input/output/internal-attempt/time bounds and complete host/adapter/dependency closure before any live execution; fixture300 is not a billed cap or account headroom.
+- Retain known Groq prohibition until a separately verified recovery policy and capacity/headroom decision; elapsed time, TPM waiting, alternate model/account or tiny success do not clear it. Shared unknown usage is not zero.
+- Parent SIGKILL still needs an external controller to contain/inspect orphan groups before a new experiment. Exclusive output restart barrier is not account-wide coordination across unrelated outputs.
+- Cooperative artifact freeze only. Post-credential rehash closes the demonstrated callback window, not hostile-filesystem atomic check-exec security.
+- Fresh real-primary-source24, provider/model/human completeness, source/version/quote/authority/conflict/temporal gates, actual CLI integration/adoption and release remain unperformed. This controlled normal task has no measured public relevance API calls; source helper gains do not establish ordinary final-answer benefit.
+
+Engine implementation/root source changes remain unread. Provider/network/Oracle calls0; repository edits0. The saved raw/first rows/report retain their original meanings. `receipt.json`, `review-summary.json`, first-artifact hash snapshot and self-excluding final manifest seal this review; all files become read-only. Runner fixed HEAD may be released after the final hash check. No new source authoring was started.
