@@ -1,0 +1,504 @@
+{
+  "identity": "engine073-launch-independent-v13",
+  "review_utc": "2026-10-16T09:27:23.815903+00:00",
+  "stage": "PRE_OBSERVATION",
+  "semantic_observations": 0,
+  "all60_reviewed": true,
+  "positive": 30,
+  "negative": 30,
+  "unknown_or_mixed_scope_ids": [
+    "li13-010",
+    "li13-014",
+    "li13-016",
+    "li13-026",
+    "li13-030",
+    "li13-040",
+    "li13-042",
+    "li13-048",
+    "li13-050",
+    "li13-056",
+    "li13-060"
+  ],
+  "existing_target_owner_with_foreign_supplement_ids": [
+    "li13-006",
+    "li13-020",
+    "li13-034",
+    "li13-038",
+    "li13-054"
+  ],
+  "whole_source_ids": [
+    "li13-022",
+    "li13-032",
+    "li13-046",
+    "li13-058"
+  ],
+  "canonical_clip_positive_ids": [
+    "li13-013",
+    "li13-027",
+    "li13-045"
+  ],
+  "explicit_context_gap_ids": [
+    "li13-014",
+    "li13-030",
+    "li13-042"
+  ],
+  "scope_interpretation": "Every adverse clause independently needs complete safe property/foreign-event scope. A single target/unknown/mixed/whole-source clause withholds. Same-role owner fills only unowned frame; property type cannot own launch reference.",
+  "risk_axis_review": "Three supplied context_gap cases independently have unknown withdrawn/denied launch ownership with actual missing context. No pure-risk joint-negative or scorer change.",
+  "newness_limit": "New multiple-clause compositions after fixed candidate; same finite syntax reused, prior failure-informed iterative development acknowledged. Not old block replay/name substitution or v11 draft reuse; not complete/statistically independent release acceptance.",
+  "precommitted_pairs": [
+    {
+      "pair_id": "v13-pair-01",
+      "axis": "three_adverse_clauses_property_and_two_explicit_events",
+      "positive_id": "li13-001",
+      "negative_id": "li13-002",
+      "scope_rationale": "Every positive adverse clause is explicitly outside target launch. The final target-event clause in the negative cannot borrow safety from earlier clauses.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-02",
+      "axis": "three_document_corrections_with_one_event_substitution",
+      "positive_id": "li13-003",
+      "negative_id": "li13-004",
+      "scope_rationale": "The Object exemption is local; each although/and correction needs its own complete property or event scope.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-03",
+      "axis": "same_item_next_line_owner_and_explicit_as_reporting_clause",
+      "positive_id": "li13-005",
+      "negative_id": "li13-006",
+      "scope_rationale": "A full next-line same-role owner fills an unowned launch frame only. A safe reporting property clause cannot overwrite an existing target-owned Item.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-04",
+      "axis": "quoted_property_item_and_reported_current_event_withdrawal",
+      "positive_id": "li13-007",
+      "negative_id": "li13-008",
+      "scope_rationale": "The explicit first-person reporting clause has its own full event owner; the quoted property Item cannot exempt it.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-05",
+      "axis": "parenthesized_foreign_event_and_additional_unknown_launch",
+      "positive_id": "li13-009",
+      "negative_id": "li13-010",
+      "scope_rationale": "The positive has one property and two fully foreign events. A later unidentified launch withdrawal is unsafe even after safe parenthesized correction.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-06",
+      "axis": "before_clause_safe_properties_and_owned_launch_object",
+      "positive_id": "li13-011",
+      "negative_id": "li13-012",
+      "scope_rationale": "No chronology inference is needed: the first-person Object withdrawal has one complete owner, foreign or target, regardless of property clauses.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-07",
+      "axis": "complete_clip_note_three_properties_vs_real_unknown_launch_gap",
+      "positive_id": "li13-013",
+      "negative_id": "li13-014",
+      "scope_rationale": "A complete canonical Clip name/note is not a gap. The negative has an independent ownerless launch withdrawal with actual omitted context and raw context_gap.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-08",
+      "axis": "and_reporting_launch_reference_cannot_borrow_property_frame",
+      "positive_id": "li13-015",
+      "negative_id": "li13-016",
+      "scope_rationale": "Explicit foreign-event type can support its local launch reference. A foreign property and another safe property cannot supply an unidentified launch owner.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-09",
+      "axis": "property_object_foreign_subject_and_reported_target_existence",
+      "positive_id": "li13-017",
+      "negative_id": "li13-018",
+      "scope_rationale": "A safe Object and foreign Subject cannot waive a separate explicitly reported target-existence denial.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-10",
+      "axis": "designated_heading_next_line_owner_and_owned_object",
+      "positive_id": "li13-019",
+      "negative_id": "li13-020",
+      "scope_rationale": "A designated complete heading owner fills an unowned same-role Object; it cannot overwrite the target owner already declared in a frame.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-11",
+      "axis": "compound_document_item_and_reported_source_wide_withdrawal",
+      "positive_id": "li13-021",
+      "negative_id": "li13-022",
+      "scope_rationale": "A complete property Item does not narrow an explicitly reported whole-source withdrawal to property scope.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-12",
+      "axis": "complete_physical_apposition_and_two_separately_owned_event_clauses",
+      "positive_id": "li13-023",
+      "negative_id": "li13-024",
+      "scope_rationale": "A complete local property apposition scopes one clause; two subsequent event clauses must each independently have a safe full owner.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-13",
+      "axis": "owned_property_item_does_not_supply_reported_launch_owner",
+      "positive_id": "li13-025",
+      "negative_id": "li13-026",
+      "scope_rationale": "The owner of a fully typed property is not automatically the owner of an independent launch reference; an explicitly supplemented foreign launch frame is different.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-14",
+      "axis": "canonical_clip_note_multiple_safe_clauses_vs_target_nonexistence",
+      "positive_id": "li13-027",
+      "negative_id": "li13-028",
+      "scope_rationale": "The complete Clip note is neutral; a current target-existence denial in the final clause blocks launch despite earlier safe scopes.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-15",
+      "axis": "immediate_full_owner_line_vs_missing_owner_and_later_unassigned_name",
+      "positive_id": "li13-029",
+      "negative_id": "li13-030",
+      "scope_rationale": "Only the immediately designated same-role full owner fills the frame. An explicitly unassigned later name cannot repair an actual missing owner, with raw context_gap.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-16",
+      "axis": "quoted_property_same_subject_explanation_and_reporting_scope",
+      "positive_id": "li13-031",
+      "negative_id": "li13-032",
+      "scope_rationale": "A full same-role material explanation scopes one denial; a separate reported entire-source withdrawal remains broad.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-17",
+      "axis": "three_finite_roles_and_owned_item_not_rewritten_by_supplement",
+      "positive_id": "li13-033",
+      "negative_id": "li13-034",
+      "scope_rationale": "Every positive role is separately safe. A third target-owned launch Item cannot be overwritten by a foreign supplement or earlier safe roles.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-18",
+      "axis": "document_apposition_because_and_while_event_owner_checks",
+      "positive_id": "li13-035",
+      "negative_id": "li13-036",
+      "scope_rationale": "Each because/while event needs independent scope; the complete document-property apposition does not consume the reason clause.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-19",
+      "axis": "owned_title_object_and_heading_supplement_with_leading_reason",
+      "positive_id": "li13-037",
+      "negative_id": "li13-038",
+      "scope_rationale": "A complete designated heading may fill a clearly unowned title Object, but cannot replace an existing target-owner declaration.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-20",
+      "axis": "reported_foreign_event_does_not_resolve_separate_mixed_item",
+      "positive_id": "li13-039",
+      "negative_id": "li13-040",
+      "scope_rationale": "A fully foreign reporting clause cannot select between a mixed target/foreign owner in a separate withdrawn launch Item.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-21",
+      "axis": "compound_title_heading_properties_and_before_unknown_launch_gap",
+      "positive_id": "li13-041",
+      "negative_id": "li13-042",
+      "scope_rationale": "The before clause states a current explicit withdrawal, not event-order truth. Missing ownership of that last launch cannot borrow a prior safe owner; raw context_gap is supplied.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-22",
+      "axis": "complete_item_denial_explanation_and_and_reporting_clause",
+      "positive_id": "li13-043",
+      "negative_id": "li13-044",
+      "scope_rationale": "A local quoted denial explanation is property-only; an explicit and/reporting clause retains its own complete event owner.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-23",
+      "axis": "canonical_clip_multiple_properties_and_reported_whole_source",
+      "positive_id": "li13-045",
+      "negative_id": "li13-046",
+      "scope_rationale": "Complete-name notes are not gaps; a reported source-wide withdrawal is unsafe despite multiple prior property corrections.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-24",
+      "axis": "same_role_owner_supplement_cannot_fill_different_role",
+      "positive_id": "li13-047",
+      "negative_id": "li13-048",
+      "scope_rationale": "A full supplement must explicitly name the same role as the unowned frame; a property Object supplement cannot own the unknown launch Subject.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-25",
+      "axis": "quoted_foreign_event_vs_property_and_reported_launch_reference",
+      "positive_id": "li13-049",
+      "negative_id": "li13-050",
+      "scope_rationale": "A complete foreign-event quote may bind a local launch reference; a property quote and another safe property cannot supply that missing launch owner.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-26",
+      "axis": "safe_roles_and_explicit_fully_owned_non_event_clause",
+      "positive_id": "li13-051",
+      "negative_id": "li13-052",
+      "scope_rationale": "The non-event clause has its own full owner and cannot be exempted by the property Subject or earlier foreign Object.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-27",
+      "axis": "next_line_owner_property_reason_and_foreign_contrast",
+      "positive_id": "li13-053",
+      "negative_id": "li13-054",
+      "scope_rationale": "Safe reason/contrast clauses and a foreign next-line name cannot overwrite an existing target-owned launch Item.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-28",
+      "axis": "single_next_line_owner_vs_mixed_owner_among_property_clauses",
+      "positive_id": "li13-055",
+      "negative_id": "li13-056",
+      "scope_rationale": "The entire positive launch frame has one designated full foreign owner. Other safe properties do not resolve a mixed owner in the negative.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-29",
+      "axis": "parenthesized_multiple_corrections_and_whole_source_last_clause",
+      "positive_id": "li13-057",
+      "negative_id": "li13-058",
+      "scope_rationale": "Every parenthesized adverse clause needs independent scope. Parentheses and earlier safe corrections do not narrow a final whole-source withdrawal.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v13-pair-30",
+      "axis": "three_roles_and_one_reported_unknown_launch_reference",
+      "positive_id": "li13-059",
+      "negative_id": "li13-060",
+      "scope_rationale": "A safe document Object and a separate foreign launch Item cannot supply ownership for a launch reference following a property Subject.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    }
+  ],
+  "other_property_truth_approved": false,
+  "require_new_affirmative_syntax": false,
+  "require_arbitrary_graph_or_chronology": false,
+  "provider_calls": 0
+}
