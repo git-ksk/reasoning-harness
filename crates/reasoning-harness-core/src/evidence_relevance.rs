@@ -2474,9 +2474,22 @@ fn launch_specific_property_object_v17(
         || object
             .iter()
             .any(|word| *word == "component" || launch_component_head_v17(word));
-    let specific_page = object
-        .windows(2)
-        .any(|pair| matches!(pair, ["page", "count" | "number" | "numbering" | "length"]));
+    let specific_page = object.windows(2).any(|pair| {
+        matches!(
+            pair,
+            [
+                "page",
+                "count"
+                    | "number"
+                    | "numbering"
+                    | "length"
+                    | "width"
+                    | "height"
+                    | "size"
+                    | "thickness"
+            ]
+        )
+    });
     let specific_document = specific_page
         || object.windows(2).any(|pair| {
             matches!(
@@ -3169,6 +3182,7 @@ fn launch_retraction_other_object_v17(
             .trim()
             .strip_suffix(" separately")
             .or_else(|| statement.trim().strip_suffix(" as a separate correction"))
+            .or_else(|| statement.trim().strip_suffix(" as a separate event claim"))
             .unwrap_or(statement)
     };
     let folded = statement.to_ascii_lowercase();
@@ -4011,16 +4025,20 @@ fn launch_printed_quoted_property_v17(policy: &EvidenceRelevanceTargetPolicy, va
         return false;
     };
     let head = normalized(value[..start].trim());
-    if ![
-        "the font of the printed words",
-        "the typography of the printed words",
-        "the colour of the printed words",
-        "the color of the printed words",
-    ]
-    .contains(&head.as_str())
-    {
-        return false;
-    }
+    let head_words = head.split_whitespace().collect::<Vec<_>>();
+    let field = match head_words.as_slice() {
+        ["the", field, "of", "the", "printed", "words" | "name"]
+        | [
+            "the",
+            field,
+            "of",
+            "the",
+            "literal",
+            "printed",
+            "words" | "name",
+        ] if ["font", "typography", "colour", "color"].contains(field) => *field,
+        _ => return false,
+    };
     let quote = value[start..].chars().next().unwrap();
     let closing = match quote {
         '“' => '”',
@@ -4037,7 +4055,7 @@ fn launch_printed_quoted_property_v17(policy: &EvidenceRelevanceTargetPolicy, va
         .any(|target| normalized_phrase_matches(tail, target))
         && launch_attribute_assertion_object_v17(
             policy,
-            &format!("{head} printed lettering {tail}"),
+            &format!("the {field} of the printed words printed lettering {tail}"),
         )
 }
 
@@ -4685,6 +4703,16 @@ fn launch_property_correction_frame_v17(
     let words = original.split_whitespace().collect::<Vec<_>>();
     let property = |value: &str| launch_attribute_assertion_object_v17(policy, value);
     if let Some((head, value)) = statement.split_once(", ") {
+        let head = normalized(head);
+        if matches!(head.split_whitespace().collect::<Vec<_>>().as_slice(),
+            ["the", "claim" | "assertion" | "statement", "we" | "i", verb, "is", "this"]
+            if launch_retraction_word_v17(verb))
+            && property(value)
+        {
+            return true;
+        }
+    }
+    if let Some((head, value)) = statement.split_once(", ") {
         if let Some((value, predicate)) = value.rsplit_once(", ") {
             if matches!(
                 normalized(head).as_str(),
@@ -4729,7 +4757,7 @@ fn launch_property_correction_frame_v17(
     {
         if words[..verb]
             .iter()
-            .all(|word| ["we", "i", "hereby", "formally"].contains(word))
+            .all(|word| ["we", "i", "also", "hereby", "formally", "explicitly"].contains(word))
         {
             let mut object = &words[verb + 1..];
             if matches!(
@@ -4895,6 +4923,124 @@ fn launch_property_apposition_v17(policy: &EvidenceRelevanceTargetPolicy, statem
         || launch_complete_property_proposition_v17(policy, value)
 }
 
+// Resolve a property-specific anaphor only against an adjacent complete
+// property proposition or its explicitly named role. No event/global scope is
+// inferred from an attribute word, and unrelated roles cannot lend their type.
+fn launch_bound_property_reference_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    statement: &str,
+    previous: Option<&LaunchFactualSegmentV17>,
+    objects: &[LaunchTypedObjectV17],
+) -> bool {
+    let Some(previous) = previous else {
+        return false;
+    };
+    let (head, apposition) = statement
+        .split_once(',')
+        .map_or((statement, None), |(head, tail)| (head, Some(tail)));
+    if apposition.is_some_and(|tail| {
+        let tail = normalized(tail);
+        !tail.split_whitespace().all(|word| {
+            [
+                "the",
+                "a",
+                "local",
+                "quoted",
+                "property",
+                "claim",
+                "assertion",
+                "statement",
+            ]
+            .contains(&word)
+        }) || !tail.split_whitespace().any(|word| word == "property")
+    }) {
+        return false;
+    }
+    let text = normalized(head);
+    let words = text.split_whitespace().collect::<Vec<_>>();
+    let Some(verb) = words
+        .iter()
+        .position(|word| launch_retraction_word_v17(word))
+    else {
+        return false;
+    };
+    let mut topic = if words[..verb]
+        .iter()
+        .all(|word| ["we", "i", "also", "hereby", "formally", "explicitly"].contains(word))
+    {
+        &words[verb + 1..]
+    } else if matches!(
+        verb.checked_sub(1).and_then(|index| words.get(index)),
+        Some(&"is" | &"was" | &"are" | &"were")
+    ) && (verb + 1 == words.len() || matches!(&words[verb + 1..], ["by", "us" | "me"]))
+    {
+        &words[..verb - 1]
+    } else {
+        return false;
+    };
+    if matches!(topic, ["the", "accuracy", "of", ..]) {
+        topic = &topic[3..];
+    }
+    if !matches!(topic.first(), Some(&"this" | &"that")) {
+        return false;
+    }
+    topic = &topic[1..];
+    if !matches!(topic.last(), Some(&"claim" | &"assertion" | &"statement")) {
+        return false;
+    }
+    topic = &topic[..topic.len() - 1];
+    let previous_property = launch_complete_property_proposition_v17(policy, &previous.raw)
+        || launch_property_correction_frame_v17(policy, &previous.raw)
+        || launch_complete_nominal_property_v17(policy, &previous.raw);
+    if topic == ["complete", "document", "property"] {
+        return previous_property
+            && normalized(&previous.raw)
+                .split_whitespace()
+                .any(|word| ["page", "document", "manual", "guide", "handbook"].contains(&word));
+    }
+    let supports = |value: &str| {
+        let text = normalized(value);
+        let value_words = text.split_whitespace().collect::<Vec<_>>();
+        topic.iter().all(|word| value_words.contains(word))
+    };
+    // A complete, owner-qualified material proposition can bind a component
+    // name outside the standalone component lexicon. Event/reference words
+    // are never allowed to acquire that property's type.
+    let contextual_material = topic.len() == 2
+        && topic.contains(&"material")
+        && topic
+            .iter()
+            .all(|word| *word == "material" || !launch_scope_or_reference_word_v17(word))
+        && previous_property
+        && supports(&previous.raw);
+    if !launch_attribute_assertion_object_v17(policy, &topic.join(" ")) && !contextual_material {
+        return false;
+    }
+    if previous_property && supports(&previous.raw) {
+        return true;
+    }
+    let previous_text = normalized(&previous.raw);
+    let mut roles = previous_text
+        .split_whitespace()
+        .filter(|word| ["object", "subject", "item"].contains(word));
+    let Some(role) = roles.next() else {
+        return false;
+    };
+    if roles.any(|other| other != role) {
+        return false;
+    }
+    let selected = objects
+        .iter()
+        .filter(|object| object.label == role)
+        .collect::<Vec<_>>();
+    !selected.is_empty()
+        && selected.iter().all(|object| {
+            object.scope == LaunchTypedScopeV17::Excluded
+                && !object.foreign_event
+                && supports(&object.declared_value)
+        })
+}
+
 fn launch_typed_reference_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     statement: &str,
@@ -4996,6 +5142,14 @@ fn launch_typed_reference_v17(
         }
         Some(first.to_owned())
     });
+    // An explicit foreign event owner is not an unspecified reference to a
+    // typed property elsewhere in the source. Named roles still bind first.
+    if label.is_none()
+        && previous_role.is_none()
+        && launch_retraction_other_object_v17(policy, statement)
+    {
+        return None;
+    }
     let selected_label = label.or(previous_role.as_deref());
     let selected = objects
         .iter()
@@ -5274,7 +5428,7 @@ fn launch_adverse_segments_v17(
                         "–and ",
                         " and ",
                     ] {
-                        if let Some(index) = folded.find(marker) {
+                        for (index, _) in folded.match_indices(marker) {
                             if marker == " as "
                                 && ![
                                     "we ",
@@ -5298,7 +5452,27 @@ fn launch_adverse_segments_v17(
                             }
                             if ![" and ", "—and ", "–and "].contains(&marker)
                                 || (reporting(&raw[..index])
-                                    && reporting(&raw[index + marker.len()..]))
+                                    && reporting(&raw[index + marker.len()..])
+                                    && {
+                                        let right = normalized(&raw[index + marker.len()..]);
+                                        let right = right.split_whitespace().collect::<Vec<_>>();
+                                        right.first().is_some_and(|word| {
+                                            launch_retraction_word_v17(word)
+                                                || [
+                                                    "report", "reports", "record", "records",
+                                                    "state", "states", "explain", "explains",
+                                                ]
+                                                .contains(word)
+                                        }) || right
+                                            .iter()
+                                            .position(|word| launch_retraction_word_v17(word))
+                                            .is_some_and(|verb| {
+                                                right[..verb].iter().any(|word| {
+                                                    ["is", "was", "are", "were", "has", "have"]
+                                                        .contains(word)
+                                                })
+                                            })
+                                    })
                                 || (reporting(&raw[index + marker.len()..])
                                     && [
                                         "i ",
@@ -5320,6 +5494,9 @@ fn launch_adverse_segments_v17(
                                 ));
                                 break;
                             }
+                        }
+                        if split.is_some() {
+                            break;
                         }
                     }
                 }
@@ -5676,6 +5853,14 @@ fn launch_governing_context_blocks_v17(
                 .all(|object| object.scope != LaunchTypedScopeV17::Launch)
                 && launch_property_apposition_v17(policy, &segment.raw)
             {
+                continue;
+            }
+            if launch_bound_property_reference_v17(
+                policy,
+                &segment.raw,
+                index.checked_sub(1).and_then(|i| segments.get(i)),
+                &typed_objects,
+            ) {
                 continue;
             }
             if let Some(excluded) = launch_typed_reference_v17(
