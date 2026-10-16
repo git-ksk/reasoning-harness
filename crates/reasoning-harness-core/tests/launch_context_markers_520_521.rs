@@ -1702,3 +1702,193 @@ fn role_owner_frames_do_not_cross_bind_or_retype_property_as_event() {
     }
     check(cases);
 }
+
+#[test]
+fn engine073_independent_v13_seen_replay_preserves_full_scope() {
+    // Keep v9's first FAIL unchanged. This replay is development evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-launch-independent-v13/cases.json"
+    ))
+    .unwrap();
+    let mut failures = Vec::new();
+    for case in corpus["cases"].as_array().unwrap() {
+        let input = &case["input"];
+        let policy = serde_json::from_value(input["policy"].clone()).unwrap();
+        let candidate = serde_json::from_value(input["candidate"].clone()).unwrap();
+        let proposal = serde_json::from_value(input["proposal"].clone()).unwrap();
+        let raw = serde_json::from_value(input["raw"].clone()).unwrap();
+        let qualification = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let assessment =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap();
+        if (qualification.relation_scope == Relation::RequestedRelation)
+            != case["expected"]["v17_requested_relation"]
+                .as_bool()
+                .unwrap()
+            || (assessment.disposition == Disposition::Relevant)
+                != case["expected"]["v30_relevant"].as_bool().unwrap()
+        {
+            failures.push(format!(
+                "{}: {qualification:?}, {:?}",
+                case["id"], assessment.disposition
+            ));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
+
+#[test]
+fn positive_reporting_shells_preserve_every_inner_denial_scope() {
+    let mut cases = Vec::new();
+    for (text, expected) in [
+        (
+            "Object: the physical release-button width claim for Silver Lens. We retract this object and report that we deny the printed button-label colour claim for Silver Lens.",
+            true,
+        ),
+        (
+            "Object: the physical release-button width claim for Silver Lens. We retract this object and report that we deny the launch claim for Silver Lens.",
+            false,
+        ),
+        (
+            "Object: the physical release-button width claim for Silver Lens. We retract this object and report that we deny that launch claim.",
+            false,
+        ),
+        (
+            "Object: the physical release-button width claim for Silver Lens. We retract this object and report that we withdraw the entire report.",
+            false,
+        ),
+        (
+            "Subject: the launch statement for Maple Queue. Object: the physical release-button width claim for Silver Lens. We retract the subject and report that we deny that launch claim.",
+            true,
+        ),
+        (
+            "Subject: the launch statement for Silver Lens. Object: the physical release-button width claim for Silver Lens. We retract the subject and report that we deny that launch claim.",
+            false,
+        ),
+        (
+            "Object: the physical release-button width claim for Silver Lens. We retract the object and report that we deny that launch claim.",
+            false,
+        ),
+        (
+            "Item: an unowned launch statement. Owner supplement for the item:\nMaple Queue\nWe retract this item and report that we deny the launch statement for Cedar Bolt.",
+            true,
+        ),
+        (
+            "Item: an unowned launch statement. Owner supplement for the object:\nMaple Queue\nWe retract this item and report that we deny the launch statement for Cedar Bolt.",
+            false,
+        ),
+        (
+            "Subject: the launch statement for Silver Lens. I retract that claim, namely the complete release-button width specification for Silver Lens.",
+            false,
+        ),
+    ] {
+        cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched."},{"kind":"excerpt","text":text}],"expected_relevant":expected}));
+    }
+    check(cases);
+}
+
+#[test]
+fn canonical_name_notes_and_scope_annotations_do_not_erase_conflicts_or_gaps() {
+    for (entity, explanation) in [
+        (
+            "Silver Clip",
+            "Name note: Clip is part of the complete target name.",
+        ),
+        (
+            "Silver Lens",
+            "Every clause is fully scoped outside target launch.",
+        ),
+    ] {
+        for tail in [
+            "",
+            " The owner column is outside this excerpt.",
+            " The document is missing required context.",
+        ] {
+            let case = json!({"entity":entity,"signals":[
+                {"kind":"excerpt","text":format!("{entity} was launched.")},
+                {"kind":"excerpt","text":format!("Object: an unowned launch statement. Owner supplement for the object: Maple Queue. We retract this object and report that we deny the printed release-label colour claim for {entity}. {explanation}{tail}")}
+            ]});
+            let (policy, candidate, proposal, raw) = inputs(&case);
+            let effective = derive_effective_evidence_local_qualification_v17(
+                &policy,
+                &candidate,
+                Some(&proposal),
+                Some(&raw),
+            )
+            .unwrap();
+            let disposition = materialize_evidence_relevance_v30(
+                &policy,
+                &candidate,
+                Some(&proposal),
+                Some(&raw),
+            )
+            .unwrap()
+            .disposition;
+            if tail.is_empty() {
+                assert_eq!(
+                    disposition,
+                    Disposition::Relevant,
+                    "{entity}: {effective:?}"
+                );
+            } else {
+                assert_ne!(
+                    disposition,
+                    Disposition::Relevant,
+                    "{entity}{tail}: {effective:?}"
+                );
+                assert_ne!(
+                    effective.scope_risk,
+                    reasoning_harness_core::EvidenceLocalBlockingReason::None
+                );
+            }
+        }
+        for adverse in [
+            format!("We deny the launch claim for {entity}."),
+            "We deny that launch claim.".to_owned(),
+            "We withdraw the entire report.".to_owned(),
+        ] {
+            let case = json!({"id":&adverse,"entity":entity,"signals":[{"kind":"excerpt","text":format!("{entity} was launched.")},{"kind":"excerpt","text":format!("{adverse} {explanation}")}],"expected_relevant":false});
+            check(vec![case]);
+        }
+        // Keep the coarse risk present, so this tests the new projection's
+        // raw-risk gate rather than changing historical model-risk semantics.
+        let case = json!({"entity":entity,"signals":[{"kind":"excerpt","text":format!("{entity} was launched.")},{"kind":"excerpt","text":format!("Object: an unowned launch statement. Owner supplement for the object: Maple Queue. We retract this object and report that we deny the printed release-label colour claim for {entity}. {explanation}")}]});
+        let (policy, candidate, proposal, mut raw) = inputs(&case);
+        for risk in [
+            "context_gap",
+            "ownership_scope",
+            "identity_mapping",
+            "multiple",
+        ] {
+            raw.scope_risk = serde_json::from_value(json!(risk)).unwrap();
+            let effective = derive_effective_evidence_local_qualification_v17(
+                &policy,
+                &candidate,
+                Some(&proposal),
+                Some(&raw),
+            )
+            .unwrap();
+            assert_ne!(
+                effective.scope_risk,
+                reasoning_harness_core::EvidenceLocalBlockingReason::None
+            );
+            assert_ne!(
+                materialize_evidence_relevance_v30(
+                    &policy,
+                    &candidate,
+                    Some(&proposal),
+                    Some(&raw)
+                )
+                .unwrap()
+                .disposition,
+                Disposition::Relevant
+            );
+        }
+    }
+}

@@ -4059,6 +4059,16 @@ fn launch_typed_owner_v17(
 
 fn launch_owner_frame_role_v17(label: &str) -> Option<Option<&str>> {
     let words = label.split_whitespace().collect::<Vec<_>>();
+    if let [
+        "owner",
+        "supplement",
+        "for",
+        "the",
+        role @ ("object" | "subject" | "item"),
+    ] = words.as_slice()
+    {
+        return Some(Some(role));
+    }
     if words.windows(2).any(|pair| pair == ["owner", "supplement"])
         && words.iter().all(|word| {
             [
@@ -4188,6 +4198,10 @@ fn launch_typed_objects_v17(
             let mut scope = launch_typed_object_scope_v17(policy, value);
             let text = normalized(value);
             let unowned = [
+                "launch statement",
+                "launch claim",
+                "release statement",
+                "release claim",
                 "a launch statement",
                 "a launch claim",
                 "a release statement",
@@ -4251,7 +4265,12 @@ fn launch_complete_nominal_property_v17(
 }
 
 fn launch_property_apposition_v17(policy: &EvidenceRelevanceTargetPolicy, statement: &str) -> bool {
-    let Some((head, value)) = statement.split_once(['—', '–']) else {
+    let Some((head, value)) = statement.split_once(['—', '–']).or_else(|| {
+        statement.split_once(',').filter(|(_, value)| {
+            let value = normalized(value);
+            value.starts_with("namely ") || value.starts_with("specifically ")
+        })
+    }) else {
         return false;
     };
     let head_text = normalized(head);
@@ -4295,7 +4314,8 @@ fn launch_property_apposition_v17(policy: &EvidenceRelevanceTargetPolicy, statem
     }
     let value = value
         .trim()
-        .strip_prefix("specifically,")
+        .strip_prefix("namely ")
+        .or_else(|| value.trim().strip_prefix("specifically,"))
         .or_else(|| value.trim().strip_prefix("specifically "))
         .unwrap_or(value.trim())
         .trim();
@@ -4337,10 +4357,31 @@ fn launch_typed_reference_v17(
     {
         return None;
     }
+    let previous_role = previous.and_then(|previous| {
+        let text = normalized(&previous.raw);
+        let words = text.split_whitespace().collect::<Vec<_>>();
+        if !words.iter().any(|word| launch_retraction_word_v17(word))
+            || target_identity_phrases(policy)
+                .iter()
+                .any(|target| normalized_phrase_matches(&previous.raw, target))
+        {
+            return None;
+        }
+        let mut roles = words
+            .iter()
+            .copied()
+            .filter(|word| ["object", "subject", "item"].contains(word));
+        let first = roles.next()?;
+        if roles.any(|role| role != first) {
+            return None;
+        }
+        Some(first.to_owned())
+    });
+    let selected_label = label.or(previous_role.as_deref());
     let selected = objects
         .iter()
         .filter(|object| {
-            label.map_or(object.label != "owner supplement", |label| {
+            selected_label.map_or(object.label != "owner supplement", |label| {
                 object.label == label
             })
         })
@@ -4479,7 +4520,7 @@ fn launch_typed_reference_v17(
     if !(plain_tail || property_tail) {
         return Some(false);
     }
-    if label.is_none() && !event_reference {
+    if label.is_none() && !event_reference && previous_role.is_none() {
         let typed_neighbor = |neighbor: &LaunchFactualSegmentV17| {
             neighbor.raw.split_once(':').is_some_and(|(label, _)| {
                 ["object", "subject", "item", "owner supplement"]
@@ -4606,7 +4647,30 @@ fn launch_adverse_segments_v17(
                 pending.push(right);
                 pending.push(left);
             } else {
-                let raw = raw.trim().trim_matches([',', '(', ')']).trim().to_owned();
+                let raw = raw
+                    .trim()
+                    .trim_matches([',', '(', ')', '"', '“', '”', '‘', '’'])
+                    .trim();
+                let mut raw = raw;
+                loop {
+                    let folded = raw.to_ascii_lowercase();
+                    let prefix = [
+                        "we also report that ",
+                        "we report that ",
+                        "i also report that ",
+                        "i report that ",
+                        "also report that ",
+                        "report that ",
+                    ]
+                    .iter()
+                    .find(|prefix| folded.starts_with(**prefix));
+                    if let Some(prefix) = prefix {
+                        raw = raw[prefix.len()..].trim();
+                    } else {
+                        break;
+                    }
+                }
+                let raw = raw.to_owned();
                 if !raw.is_empty() {
                     output.push(LaunchFactualSegmentV17 {
                         text: normalized_factual_segments(&raw).join(" "),
@@ -10016,6 +10080,95 @@ pub fn derive_effective_evidence_local_qualification_v16(
     Ok(effective)
 }
 
+// A pure scope annotation describes the relation of complete clauses, not
+// missing local context. Project it only after proving the original clauses;
+// raw risks, actual omissions and conflicting denials remain authoritative.
+fn launch_scope_annotation_view_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw: Option<&EvidenceLocalQualificationV6>,
+) -> Result<Option<EvidenceRelevanceCandidate>, EvidenceRelevanceError> {
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+    if policy.relation != EvidenceRelevanceRelationKind::ChangeOrLaunch
+        || !raw.is_some_and(|value| {
+            value.scope_risk == Risk::None
+                && value.identity_scope == Identity::ExactTarget
+                && value.relation_scope == EvidenceLocalRelationScope::RequestedRelation
+        })
+        || !proposal.is_some_and(|value| {
+            value.target_binding == EvidenceRelevanceBinding::Exact
+                && value.relation_binding == EvidenceRelevanceBinding::Exact
+        })
+        || !target_owned_launch_fact_v17(policy, candidate)
+        || launch_governing_context_blocks_v17(policy, candidate)
+    {
+        return Ok(None);
+    }
+    let mut view = candidate.clone();
+    let mut changed = false;
+    for signal in &mut view.signals {
+        if !matches!(
+            signal.kind,
+            EvidenceRelevanceSignalKind::Fact | EvidenceRelevanceSignalKind::Excerpt
+        ) {
+            continue;
+        }
+        let mut signal_changed = false;
+        let segments = launch_factual_segments_v17(policy, &signal.text)
+            .into_iter()
+            .map(|segment| {
+                let text = normalized(&segment.raw);
+                let words = text.split_whitespace().collect::<Vec<_>>();
+                if !segment.question
+                    && !segment.denied
+                    && matches!(
+                        words.as_slice(),
+                        [
+                            "every" | "each",
+                            "clause",
+                            "is",
+                            "fully",
+                            "scoped",
+                            "outside",
+                            "target",
+                            "launch"
+                        ] | [
+                            "every" | "each",
+                            "clause",
+                            "is",
+                            "fully",
+                            "scoped",
+                            "outside",
+                            "the",
+                            "target",
+                            "launch"
+                        ]
+                    )
+                {
+                    signal_changed = true;
+                    "each complete clause has a non-target launch scope".to_owned()
+                } else {
+                    segment.raw
+                }
+            })
+            .collect::<Vec<_>>();
+        if signal_changed {
+            signal.text = segments.join(". ");
+            changed = true;
+        }
+    }
+    if !changed || deterministic_omitted_ownership_identity_gap(&view) {
+        return Ok(None);
+    }
+    let scoped = derive_effective_evidence_local_qualification_v16(policy, &view, proposal, raw)?;
+    Ok(
+        (scoped.scope_risk == Risk::None && scoped.identity_scope == Identity::ExactTarget)
+            .then_some(view),
+    )
+}
+
 fn launch_opaque_name_context_view_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
@@ -10081,6 +10234,66 @@ fn launch_opaque_name_context_view_v17(
         }
         let mut signal_changed = false;
         let mut text = normalized(&signal.text);
+        if targets
+            .iter()
+            .any(|target| target.split_whitespace().any(|word| word == "clip"))
+        {
+            let kept = launch_factual_segments_v17(policy, &signal.text)
+                .into_iter()
+                .map(|segment| {
+                    let body = segment.raw.split_once(':').map_or(
+                        segment.raw.as_str(),
+                        |(label, body)| {
+                            if ["note", "name note", "limited name note", "full name note"]
+                                .contains(&normalized(label).as_str())
+                            {
+                                body
+                            } else {
+                                segment.raw.as_str()
+                            }
+                        },
+                    );
+                    let note = normalized(body);
+                    let words = note.split_whitespace().collect::<Vec<_>>();
+                    if words.contains(&"clip")
+                        && words.contains(&"name")
+                        && words
+                            .iter()
+                            .any(|word| ["complete", "full", "canonical"].contains(word))
+                        && words.iter().all(|word| {
+                            [
+                                "clip",
+                                "is",
+                                "part",
+                                "of",
+                                "this",
+                                "the",
+                                "complete",
+                                "full",
+                                "product",
+                                "canonical",
+                                "target",
+                                "name",
+                                "belongs",
+                                "to",
+                                "includes",
+                                "contains",
+                            ]
+                            .contains(word)
+                        })
+                    {
+                        signal_changed = true;
+                        changed = true;
+                        "the canonical name is preserved".to_owned()
+                    } else {
+                        segment.raw
+                    }
+                })
+                .collect::<Vec<_>>();
+            if signal_changed {
+                text = normalized(&kept.join(". "));
+            }
+        }
         if targets
             .iter()
             .any(|target| target.split_whitespace().any(|word| word == "clip"))
@@ -10246,6 +10459,12 @@ pub fn derive_effective_evidence_local_qualification_v17(
     let mut effective =
         derive_effective_evidence_local_qualification_v16(policy, candidate, proposal, raw)?;
 
+    if let Some(view) = launch_scope_annotation_view_v17(policy, candidate, proposal, raw)? {
+        let scoped =
+            derive_effective_evidence_local_qualification_v16(policy, &view, proposal, raw)?;
+        effective.scope_risk = scoped.scope_risk;
+        effective.identity_scope = scoped.identity_scope;
+    }
     if let Some(view) = launch_opaque_name_context_view_v17(policy, candidate, proposal, raw)? {
         let scoped =
             derive_effective_evidence_local_qualification_v16(policy, &view, proposal, raw)?;
@@ -10947,7 +11166,9 @@ pub fn materialize_evidence_relevance_v30(
         && effective.relation_scope == Relation::RequestedRelation
         && locally_proven_successor_relation
     {
-        match launch_opaque_name_context_view_v17(policy, candidate, proposal, raw_qualification)? {
+        match launch_scope_annotation_view_v17(policy, candidate, proposal, raw_qualification)?.or(
+            launch_opaque_name_context_view_v17(policy, candidate, proposal, raw_qualification)?,
+        ) {
             Some(view) => Some(view),
             None => {
                 launch_foreign_context_view_v17(policy, candidate, proposal, raw_qualification)?
