@@ -1,0 +1,26 @@
+{
+  "identity": "engine073-launch-independent-v12",
+  "candidate_source_sha": "20e372dec25fcc936bc1cb21bb887e3b4ae605ba",
+  "manifest_sha256": "f9a3e694ce8b6fefec7d0345ec81af4d80cfb23d35ec45d90e7cc2131988f113",
+  "outcome": "FAIL",
+  "planned_cases": 60,
+  "observed_cases": 60,
+  "passed": 40,
+  "failed": 20,
+  "incomplete": 0,
+  "positive_passed": 13,
+  "negative_passed": 27,
+  "negative_v17_requested_relation_violations": 3,
+  "negative_v30_relevant_violations": 3,
+  "positive_v17_withheld": 17,
+  "positive_v30_withheld": 17,
+  "operational_errors": [],
+  "raw": {
+    "stdout_sha256": "6384f65daa0e2e5fcda54b31ddfe425ce7344a340bfde8cfcc142bc56554b03b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "invocation_sha256": "b72c29727873fd7d854c83d3b26037eadd0a2a373ec3ac417e4d801e60e6542d"
+  },
+  "provider_calls": 0,
+  "retries": 0,
+  "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+}
