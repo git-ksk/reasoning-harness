@@ -1,0 +1,111 @@
+{
+  "source_sha": "fd091b182999d874b802dcf92483f71ce359627c",
+  "source_file_sha256": "77727cdc14de86ad4821b1698a43799afb5b42e86d53ef566971623f1d9663f7",
+  "historical_complete_equality": 597,
+  "original_audit": 14,
+  "known_seen_regression": {
+    "v2": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v3": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v4": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v5": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v6": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v7": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v8": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v9": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v10": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v12": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v13": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v14": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v15": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v16": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v18": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v19": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    }
+  },
+  "provider_calls": 0,
+  "fresh_independent_acceptance": false,
+  "core_rlib_sha256": "719c02aa9bad5340d63300c615ff37eee7e6662f34c6db08eb6ce00728607ded",
+  "focused_tests": 83,
+  "workspace": {
+    "passed": 1547,
+    "failed": 0,
+    "ignored": 8
+  },
+  "clippy": "PASS",
+  "fmt": "PASS",
+  "fixtures_cases": 20,
+  "original_archive_files": 13,
+  "root_compound_boundaries": {
+    "cases": 4,
+    "withheld": 4
+  },
+  "parent_unknown_owner_boundary": {
+    "cases": 4,
+    "withheld": 4
+  },
+  "cli_adoption": "NO_GO",
+  "full_real_source_acceptance_complete": false
+}

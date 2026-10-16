@@ -26,7 +26,7 @@
 [初回v2/v3の結果](engine07-realworld-development-results.ja.md)は不合格・不完全のままです。#535の診断保持・#537の停止制御・#541の共有runnerはmerge済みですが、live受入は未完了。Groqは記録済みの日次枯渇により追加起動を止めています。通常回答の改善と新規独立受入は未確認、採用1/6は開発比較・限界・NO-GO記録のみです。公開CLI0.5.5 / Engine0.6.1と#506の配布受入は別工程です。
 
 
-[#520の修正](launch-retraction-520.ja.md)はDraft PR #539で、既知900件・関連77テスト・workspace1541成功、歴史API597出力byte一致。独立v18初回FAIL45/60（安全性の漏れ1件・肯定取りこぼし14件）は保持し、新規独立v19はFAIL49/60（安全性の漏れ0・肯定取りこぼし11）で、受入未完了です。実行基盤PR #541は最終CI5/5・オフライン47件・限定独立再レビューPASSでmerge済み。同一CLIホストの経路証拠は旧5eddのもので、現候補やlive回答の有用性とは扱いません。live数値予算・dependency closure、実資料・provider受入は未完了です。
+[#520の修正](launch-retraction-520.ja.md)はDraft PR539で、候補fd091b1は既知960件・関連83テスト/workspace1547成功、歴史API597出力byte一致。元独立v19初回FAIL49/60を保持し、新規v20初回FAIL51/60（安全性の漏れ3・肯定取りこぼし6）。[研究に基づく診断](engine-073-research-informed-repair.ja.md)で実際の保留箇所を確認してから修正。安全なrunner PR541は限定オフライン・独立証拠でmerge済み。live予算・dependency closure、新規実24問、通常CLIの有用性は未完了です。
 
 ## 今できること
 

@@ -26,7 +26,7 @@ The central trust boundary remains unchanged: model output is an untrusted candi
 [First v2/v3 results](engine07-realworld-development-results.md) remain FAIL/incomplete. #535 diagnostic retention is merged; #537 operational bridge is merged; live acceptance remains pending. Groq daily exhaustion still blocks starts. No normal-answer utility gain or fresh independent acceptance is established; adoption1/6 records development comparison/limits/NO-GO only. Published CLI0.5.5 / Engine0.6.1 and #506 package acceptance remain separate.
 
 
-[#520 source repair](launch-retraction-520.md) remains Draft PR #539:900 seen cases,77 related tests and workspace1541 pass, with597 historical API outputs byte-identical. Independent v18 first FAIL45/60 (unsafe1, positive misses14) is preserved; fresh v19 FAIL49/60 (unsafe0, positive misses11); source gate remains open. Runner PR #541 is merged: final CI5/5,47 offline controls and bounded independent re-review PASS. Controlled ordinary CLI path evidence uses older5edd and does not establish current-source or live-provider utility. Live numerical budgets/dependency closure and fresh real-source/provider acceptance remain open.
+[#520 source repair](launch-retraction-520.md) remains Draft PR539: sourcefd091b1 passes960 consumed cases,83 related tests/workspace1547, with597 historical outputs byte-identical. Original independentv19 FAIL49/60 remains preserved; freshv20 first FAIL51/60 (unsafe3, positive misses6). [Research-guided diagnosis](engine-073-research-informed-repair.md) exposed actual blocking branches before repair. Safe runnerPR541 is merged with bounded offline/independent evidence; live budgets/dependency closure, fresh real24 and normal CLI utility remain open.
 
 ## What users can do today
 
