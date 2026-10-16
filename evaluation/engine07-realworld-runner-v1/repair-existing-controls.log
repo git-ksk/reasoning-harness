@@ -1,0 +1,31 @@
+test_actual_first_groq_normal_and_helper_failures_map_strictly (test_bridge.BridgeTests.test_actual_first_groq_normal_and_helper_failures_map_strictly) ... ok
+test_actual_successful_normal_envelope_remains_measurable (test_bridge.BridgeTests.test_actual_successful_normal_envelope_remains_measurable) ... ok
+test_canonical_cancellation_stops_even_with_known_usage (test_bridge.BridgeTests.test_canonical_cancellation_stops_even_with_known_usage) ... ok
+test_helper_success_fields_do_not_override_failure_or_interruption (test_bridge.BridgeTests.test_helper_success_fields_do_not_override_failure_or_interruption) ... ok
+test_incomplete_or_missing_run_tracking_is_not_full_usage (test_bridge.BridgeTests.test_incomplete_or_missing_run_tracking_is_not_full_usage) ... ok
+test_interrupted_lower_bound_usage_is_not_a_full_cost_total (test_bridge.BridgeTests.test_interrupted_lower_bound_usage_is_not_a_full_cost_total) ... ok
+test_known_helper_failure_usage_does_not_mask_quota (test_bridge.BridgeTests.test_known_helper_failure_usage_does_not_mask_quota) ... ok
+test_known_normal_failure_usage_does_not_mask_quota (test_bridge.BridgeTests.test_known_normal_failure_usage_does_not_mask_quota) ... ok
+test_missing_failure_class_and_malformed_frames_are_not_success (test_bridge.BridgeTests.test_missing_failure_class_and_malformed_frames_are_not_success) ... ok
+test_success_contract_does_not_override_explicit_status (test_bridge.BridgeTests.test_success_contract_does_not_override_explicit_status) ... ok
+test_success_uses_measured_run_usage (test_bridge.BridgeTests.test_success_uses_measured_run_usage) ... ok
+test_unbridged_failure_strings_fail_closed_even_with_known_usage (test_bridge.BridgeTests.test_unbridged_failure_strings_fail_closed_even_with_known_usage) ... ok
+test_unknown_envelope_classes_fail_closed (test_bridge.BridgeTests.test_unknown_envelope_classes_fail_closed) ... ok
+test_unknown_legacy_session_does_not_erase_measured_current_run (test_bridge.BridgeTests.test_unknown_legacy_session_does_not_erase_measured_current_run) ... ok
+test_first_quota_suppresses_candidate_helper_and_remaining_cases (test_guard.GuardTests.test_first_quota_suppresses_candidate_helper_and_remaining_cases) ... ok
+test_interrupted_callback_never_retries (test_guard.GuardTests.test_interrupted_callback_never_retries) ... ok
+test_invalid_budget_reserve_and_usage_never_create_capacity (test_guard.GuardTests.test_invalid_budget_reserve_and_usage_never_create_capacity) ... ok
+test_known_exhaustion_starts_no_request (test_guard.GuardTests.test_known_exhaustion_starts_no_request) ... ok
+test_missing_attempts_fail_closed (test_guard.GuardTests.test_missing_attempts_fail_closed) ... ok
+test_no_parallel_invocations_within_an_arm (test_guard.GuardTests.test_no_parallel_invocations_within_an_arm) ... ok
+test_provider_arms_are_independent (test_guard.GuardTests.test_provider_arms_are_independent) ... ok
+test_reserve_stops_before_exceeding_self_budget (test_guard.GuardTests.test_reserve_stops_before_exceeding_self_budget) ... ok
+test_success_resets_consecutive_capacity_counter (test_guard.GuardTests.test_success_resets_consecutive_capacity_counter) ... ok
+test_two_correlated_capacity_failures_latch (test_guard.GuardTests.test_two_correlated_capacity_failures_latch) ... ok
+test_unexpected_actual_overspend_stops_following_requests (test_guard.GuardTests.test_unexpected_actual_overspend_stops_following_requests) ... ok
+test_unknown_usage_stops_instead_of_assuming_zero (test_guard.GuardTests.test_unknown_usage_stops_instead_of_assuming_zero) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 0.008s
+
+OK

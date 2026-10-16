@@ -1,0 +1,2 @@
+/Users/sawadakousuke/.codex/worktrees/engine073-safe-runner/reasoning-harness
+HEAD=93a9d5a3dba976f134395409037df7c1a73d7845

@@ -1,0 +1,23 @@
+{
+  "charged_reservations": 0,
+  "complete": false,
+  "known_provider_attempts": 0,
+  "known_total_tokens": 0,
+  "latch": "known_daily_quota_exhausted",
+  "rows": [
+    {
+      "admission": {
+        "allowed": false,
+        "reason": "known_daily_quota_exhausted"
+      },
+      "arm": "baseline",
+      "complete": false,
+      "contract": "normal",
+      "id": "groq",
+      "operational_failure": "known_daily_quota_exhausted",
+      "reserve": 160
+    }
+  ],
+  "semantic_acceptance": "NOT_SCORED",
+  "unknown_usage_rows": 0
+}

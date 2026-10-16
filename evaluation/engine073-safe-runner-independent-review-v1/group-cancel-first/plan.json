@@ -1,0 +1,39 @@
+{
+  "artifacts": {
+    "/opt/homebrew/opt/python@3.14/bin/python3.14": "e401ac7a95cda75dee34a0cfe1e4faf0a6df1a501cf67887f177fb78cd4eb60a",
+    "/private/tmp/engine073-safe-runner-independent-ggk7egjm/descendant_fixture.py": "23ebf408ff41868959e32187f023b06196a0be5a6a8d6966f2ba769f5f1fe87e",
+    "/private/tmp/engine073-safe-runner-independent-ggk7egjm/pinned_fixture.py": "e476cf6e4cbb01fd103fc6bff2653751c02c416f6220cfd1aa81847e07a5026c"
+  },
+  "jobs": [
+    {
+      "argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/private/tmp/engine073-safe-runner-independent-ggk7egjm/descendant_fixture.py",
+        "--mode",
+        "success",
+        "--marker",
+        "/private/tmp/engine073-safe-runner-independent-ggk7egjm/group-cancel-spawns.txt",
+        "--provider",
+        "google",
+        "--model",
+        "offline-fixture"
+      ],
+      "arm": "baseline",
+      "budget": {
+        "max_attempts_per_generation": 2,
+        "max_generations": 2,
+        "max_input_tokens_per_generation": 20,
+        "max_output_tokens_per_generation": 20
+      },
+      "cancel_grace_seconds": 0.1,
+      "contract": "normal",
+      "id": "group-cancel",
+      "timeout_seconds": 0.18
+    }
+  ],
+  "model": "offline-fixture",
+  "provider": "google",
+  "schema": "engine07-operational-plan-v1",
+  "token_budget": 1000
+}

@@ -1,0 +1,42 @@
+{
+  "repository": "/Users/sawadakousuke/.codex/worktrees/engine073-safe-runner/reasoning-harness",
+  "head": "ed2c8dea78d27c8d9f3f9e8eff72fcf6e1147362",
+  "network_calls": 0,
+  "provider_calls": 0,
+  "cases": {
+    "post_validation_artifact_change": {
+      "credential_reads": [
+        "google"
+      ],
+      "frozen_hash": "8895ce493b3d7ccb4565b39201bd3da823d08fee5e96be1d343ade88da87573f",
+      "executed_file_hash": "e476cf6e4cbb01fd103fc6bff2653751c02c416f6220cfd1aa81847e07a5026c",
+      "mismatch": true,
+      "complete": true,
+      "known_total_tokens": 11,
+      "spawned": true,
+      "latch": null
+    },
+    "mutable_plan_alias": {
+      "frozen_provider": "google",
+      "observed_provider": "groq",
+      "credential_reads": [
+        "groq"
+      ],
+      "complete": true,
+      "spawned": true,
+      "latch": null,
+      "offline_only": true
+    },
+    "leader_exit_leaves_running_descendant": {
+      "leader_returncode": 1,
+      "reported_termination": "sigint",
+      "grace_seconds": 0.1,
+      "descendant_heartbeat_advanced_after_runner_return": true,
+      "descendant_pid": 59121,
+      "complete": false,
+      "latch": "usage_unavailable",
+      "offline_only": true
+    }
+  },
+  "cleanup": "All created descendant test groups were SIGKILLed; no provider sockets/imports used."
+}

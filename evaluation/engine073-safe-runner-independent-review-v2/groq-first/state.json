@@ -1,0 +1,43 @@
+{
+  "charged_reservations": 0,
+  "current_reserve": null,
+  "groq_state_sha256": "762eb8035ea16e50e619a448658a72fbff01b25d89b39003a8c51e08cc16f46d",
+  "guard": {
+    "events": [
+      {
+        "decision": {
+          "allowed": false,
+          "reason": "known_daily_quota_exhausted"
+        },
+        "event": "admission",
+        "started_invocations": 0
+      }
+    ],
+    "inflight": false,
+    "latch": "known_daily_quota_exhausted",
+    "observed_tokens": 0,
+    "started_invocations": 0,
+    "token_budget": 1000
+  },
+  "known_provider_attempts": 0,
+  "known_total_tokens": 0,
+  "model": "offline-fixture",
+  "provider": "groq",
+  "rows": [
+    {
+      "admission": {
+        "allowed": false,
+        "reason": "known_daily_quota_exhausted"
+      },
+      "arm": "baseline",
+      "complete": false,
+      "contract": "normal",
+      "id": "groq",
+      "operational_failure": "known_daily_quota_exhausted",
+      "reserve": 160
+    }
+  ],
+  "schema": "engine07-durable-arm-v1",
+  "sequence": 3,
+  "unknown_usage_rows": 0
+}

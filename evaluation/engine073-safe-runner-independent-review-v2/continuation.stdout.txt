@@ -1,0 +1,35 @@
+{
+  "outcome": "PASS",
+  "cases": [
+    {
+      "name": "alias",
+      "outcome": "PASS",
+      "failed_checks": []
+    },
+    {
+      "name": "groq",
+      "outcome": "PASS",
+      "failed_checks": []
+    },
+    {
+      "name": "credential-script-change",
+      "outcome": "PASS",
+      "failed_checks": []
+    },
+    {
+      "name": "credential-static-input-change",
+      "outcome": "PASS",
+      "failed_checks": []
+    },
+    {
+      "name": "leader-exits-on-cancel",
+      "outcome": "PASS",
+      "failed_checks": []
+    },
+    {
+      "name": "leader-normal-exit",
+      "outcome": "PASS",
+      "failed_checks": []
+    }
+  ]
+}

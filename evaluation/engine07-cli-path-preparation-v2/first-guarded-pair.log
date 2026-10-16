@@ -1,0 +1,9 @@
+{
+  "complete": true,
+  "known_total_tokens": 300,
+  "known_provider_attempts": 10,
+  "unknown_usage_rows": 0,
+  "charged_reservations": 300,
+  "semantic_acceptance": "NOT_SCORED",
+  "latch": null
+}

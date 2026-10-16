@@ -1,0 +1,50 @@
+{
+  "reviewed_head": "ed2c8dea78d27c8d9f3f9e8eff72fcf6e1147362",
+  "saved_artifact_entries_verified": 59,
+  "saved_artifact_manifest_sha256": "c356d48e27cc5727172661125b07cf95f75bb4f9e29fb4d49f06a1e280936223",
+  "proof_source_binary_hashes": {
+    "baseline:binary_sha256": "095f5a3c1528ec4050d457fd427f43bc2ebdf7c90a60fe0d3a21880ba8d318bd",
+    "baseline:main_sha256": "c2889dc17fa0366960d8dbe2706544437e4c26f3e40947e9195bbc96e5a6d82e",
+    "baseline:provider_fixture_sha256": "72dfd348bcaebb2c11ab02fbe63032f978da4524b544a4ff010ca25e4d16be5b",
+    "baseline:instrumented_relevance_sha256": "527fccf91ad25c420bf2751add401e83683a9ecea966197a1992ac54705e8a09",
+    "candidate:binary_sha256": "fff18c9b072f9008dea215c042f469e288d6c16478f915689831e10ec7d5a49c",
+    "candidate:main_sha256": "c2889dc17fa0366960d8dbe2706544437e4c26f3e40947e9195bbc96e5a6d82e",
+    "candidate:provider_fixture_sha256": "72dfd348bcaebb2c11ab02fbe63032f978da4524b544a4ff010ca25e4d16be5b",
+    "candidate:instrumented_relevance_sha256": "2ef44bfa96cf8503c26713bb74a08e07f0aa33dd762fd3a257f2cb09285412fa"
+  },
+  "host_main_byte_identity_verified": true,
+  "saved_model_requests_and_fixed_responses_equal": true,
+  "arms": [
+    {
+      "arm": "baseline",
+      "positive_control_API_count": 365,
+      "saved_ordinary_path_API_log_exists": false,
+      "callbacks": 5,
+      "direct_guarded_model_records_equal": true,
+      "resolver_calls": 1,
+      "finalization_status": "grounded_answer",
+      "finalization_text": "node.buffer.uint8array = true"
+    },
+    {
+      "arm": "candidate",
+      "positive_control_API_count": 446,
+      "saved_ordinary_path_API_log_exists": false,
+      "callbacks": 5,
+      "direct_guarded_model_records_equal": true,
+      "resolver_calls": 1,
+      "finalization_status": "grounded_answer",
+      "finalization_text": "node.buffer.uint8array = true"
+    }
+  ],
+  "guarded_pair": {
+    "complete": true,
+    "charged_reservations": 300,
+    "known_total_tokens": 300,
+    "unknown_usage_rows": 0,
+    "semantic_acceptance": "NOT_SCORED"
+  },
+  "interpretation": "Saved offline instrumented CLI fixture evidence supports its limited claim; no provider/live/signedbinary/real24/source-gate acceptance. Not original response replay/rescore. Synthetic token300 is not billed reserve/headroom.",
+  "Engine_implementation_viewed": false,
+  "provider_calls_in_review": 0,
+  "existing_first_artifacts_changed": 0
+}

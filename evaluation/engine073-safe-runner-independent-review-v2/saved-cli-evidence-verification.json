@@ -1,0 +1,106 @@
+{
+  "saved_utc": "2026-10-16T15:42:05.278504+00:00",
+  "proofs": {
+    "v1": {
+      "entries": 59,
+      "manifest_sha256": "c356d48e27cc5727172661125b07cf95f75bb4f9e29fb4d49f06a1e280936223",
+      "hashes_and_inventory_match": true
+    },
+    "v2": {
+      "entries": 30,
+      "manifest_sha256": "44c799f3bc3911cc37c5c0e66615b10f129cafccb2cc1bb5ff915f95f97200df",
+      "hashes_and_inventory_match": true
+    }
+  },
+  "v2_pinned_actual_artifacts_match": [
+    {
+      "path": "/private/tmp/engine073-cli-path-preparation-v1/bin/reason-baseline",
+      "sha256": "095f5a3c1528ec4050d457fd427f43bc2ebdf7c90a60fe0d3a21880ba8d318bd"
+    },
+    {
+      "path": "/private/tmp/engine073-cli-path-preparation-v2/baseline-guarded-config.json",
+      "sha256": "a07983f650866f186c2bcf7808580e03656936c6e7265aa2a65a82a959d49589"
+    },
+    {
+      "path": "/private/tmp/engine073-cli-path-preparation-v1/bin/reason-candidate",
+      "sha256": "fff18c9b072f9008dea215c042f469e288d6c16478f915689831e10ec7d5a49c"
+    },
+    {
+      "path": "/private/tmp/engine073-cli-path-preparation-v2/candidate-guarded-config.json",
+      "sha256": "8c22b0148cb3b8a9b5f1f2b04249b706e16d725b2808d1b8f720bee0657b2aa8"
+    },
+    {
+      "path": "/private/tmp/engine073-cli-path-preparation-v2/controlled-transcript.json",
+      "sha256": "f3ecd526e23949db5f530091361ef2dd0ba57d0995d3c1dc3b741b2a1405fe24"
+    },
+    {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-safe-runner/reasoning-harness/evaluation/engine07-realworld-v3/corpus.json",
+      "sha256": "59bd5996ff9dde9d40bc3755cc2c4c4829ebe80ff378e210e52b8dd4e323cb3c"
+    },
+    {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-safe-runner/reasoning-harness/evaluation/engine07-realworld-v3/resolver.py",
+      "sha256": "20f979473c1e75b8088449c84b6dfa189d1f2d7ec273d2169345b44365261523"
+    },
+    {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-safe-runner/reasoning-harness/evaluation/engine07-realworld-runner-v1/runner.py",
+      "sha256": "a412d7a9b851f23b6378496cd78a52f06e3076b05f93abd31acd3917ff2688f9"
+    }
+  ],
+  "host_commit": "ec6e55ff95b8364f9a5d09b8bbfe0ecc0c9d19d7",
+  "engines_from_saved_build_proof": {
+    "baseline": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+    "candidate": "5edd26f25cfb55f9acee49c6f2b78308a1ed48b7"
+  },
+  "candidate_is_old_5edd_not_new_9a40_source": true,
+  "main_hash_identity_from_unchanged_build_proof": true,
+  "positive_control_API_counts": {
+    "baseline": 365,
+    "candidate": 446
+  },
+  "arms": {
+    "baseline": {
+      "complete": true,
+      "model_requests_and_fixed_responses": 5,
+      "resolver_journal_rows": 1,
+      "trace_admissions": 1,
+      "grounded_finalization": {
+        "status": "grounded_answer",
+        "text": "node.buffer.uint8array = true",
+        "factual_claims": 1,
+        "covered_claims": 1,
+        "factual_claim_coverage": 1.0,
+        "uncovered_propositions": []
+      },
+      "synthetic_known_tokens": 150,
+      "relevance_API_log_absent": true,
+      "model_records_byte_equal_v1": true
+    },
+    "candidate": {
+      "complete": true,
+      "model_requests_and_fixed_responses": 5,
+      "resolver_journal_rows": 1,
+      "trace_admissions": 1,
+      "grounded_finalization": {
+        "status": "grounded_answer",
+        "text": "node.buffer.uint8array = true",
+        "factual_claims": 1,
+        "covered_claims": 1,
+        "factual_claim_coverage": 1.0,
+        "uncovered_propositions": []
+      },
+      "synthetic_known_tokens": 150,
+      "relevance_API_log_absent": true,
+      "model_records_byte_equal_v1": true
+    }
+  },
+  "same_fixed_model_request_response_records_and_finalization": true,
+  "shared_guard": {
+    "complete_rows": 2,
+    "synthetic_known_and_reserved_tokens": 300,
+    "unknown_usage_rows": 0,
+    "semantic_acceptance": "NOT_SCORED"
+  },
+  "limits": "Saved new offline stub/instrumented CLI fixture only; no original-v3 exact replay or rescore, live provider, billing/headroom, untouched signed binary, new source candidate quality, real24 or CLI adoption. No saved fixture was executed during final-save resume.",
+  "provider_calls": 0,
+  "network_calls": 0
+}

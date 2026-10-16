@@ -1,0 +1,64 @@
+{
+  "charged_reservations": 160,
+  "current_reserve": null,
+  "groq_state_sha256": null,
+  "guard": {
+    "events": [
+      {
+        "decision": {
+          "allowed": true,
+          "reason": null
+        },
+        "event": "admission",
+        "started_invocations": 1
+      },
+      {
+        "event": "observation",
+        "latch": null,
+        "observed_tokens": 10,
+        "outcome": {
+          "failure_class": null,
+          "provider_attempts": 1,
+          "tokens": 10
+        }
+      }
+    ],
+    "inflight": false,
+    "latch": null,
+    "observed_tokens": 10,
+    "started_invocations": 1,
+    "token_budget": 1000
+  },
+  "known_provider_attempts": 1,
+  "known_total_tokens": 10,
+  "model": "offline-fixture",
+  "provider": "google",
+  "rows": [
+    {
+      "admission": {
+        "allowed": true,
+        "reason": null
+      },
+      "arm": "baseline",
+      "complete": true,
+      "contract": "normal",
+      "id": "alias",
+      "operational_failure": null,
+      "outcome": {
+        "failure_class": null,
+        "provider_attempts": 1,
+        "tokens": 10
+      },
+      "partial_diagnostics_observed": null,
+      "reserve": 160,
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "b378a620a8859454048b217507932f9dd1633a30b2639a41c5ca0b0e2f5e72e1",
+      "termination": null,
+      "wall_ms": 60
+    }
+  ],
+  "schema": "engine07-durable-arm-v1",
+  "sequence": 4,
+  "unknown_usage_rows": 0
+}

@@ -1,0 +1,53 @@
+{
+  "verified_utc": "2026-10-16T15:42:05.280356+00:00",
+  "HEAD": "93a9d5a3dba976f134395409037df7c1a73d7845",
+  "reviewed_files": {
+    "evaluation/engine07-realworld-runner-v1/README.md": "e41999ae73c095239ef1894ee0dc7b6f25fc4801a88c7f03de9fe17b3a19c705",
+    "evaluation/engine07-realworld-runner-v1/existing-controls-tests.log": "be5f799fffcda038209fe4c973d563cbba54f68e2b9964877546e131745e534a",
+    "evaluation/engine07-realworld-runner-v1/fixture_child.py": "b1a7359548f545bd49dc7275166024bf3bbf40e2d0c5e83c55f39fb9512a77a2",
+    "evaluation/engine07-realworld-runner-v1/repair-development-red.log": "a7dce0ea51a0e784b28907449c551ac049cfee597fd1d61180095579d28158e2",
+    "evaluation/engine07-realworld-runner-v1/repair-existing-controls.log": "be5f799fffcda038209fe4c973d563cbba54f68e2b9964877546e131745e534a",
+    "evaluation/engine07-realworld-runner-v1/repair-tests-final.log": "d3de626a476cc4bdd2fea5ce69cd91fc2793881bbb00051dc81d912a096f1e52",
+    "evaluation/engine07-realworld-runner-v1/repair-verification-v2.json": "0ca7bf3c6aa9dfc6369d168e27ca8d6e143a5a20d73e642755006ed3879449e7",
+    "evaluation/engine07-realworld-runner-v1/runner-tests.log": "d08826aeaf30ab265382403c38b28a837d8416d698096f67e169266c7d741fa5",
+    "evaluation/engine07-realworld-runner-v1/runner.py": "a412d7a9b851f23b6378496cd78a52f06e3076b05f93abd31acd3917ff2688f9",
+    "evaluation/engine07-realworld-runner-v1/test_runner.py": "9190e5b8206d2913e50896875b5b24b052148c62ea3a67d225aecc9051f6d23c",
+    "evaluation/engine07-realworld-runner-v1/verification.json": "6f530d12ce297536d4c827e740d31e9dc38f9e7c7eb4492d91b31598da9c51d6",
+    "evaluation/engine07-realworld-operations-v1/README.md": "ef569b05e8f86de0b4a611b0b52891cb3d09c8569bc05c94eb01d3674ee16fe9",
+    "evaluation/engine07-realworld-operations-v1/bridge.py": "abae342729fdb1eceab1015041a676085cd4c051fb5816191ab0ebbb29088dcb",
+    "evaluation/engine07-realworld-operations-v1/groq-state.json": "762eb8035ea16e50e619a448658a72fbff01b25d89b39003a8c51e08cc16f46d",
+    "evaluation/engine07-realworld-operations-v1/guard.py": "49f1a8af052c5b162ba7e87c9ab43edb571ab2ede15a69e9f95bb55ac93da0a7",
+    "evaluation/engine07-realworld-operations-v1/independent-review.md": "5dff5590c551f604805fac852af33e6b0e74f0fa63c25bbb18d9ef793ab3cd34",
+    "evaluation/engine07-realworld-operations-v1/test_bridge.py": "20158cabd7cc4a19e2686e0c71bc7148cdc11b911297ab148b1a637b35570766",
+    "evaluation/engine07-realworld-operations-v1/test_guard.py": "ec40191aa8cda4c3d16f3e44ae71b61a1025187793f7abcd6b7aa1dea61ed0a6",
+    ".github/workflows/ci.yml": "3b0efae65070617f5dbc1952c0fb00e896eb380b26ecc593fd708ab65b4023e4"
+  },
+  "all_reviewed_code_logs_CI_hashes_unchanged": true,
+  "original_review": {
+    "/Users/sawadakousuke/.codex/worktrees/engine073-safe-runner/reasoning-harness/evaluation/engine073-safe-runner-independent-review-v1": {
+      "files_verified": 50,
+      "anchor": "73c516640221334787ee19ee3cbdbb1653183c7c1863320e37038fea5afe36b9",
+      "unchanged": true
+    },
+    "/private/tmp/engine073-safe-runner-independent-ggk7egjm": {
+      "files_verified": 50,
+      "anchor": "73c516640221334787ee19ee3cbdbb1653183c7c1863320e37038fea5afe36b9",
+      "unchanged": true
+    }
+  },
+  "CLI_proofs_unchanged": {
+    "v1": {
+      "entries": 59,
+      "manifest_sha256": "c356d48e27cc5727172661125b07cf95f75bb4f9e29fb4d49f06a1e280936223",
+      "hashes_and_inventory_match": true
+    },
+    "v2": {
+      "entries": 30,
+      "manifest_sha256": "44c799f3bc3911cc37c5c0e66615b10f129cafccb2cc1bb5ff915f95f97200df",
+      "hashes_and_inventory_match": true
+    }
+  },
+  "first_row_stdout_stderr_hashes_match": true,
+  "resume_engine_or_fixture_or_test_executions": 0,
+  "core_implementation_viewed": false
+}
