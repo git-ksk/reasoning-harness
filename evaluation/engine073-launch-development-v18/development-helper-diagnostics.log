@@ -1,0 +1,49 @@
+   Compiling reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 9.81s
+     Running unittests src/lib.rs (/private/tmp/engine073-target/debug/deps/reasoning_harness_core-dcd4f612c7771d71)
+
+running 1 test
+CASE "li12-011" governing=false
+SEG "Firsedge Tray was launched" property=false frame=false nominal=false foreign=false typed=None
+SEG "Subject: the printed launch-key font-size claim for Firsedge Tray" property=false frame=false nominal=false foreign=false typed=None
+SEG "I retract this subject" property=false frame=false nominal=false foreign=false typed=Some(true)
+SEG "I also deny the printed launch-key colour claim for Firsedge Tray" property=true frame=false nominal=false foreign=false typed=None
+SEG "The parenthesized correction is another text property" property=false frame=false nominal=false foreign=false typed=None
+CASE "li18-001" governing=true
+SEG "Auburn Capsule was launched" property=false frame=false nominal=false foreign=false typed=None
+SEG "Object: the font of the printed words \"Auburn Capsule was not launched\" on Auburn Capsule label" property=false frame=false nominal=false foreign=false typed=None
+SEG "We deny this Object" property=false frame=false nominal=false foreign=false typed=Some(false)
+SEG "The denial concerns only the font assertion about those literal words" property=true frame=false nominal=true foreign=false typed=None
+CASE "li18-015" governing=false
+SEG "We retract the claim, the colour assertion about Hazel Unit lid" property=false frame=true nominal=false foreign=false typed=None
+SEG "We also withdraw the launch claim owned by Silver Arbor" property=false frame=false nominal=false foreign=true typed=None
+SEG "Hazel Unit was launched" property=false frame=false nominal=false foreign=false typed=None
+CASE "li18-017" governing=true
+SEG "Indigo Casket was launched" property=false frame=false nominal=false foreign=false typed=None
+SEG "Object: \"Indigo Casket lid is not copper\", the lid-material claim" property=false frame=false nominal=false foreign=false typed=None
+SEG "We deny this Object" property=false frame=false nominal=false foreign=false typed=Some(false)
+SEG "No actual launch of Fern Pavilion occurred" property=false frame=false nominal=false foreign=true typed=None
+CASE "li18-031" governing=false
+SEG "Subject: the colour and font size of the printed title on Pine Vessel guide" property=false frame=false nominal=false foreign=false typed=None
+SEG "We retract the Subject, these two title-typography assertions" property=false frame=false nominal=false foreign=false typed=Some(true)
+SEG "We deny the launch of Daffodil Annex as a separate correction" property=false frame=false nominal=false foreign=true typed=None
+SEG "Pine Vessel was launched" property=false frame=false nominal=false foreign=false typed=None
+CASE "li18-053" governing=false
+SEG "Aspen Loom was launched" property=false frame=false nominal=false foreign=false typed=None
+SEG "The printed date on Aspen Loom carton is 12 April" property=false frame=false nominal=false foreign=false typed=None
+SEG "I retract that printed-date claim" property=true frame=true nominal=false foreign=false typed=None
+SEG "The corrected object is a fully identified carton-text property" property=false frame=false nominal=true foreign=false typed=None
+CASE "li18-057" governing=true
+SEG "Copper Latch was launched" property=false frame=false nominal=false foreign=false typed=None
+SEG "Publisher summary" property=false frame=false nominal=false foreign=false typed=None
+SEG "We withdraw the page-count claim about Copper Latch manual and the launch claim about Oleander Hall" property=false frame=false nominal=false foreign=false typed=None
+SEG "This summary names both correction objects" property=false frame=false nominal=false foreign=false typed=None
+CASE "li18-059" governing=false
+SEG "The statement I deny is the assertion about the font size of Dusk Panel title" property=true frame=false nominal=true foreign=false typed=None
+SEG "That font-size assertion is the entire local correction" property=false frame=false nominal=true foreign=false typed=None
+SEG "I withdraw the launch of Foxglove Terrace separately" property=false frame=false nominal=false foreign=true typed=None
+SEG "Dusk Panel was launched" property=false frame=false nominal=false foreign=false typed=None
+test evidence_relevance::development_scope_diagnostics18::saved_consumed_clause_diagnostics ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 330 filtered out; finished in 0.04s
+

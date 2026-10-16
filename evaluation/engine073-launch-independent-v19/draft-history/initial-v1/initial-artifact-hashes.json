@@ -1,0 +1,15 @@
+{
+  "preserved_utc": "2026-10-16T17:20:41.963369+00:00",
+  "files": {
+    "author_cases.py": "37409a0ca353aa4857dbb575064d3d6de578110b4fead0c67d4b288fbfb804d5",
+    "cases.json": "43d7189155dd67434d8fbbd4650d355aed1dbcbaf3b842e1959f75af3a5fbb49",
+    "inputs.json": "41746b6d7908eba50bc81432a231cb13d8439f844265c0fc36ca1bef9d5faadf",
+    "protocol.json": "00a25c6308186292dd6b50b429ab187bc2284f55864b11efe9bc622739634a16",
+    "static_preflight.py": "2019f00373d7a120842885aea544ffca87e8ffa00880487bbc11bada3ffc8f03",
+    "static-preflight.json": "4280c0ae90ebef54e95c291589d54d6fe43883728e5cfabbb526310746d20129"
+  },
+  "full_manifest_frozen": false,
+  "Engine_calls": 0,
+  "scorer_calls": 0,
+  "note": "Original first pre-freeze author/cases/inputs/protocol/static code and result byte-preserved before scope revision."
+}

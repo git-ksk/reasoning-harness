@@ -1,0 +1,118 @@
+{
+  "identity": "engine073-launch-independent-v19-source-review",
+  "saved_utc": "2026-10-16T17:25:34.830262+00:00",
+  "outcome": "FAIL",
+  "first_summary_sha256": "e4d1bc2e1d3e5bfda98e2e6add0911c972b588242b0329d843ed24fc1a431979",
+  "counts": {
+    "observed": 60,
+    "passed": 49,
+    "positive_passed": 19,
+    "negative_passed": 30,
+    "positive_withheld": 11,
+    "negative_v17_requested_violations": 0,
+    "negative_v30_relevant_violations": 0,
+    "operational_errors": 0
+  },
+  "failed_positives": [
+    {
+      "id": "li19-003",
+      "axis": "literal_foreign_name_is_not_event_owner",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li19-009",
+      "axis": "whole_source_words_inside_font_claim",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li19-011",
+      "axis": "claim_existence_vs_product_existence",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li19-027",
+      "axis": "heading_target_non_event_after_foreign",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li19-029",
+      "axis": "missing_author_reply_owner",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li19-033",
+      "axis": "three_roles_two_properties_owner_frame",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li19-035",
+      "axis": "quoted_property_apposition_after_two_events",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li19-039",
+      "axis": "complete_property_denial_apposition",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li19-049",
+      "axis": "unavailable_continuation_after_property_quote",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li19-057",
+      "axis": "owner_mix_after_document_property",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li19-059",
+      "axis": "explicit_foreign_quote_vs_unidentified_pronoun",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    }
+  ],
+  "finding": "All60 gate fails because11 precommitted complete-property/foreign-event positives withhold. No unsafe negative observed among these30; no universal safety or cross-corpus improvement claim. Source unread, no causal implementation diagnosis.",
+  "pre_freeze_design_revision": {
+    "pair23": "Agency-only I did not launch PRODUCT did not negate PRODUCT launch by another agent. Before complete freeze, replaced both sides with I deny that PRODUCT was launched.",
+    "initial6_artifacts_byte_preserved": true,
+    "author_and_STATIC_ONLY_runs": 2,
+    "Engine_scorer_observations_at_revision": 0,
+    "expected_boolean_polarities_changed": false,
+    "other58_unchanged": true,
+    "parent_explicitly_authorized": true,
+    "final045": "requested_relation/none/Relevant",
+    "final046": "unresolved/none/Ambiguous"
+  },
+  "special_diagnostics": {
+    "literal_global_words_font_positive009": "unresolved/none/Ambiguous, original positive label retained",
+    "actual_gap_negative030_050": "both unresolved/multiple/Ambiguous",
+    "canonical_full_clip_positive051": "requested_relation/none/Relevant",
+    "pure_risk_joint_negative": 0,
+    "component_risk_proof": false
+  },
+  "complete_freeze_inputs_scope_labels_unchanged": true,
+  "post_freeze_retry_rescore_relabel": 0,
+  "provider_network_calls": 0,
+  "limits": "Finite synthetic candidate source gate, not real24/ordinaryCLI/provider/human/adoption/release or arbitrary language guarantee. Parent build hash-verified, no independent core build."
+}

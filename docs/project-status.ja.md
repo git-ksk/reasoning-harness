@@ -19,11 +19,14 @@
 
 中心となるtrust boundaryは変わりません。model outputはuntrusted candidate / rendererであり、evidence admission、qualification、verification、bounded resolution、最終的に表示するfactual claimのauthorityはHarness側が持ちます。最終freeze済みEngine 0.4.2 natural-language release evaluationは、Mistral、Groq、Gemini 3.5 Flash-Lite、Gemma 4 31Bを独立にPASSしています。詳細は[v36 release acceptance](natural-language-e2e-v36-result.ja.md)を参照してください。
 
-## 次の開発 — 実戦評価を先行
+## 次の開発 — Engine0.7.3の修正と再評価
 
-[#531](https://github.com/git-ksk/reasoning-harness/issues/531)／[Milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12)で、**実資料の0.6.1/0.7.2比較 → 必要な修正 → 新規再評価 → CLI採用 → 正式配布**の順に進めます。公開済み0.7.2に現在形の撤回・非実在の判定漏れが再現したため、#520を再オープンし、CLI採用はNO-GOです。#488/#489/#491は測定で必要性が確認できた場合だけ実装します。
+[0.7.3ロードマップ](engine-0.7.3-roadmap.ja.md)／[計画 #538](https://github.com/git-ksk/reasoning-harness/issues/538)／[評価 #531](https://github.com/git-ksk/reasoning-harness/issues/531)で、**#520修正 → 安全なrunner・通常経路の接続確認 → 小規模開発確認 → 新規独立の実資料受入 → ソース公開 → 専用CLI採用・配布**の順に進めます。0.7.3は未公開の計画です。0.7.2の公開物・比較結果は保持し、残存不具合があるため採用不可です。#488/#489/#491は実測で必要な場合だけ実装します。
 
-通常の質問から最終回答までのE2Eと、任意の資料照合helper評価を分けます。両タグの実ビルドによる実資料5件・11入力の予備比較は完了しましたが、3社の本評価と新しい独立受入は未実施です。採用チェックは0/6。[計画・合格条件・予備結果](engine-07-realworld-evaluation.ja.md)を参照。CLI0.5.5 / Engine0.6.1の公開と#506の配布受入は別工程です。
+[初回v2/v3の結果](engine07-realworld-development-results.ja.md)は不合格・不完全のままです。#535の診断保持・#537の停止制御・#541の共有runnerはmerge済みですが、live受入は未完了。Groqは記録済みの日次枯渇により追加起動を止めています。通常回答の改善と新規独立受入は未確認、採用1/6は開発比較・限界・NO-GO記録のみです。公開CLI0.5.5 / Engine0.6.1と#506の配布受入は別工程です。
+
+
+[#520の修正](launch-retraction-520.ja.md)はDraft PR #539で、既知900件・関連77テスト・workspace1541成功、歴史API597出力byte一致。独立v18初回FAIL45/60（安全性の漏れ1件・肯定取りこぼし14件）は保持し、新規独立v19はFAIL49/60（安全性の漏れ0・肯定取りこぼし11）で、受入未完了です。実行基盤PR #541は最終CI5/5・オフライン47件・限定独立再レビューPASSでmerge済み。同一CLIホストの経路証拠は旧5eddのもので、現候補やlive回答の有用性とは扱いません。live数値予算・dependency closure、実資料・provider受入は未完了です。
 
 ## 今できること
 

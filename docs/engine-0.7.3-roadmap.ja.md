@@ -2,7 +2,7 @@
 
 日本語 | [English](engine-0.7.3-roadmap.md)
 
-**未公開・未受入の後継候補です。** 2026-10-15 JST。[計画 #538](https://github.com/git-ksk/reasoning-harness/issues/538)／[評価 #531](https://github.com/git-ksk/reasoning-harness/issues/531)／[Milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12)。
+**未公開・未受入の後継候補です。** 2026-10-17 JST。[計画 #538](https://github.com/git-ksk/reasoning-harness/issues/538)／[評価 #531](https://github.com/git-ksk/reasoning-harness/issues/531)／[Milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12)。
 
 公開製品はReason CLI0.5.5 / Engine0.6.1、最新の独立ソースはEngine0.7.2です。0.7.2の現在形の撤回・非実在の判定漏れ[#520](https://github.com/git-ksk/reasoning-harness/issues/520)がCLI採用を止めています。0.7.3は新しい修正版の目標で、0.7.2を付け替えません。版の昇格・公開は別リリースPRで判断します。
 
@@ -10,8 +10,8 @@
 
 | 順序 | 作業と必要な証拠 | 現状 |
 | --- | --- | --- |
-| 1 | #520を修正。撤回・否認・取り下げ・明示的な非実在を対象と主張の範囲で扱い、事実の肯定・準備表現・中立文・無関係な対象や別の性質は維持する。元14入力は開発用の再現として確認し、後継候補SHAを固定する。 | 未完了 |
-| 2 | 安全な評価runnerを完成。両Engineと補助APIで停止制御を共有し、予約・実行中・停止状態の永続化と再起動時停止、呼び出し全体の保守的予算、強制終了前のキャンセルを実装する。通常CLIの実際のEngine経路をtraceで確認し、Mistral rw03は固定応答で切り分ける。 | #535診断保持はmerge済み、#537変換・停止制御は26オフラインテスト合格。runner組み込み・接続証拠は未完了。 |
+| 1 | #520を修正。撤回・否認・取り下げ・明示的な非実在を対象と主張の範囲で扱い、事実の肯定・準備表現・中立文・無関係な対象や別の性質は維持する。元14入力は開発用の再現として確認し、後継候補SHAを固定する。 | 修正候補：既知900件・関連77テスト・workspace1541成功。独立v18初回FAIL45/60（安全性の漏れ1件・肯定取りこぼし14件）を保持し、新規独立v19はFAIL49/60（安全性の漏れ0・肯定取りこぼし11）で、受入未完了。[証拠](launch-retraction-520.ja.md)。 |
+| 2 | [#540](https://github.com/git-ksk/reasoning-harness/issues/540)で安全な評価runnerを完成。両Engineと補助APIで停止制御を共有し、予約・実行中・停止状態の永続化と再起動時停止、呼び出し全体の保守的予算、強制終了前のキャンセルを実装する。通常CLIの実際のEngine経路をtraceで確認し、Mistral rw03は固定応答で切り分ける。 | #535/#537/#541はmerge済み。実行基盤の最終head CI5/5・オフライン47件・限定独立再レビューPASS。同一CLIホストの経路と固定応答を保存。live callback/dependency・数値予算のfreezeは未完了。 |
 | 3 | オフラインを先行し、必要ならMistral・Googleで小さな開発確認をする。通常回答の有用性と補助APIの表示増加は別集計にする。 | 未完了。過去v2/v3の初回不合格は保持。 |
 | 4 | 完全な評価器・ホスト・Engine SHA・モデル設定・数値予算・採点基準を固定した後、別作成者が新規の実資料24問を作る。同一ホスト条件で実際の0.6.1と後継候補を比較。重大な安全性違反0、陽性退行0、有用性の実測改善、providerごとの完全な結果を要求する。 | 新規受入0/24。全受入protocolはdraftのまま。 |
 | 5 | 宣言した範囲の全必須ゲートとCIを通して、専用PRでEngine0.7.3をソース公開する。リリース方針に従い、検証範囲・限界を記録する。 | 未公開。必須受入が未完了の間は通常リリースしない。 |

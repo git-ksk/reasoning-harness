@@ -19,11 +19,14 @@ Latest Engine source release: Harness Engine 0.7.2 (`engine-v0.7.2`)
 
 The central trust boundary remains unchanged: model output is an untrusted candidate/renderer, while evidence admission, qualification, verification, bounded resolution, and exposed factual-claim authority remain Harness-owned. The final frozen Engine 0.4.2 natural-language release evaluation passed independently across Mistral, Groq, Gemini 3.5 Flash-Lite, and Gemma 4 31B. See [v36 release acceptance](natural-language-e2e-v36-result.md).
 
-## Next development — evaluate real use first
+## Next development — Engine0.7.3 repair and re-evaluation
 
-[#531](https://github.com/git-ksk/reasoning-harness/issues/531) / [milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12) order **real-data0.6.1/0.7.2 comparison → necessary fixes → fresh reacceptance → CLI adoption → distribution**. A new present-tense retraction/non-event residual reproduces in published0.7.2; #520 is reopened and adoption is NO-GO. #488/#489/#491 remain conditional on measured need.
+[0.7.3 roadmap](engine-0.7.3-roadmap.md) / [plan #538](https://github.com/git-ksk/reasoning-harness/issues/538) / [evaluation #531](https://github.com/git-ksk/reasoning-harness/issues/531) define **#520 repair → safe runner and actual normal-path wiring → small development checks → fresh independent real-source acceptance → source release → dedicated CLI adoption/distribution**.0.7.3 is planned and unpublished;0.7.2 remains an immutable historical comparison arm and its residual blocks adoption. #488/#489/#491 remain conditional.
 
-Normal question-to-final-answer E2E and opt-in helper evaluation have separate denominators. An actual-tag offline pilot on five real primary excerpts/eleven inputs is complete; canonical three-provider evaluation and fresh independent acceptance are not. Adoption remains0/6. See [plan, gates and pilot evidence](engine-07-realworld-evaluation.md). Published CLI0.5.5 / Engine0.6.1 and #506 package acceptance remain separate.
+[First v2/v3 results](engine07-realworld-development-results.md) remain FAIL/incomplete. #535 diagnostic retention is merged; #537 operational bridge is merged; live acceptance remains pending. Groq daily exhaustion still blocks starts. No normal-answer utility gain or fresh independent acceptance is established; adoption1/6 records development comparison/limits/NO-GO only. Published CLI0.5.5 / Engine0.6.1 and #506 package acceptance remain separate.
+
+
+[#520 source repair](launch-retraction-520.md) remains Draft PR #539:900 seen cases,77 related tests and workspace1541 pass, with597 historical API outputs byte-identical. Independent v18 first FAIL45/60 (unsafe1, positive misses14) is preserved; fresh v19 FAIL49/60 (unsafe0, positive misses11); source gate remains open. Runner PR #541 is merged: final CI5/5,47 offline controls and bounded independent re-review PASS. Controlled ordinary CLI path evidence uses older5edd and does not establish current-source or live-provider utility. Live numerical budgets/dependency closure and fresh real-source/provider acceptance remain open.
 
 ## What users can do today
 

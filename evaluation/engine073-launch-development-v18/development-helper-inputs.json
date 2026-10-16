@@ -1,0 +1,350 @@
+[
+  {
+    "id": "li12-011",
+    "policy": {
+      "policy_id": "independent-v12-launch-policy",
+      "target_id": "v12-fictional-target-06",
+      "target_question": "Was Firsedge Tray launched?",
+      "entity": {
+        "canonical_id": "v12-fictional-target-06",
+        "canonical_name": "Firsedge Tray",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li12-011-evidence",
+      "source_id": "li12-011-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Firsedge Tray was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the printed launch-key font-size claim for Firsedge Tray. I retract this subject (and I also deny the printed launch-key colour claim for Firsedge Tray). The parenthesized correction is another text property."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li18-001",
+    "policy": {
+      "policy_id": "li18-policy-01",
+      "target_id": "li18-target-01",
+      "target_question": "Was Auburn Capsule launched?",
+      "entity": {
+        "canonical_id": "li18-target-01",
+        "canonical_name": "Auburn Capsule",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li18-001-evidence",
+      "source_id": "li18-001-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Auburn Capsule was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the font of the printed words \"Auburn Capsule was not launched\" on Auburn Capsule label. We deny this Object. The denial concerns only the font assertion about those literal words."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li18-015",
+    "policy": {
+      "policy_id": "li18-policy-08",
+      "target_id": "li18-target-08",
+      "target_question": "Was Hazel Unit launched?",
+      "entity": {
+        "canonical_id": "li18-target-08",
+        "canonical_name": "Hazel Unit",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li18-015-evidence",
+      "source_id": "li18-015-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "We retract the claim, the colour assertion about Hazel Unit lid. We also withdraw the launch claim owned by Silver Arbor."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Hazel Unit was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li18-017",
+    "policy": {
+      "policy_id": "li18-policy-09",
+      "target_id": "li18-target-09",
+      "target_question": "Was Indigo Casket launched?",
+      "entity": {
+        "canonical_id": "li18-target-09",
+        "canonical_name": "Indigo Casket",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li18-017-evidence",
+      "source_id": "li18-017-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Indigo Casket was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: \"Indigo Casket lid is not copper\", the lid-material claim. We deny this Object. No actual launch of Fern Pavilion occurred."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li18-031",
+    "policy": {
+      "policy_id": "li18-policy-16",
+      "target_id": "li18-target-16",
+      "target_question": "Was Pine Vessel launched?",
+      "entity": {
+        "canonical_id": "li18-target-16",
+        "canonical_name": "Pine Vessel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li18-031-evidence",
+      "source_id": "li18-031-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Subject: the colour and font size of the printed title on Pine Vessel guide. We retract the Subject, these two title-typography assertions. We deny the launch of Daffodil Annex as a separate correction."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Pine Vessel was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li18-053",
+    "policy": {
+      "policy_id": "li18-policy-27",
+      "target_id": "li18-target-27",
+      "target_question": "Was Aspen Loom launched?",
+      "entity": {
+        "canonical_id": "li18-target-27",
+        "canonical_name": "Aspen Loom",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li18-053-evidence",
+      "source_id": "li18-053-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Aspen Loom was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "\"The printed date on Aspen Loom carton is 12 April.\" I retract that printed-date claim. The corrected object is a fully identified carton-text property."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li18-057",
+    "policy": {
+      "policy_id": "li18-policy-29",
+      "target_id": "li18-target-29",
+      "target_question": "Was Copper Latch launched?",
+      "entity": {
+        "canonical_id": "li18-target-29",
+        "canonical_name": "Copper Latch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li18-057-evidence",
+      "source_id": "li18-057-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Copper Latch was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Publisher summary"
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the page-count claim about Copper Latch manual and the launch claim about Oleander Hall. This summary names both correction objects."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li18-059",
+    "policy": {
+      "policy_id": "li18-policy-30",
+      "target_id": "li18-target-30",
+      "target_question": "Was Dusk Panel launched?",
+      "entity": {
+        "canonical_id": "li18-target-30",
+        "canonical_name": "Dusk Panel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li18-059-evidence",
+      "source_id": "li18-059-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The statement I deny is the assertion about the font size of Dusk Panel title. That font-size assertion is the entire local correction. I withdraw the launch of Foxglove Terrace separately."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Dusk Panel was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  }
+]

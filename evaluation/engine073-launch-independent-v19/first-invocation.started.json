@@ -1,0 +1,62 @@
+{
+  "state": "started",
+  "utc": "2026-10-16T17:22:37.769552+00:00",
+  "command": [
+    "/private/tmp/engine073-launch-independent-v19-probe/probe",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v19/inputs.json"
+  ],
+  "pre_invocation_identity": {
+    "verified_utc": "2026-10-16T17:22:37.769063+00:00",
+    "head": "f3d9ad15ae2e4fc81dadaed87c4e55fa8bce1c7d",
+    "artifacts": {
+      "evidence_relevance_source": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "sha256": "2c2a9cfce355a07dd8387f060e8dac2366d47400124f1425d7f03fa6b5dc4985"
+      },
+      "core_rlib": {
+        "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+        "sha256": "ef0a045a5bc10d97a4652ae281ebf481745a3b034ba9d8e85c3735529ec706e3"
+      },
+      "serde_json_rlib": {
+        "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+        "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+      },
+      "opaque_parent_freeze": {
+        "path": "/private/tmp/engine073-source18-freeze.json",
+        "sha256": "d3bc5d7ba76170bbe261ad53ef2ee10ab4b6e7f29e587f9bed813898d21f3793"
+      },
+      "probe_executable": {
+        "path": "/private/tmp/engine073-launch-independent-v19-probe/probe",
+        "sha256": "42374f725ec3d1c84b690ed01bad754efb55b2b5d484751a1afaca25d2730513"
+      }
+    },
+    "frozen_files": {
+      "author_cases.py": "4df3d15ef15b92ebb6389bbe68707842915f94747fc44be717d0ea766f61cfe1",
+      "build-preflight.json": "c5851d2c73d8c0ef28321ea760da27e0a5cdfd7b4b2bf3fc562241aaffcb2d56",
+      "build.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "build.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cases.json": "c28fd9555184835cab953d8fc59a8d6cbb39f6ec6f7222d414f1cf31e55b334a",
+      "draft-history/initial-v1/author_cases.py": "37409a0ca353aa4857dbb575064d3d6de578110b4fead0c67d4b288fbfb804d5",
+      "draft-history/initial-v1/cases.json": "43d7189155dd67434d8fbbd4650d355aed1dbcbaf3b842e1959f75af3a5fbb49",
+      "draft-history/initial-v1/initial-artifact-hashes.json": "f3174fa0ebd5ac71c3b8cb6963a78c8481a0398a802322855d5a67947deae7e0",
+      "draft-history/initial-v1/inputs.json": "41746b6d7908eba50bc81432a231cb13d8439f844265c0fc36ca1bef9d5faadf",
+      "draft-history/initial-v1/protocol.json": "00a25c6308186292dd6b50b429ab187bc2284f55864b11efe9bc622739634a16",
+      "draft-history/initial-v1/static-preflight.json": "4280c0ae90ebef54e95c291589d54d6fe43883728e5cfabbb526310746d20129",
+      "draft-history/initial-v1/static_preflight.py": "2019f00373d7a120842885aea544ffca87e8ffa00880487bbc11bada3ffc8f03",
+      "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+      "immutable-predecessor-check.json": "63283ada39db21e3c330497694ec1c84211c76b07c5256937728cb8627da91d4",
+      "inputs.json": "559e34af94070a60dfb93306289a7d2380e4b3de73662a40760b1365afff1c93",
+      "pre-freeze-design-revision.json": "4c3f0c735f893a8550f01db282591e19f7f798d6d5690baf61d137eeef295817",
+      "pre-freeze-scope-review.json": "a66b5e436f4bee4a8f7b3201c9847f88692976c50524bc44614adfb56317595c",
+      "predecessor-artifact-hashes.json": "b2fced4518089547d0bde0070d7bee783a757160f4829810bec58646dea92bf0",
+      "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+      "protocol.json": "dea271710d5f47166b9d48d5a085fc6408becbea2ae5cb3cc20d7a09f4191a23",
+      "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+      "static-preflight.json": "4280c0ae90ebef54e95c291589d54d6fe43883728e5cfabbb526310746d20129",
+      "static_preflight.py": "2019f00373d7a120842885aea544ffca87e8ffa00880487bbc11bada3ffc8f03"
+    },
+    "manifest_sha256": "fe9eac3ac54374bae987d9480b299c9bcfbd836237eebdfc634a80a7dbb73509"
+  },
+  "provider_calls": 0,
+  "retry": 0
+}

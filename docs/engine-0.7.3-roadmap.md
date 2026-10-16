@@ -2,7 +2,7 @@
 
 [日本語](engine-0.7.3-roadmap.ja.md) | English
 
-**Planned successor; unpublished and not accepted.** Updated 2026-10-15 JST. [Plan #538](https://github.com/git-ksk/reasoning-harness/issues/538), [evaluation #531](https://github.com/git-ksk/reasoning-harness/issues/531), [milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12).
+**Planned successor; unpublished and not accepted.** Updated 2026-10-17 JST. [Plan #538](https://github.com/git-ksk/reasoning-harness/issues/538), [evaluation #531](https://github.com/git-ksk/reasoning-harness/issues/531), [milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12).
 
 Published product: Reason CLI0.5.5 / Engine0.6.1. Latest independent source: Engine0.7.2. Its present-tense retraction/non-event residual in [#520](https://github.com/git-ksk/reasoning-harness/issues/520) blocks adoption. Target0.7.3 is a new successor, not a relabeling of0.7.2; version promotion and publication need a separate release PR.
 
@@ -10,8 +10,8 @@ Published product: Reason CLI0.5.5 / Engine0.6.1. Latest independent source: Eng
 
 | Order | Work and completion evidence | Current state |
 | --- | --- | --- |
-| 1 | Repair #520 with target/claim-scoped retraction, denial, withdrawal and explicit non-event handling. Preserve genuine launch/preparation, neutral prose and unrelated-target/property positives. Replay the original14-input failure as seen development coverage; pin successor SHA. | Pending |
-| 2 | Finish safe evaluation runtime: one guard for all baseline/candidate/helper calls; durable write-ahead reserve/inflight/latch and restart refusal; conservative whole-callback budgets; graceful cancellation before bounded hard kill. Trace actual normal CLI Engine wiring and isolate Mistral rw03 with fixed responses. | #535 diagnostics merged; #537 bridge26 offline tests pass. Live runner integration and wiring evidence pending. |
+| 1 | Repair #520 with target/claim-scoped retraction, denial, withdrawal and explicit non-event handling. Preserve genuine launch/preparation, neutral prose and unrelated-target/property positives. Replay the original14-input failure as seen development coverage; pin successor SHA. | Candidate:900 seen cases,77 related tests and workspace1541 pass. V18 first FAIL45/60 includes1 unsafe and14 positive misses; those observations remain unchanged. Fresh v19 FAIL49/60: unsafe0, positive misses11; source gate remains open. [Evidence](launch-retraction-520.md). |
+| 2 | [#540 safe evaluation runtime](https://github.com/git-ksk/reasoning-harness/issues/540): one guard for all baseline/candidate/helper calls; durable write-ahead reserve/inflight/latch and restart refusal; conservative whole-callback budgets; graceful cancellation before bounded hard kill. Trace actual normal CLI Engine wiring and isolate Mistral rw03 with fixed responses. | #535/#537/#541 merged. Runner final-head CI5/5,47 offline controls and bounded independent re-review PASS. Instrumented paired CLI path/controlled responses saved. Live callback/dependency/numeric-budget freeze remains open. |
 | 3 | Small offline and, when justified, Mistral/Google development checks. Keep normal final-answer utility separate from helper display gains. | Pending; historical v2/v3 FAIL preserved. |
 | 4 | Freeze complete evaluator, host/adapters, Engine SHA, model settings, numeric budgets and scoring before an independent author creates24 fresh real-source tasks. Compare actual0.6.1 with the successor under identical host conditions. Require zero severe safety violations, no positive regression and measured useful-answer gain, with complete per-provider results. | Fresh acceptance0/24; draft protocol remains draft. |
 | 5 | Dedicated Engine0.7.3 source release PR after all required declared-scope gates and CI pass. Document tested scope and evidence limits under the release policy. | Unpublished; no normal release while required acceptance is incomplete. |
