@@ -2072,3 +2072,97 @@ fn property_value_absence_and_proper_name_notes_preserve_actual_missing_context(
         }
     }
 }
+
+#[test]
+fn engine073_independent_v15_seen_replay_preserves_full_scope() {
+    // Keep v15's first FAIL unchanged. This replay is development evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-launch-independent-v15/cases.json"
+    ))
+    .unwrap();
+    let mut failures = Vec::new();
+    for case in corpus["cases"].as_array().unwrap() {
+        let input = &case["input"];
+        let policy = serde_json::from_value(input["policy"].clone()).unwrap();
+        let candidate = serde_json::from_value(input["candidate"].clone()).unwrap();
+        let proposal = serde_json::from_value(input["proposal"].clone()).unwrap();
+        let raw = serde_json::from_value(input["raw"].clone()).unwrap();
+        let qualification = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let assessment =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap();
+        if (qualification.relation_scope == Relation::RequestedRelation)
+            != case["expected"]["v17_requested_relation"]
+                .as_bool()
+                .unwrap()
+            || (assessment.disposition == Disposition::Relevant)
+                != case["expected"]["v30_relevant"].as_bool().unwrap()
+        {
+            failures.push(format!(
+                "{}: {qualification:?}, {:?}",
+                case["id"], assessment.disposition
+            ));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
+
+#[test]
+fn unknown_launch_owner_never_inherits_an_adjacent_foreign_owner() {
+    let mut cases = Vec::new();
+    for note in [
+        "its owner is not stated",
+        "its owner is not identified",
+        "its owner is unknown",
+    ] {
+        for prefix in [
+            "We retract the claim about the colour of Silver Lens button, and we deny the launch of Maple Queue.",
+            "We deny the launch of Maple Queue.",
+        ] {
+            cases.push(json!({"id":format!("unknown-owner:{prefix}:{note}"), "signals":[
+                {"kind":"excerpt","text":format!("Silver Lens was launched. {prefix} We also withdraw that other launch claim; {note}.")}
+            ],"expected_relevant":false}));
+        }
+    }
+    cases.push(json!({"id":"explicit-foreign-owner", "signals":[
+        {"kind":"excerpt","text":"Silver Lens was launched. We deny the launch of Maple Queue."}
+    ],"expected_relevant":true}));
+    check(cases);
+}
+
+#[test]
+fn measured_property_denial_does_not_clear_launch_or_existence_denial() {
+    let mut cases = Vec::new();
+    for quantity in ["two millimetres", "three millimeters", "7 grams"] {
+        cases.push(json!({"id":format!("property:{quantity}"),"signals":[
+            {"kind":"excerpt","text":format!("Silver Lens was launched. We deny that claim: the thickness of Silver Lens booklet cover is {quantity}. The denial object is the cover-thickness property.")}
+        ],"expected_relevant":true}));
+        for adverse in [
+            "We also deny that Silver Lens was launched.",
+            "The editor records that Silver Lens does not exist.",
+            "We withdraw the entire source.",
+        ] {
+            cases.push(json!({"id":format!("property-plus-adverse:{quantity}:{adverse}"),"signals":[
+                {"kind":"excerpt","text":format!("Silver Lens was launched. We deny that claim: the thickness of Silver Lens booklet cover is {quantity}. {adverse}")}
+            ],"expected_relevant":false}));
+        }
+    }
+    for proposition in [
+        "Silver Lens was launched",
+        "Silver Lens is available",
+        "the launch of Silver Lens occurred",
+        "the thickness of Silver Lens booklet cover is two launch events",
+        "the thickness of Silver Lens booklet cover is two millimetres and Silver Lens does not exist",
+    ] {
+        cases.push(json!({"id":format!("non-property:{proposition}"),"signals":[
+            {"kind":"excerpt","text":format!("Silver Lens was launched. We deny that claim: {proposition}.")}
+        ],"expected_relevant":false}));
+    }
+    check(cases);
+}
