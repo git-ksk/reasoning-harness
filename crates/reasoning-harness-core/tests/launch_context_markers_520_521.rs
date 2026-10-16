@@ -1574,3 +1574,131 @@ fn typed_scope_exclusion_requires_one_complete_retraction_clause() {
     }
     check(cases);
 }
+
+#[test]
+fn engine073_independent_v12_seen_replay_preserves_full_scope() {
+    // Keep v9's first FAIL unchanged. This replay is development evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-launch-independent-v12/cases.json"
+    ))
+    .unwrap();
+    let mut failures = Vec::new();
+    for case in corpus["cases"].as_array().unwrap() {
+        let input = &case["input"];
+        let policy = serde_json::from_value(input["policy"].clone()).unwrap();
+        let candidate = serde_json::from_value(input["candidate"].clone()).unwrap();
+        let proposal = serde_json::from_value(input["proposal"].clone()).unwrap();
+        let raw = serde_json::from_value(input["raw"].clone()).unwrap();
+        let qualification = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let assessment =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap();
+        if (qualification.relation_scope == Relation::RequestedRelation)
+            != case["expected"]["v17_requested_relation"]
+                .as_bool()
+                .unwrap()
+            || (assessment.disposition == Disposition::Relevant)
+                != case["expected"]["v30_relevant"].as_bool().unwrap()
+        {
+            failures.push(format!(
+                "{}: {qualification:?}, {:?}",
+                case["id"], assessment.disposition
+            ));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
+
+#[test]
+fn separated_adverse_clauses_all_need_proven_non_target_scope() {
+    let mut cases = Vec::new();
+    for (text, expected) in [
+        (
+            "Object: the physical launch-flange width claim for Silver Lens. We retract this object because Silver Lens does not exist.",
+            false,
+        ),
+        (
+            "Object: the physical launch-flange width claim for Silver Lens. We retract this object because we deny the printed font specification for Silver Lens.",
+            true,
+        ),
+        (
+            "Object: the physical launch-flange width claim for Silver Lens. Because we deny the launch claim for Maple Queue, we retract this object.",
+            true,
+        ),
+        (
+            "Object: the physical launch event width claim for Silver Lens. We withdraw this object.",
+            false,
+        ),
+        (
+            "Object: the physical launch-flange width claim for Silver Lens. We retract this object because we deny that launch claim.",
+            false,
+        ),
+        (
+            "Object: the physical launch-flange width claim for Silver Lens. We retract this object because we deny the launch claim for Maple Queue.",
+            true,
+        ),
+        (
+            "Object: the physical launch-flange width claim for Silver Lens. We retract this object as Silver Lens never existed.",
+            false,
+        ),
+        (
+            "We deny the launch claim for Maple Queue. The current denial names another owner and the claim is fabricated.",
+            false,
+        ),
+        (
+            "We deny the launch claim for Maple Queue. The launch denial is fully foreign and the object is the launch claim for Silver Lens.",
+            false,
+        ),
+    ] {
+        cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched."},{"kind":"excerpt","text":text}],"expected_relevant":expected}));
+    }
+    check(cases);
+}
+
+#[test]
+fn role_owner_frames_do_not_cross_bind_or_retype_property_as_event() {
+    let mut cases = Vec::new();
+    for (text, expected) in [
+        (
+            "Object: an unowned launch statement. Owner of the subject: Maple Queue. We withdraw the object.",
+            false,
+        ),
+        (
+            "Object: an unowned launch statement. Owner of the object: Maple Queue. We withdraw the object.",
+            true,
+        ),
+        (
+            "Object: the launch claim for Silver Lens. Owner of the object: Maple Queue. We withdraw the object.",
+            false,
+        ),
+        (
+            "Object: an unowned launch statement. The sole product owner of the object is either Maple Queue or Silver Lens. We withdraw the object.",
+            false,
+        ),
+        (
+            "Item: an unowned launch statement. Owner supplement:\nMaple Queue\nWe retract that launch claim.",
+            true,
+        ),
+        (
+            "Object: the physical release-button width statement for Maple Queue. Owner of the object: Maple Queue. We retract that launch claim.",
+            false,
+        ),
+        (
+            "Object: an unowned launch statement. Owner of the object: Maple Queue. Owner of the object: Cedar Bolt. We withdraw the object.",
+            false,
+        ),
+        (
+            "Object: an unowned launch statement. Owner of the object: Maple Queue. Owner of the subject: Cedar Bolt. We withdraw the object.",
+            true,
+        ),
+    ] {
+        cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched."},{"kind":"excerpt","text":text}],"expected_relevant":expected}));
+    }
+    check(cases);
+}
