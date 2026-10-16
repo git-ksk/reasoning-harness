@@ -1,0 +1,26 @@
+{
+  "identity": "engine073-launch-independent-v15",
+  "stage": "PRE_FREEZE_SCOPE_REVIEW",
+  "reviewed_utc": "2026-10-16T10:36:18.827773+00:00",
+  "outcome": "PASS",
+  "reviewer": "same independent author; not a second human or model reviewer",
+  "semantic_observations": 0,
+  "all_60_labels_reviewed_before_outputs": true,
+  "positive_scope": "Every positive has the direct target launch, and only complete physical/printed/document properties or one fully identified foreign launch among adverse clauses. Typed/reply/title owner completion is explicit and same-role.",
+  "negative_scope": "Every negative contains semantic target/global denial, unresolved event reference, actual missing owner, target-owner conflict, or mixed ownership. No pure raw-risk negative.",
+  "new_language_limits": "No extra affirmative launch grammar, numeric reference/AST, alias or chronology inference required. Dimension/date/page-count values are not evaluated.",
+  "known_prior_examples": "v1-v14 seen; no old author text/cases/inputs or v11 draft was used to generate these cases. Repeated declared API vocabulary is expected.",
+  "ambiguity_decisions_fixed": [
+    "li15-016 wrong role cannot fill Subject launch",
+    "li15-024/032/038/046/050 unspecified launch owner retained as semantic unknown",
+    "li15-026/042 actual source omission plus raw context_gap",
+    "li15-012/020/056 explicit target launch cannot be overwritten by foreign explanation",
+    "li15-018/052 mixed owner negative",
+    "li15-040 whole-source withdrawal negative"
+  ],
+  "property_unspecified_value": "li15-025 is positive: font-size property owner/object complete even though value absent.",
+  "canonical_clip": "li15-041/043 full canonical names plus neutral notes positive; li15-042 actual omission stays negative.",
+  "scoring_unchanged": true,
+  "post_observation_relabel_allowed": false,
+  "case_rationale_sha256": "4be2168c1ddc1967242c0a0b9b78d8aabfc7d1ca12feab96deceb99d245577f1"
+}

@@ -1,0 +1,1590 @@
+{
+  "summary": {
+    "identity": "engine073-launch-independent-v15",
+    "candidate_source_sha": "9a40b9277b59ba7a2606eedad77819e833496659",
+    "manifest_sha256": "7ed568bc14747a253012cc40d68fbc0b803e4c50e5a7d8d3af8acab80f92a1d8",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 45,
+    "failed": 15,
+    "incomplete": 0,
+    "positive_passed": 16,
+    "negative_passed": 29,
+    "negative_v17_requested_relation_violations": 1,
+    "negative_v30_relevant_violations": 1,
+    "positive_v17_withheld": 14,
+    "positive_v30_withheld": 14,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "9b13d8c9d6681c57e5394b4d4e4c596ad7cf5e06fa83feb1b135d8dd5520e520",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "6af07bb514038c876b065d7f062155df21661943f6117ab320e8c7ad9666947e"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "cases": [
+    {
+      "id": "li15-001",
+      "pair_id": "li15-pair-01",
+      "polarity": "positive",
+      "axis": "packing_label_date",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li15-002",
+      "pair_id": "li15-pair-01",
+      "polarity": "negative",
+      "axis": "packing_label_date",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-003",
+      "pair_id": "li15-pair-02",
+      "polarity": "positive",
+      "axis": "protective_film_dimension",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-004",
+      "pair_id": "li15-pair-02",
+      "polarity": "negative",
+      "axis": "protective_film_dimension",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-005",
+      "pair_id": "li15-pair-03",
+      "polarity": "positive",
+      "axis": "quoted_heading_colour",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li15-006",
+      "pair_id": "li15-pair-03",
+      "polarity": "negative",
+      "axis": "quoted_heading_colour",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-007",
+      "pair_id": "li15-pair-04",
+      "polarity": "positive",
+      "axis": "housing_material_and_existence",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li15-008",
+      "pair_id": "li15-pair-04",
+      "polarity": "negative",
+      "axis": "housing_material_and_existence",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-009",
+      "pair_id": "li15-pair-05",
+      "polarity": "positive",
+      "axis": "manual_page_count",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-010",
+      "pair_id": "li15-pair-05",
+      "polarity": "negative",
+      "axis": "manual_page_count",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-011",
+      "pair_id": "li15-pair-06",
+      "polarity": "positive",
+      "axis": "foreign_event_explicit_owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-012",
+      "pair_id": "li15-pair-06",
+      "polarity": "negative",
+      "axis": "foreign_event_explicit_owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-013",
+      "pair_id": "li15-pair-07",
+      "polarity": "positive",
+      "axis": "unowned_event_same_role_fill",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li15-014",
+      "pair_id": "li15-pair-07",
+      "polarity": "negative",
+      "axis": "unowned_event_same_role_fill",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-015",
+      "pair_id": "li15-pair-08",
+      "polarity": "positive",
+      "axis": "reply_role_binding",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li15-016",
+      "pair_id": "li15-pair-08",
+      "polarity": "negative",
+      "axis": "reply_role_binding",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-017",
+      "pair_id": "li15-pair-09",
+      "polarity": "positive",
+      "axis": "heading_owner_completion",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li15-018",
+      "pair_id": "li15-pair-09",
+      "polarity": "negative",
+      "axis": "heading_owner_completion",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-019",
+      "pair_id": "li15-pair-10",
+      "polarity": "positive",
+      "axis": "owner_supplement_newline",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li15-020",
+      "pair_id": "li15-pair-10",
+      "polarity": "negative",
+      "axis": "owner_supplement_newline",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-021",
+      "pair_id": "li15-pair-11",
+      "polarity": "positive",
+      "axis": "denial_object_apposition",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li15-022",
+      "pair_id": "li15-pair-11",
+      "polarity": "negative",
+      "axis": "denial_object_apposition",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-023",
+      "pair_id": "li15-pair-12",
+      "polarity": "positive",
+      "axis": "author_reply_quoted_property",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li15-024",
+      "pair_id": "li15-pair-12",
+      "polarity": "negative",
+      "axis": "author_reply_quoted_property",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-025",
+      "pair_id": "li15-pair-13",
+      "polarity": "positive",
+      "axis": "unspecified_typography_vs_actual_gap",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-026",
+      "pair_id": "li15-pair-13",
+      "polarity": "negative",
+      "axis": "unspecified_typography_vs_actual_gap",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-027",
+      "pair_id": "li15-pair-14",
+      "polarity": "positive",
+      "axis": "literal_word_vs_event_content",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-028",
+      "pair_id": "li15-pair-14",
+      "polarity": "negative",
+      "axis": "literal_word_vs_event_content",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-029",
+      "pair_id": "li15-pair-15",
+      "polarity": "positive",
+      "axis": "parenthesized_combined_corrections",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-030",
+      "pair_id": "li15-pair-15",
+      "polarity": "negative",
+      "axis": "parenthesized_combined_corrections",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-031",
+      "pair_id": "li15-pair-16",
+      "polarity": "positive",
+      "axis": "reason_clause_foreign_vs_unknown",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-032",
+      "pair_id": "li15-pair-16",
+      "polarity": "negative",
+      "axis": "reason_clause_foreign_vs_unknown",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-033",
+      "pair_id": "li15-pair-17",
+      "polarity": "positive",
+      "axis": "contrast_clause_two_properties",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-034",
+      "pair_id": "li15-pair-17",
+      "polarity": "negative",
+      "axis": "contrast_clause_two_properties",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-035",
+      "pair_id": "li15-pair-18",
+      "polarity": "positive",
+      "axis": "reporting_as_clause",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li15-036",
+      "pair_id": "li15-pair-18",
+      "polarity": "negative",
+      "axis": "reporting_as_clause",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-037",
+      "pair_id": "li15-pair-19",
+      "polarity": "positive",
+      "axis": "safe_corrections_then_unresolved",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-038",
+      "pair_id": "li15-pair-19",
+      "polarity": "negative",
+      "axis": "safe_corrections_then_unresolved",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li15-039",
+      "pair_id": "li15-pair-20",
+      "polarity": "positive",
+      "axis": "limited_erratum_vs_source_withdrawal",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-040",
+      "pair_id": "li15-pair-20",
+      "polarity": "negative",
+      "axis": "limited_erratum_vs_source_withdrawal",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-041",
+      "pair_id": "li15-pair-21",
+      "polarity": "positive",
+      "axis": "complete_name_and_manual_property",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-042",
+      "pair_id": "li15-pair-21",
+      "polarity": "negative",
+      "axis": "complete_name_and_manual_property",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-043",
+      "pair_id": "li15-pair-22",
+      "polarity": "positive",
+      "axis": "name_note_and_foreign_non_event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-044",
+      "pair_id": "li15-pair-22",
+      "polarity": "negative",
+      "axis": "name_note_and_foreign_non_event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-045",
+      "pair_id": "li15-pair-23",
+      "polarity": "positive",
+      "axis": "property_cannot_lend_event_owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-046",
+      "pair_id": "li15-pair-23",
+      "polarity": "negative",
+      "axis": "property_cannot_lend_event_owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-047",
+      "pair_id": "li15-pair-24",
+      "polarity": "positive",
+      "axis": "title_designated_event_owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li15-048",
+      "pair_id": "li15-pair-24",
+      "polarity": "negative",
+      "axis": "title_designated_event_owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-049",
+      "pair_id": "li15-pair-25",
+      "polarity": "positive",
+      "axis": "same_type_reference_vs_undeclared_role",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-050",
+      "pair_id": "li15-pair-25",
+      "polarity": "negative",
+      "axis": "same_type_reference_vs_undeclared_role",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-051",
+      "pair_id": "li15-pair-26",
+      "polarity": "positive",
+      "axis": "single_foreign_vs_mixed_owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-052",
+      "pair_id": "li15-pair-26",
+      "polarity": "negative",
+      "axis": "single_foreign_vs_mixed_owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-053",
+      "pair_id": "li15-pair-27",
+      "polarity": "positive",
+      "axis": "heading_property_plus_body_scope",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li15-054",
+      "pair_id": "li15-pair-27",
+      "polarity": "negative",
+      "axis": "heading_property_plus_body_scope",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-055",
+      "pair_id": "li15-pair-28",
+      "polarity": "positive",
+      "axis": "complete_denial_explanation_not_escape",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li15-056",
+      "pair_id": "li15-pair-28",
+      "polarity": "negative",
+      "axis": "complete_denial_explanation_not_escape",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-057",
+      "pair_id": "li15-pair-29",
+      "polarity": "positive",
+      "axis": "non_event_modified_scope",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-058",
+      "pair_id": "li15-pair-29",
+      "polarity": "negative",
+      "axis": "non_event_modified_scope",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li15-059",
+      "pair_id": "li15-pair-30",
+      "polarity": "positive",
+      "axis": "present_first_person_retraction",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li15-060",
+      "pair_id": "li15-pair-30",
+      "polarity": "negative",
+      "axis": "present_first_person_retraction",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    }
+  ]
+}

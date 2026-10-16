@@ -1,0 +1,101 @@
+{
+  "identity": "engine073-launch-independent-v15",
+  "saved_utc": "2026-10-16T10:38:57.522644+00:00",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "candidate_source_sha": "9a40b9277b59ba7a2606eedad77819e833496659",
+  "source_sha256": "12d42896ef75492f2cd7229125a1a731ae4eb44215756d851b99d5370d33ce26",
+  "core_rlib_sha256": "788182e7c6da8783144b7dfe9e122c4cd3faab78b56f6859d6966514bf7de918",
+  "serde_rlib_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+  "probe_executable_sha256": "c68c92e5de2669718eb6374d6581e3383d54a6dfac6667c4d122252c574b4209",
+  "probe_sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+  "scorer_sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+  "manifest_sha256": "7ed568bc14747a253012cc40d68fbc0b803e4c50e5a7d8d3af8acab80f92a1d8",
+  "cases_sha256": "4be2168c1ddc1967242c0a0b9b78d8aabfc7d1ca12feab96deceb99d245577f1",
+  "inputs_sha256": "02d0adaf0633ec44a9933152ab749f47c941f6b384cc679e1df57c85c729edd7",
+  "first_stdout_sha256": "9b13d8c9d6681c57e5394b4d4e4c596ad7cf5e06fa83feb1b135d8dd5520e520",
+  "first_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "first_results_sha256": "d353ccda5af207d4f27a3ac13fb7348eb51656baaaba377f8ebf47d4350522b2",
+  "first_summary_sha256": "4302e6446e6c825b692eb15a5d395bf5ee1f38c02818bc9deec0e60dad4c3baf",
+  "STATIC_ONLY": {
+    "engine_invocations": 0,
+    "semantic_observations": 0
+  },
+  "semantic_first": {
+    "processes": 1,
+    "cases": 60,
+    "retries": 0,
+    "provider_calls": 0,
+    "returncode": 0,
+    "stderr_bytes": 0
+  },
+  "score": {
+    "applications": 1,
+    "byte_identical_inherited": true,
+    "rescore": false
+  },
+  "first_outcome": {
+    "identity": "engine073-launch-independent-v15",
+    "candidate_source_sha": "9a40b9277b59ba7a2606eedad77819e833496659",
+    "manifest_sha256": "7ed568bc14747a253012cc40d68fbc0b803e4c50e5a7d8d3af8acab80f92a1d8",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 45,
+    "failed": 15,
+    "incomplete": 0,
+    "positive_passed": 16,
+    "negative_passed": 29,
+    "negative_v17_requested_relation_violations": 1,
+    "negative_v30_relevant_violations": 1,
+    "positive_v17_withheld": 14,
+    "positive_v30_withheld": 14,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "9b13d8c9d6681c57e5394b4d4e4c596ad7cf5e06fa83feb1b135d8dd5520e520",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "6af07bb514038c876b065d7f062155df21661943f6117ab320e8c7ad9666947e"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "failed_positive_ids": [
+    "li15-001",
+    "li15-005",
+    "li15-007",
+    "li15-013",
+    "li15-015",
+    "li15-017",
+    "li15-019",
+    "li15-021",
+    "li15-023",
+    "li15-035",
+    "li15-047",
+    "li15-053",
+    "li15-055",
+    "li15-059"
+  ],
+  "failed_negative_ids": [
+    "li15-038"
+  ],
+  "immutability": {
+    "label_changes": 0,
+    "input_changes_after_freeze": 0,
+    "criteria_relaxed": false,
+    "old290_unchanged": true,
+    "first_raw_results_summary_unchanged": true,
+    "exclusive_create": true
+  },
+  "isolation": {
+    "Engine_implementation_read": false,
+    "root_tests_historical_other_corpora_read": false,
+    "external_provider_API": 0,
+    "Oracle": false,
+    "additional_agents": 0,
+    "cargo_invocations": 0,
+    "shared_target_mutations": 0,
+    "Git_mutations": 0
+  },
+  "limits": "Finite synthetic source API only, not real24/provider/CLI/human/adoption/release. Parent supplied stable core; no independent core rebuild. FirstFAIL remains consumed development; preserve it.",
+  "final_manifest": "All v1-v15 artifacts except final manifest itself; SHA256 reported externally."
+}
