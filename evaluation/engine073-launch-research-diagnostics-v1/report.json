@@ -1,0 +1,332 @@
+{
+  "identity": "engine073-launch-research-diagnostics-v1",
+  "kind": "post-observation archive analysis; not a score or acceptance run",
+  "candidate_source_sha": "f3d9ad15ae2e4fc81dadaed87c4e55fa8bce1c7d",
+  "original_first_outcome": "FAIL",
+  "first_summary_sha256": "e4d1bc2e1d3e5bfda98e2e6add0911c972b588242b0329d843ed24fc1a431979",
+  "first_results_sha256": "a7a9b9050f64bc95103d34435fcbe37952d057a08651152028aba199ffbd9d62",
+  "final_manifest_sha256": "4f8fd8921fdf754de2088e3afe9ab23a86dbfbc25e89c3e3335c4ffcd02c930a",
+  "verified_archive_files": 444,
+  "saved_counts": {
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 49,
+    "failed": 11,
+    "incomplete": 0,
+    "positive_passed": 19,
+    "negative_passed": 30,
+    "positive_v17_withheld": 11,
+    "positive_v30_withheld": 11,
+    "negative_v17_requested_relation_violations": 0,
+    "negative_v30_relevant_violations": 0
+  },
+  "pair_patterns_from_saved_grades": {
+    "both_checks_pass": 19,
+    "positive_only_fail": 11
+  },
+  "failed_positive_ids": [
+    "li19-003",
+    "li19-009",
+    "li19-011",
+    "li19-027",
+    "li19-029",
+    "li19-033",
+    "li19-035",
+    "li19-039",
+    "li19-049",
+    "li19-057",
+    "li19-059"
+  ],
+  "failure_reason_codes": {
+    "harness_canonical_name_anchor": 11,
+    "local_qualification_disagreement": 11,
+    "model_ambiguous": 11
+  },
+  "contrast_pairs": [
+    {
+      "pair_id": "li19-pair-01",
+      "axis": "two_foreign_events_and_third_correction",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-001",
+      "negative_id": "li19-002",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-02",
+      "axis": "literal_foreign_name_is_not_event_owner",
+      "pattern_from_saved_grades": "positive_only_fail",
+      "positive_id": "li19-003",
+      "negative_id": "li19-004",
+      "positive_saved_disposition": "ambiguous",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-03",
+      "axis": "publisher_name_vs_product_event_owner",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-005",
+      "negative_id": "li19-006",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-04",
+      "axis": "separate_quotes_with_two_event_owners",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-007",
+      "negative_id": "li19-008",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-05",
+      "axis": "whole_source_words_inside_font_claim",
+      "pattern_from_saved_grades": "positive_only_fail",
+      "positive_id": "li19-009",
+      "negative_id": "li19-010",
+      "positive_saved_disposition": "ambiguous",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-06",
+      "axis": "claim_existence_vs_product_existence",
+      "pattern_from_saved_grades": "positive_only_fail",
+      "positive_id": "li19-011",
+      "negative_id": "li19-012",
+      "positive_saved_disposition": "ambiguous",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-07",
+      "axis": "role_owner_amid_two_foreign_corrections",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-013",
+      "negative_id": "li19-014",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-08",
+      "axis": "before_additional_unknown_event",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-015",
+      "negative_id": "li19-016",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-09",
+      "axis": "while_two_named_events_vs_target",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-017",
+      "negative_id": "li19-018",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-10",
+      "axis": "because_target_existence_after_foreign",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-019",
+      "negative_id": "li19-020",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-11",
+      "axis": "although_heading_role_fill",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-021",
+      "negative_id": "li19-022",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-12",
+      "axis": "parenthesis_named_event_vs_unknown",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-023",
+      "negative_id": "li19-024",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-13",
+      "axis": "printed_owner_name_not_binding",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-025",
+      "negative_id": "li19-026",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-14",
+      "axis": "heading_target_non_event_after_foreign",
+      "pattern_from_saved_grades": "positive_only_fail",
+      "positive_id": "li19-027",
+      "negative_id": "li19-028",
+      "positive_saved_disposition": "ambiguous",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-15",
+      "axis": "missing_author_reply_owner",
+      "pattern_from_saved_grades": "positive_only_fail",
+      "positive_id": "li19-029",
+      "negative_id": "li19-030",
+      "positive_saved_disposition": "ambiguous",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-16",
+      "axis": "different_unknown_event_after_title_event",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-031",
+      "negative_id": "li19-032",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-17",
+      "axis": "three_roles_two_properties_owner_frame",
+      "pattern_from_saved_grades": "positive_only_fail",
+      "positive_id": "li19-033",
+      "negative_id": "li19-034",
+      "positive_saved_disposition": "ambiguous",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-18",
+      "axis": "quoted_property_apposition_after_two_events",
+      "pattern_from_saved_grades": "positive_only_fail",
+      "positive_id": "li19-035",
+      "negative_id": "li19-036",
+      "positive_saved_disposition": "ambiguous",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-19",
+      "axis": "known_target_owner_not_replaced_by_title",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-037",
+      "negative_id": "li19-038",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-20",
+      "axis": "complete_property_denial_apposition",
+      "pattern_from_saved_grades": "positive_only_fail",
+      "positive_id": "li19-039",
+      "negative_id": "li19-040",
+      "positive_saved_disposition": "ambiguous",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-21",
+      "axis": "two_foreign_cues_before_same_role_owner",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-041",
+      "negative_id": "li19-042",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-22",
+      "axis": "target_owner_survives_foreign_caption",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-043",
+      "negative_id": "li19-044",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-23",
+      "axis": "first_person_event_denial_owner",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-045",
+      "negative_id": "li19-046",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-24",
+      "axis": "reported_nonexistence_after_two_safe_objects",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-047",
+      "negative_id": "li19-048",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-25",
+      "axis": "unavailable_continuation_after_property_quote",
+      "pattern_from_saved_grades": "positive_only_fail",
+      "positive_id": "li19-049",
+      "negative_id": "li19-050",
+      "positive_saved_disposition": "ambiguous",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-26",
+      "axis": "canonical_name_foreign_legend_and_unknown",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-051",
+      "negative_id": "li19-052",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-27",
+      "axis": "body_heading_role_reference",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-053",
+      "negative_id": "li19-054",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-28",
+      "axis": "whole_source_despite_two_foreign_events",
+      "pattern_from_saved_grades": "both_checks_pass",
+      "positive_id": "li19-055",
+      "negative_id": "li19-056",
+      "positive_saved_disposition": "relevant",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-29",
+      "axis": "owner_mix_after_document_property",
+      "pattern_from_saved_grades": "positive_only_fail",
+      "positive_id": "li19-057",
+      "negative_id": "li19-058",
+      "positive_saved_disposition": "ambiguous",
+      "negative_saved_disposition": "ambiguous"
+    },
+    {
+      "pair_id": "li19-pair-30",
+      "axis": "explicit_foreign_quote_vs_unidentified_pronoun",
+      "pattern_from_saved_grades": "positive_only_fail",
+      "positive_id": "li19-059",
+      "negative_id": "li19-060",
+      "positive_saved_disposition": "ambiguous",
+      "negative_saved_disposition": "ambiguous"
+    }
+  ],
+  "trace_limits": {
+    "available": [
+      "saved v17 relation scope",
+      "saved v30 disposition/reason codes"
+    ],
+    "deterministic_rule_path_available": false,
+    "source_span_and_reference_edges_available": false,
+    "implementation_root_causes_established": false
+  },
+  "new_execution": {
+    "engine": 0,
+    "scorer": 0,
+    "provider": 0
+  },
+  "acceptance_effect": "none; original FAIL and #531 real24/CLI gates remain unchanged"
+}

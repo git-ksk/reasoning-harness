@@ -19,6 +19,10 @@ Published product: Reason CLI0.5.5 / Engine0.6.1. Latest independent source: Eng
 
 Groq remains blocked by the carried-forward daily-quota exhaustion state. The next runner must load that state before acquiring credentials and establish actual headroom, refill and material shared-organization usage constraints. Minute pacing, elapsed time alone or a tiny readiness success cannot clear the latch. No silent model/tier/retry/budget increase. Missing/suppressed/partial runs stay incomplete, not semantic unknowns or zero-cost successes.
 
+## Research-informed next repair
+
+[Research and implementation status](engine-073-research-informed-repair.md) records Claude/Codex public techniques and CheckList/HANS/FActScore/ALCE. Archive-only diagnostics verify444 artifacts:19 of30 contrasts pass both sides,11 fail only the positive. The shared coarse disagreement code does not establish a root cause. Next add deterministic scope/reference traces, then test a small source-span/claim representation with minimal, invariant and directional development checks. Pin a new semantic candidate before fresh acceptance. All existing gates and firstFAILs remain unchanged; real24/source release/CLI acceptance are not completed by these diagnostics.
+
 ## Evidence and scope
 
 [First development v2/v3 results](engine07-realworld-development-results.md) remain FAIL/incomplete. Mistral/Google normal useful-answer gain was0; helper display gain2 is a separate metric. This source repair does not establish downstream wrong-answer prevention, external truth, real-user benefit or independently authenticated human review. Required real-source/provider gates remain under [#531](engine-07-realworld-evaluation.md).
