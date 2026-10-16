@@ -1,0 +1,338 @@
+{
+  "identity": "engine073-safe-runner-independent-review-v2",
+  "HEAD": "93a9d5a3dba976f134395409037df7c1a73d7845",
+  "outcome": "PASS",
+  "cases": [
+    {
+      "name": "alias",
+      "checks": {
+        "complete_original": true,
+        "frozen_provider_model": true,
+        "nested_budget_fixed": true,
+        "reserve160": true,
+        "known_usage10": true,
+        "one_started_invocation": true
+      },
+      "outcome": "PASS",
+      "summary": {
+        "charged_reservations": 160,
+        "complete": true,
+        "known_provider_attempts": 1,
+        "known_total_tokens": 10,
+        "latch": null,
+        "rows": [
+          {
+            "admission": {
+              "allowed": true,
+              "reason": null
+            },
+            "arm": "baseline",
+            "complete": true,
+            "contract": "normal",
+            "id": "alias",
+            "operational_failure": null,
+            "outcome": {
+              "failure_class": null,
+              "provider_attempts": 1,
+              "tokens": 10
+            },
+            "partial_diagnostics_observed": null,
+            "reserve": 160,
+            "returncode": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "b378a620a8859454048b217507932f9dd1633a30b2639a41c5ca0b0e2f5e72e1",
+            "termination": null,
+            "wall_ms": 60
+          }
+        ],
+        "semantic_acceptance": "NOT_SCORED",
+        "unknown_usage_rows": 0
+      }
+    },
+    {
+      "name": "groq",
+      "checks": {
+        "incomplete": true,
+        "fixed_Groq": true,
+        "known_prohibition": true,
+        "spawn0": true,
+        "started0": true,
+        "reserve0": true
+      },
+      "outcome": "PASS",
+      "summary": {
+        "charged_reservations": 0,
+        "complete": false,
+        "known_provider_attempts": 0,
+        "known_total_tokens": 0,
+        "latch": "known_daily_quota_exhausted",
+        "rows": [
+          {
+            "admission": {
+              "allowed": false,
+              "reason": "known_daily_quota_exhausted"
+            },
+            "arm": "baseline",
+            "complete": false,
+            "contract": "normal",
+            "id": "groq",
+            "operational_failure": "known_daily_quota_exhausted",
+            "reserve": 160
+          }
+        ],
+        "semantic_acceptance": "NOT_SCORED",
+        "unknown_usage_rows": 0
+      }
+    },
+    {
+      "name": "credential-script-change",
+      "checks": {
+        "incomplete": true,
+        "changed_artifact_latch": true,
+        "spawn0": true,
+        "following_suppressed": true,
+        "unknown1_known_subtotal0": true,
+        "reserve160_retained": true,
+        "reserved_inflight_precedes_observation": true
+      },
+      "outcome": "PASS",
+      "summary": {
+        "charged_reservations": 160,
+        "complete": false,
+        "known_provider_attempts": 0,
+        "known_total_tokens": 0,
+        "latch": "frozen_artifact_changed",
+        "rows": [
+          {
+            "admission": {
+              "allowed": true,
+              "reason": null
+            },
+            "arm": "baseline",
+            "complete": false,
+            "contract": "normal",
+            "host_exception_type": "ValueError",
+            "id": "credential-script-change",
+            "operational_failure": "interrupted_accounting",
+            "reserve": 160
+          },
+          {
+            "admission": {
+              "allowed": false,
+              "reason": "frozen_artifact_changed"
+            },
+            "arm": "helper",
+            "complete": false,
+            "contract": "helper",
+            "id": "credential-script-change-follow",
+            "operational_failure": "frozen_artifact_changed",
+            "reserve": 160
+          }
+        ],
+        "semantic_acceptance": "NOT_SCORED",
+        "unknown_usage_rows": 1
+      }
+    },
+    {
+      "name": "credential-static-input-change",
+      "checks": {
+        "incomplete": true,
+        "changed_artifact_latch": true,
+        "spawn0": true,
+        "following_suppressed": true,
+        "unknown1_known_subtotal0": true,
+        "reserve160_retained": true,
+        "reserved_inflight_precedes_observation": true
+      },
+      "outcome": "PASS",
+      "summary": {
+        "charged_reservations": 160,
+        "complete": false,
+        "known_provider_attempts": 0,
+        "known_total_tokens": 0,
+        "latch": "frozen_artifact_changed",
+        "rows": [
+          {
+            "admission": {
+              "allowed": true,
+              "reason": null
+            },
+            "arm": "baseline",
+            "complete": false,
+            "contract": "normal",
+            "host_exception_type": "ValueError",
+            "id": "credential-static-input-change",
+            "operational_failure": "interrupted_accounting",
+            "reserve": 160
+          },
+          {
+            "admission": {
+              "allowed": false,
+              "reason": "frozen_artifact_changed"
+            },
+            "arm": "helper",
+            "complete": false,
+            "contract": "helper",
+            "id": "credential-static-input-change-follow",
+            "operational_failure": "frozen_artifact_changed",
+            "reserve": 160
+          }
+        ],
+        "semantic_acceptance": "NOT_SCORED",
+        "unknown_usage_rows": 1
+      }
+    },
+    {
+      "name": "leader-exits-on-cancel",
+      "checks": {
+        "incomplete": true,
+        "hardkill_after_grace": true,
+        "leader_exit1": true,
+        "heartbeat_stopped": true,
+        "no_live_descendant": true,
+        "following_suppressed": true,
+        "unknown1": true,
+        "reserve160": true
+      },
+      "outcome": "PASS",
+      "summary": {
+        "charged_reservations": 160,
+        "complete": false,
+        "known_provider_attempts": 0,
+        "known_total_tokens": 0,
+        "latch": "usage_unavailable",
+        "rows": [
+          {
+            "admission": {
+              "allowed": true,
+              "reason": null
+            },
+            "arm": "baseline",
+            "complete": false,
+            "contract": "normal",
+            "id": "leader-exits-on-cancel",
+            "operational_failure": "wall_timeout",
+            "outcome": {
+              "failure_class": "wall_timeout",
+              "provider_attempts": null,
+              "tokens": null
+            },
+            "partial_diagnostics_observed": {
+              "complete": false,
+              "usage_is_lower_bound": true
+            },
+            "reserve": 160,
+            "returncode": 1,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "8edd2fcbe3901bb1e9e53ffb2a233e0d6e678f5cb0d30e840069c262e0876ea4",
+            "termination": "sigkill_after_grace",
+            "wall_ms": 557
+          },
+          {
+            "admission": {
+              "allowed": false,
+              "reason": "usage_unavailable"
+            },
+            "arm": "helper",
+            "complete": false,
+            "contract": "helper",
+            "id": "leader-exits-on-cancel-follow",
+            "operational_failure": "usage_unavailable",
+            "reserve": 160
+          }
+        ],
+        "semantic_acceptance": "NOT_SCORED",
+        "unknown_usage_rows": 1
+      },
+      "heartbeat_bytes_before": 252,
+      "heartbeat_bytes_after": 252,
+      "descendant_state": ""
+    },
+    {
+      "name": "leader-normal-exit",
+      "checks": {
+        "incomplete": true,
+        "hardkill_after_group_grace": true,
+        "heartbeat_stopped": true,
+        "descendant_not_live": true,
+        "following_row_suppressed": true,
+        "credential_calls1": true,
+        "unknown_usage_retained": true,
+        "reserve_not_refunded": true,
+        "original_leader_exit_retained": true
+      },
+      "outcome": "PASS",
+      "credential_observations": [
+        {
+          "provider": "google",
+          "inflight": true,
+          "reserve": 160,
+          "charged": 160
+        }
+      ],
+      "result": {
+        "complete": false,
+        "rows": [
+          {
+            "id": "leader-normal-exit",
+            "arm": "baseline",
+            "contract": "normal",
+            "admission": {
+              "allowed": true,
+              "reason": null
+            },
+            "complete": false,
+            "reserve": 160,
+            "returncode": 0,
+            "termination": "sigkill_after_grace",
+            "wall_ms": 229,
+            "partial_diagnostics_observed": null,
+            "stdout_sha256": "b378a620a8859454048b217507932f9dd1633a30b2639a41c5ca0b0e2f5e72e1",
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "outcome": {
+              "failure_class": "unknown_failure",
+              "tokens": null,
+              "provider_attempts": null
+            },
+            "operational_failure": "unknown_failure"
+          },
+          {
+            "id": "leader-normal-exit-follow",
+            "arm": "helper",
+            "contract": "helper",
+            "admission": {
+              "allowed": false,
+              "reason": "unknown_failure_class"
+            },
+            "complete": false,
+            "reserve": 160,
+            "operational_failure": "unknown_failure_class"
+          }
+        ],
+        "known_total_tokens": 0,
+        "known_provider_attempts": 0,
+        "unknown_usage_rows": 1,
+        "charged_reservations": 160,
+        "semantic_acceptance": "NOT_SCORED",
+        "latch": "unknown_failure_class"
+      },
+      "heartbeat_bytes_at_return": 90,
+      "heartbeat_bytes_200ms_later": 90,
+      "descendant_state": "",
+      "leader_pid": 68165,
+      "descendant_pid": 68166,
+      "cleanup": [
+        "own_group_absent"
+      ]
+    }
+  ],
+  "new_case_count": 6,
+  "existing_tests": 47,
+  "initial_harness": "First aggregation aborted at sandbox-forbidden ps after5 runner cases completed. Original rc1/stderr retained; none of those cases rerun. This continuation reads their durable first evidence and executes only the previously unexecuted normal-exit case. Callback in-memory observation list from interrupted aggregation was not saved; no independent callback-count claim beyond durable start/spawn markers. Existing47 tests separately verify callback suppression and pre-auth reserves.",
+  "original_first_cases_rerun": 0,
+  "new_normal_exit_case_runs": 1,
+  "provider_calls": 0,
+  "network_calls": 0,
+  "core_implementation_read": false,
+  "scope": "Bounded cooperative plan/artifact/process-group repairs only, not live acceptance."
+}

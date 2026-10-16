@@ -1,0 +1,21 @@
+{
+  "identity": "engine073-safe-runner-repair-v2",
+  "provider_calls": 0,
+  "new_subprocess_tests": 21,
+  "inherited_guard_bridge_tests": 26,
+  "total_tests": 47,
+  "independent_rereview": "PENDING",
+  "real_source_acceptance_complete": false,
+  "full_issue540_acceptance_complete": false,
+  "original_review_anchor": "73c516640221334787ee19ee3cbdbb1653183c7c1863320e37038fea5afe36b9",
+  "files": {
+    "evaluation/engine07-realworld-runner-v1/runner.py": "a412d7a9b851f23b6378496cd78a52f06e3076b05f93abd31acd3917ff2688f9",
+    "evaluation/engine07-realworld-runner-v1/test_runner.py": "9190e5b8206d2913e50896875b5b24b052148c62ea3a67d225aecc9051f6d23c",
+    "evaluation/engine07-realworld-runner-v1/fixture_child.py": "b1a7359548f545bd49dc7275166024bf3bbf40e2d0c5e83c55f39fb9512a77a2",
+    "evaluation/engine07-realworld-runner-v1/repair-development-red.log": "a7dce0ea51a0e784b28907449c551ac049cfee597fd1d61180095579d28158e2",
+    "evaluation/engine07-realworld-runner-v1/repair-tests-final.log": "d3de626a476cc4bdd2fea5ce69cd91fc2793881bbb00051dc81d912a096f1e52",
+    "evaluation/engine07-realworld-runner-v1/repair-existing-controls.log": "be5f799fffcda038209fe4c973d563cbba54f68e2b9964877546e131745e534a",
+    "evaluation/engine07-realworld-operations-v1/guard.py": "49f1a8af052c5b162ba7e87c9ab43edb571ab2ede15a69e9f95bb55ac93da0a7",
+    "evaluation/engine07-realworld-operations-v1/bridge.py": "abae342729fdb1eceab1015041a676085cd4c051fb5816191ab0ebbb29088dcb"
+  }
+}

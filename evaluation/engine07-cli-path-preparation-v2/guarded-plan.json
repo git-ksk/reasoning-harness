@@ -1,0 +1,93 @@
+{
+  "schema": "engine07-operational-plan-v1",
+  "provider": "mistral",
+  "model": "ministral-8b-2512",
+  "token_budget": 300,
+  "artifacts": {
+    "/private/tmp/engine073-cli-path-preparation-v1/bin/reason-baseline": "095f5a3c1528ec4050d457fd427f43bc2ebdf7c90a60fe0d3a21880ba8d318bd",
+    "/private/tmp/engine073-cli-path-preparation-v2/baseline-guarded-config.json": "a07983f650866f186c2bcf7808580e03656936c6e7265aa2a65a82a959d49589",
+    "/private/tmp/engine073-cli-path-preparation-v1/bin/reason-candidate": "fff18c9b072f9008dea215c042f469e288d6c16478f915689831e10ec7d5a49c",
+    "/private/tmp/engine073-cli-path-preparation-v2/candidate-guarded-config.json": "8c22b0148cb3b8a9b5f1f2b04249b706e16d725b2808d1b8f720bee0657b2aa8",
+    "/private/tmp/engine073-cli-path-preparation-v2/controlled-transcript.json": "f3ecd526e23949db5f530091361ef2dd0ba57d0995d3c1dc3b741b2a1405fe24",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-safe-runner/reasoning-harness/evaluation/engine07-realworld-v3/corpus.json": "59bd5996ff9dde9d40bc3755cc2c4c4829ebe80ff378e210e52b8dd4e323cb3c",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-safe-runner/reasoning-harness/evaluation/engine07-realworld-v3/resolver.py": "20f979473c1e75b8088449c84b6dfa189d1f2d7ec273d2169345b44365261523",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-safe-runner/reasoning-harness/evaluation/engine07-realworld-runner-v1/runner.py": "a412d7a9b851f23b6378496cd78a52f06e3076b05f93abd31acd3917ff2688f9"
+  },
+  "jobs": [
+    {
+      "id": "baseline",
+      "arm": "baseline",
+      "contract": "normal",
+      "argv": [
+        "/private/tmp/engine073-cli-path-preparation-v1/bin/reason-baseline",
+        "According to the captured current Node.js documentation, are Buffer instances Uint8Array instances?",
+        "--provider",
+        "mistral",
+        "--model",
+        "ministral-8b-2512",
+        "--seed",
+        "531003",
+        "--max-tokens",
+        "1024",
+        "--max-model-calls",
+        "12",
+        "--max-output-tokens",
+        "4096",
+        "--max-total-tokens",
+        "28096",
+        "--config",
+        "/private/tmp/engine073-cli-path-preparation-v2/baseline-guarded-config.json",
+        "--format",
+        "json",
+        "--diagnostic-trace",
+        "{RUN_DIR}/trace.json"
+      ],
+      "budget": {
+        "max_generations": 5,
+        "max_input_tokens_per_generation": 20,
+        "max_output_tokens_per_generation": 10,
+        "max_attempts_per_generation": 1
+      },
+      "timeout_seconds": 30,
+      "cancel_grace_seconds": 1
+    },
+    {
+      "id": "candidate",
+      "arm": "candidate",
+      "contract": "normal",
+      "argv": [
+        "/private/tmp/engine073-cli-path-preparation-v1/bin/reason-candidate",
+        "According to the captured current Node.js documentation, are Buffer instances Uint8Array instances?",
+        "--provider",
+        "mistral",
+        "--model",
+        "ministral-8b-2512",
+        "--seed",
+        "531003",
+        "--max-tokens",
+        "1024",
+        "--max-model-calls",
+        "12",
+        "--max-output-tokens",
+        "4096",
+        "--max-total-tokens",
+        "28096",
+        "--config",
+        "/private/tmp/engine073-cli-path-preparation-v2/candidate-guarded-config.json",
+        "--format",
+        "json",
+        "--diagnostic-trace",
+        "{RUN_DIR}/trace.json"
+      ],
+      "budget": {
+        "max_generations": 5,
+        "max_input_tokens_per_generation": 20,
+        "max_output_tokens_per_generation": 10,
+        "max_attempts_per_generation": 1
+      },
+      "timeout_seconds": 30,
+      "cancel_grace_seconds": 1
+    }
+  ],
+  "scope": "offline controlled callback accounting; these synthetic token values are NOT live provider bounds"
+}

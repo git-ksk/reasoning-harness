@@ -1,0 +1,12 @@
+{
+  "admission": {
+    "allowed": false,
+    "reason": "usage_unavailable"
+  },
+  "arm": "helper",
+  "complete": false,
+  "contract": "helper",
+  "id": "leader-exits-on-cancel-follow",
+  "operational_failure": "usage_unavailable",
+  "reserve": 160
+}

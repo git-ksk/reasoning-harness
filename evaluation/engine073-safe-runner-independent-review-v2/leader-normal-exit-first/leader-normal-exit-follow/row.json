@@ -1,0 +1,12 @@
+{
+  "admission": {
+    "allowed": false,
+    "reason": "unknown_failure_class"
+  },
+  "arm": "helper",
+  "complete": false,
+  "contract": "helper",
+  "id": "leader-normal-exit-follow",
+  "operational_failure": "unknown_failure_class",
+  "reserve": 160
+}

@@ -1,0 +1,60 @@
+[
+  {
+    "claims": [
+      {
+        "id": "node-buffer",
+        "statement": "The Buffer subtype requires verification.",
+        "proposed_state": "unknown",
+        "proposition": {
+          "key": "node.buffer.uint8array",
+          "value": "true"
+        },
+        "evidence_ids": []
+      }
+    ],
+    "inferences": []
+  },
+  {
+    "targets": [
+      {
+        "id": "realworld-v3-source-0",
+        "question": "Are Buffer instances Uint8Array instances?",
+        "expected_fact_key": "node.buffer.uint8array"
+      }
+    ]
+  },
+  {
+    "action": "acquire",
+    "target_id": "realworld-v3-source-0",
+    "capability_id": "realworld-v3-source-1"
+  },
+  {
+    "claims": [
+      {
+        "id": "node-buffer",
+        "statement": "Buffer instances are Uint8Array instances.",
+        "proposed_state": "supported",
+        "proposition": {
+          "key": "node.buffer.uint8array",
+          "value": "true"
+        },
+        "evidence_ids": [
+          "snapshot:rw03-node-positive:1"
+        ]
+      }
+    ],
+    "inferences": []
+  },
+  {
+    "text": "Buffer instances are Uint8Array instances.",
+    "factual_claims": [
+      {
+        "mode": "grounded",
+        "proposition": {
+          "key": "node.buffer.uint8array",
+          "value": "true"
+        }
+      }
+    ]
+  }
+]

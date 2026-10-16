@@ -1,0 +1,154 @@
+{
+  "identity": "engine073-safe-runner-independent-review-v2",
+  "saved_utc": "2026-10-16T15:44:04.491193+00:00",
+  "reviewed_HEAD": "93a9d5a3dba976f134395409037df7c1a73d7845",
+  "outcome": "PASS",
+  "scope": "Bounded offline code re-review of cooperative plan/artifact/process-group repairs only; not full #540/#531 acceptance.",
+  "new_reproduced_blockers": 0,
+  "repair_checks": {
+    "original_R1": "PASS: original and getter nested provider/model/job/budget mutations preserve frozen Google/model/reserve; initial Groq remains suppressed.",
+    "original_R2": "PASS: both executable-script and static-input changes in credential callback stop before spawn, preserve160 reserve and unknown usage, suppress following work.",
+    "original_R3": "PASS: leader exits on SIGINT but descendant ignores it; after grace SIGKILL heartbeat stops, usage unknown and following row suppressed.",
+    "additional_normal_leader_exit": "PASS: valid normal leader exit0 with live descendant remains incomplete, is contained and suppresses following row."
+  },
+  "first_cases": [
+    {
+      "name": "alias",
+      "outcome": "PASS",
+      "checks": {
+        "complete_original": true,
+        "frozen_provider_model": true,
+        "nested_budget_fixed": true,
+        "reserve160": true,
+        "known_usage10": true,
+        "one_started_invocation": true
+      }
+    },
+    {
+      "name": "groq",
+      "outcome": "PASS",
+      "checks": {
+        "incomplete": true,
+        "fixed_Groq": true,
+        "known_prohibition": true,
+        "spawn0": true,
+        "started0": true,
+        "reserve0": true
+      }
+    },
+    {
+      "name": "credential-script-change",
+      "outcome": "PASS",
+      "checks": {
+        "incomplete": true,
+        "changed_artifact_latch": true,
+        "spawn0": true,
+        "following_suppressed": true,
+        "unknown1_known_subtotal0": true,
+        "reserve160_retained": true,
+        "reserved_inflight_precedes_observation": true
+      }
+    },
+    {
+      "name": "credential-static-input-change",
+      "outcome": "PASS",
+      "checks": {
+        "incomplete": true,
+        "changed_artifact_latch": true,
+        "spawn0": true,
+        "following_suppressed": true,
+        "unknown1_known_subtotal0": true,
+        "reserve160_retained": true,
+        "reserved_inflight_precedes_observation": true
+      }
+    },
+    {
+      "name": "leader-exits-on-cancel",
+      "outcome": "PASS",
+      "checks": {
+        "incomplete": true,
+        "hardkill_after_grace": true,
+        "leader_exit1": true,
+        "heartbeat_stopped": true,
+        "no_live_descendant": true,
+        "following_suppressed": true,
+        "unknown1": true,
+        "reserve160": true
+      }
+    },
+    {
+      "name": "leader-normal-exit",
+      "outcome": "PASS",
+      "checks": {
+        "incomplete": true,
+        "hardkill_after_group_grace": true,
+        "heartbeat_stopped": true,
+        "descendant_not_live": true,
+        "following_row_suppressed": true,
+        "credential_calls1": true,
+        "unknown_usage_retained": true,
+        "reserve_not_refunded": true,
+        "original_leader_exit_retained": true
+      }
+    }
+  ],
+  "new_case_count": 6,
+  "saved_durable_checks": 43,
+  "existing_tests": {
+    "runner_subprocess": 21,
+    "guard_bridge": 26,
+    "total": 47,
+    "all_PASS": true,
+    "not_reexecuted_on_final_save_resume": true
+  },
+  "harness_diagnostic_limit": "First aggregation aborted at sandbox-forbidden ps after5 runner cases completed. Original rc1/stderr retained; none of those cases rerun. This continuation reads their durable first evidence and executes only the previously unexecuted normal-exit case. Callback in-memory observation list from interrupted aggregation was not saved; no independent callback-count claim beyond durable start/spawn markers. Existing47 tests separately verify callback suppression and pre-auth reserves.",
+  "original_reproduction_aggregation_returncode": 1,
+  "continuation_returncode": 0,
+  "first_cases_rerun": 0,
+  "first_artifacts_modified": 0,
+  "old_review": {
+    "outcome": "FAIL",
+    "files_verified_each_original_and_repo_copy": 50,
+    "anchor": "73c516640221334787ee19ee3cbdbb1653183c7c1863320e37038fea5afe36b9"
+  },
+  "saved_CLI_proofs": {
+    "v1_entries": 59,
+    "v2_entries": 30,
+    "all_hashes_inventory_unchanged": true,
+    "v2_complete_rows": 2,
+    "synthetic_reserved_known_tokens": 300,
+    "unknown_usage_rows": 0,
+    "fixed_model_records_per_arm": 5,
+    "resolver_journal_rows_per_arm": 1,
+    "final_text": "node.buffer.uint8array = true",
+    "semantic_acceptance": "NOT_SCORED",
+    "binary_candidate_source": "5edd26f25cfb55f9acee49c6f2b78308a1ed48b7",
+    "not_current_source_quality_evidence": true,
+    "instrumented_control_API_counts": [
+      365,
+      446
+    ],
+    "ordinary_fixed_task_API_logs_absent": true
+  },
+  "remaining_gates": [
+    "Derive and freeze actual full-callback/input/output/internal-attempt/time bounds and complete host/adapter/dependency closure before any live execution; fixture300 is not a billed cap or account headroom.",
+    "Retain known Groq prohibition until a separately verified recovery policy and capacity/headroom decision; elapsed time, TPM waiting, alternate model/account or tiny success do not clear it. Shared unknown usage is not zero.",
+    "Parent SIGKILL still needs an external controller to contain/inspect orphan groups before a new experiment. Exclusive output restart barrier is not account-wide coordination across unrelated outputs.",
+    "Cooperative artifact freeze only. Post-credential rehash closes the demonstrated callback window, not hostile-filesystem atomic check-exec security.",
+    "Fresh real-primary-source24, provider/model/human completeness, source/version/quote/authority/conflict/temporal gates, actual CLI integration/adoption and release remain unperformed. This controlled normal task has no measured public relevance API calls; source helper gains do not establish ordinary final-answer benefit."
+  ],
+  "privacy": "Offline fixtures use no real credential or provider socket. Private root protects raw output; live private traces are not authorized for publication.",
+  "isolation": {
+    "core_implementation_read": false,
+    "new_source_holdout_authored": false,
+    "Oracle": false,
+    "additional_agents": 0,
+    "provider_calls": 0,
+    "network_calls": 0,
+    "repo_code_edits": 0,
+    "Git_mutations": 0,
+    "cargo_invocations": 0,
+    "final_resume_experiments_or_tests_rerun": 0
+  },
+  "runner_fixed_HEAD_releasable_after_final_hash_verification": true
+}

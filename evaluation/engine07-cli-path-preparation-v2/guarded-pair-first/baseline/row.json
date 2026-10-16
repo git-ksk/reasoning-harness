@@ -1,0 +1,23 @@
+{
+  "admission": {
+    "allowed": true,
+    "reason": null
+  },
+  "arm": "baseline",
+  "complete": true,
+  "contract": "normal",
+  "id": "baseline",
+  "operational_failure": null,
+  "outcome": {
+    "failure_class": null,
+    "provider_attempts": 5,
+    "tokens": 150
+  },
+  "partial_diagnostics_observed": null,
+  "reserve": 150,
+  "returncode": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "2891b4fd1a41fcd94e0adce4d70a4874daafc0c75a103ba9429d339cff095f6b",
+  "termination": null,
+  "wall_ms": 154
+}

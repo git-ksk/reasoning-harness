@@ -1,0 +1,18 @@
+{
+  "scope": "saved v3 Mistral rw03 diagnostic metadata; no model invocation/rescore",
+  "archive_sha256": "ce6239bc2bdc30d9ba8148bcab08640fb34d4cc4b7d3c5861130fde32975c79b",
+  "response_counts": {
+    "0.6.1": 7,
+    "0.7.2": 7
+  },
+  "response_body_saved": false,
+  "can_exact_replay_original": false,
+  "reason": "model_response entries retain model/usage/attempt/finish/byte/structured summaries without response text; candidate-state snapshots do not reconstruct all original provider bodies",
+  "differing_response_summary_phases": [
+    "initial_generation",
+    "investigation_plan",
+    "investigation_action",
+    "final_render"
+  ],
+  "first_model_request_equal": true
+}

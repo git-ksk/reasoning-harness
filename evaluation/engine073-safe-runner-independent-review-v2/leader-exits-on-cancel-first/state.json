@@ -1,0 +1,87 @@
+{
+  "charged_reservations": 160,
+  "current_reserve": null,
+  "groq_state_sha256": null,
+  "guard": {
+    "events": [
+      {
+        "decision": {
+          "allowed": true,
+          "reason": null
+        },
+        "event": "admission",
+        "started_invocations": 1
+      },
+      {
+        "event": "observation",
+        "latch": "usage_unavailable",
+        "observed_tokens": 0,
+        "outcome": {
+          "failure_class": "wall_timeout",
+          "provider_attempts": null,
+          "tokens": null
+        }
+      },
+      {
+        "decision": {
+          "allowed": false,
+          "reason": "usage_unavailable"
+        },
+        "event": "admission",
+        "started_invocations": 1
+      }
+    ],
+    "inflight": false,
+    "latch": "usage_unavailable",
+    "observed_tokens": 0,
+    "started_invocations": 1,
+    "token_budget": 1000
+  },
+  "known_provider_attempts": 0,
+  "known_total_tokens": 0,
+  "model": "offline-fixture",
+  "provider": "google",
+  "rows": [
+    {
+      "admission": {
+        "allowed": true,
+        "reason": null
+      },
+      "arm": "baseline",
+      "complete": false,
+      "contract": "normal",
+      "id": "leader-exits-on-cancel",
+      "operational_failure": "wall_timeout",
+      "outcome": {
+        "failure_class": "wall_timeout",
+        "provider_attempts": null,
+        "tokens": null
+      },
+      "partial_diagnostics_observed": {
+        "complete": false,
+        "usage_is_lower_bound": true
+      },
+      "reserve": 160,
+      "returncode": 1,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "8edd2fcbe3901bb1e9e53ffb2a233e0d6e678f5cb0d30e840069c262e0876ea4",
+      "termination": "sigkill_after_grace",
+      "wall_ms": 557
+    },
+    {
+      "admission": {
+        "allowed": false,
+        "reason": "usage_unavailable"
+      },
+      "arm": "helper",
+      "complete": false,
+      "contract": "helper",
+      "id": "leader-exits-on-cancel-follow",
+      "operational_failure": "usage_unavailable",
+      "reserve": 160
+    }
+  ],
+  "schema": "engine07-durable-arm-v1",
+  "sequence": 5,
+  "unknown_usage_rows": 1
+}

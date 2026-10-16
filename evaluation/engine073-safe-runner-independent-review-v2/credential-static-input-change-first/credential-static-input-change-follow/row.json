@@ -1,0 +1,12 @@
+{
+  "admission": {
+    "allowed": false,
+    "reason": "frozen_artifact_changed"
+  },
+  "arm": "helper",
+  "complete": false,
+  "contract": "helper",
+  "id": "credential-static-input-change-follow",
+  "operational_failure": "frozen_artifact_changed",
+  "reserve": 160
+}

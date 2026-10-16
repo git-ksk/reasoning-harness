@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "/private/tmp/engine073-cli-path-preparation-v1/bin/reason-baseline",
+    "According to the captured current Node.js documentation, are Buffer instances Uint8Array instances?",
+    "--provider",
+    "mistral",
+    "--model",
+    "ministral-8b-2512",
+    "--seed",
+    "531003",
+    "--max-tokens",
+    "1024",
+    "--max-model-calls",
+    "12",
+    "--max-output-tokens",
+    "4096",
+    "--max-total-tokens",
+    "28096",
+    "--config",
+    "/private/tmp/engine073-cli-path-preparation-v1/run-baseline/config.json",
+    "--format",
+    "json",
+    "--diagnostic-trace",
+    "/private/tmp/engine073-cli-path-preparation-v1/run-baseline/trace.json"
+  ],
+  "offline_only": true
+}

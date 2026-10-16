@@ -1,0 +1,36 @@
+{
+  "charged_reservations": 160,
+  "complete": false,
+  "known_provider_attempts": 0,
+  "known_total_tokens": 0,
+  "latch": "frozen_artifact_changed",
+  "rows": [
+    {
+      "admission": {
+        "allowed": true,
+        "reason": null
+      },
+      "arm": "baseline",
+      "complete": false,
+      "contract": "normal",
+      "host_exception_type": "ValueError",
+      "id": "credential-static-input-change",
+      "operational_failure": "interrupted_accounting",
+      "reserve": 160
+    },
+    {
+      "admission": {
+        "allowed": false,
+        "reason": "frozen_artifact_changed"
+      },
+      "arm": "helper",
+      "complete": false,
+      "contract": "helper",
+      "id": "credential-static-input-change-follow",
+      "operational_failure": "frozen_artifact_changed",
+      "reserve": 160
+    }
+  ],
+  "semantic_acceptance": "NOT_SCORED",
+  "unknown_usage_rows": 1
+}

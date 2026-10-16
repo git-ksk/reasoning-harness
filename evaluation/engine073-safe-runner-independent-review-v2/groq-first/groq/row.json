@@ -1,0 +1,12 @@
+{
+  "admission": {
+    "allowed": false,
+    "reason": "known_daily_quota_exhausted"
+  },
+  "arm": "baseline",
+  "complete": false,
+  "contract": "normal",
+  "id": "groq",
+  "operational_failure": "known_daily_quota_exhausted",
+  "reserve": 160
+}

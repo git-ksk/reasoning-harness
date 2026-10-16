@@ -1,0 +1,23 @@
+{
+  "reviewed_head": "ed2c8dea78d27c8d9f3f9e8eff72fcf6e1147362",
+  "commands": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s evaluation/engine07-realworld-runner-v1 -p 'test_*.py' -v",
+      "tests": 17,
+      "outcome": "PASS",
+      "returncode": 0,
+      "tool_output_chunk": "9f086d"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s evaluation/engine07-realworld-operations-v1 -p 'test_*.py' -v",
+      "tests": 26,
+      "outcome": "PASS",
+      "returncode": 0,
+      "tool_output_chunk": "d6e86e"
+    }
+  ],
+  "total_tests": 43,
+  "provider_calls": 0,
+  "local_full_test_log_saved": false,
+  "log_provenance": "Original full unittest output remains in cited execution tool outputs. No second test execution merely to save logs."
+}

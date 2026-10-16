@@ -1,0 +1,119 @@
+{
+  "identity": "engine073-safe-runner-independent-review-v1",
+  "reviewed_head": "ed2c8dea78d27c8d9f3f9e8eff72fcf6e1147362",
+  "saved_utc": "2026-10-16T10:25:52.964930+00:00",
+  "outcome": "FAIL",
+  "scope": "Offline operational runner readiness review, not source/model/provider/CLI adoption acceptance.",
+  "existing_tests_passed": 43,
+  "new_reproduced_blockers": 3,
+  "findings": [
+    {
+      "id": "R1",
+      "severity": "P1",
+      "title": "Frozen plan aliases caller data and permits provider change after Groq start-prohibition initialization",
+      "locations": [
+        "evaluation/engine07-realworld-runner-v1/runner.py:100",
+        "evaluation/engine07-realworld-runner-v1/runner.py:118",
+        "evaluation/engine07-realworld-runner-v1/runner.py:236",
+        "evaluation/engine07-realworld-runner-v1/runner.py:254"
+      ],
+      "reproduction": {
+        "frozen_provider": "google",
+        "observed_provider": "groq",
+        "credential_reads": [
+          "groq"
+        ],
+        "complete": true,
+        "spawned": true,
+        "latch": null,
+        "offline_only": true
+      },
+      "condition": "Programmatic Python API: mutate the original shared plan dict after constructor; this is not a claim that changing the CLI plan file after loading mutates process memory.",
+      "fix": "Seal canonical JSON bytes internally, expose copies, compare admission identity to the immutable saved plan and preserve provider prohibition. Regression must assert Groq auth/spawn0 on caller-plan mutation or immutable identity stays original."
+    },
+    {
+      "id": "R2",
+      "severity": "P1",
+      "title": "Pinned artifact changed during credential callback executes without another hash check",
+      "locations": [
+        "evaluation/engine07-realworld-runner-v1/runner.py:236",
+        "evaluation/engine07-realworld-runner-v1/runner.py:254",
+        "evaluation/engine07-realworld-runner-v1/runner.py:177"
+      ],
+      "reproduction": {
+        "credential_reads": [
+          "google"
+        ],
+        "frozen_hash": "8895ce493b3d7ccb4565b39201bd3da823d08fee5e96be1d343ade88da87573f",
+        "executed_file_hash": "e476cf6e4cbb01fd103fc6bff2653751c02c416f6220cfd1aa81847e07a5026c",
+        "mismatch": true,
+        "complete": true,
+        "known_total_tokens": 11,
+        "spawned": true,
+        "latch": null
+      },
+      "fix": "Recheck frozen artifact identity after credential callback and immediately before Popen; retain reservation and stop/incomplete if changed. This closes the demonstrated cooperative callback window, not atomic check-exec against a hostile filesystem writer."
+    },
+    {
+      "id": "R3",
+      "severity": "P1",
+      "title": "Leader wait treats SIGINT exit as group termination while descendant remains running",
+      "locations": [
+        "evaluation/engine07-realworld-runner-v1/runner.py:151",
+        "evaluation/engine07-realworld-runner-v1/runner.py:157",
+        "evaluation/engine07-realworld-runner-v1/runner.py:183"
+      ],
+      "reproduction": {
+        "leader_returncode": 1,
+        "reported_termination": "sigint",
+        "grace_seconds": 0.1,
+        "descendant_heartbeat_advanced_after_runner_return": true,
+        "complete": false,
+        "latch": "usage_unavailable",
+        "offline_only": true
+      },
+      "fix": "Monitor the same start_new_session process group through grace, SIGKILL remaining members, and handle descendants after normal leader exit as incomplete cleanup. Do not start later work until containment; preserve unknown usage and no-refund reserve. Limit signals to the owned group."
+    }
+  ],
+  "saved_CLI_evidence": {
+    "artifacts_verified": 59,
+    "positive_control_API_calls": [
+      365,
+      446
+    ],
+    "direct_guarded_model_records_equal": true,
+    "host_main_byte_identity": true,
+    "normal_path_relevance_API_calls": [
+      0,
+      0
+    ],
+    "callbacks_per_arm": 5,
+    "resolver_calls_per_arm": 1,
+    "controlled_final_text": "node.buffer.uint8array = true",
+    "guarded_complete_rows": 2,
+    "synthetic_reserved_known_tokens": 300,
+    "unknown_usage_rows": 0,
+    "semantic_acceptance": "NOT_SCORED",
+    "limits": "Specific new offline stub/instrumented host fixture only. No exact old v3 response replay, real provider/billed cap, general CLI-path absence, signedbinary or real24 acceptance."
+  },
+  "controls_confirmed": "Durable reserve/inflight before callback/spawn, exclusive output restart barrier, atomic fsync state/journal, shared normal/helper/base/candidate guard within plan, no speculative refund, typed unknown/cancel/quota stop, Groq auth/spawn0 for the immutable normal plan, private output root700 and plan/event files600. These do not override the3 blockers.",
+  "remaining_gates": [
+    "Repair and independently retest all3 blockers with new outputs; preserve original first observations.",
+    "Freeze a complete CLI/adapter/runner/control artifact bundle and derive all actual callback/input/output/internal-attempt budgets; token300 fixture is not a billed or account-headroom cap.",
+    "Known Groq prohibition stays; time, tiny readiness call or alternate model/account cannot establish recovery or unknown shared usage0.",
+    "SIGKILL-parent external controller must contain remaining process groups; same-output restart refuses but this runner is not account-wide coordination across unrelated outputs/experiments.",
+    "Fresh #531 real24, complete provider/model observations and source/version/quote/authority/safety gates, actual CLI wiring/adoption/release gates remain open."
+  ],
+  "privacy": "Original exception text is not saved by host; private output root protects raw logs. Offline proof uses dummy credential and public/controlled data, not authorization to publish live private traces.",
+  "independence": {
+    "production_engine_implementation_viewed": false,
+    "parent_core_tests_or_diffs_viewed": false,
+    "source_authoring_v15_started": false,
+    "Oracle": false,
+    "extra_agents": false,
+    "provider_calls": 0,
+    "network_calls": 0,
+    "existing_first_artifacts_modified": 0
+  },
+  "reproduction_provenance": "Original raw report/rows/state/outputs retained. Source copy archived after exercise from executed inline body (comments omitted/string literal representation); not a pre-execution freeze hash and not run again."
+}

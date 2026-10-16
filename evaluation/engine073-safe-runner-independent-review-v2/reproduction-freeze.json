@@ -1,0 +1,12 @@
+{
+  "HEAD": "93a9d5a3dba976f134395409037df7c1a73d7845",
+  "files": {
+    "reproduction-source.py": "ea53b7a0efc59a8fdb7d00f57491d9a117912e6015fc40c6eb0dc961243a589e",
+    "descendant_fixture.py": "4b58727921642979ec931aa41a5040b8b465480e2e2484e741b36138498f9fa3"
+  },
+  "new_reproduction_invocations": 0,
+  "expected": "All6 cases and all fixed checks PASS; retain raw FAIL otherwise.",
+  "provider_calls": 0,
+  "network_calls": 0,
+  "old_artifacts_overwrite": false
+}
