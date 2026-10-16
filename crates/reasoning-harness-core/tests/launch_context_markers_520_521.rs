@@ -1892,3 +1892,183 @@ fn canonical_name_notes_and_scope_annotations_do_not_erase_conflicts_or_gaps() {
         }
     }
 }
+
+#[test]
+fn engine073_independent_v14_seen_replay_preserves_full_scope() {
+    // Keep v9's first FAIL unchanged. This replay is development evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-launch-independent-v14/cases.json"
+    ))
+    .unwrap();
+    let mut failures = Vec::new();
+    for case in corpus["cases"].as_array().unwrap() {
+        let input = &case["input"];
+        let policy = serde_json::from_value(input["policy"].clone()).unwrap();
+        let candidate = serde_json::from_value(input["candidate"].clone()).unwrap();
+        let proposal = serde_json::from_value(input["proposal"].clone()).unwrap();
+        let raw = serde_json::from_value(input["raw"].clone()).unwrap();
+        let qualification = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let assessment =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap();
+        if (qualification.relation_scope == Relation::RequestedRelation)
+            != case["expected"]["v17_requested_relation"]
+                .as_bool()
+                .unwrap()
+            || (assessment.disposition == Disposition::Relevant)
+                != case["expected"]["v30_relevant"].as_bool().unwrap()
+        {
+            failures.push(format!(
+                "{}: {qualification:?}, {:?}",
+                case["id"], assessment.disposition
+            ));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
+
+#[test]
+fn complete_property_declarations_never_override_event_or_collective_denials() {
+    let mut cases = Vec::new();
+    for (text, expected) in [
+        (
+            "Object: the physical release-cover colour claim for Silver Lens, specifically \"the cover is not red\". We retract this object.",
+            true,
+        ),
+        (
+            "Object: the physical release-cover colour claim for Silver Lens, specifically \"Silver Lens was not launched\". We retract this object.",
+            false,
+        ),
+        (
+            "Object: the physical release-cover colour claim for Silver Lens, specifically \"the cover is not red and Silver Lens was not launched\". We retract this object.",
+            false,
+        ),
+        (
+            "Object: the physical release-cover colour claim for Silver Lens, specifically \"the entire report is not true\". We retract this object.",
+            false,
+        ),
+        (
+            "Object: the launch statement for Silver Lens. I withdraw this object and only this fully named thickness property.",
+            false,
+        ),
+        (
+            "Object: an unowned launch statement. Owner supplement for the object: unknown. I withdraw this object and only this fully named thickness property.",
+            false,
+        ),
+        (
+            "Object: the physical release-cover thickness claim for Silver Lens. I withdraw this object and only this fully named thickness property.",
+            true,
+        ),
+        (
+            "Item: the printed font-style of the word \"Launch\" in the document title for Silver Lens. We retract the item and deny the launch claim for Silver Lens.",
+            false,
+        ),
+        (
+            "I deny that launch claim. Denial object: the complete printed-word typography attribute in that title.",
+            false,
+        ),
+        (
+            "We deny that launch claim. The report completely names the foreign event being withdrawn.",
+            false,
+        ),
+        (
+            "I deny that claim—the complete width specification for the physical release socket on Silver Lens—and I withdraw the launch statement for Silver Lens.",
+            false,
+        ),
+    ] {
+        cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched."},{"kind":"excerpt","text":text}],"expected_relevant":expected}));
+    }
+    check(cases);
+}
+
+#[test]
+fn property_value_absence_and_proper_name_notes_preserve_actual_missing_context() {
+    for (entity, note) in [
+        (
+            "Silver Lens",
+            "Property note: the paper colour is not specified; this note concerns only that complete paper-colour attribute and does not omit the launch record.",
+        ),
+        (
+            "Silver Clip",
+            "Proper-name note: Clip is the last word of the complete product name, not omitted source context.",
+        ),
+        (
+            "Silver Clip",
+            "Name annotation: the proper product name ends in Clip and is complete.",
+        ),
+    ] {
+        let case = json!({"entity":entity,"signals":[
+            {"kind":"excerpt","text":format!("{entity} was launched.")},
+            {"kind":"excerpt","text":format!("Object: the paper-colour specification for the printed document about {entity}. We deny that object. {note}")}
+        ]});
+        let (policy, candidate, proposal, raw) = inputs(&case);
+        assert_eq!(
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap()
+                .disposition,
+            Disposition::Relevant,
+            "{entity}: {note}"
+        );
+        for missing in [
+            "The owner column is omitted from this document.",
+            "The launch record is missing from this excerpt.",
+        ] {
+            let mut candidate = candidate.clone();
+            candidate
+                .signals
+                .push(reasoning_harness_core::EvidenceRelevanceSignal {
+                    kind: reasoning_harness_core::EvidenceRelevanceSignalKind::Excerpt,
+                    text: missing.into(),
+                });
+            let effective = derive_effective_evidence_local_qualification_v17(
+                &policy,
+                &candidate,
+                Some(&proposal),
+                Some(&raw),
+            )
+            .unwrap();
+            assert_ne!(
+                effective.scope_risk,
+                reasoning_harness_core::EvidenceLocalBlockingReason::None
+            );
+            assert_ne!(
+                materialize_evidence_relevance_v30(
+                    &policy,
+                    &candidate,
+                    Some(&proposal),
+                    Some(&raw)
+                )
+                .unwrap()
+                .disposition,
+                Disposition::Relevant
+            );
+        }
+        for risk in [
+            "context_gap",
+            "identity_mapping",
+            "ownership_scope",
+            "multiple",
+        ] {
+            let mut raw = raw;
+            raw.scope_risk = serde_json::from_value(json!(risk)).unwrap();
+            assert_ne!(
+                materialize_evidence_relevance_v30(
+                    &policy,
+                    &candidate,
+                    Some(&proposal),
+                    Some(&raw)
+                )
+                .unwrap()
+                .disposition,
+                Disposition::Relevant,
+                "{risk}: {entity}: {note}"
+            );
+        }
+    }
+}
