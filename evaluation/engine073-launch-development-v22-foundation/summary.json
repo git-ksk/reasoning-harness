@@ -1,0 +1,222 @@
+{
+  "identity": {
+    "source_sha": "c20c5136d59cb3a0bfdac4fb8ca9dade2d93e076",
+    "kind": "consumed development on newly pinned actual worktree source, not fresh independent acceptance or CLI integration",
+    "base_source_sha": "7431333d212938147a5d9ab32a0b8bdb44ee16b8",
+    "base_source_file_sha256": "b7fec3e0f7c6b76dfbff1b801dd085a22661df9b22457431653eb2073a4e08f0",
+    "source_file_sha256": "6b5aa28035bf23e6ad5eded264b323109786963354f3769a74fffd41ebe54a31",
+    "core": {
+      "path": "/private/tmp/engine073-target/debug/libreasoning_harness_core.rlib",
+      "sha256": "77a598617cd2a8701b5894e0bbeb3c5109d216b22019664fab6f6b275547fdba"
+    },
+    "deps_core": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "77a598617cd2a8701b5894e0bbeb3c5109d216b22019664fab6f6b275547fdba"
+    },
+    "serde": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "compiler_metadata_sha256": "0154d53d3df8e2bedf8d74393e225d2986b3c3bfcb79c563de09465be70e9c33"
+  },
+  "historical_byte_identical": 597,
+  "original_audit_passed": 14,
+  "seen_regressions": {
+    "v2": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v3": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v4": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v5": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v6": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v7": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v8": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v9": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v10": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v12": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v13": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v14": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v15": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v16": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v18": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v19": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v20": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v21": {
+      "passed": 60,
+      "mismatches": []
+    }
+  },
+  "v22": {
+    "inputs_sha256": "c971217116917ba70cb69fb739fe17d7f38b0652748b645ac63ba511d9dd7b37",
+    "cases_sha256": "132ba8207c5fcc825beefab4cdd3725e6002f01048c6b380201fdca42351b83f",
+    "baseline_first_source_sha": "7431333d212938147a5d9ab32a0b8bdb44ee16b8",
+    "before_first_axes": {
+      "v17_requested_relation": {
+        "confusion": {
+          "tp": 0,
+          "fp": 0,
+          "tn": 30,
+          "fn": 30
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": null,
+        "recall": 0.0,
+        "f1_positive": 0.0,
+        "specificity": 1.0,
+        "accuracy": 0.5,
+        "balanced_accuracy": 0.5,
+        "predicted_positive_rate": 0.0,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 1.0,
+        "mcc": null
+      },
+      "v30_relevant": {
+        "confusion": {
+          "tp": 0,
+          "fp": 0,
+          "tn": 30,
+          "fn": 30
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": null,
+        "recall": 0.0,
+        "f1_positive": 0.0,
+        "specificity": 1.0,
+        "accuracy": 0.5,
+        "balanced_accuracy": 0.5,
+        "predicted_positive_rate": 0.0,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 1.0,
+        "mcc": null
+      }
+    },
+    "after_development_axes": {
+      "v17_requested_relation": {
+        "confusion": {
+          "tp": 10,
+          "fp": 0,
+          "tn": 30,
+          "fn": 20
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 0.3333333333333333,
+        "f1_positive": 0.5,
+        "specificity": 1.0,
+        "accuracy": 0.6666666666666666,
+        "balanced_accuracy": 0.6666666666666666,
+        "predicted_positive_rate": 0.16666666666666666,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.6666666666666666,
+        "mcc": 0.4472135954999579
+      },
+      "v30_relevant": {
+        "confusion": {
+          "tp": 9,
+          "fp": 0,
+          "tn": 30,
+          "fn": 21
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 0.3,
+        "f1_positive": 0.46153846153846156,
+        "specificity": 1.0,
+        "accuracy": 0.65,
+        "balanced_accuracy": 0.65,
+        "predicted_positive_rate": 0.15,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.7,
+        "mcc": 0.4200840252084029
+      }
+    },
+    "passed": 39,
+    "mismatches": [
+      "li22-003",
+      "li22-005",
+      "li22-007",
+      "li22-009",
+      "li22-015",
+      "li22-017",
+      "li22-019",
+      "li22-021",
+      "li22-031",
+      "li22-033",
+      "li22-035",
+      "li22-037",
+      "li22-039",
+      "li22-041",
+      "li22-045",
+      "li22-047",
+      "li22-049",
+      "li22-051",
+      "li22-055",
+      "li22-057",
+      "li22-059"
+    ],
+    "scope": "same frozen consumed input/labels, new pinned source on same consumed input/labels; first FAIL unchanged; not fresh acceptance",
+    "historical_v29_all60_equal": true
+  },
+  "fresh_independent_semantic_calls": 0,
+  "scorer_invocations": 0,
+  "provider_model_Oracle_calls": 0,
+  "development_probe_processes": 21,
+  "development_inputs": 1751
+}

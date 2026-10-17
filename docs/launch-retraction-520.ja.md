@@ -2,7 +2,7 @@
 
 日本語 | [English](launch-retraction-520.md)
 
-[計画 #538](https://github.com/git-ksk/reasoning-harness/issues/538)／[Draft PR #539](https://github.com/git-ksk/reasoning-harness/pull/539)。現候補は`7431333d212938147a5d9ab32a0b8bdb44ee16b8`、evidence_relevance.rs SHA256は`b7fec3e0f7c6b76dfbff1b801dd085a22661df9b22457431653eb2073a4e08f0`。元v21初回FAIL48/60（安全性の漏れ0・肯定保留12）は保持し、12件は開発再現で解消。新規独立v22初回はFAIL30/60（陽性0/30・陰性30/30、安全性の漏れ0・過剰保留30）。0.7.3は未公開・CLI未採用で、専用リリースまでpackage表記は0.7.2です。
+[計画 #538](https://github.com/git-ksk/reasoning-harness/issues/538)／[Draft PR #539](https://github.com/git-ksk/reasoning-harness/pull/539)。現修正候補は`c20c5136d59cb3a0bfdac4fb8ca9dade2d93e076`、evidence_relevance.rs SHA256 `6b5aa28035bf23e6ad5eded264b323109786963354f3769a74fffd41ebe54a31`。同じ観測済み60件の開発比較ではv30 F1 0→0.4615、肯定9/30・否定30/30、過剰保留21が残る。独立v22初回FAIL30/60（7431333）は不変で、新候補の新規独立評価は未実施。0.7.3未公開・CLI未採用、package表記は0.7.2。
 
 ## 修正した動作と境界
 
@@ -45,7 +45,7 @@
 
 ## 修正コードの開発検証
 
-[現在の検証](../evaluation/engine073-launch-development-v21-repair/README.md)：既知v2〜v10/v12〜v16/v18〜v21の1080件成功、関連98テスト、全体1562成功・失敗0・既存ignore8。元監査14/14、歴史v16/v29の597出力byte一致、複合否定4件と所有者不明4変種は保留。strict Clippy・fmt・fixture20件・元archive13件成功。5507f26のテスト内の不要な借用による最初のClippy不合格を保存し、実装bytes不変のテスト修正7431333後に成功した。修正途中のRED、親テストの仕様確認と期待値訂正、正しいビルド成果物の固定を保存。新規独立受入とは別の開発証拠です。
+[現候補の検証](../evaluation/engine073-launch-development-v22-foundation/README.md)：候補c20c513、全体1564成功・失敗0・既存ignore8、strict Clippy/fmt・fixture20・元archive13成功。過去1080件成功、元監査14/14、歴史597出力byte一致、同じv22入力60件のv29全出力も不変。v22を開発再現に使った39/60は不合格で、F1/Recallの改善は新規独立受入に数えない。最初の修正はF1 0.45・誤通過1で不採用にし、[出力・途中検証・限界](../evaluation/engine073-launch-development-v22-foundation-rejected/README.md)を保存。新しい意味コードのCIは別確認が必要で、旧7431333 CI19成功とは区別する。
 
 [前候補のCI](../evaluation/engine073-launch-source18-ci-status.json)はf3d9ad1で19/19成功しましたが、独立v19の不合格を取り消しません。[前候補fd091b1のCI](../evaluation/engine073-launch-source19-ci-status.json)は19/19成功しましたが、独立v20は不合格です。[観測済み11件の分類](../evaluation/engine073-launch-development-v19/README.md)は、印刷された引用文字2・完全な属性への参照4・別製品の所有者/引用/同格説明4・複数roleの訂正1。入力構造の分類であり、実装原因の確定ではありません。[実際の判定経路の開発診断](../evaluation/engine073-launch-trace-development-v1/README.md)では、型付き参照5・対象への否定3・参照範囲未解決3で保留を確認。fd091b1の修正は属性参照を直前の完全な主張/同じroleへ結び付け、並列のroleを次の述語まで保ち、明示された別製品の所有者を扱います。一時的な計測コードは修正前に除去。観測済み11件は全て通り、追加境界と否定・歴史動作も維持。[研究と実装状況](engine-073-research-informed-repair.ja.md)では、開発検証と新規v20・実資料24問の受入を分けています。
 
@@ -82,3 +82,9 @@
 
 
 再開した独立担当が最終保存を完了し、全551ファイルを照合。anchor359a6712b07bc1a58fce4332f77f190578b6fec0bad4f9aab0e022c6b3fef160、初回FAILは不変。[親の最終照合](../evaluation/engine073-launch-v22-parent-final-verification.json)・[初回指標の集計](../evaluation/engine073-launch-first-metrics-v1/README.md)を保存。[別コピーの実経路診断](../evaluation/engine073-launch-trace-development-v4/README.md)では型付き参照27・対象否定2・未解決範囲1が最初の保留箇所。次は完全な主張の包みを扱うが、内側の命題が独立に既存の属性確認を通る場合だけ認める。同義の冠詞/未所有表現は、一意な同じroleのforeign ownerがある場合だけ結ぶ。対象/全体否定、競合/未知owner、歴史/rawリスク制限を維持し、同じ入力の開発F1と誤通過数を測る。新規受入とは別で、マージ・公開・採用はしない。
+
+## F1を測定した限定修正と残りの作業
+
+[候補c20c513の記録](../evaluation/engine073-launch-development-v22-foundation/README.md)では、同じ60件のv30 F1 0→0.4615、Precision未定義→1.0（通した9件）、Recall0→0.30、API通過率0→0.15、FP0を確認。v17はF1 0.5・Recall1/3、relationが見えてもriskで保留する1件がありAPI間で混ぜない。過去初回を再採点したものではない。最初の修正のFP1は拒否し、競合する所有者の宣言を扱ってFP0へ戻した。全体1564成功、旧1080と歴史597を維持。
+
+残る21件は現在のコードで診断してから、物理/文書属性のhas・prints・uses/測定値、引用文字の外側の属性/owner証明、別製品イベントの引用・同格、canonical Clip名による偽欠落を限定修正する。毎回同じ開発セットのF1/Recall/Precision/FPを記録する。全肯定・否定の回帰を通して候補を再固定した後に、新規独立評価を用意する。現時点で追加の新規v23を消費しない。#531実24問の最終回答/主張の根拠・引用・有用性の指標は未測定で、合成API指標では代替しない。マージ・公開・CLI採用は保留。

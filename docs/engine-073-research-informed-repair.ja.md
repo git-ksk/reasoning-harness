@@ -44,3 +44,9 @@
 
 
 再開した独立担当が最終保存を完了し、全551ファイルを照合。anchor359a6712b07bc1a58fce4332f77f190578b6fec0bad4f9aab0e022c6b3fef160、初回FAILは不変。[親の最終照合](../evaluation/engine073-launch-v22-parent-final-verification.json)・[初回指標の集計](../evaluation/engine073-launch-first-metrics-v1/README.md)を保存。[別コピーの実経路診断](../evaluation/engine073-launch-trace-development-v4/README.md)では型付き参照27・対象否定2・未解決範囲1が最初の保留箇所。次は完全な主張の包みを扱うが、内側の命題が独立に既存の属性確認を通る場合だけ認める。同義の冠詞/未所有表現は、一意な同じroleのforeign ownerがある場合だけ結ぶ。対象/全体否定、競合/未知owner、歴史/rawリスク制限を維持し、同じ入力の開発F1と誤通過数を測る。新規受入とは別で、マージ・公開・採用はしない。
+
+## F1を測定した限定修正と残りの作業
+
+[候補c20c513の記録](../evaluation/engine073-launch-development-v22-foundation/README.md)では、同じ60件のv30 F1 0→0.4615、Precision未定義→1.0（通した9件）、Recall0→0.30、API通過率0→0.15、FP0を確認。v17はF1 0.5・Recall1/3、relationが見えてもriskで保留する1件がありAPI間で混ぜない。過去初回を再採点したものではない。最初の修正のFP1は拒否し、競合する所有者の宣言を扱ってFP0へ戻した。全体1564成功、旧1080と歴史597を維持。
+
+残る21件は現在のコードで診断してから、物理/文書属性のhas・prints・uses/測定値、引用文字の外側の属性/owner証明、別製品イベントの引用・同格、canonical Clip名による偽欠落を限定修正する。毎回同じ開発セットのF1/Recall/Precision/FPを記録する。全肯定・否定の回帰を通して候補を再固定した後に、新規独立評価を用意する。現時点で追加の新規v23を消費しない。#531実24問の最終回答/主張の根拠・引用・有用性の指標は未測定で、合成API指標では代替しない。マージ・公開・CLI採用は保留。
