@@ -1,0 +1,754 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.24
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling serde_json v1.0.151
+   Compiling ref-cast v1.0.27
+   Compiling serde v1.0.229
+   Compiling memchr v2.8.3
+   Compiling thiserror v2.0.21
+   Compiling itoa v1.0.18
+   Compiling dyn-clone v1.0.20
+   Compiling pin-project-lite v0.2.17
+   Compiling syn v3.0.4
+   Compiling serde_derive_internals v0.30.0
+   Compiling serde_derive v1.0.229
+   Compiling ref-cast-impl v1.0.27
+   Compiling thiserror-impl v2.0.21
+   Compiling tokio-macros v2.7.2
+   Compiling schemars_derive v1.2.2
+   Compiling tokio v1.53.2
+   Compiling schemars v1.2.2
+   Compiling reasoning-harness-core v0.7.2 (/private/tmp/engine073-source21-trace-shadow/crates/reasoning-harness-core)
+warning: unused variable: `signal_index`
+    --> crates/reasoning-harness-core/src/evidence_relevance.rs:5952:10
+     |
+5952 |     for (signal_index, signal) in candidate.signals.iter().enumerate().filter(|(_, signal)| {
+     |          ^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_signal_index`
+     |
+     = note: `#[warn(unused_variables)]` on by default
+
+warning: `reasoning-harness-core` (lib) generated 1 warning
+    Finished `test` profile [unoptimized] target(s) in 27.34s
+     Running unittests src/lib.rs (/private/tmp/engine073-trace22-target/debug/deps/reasoning_harness_core-dcd4f612c7771d71)
+
+running 1 test
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-001","rule_trace":[{"exact_original_utf8_byte_span":[92,113],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[92,113],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[92,113],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[92,113],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[92,113],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Warranty-card corrections","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the claim that the raised seal on the warranty card for Moraine Ledger is circular","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I withdraw the Object","resolved_foreign":false,"segment_index":1,"signal_index":1,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"the seal shape was misdescribed","resolved_foreign":false,"segment_index":2,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Moraine Ledger was launched","resolved_foreign":false,"segment_index":0,"signal_index":2,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the raised seal on the warranty card for Moraine Ledger is circular","foreign_event":false,"label":"object","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-003","rule_trace":[{"exact_original_utf8_byte_span":[95,114],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We deny the Subject","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[95,114],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We deny the Subject","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[95,114],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We deny the Subject","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[95,114],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We deny the Subject","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[95,114],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We deny the Subject","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Correction limited to the certificate watermark","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Saffron Relay was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Subject: the claim that the certificate supplied with Granite Pocket has a diagonal watermark","resolved_foreign":false,"segment_index":0,"signal_index":2,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"We deny the Subject","resolved_foreign":false,"segment_index":1,"signal_index":2,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"This correction concerns the watermark on that certificate","resolved_foreign":false,"segment_index":2,"signal_index":2,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the certificate supplied with Granite Pocket has a diagonal watermark","foreign_event":false,"label":"subject","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-005","rule_trace":[{"exact_original_utf8_byte_span":[0,120],"rule":"target_adverse_clause","segment_index":0,"segment_raw":"Object: the claim that the sentence \"Copper Orchard was not launched\" is printed in silver ink on the Atlas Spool insert","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,120],"rule":"target_adverse_clause","segment_index":0,"segment_raw":"Object: the claim that the sentence \"Copper Orchard was not launched\" is printed in silver ink on the Atlas Spool insert","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,120],"rule":"target_adverse_clause","segment_index":0,"segment_raw":"Object: the claim that the sentence \"Copper Orchard was not launched\" is printed in silver ink on the Atlas Spool insert","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,120],"rule":"target_adverse_clause","segment_index":0,"segment_raw":"Object: the claim that the sentence \"Copper Orchard was not launched\" is printed in silver ink on the Atlas Spool insert","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,120],"rule":"target_adverse_clause","segment_index":0,"segment_raw":"Object: the claim that the sentence \"Copper Orchard was not launched\" is printed in silver ink on the Atlas Spool insert","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Copper Orchard was launched","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the claim that the sentence \"Copper Orchard was not launched\" is printed in silver ink on the Atlas Spool insert","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I retract the Object","resolved_foreign":false,"segment_index":1,"signal_index":1,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"The correction is to the ink color on the insert, not an assertion of the sentence printed there","resolved_foreign":false,"segment_index":2,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the sentence \"Copper Orchard was not launched\" is printed in silver ink on the Atlas Spool insert","foreign_event":false,"label":"object","scope":"launch"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-007","rule_trace":[{"exact_original_utf8_byte_span":[68,88],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We withdraw the Item","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[68,88],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We withdraw the Item","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[68,88],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We withdraw the Item","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[68,88],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We withdraw the Item","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[68,88],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We withdraw the Item","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Binding inspection reply","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Item: the claim that the Ridge Lantern manual has a stitched spine","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"We withdraw the Item","resolved_foreign":false,"segment_index":1,"signal_index":1,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"the cover illustration remains approved","resolved_foreign":false,"segment_index":2,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Indigo Basin was launched","resolved_foreign":false,"segment_index":0,"signal_index":2,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the Ridge Lantern manual has a stitched spine","foreign_event":false,"label":"item","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-009","rule_trace":[{"exact_original_utf8_byte_span":[105,122],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I deny the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[105,122],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I deny the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[105,122],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I deny the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[105,122],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I deny the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[105,122],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I deny the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the claim that the battery table in the Willow Compass booklet prints its units in milliamperes","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I deny the Object","resolved_foreign":false,"segment_index":1,"signal_index":0,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"My correction is confined to the printed unit labels","resolved_foreign":false,"segment_index":2,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Willow Compass was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the battery table in the Willow Compass booklet prints its units in milliamperes","foreign_event":false,"label":"object","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-011","rule_trace":[{"exact_original_utf8_byte_span":[83,105],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Subject","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[83,105],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Subject","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[83,105],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Subject","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[83,105],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Subject","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[83,105],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Subject","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Harbor Mosaic was launched","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Caption erratum","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Subject: the claim that the photo caption in the Cinder Fold brochure is centered","resolved_foreign":false,"segment_index":0,"signal_index":2,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I withdraw the Subject","resolved_foreign":false,"segment_index":1,"signal_index":2,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"the correction applies to the alignment of that caption","resolved_foreign":false,"segment_index":2,"signal_index":2,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the photo caption in the Cinder Fold brochure is centered","foreign_event":false,"label":"subject","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-013","rule_trace":[{"exact_original_utf8_byte_span":[160,181],"rule":"typed_reference_not_excluded","segment_index":2,"segment_raw":"We retract the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[160,181],"rule":"typed_reference_not_excluded","segment_index":2,"segment_raw":"We retract the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[160,181],"rule":"typed_reference_not_excluded","segment_index":2,"segment_raw":"We retract the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[160,181],"rule":"typed_reference_not_excluded","segment_index":2,"segment_raw":"We retract the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[160,181],"rule":"typed_reference_not_excluded","segment_index":2,"segment_raw":"We retract the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the claim that the Ember Loom registration sheet uses smooth paper","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Subject: the claim that the Ember Loom registration sheet is 0.3 millimeters thick","resolved_foreign":false,"segment_index":1,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"We retract the Object","resolved_foreign":false,"segment_index":2,"signal_index":0,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"deny the Subject","resolved_foreign":false,"segment_index":3,"signal_index":0,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Vesper Slate was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the Ember Loom registration sheet uses smooth paper","foreign_event":false,"label":"object","scope":"unresolved"},{"declared_value":"the claim that the Ember Loom registration sheet is 0.3 millimeters thick","foreign_event":false,"label":"subject","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-015","rule_trace":[{"exact_original_utf8_byte_span":[106,122],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We deny the Item","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[106,122],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We deny the Item","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[106,122],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We deny the Item","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[106,122],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We deny the Item","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[106,122],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We deny the Item","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Foxtail Dial catalog inspection","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Cobalt Garden was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Item: the claim that the section heading \"Launch status\" in the Foxtail Dial catalog uses small capitals","resolved_foreign":false,"segment_index":0,"signal_index":2,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"We deny the Item","resolved_foreign":false,"segment_index":1,"signal_index":2,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Only the type style of that heading is being corrected","resolved_foreign":false,"segment_index":2,"signal_index":2,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the section heading \"Launch status\" in the Foxtail Dial catalog uses small capitals","foreign_event":false,"label":"item","scope":"launch"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-017","rule_trace":[{"exact_original_utf8_byte_span":[128,144],"rule":"typed_reference_not_excluded","segment_index":3,"segment_raw":"deny the Subject","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[128,144],"rule":"typed_reference_not_excluded","segment_index":3,"segment_raw":"deny the Subject","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[128,144],"rule":"typed_reference_not_excluded","segment_index":3,"segment_raw":"deny the Subject","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[128,144],"rule":"typed_reference_not_excluded","segment_index":3,"segment_raw":"deny the Subject","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[128,144],"rule":"typed_reference_not_excluded","segment_index":3,"segment_raw":"deny the Subject","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Pollen Beacon was launched","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the launch of Quartz Ferry","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Subject: the claim that the Quartz Ferry case has a ribbed edge","resolved_foreign":false,"segment_index":1,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"We withdraw the Object","resolved_foreign":false,"segment_index":2,"signal_index":1,"typed_reference":true,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"deny the Subject","resolved_foreign":false,"segment_index":3,"signal_index":1,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"both roles refer only to Quartz Ferry","resolved_foreign":false,"segment_index":4,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the launch of Quartz Ferry","foreign_event":true,"label":"object","scope":"excluded"},{"declared_value":"the claim that the Quartz Ferry case has a ribbed edge","foreign_event":false,"label":"subject","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-019","rule_trace":[{"exact_original_utf8_byte_span":[79,98],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Item","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[79,98],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Item","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[79,98],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Item","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[79,98],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Item","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[79,98],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Item","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Item: the claim \"Bracken Lens was launched\" quoted in the Juniper Tray manual","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I withdraw the Item","resolved_foreign":false,"segment_index":1,"signal_index":0,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"The quoted event names Bracken Lens","resolved_foreign":false,"segment_index":2,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Juniper Tray owns the manual only","resolved_foreign":false,"segment_index":3,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Aster Dock was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim \"Bracken Lens was launched\" quoted in the Juniper Tray manual","foreign_event":false,"label":"item","scope":"launch"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-021","rule_trace":[{"exact_original_utf8_byte_span":[119,140],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We retract the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[119,140],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We retract the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[119,140],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We retract the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[119,140],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We retract the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[119,140],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We retract the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the claim that the heading \"Maple Prism was launched\" occupies two lines on the Hush Ribbon instruction sheet","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"We retract the Object","resolved_foreign":false,"segment_index":1,"signal_index":0,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"the disputed property is the line count on that sheet","resolved_foreign":false,"segment_index":2,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Maple Prism was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the heading \"Maple Prism was launched\" occupies two lines on the Hush Ribbon instruction sheet","foreign_event":false,"label":"object","scope":"launch"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-023","rule_trace":[{"exact_original_utf8_byte_span":[66,87],"rule":"typed_reference_not_excluded","segment_index":2,"segment_raw":"I retract the Subject","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[66,87],"rule":"typed_reference_not_excluded","segment_index":2,"segment_raw":"I retract the Subject","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[66,87],"rule":"typed_reference_not_excluded","segment_index":2,"segment_raw":"I retract the Subject","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[66,87],"rule":"typed_reference_not_excluded","segment_index":2,"segment_raw":"I retract the Subject","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[66,87],"rule":"typed_reference_not_excluded","segment_index":2,"segment_raw":"I retract the Subject","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Nacre Switch was launched","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Subject: the launch claim","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Owner of the Subject: Thistle Cabinet","resolved_foreign":false,"segment_index":1,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I retract the Subject","resolved_foreign":false,"segment_index":2,"signal_index":1,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"This owner supplement identifies the event itself","resolved_foreign":false,"segment_index":3,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the launch claim","foreign_event":false,"label":"subject","scope":"launch"},{"declared_value":"Thistle Cabinet","foreign_event":false,"label":"owner supplement","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-025","rule_trace":[{"exact_original_utf8_byte_span":[43,64],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[43,64],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[43,64],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[43,64],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[43,64],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Owner of the Object: Birch Vessel","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: an otherwise unowned launch claim","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I withdraw the Object","resolved_foreign":false,"segment_index":1,"signal_index":1,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"The heading explicitly names the owner of this Object","resolved_foreign":false,"segment_index":2,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Cairn Panel was launched","resolved_foreign":false,"segment_index":0,"signal_index":2,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"Birch Vessel","foreign_event":false,"label":"owner supplement","scope":"unresolved"},{"declared_value":"an otherwise unowned launch claim","foreign_event":false,"label":"object","scope":"launch"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-027","rule_trace":[{"exact_original_utf8_byte_span":[24,39],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I deny the Item","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[24,39],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I deny the Item","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[24,39],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I deny the Item","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[24,39],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I deny the Item","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[24,39],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I deny the Item","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Item: the launch claim","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I deny the Item","resolved_foreign":false,"segment_index":1,"signal_index":0,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Author reply: the owner of the Item is Mica Archive","resolved_foreign":false,"segment_index":2,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Garnet Field was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the launch claim","foreign_event":false,"label":"item","scope":"launch"},{"declared_value":"Mica Archive","foreign_event":false,"label":"owner supplement","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-029","rule_trace":[{"exact_original_utf8_byte_span":[59,79],"rule":"typed_reference_not_excluded","segment_index":3,"segment_raw":"I retract the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[59,79],"rule":"typed_reference_not_excluded","segment_index":3,"segment_raw":"I retract the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[59,79],"rule":"typed_reference_not_excluded","segment_index":3,"segment_raw":"I retract the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[59,79],"rule":"typed_reference_not_excluded","segment_index":3,"segment_raw":"I retract the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[59,79],"rule":"typed_reference_not_excluded","segment_index":3,"segment_raw":"I retract the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Wren Cabinet was launched","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the launch claim","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Owner of the Object:","resolved_foreign":false,"segment_index":1,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Opal Guide","resolved_foreign":false,"segment_index":2,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I retract the Object","resolved_foreign":false,"segment_index":3,"signal_index":1,"typed_reference":false,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the launch claim","foreign_event":false,"label":"object","scope":"launch"},{"declared_value":"Opal Guide","foreign_event":false,"label":"owner supplement","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-031","rule_trace":[{"exact_original_utf8_byte_span":[50,119],"rule":"unresolved_adverse_scope","segment_index":1,"segment_raw":"Celadon Anchor is the full name of the product whose launch is denied","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[50,119],"rule":"unresolved_adverse_scope","segment_index":1,"segment_raw":"Celadon Anchor is the full name of the product whose launch is denied","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[50,119],"rule":"unresolved_adverse_scope","segment_index":1,"segment_raw":"Celadon Anchor is the full name of the product whose launch is denied","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[50,119],"rule":"unresolved_adverse_scope","segment_index":1,"segment_raw":"Celadon Anchor is the full name of the product whose launch is denied","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[50,119],"rule":"unresolved_adverse_scope","segment_index":1,"segment_raw":"Celadon Anchor is the full name of the product whose launch is denied","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":true,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"We deny this claim, the launch of Celadon Anchor","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Celadon Anchor is the full name of the product whose launch is denied","resolved_foreign":false,"segment_index":1,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Tidal Cask was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-033","rule_trace":[{"exact_original_utf8_byte_span":[0,117],"rule":"target_adverse_clause","segment_index":0,"segment_raw":"I withdraw this claim, the claim that the engraving \"Raven Meter was launched\" on the Alabaster Reel badge is shallow","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,117],"rule":"target_adverse_clause","segment_index":0,"segment_raw":"I withdraw this claim, the claim that the engraving \"Raven Meter was launched\" on the Alabaster Reel badge is shallow","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,117],"rule":"target_adverse_clause","segment_index":0,"segment_raw":"I withdraw this claim, the claim that the engraving \"Raven Meter was launched\" on the Alabaster Reel badge is shallow","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,117],"rule":"target_adverse_clause","segment_index":0,"segment_raw":"I withdraw this claim, the claim that the engraving \"Raven Meter was launched\" on the Alabaster Reel badge is shallow","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,117],"rule":"target_adverse_clause","segment_index":0,"segment_raw":"I withdraw this claim, the claim that the engraving \"Raven Meter was launched\" on the Alabaster Reel badge is shallow","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I withdraw this claim, the claim that the engraving \"Raven Meter was launched\" on the Alabaster Reel badge is shallow","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"My withdrawal concerns the depth of the engraving","resolved_foreign":false,"segment_index":1,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Raven Meter was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-035","rule_trace":[{"exact_original_utf8_byte_span":[169,187],"rule":"typed_reference_not_excluded","segment_index":3,"segment_raw":"We deny the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[169,187],"rule":"typed_reference_not_excluded","segment_index":3,"segment_raw":"We deny the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[169,187],"rule":"typed_reference_not_excluded","segment_index":3,"segment_raw":"We deny the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[169,187],"rule":"typed_reference_not_excluded","segment_index":3,"segment_raw":"We deny the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[169,187],"rule":"typed_reference_not_excluded","segment_index":3,"segment_raw":"We deny the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Fennel Port was launched","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the claim that the Lichen Card folder has rounded corners","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Subject: the launch of Marigold Cradle","resolved_foreign":false,"segment_index":1,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Item: the claim that the Lichen Card folder has a cotton tie","resolved_foreign":false,"segment_index":2,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"We deny the Object","resolved_foreign":false,"segment_index":3,"signal_index":1,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"withdraw the Subject","resolved_foreign":false,"segment_index":4,"signal_index":1,"typed_reference":true,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"retract the Item","resolved_foreign":false,"segment_index":5,"signal_index":1,"typed_reference":false,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the Lichen Card folder has rounded corners","foreign_event":false,"label":"object","scope":"unresolved"},{"declared_value":"the launch of Marigold Cradle","foreign_event":true,"label":"subject","scope":"excluded"},{"declared_value":"the claim that the Lichen Card folder has a cotton tie","foreign_event":false,"label":"item","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-037","rule_trace":[{"exact_original_utf8_byte_span":[187,204],"rule":"typed_reference_not_excluded","segment_index":5,"segment_raw":"withdraw the Item","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[187,204],"rule":"typed_reference_not_excluded","segment_index":5,"segment_raw":"withdraw the Item","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[187,204],"rule":"typed_reference_not_excluded","segment_index":5,"segment_raw":"withdraw the Item","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[187,204],"rule":"typed_reference_not_excluded","segment_index":5,"segment_raw":"withdraw the Item","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[187,204],"rule":"typed_reference_not_excluded","segment_index":5,"segment_raw":"withdraw the Item","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the launch of Pumice Notebook","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Subject: the launch of Ochre Gateway","resolved_foreign":false,"segment_index":1,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Item: the claim that the Pumice Notebook notice has a red border","resolved_foreign":false,"segment_index":2,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I retract the Object","resolved_foreign":false,"segment_index":3,"signal_index":0,"typed_reference":true,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"deny the Subject","resolved_foreign":false,"segment_index":4,"signal_index":0,"typed_reference":true,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"withdraw the Item","resolved_foreign":false,"segment_index":5,"signal_index":0,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Solstice Rack was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the launch of Pumice Notebook","foreign_event":true,"label":"object","scope":"excluded"},{"declared_value":"the launch of Ochre Gateway","foreign_event":true,"label":"subject","scope":"excluded"},{"declared_value":"the claim that the Pumice Notebook notice has a red border","foreign_event":false,"label":"item","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-039","rule_trace":[{"exact_original_utf8_byte_span":[78,99],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Object","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[78,99],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Object","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[78,99],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Object","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[78,99],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Object","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[78,99],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Object","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Inspection notes for the Sable Stack package","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Dune Loom was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the claim that the Sable Stack shipping sleeve has a perforated flap","resolved_foreign":false,"segment_index":0,"signal_index":2,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I withdraw the Object","resolved_foreign":false,"segment_index":1,"signal_index":2,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Subject: the claim that the Sable Stack sleeve prints its address in bold","resolved_foreign":false,"segment_index":2,"signal_index":2,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I deny the Subject","resolved_foreign":false,"segment_index":3,"signal_index":2,"typed_reference":false,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the Sable Stack shipping sleeve has a perforated flap","foreign_event":false,"label":"object","scope":"unresolved"},{"declared_value":"the claim that the Sable Stack sleeve prints its address in bold","foreign_event":false,"label":"subject","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-041","rule_trace":[{"exact_original_utf8_byte_span":[0,17],"rule":"typed_reference_not_excluded","segment_index":0,"segment_raw":"I deny the Object","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,17],"rule":"typed_reference_not_excluded","segment_index":0,"segment_raw":"I deny the Object","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,17],"rule":"typed_reference_not_excluded","segment_index":0,"segment_raw":"I deny the Object","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,17],"rule":"typed_reference_not_excluded","segment_index":0,"segment_raw":"I deny the Object","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,17],"rule":"typed_reference_not_excluded","segment_index":0,"segment_raw":"I deny the Object","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Nettle Frame was launched","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the claim that the Azure Basin bulletin has a folded back page","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I deny the Object","resolved_foreign":false,"segment_index":0,"signal_index":2,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"The corrected assertion is the folding of the bulletin page","resolved_foreign":false,"segment_index":1,"signal_index":2,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the Azure Basin bulletin has a folded back page","foreign_event":false,"label":"object","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-043","rule_trace":[{"exact_original_utf8_byte_span":[0,21],"rule":"typed_reference_not_excluded","segment_index":0,"segment_raw":"I retract the Subject","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,21],"rule":"typed_reference_not_excluded","segment_index":0,"segment_raw":"I retract the Subject","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,21],"rule":"typed_reference_not_excluded","segment_index":0,"segment_raw":"I retract the Subject","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,21],"rule":"typed_reference_not_excluded","segment_index":0,"segment_raw":"I retract the Subject","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[0,21],"rule":"typed_reference_not_excluded","segment_index":0,"segment_raw":"I retract the Subject","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Subject: the claim that the Russet Vault sticker uses uppercase letters","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I retract the Subject","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"The role refers to the letter case of the Russet Vault sticker","resolved_foreign":false,"segment_index":1,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Sorrel Gauge was launched","resolved_foreign":false,"segment_index":0,"signal_index":2,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the Russet Vault sticker uses uppercase letters","foreign_event":false,"label":"subject","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"context_gap"},"governing_blocks":true,"id":"li22-045","rule_trace":[{"exact_original_utf8_byte_span":[55,74],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Item","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[55,74],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Item","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[55,74],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Item","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[55,74],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Item","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[55,74],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Item","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[55,74],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Item","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Canonical product name: Heron Clip","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Clip is part of this complete name","resolved_foreign":false,"segment_index":1,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"no excerpt has been clipped","resolved_foreign":false,"segment_index":2,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Heron Clip was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Item: the claim that the Heron Clip clasp is magnetic","resolved_foreign":false,"segment_index":0,"signal_index":2,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I withdraw the Item","resolved_foreign":false,"segment_index":1,"signal_index":2,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"The correction is limited to the clasp property","resolved_foreign":false,"segment_index":2,"signal_index":2,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the Heron Clip clasp is magnetic","foreign_event":false,"label":"item","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-047","rule_trace":[{"exact_original_utf8_byte_span":[108,125],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I deny the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[108,125],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I deny the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[108,125],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I deny the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[108,125],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I deny the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[108,125],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I deny the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Flint Harbor was launched","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the claim that the literal footer \"owner not supplied\" in the Persimmon Rail booklet is underlined","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":true},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I deny the Object","resolved_foreign":false,"segment_index":1,"signal_index":1,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Only the printed underline is disputed","resolved_foreign":false,"segment_index":2,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"the quoted words are specimen text","resolved_foreign":false,"segment_index":3,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the literal footer \"owner not supplied\" in the Persimmon Rail booklet is underlined","foreign_event":false,"label":"object","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-049","rule_trace":[{"exact_original_utf8_byte_span":[59,81],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We withdraw the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[59,81],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We withdraw the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[59,81],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We withdraw the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[59,81],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We withdraw the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[59,81],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"We withdraw the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the claim that the Violet Spire label is embossed","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"We withdraw the Object","resolved_foreign":false,"segment_index":1,"signal_index":0,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Subject: the launch of Wattle Stand","resolved_foreign":false,"segment_index":2,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"We deny the Subject, and we maintain that Wattle Stand was not launched","resolved_foreign":false,"segment_index":3,"signal_index":0,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Brine Canvas was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the Violet Spire label is embossed","foreign_event":false,"label":"object","scope":"unresolved"},{"declared_value":"the launch of Wattle Stand","foreign_event":true,"label":"subject","scope":"excluded"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-051","rule_trace":[{"exact_original_utf8_byte_span":[64,152],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I retract the Object (the correction concerns the depth of the hinge recess on Moss Tide","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[64,152],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I retract the Object (the correction concerns the depth of the hinge recess on Moss Tide","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[64,152],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I retract the Object (the correction concerns the depth of the hinge recess on Moss Tide","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[64,152],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I retract the Object (the correction concerns the depth of the hinge recess on Moss Tide","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[64,152],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I retract the Object (the correction concerns the depth of the hinge recess on Moss Tide","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the claim that the Moss Tide case has a recessed hinge","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I retract the Object (the correction concerns the depth of the hinge recess on Moss Tide","resolved_foreign":false,"segment_index":1,"signal_index":0,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Kestrel Pin was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the Moss Tide case has a recessed hinge","foreign_event":false,"label":"object","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-053","rule_trace":[{"exact_original_utf8_byte_span":[183,200],"rule":"typed_reference_not_excluded","segment_index":4,"segment_raw":"I deny the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[183,200],"rule":"typed_reference_not_excluded","segment_index":4,"segment_raw":"I deny the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[183,200],"rule":"typed_reference_not_excluded","segment_index":4,"segment_raw":"I deny the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[183,200],"rule":"typed_reference_not_excluded","segment_index":4,"segment_raw":"I deny the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[183,200],"rule":"typed_reference_not_excluded","segment_index":4,"segment_raw":"I deny the Object","signal_index":1,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Alpine Reed was launched","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Item: the launch of Crimson Desk","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I withdraw the Item","resolved_foreign":false,"segment_index":1,"signal_index":1,"typed_reference":true,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Crimson Desk was not launched","resolved_foreign":false,"segment_index":2,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the claim that the Crimson Desk press sheet uses cream paper","resolved_foreign":false,"segment_index":3,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I deny the Object","resolved_foreign":false,"segment_index":4,"signal_index":1,"typed_reference":false,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the launch of Crimson Desk","foreign_event":true,"label":"item","scope":"excluded"},{"declared_value":"the claim that the Crimson Desk press sheet uses cream paper","foreign_event":false,"label":"object","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-055","rule_trace":[{"exact_original_utf8_byte_span":[110,131],"rule":"typed_reference_not_excluded","segment_index":2,"segment_raw":"I withdraw the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[110,131],"rule":"typed_reference_not_excluded","segment_index":2,"segment_raw":"I withdraw the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[110,131],"rule":"typed_reference_not_excluded","segment_index":2,"segment_raw":"I withdraw the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[110,131],"rule":"typed_reference_not_excluded","segment_index":2,"segment_raw":"I withdraw the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[110,131],"rule":"typed_reference_not_excluded","segment_index":2,"segment_raw":"I withdraw the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the claim that the Nickel Grove booklet has a serrated edge","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Subject: the launch of Periwinkle Shelf","resolved_foreign":false,"segment_index":1,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I withdraw the Object","resolved_foreign":false,"segment_index":2,"signal_index":0,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I deny the Subject","resolved_foreign":false,"segment_index":3,"signal_index":0,"typed_reference":true,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"This sentence specifies two corrections, both with explicit scope","resolved_foreign":false,"segment_index":4,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Seagrass Button was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the Nickel Grove booklet has a serrated edge","foreign_event":false,"label":"object","scope":"unresolved"},{"declared_value":"the launch of Periwinkle Shelf","foreign_event":true,"label":"subject","scope":"excluded"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-057","rule_trace":[{"exact_original_utf8_byte_span":[192,213],"rule":"typed_reference_not_excluded","segment_index":4,"segment_raw":"We retract the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[192,213],"rule":"typed_reference_not_excluded","segment_index":4,"segment_raw":"We retract the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[192,213],"rule":"typed_reference_not_excluded","segment_index":4,"segment_raw":"We retract the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[192,213],"rule":"typed_reference_not_excluded","segment_index":4,"segment_raw":"We retract the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[192,213],"rule":"typed_reference_not_excluded","segment_index":4,"segment_raw":"We retract the Object","signal_index":0,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Object: the claim that the Hyacinth Dock document title has a trailing period","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Subject: the launch of Verdigris Tray","resolved_foreign":false,"segment_index":1,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Owner of the Object: Hyacinth Dock","resolved_foreign":false,"segment_index":2,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Owner of the Subject: Verdigris Tray","resolved_foreign":false,"segment_index":3,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"We retract the Object","resolved_foreign":false,"segment_index":4,"signal_index":0,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"deny the Subject","resolved_foreign":false,"segment_index":5,"signal_index":0,"typed_reference":true,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Ibis Latch was launched","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the Hyacinth Dock document title has a trailing period","foreign_event":false,"label":"object","scope":"unresolved"},{"declared_value":"the launch of Verdigris Tray","foreign_event":true,"label":"subject","scope":"excluded"},{"declared_value":"Hyacinth Dock","foreign_event":false,"label":"owner supplement","scope":"unresolved"},{"declared_value":"Verdigris Tray","foreign_event":false,"label":"owner supplement","scope":"unresolved"}]}
+DEVELOPMENT_TRACE {"effective":{"identity_scope":"exact_target","relation_scope":"unresolved","scope_risk":"none"},"governing_blocks":true,"id":"li22-059","rule_trace":[{"exact_original_utf8_byte_span":[91,113],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Subject","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[91,113],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Subject","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[91,113],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Subject","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[91,113],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Subject","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"},{"exact_original_utf8_byte_span":[91,113],"rule":"typed_reference_not_excluded","segment_index":1,"segment_raw":"I withdraw the Subject","signal_index":2,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"}],"scope":"consumed diagnostic, not fresh score","segments":[{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Tamarisk Arc was launched","resolved_foreign":false,"segment_index":0,"signal_index":0,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Document owner: Basalt Counter","resolved_foreign":false,"segment_index":0,"signal_index":1,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Subject: the claim that the Basalt Counter cover prints its revision mark inside a square","resolved_foreign":false,"segment_index":0,"signal_index":2,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I withdraw the Subject","resolved_foreign":false,"segment_index":1,"signal_index":2,"typed_reference":false,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"Item: the launch of Amethyst Wheel","resolved_foreign":false,"segment_index":2,"signal_index":2,"typed_reference":null,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"I deny the Item","resolved_foreign":false,"segment_index":3,"signal_index":2,"typed_reference":true,"unknown_owner":false},{"apposition":false,"bound_property":false,"complete_foreign_report":false,"correction_frame":false,"declared_foreign":false,"denied":false,"foreign_object":false,"nominal_property":false,"nonlaunch":false,"property_context":false,"raw":"The document owner and the event owner are separately stated","resolved_foreign":false,"segment_index":4,"signal_index":2,"typed_reference":null,"unknown_owner":false}],"target_fact":false,"typed_objects":[{"declared_value":"the claim that the Basalt Counter cover prints its revision mark inside a square","foreign_event":false,"label":"subject","scope":"unresolved"},{"declared_value":"the launch of Amethyst Wheel","foreign_event":true,"label":"item","scope":"excluded"}]}
+test evidence_relevance::tests::development_consumed_v22_rule_trace ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 330 filtered out; finished in 0.70s
+
+     Running tests/assumption_benchmark.rs (/private/tmp/engine073-trace22-target/debug/deps/assumption_benchmark-1c8f82afec56258e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/benchmark.rs (/private/tmp/engine073-trace22-target/debug/deps/benchmark-f1ede1e216e0a063)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/bilingual_preparation_512.rs (/private/tmp/engine073-trace22-target/debug/deps/bilingual_preparation_512-5d4a4ae76f8f1ca1)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/candidate.rs (/private/tmp/engine073-trace22-target/debug/deps/candidate-48a50a7ee89b3a6c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/causal_benchmark.rs (/private/tmp/engine073-trace22-target/debug/deps/causal_benchmark-eb00c6ee0c1db231)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/corpus_manifest.rs (/private/tmp/engine073-trace22-target/debug/deps/corpus_manifest-d19d01883182e374)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/engine_0_6_1_launch_independent_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/engine_0_6_1_launch_independent_v2-c7a7397dd999de6a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/engine_0_7_dev_baseline_v1.rs (/private/tmp/engine073-trace22-target/debug/deps/engine_0_7_dev_baseline_v1-6ee3882b6645c8ac)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/evidence_need_routing.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_need_routing-09083bdb7ddf9577)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 24 filtered out; finished in 0.00s
+
+     Running tests/evidence_qualification_benchmark.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_qualification_benchmark-adaa5a6b634ddc0d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_successor_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_successor_v2-f6d67b26767c6683)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_successor_v3.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_successor_v3-e2986155be974d91)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_successor_v4.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_successor_v4-dc6269762c5c76bd)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_successor_v5.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_successor_v5-4e5ce9934b3c73db)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_successor_v6.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_successor_v6-b442f492b6201f62)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_successor_v7.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_successor_v7-5634aade80afa29c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v10.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v10-a0bd74b8ce4669ca)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v11.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v11-58e4677d640fc600)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v12.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v12-09bdccde91ab96a9)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v4.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v4-c5e47033afb8419c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v5.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v5-c0d80319d37825c3)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v6.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v6-688456f99b3d5fbb)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v7.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v7-9ad99a349ba0dfcc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v8.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v8-69cc3305fdc54fd6)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v9.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v9-0049a43a1f54dc9f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing-c93e34a3f6da7a29)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v10.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v10-f878796dd5943971)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v11.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v11-bd5c6d9e307118ef)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v12.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v12-95910b890c986876)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v13.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v13-3f46aa62c1073863)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v14.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v14-3e8ea3b9138fd25c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v15.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v15-712fc49949b07dcd)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v16.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v16-3d8b677d302668c8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v17.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v17-1066c4ab5e0bae60)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v18.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v18-0c5598a985ae9d3c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 17 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v19.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v19-a4ca3f93c262ccf5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v2-15c2f25edaba3f6e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v20.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v20-eda6fbbceee72b3b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v21.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v21-2563fbe49a5b52c5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 20 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v22.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v22-22bf717bcb83cae0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v23.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v23-84b80ecef2f10257)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v3.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v3-6885d1c4806bfe19)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v4.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v4-1996340a8677c4e5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v5.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v5-ccaafcd973c9e22f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v6.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v6-15ffd73465112168)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v7.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v7-083cba8a6d764012)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v8.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v8-5d32ab4795155bfc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v9.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v9-e43e69a6cfaf1b83)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v10_development.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v10_development-fa86ee1da0efcca8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v10_development_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v10_development_v2-e887a647cc80113e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v10_development_v3.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v10_development_v3-c49f4141c5b50b41)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v10_development_v4.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v10_development_v4-1dc7238b26992ce5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v10_materialization_v27_replay.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v10_materialization_v27_replay-e778f467926b861d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v10_materialization_v28_replay.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v10_materialization_v28_replay-a7087faa300a9c9e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v11_development.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v11_development-6c2ca1f96fee3b07)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v11_development_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v11_development_v2-377372f55356cc01)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v11_materialization_v29_replay.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v11_materialization_v29_replay-114f8d21aa00eb51)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v11_materialization_v30_replay.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v11_materialization_v30_replay-3534deb3aa26a44a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v5_controls.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v5_controls-2d17a1b03a2701de)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v6_controls.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v6_controls-2e3bb6d7948a1da8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 17 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v7_controls.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v7_controls-6b9b5c1ed9d7dc54)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v7_development.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v7_development-9f4825f04a0369d6)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v8_development.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v8_development-28070c81a8beac09)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v8_relation_controls.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v8_relation_controls-7ef69fe746b949dc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v9_development.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v9_development-1f2c52bd4a70b88b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v9_historical_replay.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v9_historical_replay-2d4721d752c6b46b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v9_relation_controls.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v9_relation_controls-8d41e5920d9a1549)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+     Running tests/five_whys.rs (/private/tmp/engine073-trace22-target/debug/deps/five_whys-31038b39b776fe48)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/format_invariance.rs (/private/tmp/engine073-trace22-target/debug/deps/format_invariance-5f3fa2e5e088c9ad)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/harness.rs (/private/tmp/engine073-trace22-target/debug/deps/harness-cadabaa8186ad144)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/investigation_intent_materialization.rs (/private/tmp/engine073-trace22-target/debug/deps/investigation_intent_materialization-2b1bb975f579f539)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.00s
+
+     Running tests/investigation_plan_request_contract.rs (/private/tmp/engine073-trace22-target/debug/deps/investigation_plan_request_contract-143fa26ac08ba01b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_520_521.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_520_521-e481f9b596de9638)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 80 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v1.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v1-235c8e9cb1e10234)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v10.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v10-ea492dc3b56cf61f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v2-a0667f1763bde9fe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v3.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v3-e205bfccadcc3214)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v4.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v4-e66ed612d3743e2f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v5.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v5-a4b78f1416216a89)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v6.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v6-c9f692c7dd4e3388)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v7.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v7-7062df8a5cf54aca)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v8.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v8-f6b6fd393420a6fd)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v9.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v9-f39503fd1f9a9b40)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515-6339a725fa53f0d7)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v2-e20d335f67f17eac)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v3.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v3-abe16e43cd9b9608)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v4.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v4-1b63167461810b6b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v5.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v5-8e9c1bf367460093)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v6.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v6-8451812653b2bffd)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v7.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v7-8eedf3125e69e5e4)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v8.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v8-51155a5cd19b50c0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v9.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v9-419180d48259760d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_source_frames_514_515.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_source_frames_514_515-7ff978535d04a377)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.00s
+
+     Running tests/metamorphic_benchmark.rs (/private/tmp/engine073-trace22-target/debug/deps/metamorphic_benchmark-8937383eebca79f6)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/model_backed_soft_judge.rs (/private/tmp/engine073-trace22-target/debug/deps/model_backed_soft_judge-d020b92d092f8070)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+     Running tests/reasoning_policy_regression.rs (/private/tmp/engine073-trace22-target/debug/deps/reasoning_policy_regression-49b0f7ae59f93b27)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/reasoning_thread_replay.rs (/private/tmp/engine073-trace22-target/debug/deps/reasoning_thread_replay-68de74d6669e8f90)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+     Running tests/resolution_benchmark.rs (/private/tmp/engine073-trace22-target/debug/deps/resolution_benchmark-ee40a16037776aab)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/semantic_decidability.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_decidability-85626acdc9b32d49)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/semantic_decidability_holdout_v5.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_decidability_holdout_v5-15a5dfaab87fb8b2)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/semantic_judge_calibration.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_judge_calibration-4f0b4bc055be4cd0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/semantic_judge_holdout.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_judge_holdout-f43b2f15cba3e571)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/semantic_judge_holdout_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_judge_holdout_v2-ae612140d139dba5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/semantic_judge_holdout_v3.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_judge_holdout_v3-e5dda5e3ef52b0fe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/semantic_judge_holdout_v4.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_judge_holdout_v4-5098748b09b6d16d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/semantic_materialization.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_materialization-9e30e00d726c2dd3)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 0.00s
+
+     Running tests/semantic_runtime.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_runtime-f48b5ae98a7168ce)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+     Running tests/semantic_stability.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_stability-6a8e7a799760573c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/semantic_sufficiency_rsd0.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_sufficiency_rsd0-0f15988295d49978)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/semantic_sufficiency_rsd1.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_sufficiency_rsd1-3f9ea7a5af1a4193)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/source_reconciliation_development_v1.rs (/private/tmp/engine073-trace22-target/debug/deps/source_reconciliation_development_v1-1031630b1a9be72a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/target_presentation_development_v1.rs (/private/tmp/engine073-trace22-target/debug/deps/target_presentation_development_v1-2e950f7c357d8bcc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/validate.rs (/private/tmp/engine073-trace22-target/debug/deps/validate-5af3c259ec253566)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+     Running tests/verification.rs (/private/tmp/engine073-trace22-target/debug/deps/verification-80c13fb23057452c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+

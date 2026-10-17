@@ -1,0 +1,115 @@
+{
+  "source": {
+    "source_sha": "7431333d212938147a5d9ab32a0b8bdb44ee16b8",
+    "source_file_sha256": "b7fec3e0f7c6b76dfbff1b801dd085a22661df9b22457431653eb2073a4e08f0",
+    "reasoning_harness_core": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "ab615574b7b5487592e04cc07fcb6cd748c129cd7ea148bd599329d1bbb83ad1"
+    },
+    "serde_json": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    }
+  },
+  "consumed_positive_cases": 30,
+  "first_blockers": {
+    "typed_reference_not_excluded": 27,
+    "target_adverse_clause": 2,
+    "unresolved_adverse_scope": 1
+  },
+  "by_case": {
+    "li22-001": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-003": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-005": [
+      "target_adverse_clause"
+    ],
+    "li22-007": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-009": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-011": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-013": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-015": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-017": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-019": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-021": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-023": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-025": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-027": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-029": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-031": [
+      "unresolved_adverse_scope"
+    ],
+    "li22-033": [
+      "target_adverse_clause"
+    ],
+    "li22-035": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-037": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-039": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-041": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-043": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-045": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-047": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-049": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-051": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-053": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-055": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-057": [
+      "typed_reference_not_excluded"
+    ],
+    "li22-059": [
+      "typed_reference_not_excluded"
+    ]
+  },
+  "diagnostic_location": "separate git archive of7431333 plus v22 input; isolated /private/tmp/engine073-trace22-target; original source/normal target/HEAD never instrumented",
+  "scope": "actual existing first blocking branches only, not every later blocker or fresh acceptance",
+  "provider_model_scorer_calls": 0
+}

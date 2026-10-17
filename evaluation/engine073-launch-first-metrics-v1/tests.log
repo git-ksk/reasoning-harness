@@ -1,0 +1,15 @@
+test_anchored_inventory_rejects_tamper_and_extra_file (__main__.MetricsTests.test_anchored_inventory_rejects_tamper_and_extra_file) ... ok
+test_axes_are_separate_not_joint_f1 (__main__.MetricsTests.test_axes_are_separate_not_joint_f1) ... ok
+test_empty_or_negative_only_undefined (__main__.MetricsTests.test_empty_or_negative_only_undefined) ... ok
+test_formula_with_false_accept_and_false_withhold (__main__.MetricsTests.test_formula_with_false_accept_and_false_withhold) ... ok
+test_frozen_label_mismatch_not_rescored (__main__.MetricsTests.test_frozen_label_mismatch_not_rescored) ... ok
+test_manifest_swap_rejected (__main__.MetricsTests.test_manifest_swap_rejected) ... ok
+test_missing_value_not_negative (__main__.MetricsTests.test_missing_value_not_negative) ... ok
+test_operational_failure_is_unmeasured (__main__.MetricsTests.test_operational_failure_is_unmeasured) ... ok
+test_perfect (__main__.MetricsTests.test_perfect) ... ok
+test_reject_all_does_not_look_precise (__main__.MetricsTests.test_reject_all_does_not_look_precise) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.008s
+
+OK

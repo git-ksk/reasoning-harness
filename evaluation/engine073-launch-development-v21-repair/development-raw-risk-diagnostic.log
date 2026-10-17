@@ -1,0 +1,22 @@
+   Compiling reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 1.11s
+     Running tests/launch_context_markers_520_521.rs (/private/tmp/engine073-validation-target/debug/deps/launch_context_markers_520_521-e481f9b596de9638)
+
+running 1 test
+DEVELOPMENT_RAW_RISK ownership_scope: EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: RequestedRelation, scope_risk: None }
+
+thread 'foreign_printed_properties_keep_outside_ownership_and_raw_risks' panicked at crates/reasoning-harness-core/tests/launch_context_markers_520_521.rs:2947:9:
+assertion `left != right` failed
+  left: Relevant
+ right: Relevant
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test foreign_printed_properties_keep_outside_ownership_and_raw_risks ... FAILED
+
+failures:
+
+failures:
+    foreign_printed_properties_keep_outside_ownership_and_raw_risks
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 79 filtered out; finished in 0.54s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_context_markers_520_521`

@@ -1,0 +1,53 @@
+{
+  "identity": "engine073-launch-independent-v22",
+  "status": "PRE_OBSERVATION",
+  "author": "sole authorized independent evaluator; source-blind",
+  "candidate_source_sha": "7431333d212938147a5d9ab32a0b8bdb44ee16b8",
+  "scope": "bounded #520 synthetic launch retraction/denial/withdrawal/non-event source qualification only",
+  "authorship": "60 new hand-authored cases in 30 controlled semantic pairs; 30 positive and 30 negative. Fictional sources, not real primary documents. v1-v21 are seen development evidence, including unexecuted drafts.",
+  "qualification_rules": {
+    "positive": "Direct factual target launch anchor plus only fully specified non-launch property corrections or uniquely foreign event corrections. Both v17 requested_relation and v30 Relevant required.",
+    "negative": "Explicit target launch/existence/global denial, ownerless/ambiguous/mixed/conflicting adverse event, or actual owner-bearing context gap. Both v17 non-requested and v30 non-Relevant required.",
+    "risk": "raw/effective risk independent from relation; no raw-only joint negative; exact diagnostics retained without internal component inference.",
+    "scoring": "byte-identical inherited scorer; v29 diagnostic only; missing rows, malformed data, stderr, failed invocation prevent PASS."
+  },
+  "budget": {
+    "max_model_attempts": 2,
+    "max_tokens": 192,
+    "max_elapsed_ms": 90000
+  },
+  "raw_context_gap_ids": [
+    "li22-024",
+    "li22-048"
+  ],
+  "no_label_leakage": "Engine process receives only inputs.json, with id/policy/candidate/proposal/raw. Expected/rationale/polarity/axis stay in cases.json outside the process.",
+  "stages": [
+    "author AST/scope review, Engine0/scorer0",
+    "generate complete inputs and static schema validation, semantic0",
+    "compile unchanged public probe into dedicated new tmp, no run",
+    "complete manifest freeze of inputs/labels/scope/scorer/recorder/source/core/serde/opaque/executable",
+    "one process first60; exclusive raw writes, no retry",
+    "one scorer process; exclusive results, no relabel or rescore",
+    "save first errors/results, receipt/review/README, exact risk diagnostics, recursive old/new hash inventory, read-only final manifest"
+  ],
+  "pre_freeze_corrections": "If necessary, preserve original bytes/static result/exact diff/reason and expected polarity before complete freeze. None made during original AST review.",
+  "post_freeze": "No changes to labels/inputs/criteria, no semantic retry, no rescoring; failures preserved.",
+  "isolation": {
+    "Engine_source": "hash only, contents unread",
+    "parent_diagnostics_tests_audits_development": "unread",
+    "Oracle": 0,
+    "provider_model_API": 0,
+    "network": 0,
+    "cargo_or_shared_target_mutation": 0,
+    "Git_mutation": 0,
+    "extra_agents": 0,
+    "writes": "new v22 prefix and dedicated tmp probe only"
+  },
+  "limits": [
+    "finite source qualification, not arbitrary language truth or general reference resolution",
+    "not #531 real24, ordinary CLI, provider, human, adoption or release acceptance",
+    "not an improvement rate across changing corpora",
+    "source-blind iterative development evidence, not statistical fresh human acceptance"
+  ],
+  "parent_reported_only": "related80/strict Clippy/fmt PASS; full/seen1080/historical597 in separate validation target at task dispatch. Not independently inspected."
+}

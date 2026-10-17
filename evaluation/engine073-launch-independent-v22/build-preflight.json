@@ -1,0 +1,35 @@
+{
+  "identity": "engine073-launch-independent-v22",
+  "utc": "2026-10-17T00:48:07.542034+00:00",
+  "stage": "COMPILE_ONLY",
+  "command": [
+    "rustc",
+    "--edition=2024",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v22/probe.rs",
+    "-L",
+    "dependency=/private/tmp/engine073-target/debug/deps",
+    "--extern",
+    "reasoning_harness_core=/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+    "--extern",
+    "serde_json=/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+    "-o",
+    "/private/tmp/engine073-launch-independent-v22-probe/probe"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 0.3092255415394902,
+  "compiler_version": "rustc 1.88.0 (6b00bc388 2025-06-23)",
+  "probe_executable": {
+    "path": "/private/tmp/engine073-launch-independent-v22-probe/probe",
+    "sha256": "7415f47eae7d682171633c8eb3361beb009bc3e75bc416e02c1bcc99b1d4b491"
+  },
+  "core_sha256": "ab615574b7b5487592e04cc07fcb6cd748c129cd7ea148bd599329d1bbb83ad1",
+  "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+  "probe_source_sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "semantic_observations": 0,
+  "Engine_invocations": 0,
+  "scorer_invocations": 0,
+  "provider_network_calls": 0,
+  "cargo_shared_target_mutation": 0
+}

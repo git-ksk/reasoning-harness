@@ -1,0 +1,2674 @@
+[
+  {
+    "id": "li22-001",
+    "policy": {
+      "policy_id": "li22-001-policy",
+      "target_id": "v22-target-01",
+      "target_question": "Was Moraine Ledger launched?",
+      "entity": {
+        "canonical_id": "v22-target-01",
+        "canonical_name": "Moraine Ledger",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-001-evidence",
+      "source_id": "li22-001-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Warranty-card corrections"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the raised seal on the warranty card for Moraine Ledger is circular. I withdraw the Object; the seal shape was misdescribed."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Moraine Ledger was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-002",
+    "policy": {
+      "policy_id": "li22-002-policy",
+      "target_id": "v22-target-01",
+      "target_question": "Was Moraine Ledger launched?",
+      "entity": {
+        "canonical_id": "v22-target-01",
+        "canonical_name": "Moraine Ledger",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-002-evidence",
+      "source_id": "li22-002-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Warranty-card corrections"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the raised seal on the warranty card for Moraine Ledger is circular. I withdraw the Object because Moraine Ledger was not launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Moraine Ledger was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-003",
+    "policy": {
+      "policy_id": "li22-003-policy",
+      "target_id": "v22-target-02",
+      "target_question": "Was Saffron Relay launched?",
+      "entity": {
+        "canonical_id": "v22-target-02",
+        "canonical_name": "Saffron Relay",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-003-evidence",
+      "source_id": "li22-003-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Correction limited to the certificate watermark"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Saffron Relay was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the claim that the certificate supplied with Granite Pocket has a diagonal watermark. We deny the Subject. This correction concerns the watermark on that certificate."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-004",
+    "policy": {
+      "policy_id": "li22-004-policy",
+      "target_id": "v22-target-02",
+      "target_question": "Was Saffron Relay launched?",
+      "entity": {
+        "canonical_id": "v22-target-02",
+        "canonical_name": "Saffron Relay",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-004-evidence",
+      "source_id": "li22-004-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Correction of the entire notice"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Saffron Relay was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the claim that the certificate supplied with Granite Pocket has a diagonal watermark. We deny the Subject. We retract this entire notice, including its statement that Saffron Relay was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-005",
+    "policy": {
+      "policy_id": "li22-005-policy",
+      "target_id": "v22-target-03",
+      "target_question": "Was Copper Orchard launched?",
+      "entity": {
+        "canonical_id": "v22-target-03",
+        "canonical_name": "Copper Orchard",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-005-evidence",
+      "source_id": "li22-005-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Copper Orchard was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the sentence \"Copper Orchard was not launched\" is printed in silver ink on the Atlas Spool insert. I retract the Object. The correction is to the ink color on the insert, not an assertion of the sentence printed there."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-006",
+    "policy": {
+      "policy_id": "li22-006-policy",
+      "target_id": "v22-target-03",
+      "target_question": "Was Copper Orchard launched?",
+      "entity": {
+        "canonical_id": "v22-target-03",
+        "canonical_name": "Copper Orchard",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-006-evidence",
+      "source_id": "li22-006-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Copper Orchard was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the sentence \"Copper Orchard was not launched\" is printed in silver ink on the Atlas Spool insert. I retract the Object. Separately, Copper Orchard was not launched; that sentence is our present assertion about the event."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-007",
+    "policy": {
+      "policy_id": "li22-007-policy",
+      "target_id": "v22-target-04",
+      "target_question": "Was Indigo Basin launched?",
+      "entity": {
+        "canonical_id": "v22-target-04",
+        "canonical_name": "Indigo Basin",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-007-evidence",
+      "source_id": "li22-007-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Binding inspection reply"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the claim that the Ridge Lantern manual has a stitched spine. We withdraw the Item, although the cover illustration remains approved."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Indigo Basin was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-008",
+    "policy": {
+      "policy_id": "li22-008-policy",
+      "target_id": "v22-target-04",
+      "target_question": "Was Indigo Basin launched?",
+      "entity": {
+        "canonical_id": "v22-target-04",
+        "canonical_name": "Indigo Basin",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-008-evidence",
+      "source_id": "li22-008-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Binding inspection reply"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the claim that the Ridge Lantern manual has a stitched spine. We withdraw the Item, although Indigo Basin does not exist."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Indigo Basin was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-009",
+    "policy": {
+      "policy_id": "li22-009-policy",
+      "target_id": "v22-target-05",
+      "target_question": "Was Willow Compass launched?",
+      "entity": {
+        "canonical_id": "v22-target-05",
+        "canonical_name": "Willow Compass",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-009-evidence",
+      "source_id": "li22-009-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the battery table in the Willow Compass booklet prints its units in milliamperes. I deny the Object. My correction is confined to the printed unit labels."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Willow Compass was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-010",
+    "policy": {
+      "policy_id": "li22-010-policy",
+      "target_id": "v22-target-05",
+      "target_question": "Was Willow Compass launched?",
+      "entity": {
+        "canonical_id": "v22-target-05",
+        "canonical_name": "Willow Compass",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-010-evidence",
+      "source_id": "li22-010-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the battery table in the Willow Compass booklet prints its units in milliamperes. I deny the Object and I deny that Willow Compass was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Willow Compass was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-011",
+    "policy": {
+      "policy_id": "li22-011-policy",
+      "target_id": "v22-target-06",
+      "target_question": "Was Harbor Mosaic launched?",
+      "entity": {
+        "canonical_id": "v22-target-06",
+        "canonical_name": "Harbor Mosaic",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-011-evidence",
+      "source_id": "li22-011-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Harbor Mosaic was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "Caption erratum"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the claim that the photo caption in the Cinder Fold brochure is centered. I withdraw the Subject; the correction applies to the alignment of that caption."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-012",
+    "policy": {
+      "policy_id": "li22-012-policy",
+      "target_id": "v22-target-06",
+      "target_question": "Was Harbor Mosaic launched?",
+      "entity": {
+        "canonical_id": "v22-target-06",
+        "canonical_name": "Harbor Mosaic",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-012-evidence",
+      "source_id": "li22-012-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Harbor Mosaic was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "Caption erratum and event correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the claim that the photo caption in the Cinder Fold brochure is centered. I withdraw the Subject. I also withdraw another launch claim, whose product owner is not supplied here."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-013",
+    "policy": {
+      "policy_id": "li22-013-policy",
+      "target_id": "v22-target-07",
+      "target_question": "Was Vesper Slate launched?",
+      "entity": {
+        "canonical_id": "v22-target-07",
+        "canonical_name": "Vesper Slate",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-013-evidence",
+      "source_id": "li22-013-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the Ember Loom registration sheet uses smooth paper. Subject: the claim that the Ember Loom registration sheet is 0.3 millimeters thick. We retract the Object and deny the Subject."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Vesper Slate was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-014",
+    "policy": {
+      "policy_id": "li22-014-policy",
+      "target_id": "v22-target-07",
+      "target_question": "Was Vesper Slate launched?",
+      "entity": {
+        "canonical_id": "v22-target-07",
+        "canonical_name": "Vesper Slate",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-014-evidence",
+      "source_id": "li22-014-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the Ember Loom registration sheet uses smooth paper. Subject: the claim that the Ember Loom registration sheet is 0.3 millimeters thick. We retract the Object and deny the Subject while Vesper Slate was never launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Vesper Slate was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-015",
+    "policy": {
+      "policy_id": "li22-015-policy",
+      "target_id": "v22-target-08",
+      "target_question": "Was Cobalt Garden launched?",
+      "entity": {
+        "canonical_id": "v22-target-08",
+        "canonical_name": "Cobalt Garden",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-015-evidence",
+      "source_id": "li22-015-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Foxtail Dial catalog inspection"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Cobalt Garden was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the claim that the section heading \"Launch status\" in the Foxtail Dial catalog uses small capitals. We deny the Item. Only the type style of that heading is being corrected."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-016",
+    "policy": {
+      "policy_id": "li22-016-policy",
+      "target_id": "v22-target-08",
+      "target_question": "Was Cobalt Garden launched?",
+      "entity": {
+        "canonical_id": "v22-target-08",
+        "canonical_name": "Cobalt Garden",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-016-evidence",
+      "source_id": "li22-016-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Foxtail Dial catalog inspection"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Cobalt Garden was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the claim that the section heading \"Launch status\" in the Foxtail Dial catalog uses small capitals. We deny the Item. We withdraw all launch statements in this material, including the Cobalt Garden statement."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-017",
+    "policy": {
+      "policy_id": "li22-017-policy",
+      "target_id": "v22-target-09",
+      "target_question": "Was Pollen Beacon launched?",
+      "entity": {
+        "canonical_id": "v22-target-09",
+        "canonical_name": "Pollen Beacon",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-017-evidence",
+      "source_id": "li22-017-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Pollen Beacon was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the launch of Quartz Ferry. Subject: the claim that the Quartz Ferry case has a ribbed edge. We withdraw the Object and deny the Subject; both roles refer only to Quartz Ferry."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-018",
+    "policy": {
+      "policy_id": "li22-018-policy",
+      "target_id": "v22-target-09",
+      "target_question": "Was Pollen Beacon launched?",
+      "entity": {
+        "canonical_id": "v22-target-09",
+        "canonical_name": "Pollen Beacon",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-018-evidence",
+      "source_id": "li22-018-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Pollen Beacon was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: a launch claim with no product owner specified. Subject: the claim that the Quartz Ferry case has a ribbed edge. We withdraw the Object and deny the Subject; the case owner does not identify the event owner."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-019",
+    "policy": {
+      "policy_id": "li22-019-policy",
+      "target_id": "v22-target-10",
+      "target_question": "Was Aster Dock launched?",
+      "entity": {
+        "canonical_id": "v22-target-10",
+        "canonical_name": "Aster Dock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-019-evidence",
+      "source_id": "li22-019-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Item: the claim \"Bracken Lens was launched\" quoted in the Juniper Tray manual. I withdraw the Item. The quoted event names Bracken Lens; Juniper Tray owns the manual only."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Aster Dock was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-020",
+    "policy": {
+      "policy_id": "li22-020-policy",
+      "target_id": "v22-target-10",
+      "target_question": "Was Aster Dock launched?",
+      "entity": {
+        "canonical_id": "v22-target-10",
+        "canonical_name": "Aster Dock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-020-evidence",
+      "source_id": "li22-020-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Item: the claim \"Aster Dock was launched\" quoted in the Juniper Tray manual. I withdraw the Item. Juniper Tray owns the manual; Aster Dock owns the quoted launch event."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Aster Dock was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-021",
+    "policy": {
+      "policy_id": "li22-021-policy",
+      "target_id": "v22-target-11",
+      "target_question": "Was Maple Prism launched?",
+      "entity": {
+        "canonical_id": "v22-target-11",
+        "canonical_name": "Maple Prism",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-021-evidence",
+      "source_id": "li22-021-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the heading \"Maple Prism was launched\" occupies two lines on the Hush Ribbon instruction sheet. We retract the Object; the disputed property is the line count on that sheet."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Maple Prism was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-022",
+    "policy": {
+      "policy_id": "li22-022-policy",
+      "target_id": "v22-target-11",
+      "target_question": "Was Maple Prism launched?",
+      "entity": {
+        "canonical_id": "v22-target-11",
+        "canonical_name": "Maple Prism",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-022-evidence",
+      "source_id": "li22-022-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that Maple Prism was launched, quoted beneath a two-line heading on the Hush Ribbon instruction sheet. We retract the Object; the disputed claim is the launch event, not the heading layout."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Maple Prism was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-023",
+    "policy": {
+      "policy_id": "li22-023-policy",
+      "target_id": "v22-target-12",
+      "target_question": "Was Nacre Switch launched?",
+      "entity": {
+        "canonical_id": "v22-target-12",
+        "canonical_name": "Nacre Switch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-023-evidence",
+      "source_id": "li22-023-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Nacre Switch was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the launch claim. Owner of the Subject: Thistle Cabinet. I retract the Subject. This owner supplement identifies the event itself."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-024",
+    "policy": {
+      "policy_id": "li22-024-policy",
+      "target_id": "v22-target-12",
+      "target_question": "Was Nacre Switch launched?",
+      "entity": {
+        "canonical_id": "v22-target-12",
+        "canonical_name": "Nacre Switch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-024-evidence",
+      "source_id": "li22-024-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Nacre Switch was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the launch claim. Owner of the Subject: [missing from this captured excerpt]. I retract the Subject. The event owner cannot be recovered from this material."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "context_gap"
+    }
+  },
+  {
+    "id": "li22-025",
+    "policy": {
+      "policy_id": "li22-025-policy",
+      "target_id": "v22-target-13",
+      "target_question": "Was Cairn Panel launched?",
+      "entity": {
+        "canonical_id": "v22-target-13",
+        "canonical_name": "Cairn Panel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-025-evidence",
+      "source_id": "li22-025-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Owner of the Object: Birch Vessel"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: an otherwise unowned launch claim. I withdraw the Object. The heading explicitly names the owner of this Object."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Cairn Panel was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-026",
+    "policy": {
+      "policy_id": "li22-026-policy",
+      "target_id": "v22-target-13",
+      "target_question": "Was Cairn Panel launched?",
+      "entity": {
+        "canonical_id": "v22-target-13",
+        "canonical_name": "Cairn Panel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-026-evidence",
+      "source_id": "li22-026-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Owner of the Object: Birch Vessel"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the launch of Cairn Panel. I withdraw the Object. The heading says Birch Vessel, but this Object already explicitly names Cairn Panel as its event owner."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Cairn Panel was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-027",
+    "policy": {
+      "policy_id": "li22-027-policy",
+      "target_id": "v22-target-14",
+      "target_question": "Was Garnet Field launched?",
+      "entity": {
+        "canonical_id": "v22-target-14",
+        "canonical_name": "Garnet Field",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-027-evidence",
+      "source_id": "li22-027-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Item: the launch claim. I deny the Item. Author reply: the owner of the Item is Mica Archive."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Garnet Field was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-028",
+    "policy": {
+      "policy_id": "li22-028-policy",
+      "target_id": "v22-target-14",
+      "target_question": "Was Garnet Field launched?",
+      "entity": {
+        "canonical_id": "v22-target-14",
+        "canonical_name": "Garnet Field",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-028-evidence",
+      "source_id": "li22-028-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Item: the launch claim. I deny the Item. Author reply: the owner of the Item is Mica Archive. Second owner statement for the Item: Garnet Field."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Garnet Field was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-029",
+    "policy": {
+      "policy_id": "li22-029-policy",
+      "target_id": "v22-target-15",
+      "target_question": "Was Wren Cabinet launched?",
+      "entity": {
+        "canonical_id": "v22-target-15",
+        "canonical_name": "Wren Cabinet",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-029-evidence",
+      "source_id": "li22-029-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Wren Cabinet was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the launch claim. Owner of the Object:\nOpal Guide.\nI retract the Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-030",
+    "policy": {
+      "policy_id": "li22-030-policy",
+      "target_id": "v22-target-15",
+      "target_question": "Was Wren Cabinet launched?",
+      "entity": {
+        "canonical_id": "v22-target-15",
+        "canonical_name": "Wren Cabinet",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-030-evidence",
+      "source_id": "li22-030-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Wren Cabinet was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the launch claim. Subject: the claim that the Opal Guide cover is laminated. Owner of the Subject: Opal Guide. I retract the Object. The owner of the Object is not stated."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-031",
+    "policy": {
+      "policy_id": "li22-031-policy",
+      "target_id": "v22-target-16",
+      "target_question": "Was Tidal Cask launched?",
+      "entity": {
+        "canonical_id": "v22-target-16",
+        "canonical_name": "Tidal Cask",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-031-evidence",
+      "source_id": "li22-031-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "We deny this claim, the launch of Celadon Anchor. Celadon Anchor is the full name of the product whose launch is denied."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Tidal Cask was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-032",
+    "policy": {
+      "policy_id": "li22-032-policy",
+      "target_id": "v22-target-16",
+      "target_question": "Was Tidal Cask launched?",
+      "entity": {
+        "canonical_id": "v22-target-16",
+        "canonical_name": "Tidal Cask",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-032-evidence",
+      "source_id": "li22-032-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "We deny this claim, the launch of Tidal Cask. Celadon Anchor is the full name printed on the reply stationery; it does not own the denied event."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Tidal Cask was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-033",
+    "policy": {
+      "policy_id": "li22-033-policy",
+      "target_id": "v22-target-17",
+      "target_question": "Was Raven Meter launched?",
+      "entity": {
+        "canonical_id": "v22-target-17",
+        "canonical_name": "Raven Meter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-033-evidence",
+      "source_id": "li22-033-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "I withdraw this claim, the claim that the engraving \"Raven Meter was launched\" on the Alabaster Reel badge is shallow. My withdrawal concerns the depth of the engraving."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Raven Meter was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-034",
+    "policy": {
+      "policy_id": "li22-034-policy",
+      "target_id": "v22-target-17",
+      "target_question": "Was Raven Meter launched?",
+      "entity": {
+        "canonical_id": "v22-target-17",
+        "canonical_name": "Raven Meter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-034-evidence",
+      "source_id": "li22-034-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "I withdraw this claim, the claim that Raven Meter was launched. The phrase appears on the Alabaster Reel badge, but the withdrawal concerns its event content."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Raven Meter was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-035",
+    "policy": {
+      "policy_id": "li22-035-policy",
+      "target_id": "v22-target-18",
+      "target_question": "Was Fennel Port launched?",
+      "entity": {
+        "canonical_id": "v22-target-18",
+        "canonical_name": "Fennel Port",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-035-evidence",
+      "source_id": "li22-035-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Fennel Port was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the Lichen Card folder has rounded corners. Subject: the launch of Marigold Cradle. Item: the claim that the Lichen Card folder has a cotton tie. We deny the Object, withdraw the Subject, and retract the Item."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-036",
+    "policy": {
+      "policy_id": "li22-036-policy",
+      "target_id": "v22-target-18",
+      "target_question": "Was Fennel Port launched?",
+      "entity": {
+        "canonical_id": "v22-target-18",
+        "canonical_name": "Fennel Port",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-036-evidence",
+      "source_id": "li22-036-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Fennel Port was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the Lichen Card folder has rounded corners. Subject: the launch of Fennel Port. Item: the claim that the Lichen Card folder has a cotton tie. We deny the Object, withdraw the Subject, and retract the Item."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-037",
+    "policy": {
+      "policy_id": "li22-037-policy",
+      "target_id": "v22-target-19",
+      "target_question": "Was Solstice Rack launched?",
+      "entity": {
+        "canonical_id": "v22-target-19",
+        "canonical_name": "Solstice Rack",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-037-evidence",
+      "source_id": "li22-037-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the launch of Pumice Notebook. Subject: the launch of Ochre Gateway. Item: the claim that the Pumice Notebook notice has a red border. I retract the Object, deny the Subject, and withdraw the Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Solstice Rack was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-038",
+    "policy": {
+      "policy_id": "li22-038-policy",
+      "target_id": "v22-target-19",
+      "target_question": "Was Solstice Rack launched?",
+      "entity": {
+        "canonical_id": "v22-target-19",
+        "canonical_name": "Solstice Rack",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-038-evidence",
+      "source_id": "li22-038-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the launch of Pumice Notebook. Subject: the launch of Ochre Gateway. Item: another launch claim whose owner is unavailable. I retract the Object, deny the Subject, and withdraw the Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Solstice Rack was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-039",
+    "policy": {
+      "policy_id": "li22-039-policy",
+      "target_id": "v22-target-20",
+      "target_question": "Was Dune Loom launched?",
+      "entity": {
+        "canonical_id": "v22-target-20",
+        "canonical_name": "Dune Loom",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-039-evidence",
+      "source_id": "li22-039-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Inspection notes for the Sable Stack package"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Dune Loom was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the Sable Stack shipping sleeve has a perforated flap. I withdraw the Object. Subject: the claim that the Sable Stack sleeve prints its address in bold. I deny the Subject."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-040",
+    "policy": {
+      "policy_id": "li22-040-policy",
+      "target_id": "v22-target-20",
+      "target_question": "Was Dune Loom launched?",
+      "entity": {
+        "canonical_id": "v22-target-20",
+        "canonical_name": "Dune Loom",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-040-evidence",
+      "source_id": "li22-040-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Inspection notes for the Sable Stack package"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Dune Loom was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the Sable Stack shipping sleeve has a perforated flap. I withdraw the Object. Subject: the claim that the Sable Stack sleeve prints its address in bold. I deny the Subject."
+        },
+        {
+          "kind": "source_title",
+          "text": "Retraction: this entire source and every launch claim it contains are withdrawn, including Dune Loom"
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-041",
+    "policy": {
+      "policy_id": "li22-041-policy",
+      "target_id": "v22-target-21",
+      "target_question": "Was Nettle Frame launched?",
+      "entity": {
+        "canonical_id": "v22-target-21",
+        "canonical_name": "Nettle Frame",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-041-evidence",
+      "source_id": "li22-041-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Nettle Frame was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Object: the claim that the Azure Basin bulletin has a folded back page"
+        },
+        {
+          "kind": "excerpt",
+          "text": "I deny the Object. The corrected assertion is the folding of the bulletin page."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-042",
+    "policy": {
+      "policy_id": "li22-042-policy",
+      "target_id": "v22-target-21",
+      "target_question": "Was Nettle Frame launched?",
+      "entity": {
+        "canonical_id": "v22-target-21",
+        "canonical_name": "Nettle Frame",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-042-evidence",
+      "source_id": "li22-042-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Nettle Frame was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Object: the launch of Nettle Frame"
+        },
+        {
+          "kind": "excerpt",
+          "text": "I deny the Object. Azure Basin is the publisher of the bulletin, not a replacement for the event owner."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-043",
+    "policy": {
+      "policy_id": "li22-043-policy",
+      "target_id": "v22-target-22",
+      "target_question": "Was Sorrel Gauge launched?",
+      "entity": {
+        "canonical_id": "v22-target-22",
+        "canonical_name": "Sorrel Gauge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-043-evidence",
+      "source_id": "li22-043-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Subject: the claim that the Russet Vault sticker uses uppercase letters"
+        },
+        {
+          "kind": "excerpt",
+          "text": "I retract the Subject. The role refers to the letter case of the Russet Vault sticker."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Sorrel Gauge was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-044",
+    "policy": {
+      "policy_id": "li22-044-policy",
+      "target_id": "v22-target-22",
+      "target_question": "Was Sorrel Gauge launched?",
+      "entity": {
+        "canonical_id": "v22-target-22",
+        "canonical_name": "Sorrel Gauge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-044-evidence",
+      "source_id": "li22-044-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Subject: the claim that the Russet Vault sticker uses uppercase letters"
+        },
+        {
+          "kind": "excerpt",
+          "text": "I retract the Subject. I withdraw a different launch claim. Its event owner is absent from the source fields supplied here."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Sorrel Gauge was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-045",
+    "policy": {
+      "policy_id": "li22-045-policy",
+      "target_id": "v22-target-23",
+      "target_question": "Was Heron Clip launched?",
+      "entity": {
+        "canonical_id": "v22-target-23",
+        "canonical_name": "Heron Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-045-evidence",
+      "source_id": "li22-045-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Canonical product name: Heron Clip. Clip is part of this complete name; no excerpt has been clipped."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Heron Clip was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the claim that the Heron Clip clasp is magnetic. I withdraw the Item. The correction is limited to the clasp property."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-046",
+    "policy": {
+      "policy_id": "li22-046-policy",
+      "target_id": "v22-target-23",
+      "target_question": "Was Heron Clip launched?",
+      "entity": {
+        "canonical_id": "v22-target-23",
+        "canonical_name": "Heron Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-046-evidence",
+      "source_id": "li22-046-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Canonical product name: Heron Clip. Clip is part of this complete name; no excerpt has been clipped."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Heron Clip was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the launch of Heron Clip. I withdraw the Item. The canonical-name note does not retract or alter this event denial."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-047",
+    "policy": {
+      "policy_id": "li22-047-policy",
+      "target_id": "v22-target-24",
+      "target_question": "Was Flint Harbor launched?",
+      "entity": {
+        "canonical_id": "v22-target-24",
+        "canonical_name": "Flint Harbor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-047-evidence",
+      "source_id": "li22-047-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Flint Harbor was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the literal footer \"owner not supplied\" in the Persimmon Rail booklet is underlined. I deny the Object. Only the printed underline is disputed; the quoted words are specimen text."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-048",
+    "policy": {
+      "policy_id": "li22-048-policy",
+      "target_id": "v22-target-24",
+      "target_question": "Was Flint Harbor launched?",
+      "entity": {
+        "canonical_id": "v22-target-24",
+        "canonical_name": "Flint Harbor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-048-evidence",
+      "source_id": "li22-048-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Flint Harbor was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the launch claim mentioned in the missing footer of the Persimmon Rail booklet. I deny the Object. The footer is absent from this excerpt and the event owner is not supplied."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "context_gap"
+    }
+  },
+  {
+    "id": "li22-049",
+    "policy": {
+      "policy_id": "li22-049-policy",
+      "target_id": "v22-target-25",
+      "target_question": "Was Brine Canvas launched?",
+      "entity": {
+        "canonical_id": "v22-target-25",
+        "canonical_name": "Brine Canvas",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-049-evidence",
+      "source_id": "li22-049-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the Violet Spire label is embossed. We withdraw the Object. Subject: the launch of Wattle Stand. We deny the Subject, and we maintain that Wattle Stand was not launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Brine Canvas was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-050",
+    "policy": {
+      "policy_id": "li22-050-policy",
+      "target_id": "v22-target-25",
+      "target_question": "Was Brine Canvas launched?",
+      "entity": {
+        "canonical_id": "v22-target-25",
+        "canonical_name": "Brine Canvas",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-050-evidence",
+      "source_id": "li22-050-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the Violet Spire label is embossed. We withdraw the Object. Subject: the existence of Brine Canvas. We deny the Subject, and we maintain that Brine Canvas does not exist."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Brine Canvas was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-051",
+    "policy": {
+      "policy_id": "li22-051-policy",
+      "target_id": "v22-target-26",
+      "target_question": "Was Kestrel Pin launched?",
+      "entity": {
+        "canonical_id": "v22-target-26",
+        "canonical_name": "Kestrel Pin",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-051-evidence",
+      "source_id": "li22-051-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the Moss Tide case has a recessed hinge. I retract the Object (the correction concerns the depth of the hinge recess on Moss Tide)."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Kestrel Pin was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-052",
+    "policy": {
+      "policy_id": "li22-052-policy",
+      "target_id": "v22-target-26",
+      "target_question": "Was Kestrel Pin launched?",
+      "entity": {
+        "canonical_id": "v22-target-26",
+        "canonical_name": "Kestrel Pin",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-052-evidence",
+      "source_id": "li22-052-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the Moss Tide case has a recessed hinge. I retract the Object (Kestrel Pin was not launched)."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Kestrel Pin was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-053",
+    "policy": {
+      "policy_id": "li22-053-policy",
+      "target_id": "v22-target-27",
+      "target_question": "Was Alpine Reed launched?",
+      "entity": {
+        "canonical_id": "v22-target-27",
+        "canonical_name": "Alpine Reed",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-053-evidence",
+      "source_id": "li22-053-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Alpine Reed was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the launch of Crimson Desk. I withdraw the Item, as the editor reports that Crimson Desk was not launched. Object: the claim that the Crimson Desk press sheet uses cream paper. I deny the Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-054",
+    "policy": {
+      "policy_id": "li22-054-policy",
+      "target_id": "v22-target-27",
+      "target_question": "Was Alpine Reed launched?",
+      "entity": {
+        "canonical_id": "v22-target-27",
+        "canonical_name": "Alpine Reed",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-054-evidence",
+      "source_id": "li22-054-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Alpine Reed was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the launch of Crimson Desk. I withdraw the Item, as the editor reports that another product was not launched. Object: that other launch claim, whose owner remains undisclosed. I deny the Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-055",
+    "policy": {
+      "policy_id": "li22-055-policy",
+      "target_id": "v22-target-28",
+      "target_question": "Was Seagrass Button launched?",
+      "entity": {
+        "canonical_id": "v22-target-28",
+        "canonical_name": "Seagrass Button",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-055-evidence",
+      "source_id": "li22-055-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the Nickel Grove booklet has a serrated edge. Subject: the launch of Periwinkle Shelf. I withdraw the Object before I deny the Subject. This sentence specifies two corrections, both with explicit scope."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Seagrass Button was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-056",
+    "policy": {
+      "policy_id": "li22-056-policy",
+      "target_id": "v22-target-28",
+      "target_question": "Was Seagrass Button launched?",
+      "entity": {
+        "canonical_id": "v22-target-28",
+        "canonical_name": "Seagrass Button",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-056-evidence",
+      "source_id": "li22-056-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the Nickel Grove booklet has a serrated edge. Subject: the launch of Periwinkle Shelf. I withdraw the Object before I deny the Subject, and I deny that Seagrass Button was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Seagrass Button was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-057",
+    "policy": {
+      "policy_id": "li22-057-policy",
+      "target_id": "v22-target-29",
+      "target_question": "Was Ibis Latch launched?",
+      "entity": {
+        "canonical_id": "v22-target-29",
+        "canonical_name": "Ibis Latch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-057-evidence",
+      "source_id": "li22-057-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the Hyacinth Dock document title has a trailing period. Subject: the launch of Verdigris Tray. Owner of the Object: Hyacinth Dock. Owner of the Subject: Verdigris Tray. We retract the Object and deny the Subject."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Ibis Latch was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-058",
+    "policy": {
+      "policy_id": "li22-058-policy",
+      "target_id": "v22-target-29",
+      "target_question": "Was Ibis Latch launched?",
+      "entity": {
+        "canonical_id": "v22-target-29",
+        "canonical_name": "Ibis Latch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-058-evidence",
+      "source_id": "li22-058-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the claim that the Hyacinth Dock document title has a trailing period. Subject: the launch claim for Ibis Latch and Verdigris Tray. Owner of the Object: Hyacinth Dock. We retract the Object and deny the Subject."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Ibis Latch was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-059",
+    "policy": {
+      "policy_id": "li22-059-policy",
+      "target_id": "v22-target-30",
+      "target_question": "Was Tamarisk Arc launched?",
+      "entity": {
+        "canonical_id": "v22-target-30",
+        "canonical_name": "Tamarisk Arc",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-059-evidence",
+      "source_id": "li22-059-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Tamarisk Arc was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "Document owner: Basalt Counter"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the claim that the Basalt Counter cover prints its revision mark inside a square. I withdraw the Subject. Item: the launch of Amethyst Wheel. I deny the Item. The document owner and the event owner are separately stated."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li22-060",
+    "policy": {
+      "policy_id": "li22-060-policy",
+      "target_id": "v22-target-30",
+      "target_question": "Was Tamarisk Arc launched?",
+      "entity": {
+        "canonical_id": "v22-target-30",
+        "canonical_name": "Tamarisk Arc",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li22-060-evidence",
+      "source_id": "li22-060-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Tamarisk Arc was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "Document owner: Basalt Counter"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the claim that the Basalt Counter cover prints its revision mark inside a square. I withdraw the Subject. Item: the launch of Tamarisk Arc. I deny the Item. The document owner and the event owner are separately stated."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  }
+]

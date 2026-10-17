@@ -36,6 +36,11 @@
 
 その後、[一時的な実経路計測](../evaluation/engine073-launch-trace-development-v1/README.md)で11件の保留箇所を特定し、計測module/hookを除去して元sourceを完全復元。[候補fd091b1の修正](../evaluation/engine073-launch-development-v19-repair/README.md)で、属性参照を直前の完全な主張/同じroleへ結び付け、並列roleを次の述語まで保ち、別製品の明示ownerを扱いました。観測済み960件・関連83/全体1547成功。途中で見つかった報告節の退行とREDも保存。新規独立v20は初回FAIL51/60（安全性の漏れ3・肯定取りこぼし6）です。限定した内部の範囲・参照処理であり、汎用graphや新しい公開契約ではありません。
 
-その後の[実経路診断v2](../evaluation/engine073-launch-trace-development-v2/README.md)と[候補d647ca4](../evaluation/engine073-launch-development-v20-repair/README.md)では、別の未解決イベントのowner貸し借り、role付き対象不存在、完全属性の同格・参照・カンマ述語を修正。閉じた印刷引用を保持し、後継専用viewで証明済みの引用内容だけを置き換え、外側の欠落・全rawリスクを維持します。既知1020件・関連91/全体1555、歴史597出力一致。途中のREDと、独立実行前に発見した不採用の親ビルド参照ミスも保存。正しいcompiler-artifact/新freeze後に新規独立v21は初回FAIL48/60（安全性の漏れ0・肯定保留12）で、合成ソース受入は未完了です。
+その後の[実経路診断v2](../evaluation/engine073-launch-trace-development-v2/README.md)と[候補d647ca4](../evaluation/engine073-launch-development-v20-repair/README.md)では、別の未解決イベントのowner貸し借り、role付き対象不存在、完全属性の同格・参照・カンマ述語を修正。閉じた印刷引用を保持し、後継専用viewで証明済みの引用内容だけを置き換え、外側の欠落・rawリスクによる適格性制限を維持します。既知1020件・関連91/全体1555、歴史597出力一致。途中のREDと、独立実行前に発見した不採用の親ビルド参照ミスも保存。正しいcompiler-artifact/新freeze後に新規独立v21は初回FAIL48/60（安全性の漏れ0・肯定保留12）で、合成ソース受入は未完了です。
+
+続く[実経路診断v3](../evaluation/engine073-launch-trace-development-v3/README.md)はv21の12保留について型付き参照9・対象否定2・未解決範囲1を確認。[候補7431333](../evaluation/engine073-launch-development-v21-repair/README.md)で完全な別製品の属性owner・印刷引用の外側の型/owner・同じ役割の補足参照を修正し、12件の開発再現は解消。既知1080件・関連98/全体1562成功、歴史597出力一致。6群の追加境界と途中RED、テスト内の借用による最初のClippy不合格/修正後成功を保存した。新規独立v22初回FAIL30/60（陽性0/30・陰性30/30、安全性の漏れ0）。rawの助言リスクがNone以外なら新投影は不適格とし、過去v16の局所リスク判定を維持する。raw enumの無条件コピーを要求する仕様ではなく、親テストの期待値2件を既存契約へ訂正。実際の欠落・owner不明・対象/全体否定と独立評価の初回結果は維持した。
 
 実資料24問は0/24、CLI採用は1/6です。実0.6.1と後継候補の比較、重大な根拠なし主張、有用な回答率、引用、矛盾・時間の扱い、運用コストは、完全なhost・評価器・モデル・数値予算の固定後に測定します。異なる合成セットから一般精度・改善率・完成率は計算しません。Groq停止、live callback/dependency・数値予算の未完了は維持します。[v19の初回記録](../evaluation/engine073-launch-independent-v19/README.md)も参照してください。
+
+
+再開した独立担当が最終保存を完了し、全551ファイルを照合。anchor359a6712b07bc1a58fce4332f77f190578b6fec0bad4f9aab0e022c6b3fef160、初回FAILは不変。[親の最終照合](../evaluation/engine073-launch-v22-parent-final-verification.json)・[初回指標の集計](../evaluation/engine073-launch-first-metrics-v1/README.md)を保存。[別コピーの実経路診断](../evaluation/engine073-launch-trace-development-v4/README.md)では型付き参照27・対象否定2・未解決範囲1が最初の保留箇所。次は完全な主張の包みを扱うが、内側の命題が独立に既存の属性確認を通る場合だけ認める。同義の冠詞/未所有表現は、一意な同じroleのforeign ownerがある場合だけ結ぶ。対象/全体否定、競合/未知owner、歴史/rawリスク制限を維持し、同じ入力の開発F1と誤通過数を測る。新規受入とは別で、マージ・公開・採用はしない。

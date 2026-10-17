@@ -26,7 +26,7 @@
 [初回v2/v3の結果](engine07-realworld-development-results.ja.md)は不合格・不完全のままです。#535の診断保持・#537の停止制御・#541の共有runnerはmerge済みですが、live受入は未完了。Groqは記録済みの日次枯渇により追加起動を止めています。通常回答の改善と新規独立受入は未確認、採用1/6は開発比較・限界・NO-GO記録のみです。公開CLI0.5.5 / Engine0.6.1と#506の配布受入は別工程です。
 
 
-[#520の修正](launch-retraction-520.ja.md)はDraft PR539。候補d647ca4は既知1020件・関連91/全体1555成功、歴史API597出力byte一致。元v20初回FAIL51/60（安全性の漏れ3・肯定保留6）を保持し、新規v21初回FAIL48/60（安全性の漏れ0・肯定保留12）。[研究に基づく実経路診断と修正](engine-073-research-informed-repair.ja.md)を反映。正しいrlibを新規独立実行前に確認済み。runner PR541はmerge済み。live予算/dependency・実24問・通常CLIの有用性は未完了。
+[#520の修正](launch-retraction-520.ja.md)はDraft PR539。候補7431333で既知1080件・関連98/全体1562成功、歴史API597出力byte一致。元v21初回FAIL48/60（安全性の漏れ0・肯定保留12）を保持し、12件は開発再現で解消。新規独立v22初回FAIL30/60（陽性0/30・陰性30/30、安全性の漏れ0）。[研究に基づく実経路診断と修正](engine-073-research-informed-repair.ja.md)を反映。runner PR541はmerge済み。live予算/dependency・実24問0/24・通常CLIの有用性は未完了、採用1/6。
 
 ## 今できること
 
@@ -122,3 +122,6 @@ Harness Engine 0.6.0は#461/#462/#468/#463まで実装・acceptance・release完
 Reasoning Harnessはopen-world reasoningを解決したとは主張しません。hard correctnessには、hard answerが存在する範囲でdeterministic structureとtrusted evidence / oracleが必要です。model-backed semantic mechanismは、別途authority-safeなpromotionを通さない限りadvisory / restrictiveです。
 
 過去のsemantic study、holdout、RSD、provider investigation、product dogfood、natural-language E2Eの詳細は[Project status history](project-status-history.ja.md)と[Documentation index](README.ja.md)を参照してください。
+
+
+再開した独立担当が最終保存を完了し、全551ファイルを照合。anchor359a6712b07bc1a58fce4332f77f190578b6fec0bad4f9aab0e022c6b3fef160、初回FAILは不変。[親の最終照合](../evaluation/engine073-launch-v22-parent-final-verification.json)・[初回指標の集計](../evaluation/engine073-launch-first-metrics-v1/README.md)を保存。[別コピーの実経路診断](../evaluation/engine073-launch-trace-development-v4/README.md)では型付き参照27・対象否定2・未解決範囲1が最初の保留箇所。次は完全な主張の包みを扱うが、内側の命題が独立に既存の属性確認を通る場合だけ認める。同義の冠詞/未所有表現は、一意な同じroleのforeign ownerがある場合だけ結ぶ。対象/全体否定、競合/未知owner、歴史/rawリスク制限を維持し、同じ入力の開発F1と誤通過数を測る。新規受入とは別で、マージ・公開・採用はしない。

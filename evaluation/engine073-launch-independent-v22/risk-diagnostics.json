@@ -1,0 +1,1101 @@
+{
+  "identity": "engine073-launch-independent-v22",
+  "stage": "READ_EXISTING_FIRST_RAW_ONLY",
+  "reexecution": false,
+  "rescoring": false,
+  "raw_is": "Synthetic optimistic local qualification supplied by the fixture, not output from a live model. Provider/model calls0.",
+  "enum_interpretation": "Copy exact raw/effective identity/relation/risk values. An effective combination enum does not prove retention/loss of any hidden component risk.",
+  "tuples": [
+    {
+      "effective_identity_scope": "exact_target",
+      "effective_relation_scope": "unresolved",
+      "effective_scope_risk": "none",
+      "v30_disposition": "ambiguous",
+      "count": 55
+    },
+    {
+      "effective_identity_scope": "unresolved",
+      "effective_relation_scope": "unresolved",
+      "effective_scope_risk": "ownership_scope",
+      "v30_disposition": "ambiguous",
+      "count": 1
+    },
+    {
+      "effective_identity_scope": "unresolved",
+      "effective_relation_scope": "unresolved",
+      "effective_scope_risk": "multiple",
+      "v30_disposition": "ambiguous",
+      "count": 2
+    },
+    {
+      "effective_identity_scope": "exact_target",
+      "effective_relation_scope": "unresolved",
+      "effective_scope_risk": "context_gap",
+      "v30_disposition": "ambiguous",
+      "count": 2
+    }
+  ],
+  "cases": [
+    {
+      "id": "li22-001",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-002",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-003",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-004",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-005",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-006",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-007",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-008",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-009",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-010",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-011",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-012",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-013",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-014",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-015",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-016",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-017",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-018",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "ownership_scope"
+      },
+      "v29_disposition": "ambiguous",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-019",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-020",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-021",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-022",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-023",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-024",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "effective_v17": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "multiple"
+      },
+      "v29_disposition": "ambiguous",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-025",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-026",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-027",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-028",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-029",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-030",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-031",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-032",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-033",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-034",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-035",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-036",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-037",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-038",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-039",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-040",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-041",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-042",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-043",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "ambiguous",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-044",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-045",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "v29_disposition": "ambiguous",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-046",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "v29_disposition": "ambiguous",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-047",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-048",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "effective_v17": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "multiple"
+      },
+      "v29_disposition": "ambiguous",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-049",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-050",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-051",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-052",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-053",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-054",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-055",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-056",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-057",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-058",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-059",
+      "polarity": "positive",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li22-060",
+      "polarity": "negative",
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous"
+    }
+  ],
+  "common_positive_inputs_and_preflight": {
+    "all_positive_cases": 30,
+    "shared_configuration": {
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      },
+      "target_aliases": [],
+      "canonical_anchor": "Exactly one separate excerpt signal: full TARGET was launched.",
+      "adverse_context": "Present first-person retraction/withdrawal/denial, explicitly scoped to finite typed Object/Subject/Item, a complete local apposition/property, or a unique foreign event. Source-field and role combinations vary.",
+      "source_kind": "fictional synthetic material, not real publication"
+    },
+    "observed_positive_effective_tuples": [
+      {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none",
+        "v30_disposition": "ambiguous",
+        "count": 29
+      },
+      {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap",
+        "v30_disposition": "ambiguous",
+        "count": 1
+      }
+    ],
+    "scope_preflight_correspondence": "The AST/scope review precommitted complete non-launch property or unique foreign-event semantics for positives. STATIC_ONLY verified counts, required public-schema fields, exact anchor, budget, external labels, raw axes, inherited hashes and old-file immutability. These are design/schema checks, not proof that Engine implements that semantic distinction. No Engine outputs were observed at preflight.",
+    "root_cause_limit": "The shared unresolved public output is an observation, not an implementation diagnosis. No Engine trace or implementation was inspected, no control was added or rerun, and no criteria were weakened after observation."
+  },
+  "special_observations": {
+    "actual_gap_cases": {
+      "li22-024": {
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "context_gap"
+        },
+        "effective_v17": {
+          "identity_scope": "unresolved",
+          "relation_scope": "unresolved",
+          "scope_risk": "multiple"
+        },
+        "v30_disposition": "ambiguous"
+      },
+      "li22-048": {
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "context_gap"
+        },
+        "effective_v17": {
+          "identity_scope": "unresolved",
+          "relation_scope": "unresolved",
+          "scope_risk": "multiple"
+        },
+        "v30_disposition": "ambiguous"
+      }
+    },
+    "canonical_Clip_note_cases": {
+      "li22-045": {
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "context_gap"
+        },
+        "v30_disposition": "ambiguous"
+      },
+      "li22-046": {
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "context_gap"
+        },
+        "v30_disposition": "ambiguous"
+      }
+    }
+  }
+}

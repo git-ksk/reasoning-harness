@@ -1,0 +1,46 @@
+{
+  "identity": "engine073-launch-independent-v22",
+  "utc": "2026-10-17T04:24:30.380176+00:00",
+  "stage": "AFTER_SUBSTANTIVE_SAVE_BEFORE_RECEIPT_AND_SELF_EXCLUDING_FINAL_MANIFEST",
+  "head": "7431333d212938147a5d9ab32a0b8bdb44ee16b8",
+  "head_unchanged": true,
+  "hash_only_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "b7fec3e0f7c6b76dfbff1b801dd085a22661df9b22457431653eb2073a4e08f0",
+      "bytes": 718231,
+      "unchanged": true
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "ab615574b7b5487592e04cc07fcb6cd748c129cd7ea148bd599329d1bbb83ad1",
+      "bytes": 31392816,
+      "unchanged": true
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "bytes": 2110472,
+      "unchanged": true
+    },
+    "opaque_parent_freeze": {
+      "path": "/private/tmp/engine073-source21-freeze.json",
+      "sha256": "72d19b55ec8a8594268ab486b1840e335fa0951fdb17937b7d7b575f015f512b",
+      "bytes": 571,
+      "unchanged": true
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v22-probe/probe",
+      "sha256": "7415f47eae7d682171633c8eb3361beb009bc3e75bc416e02c1bcc99b1d4b491",
+      "bytes": 3119192,
+      "unchanged": true
+    }
+  },
+  "old_recursive_files": 516,
+  "old_inventories_and_hashes_unchanged": true,
+  "all_complete_freeze_files_unchanged": true,
+  "semantic_reexecution": 0,
+  "rescoring": 0,
+  "post_freeze_relabel": 0,
+  "first29_files_verified_on_save_continuation": true
+}

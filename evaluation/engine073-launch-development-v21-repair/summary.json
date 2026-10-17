@@ -1,0 +1,131 @@
+{
+  "source_sha": "7431333d212938147a5d9ab32a0b8bdb44ee16b8",
+  "source_file_sha256": "b7fec3e0f7c6b76dfbff1b801dd085a22661df9b22457431653eb2073a4e08f0",
+  "historical_complete_equality": 597,
+  "original_audit": 14,
+  "known_seen_regression": {
+    "v2": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v3": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v4": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v5": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v6": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v7": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v8": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v9": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v10": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v12": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v13": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v14": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v15": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v16": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v18": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v19": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v20": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v21": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    }
+  },
+  "provider_calls": 0,
+  "fresh_independent_acceptance": false,
+  "core_rlib_sha256": "ab615574b7b5487592e04cc07fcb6cd748c129cd7ea148bd599329d1bbb83ad1",
+  "focused_tests": 98,
+  "workspace": {
+    "passed": 1562,
+    "failed": 0,
+    "ignored": 8
+  },
+  "clippy": "PASS",
+  "fmt": "PASS",
+  "fixtures_cases": 20,
+  "original_archive_files": 13,
+  "root_compound_boundaries": {
+    "cases": 4,
+    "withheld": 4
+  },
+  "parent_unknown_owner_boundary": {
+    "cases": 4,
+    "withheld": 4
+  },
+  "literal_owner_development_variant": {
+    "current_v17_v30": "relevant",
+    "old_v29": "unchanged ambiguous",
+    "before_library_source": "fd091b1"
+  },
+  "first5507_lint": "FAIL needless borrow in test; fixed in7431333; implementation bytes unchanged",
+  "root_test_contract_corrections": [
+    "visible relation and blocking risk are orthogonal",
+    "unsupported advisory risk alone is not inherited risk authority; v16 local-risk contract retained"
+  ],
+  "cli_adoption": "NO_GO",
+  "full_real_source_acceptance_complete": false
+}

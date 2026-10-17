@@ -1,0 +1,33 @@
+   Compiling reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 9.20s
+     Running tests/launch_context_markers_520_521.rs (/private/tmp/engine073-validation-target/debug/deps/launch_context_markers_520_521-e481f9b596de9638)
+
+running 1 test
+test engine073_independent_v21_seen_replay_preserves_full_scope ... FAILED
+
+failures:
+
+---- engine073_independent_v21_seen_replay_preserves_full_scope stdout ----
+
+thread 'engine073_independent_v21_seen_replay_preserves_full_scope' panicked at crates/reasoning-harness-core/tests/launch_context_markers_520_521.rs:2828:5:
+"li21-003": EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: Unresolved, scope_risk: None }, Ambiguous
+"li21-011": EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: Unresolved, scope_risk: None }, Ambiguous
+"li21-025": EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: Unresolved, scope_risk: None }, Ambiguous
+"li21-027": EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: Unresolved, scope_risk: None }, Ambiguous
+"li21-031": EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: Unresolved, scope_risk: None }, Ambiguous
+"li21-033": EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: Unresolved, scope_risk: None }, Ambiguous
+"li21-035": EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: Unresolved, scope_risk: None }, Ambiguous
+"li21-037": EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: Unresolved, scope_risk: None }, Ambiguous
+"li21-041": EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: Unresolved, scope_risk: None }, Ambiguous
+"li21-043": EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: Unresolved, scope_risk: None }, Ambiguous
+"li21-055": EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: Unresolved, scope_risk: None }, Ambiguous
+"li21-059": EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: Unresolved, scope_risk: None }, Ambiguous
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    engine073_independent_v21_seen_replay_preserves_full_scope
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 73 filtered out; finished in 2.92s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_context_markers_520_521`
