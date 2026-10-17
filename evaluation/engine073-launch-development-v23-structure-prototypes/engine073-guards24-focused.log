@@ -1,0 +1,9 @@
+   Compiling reasoning-harness-core v0.7.2 (/private/tmp/engine073-source23-trace-shadow/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 9.24s
+     Running unittests src/lib.rs (/private/tmp/engine073-trace22-target/debug/deps/reasoning_harness_core-dcd4f612c7771d71)
+
+running 1 test
+test evidence_relevance::tests::v30_prefixed_existence_denial_and_competing_reply_cannot_borrow_property_scope ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 341 filtered out; finished in 0.37s
+

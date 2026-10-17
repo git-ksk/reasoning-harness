@@ -1,0 +1,562 @@
+{
+  "identity": "engine073-launch-independent-v24",
+  "saved_utc": "2026-10-17T09:43:53.984198+00:00",
+  "outcome": "FAIL",
+  "bounded_conclusion": "47/60 joint matches;positive17/30,negative30/30;unsafe0,positive miss13,ops/incomplete0. All60 required source gate fails, despite F1 diagnostic.",
+  "first_summary_sha256": "6aec4593203dc47a53e1f11b18e7a90a8f87e9068a95410ec3660f31b897328b",
+  "first_results_sha256": "0b686ef9360eb52be659d0d2ab3e3054d72590f9260807ab4c3957300f81d6b0",
+  "axis_metrics_sha256": "33f013f19ebe247eaa1baf0bf62ede848f41a9917588d4f9daffb1fd22e3ebdc",
+  "first_summary": {
+    "identity": "engine073-launch-independent-v24",
+    "candidate_source_sha": "3ccda6b4263eb5210477660b11f6926ec0186f4e",
+    "manifest_sha256": "2b6bb47ef9a1f716707e731bd16f4397c292faad05f07cee5363e9abdd6da371",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 47,
+    "failed": 13,
+    "incomplete": 0,
+    "positive_passed": 17,
+    "negative_passed": 30,
+    "negative_v17_requested_relation_violations": 0,
+    "negative_v30_relevant_violations": 0,
+    "positive_v17_withheld": 13,
+    "positive_v30_withheld": 13,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "f6f1fce18ac4aeb18f4899aaa5a1d4cf7d3ffd1ddfbf8c42286c56a1dadaaca0",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "e2787e73e462c75e2477cf28d3aef48b1f08ce889771bf70e48452e3bfd664bb"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "axis_metrics": {
+    "identity": "engine073-launch-independent-v24",
+    "stage": "POST_FIRST_SCORER_DIAGNOSTIC_AGGREGATION_ONLY",
+    "spec_sha256": "fe5871ad8aa82852e7a978c47d138c8a17f1c647979fd7dc06a7605368b87da6",
+    "aggregator_sha256": "7a59e505a407f00d796655222cbad4274c865fb9e3ffa7d301a8360074bb97b7",
+    "first_results_sha256": "0b686ef9360eb52be659d0d2ab3e3054d72590f9260807ab4c3957300f81d6b0",
+    "first_summary_sha256": "6aec4593203dc47a53e1f11b18e7a90a8f87e9068a95410ec3660f31b897328b",
+    "complete": true,
+    "planned": 60,
+    "observed_valid": 60,
+    "planned_positive": 30,
+    "planned_negative": 30,
+    "axes": {
+      "v17": {
+        "counts": {
+          "TP": 17,
+          "FP": 0,
+          "TN": 30,
+          "FN": 13
+        },
+        "observed_counts_diagnostic": {
+          "TP": 17,
+          "FP": 0,
+          "TN": 30,
+          "FN": 13
+        },
+        "ratios": {
+          "Precision": {
+            "numerator": 17,
+            "denominator": 17,
+            "value": 1.0,
+            "null_reason": null
+          },
+          "Recall": {
+            "numerator": 17,
+            "denominator": 30,
+            "value": 0.5666666666666667,
+            "null_reason": null
+          },
+          "F1": {
+            "numerator": 34,
+            "denominator": 47,
+            "value": 0.723404255319149,
+            "null_reason": null
+          }
+        },
+        "observed_negative_unsafe": 0,
+        "unobserved_cases": 0
+      },
+      "v30": {
+        "counts": {
+          "TP": 17,
+          "FP": 0,
+          "TN": 30,
+          "FN": 13
+        },
+        "observed_counts_diagnostic": {
+          "TP": 17,
+          "FP": 0,
+          "TN": 30,
+          "FN": 13
+        },
+        "ratios": {
+          "Precision": {
+            "numerator": 17,
+            "denominator": 17,
+            "value": 1.0,
+            "null_reason": null
+          },
+          "Recall": {
+            "numerator": 17,
+            "denominator": 30,
+            "value": 0.5666666666666667,
+            "null_reason": null
+          },
+          "F1": {
+            "numerator": 34,
+            "denominator": 47,
+            "value": 0.723404255319149,
+            "null_reason": null
+          }
+        },
+        "observed_negative_unsafe": 0,
+        "unobserved_cases": 0
+      }
+    },
+    "joint_outcome": "FAIL",
+    "joint_passed": 47,
+    "ops": {
+      "operational_errors": [],
+      "operational_error_count": 0,
+      "incomplete": 0
+    },
+    "inherited_scorer_invocations": 1,
+    "additional_Engine_or_scorer_invocations": 0,
+    "gate": "All60/60 joint source cases and operational completeness still required; no F1 threshold substitution. Not answer grounding F1."
+  },
+  "failed_ids": [
+    "li24-001",
+    "li24-003",
+    "li24-005",
+    "li24-009",
+    "li24-011",
+    "li24-015",
+    "li24-017",
+    "li24-021",
+    "li24-031",
+    "li24-033",
+    "li24-039",
+    "li24-045",
+    "li24-057"
+  ],
+  "passed_positive_ids": [
+    "li24-007",
+    "li24-013",
+    "li24-019",
+    "li24-023",
+    "li24-025",
+    "li24-027",
+    "li24-029",
+    "li24-035",
+    "li24-037",
+    "li24-041",
+    "li24-043",
+    "li24-047",
+    "li24-049",
+    "li24-051",
+    "li24-053",
+    "li24-055",
+    "li24-059"
+  ],
+  "failed_positive_observations": [
+    {
+      "id": "li24-001",
+      "pair_id": "li24-p01",
+      "axis": "two safe corrections cannot absorb a separate title denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The target table property and fully foreign event each have complete safe scope."
+    },
+    {
+      "id": "li24-003",
+      "pair_id": "li24-p02",
+      "axis": "physical foil property plus uniquely foreign versus mixed-owner event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The complete lining property and event both belong to the explicitly foreign product."
+    },
+    {
+      "id": "li24-005",
+      "pair_id": "li24-p03",
+      "axis": "literal withdrawal sentence in a layout property versus ownerless additional event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "Retraction words inside a complete margin property are literal content; the actual event correction names a foreign product."
+    },
+    {
+      "id": "li24-009",
+      "pair_id": "li24-p05",
+      "axis": "adjacent full same-role reply identifies foreign versus target owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The unowned event is immediately and uniquely assigned to a foreign product; the other role is physical."
+    },
+    {
+      "id": "li24-011",
+      "pair_id": "li24-p06",
+      "axis": "explicit event-owner header versus actual missing header data",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The heading supplies a single complete foreign event owner; caption ownership is a separate property."
+    },
+    {
+      "id": "li24-015",
+      "pair_id": "li24-p08",
+      "axis": "quote event owner independent of a different document owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The full quoted event owner is foreign even though the enclosing document has another owner."
+    },
+    {
+      "id": "li24-017",
+      "pair_id": "li24-p09",
+      "axis": "uncertainty phrase as a font property versus real uncertainty in a denied event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "ownership_scope"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The uncertainty words are literal typography; the actual event has a full foreign owner."
+    },
+    {
+      "id": "li24-021",
+      "pair_id": "li24-p11",
+      "axis": "compound physical and printed property versus reason-clause target denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "All components of the complete Object and its reason are explicitly non-launch properties."
+    },
+    {
+      "id": "li24-031",
+      "pair_id": "li24-p16",
+      "axis": "non-event wording as printed heading property versus actual non-event declaration",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The non-event words are literal heading text within a complete color property, and the event correction is foreign."
+    },
+    {
+      "id": "li24-033",
+      "pair_id": "li24-p17",
+      "axis": "target nonexistence quoted as print color versus asserted existence denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The Item is only the color of a literal sentence; the adverse event is uniquely foreign."
+    },
+    {
+      "id": "li24-039",
+      "pair_id": "li24-p20",
+      "axis": "role-looking literal text as a border property versus a real typed target event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The literal role-looking line is contained in a complete border property; the actual event role is foreign."
+    },
+    {
+      "id": "li24-045",
+      "pair_id": "li24-p23",
+      "axis": "finite same-role reference to complete property versus independently target-owned event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The same finite role reference points to a complete printed property; the separate event is foreign."
+    },
+    {
+      "id": "li24-057",
+      "pair_id": "li24-p29",
+      "axis": "literal owner-name text as alignment property versus actual target event owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The target owner words are literal text within a complete alignment property; the actual event is foreign."
+    }
+  ],
+  "common_input_and_preflight": {
+    "positive_cases": 30,
+    "shared_input": {
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "canonical": "full exact name; aliases empty",
+      "anchor": "one separate TARGET was launched. excerpt",
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "positive_effective_tuples": [
+      {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none",
+        "v30_disposition": "ambiguous",
+        "count": 12
+      },
+      {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none",
+        "v30_disposition": "relevant",
+        "count": 17
+      },
+      {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "ownership_scope",
+        "v30_disposition": "ambiguous",
+        "count": 1
+      }
+    ],
+    "preflight_role": "Pre-output semantic/rationale review fixes complete property/foreign-event positive scope; STATIC_ONLY validates schema/counts/anchor/budget/label isolation/bytes, not Engine semantic conformance.",
+    "cause_limit": "Observed public outputs only, not implementation/trace diagnosis. New surface combinations and known finite grammar do not establish population or changing-corpus improvement."
+  },
+  "risk_observations": "All60 exact raw/effective tuples saved. Actual gap012/052 rawcontext_gap -> effective unresolved/unresolved/ownership_scope/Ambiguous. Full canonical Rivulet Clip035 is exact_target/requested_relation/none/Relevant;036 is exact_target/unresolved/context_gap/Ambiguous, both rawnone. No hidden component claim.",
+  "authorship": "New60 after source24 freeze, no old author/cases/inputs/unused draft bodies read/reused/transformed. Original scope labels and rationale unchanged; author revisions0.",
+  "metrics_contract": "Source-binary TP/FP/TN/FN/P/R/F1 definitions and aggregation code frozen before outputs. Code reads saved inherited-scorer booleans only; first score unchanged. This is not final-answer grounding F1 and #542 thresholds never substitute for all60 joint gate.",
+  "execution_counts": {
+    "author_runs": 1,
+    "full_input_static_runs": 1,
+    "compile_only_runs": 1,
+    "Engine_first_processes": 1,
+    "Engine_cases": 60,
+    "inherited_scorer_processes": 1,
+    "saved_boolean_diagnostic_aggregations": 1,
+    "retries": 0,
+    "rescores": 0,
+    "relabels": 0,
+    "post_freeze_input_or_rule_changes": 0,
+    "provider_model_network_Oracle_calls": 0,
+    "cargo_shared_target_mutations": 0,
+    "Git_mutations": 0,
+    "additional_agents": 0,
+    "new_real24_cases": 0
+  },
+  "blindness": {
+    "Engine_implementation_read": false,
+    "current_tests_read": false,
+    "root_trace_diagnosis_development_metrics_read": false,
+    "old_author_cases_inputs_read_for_this_set": false
+  },
+  "parent_reported_only": "pinned3ccda6b strict all-targetClippy/fmt,workspace1578PASS/0FAIL/8existingignore,fixtures20/archive13,quality-counter10,known1200/original14/historical597 whole-output equality and all60v23v29 baseline equal. No parent logs/implementation/tests/metrics read.",
+  "remaining_gates": [
+    "Root repairs measured source misses; this first FAIL remains immutable seen development evidence.",
+    "New fresh source identity needs explicit new candidate freeze and new authorship; v25 not started.",
+    "Real24/ordinary CLI/acquisition/final-answer accuracy/live provider/human/release/adoption not measured here.",
+    "No arbitrary-language/graph/alias/numbered AST/chronology guarantee and no improvement rate across different corpora."
+  ]
+}

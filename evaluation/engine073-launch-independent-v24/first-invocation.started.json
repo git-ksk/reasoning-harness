@@ -1,0 +1,78 @@
+{
+  "state": "started",
+  "utc": "2026-10-17T09:41:44.815116+00:00",
+  "command": [
+    "/private/tmp/engine073-launch-independent-v24-probe/probe",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v24/inputs.json"
+  ],
+  "pre_invocation_identity": {
+    "verified_utc": "2026-10-17T09:41:44.814660+00:00",
+    "head": "3ccda6b4263eb5210477660b11f6926ec0186f4e",
+    "artifacts": {
+      "evidence_relevance_source": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "sha256": "85a64b506f8c47828a4a3296c5d07c13e921c59b528ea27e10ec4993c5f636e2"
+      },
+      "core_rlib": {
+        "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+        "sha256": "88e29a4efd212517bce73045c9a33e7a346c344f99892131554ac25233d61368"
+      },
+      "serde_json_rlib": {
+        "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+        "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+      },
+      "opaque_parent_freeze": {
+        "path": "/private/tmp/engine073-source24-freeze.json",
+        "sha256": "34555ab86037995f90a53f9d7d9fce64c7a7ae084f7d3b5f5d415b75446646d7"
+      },
+      "probe_executable": {
+        "path": "/private/tmp/engine073-launch-independent-v24-probe/probe",
+        "sha256": "defe50fb13beb0b88ddc7f376da5efca70eeb1434fc8085d93995ace4628f5af"
+      },
+      "preserved_metrics_preparation_1": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/docs/engine073-realworld-metrics-preparation.md",
+        "sha256": "9e90707b295ee4e273f7101f0d7d33804bff64c4629d980f9209a1258e6f73e7"
+      },
+      "preserved_metrics_preparation_2": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/docs/engine073-realworld-metrics-preparation.ja.md",
+        "sha256": "30a4f73c4f0cd4a6aa2a284f3243d997dbc1f769751defcb7617659f6605df08"
+      },
+      "preserved_metrics_preparation_3": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/review.json",
+        "sha256": "787da5422330047f4ca23f1020df867bc66eb6794f45fd40c01f72314d7189fc"
+      },
+      "preserved_metrics_preparation_4": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/reviewed-input-sha256.json",
+        "sha256": "76b41a7c06dc1893106695253dc303164e2905881cdeffabe26ca0251f7e36c0"
+      },
+      "preserved_metrics_preparation_5": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/artifact-sha256.json",
+        "sha256": "6b83e2b6b090f46da65580bf27486ada831d53e9827d77c0081119fa5c969e22"
+      }
+    },
+    "frozen_files": {
+      "author_cases.py": "041527756c38955c651b952a639b69a32732742807b5d273a0813b59bd624df8",
+      "axis-metrics-spec.json": "fe5871ad8aa82852e7a978c47d138c8a17f1c647979fd7dc06a7605368b87da6",
+      "axis_metrics.py": "7a59e505a407f00d796655222cbad4274c865fb9e3ffa7d301a8360074bb97b7",
+      "build-preflight.json": "e3a08a9c479d8830591e852d9a238c4cddb6beb74182a763d6dc5222536993be",
+      "build.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "build.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cases.json": "873b4f02e7f45791f05cd1edc13d4aea0fe7bebfbd0c5f36f010a69a2b964948",
+      "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+      "immutable-predecessor-check.json": "36bd5fa5c6c3443a154bdef70cb3e4a9ef7d4ef8a17dc44bc90416ac53216060",
+      "inputs.json": "74569d5027c1db3faa8aa0db930220b356970daa8646ad3198f6ece7414c80bf",
+      "pre-freeze-scope-review.json": "b251d0e60b5b1180b3c36060c3f41dc90458c6a5bfeba51855ca36cbef2ffa89",
+      "predecessor-artifact-hashes.json": "03e7ab183cc1bdeedbb416241d17bbeb85778dbd11bb8110666fbffa6ea413ba",
+      "preserved-preparation-hashes.json": "4ce3f90bbb870cda0f9771bfe31e57c3729b531034225f820f15a4489a0729ea",
+      "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+      "protocol.json": "c7239b0c09a45906a6fd1bc43d84e49496c9f80fd758ccdc126669ec7e713d7b",
+      "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+      "static-preflight.json": "187f611477865de4084a39d6f3abd5ffb3a8b12c2f069fe999ba16ffd47324f3",
+      "static-stage-invocation.json": "b2b884c3cac449674f958e1f9f2465bca6a45ffade0fb5491befb478aab33a22",
+      "static_preflight.py": "af8b99d3d4b23f40fd2ed3d8612b6def5e12f970151a69022c2f0188b6827d5a"
+    },
+    "manifest_sha256": "2b6bb47ef9a1f716707e731bd16f4397c292faad05f07cee5363e9abdd6da371"
+  },
+  "provider_calls": 0,
+  "retry": 0
+}

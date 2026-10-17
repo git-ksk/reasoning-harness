@@ -1,5 +1,7 @@
 # Next v23 repair plan
 
+This plan completed the20 known repairs,known1200/history/full checks,candidate3ccda6b freeze and freshv24 first run. See[current decision/next work](engine073-v24-decision.md). The original pre-repair plan below is historical.
+
 Independentv23 firstFAIL40/60 at01dc78b:unsafe0,positive misses20. These now become consumed-development inputs;first records unchanged.
 
 1. Instrument a separate copy of current source to identify the first actual blocker for20 misses. Separate predicates,quotes,role/owner,clauses and risk;surface classification alone is not cause proof.
