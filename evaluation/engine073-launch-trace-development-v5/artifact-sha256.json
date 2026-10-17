@@ -1,0 +1,9 @@
+{
+  "README.md": "99e5faa0191b225cdeaff6f15a2856fae6eceef6774e5bfb2198525404accb19",
+  "instrument.py": "582d1a490dad0c9f48d24c28d7966db68ec47065d2850a57cbe518a1224843e7",
+  "instrumentation-identity.json": "f69d69b3278f01a66414ce41e30ba4a699c4300f6ca12699032d492822bee5c5",
+  "instrumentation.patch": "aa35c069628d59d0f241a0a206949fac931b66032745f52122c8b4f75da81d27",
+  "observations.json": "e90328ebcc850855fa240cb2978b3b6cdc6b4ea4db2fff45237d18962cc3a627",
+  "summary.json": "82f2926b07c5f3b39d163966dca5536577fc85ed24e999e48def1d0ec08cebfd",
+  "trace-test.log": "3a443f6e728ae5d4e0fcc3c6187df2b3b9d50d8ffd8770bdb91bd2f2f347dc5d"
+}
