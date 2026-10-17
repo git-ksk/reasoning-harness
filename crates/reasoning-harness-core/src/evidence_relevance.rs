@@ -3966,6 +3966,12 @@ fn launch_complete_printed_property_correction_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     statement: &str,
 ) -> bool {
+    if statement.split_once(',').is_some_and(|(_, body)| {
+        launch_complete_printed_attribute_v17(policy, body.trim())
+            && launch_property_apposition_v17(policy, statement)
+    }) {
+        return true;
+    }
     let Some(start) = statement.find(['"', '“', '‘']) else {
         return false;
     };
@@ -4110,23 +4116,292 @@ fn launch_compound_attribute_object_v17(
 
 // A finite local Object/Subject/Item frame is not a general reference graph.
 // Only an explicit non-launch object or a complete foreign owner is excluded.
-fn launch_complete_property_proposition_v17(
-    policy: &EvidenceRelevanceTargetPolicy,
-    value: &str,
-) -> bool {
-    // A complete assertion wrapper does not change the property proposition.
-    // Strip one finite wrapper only; the full body must still independently
-    // pass the existing property/predicate/risk checks below.
+fn launch_complete_assertion_body_v17(value: &str) -> &str {
     let value = value.trim();
     let folded = value.to_ascii_lowercase();
-    let value = [
+    [
         "the claim that ",
         "the assertion that ",
         "the statement that ",
     ]
     .iter()
     .find(|prefix| folded.starts_with(**prefix))
-    .map_or(value, |prefix| value[prefix.len()..].trim());
+    .map_or(value, |prefix| value[prefix.len()..].trim())
+}
+
+// These subjects identify one local physical/document component and its own
+// complete owner. They cannot identify an event merely by naming its publisher.
+fn launch_owned_appearance_subject_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    value: &str,
+) -> bool {
+    let component = |word: &str| {
+        [
+            "certificate",
+            "card",
+            "manual",
+            "case",
+            "folder",
+            "notice",
+            "sleeve",
+            "bulletin",
+            "booklet",
+            "document",
+            "title",
+            "cover",
+            "label",
+            "table",
+            "caption",
+            "clasp",
+            "sheet",
+            "insert",
+            "badge",
+            "sticker",
+            "catalog",
+            "page",
+            "spine",
+            "binding",
+            "panel",
+            "seal",
+            "hinge",
+            "edge",
+        ]
+        .contains(&word)
+    };
+    let components = |text: &str| {
+        let text = normalized(text);
+        let words = text.split_whitespace().collect::<Vec<_>>();
+        !words.is_empty()
+            && words.len() <= 5
+            && words.last().is_some_and(|word| component(word))
+            && words.iter().all(|word| {
+                (!launch_scope_or_reference_word_v17(word)
+                    || ["document", "notice", "bulletin", "page"].contains(word))
+                    && ![
+                        "and", "or", "not", "never", "has", "have", "is", "was", "are", "were",
+                        "uses", "prints", "because", "although",
+                    ]
+                    .contains(word)
+            })
+    };
+    let value = value.trim();
+    let value = value
+        .strip_prefix("the ")
+        .or_else(|| value.strip_prefix("a "))
+        .unwrap_or(value);
+    let owner_and_component = |value: &str| {
+        let words = value.split_whitespace().collect::<Vec<_>>();
+        let end = words
+            .iter()
+            .take_while(|word| word.chars().next().is_some_and(char::is_uppercase))
+            .count();
+        end > 0
+            && end < words.len()
+            && launch_named_subject_v17(&words[..end].join(" "))
+            && components(&words[end..].join(" "))
+    };
+    if owner_and_component(value) {
+        return true;
+    }
+    let folded = normalized(value);
+    if target_identity_phrases(policy).iter().any(|target| {
+        folded.strip_prefix(target).is_some_and(|tail| {
+            tail.starts_with(' ')
+                && components(
+                    tail.trim_start()
+                        .strip_prefix("s ")
+                        .unwrap_or(tail.trim_start()),
+                )
+        })
+    }) {
+        return true;
+    }
+    for link in [" supplied with ", " in ", " on ", " for "] {
+        if let Some((head, owner)) = value.split_once(link) {
+            let owner = owner.strip_prefix("the ").unwrap_or(owner).trim();
+            if components(head) && (launch_named_subject_v17(owner) || owner_and_component(owner)) {
+                return true;
+            }
+        }
+    }
+    false
+}
+
+fn launch_complete_appearance_proposition_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    value: &str,
+) -> bool {
+    let value = launch_complete_assertion_body_v17(value);
+    if value.contains(['"', '“', '‘', '?']) {
+        return false;
+    }
+    if let Some((head, appearance)) = value.split_once(" has ") {
+        let text = normalized(appearance);
+        let words = text.split_whitespace().collect::<Vec<_>>();
+        let field = words.last().is_some_and(|word| {
+            [
+                "watermark",
+                "spine",
+                "edge",
+                "corner",
+                "corners",
+                "tie",
+                "border",
+                "flap",
+                "page",
+                "hinge",
+                "period",
+                "seal",
+                "clasp",
+                "coating",
+                "handle",
+                "label",
+                "binding",
+                "panel",
+                "aperture",
+                "groove",
+            ]
+            .contains(word)
+        });
+        return launch_owned_appearance_subject_v17(policy, head)
+            && field
+            && words.len() <= 5
+            && words.iter().all(|word| {
+                (!launch_scope_or_reference_word_v17(word) || *word == "page")
+                    && ![
+                        "and", "or", "not", "never", "is", "was", "has", "have", "because",
+                        "although", "while", "when", "if", "since",
+                    ]
+                    .contains(word)
+            });
+    }
+    if let Some((head, printed)) = value.split_once(" prints ") {
+        if !launch_owned_appearance_subject_v17(policy, head) {
+            return false;
+        }
+        let text = normalized(printed);
+        let tail = [
+            "its units in ",
+            "its address in ",
+            "its revision mark inside a ",
+        ]
+        .iter()
+        .find_map(|prefix| text.strip_prefix(prefix));
+        return tail.is_some_and(|tail| {
+            let words = tail.split_whitespace().collect::<Vec<_>>();
+            !words.is_empty()
+                && words.len() <= 3
+                && words.iter().all(|word| {
+                    !launch_scope_or_reference_word_v17(word)
+                        && ![
+                            "and", "or", "not", "never", "is", "was", "has", "have", "because",
+                            "although", "while", "when", "if", "since",
+                        ]
+                        .contains(word)
+                })
+        });
+    }
+    false
+}
+
+// The quoted body is inert lettering only when its complete outside grammar
+// proves a physical/printed attribute and an independently owned component.
+fn launch_complete_printed_attribute_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    value: &str,
+) -> bool {
+    let value = launch_complete_assertion_body_v17(value);
+    let Some(start) = value.find(['"', '“', '‘']) else {
+        return false;
+    };
+    let quote = value[start..].chars().next().unwrap();
+    let closing = match quote {
+        '“' => '”',
+        '‘' => '’',
+        _ => '"',
+    };
+    let quoted = &value[start + quote.len_utf8()..];
+    let Some(end) = quoted.find(closing) else {
+        return false;
+    };
+    let head = normalized(&value[..start]);
+    let tail = quoted[end + closing.len_utf8()..].trim();
+    if tail.contains(['"', '“', '”', '‘', '’', '?', ',']) {
+        return false;
+    }
+    let owned = |owner: &str| launch_owned_appearance_subject_v17(policy, owner.trim());
+    if head == "the sentence" {
+        return tail
+            .strip_prefix("is printed in ")
+            .and_then(|tail| tail.split_once(" ink on "))
+            .is_some_and(|(colour, owner)| {
+                let colour = normalized(colour);
+                let words = colour.split_whitespace().collect::<Vec<_>>();
+                !words.is_empty()
+                    && words.len() <= 2
+                    && words.iter().all(|word| {
+                        !launch_scope_or_reference_word_v17(word)
+                            && !["and", "or", "not", "never", "is", "was", "has"].contains(word)
+                    })
+                    && owned(owner)
+            });
+    }
+    if ["the heading", "the section heading"].contains(&head.as_str()) {
+        if let Some((owner, style)) = tail
+            .strip_prefix("in ")
+            .and_then(|tail| tail.split_once(" uses "))
+        {
+            return owned(owner)
+                && [
+                    "small capitals",
+                    "uppercase letters",
+                    "lowercase letters",
+                    "bold lettering",
+                ]
+                .contains(&normalized(style).as_str());
+        }
+        if let Some((count, owner)) = tail
+            .strip_prefix("occupies ")
+            .and_then(|tail| tail.split_once(" on "))
+        {
+            let count = normalized(count);
+            let words = count.split_whitespace().collect::<Vec<_>>();
+            return matches!(words.as_slice(), [number,"line"|"lines"]
+                if ["one","two","three","four","five","six","seven","eight","nine","ten"].contains(number)
+                    || (!number.is_empty() && number.chars().all(|c|c.is_ascii_digit())))
+                && owned(owner);
+        }
+    }
+    if head == "the engraving" {
+        return tail
+            .strip_prefix("on ")
+            .and_then(|tail| tail.split_once(" is "))
+            .is_some_and(|(owner, depth)| {
+                owned(owner) && ["shallow", "deep"].contains(&normalized(depth).as_str())
+            });
+    }
+    if ["the footer", "the literal footer"].contains(&head.as_str()) {
+        return tail
+            .strip_prefix("in ")
+            .and_then(|tail| tail.split_once(" is "))
+            .is_some_and(|(owner, style)| {
+                owned(owner)
+                    && ["underlined", "italicized", "bold"].contains(&normalized(style).as_str())
+            });
+    }
+    false
+}
+
+fn launch_complete_property_proposition_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    value: &str,
+) -> bool {
+    let value = launch_complete_assertion_body_v17(value);
+    if launch_complete_printed_attribute_v17(policy, value)
+        || launch_complete_appearance_proposition_v17(policy, value)
+    {
+        return true;
+    }
     let property = launch_property_words_v17(policy, value);
     let words = property.iter().map(String::as_str).collect::<Vec<_>>();
     let Some(predicate) = words
@@ -4163,6 +4438,9 @@ fn launch_complete_property_proposition_v17(
 }
 
 fn launch_printed_quoted_property_v17(policy: &EvidenceRelevanceTargetPolicy, value: &str) -> bool {
+    if launch_complete_printed_attribute_v17(policy, value) {
+        return true;
+    }
     let Some(start) = value.find(['"', '“', '‘']) else {
         return false;
     };
@@ -4250,6 +4528,85 @@ fn launch_target_nonexistence_v17(policy: &EvidenceRelevanceTargetPolicy, statem
     })
 }
 
+// The event owner inside the quotation and the document owner outside it
+// are separate roles. Both must be complete; a manual cannot lend event scope.
+fn launch_complete_quoted_foreign_event_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    value: &str,
+) -> bool {
+    let value = value.trim();
+    let Some(start) = value.find(['"', '“', '‘']) else {
+        return false;
+    };
+    if !["the claim", "the statement", "the assertion"]
+        .contains(&normalized(&value[..start]).as_str())
+    {
+        return false;
+    }
+    let quote = value[start..].chars().next().unwrap();
+    let closing = match quote {
+        '“' => '”',
+        '‘' => '’',
+        _ => '"',
+    };
+    let quoted = &value[start + quote.len_utf8()..];
+    let Some(end) = quoted.find(closing) else {
+        return false;
+    };
+    let body = &quoted[..end];
+    let tail = quoted[end + closing.len_utf8()..].trim();
+    if body.contains(['"', '“', '”', '‘', '’', ',', ';'])
+        || tail.contains(['"', '“', '”', '‘', '’', ',', ';'])
+    {
+        return false;
+    }
+    let owner = [
+        " was launched",
+        " was released",
+        " was not launched",
+        " was not released",
+    ]
+    .iter()
+    .find_map(|suffix| body.strip_suffix(suffix));
+    owner.is_some_and(|owner| {
+        launch_named_subject_v17(owner)
+            && !target_identity_phrases(policy)
+                .iter()
+                .any(|target| normalized_phrase_matches(owner, target))
+    }) && tail
+        .strip_prefix("quoted in ")
+        .is_some_and(|owner| launch_owned_appearance_subject_v17(policy, owner))
+}
+
+// An adjacent full-name explanation can confirm a syntactically owned foreign
+// denial. It cannot assign an owner to a previously unresolved event.
+fn launch_foreign_denial_name_confirmation_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    statement: &str,
+    previous: Option<&LaunchFactualSegmentV17>,
+) -> bool {
+    let Some(previous) = previous else {
+        return false;
+    };
+    if !launch_retraction_other_object_v17(policy, &previous.raw) {
+        return false;
+    }
+    ["launch", "release"].iter().any(|event| {
+        statement
+            .strip_suffix(&format!(
+                " is the full name of the product whose {event} is denied"
+            ))
+            .is_some_and(|owner| {
+                launch_named_subject_v17(owner)
+                    && !target_identity_phrases(policy)
+                        .iter()
+                        .any(|target| normalized_phrase_matches(owner, target))
+                    && normalized(&previous.raw)
+                        .ends_with(&format!("the {event} of {}", normalized(owner)))
+            })
+    })
+}
+
 fn launch_typed_object_scope_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     value: &str,
@@ -4259,6 +4616,7 @@ fn launch_typed_object_scope_v17(
         return Scope::Launch;
     }
     if launch_owned_material_object_v17(value)
+        || launch_complete_quoted_foreign_event_v17(policy, value)
         || launch_complete_property_proposition_v17(policy, value)
         || launch_compound_attribute_object_v17(policy, value)
         || launch_printed_quoted_property_v17(policy, value)
@@ -4921,6 +5279,7 @@ fn launch_typed_objects_v17(
             let foreign_event = scope == Scope::Excluded
                 && !proven_property
                 && (owner_bound
+                    || launch_complete_quoted_foreign_event_v17(policy, value)
                     || (explicit_event
                         && !target_identity_phrases(policy)
                             .iter()
@@ -5133,8 +5492,10 @@ fn launch_property_apposition_v17(policy: &EvidenceRelevanceTargetPolicy, statem
         .or_else(|| statement.split_once(':'))
         .or_else(|| {
             statement.split_once(',').filter(|(_, value)| {
-                let value = normalized(value);
-                value.starts_with("namely ") || value.starts_with("specifically ")
+                let text = normalized(value);
+                text.starts_with("namely ")
+                    || text.starts_with("specifically ")
+                    || launch_complete_property_proposition_v17(policy, value.trim())
             })
         })
     else {
@@ -5711,11 +6072,31 @@ fn launch_adverse_segments_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     text: &str,
 ) -> Vec<LaunchFactualSegmentV17> {
-    let reporting = |text: &str| {
-        normalized(text).split_whitespace().any(|word| {
-            launch_retraction_word_v17(word)
-                || ["withdrawal", "retraction", "denial"].contains(&word)
+    // Keep a reported non-event as its own clause; it must retain its actual owner.
+    let maintained = |text: &str| {
+        let text = normalized(text);
+        [
+            "we maintain that ",
+            "i maintain that ",
+            "the author maintains that ",
+            "the editor maintains that ",
+            "the publisher maintains that ",
+        ]
+        .iter()
+        .any(|prefix| {
+            text.strip_prefix(prefix).is_some_and(|body| {
+                body.contains(" was not launched")
+                    || body.contains(" was not released")
+                    || body.contains(" does not exist")
+            })
         })
+    };
+    let reporting = |text: &str| {
+        maintained(text)
+            || normalized(text).split_whitespace().any(|word| {
+                launch_retraction_word_v17(word)
+                    || ["withdrawal", "retraction", "denial"].contains(&word)
+            })
     };
     let mut output = Vec::new();
     for segment in launch_factual_segments_v17(policy, text) {
@@ -5727,7 +6108,7 @@ fn launch_adverse_segments_v17(
                 if let Some(body) = body.strip_suffix(')') {
                     if !head.contains(['"', '“', '‘'])
                         && !body.contains(['(', ')'])
-                        && reporting(body)
+                        && (reporting(head) || reporting(body))
                     {
                         split = Some((
                             head.to_owned(),
@@ -5869,13 +6250,22 @@ fn launch_adverse_segments_v17(
                     ]
                     .iter()
                     .flat_map(|actor| {
-                        ["report", "reports", "record", "records", "state", "states"]
-                            .into_iter()
-                            .flat_map(move |verb| {
-                                ["", "also ", "explicitly ", "formally ", "clearly "]
-                                    .into_iter()
-                                    .map(move |modifier| format!("{actor} {modifier}{verb} that "))
-                            })
+                        [
+                            "report",
+                            "reports",
+                            "record",
+                            "records",
+                            "state",
+                            "states",
+                            "maintain",
+                            "maintains",
+                        ]
+                        .into_iter()
+                        .flat_map(move |verb| {
+                            ["", "also ", "explicitly ", "formally ", "clearly "]
+                                .into_iter()
+                                .map(move |modifier| format!("{actor} {modifier}{verb} that "))
+                        })
                     })
                     .find(|prefix| folded.starts_with(prefix));
                     if let Some(prefix) = positive_reporting {
@@ -5988,6 +6378,32 @@ fn launch_complete_foreign_denial_report_v17(
     })
 }
 
+// A collective withdrawal of launch claims in this source is an event scope,
+// even when a preceding typed role denotes a physical/printed property.
+fn launch_collective_event_withdrawal_v17(statement: &str) -> bool {
+    let text = normalized(statement);
+    let words = text.split_whitespace().collect::<Vec<_>>();
+    words.iter().enumerate().any(|(i, word)| {
+        launch_retraction_word_v17(word)
+            && !launch_retraction_negated_v17(&words[..i])
+            && words[i + 1..].windows(3).any(|phrase| {
+                matches!(
+                    phrase,
+                    [
+                        "all" | "every" | "each",
+                        "launch" | "release",
+                        "statement"
+                            | "statements"
+                            | "claim"
+                            | "claims"
+                            | "assertion"
+                            | "assertions"
+                    ]
+                )
+            })
+    })
+}
+
 fn launch_governing_context_blocks_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
@@ -6022,6 +6438,9 @@ fn launch_governing_context_blocks_v17(
             {
                 continue;
             }
+            if launch_collective_event_withdrawal_v17(&segment.raw) {
+                return true;
+            }
             if launch_unavailable_owner_note_v17(&segment.raw)
                 && std::iter::once(segment)
                     .chain(
@@ -6053,6 +6472,27 @@ fn launch_governing_context_blocks_v17(
             if launch_target_nonexistence_v17(policy, &segment.raw) {
                 return true;
             }
+            // An expressly unknown event owner cannot inherit a preceding
+            // foreign role or property scope merely through conjunction.
+            if [" was not launched", " was not released"]
+                .iter()
+                .any(|suffix| {
+                    text.strip_suffix(suffix).is_some_and(|owner| {
+                        matches!(
+                            owner,
+                            "an unknown product"
+                                | "the unknown product"
+                                | "an unidentified product"
+                                | "the unidentified product"
+                                | "an unnamed product"
+                                | "the unnamed product"
+                        )
+                    })
+                })
+            {
+                return true;
+            }
+
             if segment.question
                 && !targets
                     .iter()
@@ -6109,6 +6549,13 @@ fn launch_governing_context_blocks_v17(
                 ["object", "subject", "item"].contains(&normalized(label).as_str())
                     && launch_typed_object_scope_v17(policy, value) == LaunchTypedScopeV17::Excluded
             }) {
+                continue;
+            }
+            if launch_foreign_denial_name_confirmation_v17(
+                policy,
+                &segment.raw,
+                index.checked_sub(1).and_then(|i| segments.get(i)),
+            ) {
                 continue;
             }
             let prior_foreign_denial = segments[..index].iter().any(|prior| {
@@ -11674,7 +12121,14 @@ fn launch_opaque_name_context_view_v17(
                         "clip is the last word of the complete product name not omitted source context",
                         "the proper product name ends in clip and is complete",
                     ].contains(&note.as_str());
-                    if complete_last_token_note || (words.contains(&"clip") && words.contains(&"name")
+                    // Exact negated clipping note is metadata, not omitted context.
+                    // This projection still requires the anchored target fact and a
+                    // risk-free independently recomputed complete candidate below.
+                    if note == "no excerpt has been clipped" {
+                        signal_changed = true;
+                        changed = true;
+                        "the excerpt is complete".to_owned()
+                    } else if complete_last_token_note || (words.contains(&"clip") && words.contains(&"name")
                         && words
                             .iter()
                             .any(|word| ["complete", "full", "canonical"].contains(word))
@@ -13807,6 +14261,429 @@ pub fn parse_evidence_relevance_proposal(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn v30_complete_clip_name_note_cannot_erase_actual_context_gap() {
+        let mut policy = launch_policy_for_v28();
+        policy.entity.as_mut().unwrap().canonical_name = "Leaf Clip".into();
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+        for (extra, ok) in [
+            ("", true),
+            ("The event owner column has been clipped.", false),
+            ("The event owner is missing.", false),
+            ("Leaf Clip was not launched.", false),
+            ("We withdraw the whole source.", false),
+        ] {
+            let text = format!(
+                "Item: the claim that the Leaf Clip clasp is magnetic. I withdraw the Item. {extra}"
+            );
+            let local = candidate(vec![
+                (
+                    EvidenceRelevanceSignalKind::Heading,
+                    "Canonical product name: Leaf Clip. Clip is part of this complete name; no excerpt has been clipped.",
+                ),
+                (
+                    EvidenceRelevanceSignalKind::Excerpt,
+                    "Leaf Clip was launched.",
+                ),
+                (EvidenceRelevanceSignalKind::Excerpt, &text),
+            ]);
+            assert_eq!(
+                materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                    .unwrap()
+                    .disposition
+                    == EvidenceRelevanceDisposition::Relevant,
+                ok,
+                "{text}"
+            );
+            let mut inherited = raw;
+            inherited.scope_risk = EvidenceLocalBlockingReason::ContextGap;
+            assert!(
+                launch_opaque_name_context_view_v17(
+                    &policy,
+                    &local,
+                    Some(&proposal),
+                    Some(&inherited)
+                )
+                .unwrap()
+                .is_none()
+            );
+        }
+    }
+
+    #[test]
+    fn v30_separate_maintained_non_event_and_parenthesis_keep_each_scope() {
+        let policy = launch_policy_for_v28();
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+        let property = "Object: the claim that the Cedar Basket case has a recessed hinge.";
+        for (body, ok) in [
+            (
+                "I retract the Object (the correction concerns the depth of the hinge recess on Cedar Basket)",
+                true,
+            ),
+            ("I retract the Object (Silver Lens was not launched)", false),
+            ("I retract the Object (we retract the whole source)", false),
+            ("I retract the Object (the event owner is missing)", false),
+            (
+                "We withdraw the Object. Subject: the launch of Violet Bell. We deny the Subject, and we maintain that Violet Bell was not launched",
+                true,
+            ),
+            (
+                "We withdraw the Object. Subject: the launch of Violet Bell. We deny the Subject, and we maintain that Silver Lens was not launched",
+                false,
+            ),
+            (
+                "We withdraw the Object. Subject: the launch of Violet Bell. We deny the Subject, and we maintain that an unknown product was not launched",
+                false,
+            ),
+            (
+                "We withdraw the Object. Subject: the launch of Violet Bell. We deny the Subject, and we maintain that Silver Lens does not exist",
+                false,
+            ),
+        ] {
+            let text = format!("{property} {body}. Silver Lens was launched.");
+            let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, &text)]);
+            assert_eq!(
+                materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                    .unwrap()
+                    .disposition
+                    == EvidenceRelevanceDisposition::Relevant,
+                ok,
+                "{text}"
+            );
+        }
+    }
+
+    #[test]
+    fn v30_complete_foreign_event_quote_does_not_borrow_document_owner() {
+        let policy = launch_policy_for_v28();
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+        for document in ["Cedar Basket", "Silver Lens"] {
+            let text = format!(
+                "Item: the claim \"Violet Bell was launched\" quoted in the {document} manual. I withdraw the Item. Silver Lens was launched."
+            );
+            let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, &text)]);
+            assert_eq!(
+                materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                    .unwrap()
+                    .disposition,
+                EvidenceRelevanceDisposition::Relevant,
+                "{text}"
+            );
+        }
+        for body in [
+            "the claim \"Silver Lens was launched\" quoted in the Cedar Basket manual",
+            "the claim \"it was launched\" quoted in the Cedar Basket manual",
+            "the claim \"Violet Bell was launched\" quoted in the manual",
+            "the claim \"Violet Bell was launched and Silver Lens was launched\" quoted in the Cedar Basket manual",
+        ] {
+            let text = format!("Item: {body}. I withdraw the Item. Silver Lens was launched.");
+            let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, &text)]);
+            assert_ne!(
+                materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                    .unwrap()
+                    .disposition,
+                EvidenceRelevanceDisposition::Relevant,
+                "{text}"
+            );
+        }
+    }
+    #[test]
+    fn v30_complete_printed_apposition_retains_event_and_global_denials() {
+        let policy = launch_policy_for_v28();
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+        for (correction, ok) in [
+            (
+                "I withdraw this claim, the claim that the engraving \"Silver Lens was launched\" on the Cedar Basket badge is shallow",
+                true,
+            ),
+            (
+                "I withdraw this claim, the claim that Silver Lens was launched",
+                false,
+            ),
+            (
+                "I withdraw this claim, the claim that the engraving \"Silver Lens was launched\" on the badge is shallow",
+                false,
+            ),
+            (
+                "I withdraw all launch statements, the claim that the engraving \"Silver Lens was launched\" on the Cedar Basket badge is shallow",
+                false,
+            ),
+        ] {
+            let text = format!("{correction}. Silver Lens was launched.");
+            let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, &text)]);
+            assert_eq!(
+                materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                    .unwrap()
+                    .disposition
+                    == EvidenceRelevanceDisposition::Relevant,
+                ok,
+                "{text}"
+            );
+        }
+    }
+    #[test]
+    fn v30_foreign_name_confirmation_requires_adjacent_same_owned_denial() {
+        let policy = launch_policy_for_v28();
+        for (prior, owner, ok) in [
+            (
+                "We deny this claim, the launch of Violet Bell",
+                "Violet Bell",
+                true,
+            ),
+            (
+                "We deny this claim, the launch of Cedar Basket",
+                "Violet Bell",
+                false,
+            ),
+            (
+                "We deny this claim, the launch of Silver Lens",
+                "Silver Lens",
+                false,
+            ),
+            (
+                "We deny this claim, a launch whose owner is unknown",
+                "Violet Bell",
+                false,
+            ),
+        ] {
+            let previous = launch_factual_segments_v17(&policy, prior).pop().unwrap();
+            let note = format!("{owner} is the full name of the product whose launch is denied");
+            assert_eq!(
+                launch_foreign_denial_name_confirmation_v17(&policy, &note, Some(&previous)),
+                ok,
+                "{prior}: {note}"
+            );
+        }
+    }
+
+    #[test]
+    fn v30_printed_property_cannot_own_collective_event_withdrawal() {
+        let policy = launch_policy_for_v28();
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+        let base = "Object: the claim that the heading \"Launch status\" in the Cedar Basket catalog uses small capitals. We deny the Object. Silver Lens was launched.";
+        for denial in [
+            "We withdraw all launch statements in this material, including the Silver Lens statement.",
+            "I retract every launch claim.",
+            "We deny each release assertion.",
+        ] {
+            let text = format!("{base} {denial}");
+            let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, &text)]);
+            assert_ne!(
+                materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                    .unwrap()
+                    .disposition,
+                EvidenceRelevanceDisposition::Relevant,
+                "{text}"
+            );
+        }
+        let text = format!("{base} We do not withdraw all launch statements.");
+        let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, &text)]);
+        assert!(!launch_collective_event_withdrawal_v17(
+            "We do not withdraw all launch statements."
+        ));
+        assert_eq!(
+            materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                .unwrap()
+                .disposition,
+            EvidenceRelevanceDisposition::Relevant
+        );
+    }
+
+    #[test]
+    fn v30_printed_attribute_requires_outside_type_owner_and_balanced_literal() {
+        let policy = launch_policy_for_v28();
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+        for property in [
+            "the sentence \"Silver Lens was not launched\" is printed in green ink on the Marble Basket insert",
+            "the section heading \"Launch status\" in the Amber Parcel catalog uses small capitals",
+            "the heading \"Silver Lens was launched\" occupies three lines on the Indigo Gate instruction sheet",
+            "the engraving \"Silver Lens was launched\" on the Birch Token badge is shallow",
+            "the literal footer \"owner not supplied\" in the Quartz Button booklet is underlined",
+        ] {
+            let text = format!(
+                "Object: the claim that {property}. I retract the Object. Silver Lens was launched."
+            );
+            let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, &text)]);
+            assert_eq!(
+                materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                    .unwrap()
+                    .disposition,
+                EvidenceRelevanceDisposition::Relevant,
+                "{text}"
+            );
+            for denial in [
+                "Silver Lens was not launched.",
+                "We retract the whole source.",
+                "The event owner column is missing.",
+            ] {
+                let negative = format!("{text} {denial}");
+                let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, &negative)]);
+                assert_ne!(
+                    materialize_evidence_relevance_v30(
+                        &policy,
+                        &local,
+                        Some(&proposal),
+                        Some(&raw)
+                    )
+                    .unwrap()
+                    .disposition,
+                    EvidenceRelevanceDisposition::Relevant,
+                    "{negative}"
+                );
+            }
+        }
+        for value in [
+            "the sentence \"Silver Lens was not launched\" is our present assertion on the Marble Basket insert",
+            "the claim \"Silver Lens was launched\" quoted in the Marble Basket manual",
+            "the sentence \"Silver Lens was not launched\" is printed in green ink on an unknown product insert",
+            "the sentence \"Silver Lens was not launched is printed in green ink on the Marble Basket insert",
+            "the engraving \"Silver Lens was launched\" on the Birch Token badge is a false event claim",
+        ] {
+            let text = format!(
+                "Object: the claim that {value}. I retract the Object. Silver Lens was launched."
+            );
+            let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, &text)]);
+            assert_ne!(
+                materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                    .unwrap()
+                    .disposition,
+                EvidenceRelevanceDisposition::Relevant,
+                "{text}"
+            );
+        }
+    }
+
+    #[test]
+    fn v30_owned_appearance_predicates_require_component_and_non_event_value() {
+        let policy = launch_policy_for_v28();
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+        for property in [
+            "the Cedar Basket manual has a bent corner",
+            "the certificate supplied with Violet Bell has a blue watermark",
+            "the Silver Lens label has a ribbed edge",
+            "the battery table in the Silver Lens booklet prints its units in amperes",
+            "the Jade Parcel sleeve prints its address in bold",
+            "the Opal Button cover prints its revision mark inside a triangle",
+        ] {
+            let text = format!(
+                "Object: the claim that {property}. I retract the Object. Silver Lens was launched."
+            );
+            let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, &text)]);
+            assert_eq!(
+                materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                    .unwrap()
+                    .disposition,
+                EvidenceRelevanceDisposition::Relevant,
+                "{text}"
+            );
+            for denial in [
+                "Silver Lens was not launched.",
+                "We retract the whole source.",
+                "The event owner column is missing.",
+            ] {
+                let negative = format!("{text} {denial}");
+                let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, &negative)]);
+                assert_ne!(
+                    materialize_evidence_relevance_v30(
+                        &policy,
+                        &local,
+                        Some(&proposal),
+                        Some(&raw)
+                    )
+                    .unwrap()
+                    .disposition,
+                    EvidenceRelevanceDisposition::Relevant,
+                    "{negative}"
+                );
+            }
+        }
+        for body in [
+            "the unknown owner's manual has a bent corner",
+            "the manual has a bent corner",
+            "the Cedar Basket manual has a launch announcement",
+            "the Cedar Basket manual prints its address in a denied launch",
+            "the Silver Lens service has a launch date",
+            "the Cedar Basket manual has a bent corner and Silver Lens was not launched",
+        ] {
+            let text = format!(
+                "Object: the claim that {body}. I retract the Object. Silver Lens was launched."
+            );
+            let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, &text)]);
+            assert_ne!(
+                materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                    .unwrap()
+                    .disposition,
+                EvidenceRelevanceDisposition::Relevant,
+                "{text}"
+            );
+        }
+        let local = candidate(vec![(
+            EvidenceRelevanceSignalKind::Excerpt,
+            "Subject: the claim that the Cedar Basket manual has a bent corner. Object: an unowned launch claim. I withdraw the Subject and retract the Object. Silver Lens was launched.",
+        )]);
+        assert_ne!(
+            materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                .unwrap()
+                .disposition,
+            EvidenceRelevanceDisposition::Relevant
+        );
+    }
 
     #[test]
     fn v30_complete_claim_wrapper_preserves_only_proven_property_scope() {
