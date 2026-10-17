@@ -36,6 +36,14 @@ Before independent authoring: commit complete evaluators, host/adapters, exact e
 
 Only perform expensive canonical runs once required stages and known source-safety controls are ready. A known uncorrected defect independently blocks adoption, even if the sampled tasks miss it.
 
+## Candidate quality thresholds (new precommit policy; not acceptance)
+
+For each required provider and for **each separate track**, the future independently source-reviewed candidate must meet all three positive-class floors **simultaneously**: **F1 >= 0.90, precision >= 0.95, recall >= 0.85**. These are project-specific operational acceptance targets, not a universal benchmark. F0.5 >= 0.95 is a diagnostic stretch goal, **not** an additional hard gate. Precision 0.95 and recall 0.85 yield F1 about 0.8972; the three minimums are not redundant. See the machine-readable `gates.candidate_quality` and [metric contract/tests](../evaluation/engine07-quality-gates-v1/README.md).
+
+Only fully observed, independently labeled clear positive/negative cases enter the binary confusion matrix. Correctly withheld *answerable* cases count as FN, and unsafe accepts on ambiguous cases remain separate mandatory safety failures. Missing/timeout/quota cases are operationally incomplete, not TN; undefined precision or zero positive decisions cannot pass. Record exact TP/FP/FN/TN, ambiguous, coverage, F1, F0.5, per-class denominators and uncertainty. The small proposed 24-case sample provides a bounded gate result, **not** a population-level guarantee. Neither model advice nor a separately enabled helper result can supply normal CLI answer quality.
+
+**All older hard gates are cumulative and unchanged:** zero observed critical safety/citation/authority violations, zero positive-control regressions, known defects closed, paired improvement over0.6.1, all required providers, runnable secure host and live budgets, complete independent full-source review, CLI/distribution acceptance. Freeze the final evaluator and these thresholds **before** authoring/executing the next new independent acceptance cohort; previous recorded first observations remain immutable. The small offline metric scorer is an integration building block, not itself a release gate or a completed live evaluator.
+
 ## Preparation evidence already collected
 
 - [Published0.7.2 audit](../evaluation/engine-0.7.2-verification-audit-20261014/README.md): a root-authored synthetic14-input targeted matrix finds ten false-Relevant negatives for present-tense retractions/denials and non-event statements. #520 is reopened under milestone#12. Its original repair, acceptance and published tags remain preserved. No downstream wrong answer or Known/Supported promotion was demonstrated.
