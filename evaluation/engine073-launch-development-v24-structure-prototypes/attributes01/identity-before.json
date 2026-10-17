@@ -1,0 +1,14 @@
+{
+  "stage": "attributes01",
+  "started_utc": "2026-10-17T11:22:02.083839+00:00",
+  "kind": "consumed development prototype only; no independent acceptance",
+  "source_file_sha256": "ea14a86d9a7fe88ca21d7ffd2ce1b0ec9efdf3b104d6ab4eb2d7fb5c7afe5fc7",
+  "core_sha256": "05a4bde42d586e8c6fd3be8a64c74d14b3124e2c0c72de2abaa6615c72d6574a",
+  "serde_sha256": "2fe87fdc8a57311cffa8b4bc38635b5173ead4bce5c2a34574097874f90ae15e",
+  "metadata_sha256": "6ab35015eb062cce7ec5d802fce5037a64ea200a900d0d0ce7088b639b897e0a",
+  "inputs_sha256": "74569d5027c1db3faa8aa0db930220b356970daa8646ad3198f6ece7414c80bf",
+  "cases_sha256": "873b4f02e7f45791f05cd1edc13d4aea0fe7bebfbd0c5f36f010a69a2b964948",
+  "probe_source_sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+  "probe_executable_sha256": "8b8645aef50d21cc1839320d1bc9b80481130fa08a6f9b251f8bbbc96314ebe3",
+  "base_source_sha": "3ccda6b4263eb5210477660b11f6926ec0186f4e"
+}

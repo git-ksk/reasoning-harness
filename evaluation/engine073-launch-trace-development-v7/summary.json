@@ -1,0 +1,12 @@
+{
+  "source_sha": "3ccda6b4263eb5210477660b11f6926ec0186f4e",
+  "source_file_sha256": "85a64b506f8c47828a4a3296c5d07c13e921c59b528ea27e10ec4993c5f636e2",
+  "observed": 13,
+  "first_blocker_counts": {
+    "typed_reference_not_excluded": 13
+  },
+  "effective_tuples_match_original_first": 13,
+  "scope": "first actual blocker only, not complete causal explanation; consumed development diagnostic",
+  "provider_model_Oracle_calls": 0,
+  "scorer_invocations": 0
+}

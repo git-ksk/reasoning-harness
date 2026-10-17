@@ -1,0 +1,2318 @@
+[
+  {
+    "effective": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "governing_blocks": true,
+    "id": "li24-001",
+    "rule_trace": [
+      {
+        "exact_original_utf8_byte_span": [
+          35,
+          53
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We deny the Object",
+        "signal_index": 1,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          35,
+          53
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We deny the Object",
+        "signal_index": 1,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          35,
+          53
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We deny the Object",
+        "signal_index": 1,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          35,
+          53
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We deny the Object",
+        "signal_index": 1,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          35,
+          53
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We deny the Object",
+        "signal_index": 1,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      }
+    ],
+    "scope": "consumed diagnostic, not fresh score",
+    "segments": [
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Object: the claim that the Cerulean Bridge table header has a blue background",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Item: the launch of Sable Station",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 1,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We deny the Object",
+        "resolved_foreign": false,
+        "segment_index": 1,
+        "signal_index": 1,
+        "typed_reference": false,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "withdraw the Item",
+        "resolved_foreign": false,
+        "segment_index": 2,
+        "signal_index": 1,
+        "typed_reference": true,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Cerulean Bridge was launched",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 2,
+        "typed_reference": null,
+        "unknown_owner": false
+      }
+    ],
+    "target_fact": false,
+    "typed_objects": [
+      {
+        "declared_value": "the claim that the Cerulean Bridge table header has a blue background",
+        "foreign_event": false,
+        "label": "object",
+        "scope": "unresolved"
+      },
+      {
+        "declared_value": "the launch of Sable Station",
+        "foreign_event": true,
+        "label": "item",
+        "scope": "excluded"
+      }
+    ]
+  },
+  {
+    "effective": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "governing_blocks": true,
+    "id": "li24-003",
+    "rule_trace": [
+      {
+        "exact_original_utf8_byte_span": [
+          114,
+          135
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 2,
+        "segment_raw": "I retract the Subject",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          114,
+          135
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 2,
+        "segment_raw": "I retract the Subject",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          114,
+          135
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 2,
+        "segment_raw": "I retract the Subject",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          114,
+          135
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 2,
+        "segment_raw": "I retract the Subject",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          114,
+          135
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 2,
+        "segment_raw": "I retract the Subject",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      }
+    ],
+    "scope": "consumed diagnostic, not fresh score",
+    "segments": [
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Subject: the claim that the Honeycomb Dock package has a metal foil lining",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Object: the launch of Honeycomb Dock",
+        "resolved_foreign": false,
+        "segment_index": 1,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "I retract the Subject",
+        "resolved_foreign": false,
+        "segment_index": 2,
+        "signal_index": 0,
+        "typed_reference": false,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "deny the Object",
+        "resolved_foreign": false,
+        "segment_index": 3,
+        "signal_index": 0,
+        "typed_reference": true,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Aspen Harbor was launched",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 1,
+        "typed_reference": null,
+        "unknown_owner": false
+      }
+    ],
+    "target_fact": false,
+    "typed_objects": [
+      {
+        "declared_value": "the claim that the Honeycomb Dock package has a metal foil lining",
+        "foreign_event": false,
+        "label": "subject",
+        "scope": "unresolved"
+      },
+      {
+        "declared_value": "the launch of Honeycomb Dock",
+        "foreign_event": true,
+        "label": "object",
+        "scope": "excluded"
+      }
+    ]
+  },
+  {
+    "effective": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "governing_blocks": true,
+    "id": "li24-005",
+    "rule_trace": [
+      {
+        "exact_original_utf8_byte_span": [
+          0,
+          124
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 0,
+        "segment_raw": "Item: the claim that the printed sentence \"We withdraw this launch claim\" in the Amaranth Cart guide occupies its top margin",
+        "signal_index": 1,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          0,
+          124
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 0,
+        "segment_raw": "Item: the claim that the printed sentence \"We withdraw this launch claim\" in the Amaranth Cart guide occupies its top margin",
+        "signal_index": 1,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          0,
+          124
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 0,
+        "segment_raw": "Item: the claim that the printed sentence \"We withdraw this launch claim\" in the Amaranth Cart guide occupies its top margin",
+        "signal_index": 1,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          0,
+          124
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 0,
+        "segment_raw": "Item: the claim that the printed sentence \"We withdraw this launch claim\" in the Amaranth Cart guide occupies its top margin",
+        "signal_index": 1,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          0,
+          124
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 0,
+        "segment_raw": "Item: the claim that the printed sentence \"We withdraw this launch claim\" in the Amaranth Cart guide occupies its top margin",
+        "signal_index": 1,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      }
+    ],
+    "scope": "consumed diagnostic, not fresh score",
+    "segments": [
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Mallow Gate was launched",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Item: the claim that the printed sentence \"We withdraw this launch claim\" in the Amaranth Cart guide occupies its top margin",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 1,
+        "typed_reference": false,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "I deny the Item",
+        "resolved_foreign": false,
+        "segment_index": 1,
+        "signal_index": 1,
+        "typed_reference": false,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Object: the launch of Amaranth Cart",
+        "resolved_foreign": false,
+        "segment_index": 2,
+        "signal_index": 1,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "I retract the Object",
+        "resolved_foreign": false,
+        "segment_index": 3,
+        "signal_index": 1,
+        "typed_reference": true,
+        "unknown_owner": false
+      }
+    ],
+    "target_fact": false,
+    "typed_objects": [
+      {
+        "declared_value": "the claim that the printed sentence \"We withdraw this launch claim\" in the Amaranth Cart guide occupies its top margin",
+        "foreign_event": false,
+        "label": "item",
+        "scope": "launch"
+      },
+      {
+        "declared_value": "the launch of Amaranth Cart",
+        "foreign_event": true,
+        "label": "object",
+        "scope": "excluded"
+      }
+    ]
+  },
+  {
+    "effective": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "governing_blocks": true,
+    "id": "li24-009",
+    "rule_trace": [
+      {
+        "exact_original_utf8_byte_span": [
+          168,
+          187
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 4,
+        "segment_raw": "We deny the Subject",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          168,
+          187
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 4,
+        "segment_raw": "We deny the Subject",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          168,
+          187
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 4,
+        "segment_raw": "We deny the Subject",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          168,
+          187
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 4,
+        "segment_raw": "We deny the Subject",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          168,
+          187
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 4,
+        "segment_raw": "We deny the Subject",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      }
+    ],
+    "scope": "consumed diagnostic, not fresh score",
+    "segments": [
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Object: the launch claim",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We withdraw the Object",
+        "resolved_foreign": false,
+        "segment_index": 1,
+        "signal_index": 0,
+        "typed_reference": true,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Author reply: owner of the Object is Slate Canopy",
+        "resolved_foreign": false,
+        "segment_index": 2,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Subject: the claim that the Slate Canopy cover has a round cutout",
+        "resolved_foreign": false,
+        "segment_index": 3,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We deny the Subject",
+        "resolved_foreign": false,
+        "segment_index": 4,
+        "signal_index": 0,
+        "typed_reference": false,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Tangerine Row was launched",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 1,
+        "typed_reference": null,
+        "unknown_owner": false
+      }
+    ],
+    "target_fact": false,
+    "typed_objects": [
+      {
+        "declared_value": "the launch claim",
+        "foreign_event": true,
+        "label": "object",
+        "scope": "excluded"
+      },
+      {
+        "declared_value": "Slate Canopy",
+        "foreign_event": false,
+        "label": "owner supplement",
+        "scope": "unresolved"
+      },
+      {
+        "declared_value": "the claim that the Slate Canopy cover has a round cutout",
+        "foreign_event": false,
+        "label": "subject",
+        "scope": "unresolved"
+      }
+    ]
+  },
+  {
+    "effective": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "governing_blocks": true,
+    "id": "li24-011",
+    "rule_trace": [
+      {
+        "exact_original_utf8_byte_span": [
+          113,
+          130
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 3,
+        "segment_raw": "I deny the Object",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          113,
+          130
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 3,
+        "segment_raw": "I deny the Object",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          113,
+          130
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 3,
+        "segment_raw": "I deny the Object",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          113,
+          130
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 3,
+        "segment_raw": "I deny the Object",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          113,
+          130
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 3,
+        "segment_raw": "I deny the Object",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      }
+    ],
+    "scope": "consumed diagnostic, not fresh score",
+    "segments": [
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Poppy Basin was launched",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Owner of the Item: Laurel Deck",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 1,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Item: the launch claim",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 2,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "I retract the Item",
+        "resolved_foreign": false,
+        "segment_index": 1,
+        "signal_index": 2,
+        "typed_reference": true,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Object: the claim that the Laurel Deck caption has a red background",
+        "resolved_foreign": false,
+        "segment_index": 2,
+        "signal_index": 2,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "I deny the Object",
+        "resolved_foreign": false,
+        "segment_index": 3,
+        "signal_index": 2,
+        "typed_reference": false,
+        "unknown_owner": false
+      }
+    ],
+    "target_fact": false,
+    "typed_objects": [
+      {
+        "declared_value": "Laurel Deck",
+        "foreign_event": false,
+        "label": "owner supplement",
+        "scope": "unresolved"
+      },
+      {
+        "declared_value": "the launch claim",
+        "foreign_event": true,
+        "label": "item",
+        "scope": "excluded"
+      },
+      {
+        "declared_value": "the claim that the Laurel Deck caption has a red background",
+        "foreign_event": false,
+        "label": "object",
+        "scope": "unresolved"
+      }
+    ]
+  },
+  {
+    "effective": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "governing_blocks": true,
+    "id": "li24-015",
+    "rule_trace": [
+      {
+        "exact_original_utf8_byte_span": [
+          85,
+          107
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "I withdraw the Subject",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          85,
+          107
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "I withdraw the Subject",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          85,
+          107
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "I withdraw the Subject",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          85,
+          107
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "I withdraw the Subject",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          85,
+          107
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "I withdraw the Subject",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      }
+    ],
+    "scope": "consumed diagnostic, not fresh score",
+    "segments": [
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Document owner: Granite Frame",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Orchid Rail was launched",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 1,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Subject: the quoted claim \"Flax Counter was launched\" in the Granite Frame bulletin",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 2,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "I withdraw the Subject",
+        "resolved_foreign": false,
+        "segment_index": 1,
+        "signal_index": 2,
+        "typed_reference": false,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Flax Counter is the complete product owner of the quoted event",
+        "resolved_foreign": false,
+        "segment_index": 2,
+        "signal_index": 2,
+        "typed_reference": null,
+        "unknown_owner": false
+      }
+    ],
+    "target_fact": false,
+    "typed_objects": [
+      {
+        "declared_value": "the quoted claim \"Flax Counter was launched\" in the Granite Frame bulletin",
+        "foreign_event": false,
+        "label": "subject",
+        "scope": "launch"
+      }
+    ]
+  },
+  {
+    "effective": {
+      "identity_scope": "unresolved",
+      "relation_scope": "unresolved",
+      "scope_risk": "ownership_scope"
+    },
+    "governing_blocks": true,
+    "id": "li24-017",
+    "rule_trace": [
+      {
+        "exact_original_utf8_byte_span": [
+          0,
+          22
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 0,
+        "segment_raw": "We withdraw the Object",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          0,
+          22
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 0,
+        "segment_raw": "We withdraw the Object",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          0,
+          22
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 0,
+        "segment_raw": "We withdraw the Object",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          0,
+          22
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 0,
+        "segment_raw": "We withdraw the Object",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          0,
+          22
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 0,
+        "segment_raw": "We withdraw the Object",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      }
+    ],
+    "scope": "consumed diagnostic, not fresh score",
+    "segments": [
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Paprika Dial was launched",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Object: the claim that the phrase \"event owner unknown\" in the Fern Jet index uses a serif font",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 1,
+        "typed_reference": null,
+        "unknown_owner": true
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We withdraw the Object",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 2,
+        "typed_reference": false,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Item: the launch of Fern Jet",
+        "resolved_foreign": false,
+        "segment_index": 1,
+        "signal_index": 2,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We deny the Item",
+        "resolved_foreign": false,
+        "segment_index": 2,
+        "signal_index": 2,
+        "typed_reference": true,
+        "unknown_owner": false
+      }
+    ],
+    "target_fact": false,
+    "typed_objects": [
+      {
+        "declared_value": "the claim that the phrase \"event owner unknown\" in the Fern Jet index uses a serif font",
+        "foreign_event": false,
+        "label": "object",
+        "scope": "unresolved"
+      },
+      {
+        "declared_value": "the launch of Fern Jet",
+        "foreign_event": true,
+        "label": "item",
+        "scope": "excluded"
+      }
+    ]
+  },
+  {
+    "effective": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "governing_blocks": true,
+    "id": "li24-021",
+    "rule_trace": [
+      {
+        "exact_original_utf8_byte_span": [
+          87,
+          108
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We retract the Object",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          87,
+          108
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We retract the Object",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          87,
+          108
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We retract the Object",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          87,
+          108
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We retract the Object",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          87,
+          108
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We retract the Object",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      }
+    ],
+    "scope": "consumed diagnostic, not fresh score",
+    "segments": [
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Object: the claim that the Velvet Pier reference card is thin and its heading is blue",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We retract the Object",
+        "resolved_foreign": false,
+        "segment_index": 1,
+        "signal_index": 0,
+        "typed_reference": false,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "the disputed attributes are the card thickness and heading color",
+        "resolved_foreign": false,
+        "segment_index": 2,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Velvet Pier was launched",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 1,
+        "typed_reference": null,
+        "unknown_owner": false
+      }
+    ],
+    "target_fact": false,
+    "typed_objects": [
+      {
+        "declared_value": "the claim that the Velvet Pier reference card is thin and its heading is blue",
+        "foreign_event": false,
+        "label": "object",
+        "scope": "unresolved"
+      }
+    ]
+  },
+  {
+    "effective": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "governing_blocks": true,
+    "id": "li24-031",
+    "rule_trace": [
+      {
+        "exact_original_utf8_byte_span": [
+          90,
+          108
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "I deny the Subject",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          90,
+          108
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "I deny the Subject",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          90,
+          108
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "I deny the Subject",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          90,
+          108
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "I deny the Subject",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          90,
+          108
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "I deny the Subject",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      }
+    ],
+    "scope": "consumed diagnostic, not fresh score",
+    "segments": [
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Subject: the claim that the heading \"No actual launch\" on the Cinnabar Rope sheet is red",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "I deny the Subject",
+        "resolved_foreign": false,
+        "segment_index": 1,
+        "signal_index": 0,
+        "typed_reference": false,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Object: the launch of Cinnabar Rope",
+        "resolved_foreign": false,
+        "segment_index": 2,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "I withdraw the Object",
+        "resolved_foreign": false,
+        "segment_index": 3,
+        "signal_index": 0,
+        "typed_reference": true,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Clover Lift was launched",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 1,
+        "typed_reference": null,
+        "unknown_owner": false
+      }
+    ],
+    "target_fact": false,
+    "typed_objects": [
+      {
+        "declared_value": "the claim that the heading \"No actual launch\" on the Cinnabar Rope sheet is red",
+        "foreign_event": false,
+        "label": "subject",
+        "scope": "launch"
+      },
+      {
+        "declared_value": "the launch of Cinnabar Rope",
+        "foreign_event": true,
+        "label": "object",
+        "scope": "excluded"
+      }
+    ]
+  },
+  {
+    "effective": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "governing_blocks": true,
+    "id": "li24-033",
+    "rule_trace": [
+      {
+        "exact_original_utf8_byte_span": [
+          109,
+          128
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We retract the Item",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          109,
+          128
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We retract the Item",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          109,
+          128
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We retract the Item",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          109,
+          128
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We retract the Item",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          109,
+          128
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We retract the Item",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      }
+    ],
+    "scope": "consumed diagnostic, not fresh score",
+    "segments": [
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Item: the claim that the sentence \"Teal Grove does not exist\" on the Violet Bridge slip is printed in green",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We retract the Item",
+        "resolved_foreign": false,
+        "segment_index": 1,
+        "signal_index": 0,
+        "typed_reference": false,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Object: the launch of Violet Bridge",
+        "resolved_foreign": false,
+        "segment_index": 2,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We deny the Object",
+        "resolved_foreign": false,
+        "segment_index": 3,
+        "signal_index": 0,
+        "typed_reference": true,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Teal Grove was launched",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 1,
+        "typed_reference": null,
+        "unknown_owner": false
+      }
+    ],
+    "target_fact": false,
+    "typed_objects": [
+      {
+        "declared_value": "the claim that the sentence \"Teal Grove does not exist\" on the Violet Bridge slip is printed in green",
+        "foreign_event": false,
+        "label": "item",
+        "scope": "unresolved"
+      },
+      {
+        "declared_value": "the launch of Violet Bridge",
+        "foreign_event": true,
+        "label": "object",
+        "scope": "excluded"
+      }
+    ]
+  },
+  {
+    "effective": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "governing_blocks": true,
+    "id": "li24-039",
+    "rule_trace": [
+      {
+        "exact_original_utf8_byte_span": [
+          120,
+          139
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "I withdraw the Item",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          120,
+          139
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "I withdraw the Item",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          120,
+          139
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "I withdraw the Item",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          120,
+          139
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "I withdraw the Item",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          120,
+          139
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "I withdraw the Item",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      }
+    ],
+    "scope": "consumed diagnostic, not fresh score",
+    "segments": [
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Item: the claim that the printed line \"Object: the launch of Petal Meter\" in the Cedar Wheel glossary has a red border",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "I withdraw the Item",
+        "resolved_foreign": false,
+        "segment_index": 1,
+        "signal_index": 0,
+        "typed_reference": false,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Subject: the launch of Cedar Wheel",
+        "resolved_foreign": false,
+        "segment_index": 2,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "I deny the Subject",
+        "resolved_foreign": false,
+        "segment_index": 3,
+        "signal_index": 0,
+        "typed_reference": true,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Petal Meter was launched",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 1,
+        "typed_reference": null,
+        "unknown_owner": false
+      }
+    ],
+    "target_fact": false,
+    "typed_objects": [
+      {
+        "declared_value": "the claim that the printed line \"Object: the launch of Petal Meter\" in the Cedar Wheel glossary has a red border",
+        "foreign_event": false,
+        "label": "item",
+        "scope": "launch"
+      },
+      {
+        "declared_value": "the launch of Cedar Wheel",
+        "foreign_event": true,
+        "label": "subject",
+        "scope": "excluded"
+      }
+    ]
+  },
+  {
+    "effective": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "governing_blocks": true,
+    "id": "li24-045",
+    "rule_trace": [
+      {
+        "exact_original_utf8_byte_span": [
+          0,
+          20
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 0,
+        "segment_raw": "We deny that Subject",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          0,
+          20
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 0,
+        "segment_raw": "We deny that Subject",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          0,
+          20
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 0,
+        "segment_raw": "We deny that Subject",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          0,
+          20
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 0,
+        "segment_raw": "We deny that Subject",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          0,
+          20
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 0,
+        "segment_raw": "We deny that Subject",
+        "signal_index": 2,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      }
+    ],
+    "scope": "consumed diagnostic, not fresh score",
+    "segments": [
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Subject: the claim that the Walnut Sled drawing has a thin black frame",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Lemon Arch was launched",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 1,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We deny that Subject",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 2,
+        "typed_reference": false,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Object: the launch of Walnut Sled",
+        "resolved_foreign": false,
+        "segment_index": 1,
+        "signal_index": 2,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We retract the Object",
+        "resolved_foreign": false,
+        "segment_index": 2,
+        "signal_index": 2,
+        "typed_reference": true,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "The Subject is the drawing-frame property declared in the heading",
+        "resolved_foreign": false,
+        "segment_index": 3,
+        "signal_index": 2,
+        "typed_reference": null,
+        "unknown_owner": false
+      }
+    ],
+    "target_fact": false,
+    "typed_objects": [
+      {
+        "declared_value": "the claim that the Walnut Sled drawing has a thin black frame",
+        "foreign_event": false,
+        "label": "subject",
+        "scope": "unresolved"
+      },
+      {
+        "declared_value": "the launch of Walnut Sled",
+        "foreign_event": true,
+        "label": "object",
+        "scope": "excluded"
+      }
+    ]
+  },
+  {
+    "effective": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "governing_blocks": true,
+    "id": "li24-057",
+    "rule_trace": [
+      {
+        "exact_original_utf8_byte_span": [
+          91,
+          107
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We deny the Item",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          91,
+          107
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We deny the Item",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          91,
+          107
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We deny the Item",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          91,
+          107
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We deny the Item",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          91,
+          107
+        ],
+        "rule": "typed_reference_not_excluded",
+        "segment_index": 1,
+        "segment_raw": "We deny the Item",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      }
+    ],
+    "scope": "consumed diagnostic, not fresh score",
+    "segments": [
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Item: the claim that the line \"Owner: Olive Keystone\" on the Ruby Basin plate is centered",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We deny the Item",
+        "resolved_foreign": false,
+        "segment_index": 1,
+        "signal_index": 0,
+        "typed_reference": false,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Object: the launch of Ruby Basin",
+        "resolved_foreign": false,
+        "segment_index": 2,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We withdraw the Object",
+        "resolved_foreign": false,
+        "segment_index": 3,
+        "signal_index": 0,
+        "typed_reference": true,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "The line describes printed plate text, not an owner supplement for the Object",
+        "resolved_foreign": false,
+        "segment_index": 4,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": true
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Olive Keystone was launched",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 1,
+        "typed_reference": null,
+        "unknown_owner": false
+      }
+    ],
+    "target_fact": false,
+    "typed_objects": [
+      {
+        "declared_value": "the claim that the line \"Owner: Olive Keystone\" on the Ruby Basin plate is centered",
+        "foreign_event": false,
+        "label": "item",
+        "scope": "unresolved"
+      },
+      {
+        "declared_value": "the launch of Ruby Basin",
+        "foreign_event": true,
+        "label": "object",
+        "scope": "excluded"
+      }
+    ]
+  }
+]
