@@ -156,6 +156,8 @@ jobs:
           PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s evaluation/engine07-realworld-operations-v1 -p 'test_*.py' -v
           PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s evaluation/engine07-realworld-runner-v1 -p 'test_*.py' -v
           PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s evaluation/engine07-quality-gates-v1 -p 'test_*.py' -v
+          PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s evaluation/engine073-source-gate-v1 -p 'test_*.py' -v
+          PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s evaluation/engine073-source-gate-v1 -p 'test_*.py' -v
       - name: Validate cross-model concurrency policy
         run: python3 scripts/validate_cross_model_concurrency_policy.py
       - name: Validate Google canonical pacing policy
