@@ -2962,7 +2962,7 @@ fn foreign_printed_properties_keep_outside_ownership_and_raw_risks() {
             )
             .unwrap();
             assert_eq!(effective.scope_risk, inherited.scope_risk, "{tail}:{risk}");
-            assert_eq!(serde_json::to_value(&raw).unwrap()["scope_risk"], risk);
+            assert_eq!(serde_json::to_value(raw).unwrap()["scope_risk"], risk);
             if !tail.is_empty() {
                 assert_ne!(
                     effective.scope_risk,
