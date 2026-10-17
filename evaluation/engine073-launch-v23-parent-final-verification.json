@@ -1,0 +1,15 @@
+{
+  "status": "PASS archive/identity integrity only; semantic first FAIL preserved",
+  "source_sha": "01dc78b6952ed77cd20001323f6ab032eeec361e",
+  "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+  "independent_anchor": "2d9fcc74cb6671f8eff56855d45a5e4d48e1e14dedcc29b7c3dbd466edb10d9c",
+  "source_archive_files": 591,
+  "preserved_preparation_files": 5,
+  "all_referenced_files": 596,
+  "first_summary_sha256": "9ad87662c8af8d1847fe8d2a231a80be2fb51abcd14f1788321df5dfea76f7ce",
+  "first_results_sha256": "a0649be3d77a08c1a03fdf433c0dfc6ff27c5b3b1b9e39cd6d161a2736b6d1e1",
+  "receipt_sha256": "7989adcae182a5fce6e7d357adf098bf1a90f379e2db4df5018bd43c16530ea1",
+  "independent_outcome": "FAIL40/60;unsafe0;positive misses20",
+  "independent_fixed_source_released": true,
+  "mutation_engine_scorer_provider_model_Oracle_calls": 0
+}

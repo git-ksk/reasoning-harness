@@ -1,0 +1,178 @@
+   Compiling reasoning-harness-providers v0.4.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-providers)
+    Finished `test` profile [unoptimized] target(s) in 5.19s
+     Running unittests src/lib.rs (/private/tmp/engine073-validation-target/debug/deps/reasoning_harness_providers-05a026163a747129)
+
+running 156 tests
+test external_admission::tests::admitted_external_evidence_reenters_ordinary_verification_before_accept ... ok
+test external_admission::tests::configured_source_can_admit_fresh_scoped_evidence_without_self_authority ... ok
+test external_admission::tests::insufficient_configured_authority_and_invalid_retrieval_time_fail_closed ... ok
+test external_admission::tests::missing_normalized_metadata_is_machine_classified ... ok
+test external_admission::tests::scope_helper_does_not_accept_broader_untrusted_claim ... ok
+test external_admission::tests::stale_external_evidence_stays_unknown_with_typed_admission_telemetry ... ok
+test external_admission::tests::stale_wrong_scope_and_authority_claims_fail_closed ... ok
+test external_command::tests::command_adapter_exchanges_typed_stdio_without_trust_promotion ... ok
+test external_command::tests::config_identity_is_stable_and_does_not_expose_literal_arguments ... ok
+test external_command::tests::investigation_adapter_uses_separate_request_identity ... ok
+test external_command::tests::large_request_write_to_non_reader_respects_whole_invocation_timeout ... ok
+test external_command::tests::oversized_or_non_json_response_is_protocol_failure ... ok
+test external_command::tests::process_timeout_is_enforced_and_typed ... ok
+test external_command::tests::response_schema_cannot_smuggle_trusted_metadata ... ok
+test external_command::tests::response_schema_cannot_smuggle_verification_receipts ... ok
+test external_command::tests::typed_failure_envelope_preserves_authentication_class_without_retry ... ok
+test gemma::tests::attempt_telemetry_guard_records_in_flight_cancellation ... ok
+test gemma::tests::attempt_telemetry_records_503_retry_then_success ... ok
+test gemma::tests::attempt_telemetry_records_structured_quota_without_request_content ... ok
+test gemma::tests::classifies_google_quota_rate_limit_and_availability_errors ... ok
+test gemma::tests::classifies_quota_id_absent_structured_retry_info_as_rate_limit ... ok
+test gemma::tests::classifies_structured_short_window_google_quota_as_rate_limit_only ... ok
+test gemma::tests::deterministic_http_failures_and_quota_do_not_retry ... ok
+test gemma::tests::empty_model_text_can_recover_on_final_allowed_attempt ... ok
+test gemma::tests::execution_budget_rejects_long_short_window_retry_without_sleep ... ok
+test gemma::tests::extracts_bounded_google_provider_error_detail ... ok
+test gemma::tests::google_request_timeout_allows_slow_provider_responses ... ok
+test gemma::tests::normalizes_random_seed_to_google_supported_signed_32_bit_domain ... ok
+test gemma::tests::parses_model_output_text_and_usage ... ok
+test gemma::tests::parses_opt_in_google_request_pacing_without_changing_default ... ok
+test gemma::tests::rate_limit_delay_prefers_retry_after_header ... ok
+test gemma::tests::rate_limit_delay_uses_bounded_jittered_exponential_fallback ... ok
+test gemma::tests::rate_limit_retry_remains_compatible_and_observable ... ok
+test gemma::tests::rejects_empty_credentials_without_echoing_them ... ok
+test gemma::tests::repeated_empty_model_text_remains_protocol_failure ... ok
+test gemma::tests::repeated_transient_5xx_fails_after_bounded_retries ... ok
+test gemma::tests::retries_http_500_then_returns_success_with_attempt_count ... ok
+test gemma::tests::retries_one_empty_model_text_then_returns_success ... ok
+test gemma::tests::retry_delay_uses_bounded_equal_jitter ... ok
+test gemma::tests::retryable_google_transients_use_full_provider_attempt_budget ... ok
+test gemma::tests::serializes_interactions_json_schema_without_authority_fields ... ok
+test gemma::tests::shared_google_pacer_path_requires_absolute_path ... ok
+test gemma::tests::shared_google_pacer_serializes_request_slots_across_instances ... ok
+test gemma::tests::structured_google_quota_window_distinguishes_short_daily_and_ambiguous ... ok
+test gemma::tests::structured_per_day_quota_remains_non_retryable ... ok
+test gemma::tests::structured_per_minute_quota_uses_existing_bounded_rate_limit_retry ... ok
+test gemma::tests::structured_retry_info_without_quota_id_is_short_window_only_when_bounded_and_conflict_free ... ok
+test gemma::tests::transient_5xx_backoff_keeps_bounded_base_schedule ... ok
+test gemma::tests::transient_5xx_can_recover_on_final_allowed_attempt ... ok
+test gemma::tests::uses_google_recommended_sampling_temperature ... ok
+test groq::tests::classifies_rate_limit_quota_and_credentials ... ok
+test groq::tests::daily_quota_429_fails_fast_without_rate_limit_retry ... ok
+test groq::tests::empty_content_reports_bounded_terminal_metadata_without_reasoning_text ... ok
+test groq::tests::execution_budget_rejects_long_transient_retry_without_sleep ... ok
+test groq::tests::exhausted_json_object_generation_retries_surface_typed_capability_failure ... ok
+test groq::tests::exhausted_structured_output_retries_surface_typed_capability_failure ... ok
+test groq::tests::extracts_safe_rate_limit_headers_for_diagnostics ... ok
+test groq::tests::minimizes_reasoning_only_for_groq_gpt_oss_models ... ok
+test groq::tests::parses_groq_reset_durations ... ok
+test groq::tests::rejects_empty_credentials_without_echoing_them ... ok
+test groq::tests::retries_best_effort_schema_validation_failure_then_returns_success ... ok
+test groq::tests::retries_http_429_then_returns_success ... ok
+test groq::tests::serializes_best_effort_json_schema_without_rewriting_harness_schema ... ok
+test groq::tests::serializes_openai_compatible_request_without_model_specific_controls ... ok
+test groq::tests::structured_output_retry_matches_only_validation_errors ... ok
+test groq::tests::token_pacing_uses_actual_previous_usage ... ok
+test groq::tests::transport_failure_records_the_started_provider_attempt ... ok
+test groq::tests::zero_structured_output_retry_limit_surfaces_capability_failure_after_one_attempt ... ok
+test mcp_readonly::tests::acquisition_envelope_is_raw_data_and_reverification_still_owns_support ... ok
+test mcp_readonly::tests::allowlist_timeout_and_protocol_errors_fail_closed ... ok
+test mcp_readonly::tests::modern_stdio_call_carries_protocol_and_stable_provenance ... ok
+test mcp_readonly::tests::opaque_or_tool_error_results_never_self_promote ... ok
+test mcp_readonly_v2::tests::acquisition_envelope_is_raw_data_and_reverification_still_owns_support ... ok
+test mcp_readonly_v2::tests::allowlist_timeout_and_protocol_errors_fail_closed ... ok
+test mcp_readonly_v2::tests::large_request_write_to_non_reader_respects_whole_invocation_timeout ... ok
+test mcp_readonly_v2::tests::modern_stdio_call_carries_protocol_and_stable_provenance ... ok
+test mcp_readonly_v2::tests::opaque_or_tool_error_results_never_self_promote ... ok
+test mcp_readonly_v2::tests::successor_stdin_block_does_not_exceed_whole_invocation_deadline ... ok
+test mcp_readonly_v3::tests::config_identity_binds_negotiation_policy ... ok
+test mcp_readonly_v3::tests::explicit_harness_envelope_is_preserved_as_untrusted_acquisition_data ... ok
+test mcp_readonly_v3::tests::malformed_rpc_remains_protocol_failure ... ok
+test mcp_readonly_v3::tests::negotiated_session_accepts_allowlisted_downgrade_and_keeps_generic_content_opaque ... ok
+test mcp_readonly_v3::tests::official_github_mcp_pinned_image_negotiates_and_generic_result_stays_opaque ... ignored, requires Docker and GITHUB_PERSONAL_ACCESS_TOKEN
+test mcp_readonly_v3::tests::readiness_probe_negotiates_and_verifies_read_only_without_calling_tool ... ok
+test mcp_readonly_v3::tests::readiness_probe_rejects_selected_tool_without_read_only_proof ... ok
+test mcp_readonly_v3::tests::selected_tool_requires_server_read_only_proof ... ok
+test mcp_readonly_v3::tests::session_break_after_initialize_is_typed_session_failure ... ok
+test mcp_readonly_v3::tests::tool_is_error_remains_tool_execution_failure ... ok
+test mcp_readonly_v3::tests::tool_json_rpc_error_is_typed_tool_execution_failure ... ok
+test mcp_readonly_v3::tests::tool_list_page_budget_exhaustion_is_typed_session_failure ... ok
+test mcp_readonly_v3::tests::unsupported_negotiated_revision_is_typed_negotiation_failure ... ok
+test mcp_readonly_v3::tests::whole_session_lifecycle_uses_one_absolute_deadline ... ok
+test mcp_remote::tests::acquisition_cancellation_interrupts_tools_call_without_evidence ... ok
+test mcp_remote::tests::complete_and_legacy_call_results_keep_existing_shape ... ok
+test mcp_remote::tests::input_required_mid_tool_records_only_safe_state_and_returns_no_evidence ... ok
+test mcp_remote::tests::input_required_transition_is_typed_without_retaining_prompt_or_state ... ok
+test mcp_remote::tests::insufficient_scope_challenge_is_bounded_typed_and_secret_free ... ok
+test mcp_remote::tests::insufficient_scope_is_typed_outside_core_error_semantics ... ok
+test mcp_remote::tests::malformed_or_conflicting_insufficient_scope_challenges_fail_closed ... ok
+test mcp_remote::tests::malformed_or_conflicting_scope_challenges_fail_closed ... ok
+test mcp_remote::tests::malformed_or_unknown_mid_tool_transition_fails_closed ... ok
+test mcp_remote::tests::non_tls_remote_endpoint_is_rejected_except_loopback ... ok
+test mcp_remote::tests::ordinary_forbidden_challenge_remains_generic_permission_denial_shape ... ok
+test mcp_remote::tests::ordinary_forbidden_remains_permission_denied_without_scope_recovery ... ok
+test mcp_remote::tests::readiness_cancellation_interrupts_http_before_remote_timeout ... ok
+test mcp_remote::tests::readiness_fails_closed_for_unimplemented_x_mcp_header_contract ... ok
+test mcp_remote::tests::readiness_is_stateless_and_requires_read_only_hint ... ok
+test mcp_remote::tests::readiness_rejects_write_capable_tool ... ok
+test mcp_remote::tests::remote_acquisition_uses_bearer_without_binding_token_into_config_identity ... ok
+test mcp_remote::tests::sse_parser_combines_first_event_data_lines ... ok
+test mistral::tests::classifies_429_as_rate_limit_without_quota_signal ... ok
+test mistral::tests::classifies_429_quota_signal_separately ... ok
+test mistral::tests::classifies_client_request_rejections_as_protocol ... ok
+test mistral::tests::default_request_timeout_supports_long_form_reasoning ... ok
+test mistral::tests::execution_budget_rejects_long_rate_limit_retry_without_sleep ... ok
+test mistral::tests::fallback_backoff_bridges_a_minute_window_without_unbounded_waits ... ok
+test mistral::tests::provider_error_detail_is_bounded_and_single_line ... ok
+test mistral::tests::rate_limit_delay_prefers_retry_after_header ... ok
+test mistral::tests::rate_limit_delay_uses_bounded_exponential_fallback ... ok
+test mistral::tests::rate_limit_delay_uses_provider_token_reset_before_fallback ... ok
+test mistral::tests::rejects_empty_credentials_without_echoing_them ... ok
+test mistral::tests::retries_http_429_then_returns_success ... ok
+test mistral::tests::serializes_json_schema_without_provider_authority_fields ... ok
+test mistral::tests::successful_healthy_headroom_does_not_pace ... ok
+test mistral::tests::successful_low_token_headroom_requests_a_cooldown ... ok
+test mistral::tests::telemetry_whitelists_rate_headers_only ... ok
+test network::tests::execution_telemetry_separates_attempts_active_and_wait ... ok
+test network::tests::network_failure_classifier_separates_dns_proxy_tls_and_connectivity ... ok
+test network::tests::provider_active_budget_is_separate_from_wait_budget ... ok
+test network::tests::provider_wait_budget_caps_single_and_cumulative_waits ... ok
+test nvidia::tests::classifies_connection_refusal_as_provider_unavailable ... ok
+test nvidia::tests::classifies_malformed_success_response_as_protocol_failure ... ok
+test nvidia::tests::classifies_rate_limit_quota_timeout_and_unavailable ... ok
+test nvidia::tests::classifies_request_timeout_without_contacting_nvidia ... ok
+test nvidia::tests::maps_minimized_reasoning_to_disable_thinking_without_changing_output_contract ... ok
+test nvidia::tests::parses_text_and_usage ... ok
+test nvidia::tests::rejects_empty_credentials_without_echoing_them ... ok
+test nvidia::tests::rejects_empty_model_text ... ok
+test nvidia::tests::retries_http_429_then_returns_success ... ok
+test nvidia::tests::retry_after_prefers_seconds_and_supports_http_date ... ok
+test nvidia::tests::serializes_model_seed_and_json_mode_without_model_specific_branches ... ok
+test nvidia::tests::serializes_provider_neutral_json_mode_without_authority_fields ... ok
+test subprocess_deadline::tests::cancellation_terminates_owned_subprocess_before_deadline ... ok
+test subprocess_deadline::tests::cancellation_terminates_stream_session_before_deadline ... ok
+test subprocess_deadline::tests::inherited_stdout_descendant_does_not_extend_deadline_cleanup ... ok
+test subprocess_deadline::tests::large_write_to_non_reader_is_bounded_by_absolute_deadline ... ok
+test subprocess_deadline::tests::oversized_stdout_is_drained_and_classified_as_protocol ... ok
+test subprocess_deadline::tests::pre_cancelled_subprocess_is_never_spawned ... ok
+test subprocess_environment::tests::child_environment_strips_ambient_sentinel_and_preserves_launch_baseline ... ok
+test subprocess_environment::tests::scoped_environment_is_explicit_and_does_not_restore_ambient_secrets ... ok
+test trusted_command::tests::contradiction_and_operational_failure_stay_typed ... ok
+test trusted_command::tests::external_response_cannot_smuggle_receipt_or_verifier_identity ... ok
+test trusted_command::tests::large_request_write_to_non_reader_respects_whole_invocation_timeout ... ok
+test trusted_command::tests::opaque_acquired_data_needs_explicit_trusted_verifier_to_promote ... ok
+test trusted_command::tests::qualified_requirement_cannot_be_bypassed_by_trusted_command_binding ... ok
+test trusted_command::tests::verifier_constructs_exact_receipt_in_harness_not_from_external_fields ... ok
+
+test result: ok. 155 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 67.76s
+
+     Running tests/mcp_readonly_fixture_stress.rs (/private/tmp/engine073-validation-target/debug/deps/mcp_readonly_fixture_stress-ecf101eb2569c5be)
+
+running 2 tests
+test parallel_legacy_mcp_fixtures_preserve_fail_closed_observations ... ignored, opt-in high-contention diagnostic; CI demonstrated immediate Transport at 8 workers
+test sequential_legacy_mcp_fixture_protocol_is_fail_closed ... ok
+
+test result: ok. 1 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 6.92s
+
+   Doc-tests reasoning_harness_providers
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

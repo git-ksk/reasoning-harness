@@ -1,0 +1,117 @@
+{
+  "identity": "engine073-launch-independent-v21",
+  "saved_utc": "2026-10-16T23:29:28.092089+00:00",
+  "first_outcome": "FAIL",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "candidate_source_sha": "d647ca44d38958858a9ff4582f48ba6240d75241",
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "1abbec8d424d372a5713d57be7068af2dd231f1415ad6ad232f2b497e16baea6",
+      "unchanged": true
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "1c1df020a80f6c2bedec5ed3e5daec21a5886484d593af56d3d27a54ad6f86c4",
+      "unchanged": true
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "unchanged": true
+    },
+    "opaque_parent_freeze": {
+      "path": "/private/tmp/engine073-source20-freeze-v2.json",
+      "sha256": "5c1d24ce66b10facaaa3ed9c52f3aa71c71262f271c65768f8a727031130335f",
+      "unchanged": true
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v21-probe/probe",
+      "sha256": "2f46670978f03eebf7746333627f305e90e6c2e24fa4fce373fd9203d973eab2",
+      "unchanged": true
+    }
+  },
+  "manifest_sha256": "2eec1fc5a0c593aec8cde9005d0a907288e4f05ad52df01acc3a273c18bf4037",
+  "cases_sha256": "7e548dd4eae69fe7b6b4af6fd376c37db26f00d49e4a84ed3a4cecba9d5c35b0",
+  "inputs_sha256": "602d2d1c010c9998035d922e3dd784dd052efcfd5e6d298f8f226627dcd4b194",
+  "probe_source_sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+  "scorer_sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+  "recorder_sha256": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+  "first_stdout_sha256": "cab1b85895c6f2099da79e8e419015581434f88650bc2cbdb50c8b0f68b58832",
+  "first_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "first_results_sha256": "d34a913ed98b4ce2aee3ebe447e63a8e063fecb2b97c90056b0e9c3421973ef2",
+  "first_summary_sha256": "70e22c764cb06dc6ce7e71f9f84e869e08b8dfbce50cc33bfeff9e2372acd390",
+  "first_invocation_sha256": "1240036a6f28f4279de613f2017359afaffec83ed7e7d2dc0478ea957c0104dc",
+  "review_sha256": "8c4191a3e16c2f9a844372d74648268e8e6d043ef1ff131cdc77630d78e6e7d4",
+  "README_sha256": "4bed625d13e4960939165e5781e67fd5d68ca70bc35cab232b926339048f591f",
+  "first_summary": {
+    "identity": "engine073-launch-independent-v21",
+    "candidate_source_sha": "d647ca44d38958858a9ff4582f48ba6240d75241",
+    "manifest_sha256": "2eec1fc5a0c593aec8cde9005d0a907288e4f05ad52df01acc3a273c18bf4037",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 48,
+    "failed": 12,
+    "incomplete": 0,
+    "positive_passed": 18,
+    "negative_passed": 30,
+    "negative_v17_requested_relation_violations": 0,
+    "negative_v30_relevant_violations": 0,
+    "positive_v17_withheld": 12,
+    "positive_v30_withheld": 12,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "cab1b85895c6f2099da79e8e419015581434f88650bc2cbdb50c8b0f68b58832",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "1240036a6f28f4279de613f2017359afaffec83ed7e7d2dc0478ea957c0104dc"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "failed_positive_ids": [
+    "li21-003",
+    "li21-011",
+    "li21-025",
+    "li21-027",
+    "li21-031",
+    "li21-033",
+    "li21-035",
+    "li21-037",
+    "li21-041",
+    "li21-043",
+    "li21-055",
+    "li21-059"
+  ],
+  "negative_safety_violations": 0,
+  "author_stage_revision": {
+    "record_sha256": "33eae9d774d5fa9b252c84d5db91da5964fa4947a322a60f35fca6fd951a5eb2",
+    "initial_author_AST_hashes_preserved": true,
+    "meaning_polarity_rationales_unchanged": true,
+    "before_input_generation_Engine_scorer0": true,
+    "parent_authorized": true
+  },
+  "author_and_full_input_STATIC_ONLY_runs": 1,
+  "STATIC_ONLY_semantic_observations": 0,
+  "semantic_processes": 1,
+  "observed_cases": 60,
+  "scorer_applications": 1,
+  "post_freeze_retry_rescore_relabel": 0,
+  "all_complete_frozen_inputs_labels_scope_history_unchanged": true,
+  "old_v1_v20_recursive_files_unchanged": 478,
+  "all_unused_drafts_and_v19_history_unchanged_not_reused": true,
+  "isolation": {
+    "Engine_implementation_read": false,
+    "root_diagnostics_audits_tests_development_other_corpora_read": false,
+    "opaque_parent_freeze_contents_read": false,
+    "provider_network_calls": 0,
+    "Oracle": false,
+    "additional_agents": 0,
+    "cargo_invocations": 0,
+    "shared_target_mutations": 0,
+    "Git_mutations": 0
+  },
+  "limits": "Finite synthetic source gate, not real24/ordinaryCLI/provider/human/release; no cross-corpus improvement/arbitrary-language/risk-component assertion.",
+  "final_manifest": "Recursive all-version hashes except final manifest itself; external SHA256 is final anchor."
+}

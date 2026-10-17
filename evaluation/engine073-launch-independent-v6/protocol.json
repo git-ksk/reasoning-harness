@@ -1,0 +1,75 @@
+{
+  "identity": "engine073-launch-independent-v6",
+  "purpose": "New independent controlled synthetic multi-cue #520 source-fix check, not #531 real-document 24-question/provider/final-answer/CLI/release acceptance.",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "candidate": {
+    "source_sha": "06d6c0b8ce28adec71f688a44dfef7624df2ab3b",
+    "evidence_relevance_rs_sha256": "d6811361889b8815c4a1234fbdb60309e9e122c88cc6dcd5cc0aa3eec947d39c",
+    "package_version": "0.7.2",
+    "identity": "Fixed immutable source SHA; package metadata not yet release version."
+  },
+  "prior_exposure": {
+    "known_seen": "Evaluator authored/observed v2-v5; these are seen development controls. V1 was operational FAIL before semantics. All previous first results remain unchanged.",
+    "parent_reports": "Related42 tests and seen regressions PASS are parent-reported development evidence, not independently read/rerun here.",
+    "prohibited_unread": "Production implementation, parent/root tests, historical/other corpora/fixtures.",
+    "new_authoring": "New multi-cue records and controls after candidate freeze, not renamed prior blocks. Iterative successor testing is acknowledged and does not constitute broad release or real-world acceptance."
+  },
+  "design": {
+    "cases": 60,
+    "positive": "All operative objects are explicitly non-launch properties/activities/artifacts, named other-product launch claims, or neutral text. Each parallel/list/quoted object supplies scope directly; no forced ambiguous positive. Launch requested_relation and Relevant must remain. Other-property fact approval is not measured.",
+    "negative": "A current same-target/claim launch denial/retraction/withdrawal/non-event or explicitly unresolved launch-owner/reference requires both not requested_relation and non-Relevant, regardless of coexisting harmless cues.",
+    "matched_pairs": 30,
+    "fictional_targets": 30,
+    "real_documents": 0,
+    "affirmative": "One separate unadorned TARGET was launched Excerpt, canonical name directly owns the known predicate. No arbitrary positive predicate/number/AST/alias/preparation addition.",
+    "new_boundary": "An explicit harmless property/other-owner cue cannot globally exempt any independent target launch denial/retraction/non-event or unresolved launch correction within the same candidate record.",
+    "unknown_ids": [
+      "li6-050",
+      "li6-052",
+      "li6-054",
+      "li6-056",
+      "li6-058",
+      "li6-060"
+    ],
+    "scope_decisions": "pre-freeze-scope-review.json, fixed before any semantics. Ambiguous parallel/group references are negatives; fully named objects/owners require no general reference AST.",
+    "optimistic_prebinding": "All proposal exact/exact and raw exact_target/requested_relation/none; core must correct unsafe launch qualification. No model binding/extraction evaluation.",
+    "budget": {
+      "max_model_attempts": 2,
+      "max_tokens": 192,
+      "max_elapsed_ms": 90000
+    },
+    "labels": "Offline controlled evaluator expectations excluded from Engine input, not externally approved universal truth."
+  },
+  "scoring": {
+    "code": "Byte-identical inherited score.py SHA256 9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3; no permissive changes.",
+    "positive": "effective_v17.relation_scope == requested_relation AND v30.disposition == relevant",
+    "negative": "effective_v17.relation_scope != requested_relation AND v30.disposition != relevant",
+    "v29": "Diagnostic only.",
+    "PASS": "60/60 fixed outcomes; zero negative requested_relation/Relevant; zero withheld positive; no missing/duplicate/foreign/malformed/unexpected row; exit0 and empty stderr.",
+    "v17_v30": "Negative requested_relation retained with v30 Ambiguous still violates the joint gate; distinguish from false-Relevant.",
+    "failure": "Keep first raw/result/FAIL. No retries, rescoring, post-result labels/inputs/scorer changes or overwrite."
+  },
+  "stages": {
+    "static": "60 schema-complete inputs/positive budget/label exclusion/direct supported facts/inherited syntax and scorer/probe hash/prior hash checks; Engine and semantic observations0.",
+    "freeze": "Full inputs/corpus/labels/protocol/scorer/probe/recorder plus actual source/core/serde/executable identity hashes before first Engine observation.",
+    "semantic": "Exactly one 60-case deterministic public v17/v29/v30 probe process; no semantic sentinel/model/provider.",
+    "score": "One fixed scoring application to original raw.",
+    "receipt": "Verify old/frozen file integrity and save all-version final artifact hash manifest."
+  },
+  "execution": {
+    "provider_API_calls": 0,
+    "oracle": false,
+    "additional_agents": false,
+    "cargo": false,
+    "identity_guard": "Immediately before invocation check actual HEAD, hash-only source bytes, linked core/serde/probe and all frozen authored files.",
+    "build_limit": "Parent supplied completed fixed-source core; evaluator hash-checks/links with rustc only, no independent rebuild/implementation inspection."
+  },
+  "limits": [
+    "Narrow synthetic controlled English launch-context API check; #531 acquired real primary-source questions/final answers and provider/CLI/release acceptance remain separate unperformed gates.",
+    "Candidate only, no baseline delta; distinct set/candidate percentages are not improvement measurements.",
+    "60 scenarios are30 matched pairs, not60 independent documents/exhaustive grammar or reference proof.",
+    "No other-property truth, arbitrary AST/numeric reference, alias, temporal, preparation/future-release or new affirmative predicate capability measured.",
+    "Model_relevant/model_ambiguous core reason names do not represent model calls.",
+    "After first semantic observation v6 is consumed and later use is seen development/regression."
+  ]
+}

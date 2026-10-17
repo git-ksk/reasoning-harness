@@ -1,6 +1,6 @@
 # Roadmap
 
-> Historical engineering/acceptance ledger below. Current direction: [product roadmap](product-roadmap.md) and [#531 Engine0.7 real-world evaluation](engine-07-realworld-evaluation.md). Published CLI is0.5.5 / Engine0.6.1;0.7.2 adoption evaluation is incomplete.
+> Historical engineering/acceptance ledger below. Current direction: [product roadmap](product-roadmap.md) and [#531 Engine0.7 real-world evaluation](engine-07-realworld-evaluation.md). Published CLI is0.5.5 / Engine0.6.1;0.7.2 adoption evaluation is incomplete. Current successor plan: [Engine0.7.3](engine-0.7.3-roadmap.md).
 
 ## Project direction
 

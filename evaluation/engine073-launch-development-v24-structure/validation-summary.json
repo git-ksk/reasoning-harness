@@ -1,0 +1,23 @@
+{
+  "workspace": {
+    "passed": 1582,
+    "failed": 0,
+    "ignored": 8
+  },
+  "strict_clippy": "PASS",
+  "fmt": "PASS",
+  "quality_metric_unit_tests": 10,
+  "fixtures": 20,
+  "original_archive_files": 13,
+  "source_sha": "95053007bba54c728eee428837b22eb9d52a4f61",
+  "source_file_sha256": "9d8d3fa48a67f197d32282314813d992a374b9f54a6b079c39498b9a67f9207f",
+  "seen_regressions": 1264,
+  "historical_byte_identical": 597,
+  "original_audit": 14,
+  "scope": "source development only; new fresh independent acceptance in progress separately",
+  "fresh_independent_after_this_change": "PREPARING v25 pre-author evaluator freeze; not authored or accepted",
+  "merge_release_cli_adoption": "NO_GO pending fresh/real gates",
+  "provider_model_Oracle_calls": 0,
+  "source_gate_policy_unit_tests": 10,
+  "preflight_error_before_any_probe": "raw patch whitespace precluded commit/freeze;startup created empty output only;0 probe/scorer calls"
+}

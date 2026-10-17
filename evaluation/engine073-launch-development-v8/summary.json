@@ -1,0 +1,58 @@
+{
+  "source_sha": "92293072c686dc4000855816322ed58b3df905c8",
+  "source_file_sha256": "644627ea637cac355d20b6ecd62131ecfad690e653ffcacdd7f72c1f9fce69c8",
+  "historical_complete_equality": 597,
+  "original_audit": 14,
+  "known_seen_regression": {
+    "v2": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v3": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v4": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v5": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v6": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v7": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v8": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    }
+  },
+  "provider_calls": 0,
+  "fresh_independent_acceptance": false,
+  "core_rlib_sha256": "eb1a1317fd693e7b65fb3502f190e69defe3500294637f9886b088dbbe17b83d",
+  "focused_tests": 50,
+  "workspace": {
+    "passed": 1514,
+    "failed": 0,
+    "ignored": 8
+  },
+  "clippy": "PASS",
+  "fmt": "PASS",
+  "fixtures_cases": 20,
+  "original_archive_files": 13,
+  "cli_adoption": "NO_GO",
+  "full_real_source_acceptance_complete": false
+}

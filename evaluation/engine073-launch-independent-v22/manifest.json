@@ -1,0 +1,116 @@
+{
+  "identity": "engine073-launch-independent-v22",
+  "author": "sole authorized independent evaluator; Engine source blind",
+  "frozen_utc": "2026-10-17T00:48:55.430776+00:00",
+  "candidate": {
+    "source_sha": "7431333d212938147a5d9ab32a0b8bdb44ee16b8",
+    "package_version": "0.7.2",
+    "source_identity": "candidate identified by exact source commit and source hash; unreleased development source21",
+    "engine_source_contents_read": false
+  },
+  "frozen_files": {
+    "author_cases.py": "2305f6aae15ba359ee8425fade0938e25985ec4c17c456257c83eace88122cb6",
+    "build-preflight.json": "1bc835d65dff2331e09bfff706d9f9f37a2c851363269544e90e5521ce51bf79",
+    "build.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cases.json": "132ba8207c5fcc825beefab4cdd3725e6002f01048c6b380201fdca42351b83f",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "immutable-predecessor-check.json": "7efdd0f1e1d26bd7b07322db717088f7a3a135a62a0cc62432b37edc8e340e20",
+    "inputs.json": "c971217116917ba70cb69fb739fe17d7f38b0652748b645ac63ba511d9dd7b37",
+    "pre-freeze-scope-review.json": "78d7e78fb193441060efc6a77fb89b6fefc404f6dba1ea78e56de1dc4e817319",
+    "predecessor-artifact-hashes.json": "5ef451fe82bd91c0e3022d1418578705b3ba938b426482d4ab84ecc66b032b68",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "protocol.json": "ff4ebc05fda7835ebd1ad1ec949024a31ff405a00727cc811bea565dcded89e6",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "static-preflight.json": "60c13d380866e49f670ee6b78782d7a8683d6fd149a565caa8f03974b5e0175a",
+    "static-stage-invocation.json": "0c10b11a8491ecfee556c0409a207c6b7a0eee37213624fbafdd2d92bc35cd92",
+    "static_preflight.py": "6d82309857b66dcdc8eeceb47517eb3d56ff7e8900548707861c49cc4e0d7b50"
+  },
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "b7fec3e0f7c6b76dfbff1b801dd085a22661df9b22457431653eb2073a4e08f0",
+      "bytes": 718231
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "ab615574b7b5487592e04cc07fcb6cd748c129cd7ea148bd599329d1bbb83ad1",
+      "bytes": 31392816
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "bytes": 2110472
+    },
+    "opaque_parent_freeze": {
+      "path": "/private/tmp/engine073-source21-freeze.json",
+      "sha256": "72d19b55ec8a8594268ab486b1840e335fa0951fdb17937b7d7b575f015f512b",
+      "bytes": 571
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v22-probe/probe",
+      "sha256": "7415f47eae7d682171633c8eb3361beb009bc3e75bc416e02c1bcc99b1d4b491",
+      "bytes": 3119192
+    }
+  },
+  "corpus": {
+    "cases": 60,
+    "pairs": 30,
+    "positive": 30,
+    "semantic_negative": 30,
+    "author_revisions": 0,
+    "new_after_candidate_freeze": true,
+    "labels_and_rationales_excluded_from_Engine_input": true,
+    "raw_context_gap": [
+      "li22-024",
+      "li22-048"
+    ],
+    "pure_raw_risk_joint_negatives": 0
+  },
+  "probe": {
+    "sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "public_API": "derive_effective_evidence_local_qualification_v17/materialize_evidence_relevance_v29/materialize_evidence_relevance_v30",
+    "semantic_invocations_before_freeze": 0
+  },
+  "scoring": {
+    "scorer_sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "positive": "v17 requested_relation AND v30 Relevant",
+    "negative": "v17 not requested_relation AND v30 not Relevant",
+    "v29": "diagnostic only",
+    "scorer_invocations_before_freeze": 0
+  },
+  "stages": {
+    "author_runs": 1,
+    "complete_input_static_runs": 1,
+    "compile_only_runs": 1,
+    "semantic_processes": 0,
+    "scorer_processes": 0
+  },
+  "predecessors": {
+    "recursive_files": 516,
+    "prior_final_manifest_sha256": "9db10bc88ef24b76cd6dd360bd0b23b90b32a19dac74cbbcb7c6f6dd851ee913",
+    "all_recursive_inventories_and_hashes_verified": true,
+    "known_development_versions": "v1-v21, including NOT_EVALUATED v11/v17 drafts"
+  },
+  "parent_reported_only": "related80/strictClippy/fmt PASS; full/seen1080/historical597 separately in progress at dispatch; no root code/tests/diagnostics read",
+  "isolation": {
+    "provider_model_API_calls": 0,
+    "network_calls": 0,
+    "Oracle": 0,
+    "additional_agents": 0,
+    "cargo_shared_target_mutation": 0,
+    "Git_mutation": 0,
+    "source_content_read": false
+  },
+  "first_result_contract": {
+    "Engine_first_one_process_cases": 60,
+    "scorer_once": true,
+    "raw_exclusive_create": true,
+    "no_retry": true,
+    "no_rescore": true,
+    "no_relabel": true,
+    "failure_preserved": true,
+    "release_only_after_final_readonly_inventory_hash_save": true,
+    "scope": "bounded synthetic source gate only; not #531 real24/CLI/provider/human/adoption or arbitrary-language guarantee"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "kind": "consumed development trace, not independent acceptance",
+  "base_source_sha256": "2c2a9cfce355a07dd8387f060e8dac2366d47400124f1425d7f03fa6b5dc4985",
+  "instrumented_source_sha256": "f78f002d4f789e52ed138046639ea0d6d26447e0a89547fb802546812e5dce7d",
+  "cases": [
+    {
+      "id": "li19-003",
+      "first_blocking_rule": "unresolved_adverse_scope",
+      "signal_index": 1,
+      "segment_index": 2,
+      "segment_raw": "We withdraw the launch of Sable Gallery as a separate event claim"
+    },
+    {
+      "id": "li19-009",
+      "first_blocking_rule": "typed_reference_not_excluded",
+      "signal_index": 0,
+      "segment_index": 0,
+      "segment_raw": "Subject: the font of the literal printed words \"we withdraw this entire source\" on Elder Panel card"
+    },
+    {
+      "id": "li19-011",
+      "first_blocking_rule": "typed_reference_not_excluded",
+      "signal_index": 1,
+      "segment_index": 2,
+      "segment_raw": "deny the accuracy of that handle-colour assertion"
+    },
+    {
+      "id": "li19-027",
+      "first_blocking_rule": "target_adverse_clause",
+      "signal_index": 3,
+      "segment_index": 0,
+      "segment_raw": "We retract the page-width assertion about Nettle Stand guide"
+    },
+    {
+      "id": "li19-029",
+      "first_blocking_rule": "target_adverse_clause",
+      "signal_index": 0,
+      "segment_index": 2,
+      "segment_raw": "I also deny the material claim about Oriel Socket rim"
+    },
+    {
+      "id": "li19-033",
+      "first_blocking_rule": "unresolved_adverse_scope",
+      "signal_index": 0,
+      "segment_index": 5,
+      "segment_raw": "Subject and withdraw the Item"
+    },
+    {
+      "id": "li19-035",
+      "first_blocking_rule": "unresolved_adverse_scope",
+      "signal_index": 1,
+      "segment_index": 3,
+      "segment_raw": "I withdraw that handbook-font assertion, the local quoted property claim"
+    },
+    {
+      "id": "li19-039",
+      "first_blocking_rule": "target_adverse_clause",
+      "signal_index": 1,
+      "segment_index": 0,
+      "segment_raw": "The assertion we deny is this, the printed page-count claim about Tansy Hub manual"
+    },
+    {
+      "id": "li19-049",
+      "first_blocking_rule": "typed_reference_not_excluded",
+      "signal_index": 0,
+      "segment_index": 1,
+      "segment_raw": "We deny that shell-material assertion"
+    },
+    {
+      "id": "li19-057",
+      "first_blocking_rule": "typed_reference_not_excluded",
+      "signal_index": 0,
+      "segment_index": 1,
+      "segment_raw": "We deny the Subject"
+    },
+    {
+      "id": "li19-059",
+      "first_blocking_rule": "typed_reference_not_excluded",
+      "signal_index": 1,
+      "segment_index": 3,
+      "segment_raw": "I withdraw that launch claim for Primula Court"
+    }
+  ],
+  "rule_counts": {
+    "unresolved_adverse_scope": 3,
+    "typed_reference_not_excluded": 5,
+    "target_adverse_clause": 3
+  },
+  "public_provider_calls": 0,
+  "original_first_outcome": "FAIL49/60 unchanged",
+  "limits": "Temporary cfg(test) hook before existing true returns, same predicates/order; traces establish blocking branches, not completeness or truth."
+}

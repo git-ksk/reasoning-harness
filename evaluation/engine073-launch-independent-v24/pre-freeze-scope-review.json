@@ -1,0 +1,265 @@
+{
+  "identity": "engine073-launch-independent-v24",
+  "utc": "2026-10-17T09:38:36.166299+00:00",
+  "stage": "PRE_FREEZE_AUTHOR_AST_SCOPE_REVIEW",
+  "author_sha256": "041527756c38955c651b952a639b69a32732742807b5d273a0813b59bd624df8",
+  "semantic_observations": 0,
+  "Engine_invocations": 0,
+  "scorer_invocations": 0,
+  "cases_generated": false,
+  "author_revision_count": 0,
+  "scope_decision": "All30 pairs retained at original polarity; no revisions. Manual finite semantic review, not Engine behavior.",
+  "positive_rule": "Separate direct target launch is unwithdrawn; every adverse clause is wholly specified non-launch physical/printed property or uniquely foreign event. Document owner/property owner is never automatically event owner.",
+  "negative_rule": "Actual target/global/nonexistence denial, unknown/mixed/conflicting/ownerless adverse event, or actual missing owner-bearing context. Joint no requested_relation AND non-Relevant required.",
+  "risk_rule": "Raw-risk alone is never a joint semantic negative. Actual gaps012/052 are negatives for missing event-owner meaning. Exact raw/effective axes retained, no hidden component inference.",
+  "scope_clarifications": [
+    "Compound property Object in pair11/pair27 is completely physical/printed in every component, including explicitly different property owners; mixed event ownership remains negative.",
+    "Literal withdrawal/non-event/owner/role-looking words are contained in fully specified printed properties; separate actual declarations/denials remain adverse.",
+    "Single complete same-role supplements only resolve otherwise unowned event; other-role/property owner, target declaration or conflicting owner cannot be overwritten.",
+    "Finite same-role reference, complete local apposition, heading/title scope and individually scoped linked clauses only; no general graphs, aliases, numbered AST or chronology inference.",
+    "Rivulet Clip is full canonical name explicitly in entity schema and heading; actual gaps are independently labeled."
+  ],
+  "pairs": [
+    {
+      "pair_id": "li24-p01",
+      "canonical_target": "Cerulean Bridge",
+      "axis": "two safe corrections cannot absorb a separate title denial",
+      "positive_basis": "The target table property and fully foreign event each have complete safe scope.",
+      "negative_basis": "The independent title explicitly denies target launch and is not cancelled by the safe roles.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p02",
+      "canonical_target": "Aspen Harbor",
+      "axis": "physical foil property plus uniquely foreign versus mixed-owner event",
+      "positive_basis": "The complete lining property and event both belong to the explicitly foreign product.",
+      "negative_basis": "The denied event role includes target and foreign owners; the complete physical property cannot exclude it.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p03",
+      "canonical_target": "Mallow Gate",
+      "axis": "literal withdrawal sentence in a layout property versus ownerless additional event",
+      "positive_basis": "Retraction words inside a complete margin property are literal content; the actual event correction names a foreign product.",
+      "negative_basis": "The actual separate withdrawn event is explicitly ownerless, unlike the fully identified layout property.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p04",
+      "canonical_target": "Linden Spire",
+      "axis": "local physical apposition and explicit foreign report versus independent target report",
+      "positive_basis": "The immediate complete physical apposition and every adverse event clause have non-target scope.",
+      "negative_basis": "The reporting clause independently asserts target non-event rather than repeating the foreign event.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p05",
+      "canonical_target": "Tangerine Row",
+      "axis": "adjacent full same-role reply identifies foreign versus target owner",
+      "positive_basis": "The unowned event is immediately and uniquely assigned to a foreign product; the other role is physical.",
+      "negative_basis": "The same-role reply assigns the withdrawn event to the target despite a safe foreign cover property.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p06",
+      "canonical_target": "Poppy Basin",
+      "axis": "explicit event-owner header versus actual missing header data",
+      "positive_basis": "The heading supplies a single complete foreign event owner; caption ownership is a separate property.",
+      "negative_basis": "The actual owner-bearing cell is absent, so the owned caption property cannot identify the withdrawn event.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p07",
+      "canonical_target": "Azure Hollow",
+      "axis": "three explicit safe roles versus global retraction that includes anchor",
+      "positive_basis": "The target correction is only a casing property; the event and title property are fully foreign.",
+      "negative_basis": "The independent whole-source launch retraction explicitly covers the target anchor.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p08",
+      "canonical_target": "Orchid Rail",
+      "axis": "quote event owner independent of a different document owner",
+      "positive_basis": "The full quoted event owner is foreign even though the enclosing document has another owner.",
+      "negative_basis": "The full quoted event belongs to the target; the foreign document owner cannot overwrite it.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p09",
+      "canonical_target": "Paprika Dial",
+      "axis": "uncertainty phrase as a font property versus real uncertainty in a denied event",
+      "positive_basis": "The uncertainty words are literal typography; the actual event has a full foreign owner.",
+      "negative_basis": "The Item is actually an unknown-owner launch claim; the font property owner does not resolve it.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p10",
+      "canonical_target": "Bracken Field",
+      "axis": "two foreign events across linked corrections versus a target-owned second event",
+      "positive_basis": "Every corrected event explicitly belongs to a foreign product; no temporal deduction is requested.",
+      "negative_basis": "The second role and maintained non-event directly concern the target.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p11",
+      "canonical_target": "Velvet Pier",
+      "axis": "compound physical and printed property versus reason-clause target denial",
+      "positive_basis": "All components of the complete Object and its reason are explicitly non-launch properties.",
+      "negative_basis": "The reason clause adds actual target launch denial; the safe compound property cannot absorb it.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p12",
+      "canonical_target": "Myrtle Console",
+      "axis": "owner annotation for event role versus wrong-role annotation",
+      "positive_basis": "The same-role annotation identifies the event as foreign; the Subject is a complete cover property.",
+      "negative_basis": "Only the property role receives an owner; the withdrawn event role remains expressly ownerless.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p13",
+      "canonical_target": "Ochre Bloom",
+      "axis": "complete event declaration in title and target printed property versus target title event",
+      "positive_basis": "The title names one complete foreign event and the target-owned role is only printed typography.",
+      "negative_basis": "The title explicitly names a withdrawn target event; foreign document ownership does not change it.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p14",
+      "canonical_target": "Zinnia Board",
+      "axis": "property apposition and foreign role versus unowned separate claim",
+      "positive_basis": "The immediate complete property apposition and separate full foreign event are safely scoped.",
+      "negative_basis": "The additional launch denial has an explicitly unidentified owner; the apposition property cannot supply it.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p15",
+      "canonical_target": "Sorrel Port",
+      "axis": "foreign annotation agrees with declared owner versus conflicting attempt to replace target owner",
+      "positive_basis": "The event is completely foreign before and after annotation; the target button correction is physical.",
+      "negative_basis": "The existing target event owner cannot be rewritten by a conflicting foreign owner heading.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p16",
+      "canonical_target": "Clover Lift",
+      "axis": "non-event wording as printed heading property versus actual non-event declaration",
+      "positive_basis": "The non-event words are literal heading text within a complete color property, and the event correction is foreign.",
+      "negative_basis": "A separate explicit statement says the target launch did not occur.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p17",
+      "canonical_target": "Teal Grove",
+      "axis": "target nonexistence quoted as print color versus asserted existence denial",
+      "positive_basis": "The Item is only the color of a literal sentence; the adverse event is uniquely foreign.",
+      "negative_basis": "The independent target nonexistence assertion remains adverse between two safe corrections.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p18",
+      "canonical_target": "Rivulet Clip",
+      "axis": "canonical full name with title property and foreign event versus direct target event",
+      "positive_basis": "The complete canonical name has no actual gap; the target-owned correction is lettering and the event is foreign.",
+      "negative_basis": "The complete-name heading cannot neutralize the explicitly target-owned withdrawn event.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p19",
+      "canonical_target": "Navy Window",
+      "axis": "single same-role owner header versus competing full owners",
+      "positive_basis": "A single full foreign owner in the explicit header binds the otherwise unowned event.",
+      "negative_basis": "The event has competing foreign and target owner statements; a property owner does not resolve the conflict.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p20",
+      "canonical_target": "Petal Meter",
+      "axis": "role-looking literal text as a border property versus a real typed target event",
+      "positive_basis": "The literal role-looking line is contained in a complete border property; the actual event role is foreign.",
+      "negative_basis": "A separate real Object declaration withdraws/denies the target event and is not merely printed glossary text.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p21",
+      "canonical_target": "Sequoia Tile",
+      "axis": "complete casing property plus foreign clause versus target nonexistence clause",
+      "positive_basis": "The target property and uniquely foreign event denial each have a complete explicit scope.",
+      "negative_basis": "The independent target nonexistence clause cannot be erased by explaining that the Object is physical.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p22",
+      "canonical_target": "Mica Orchard",
+      "axis": "newline event-owner reply versus property-owner-only reply",
+      "positive_basis": "The immediate same-role newline supplement uniquely binds the unowned event to a foreign product.",
+      "negative_basis": "The full owner belongs only to the matte-sheet property; the adverse event stays expressly unowned.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p23",
+      "canonical_target": "Lemon Arch",
+      "axis": "finite same-role reference to complete property versus independently target-owned event",
+      "positive_basis": "The same finite role reference points to a complete printed property; the separate event is foreign.",
+      "negative_basis": "The explicitly target-owned Object remains adverse despite the resolved safe property reference.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p24",
+      "canonical_target": "Pecan Tide",
+      "axis": "direct foreign denial plus target physical property versus direct target denial",
+      "positive_basis": "The directly named denied launch is foreign; the target-owned adverse Object is only bracket shape.",
+      "negative_basis": "The direct denial explicitly concerns target launch and cannot inherit the bracket-property scope.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p25",
+      "canonical_target": "Jasper Cask",
+      "axis": "fully foreign event in target-owned document versus whole-source title denial",
+      "positive_basis": "Document ownership alone is neutral; the event is explicitly foreign and the target appendix correction is physical.",
+      "negative_basis": "The title explicitly withdraws the whole source and target launch, independently of safe body roles.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p26",
+      "canonical_target": "Sage Beacon",
+      "axis": "complete owner reply versus truly omitted continuation owner",
+      "positive_basis": "The immediate reply completely identifies a single foreign event owner; the other role is a printed page property.",
+      "negative_basis": "The required event-owner continuation is actually missing; the page-property owner does not repair it.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p27",
+      "canonical_target": "Fern Valley",
+      "axis": "multiple named owners of non-launch properties versus mixed event owners",
+      "positive_basis": "Every clause in the compound Object is a complete printed color property, and the sole event is uniquely foreign.",
+      "negative_basis": "The adverse Object is instead a mixed target/foreign event; the safe property Subject cannot exclude it.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p28",
+      "canonical_target": "Bloom Switch",
+      "axis": "full correction scopes across fields versus overriding whole-source withdrawal",
+      "positive_basis": "The finite declarations across title/heading fully identify a physical property and a foreign event.",
+      "negative_basis": "The extra whole-source withdrawal explicitly includes the target and remains adverse across fields.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p29",
+      "canonical_target": "Olive Keystone",
+      "axis": "literal owner-name text as alignment property versus actual target event owner",
+      "positive_basis": "The target owner words are literal text within a complete alignment property; the actual event is foreign.",
+      "negative_basis": "The actual Object explicitly identifies the target event despite the foreign physical plate owner.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li24-p30",
+      "canonical_target": "Cypress Drum",
+      "axis": "three roles with independent full owners versus an explicitly unresolved event role",
+      "positive_basis": "The target-owned Object is a physical property and both event roles are independently and fully foreign.",
+      "negative_basis": "The Item event remains explicitly ownerless and cannot borrow the other foreign event role owner.",
+      "label_change": false
+    }
+  ],
+  "newness": "New content and semantic combinations after candidate freeze; no old author/cases/inputs/unused drafts read or reused. Finite grammar and iterative failure history known; no statistical or cross-corpus improvement claim."
+}

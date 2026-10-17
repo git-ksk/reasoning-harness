@@ -1,0 +1,257 @@
+{
+  "candidate_source": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+    "sha256": "9d8d3fa48a67f197d32282314813d992a374b9f54a6b079c39498b9a67f9207f",
+    "bytes": 814044
+  },
+  "opaque_parent_freeze": {
+    "path": "/private/tmp/engine073-source25-independent-freeze.json",
+    "sha256": "87fd6d094d4bf247cf609e81b5a4bae24953cc59c3feea5c062ecbc1cad4902c",
+    "bytes": 1845
+  },
+  "opaque_parent_controls": {
+    "path": "/private/tmp/engine073-source25-regression-controls.json",
+    "sha256": "4e27e271e45a6a757e34c044cfc32619b4f34598aeb738ede7fbdbdca14eeb3f",
+    "bytes": 1422
+  },
+  "frozen_dependency_000": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/copied-artifacts.json",
+    "sha256": "3b34a4582921ae46d411b7a0c4f5786b642449275879ba7fcc6fe230ec266c03",
+    "bytes": 9236
+  },
+  "frozen_dependency_001": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libdyn_clone-6f556472d6b376d7.rlib",
+    "sha256": "e0e0e499a809c83c92f064c9cc53e60b0daaaf99e395335b13fc68e8323b2e80",
+    "bytes": 52144
+  },
+  "frozen_dependency_002": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libdyn_clone-6f556472d6b376d7.rmeta",
+    "sha256": "0b2c5e165180706738e05c834649c307fe657c9234322e50e5ff841732b23e25",
+    "bytes": 28466
+  },
+  "frozen_dependency_003": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libitoa-474d501d6102ed82.rlib",
+    "sha256": "7f7cb3a98ab7c4c0423ae1f27e57f04dd08b916b5da22ac8fbdf45187b1c5f1b",
+    "bytes": 108328
+  },
+  "frozen_dependency_004": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libitoa-474d501d6102ed82.rmeta",
+    "sha256": "e9df5973ba98c26dc0a90bfce1de0c992ecad6f55ffedc85f2b3d73bac9af25d",
+    "bytes": 60987
+  },
+  "frozen_dependency_005": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libmemchr-bc4d24ce62cf35aa.rlib",
+    "sha256": "a21bf067555dd3eeeb39d0eff832285193e2499a5ea23b3c817aa7d7fa936752",
+    "bytes": 1004936
+  },
+  "frozen_dependency_006": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libmemchr-bc4d24ce62cf35aa.rmeta",
+    "sha256": "c1c694591e5f14d888395e494d7aed45a7baf3735aea8182ea363cfa84882471",
+    "bytes": 883812
+  },
+  "frozen_dependency_007": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libproc_macro2-600ac2a972792ecd.rlib",
+    "sha256": "56a43539fb95897b17d1c18248cf2783d85a91995b7b4c980cf64113eaf97c4a",
+    "bytes": 913256
+  },
+  "frozen_dependency_008": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libproc_macro2-600ac2a972792ecd.rmeta",
+    "sha256": "8f966611f4f62578bc83c5f82d828036a979bbe60752d7881033151093c395b6",
+    "bytes": 338687
+  },
+  "frozen_dependency_009": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libquote-b116bcba763d449d.rlib",
+    "sha256": "a60efd38fdc208f70cbe0bb48a7efd22dc39d88930adc7f81f27ce182fdb6096",
+    "bytes": 425600
+  },
+  "frozen_dependency_010": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libquote-b116bcba763d449d.rmeta",
+    "sha256": "5094c49b33497e49bcb9519e46954d1456bb2a90043edc797bfeee936db03078",
+    "bytes": 269650
+  },
+  "frozen_dependency_011": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libreasoning_harness_core-af992f1b2d90d349.rlib",
+    "sha256": "d785adeaa51591b9902266c7c7bd114763aaed1671c5e65f4df65d83d9be7fd9",
+    "bytes": 31633976
+  },
+  "frozen_dependency_012": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libreasoning_harness_core-af992f1b2d90d349.rmeta",
+    "sha256": "356fc87869c105c12b089330c20bee7866040bc0a083f5ed7aca78e8ef7c9bed",
+    "bytes": 13491357
+  },
+  "frozen_dependency_013": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libreasoning_harness_core.rlib",
+    "sha256": "d785adeaa51591b9902266c7c7bd114763aaed1671c5e65f4df65d83d9be7fd9",
+    "bytes": 31633976
+  },
+  "frozen_dependency_014": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libref_cast-587bf35479d40d2d.rlib",
+    "sha256": "255d37dd6726946442222cd0c4e6be1e955b68ec1bea621d4e1ee43d41532da8",
+    "bytes": 24584
+  },
+  "frozen_dependency_015": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libref_cast-587bf35479d40d2d.rmeta",
+    "sha256": "ea590ff7de51ae9c015177c56fc567ba1240841f254eeb74b33fc9be635b0864",
+    "bytes": 23632
+  },
+  "frozen_dependency_016": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libref_cast_impl-3ab516a8cb6e5975.dylib",
+    "sha256": "150db489057e05d8e76e6e0967c59c6939ebc5043d55235309c6968d259534f0",
+    "bytes": 1797424
+  },
+  "frozen_dependency_017": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libschemars-73fcc1b797bd9d95.rlib",
+    "sha256": "2402cdc2fcfde53b00185c1266a5ff40bc1f59e217bd9f474a6f0b212d98387b",
+    "bytes": 2653120
+  },
+  "frozen_dependency_018": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libschemars-73fcc1b797bd9d95.rmeta",
+    "sha256": "e8c6c951ae7e0d2549f7c404fa930d9277c5396cda814962e22c1f9613887f63",
+    "bytes": 1189610
+  },
+  "frozen_dependency_019": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libschemars_derive-f6693c726c4440c7.dylib",
+    "sha256": "7369347236de9996cc5618d5762ccec4a975384aa4f9b2042a21e2b4ff8f5f6d",
+    "bytes": 3381600
+  },
+  "frozen_dependency_020": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libserde-29474bc4864db4fd.rlib",
+    "sha256": "0428b13a8ad68c6110128637e629fad5b7f35ade6dab3c7c0d3fffd53426f6af",
+    "bytes": 885336
+  },
+  "frozen_dependency_021": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libserde-29474bc4864db4fd.rmeta",
+    "sha256": "42d1bc6545c2403a376216b3cbdb7bdfdecac26307d2a27a6abc9b2db87fadd3",
+    "bytes": 811327
+  },
+  "frozen_dependency_022": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libserde_core-db622675fb170d9d.rlib",
+    "sha256": "b20fa1e20c4de99dbb8910fbdd22a1a5ac0581cb271eeaf3781059ee31ff920c",
+    "bytes": 4741760
+  },
+  "frozen_dependency_023": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libserde_core-db622675fb170d9d.rmeta",
+    "sha256": "47b3507cecbb69f846e7403560e68e5fc7950d8ae1f05a7002322a8b18a25c64",
+    "bytes": 4631796
+  },
+  "frozen_dependency_024": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libserde_derive-b3e282566d6939f4.dylib",
+    "sha256": "de4bb59569b87a9a6bd93faa2b1eda72fbca66d1847a854f3a87a1cd1f1f13b8",
+    "bytes": 3303072
+  },
+  "frozen_dependency_025": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libserde_derive_internals-f3ffaf4ac50fedc8.rlib",
+    "sha256": "f1d0267acac590394a2f4dba6d780fdb0347ce418e5215ae90d639920e21f797",
+    "bytes": 1337024
+  },
+  "frozen_dependency_026": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libserde_derive_internals-f3ffaf4ac50fedc8.rmeta",
+    "sha256": "34449deff887fbaa148ba252f4419db3a1b424d5709213bac5a790688e62a809",
+    "bytes": 197107
+  },
+  "frozen_dependency_027": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libserde_json-4247b0767bfe4a83.rlib",
+    "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+    "bytes": 2110472
+  },
+  "frozen_dependency_028": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libserde_json-4247b0767bfe4a83.rmeta",
+    "sha256": "30bb34b5b062318fd0e567f05487c1b85196c3f1052326c12faa35544ecc35f6",
+    "bytes": 1390370
+  },
+  "frozen_dependency_029": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libsyn-65c1b76316221112.rlib",
+    "sha256": "4e20cfc6113313b026cfdaa75869243099ce12fba984191dfcb10867fa2e3a98",
+    "bytes": 4891336
+  },
+  "frozen_dependency_030": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libsyn-65c1b76316221112.rmeta",
+    "sha256": "2802030f3d08fce7b61d78f1ac9c47b527895ec9108f97ffa72611dd47bb19f5",
+    "bytes": 2206695
+  },
+  "frozen_dependency_031": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libthiserror-e0f2a66b060b8a58.rlib",
+    "sha256": "526f8f8fd363d4c237114efff7f281e10b101bec6d43b747ade467e6d9bf980f",
+    "bytes": 29792
+  },
+  "frozen_dependency_032": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libthiserror-e0f2a66b060b8a58.rmeta",
+    "sha256": "8c5338978b7a3141e62f442a37b7c54c021afa488ddf9e6e6a53475f5714895a",
+    "bytes": 28837
+  },
+  "frozen_dependency_033": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libthiserror_impl-67481e917fe8485d.dylib",
+    "sha256": "e060c6f9b1335ba43daa9e7f409c2113d32d7e50c984e6cbc94d002db1469ebf",
+    "bytes": 2526416
+  },
+  "frozen_dependency_034": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libunicode_ident-d9e62c08a060ccd0.rlib",
+    "sha256": "48adb4b16d01b7ade825e91e49fa003741bf39f259499325d73702cdf6231716",
+    "bytes": 50424
+  },
+  "frozen_dependency_035": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libunicode_ident-d9e62c08a060ccd0.rmeta",
+    "sha256": "e00441a8c0abe4bc606bed4be292bb970f79067d62283038677bea912b47b3f0",
+    "bytes": 32849
+  },
+  "frozen_dependency_036": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libzmij-ddfec70658a18947.rlib",
+    "sha256": "d77a2a3d6f4d3994c4808c3cf48151d035c2e878deb803d4b64ff0df51037726",
+    "bytes": 237168
+  },
+  "frozen_dependency_037": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libzmij-ddfec70658a18947.rmeta",
+    "sha256": "38eedef173c75a7f975396c61742ae061071936d8494e88168afc7ef7665a079",
+    "bytes": 154774
+  },
+  "frozen_dependency_038": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/origin-cargo-artifacts.jsonl",
+    "sha256": "82664dd4d9587210c71c3ea60dd66996d4c28bfac6bbe4769356820c027b0e85",
+    "bytes": 24334
+  },
+  "preserved_preparation_0": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/docs/engine073-realworld-metrics-preparation.md",
+    "sha256": "9e90707b295ee4e273f7101f0d7d33804bff64c4629d980f9209a1258e6f73e7",
+    "bytes": 25560
+  },
+  "preserved_preparation_1": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/docs/engine073-realworld-metrics-preparation.ja.md",
+    "sha256": "30a4f73c4f0cd4a6aa2a284f3243d997dbc1f769751defcb7617659f6605df08",
+    "bytes": 23762
+  },
+  "preserved_preparation_2": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/review.json",
+    "sha256": "787da5422330047f4ca23f1020df867bc66eb6794f45fd40c01f72314d7189fc",
+    "bytes": 2526
+  },
+  "preserved_preparation_3": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/reviewed-input-sha256.json",
+    "sha256": "76b41a7c06dc1893106695253dc303164e2905881cdeffabe26ca0251f7e36c0",
+    "bytes": 1898
+  },
+  "preserved_preparation_4": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/artifact-sha256.json",
+    "sha256": "6b83e2b6b090f46da65580bf27486ada831d53e9827d77c0081119fa5c969e22",
+    "bytes": 673
+  },
+  "probe_executable": {
+    "path": "/private/tmp/engine073-launch-independent-v25-probe/probe",
+    "sha256": "2c692c87307fa1b3ccd73c2134151d08287d38ab3335f094329ec129b3a5083a",
+    "bytes": 3223592
+  },
+  "core_rlib": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libreasoning_harness_core-af992f1b2d90d349.rlib",
+    "sha256": "d785adeaa51591b9902266c7c7bd114763aaed1671c5e65f4df65d83d9be7fd9",
+    "bytes": 31633976
+  },
+  "serde_json_rlib": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/libserde_json-4247b0767bfe4a83.rlib",
+    "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+    "bytes": 2110472
+  },
+  "copied_artifacts_inventory": {
+    "path": "/private/tmp/engine073-source25-frozen-libs/copied-artifacts.json",
+    "sha256": "3b34a4582921ae46d411b7a0c4f5786b642449275879ba7fcc6fe230ec266c03",
+    "bytes": 9236
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "identity": "engine073-launch-independent-v24",
+  "utc": "2026-10-17T09:38:57.912590+00:00",
+  "stages": [
+    {
+      "script": "author_cases.py",
+      "returncode": 0,
+      "stdout": "{\"stage\": \"AUTHOR_STATIC_ONLY\", \"cases\": 60, \"Engine_invocations\": 0, \"scorer_invocations\": 0, \"provider_network_Oracle_calls\": 0}\n",
+      "stderr": "",
+      "semantic_observations": 0
+    },
+    {
+      "script": "static_preflight.py",
+      "returncode": 0,
+      "stdout": "{\n  \"identity\": \"engine073-launch-independent-v24\",\n  \"stage\": \"STATIC_ONLY\",\n  \"outcome\": \"PASS\",\n  \"planned\": 60,\n  \"positive\": 30,\n  \"semantic_negative\": 30,\n  \"pairs\": 30,\n  \"targets\": 30,\n  \"required_fields_valid\": true,\n  \"labels_excluded\": true,\n  \"budget\": {\n    \"max_model_attempts\": 2,\n    \"max_tokens\": 192,\n    \"max_elapsed_ms\": 90000\n  },\n  \"inherited_probe_scorer_recorder_identical\": true,\n  \"old_recursive_files_unchanged\": 591,\n  \"author_runs\": 1,\n  \"full_input_static_runs\": 1,\n  \"author_revisions\": 0,\n  \"raw_context_gap\": [\n    \"li24-012\",\n    \"li24-052\"\n  ],\n  \"pure_raw_risk_joint_negatives\": 0,\n  \"semantic_observations\": 0,\n  \"Engine_invocations\": 0,\n  \"scorer_invocations\": 0,\n  \"provider_network_calls\": 0\n}\n",
+      "stderr": "",
+      "semantic_observations": 0
+    }
+  ],
+  "Engine_invocations": 0,
+  "scorer_invocations": 0,
+  "provider_network_Oracle_calls": 0
+}

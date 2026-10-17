@@ -1,0 +1,14 @@
+   Compiling reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+error[E0609]: no field `canonical_name` on type `std::option::Option<EvidenceTargetEntityIdentity>`
+    --> crates/reasoning-harness-core/src/evidence_relevance.rs:5221:39
+     |
+5221 |             .any(|name| policy.entity.canonical_name == *name)
+     |                                       ^^^^^^^^^^^^^^ unknown field
+     |
+help: one of the expressions' fields has a field of the same name
+     |
+5221 |             .any(|name| policy.entity.unwrap().canonical_name == *name)
+     |                                       +++++++++
+
+For more information about this error, try `rustc --explain E0609`.
+error: could not compile `reasoning-harness-core` (lib) due to 1 previous error

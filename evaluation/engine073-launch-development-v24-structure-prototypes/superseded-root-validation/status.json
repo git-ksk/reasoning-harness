@@ -1,0 +1,6 @@
+{
+  "status": "SUPERSEDED_NOT_ACCEPTANCE",
+  "root_source_file_sha256_at_start": "047c40ec91d7fcf6416db00f5293c66d9f03880d62ff4cb94681dff5e261cfdc",
+  "reason": "later discourse-adjunct semantic repair;private test build overlapped shared validation target,so isolated exact-source check not established",
+  "final_validation_is_separate": true
+}

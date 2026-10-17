@@ -1,0 +1,44 @@
+[
+  {
+    "original_logical_path": "attributes01/source.rs",
+    "original_sha256": "ea14a86d9a7fe88ca21d7ffd2ce1b0ec9efdf3b104d6ab4eb2d7fb5c7afe5fc7",
+    "packed_path": "attributes01/source.rs.gz",
+    "packed_sha256": "13208847624416c597f31680862904826643948f051e85e43ccf77f3df460314"
+  },
+  {
+    "original_logical_path": "structure02/source.rs",
+    "original_sha256": "047c40ec91d7fcf6416db00f5293c66d9f03880d62ff4cb94681dff5e261cfdc",
+    "packed_path": "structure02/source.rs.gz",
+    "packed_sha256": "ad73003591f9211685e191be1ff234263d117ae279434bab75cc0b2c322fdfb0"
+  },
+  {
+    "original_logical_path": "engine073-attributes25-before-owner-guard.rs",
+    "original_sha256": "093e6ec5e588ace6b17495d818f448446c0edb5aec97e3e75fc1de20a0484d7c",
+    "packed_path": "engine073-attributes25-before-owner-guard.rs.gz",
+    "packed_sha256": "6ae70090b7077a42159becb368f76ce326d7fa2d443093b4e1ff1fc38104a8d4"
+  },
+  {
+    "original_logical_path": "engine073-projection25-before-compound-guard.rs",
+    "original_sha256": "ad5db6bae9b27b6be7807cb5e9ac03dead3fa9241ff85d6df24f5910ac663d44",
+    "packed_path": "engine073-projection25-before-compound-guard.rs.gz",
+    "packed_sha256": "e68ca833195878c8e15cf030050ddb6c7a9186bb41ac5f3f9f2bbd757b0c9ea6"
+  },
+  {
+    "original_logical_path": "engine073-projection25-before-anaphor-veto.rs",
+    "original_sha256": "f5e428c430fde118dfe91484e0237faadc2fad2ad17d33c7763bd596679ee30e",
+    "packed_path": "engine073-projection25-before-anaphor-veto.rs.gz",
+    "packed_sha256": "deff8d5f752c7b5b43505ab0242575ace65931e4bd5e57c71180cd7277701281"
+  },
+  {
+    "original_logical_path": "engine073-projection25-before-heading-component.rs",
+    "original_sha256": "7496bb47dee83e3f6c49ad5396cdb642be908bad6ab7f8f7671fdbb4273708e6",
+    "packed_path": "engine073-projection25-before-heading-component.rs.gz",
+    "packed_sha256": "af7193e3478c372f0d2ef09c2b4d4ae7b41959ab2ee1e404fd837c8c7e18d5af"
+  },
+  {
+    "original_logical_path": "adjunct03/source.rs",
+    "original_sha256": "9d8d3fa48a67f197d32282314813d992a374b9f54a6b079c39498b9a67f9207f",
+    "packed_path": "adjunct03/source.rs.gz",
+    "packed_sha256": "2625ab5974d3d0a25838d25f47e9791a1c08f0c8b3863434ff995396b7a58abb"
+  }
+]

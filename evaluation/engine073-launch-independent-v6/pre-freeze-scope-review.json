@@ -1,0 +1,20 @@
+{
+  "phase": "Pre-freeze; v6 Engine invocations/semantic observations0",
+  "new_design": "Multi-cue interference: no non-launch or different-owner cue may erase an independent same-target launch denial/retraction/non-event or unresolved launch correction in the same record.",
+  "affirmative": "Every case has one separate exact canonical-target-subject Excerpt TARGET was launched. No new positive launch predicate, numeric prefix, AST, alias or preparation semantics.",
+  "positive_rule": "Every operative correction object is explicitly a non-launch property/activity/artifact or a fully named other owner. Parallel/quoted objects each identify type and owner directly; no unspecified group reference is counted positive. Neutral text remains neutral.",
+  "negative_rule": "At least one independent cue explicitly retracts/denies/withdraws/negates the target launch, or explicitly lacks the launch correction owner/reference. Coexisting harmless cues do not cancel it.",
+  "unknown_launch_negative_ids": [
+    "li6-050",
+    "li6-052",
+    "li6-054",
+    "li6-056",
+    "li6-058",
+    "li6-060"
+  ],
+  "parallel_scope": "Named both/and/quoted clauses with complete objects are clear controlled scopes; omitted/one-of-three/additional-unowned references are negative. No trusted list/number AST is inferred.",
+  "non_event": "Did not take place, never happened, was not launched and no actual launch occurred are explicit denials/non-events of the same existing launch proposition, not new affirmative predicates.",
+  "prior_sets": "V2-v5 cases/results known and seen development; V1 operational FAIL semantic0. All files preserved.",
+  "novelty": "New cross-cue combinations, mixed header/body ownership, quoted-object lists, independent semicolon/bullet/paragraph corrections and masking controls. Prior entire input blocks are not copied or renamed.",
+  "post_observation_label_changes": 0
+}

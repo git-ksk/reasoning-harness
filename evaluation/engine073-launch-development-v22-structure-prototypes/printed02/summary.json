@@ -1,0 +1,119 @@
+{
+  "identity": {
+    "stage": "printed02",
+    "started_utc": "2026-10-17T07:22:16.887219+00:00",
+    "kind": "consumed development prototype only; no independent acceptance",
+    "source_file_sha256": "322ed2de5fa8d5bf3873573ed2c066cd95333b9052bea7b2a1bdbd13b5c39aee",
+    "core_sha256": "08a618024c22bb0c3a8088ae2a8cbdc864ba52dd6b21f10adc3a85e22d3ec02e",
+    "serde_sha256": "2ba2eda94734d666b378d4013f0f5d28a8ca6f87f478667e2472f50acdb486de",
+    "metadata_sha256": "88b2c2ae1860675be7446eeaf1c9cc95a6c2125b4a42a13648c06c31cdd9c494",
+    "inputs_sha256": "c971217116917ba70cb69fb739fe17d7f38b0652748b645ac63ba511d9dd7b37",
+    "cases_sha256": "132ba8207c5fcc825beefab4cdd3725e6002f01048c6b380201fdca42351b83f",
+    "probe_source_sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "probe_executable_sha256": "0e2c88bbf43a6b5a4d4074c26eb780c249080b601e12601fdafbbd6f90eb5217",
+    "base_source_sha": "c20c5136d59cb3a0bfdac4fb8ca9dade2d93e076"
+  },
+  "after_development_axes": {
+    "v17_requested_relation": {
+      "confusion": {
+        "tp": 25,
+        "fp": 1,
+        "tn": 29,
+        "fn": 5
+      },
+      "n": 60,
+      "positive_support": 30,
+      "negative_support": 30,
+      "precision": 0.9615384615384616,
+      "recall": 0.8333333333333334,
+      "f1_positive": 0.8928571428571429,
+      "specificity": 0.9666666666666667,
+      "accuracy": 0.9,
+      "balanced_accuracy": 0.9,
+      "predicted_positive_rate": 0.43333333333333335,
+      "false_accept_rate": 0.03333333333333333,
+      "false_withhold_rate": 0.16666666666666666,
+      "mcc": 0.807207352795575
+    },
+    "v30_relevant": {
+      "confusion": {
+        "tp": 24,
+        "fp": 1,
+        "tn": 29,
+        "fn": 6
+      },
+      "n": 60,
+      "positive_support": 30,
+      "negative_support": 30,
+      "precision": 0.96,
+      "recall": 0.8,
+      "f1_positive": 0.8727272727272727,
+      "specificity": 0.9666666666666667,
+      "accuracy": 0.8833333333333333,
+      "balanced_accuracy": 0.8833333333333333,
+      "predicted_positive_rate": 0.4166666666666667,
+      "false_accept_rate": 0.03333333333333333,
+      "false_withhold_rate": 0.2,
+      "mcc": 0.7775419143502352
+    }
+  },
+  "before_c20_axes": {
+    "v17_requested_relation": {
+      "confusion": {
+        "tp": 10,
+        "fp": 0,
+        "tn": 30,
+        "fn": 20
+      },
+      "n": 60,
+      "positive_support": 30,
+      "negative_support": 30,
+      "precision": 1.0,
+      "recall": 0.3333333333333333,
+      "f1_positive": 0.5,
+      "specificity": 1.0,
+      "accuracy": 0.6666666666666666,
+      "balanced_accuracy": 0.6666666666666666,
+      "predicted_positive_rate": 0.16666666666666666,
+      "false_accept_rate": 0.0,
+      "false_withhold_rate": 0.6666666666666666,
+      "mcc": 0.4472135954999579
+    },
+    "v30_relevant": {
+      "confusion": {
+        "tp": 9,
+        "fp": 0,
+        "tn": 30,
+        "fn": 21
+      },
+      "n": 60,
+      "positive_support": 30,
+      "negative_support": 30,
+      "precision": 1.0,
+      "recall": 0.3,
+      "f1_positive": 0.46153846153846156,
+      "specificity": 1.0,
+      "accuracy": 0.65,
+      "balanced_accuracy": 0.65,
+      "predicted_positive_rate": 0.15,
+      "false_accept_rate": 0.0,
+      "false_withhold_rate": 0.7,
+      "mcc": 0.4200840252084029
+    }
+  },
+  "joint_passed": 53,
+  "mismatches": [
+    "li22-016",
+    "li22-019",
+    "li22-031",
+    "li22-033",
+    "li22-045",
+    "li22-049",
+    "li22-051"
+  ],
+  "unsafe_ids": [
+    "li22-016"
+  ],
+  "safety_gate": "FAIL",
+  "scope": "same frozen consumed inputs; old independent first outputs/labels/scorer unchanged; partial prototype not merge/release acceptance"
+}

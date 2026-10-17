@@ -1,0 +1,14 @@
+{
+  "stage": "structure02",
+  "started_utc": "2026-10-17T13:22:44.048390+00:00",
+  "kind": "consumed development prototype only; no independent acceptance",
+  "source_file_sha256": "047c40ec91d7fcf6416db00f5293c66d9f03880d62ff4cb94681dff5e261cfdc",
+  "core_sha256": "70f2a03ca01dd4ed956bef9e6809d936ad49ff33e46abc595ffc06c0318031e2",
+  "serde_sha256": "2fe87fdc8a57311cffa8b4bc38635b5173ead4bce5c2a34574097874f90ae15e",
+  "metadata_sha256": "884f7ed9bd122e746cf1a08644bf4721d6a9dce153857407de5703e4aa582327",
+  "inputs_sha256": "74569d5027c1db3faa8aa0db930220b356970daa8646ad3198f6ece7414c80bf",
+  "cases_sha256": "873b4f02e7f45791f05cd1edc13d4aea0fe7bebfbd0c5f36f010a69a2b964948",
+  "probe_source_sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+  "probe_executable_sha256": "b2039531fbb3b34d50de7f6eb3eb69c13362f30adf28948945f1a9fb4dc23e0e",
+  "base_source_sha": "3ccda6b4263eb5210477660b11f6926ec0186f4e"
+}

@@ -1,0 +1,30 @@
+{
+  "identity": "engine073-launch-independent-v16",
+  "stage": "PRE_FREEZE_SCOPE_REVIEW",
+  "reviewed_utc": "2026-10-16T16:00:08.074146+00:00",
+  "reviewer": "Same independent author, no second human/model review.",
+  "outcome": "PASS",
+  "semantic_observations": 0,
+  "all_60_labels_rationales_reviewed": true,
+  "complete_positive_scope": "Each adverse object has complete non-launch physical/document scope or unique fully named foreign event ownership, including combinations of two different roles/corrections. The standalone target launch is uncontradicted.",
+  "semantic_negative_scope": "Every negative independently denies target/global/existence or leaves an event owner missing, mixed or conflicting. Actual omissions cannot be repaired by safe-property names or exemption labels.",
+  "actual_gaps": [
+    "li16-050",
+    "li16-054"
+  ],
+  "pure_risk_joint_negative": false,
+  "scope_ambiguity_fixed": [
+    "Other/unidentified event after known foreign/property corrections remains unknown.",
+    "Same-role single owner fills unowned launch only; wrong-role supplement remains unbound.",
+    "A property statement owner is not an event-owner source; target-owned event not overwritten.",
+    "Quoted material negation/printed literal property differs from actual target-event denial or source-title non-event.",
+    "Connective before/as/because/while does not require chronology/truth reasoning.",
+    "Full canonical Dogwood Clip name explicit in policy/heading; actual missing-context cases remain separate."
+  ],
+  "newness": "New30 contrasts written after854 freeze, not previous case text/name/template or draft reuse. Repeated public API/schema vocabulary intentionally unchanged. Prior development exposure acknowledged.",
+  "limits": "Finite declared source scope only, not arbitrary syntax/AST/reference graph/property truth/real-world/CLI/provider acceptance.",
+  "case_label_rationale_sha256": "b3f9571b130a5cee4c1e7264df1ae0fb5e3eb23e26983f210b01e2429219ee17",
+  "inherited_scoring_unchanged": true,
+  "post_output_relabel": false,
+  "external_lint_gate": "Parent reports needless_borrow strictClippy failure; separate correction/CI required."
+}

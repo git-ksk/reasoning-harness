@@ -1,0 +1,10 @@
+test_changed_first_output_is_refused (test_analyze.ArchiveDiagnosticTests.test_changed_first_output_is_refused) ... ok
+test_changed_predecessor_evidence_is_refused (test_analyze.ArchiveDiagnosticTests.test_changed_predecessor_evidence_is_refused) ... ok
+test_different_final_anchor_is_refused (test_analyze.ArchiveDiagnosticTests.test_different_final_anchor_is_refused) ... ok
+test_preserved_observation_and_pair_losses_are_reported_without_execution (test_analyze.ArchiveDiagnosticTests.test_preserved_observation_and_pair_losses_are_reported_without_execution) ... ok
+test_unrecorded_current_file_is_refused (test_analyze.ArchiveDiagnosticTests.test_unrecorded_current_file_is_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.728s
+
+OK

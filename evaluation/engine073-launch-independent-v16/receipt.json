@@ -1,0 +1,107 @@
+{
+  "identity": "engine073-launch-independent-v16",
+  "saved_utc": "2026-10-16T16:02:52.081714+00:00",
+  "first_outcome": "FAIL",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "candidate_source_sha": "854ef6d23d8089b6136dae38086941a9ced96c76",
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "436b09d9f81386931213cb15048c86628d289c1b57d9bb31cc5c24bd5ecf4af5",
+      "unchanged": true
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "8aab14019e072369a5e44f316237b55b58e695efbbddf4d6a63758b279a7aca9",
+      "unchanged": true
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "unchanged": true
+    },
+    "opaque_parent_freeze": {
+      "path": "/private/tmp/engine073-source15-freeze.json",
+      "sha256": "a637ccbcfbb6e139d756d1ed8a14e003fb60397a2d24ea69b4ff53b03a9e8ca1",
+      "unchanged": true
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v16-probe/probe",
+      "sha256": "7a4414646f1b97c317fb144b3669e5fa4bc031f23f4279bd078df76f2d8865f6",
+      "unchanged": true
+    }
+  },
+  "manifest_sha256": "75bd984fa6ce237cb8730b4bcfc5f326e704241d2541b4e71f91c9ddba2b3f06",
+  "cases_sha256": "b3f9571b130a5cee4c1e7264df1ae0fb5e3eb23e26983f210b01e2429219ee17",
+  "inputs_sha256": "068744865ad4cfe560fbaa093d0767fa69e1eec6ddd4b129280ac5577068962f",
+  "probe_source_sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+  "scorer_sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+  "recorder_sha256": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+  "first_stdout_sha256": "707a25fcd28000888b061b42ea417d8e0076e8d4cf6cf2e9044d0517e43ac334",
+  "first_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "first_results_sha256": "016fbd20cd2169212e9d9617b1701f9667101f6507b1bfc4b05c4fa5cbfb9487",
+  "first_summary_sha256": "e0a50f8eb88e3a348744f7d0191c5e0b2f18a0d1f365df23615ecbe70bf26fac",
+  "first_invocation_sha256": "085abc075114b7519b3367b13abada348d5f93bb357b6d8c8d63e6fde9b0892b",
+  "review_sha256": "eae0e0c7028436f3f43ba84529d1faaf80532cbbafba20a712d2893b218d580c",
+  "README_sha256": "7337ea3ac7f284fcbc124cd34033583a8f21c2952448903ec5e07f3c948a8d15",
+  "first_summary": {
+    "identity": "engine073-launch-independent-v16",
+    "candidate_source_sha": "854ef6d23d8089b6136dae38086941a9ced96c76",
+    "manifest_sha256": "75bd984fa6ce237cb8730b4bcfc5f326e704241d2541b4e71f91c9ddba2b3f06",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 50,
+    "failed": 10,
+    "incomplete": 0,
+    "positive_passed": 20,
+    "negative_passed": 30,
+    "negative_v17_requested_relation_violations": 0,
+    "negative_v30_relevant_violations": 0,
+    "positive_v17_withheld": 10,
+    "positive_v30_withheld": 10,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "707a25fcd28000888b061b42ea417d8e0076e8d4cf6cf2e9044d0517e43ac334",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "085abc075114b7519b3367b13abada348d5f93bb357b6d8c8d63e6fde9b0892b"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "failed_positive_ids": [
+    "li16-009",
+    "li16-011",
+    "li16-015",
+    "li16-021",
+    "li16-027",
+    "li16-041",
+    "li16-043",
+    "li16-045",
+    "li16-051",
+    "li16-057"
+  ],
+  "negative_safety_violations": 0,
+  "STATIC_ONLY_semantic_observations": 0,
+  "semantic_processes": 1,
+  "cases_observed": 60,
+  "scorer_applications": 1,
+  "retry_rescore_relabel": 0,
+  "frozen_inputs_scope_unchanged": true,
+  "old_v1_v15_files_unchanged": 323,
+  "parent_reported_lint_gate": "strictClippy needless_borrow unresolved, later fix/CI required.",
+  "isolation": {
+    "Engine_implementation_read": false,
+    "root_tests_historical_other_corpora_read": false,
+    "opaque_parent_freeze_contents_read": false,
+    "provider_network_calls": 0,
+    "Oracle": false,
+    "additional_agents": 0,
+    "cargo_invocations": 0,
+    "shared_target_mutations": 0,
+    "Git_mutations": 0
+  },
+  "limits": "Finite synthetic candidate-only source gate, not real24/CLI/provider/human/release; no cross-corpus improvement claim.",
+  "final_manifest": "All versions except final manifest itself; external SHA256 is final anchor."
+}

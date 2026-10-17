@@ -1,0 +1,13 @@
+# Connecting real-answer metrics preparation to #542 quality gates
+
+[PR #542](https://github.com/git-ksk/reasoning-harness/pull/542),c1cd554,added future real-source quality floors on main during this repair. The [independent metrics preparation](engine073-realworld-metrics-preparation.md) reviewed the12 earlier files at its recorded time; its [input hashes](../evaluation/engine073-realworld-metrics-preparation-v1/reviewed-input-sha256.json) remain unchanged. This addendum reconciles later requirements; it is not new real-source authorship,first execution or scoring.
+
+| Metric | Gold/observation unit | Status and use |
+| --- | --- | --- |
+| Synthetic API F1 | Frozen source expected to requestv17 relation / yieldv30 Relevant | #520 consumed-development and fresh source gate;not final-answer quality. New future independent source gate: both axes F1>=.90/precision>=.95/recall>=.85, safety-negative FP0 and known regressions100%; historical first FAIL archives unchanged. Separate from #531 real24 |
+| #542 candidate-quality F1 | Independent clear positive/negative/ambiguous gold and candidate answer/withhold;normal=complete grounded answer,helper=separately authorized source-scoped target display | Each required provider/track:complete24,at least8 clear positives/1 clear negative,F1>=.90/precision>=.95/recall>=.85 simultaneously. F0.5>=.95 is a diagnostic stretch. Never pool providers/tracks |
+| Claim-grounding P / required-claim recall/F1 | Support for visible atomic factual claims and coverage of required supported gold groups | Zero-denominator,abstention and missingness definitions prepared. Different from case binary F1;complete semantic scorer/rubric integration,use and floors still needM0 freeze |
+
+The #542 pure calculator counts independently frozen gold and externally adjudicated observations. It does not itself implement textual entailment/citation/time scoring or displayed-span→retrieval→admission→evidence validation. Its numeric pass cannot substitute for severe violations0,known unrepaired defects0,no positive regression,paired utility gain,normal/helper distinction,complete providers,budget and product/distribution gates. Ambiguous gold never becomes a negative;unsafe accepts are separate hard failures. Operational missingness never becomes successful semantic abstention.
+
+Freeze both units/denominators/scoring authority/answerability strata/counterexamples/aggregation/thresholds before independent real24 authorship. Do not reinterpret claimF1 as #542 caseF1 after observation. M0 incomplete,M1 absent,real24=0/24. Do not retroactively apply #542 thresholds to oldv2/v3 or sourcev1–v23 first records. Synthetic consumed API F1=1 neither passes the24-task quality gates nor guarantees population precision95%.

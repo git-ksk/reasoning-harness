@@ -1,0 +1,30 @@
+{
+  "identity": "engine073-launch-independent-v19",
+  "stage": "PRE_FREEZE_SCOPE_REVIEW",
+  "outcome": "PASS",
+  "reviewed_utc": "2026-10-16T17:22:03.022555+00:00",
+  "reviewer": "same independent author; no second human/model reviewer",
+  "semantic_observations": 0,
+  "all60_final_labels_rationales_reviewed": true,
+  "positive_scope": "Every adverse object owns a complete physical/document property or a separately fully named foreign event, including multiple foreign cues and three finite roles.",
+  "negative_scope": "Actual target/global/existence denial or unowned/mixed/conflicting event. Literal names/metadata/earlier foreign events cannot supply an explicitly missing owner.",
+  "scope_decisions_fixed": [
+    "li19-009 literal global-withdrawal words are nested in a complete font assertion, not an actual source-wide withdrawal.",
+    "li19-045/046 corrected before freeze from speaker-agency denial to direct product-event denial. Initial6 artifacts byte-kept; expectations retained; other58 unchanged; Engine/scorer0.",
+    "li19-060 unidentified pronoun quote is negative; no new general pronoun resolution required.",
+    "Multiple fully named separate foreign events differ from one mixed-owner event, which includes target in negative058."
+  ],
+  "actual_gap": [
+    "li19-030",
+    "li19-050"
+  ],
+  "canonical_clip_positive": "li19-051",
+  "pure_risk_joint_negative": false,
+  "new_after_source_freeze": true,
+  "old_or_v17_unused_draft_reused": false,
+  "prior_exposure_seen": true,
+  "final_cases_sha256": "c28fd9555184835cab953d8fc59a8d6cbb39f6ec6f7222d414f1cf31e55b334a",
+  "initial_design_revision": "pre-freeze-design-revision.json",
+  "author_generation_and_STATIC_ONLY_runs_before_freeze": 2,
+  "post_observation_revision_allowed": false
+}

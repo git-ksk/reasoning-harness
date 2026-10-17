@@ -1,0 +1,29 @@
+{
+  "identity": "engine073-launch-independent-v21",
+  "stage": "STATIC_ONLY",
+  "outcome": "PASS",
+  "planned": 60,
+  "positive": 30,
+  "semantic_negative": 30,
+  "pairs": 30,
+  "targets": 30,
+  "required_fields_valid": true,
+  "labels_excluded": true,
+  "budget": {
+    "max_model_attempts": 2,
+    "max_tokens": 192,
+    "max_elapsed_ms": 90000
+  },
+  "inherited_probe_scorer_recorder_identical": true,
+  "old_recursive_files_unchanged": 478,
+  "initial_author_AST_history_preserved": true,
+  "author_and_full_input_static_runs": 1,
+  "raw_context_gap": [
+    "li21-030",
+    "li21-050"
+  ],
+  "pure_raw_risk_joint_negatives": 0,
+  "semantic_observations": 0,
+  "Engine_invocations": 0,
+  "provider_network_calls": 0
+}

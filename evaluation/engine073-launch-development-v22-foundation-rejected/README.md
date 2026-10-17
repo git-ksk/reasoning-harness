@@ -1,0 +1,9 @@
+# Rejected first foundation repair after v22
+
+This is a consumed development prototype, **not independent acceptance or an accepted source candidate**. Original independentv22 firstFAIL30/60 and all551 artifacts remain immutable.
+
+The first complete-wrapper/determiner repair recovered some positives but let li22-028 pass: a second owner statement for the same role was skipped, making the first foreign owner appear unique. V17:TP10/FP1/TN29/FN20, precision0.9091, recall0.3333, F1 0.4878. V30:TP9/FP1/TN29/FN21, precision0.9, recall0.3, F1 0.45. Higher F1 does not override safetyFP1. All1080 old seen cases, original14 and historical597 byte equality had passed before the measurement stopped at its safety assertion. Same frozen labels/inputs; scorer/provider/model/Oracle calls0. Outputs are development observations, not revised first scores.
+
+The failed measurement did not persist its initial library hash/identity summary before assertion. The linked probe executable hash, source snapshot hash, metadata recipe, raw outputs and executed measurement script are preserved; this incomplete binding is another reason not to reuse the prototype as accepted pinned evidence. The replacement pins actual worktree HEAD/source/library and saves identity before invocation.
+
+The root's initial new fixture used an unsupported `Object owner` label; it was corrected to the existing exact `Owner of the Object` grammar, with the RED retained. A temporary diagnostic print first failed compilation because a private type lacks Debug, then its corrected diagnostic confirmed the missing root declaration. These are parent test/setup corrections, not independent relabeling. Strict lint/fmt passed on the first source, but its full validation was superseded/stopped; its partial log is not a full PASS. The replacement explicitly includes role-specific competing owner statements and adds target/unknown/different-foreign conflicts plus same-owner/split-role controls.

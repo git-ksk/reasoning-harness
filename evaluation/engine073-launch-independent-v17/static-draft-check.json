@@ -1,0 +1,26 @@
+{
+  "identity": "engine073-launch-independent-v17",
+  "stage": "STATIC_DRAFT_ONLY",
+  "outcome": "PASS",
+  "checked_utc": "2026-10-16T16:21:01.401068+00:00",
+  "author_AST_valid": true,
+  "hand_authored_pair_literals": 30,
+  "planned_positive": 30,
+  "planned_semantic_negative": 30,
+  "distinct_targets": 30,
+  "budget_literal": {
+    "max_model_attempts": 2,
+    "max_tokens": 192,
+    "max_elapsed_ms": 90000
+  },
+  "inherited_probe_scorer_recorder_byte_identical": true,
+  "author_script_executions": 0,
+  "generated_engine_inputs": 0,
+  "full_input_schema_validated": false,
+  "complete_manifest_frozen": false,
+  "probe_builds": 0,
+  "Engine_semantic_observations": 0,
+  "scorer_applications": 0,
+  "provider_network_calls": 0,
+  "limit": "AST/literal checks only; not a completed full-input API preflight or source qualification."
+}

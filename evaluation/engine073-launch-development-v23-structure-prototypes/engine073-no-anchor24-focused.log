@@ -1,0 +1,9 @@
+   Compiling reasoning-harness-core v0.7.2 (/private/tmp/engine073-source23-trace-shadow/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 10.12s
+     Running unittests src/lib.rs (/private/tmp/engine073-trace22-target/debug/deps/reasoning_harness_core-dcd4f612c7771d71)
+
+running 1 test
+test evidence_relevance::tests::v30_quote_truth_status_is_not_a_printed_format_property ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 345 filtered out; finished in 0.30s
+

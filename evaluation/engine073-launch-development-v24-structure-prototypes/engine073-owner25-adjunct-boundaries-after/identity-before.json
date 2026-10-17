@@ -1,0 +1,5 @@
+{
+  "inputs_sha256": "57f0dd786e12a6e14053f0497f5dd93bbd8961e01232dfb4189c754619a1b895",
+  "exe_sha256": "8f50efa34bf80a62c144db209358c0d1336ff803a7560ca46aece5a0b0eae4b8",
+  "expected": "all4 both public axes withhold; development only"
+}

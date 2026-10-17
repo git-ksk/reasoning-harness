@@ -1,0 +1,124 @@
+{
+  "historical": 597,
+  "original": 14,
+  "old_seen": 1080,
+  "v22": {
+    "inputs_sha256": "c971217116917ba70cb69fb739fe17d7f38b0652748b645ac63ba511d9dd7b37",
+    "cases_sha256": "132ba8207c5fcc825beefab4cdd3725e6002f01048c6b380201fdca42351b83f",
+    "baseline_first_source_sha": "7431333d212938147a5d9ab32a0b8bdb44ee16b8",
+    "before_first_axes": {
+      "v17_requested_relation": {
+        "confusion": {
+          "tp": 0,
+          "fp": 0,
+          "tn": 30,
+          "fn": 30
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": null,
+        "recall": 0.0,
+        "f1_positive": 0.0,
+        "specificity": 1.0,
+        "accuracy": 0.5,
+        "balanced_accuracy": 0.5,
+        "predicted_positive_rate": 0.0,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 1.0,
+        "mcc": null
+      },
+      "v30_relevant": {
+        "confusion": {
+          "tp": 0,
+          "fp": 0,
+          "tn": 30,
+          "fn": 30
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": null,
+        "recall": 0.0,
+        "f1_positive": 0.0,
+        "specificity": 1.0,
+        "accuracy": 0.5,
+        "balanced_accuracy": 0.5,
+        "predicted_positive_rate": 0.0,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 1.0,
+        "mcc": null
+      }
+    },
+    "after_development_axes": {
+      "v17_requested_relation": {
+        "confusion": {
+          "tp": 10,
+          "fp": 0,
+          "tn": 30,
+          "fn": 20
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 0.3333333333333333,
+        "f1_positive": 0.5,
+        "specificity": 1.0,
+        "accuracy": 0.6666666666666666,
+        "balanced_accuracy": 0.6666666666666666,
+        "predicted_positive_rate": 0.16666666666666666,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.6666666666666666,
+        "mcc": 0.4472135954999579
+      },
+      "v30_relevant": {
+        "confusion": {
+          "tp": 9,
+          "fp": 0,
+          "tn": 30,
+          "fn": 21
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 0.3,
+        "f1_positive": 0.46153846153846156,
+        "specificity": 1.0,
+        "accuracy": 0.65,
+        "balanced_accuracy": 0.65,
+        "predicted_positive_rate": 0.15,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.7,
+        "mcc": 0.4200840252084029
+      }
+    },
+    "passed": 39,
+    "mismatches": [
+      "li22-003",
+      "li22-005",
+      "li22-007",
+      "li22-009",
+      "li22-015",
+      "li22-017",
+      "li22-019",
+      "li22-021",
+      "li22-031",
+      "li22-033",
+      "li22-035",
+      "li22-037",
+      "li22-039",
+      "li22-041",
+      "li22-045",
+      "li22-047",
+      "li22-049",
+      "li22-051",
+      "li22-055",
+      "li22-057",
+      "li22-059"
+    ],
+    "scope": "same frozen consumed input/labels, new pinned source on same consumed input/labels; first FAIL unchanged; not fresh acceptance",
+    "historical_v29_all60_equal": true
+  }
+}

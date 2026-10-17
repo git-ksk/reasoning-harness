@@ -1,0 +1,11 @@
+{
+  "verified_utc": "2026-10-16T10:35:08.037926+00:00",
+  "external_anchor": "9c59f7750ce81b95e93f02d6f42b272dc16f76ba8a7b24394102b955b3ab412f",
+  "anchored_entries": 289,
+  "anchor_itself_verified": true,
+  "all_v1_v14_files": 290,
+  "inventory_and_hashes_match": true,
+  "v11_NOT_EVALUATED_unchanged": true,
+  "prior_first_FAIL_unchanged": true,
+  "engine_invocations": 0
+}

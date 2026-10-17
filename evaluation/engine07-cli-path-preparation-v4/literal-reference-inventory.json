@@ -1,0 +1,544 @@
+{
+  "status": "STATIC_PREPARATION_ONLY",
+  "symbols": [
+    "derive_effective_evidence_local_qualification_v17",
+    "materialize_evidence_relevance_v30"
+  ],
+  "common_published_cli_host": {
+    "ref": "ec6e55ff95b8364f9a5d09b8bbfe0ecc0c9d19d7",
+    "file_sha256": {
+      "crates/reasoning-harness-cli/src/auth.rs": "b602e2783769e813b51eaee03d525bbc55f3843363aba070e4c0604cbbd9af40",
+      "crates/reasoning-harness-cli/src/bin/cross_model.rs": "c4c775cd9ab08f777be9f98302b27ced1ac72807005dcf2a80102711dcf523bb",
+      "crates/reasoning-harness-cli/src/bin/decidability.rs": "15f0f5a6af6e5b0522d0be5a116c424815068eaa360705dfc22c9ff04454d071",
+      "crates/reasoning-harness-cli/src/bin/engine_0_6_1_launch_live.rs": "a2a7789fedf13047425e5393a846298fdcb6a3784bf33fc7feda93aeb4a289b7",
+      "crates/reasoning-harness-cli/src/bin/evidence_need.rs": "8713615886cc7484c7a215ffc856e2cc9c6a21a34312dd545bbfd18a2749711d",
+      "crates/reasoning-harness-cli/src/bin/evidence_need_holdout.rs": "732ca4559d9781d98f898960b118052c421b84c1b5af78f36609fd56f521d3ec",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance.rs": "9e0fa8f8e9508161e8916bbf61b553bb2f8851eafe81c62aafd002c27bec709e",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_holdout.rs": "8403d5885756d726a6dad6f5acc95da6afb689a97e31cf152557de1a6d7d3071",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_holdout_v10.rs": "0ee8e5db0b16c5faae3a4a24392831d10d343b17fc589fb53c35dfaa5bea83ac",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_holdout_v11.rs": "fc7487a4384170ee49783fe90b21df338db52a06bb7339701775564d2430c344",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_holdout_v12.rs": "0b104022b2b103174e854c140782ab090f9f290962da28a0eb435d01b0e986ee",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_holdout_v6.rs": "ca4d2d15466c02de90ea91879d7f193b709f7c2a7c556c9c46d61b8cd417c1fe",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_holdout_v7.rs": "b1b374c320a93b35b6ab21fd7c1c92629c6607936c962ef8b7be6aada15d2321",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_holdout_v8.rs": "2d0ee1d97a8a90ad2c0a9c154523c44c8dac85c314d0d4b31957c83cbe2a3f47",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_holdout_v9.rs": "5750de7c67b63aaf3f76c3f6178a31cbfcd36418c44e916e5fcbd27310ad76cf",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_identity_probe.rs": "fd40fd9c2006788bd3bb02e1cf17b904442e29134c16a7b9c1c4b180c0c84219",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_negative_relation_probe.rs": "b01c66c5652d8244b0fd80ea140e7a6462a101cf4a9131d11777c614c6ece8ed",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_successor_v10_development_v2.rs": "12b46212c742f60e6c9fa9c84fdb3ecf13c080b52cb38fbf12f3264f57758cbb",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_successor_v10_development_v3.rs": "12b46212c742f60e6c9fa9c84fdb3ecf13c080b52cb38fbf12f3264f57758cbb",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_successor_v10_development_v4.rs": "12b46212c742f60e6c9fa9c84fdb3ecf13c080b52cb38fbf12f3264f57758cbb",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_successor_v11_development.rs": "12b46212c742f60e6c9fa9c84fdb3ecf13c080b52cb38fbf12f3264f57758cbb",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_successor_v11_development_v2.rs": "12b46212c742f60e6c9fa9c84fdb3ecf13c080b52cb38fbf12f3264f57758cbb",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_successor_v7_development.rs": "cecf2cbae26835679cc341a2238ec9a2568ccc212c493c5641c91b2052e7874c",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_successor_v8_development.rs": "12b46212c742f60e6c9fa9c84fdb3ecf13c080b52cb38fbf12f3264f57758cbb",
+      "crates/reasoning-harness-cli/src/bin/evidence_relevance_successor_v9_development.rs": "12b46212c742f60e6c9fa9c84fdb3ecf13c080b52cb38fbf12f3264f57758cbb",
+      "crates/reasoning-harness-cli/src/bin/external_resolution_acceptance.rs": "4f893b6d6a7325fa0d1035079120c3c32300f7ff45ba1f051bf62843baae00a1",
+      "crates/reasoning-harness-cli/src/bin/format_invariance.rs": "b42b872aafdefa46f7da57db94c1d0300000926a54069250c112ba3fe211940a",
+      "crates/reasoning-harness-cli/src/bin/materialization.rs": "e945896e2e8178fe5c930aefd7bee9e301aa0e47f1b440daddc75a62176e2893",
+      "crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs": "2d448c963cb05d0b37043dd292c31d14d9e39de3770463b2e60f0717a70f86a8",
+      "crates/reasoning-harness-cli/src/bin/mcp_product.rs": "54716f546ab3a269558135feb080e40c49dbbd52e7edcfacee071fb1050068e2",
+      "crates/reasoning-harness-cli/src/bin/product_dogfood.rs": "630fa5df1bcecba3eb7ae31c0c4ca85f64b750e6c5ca06f1a75fc31b1749ba47",
+      "crates/reasoning-harness-cli/src/bin/product_external_info.rs": "6d778b4a42e6ae871e84c9f0e2ced59265d0e4751920d97c8387d0718efe32cb",
+      "crates/reasoning-harness-cli/src/bin/product_external_info_successor.rs": "8d0013e8d827ba599873ded42a8d22d417194992f6c85484e589baceebae35a2",
+      "crates/reasoning-harness-cli/src/bin/product_external_info_v3.rs": "f899a6d0846fd16ed4b81e30e3f5bac7e73247c052a05cb61c48bdd4d6fb4da0",
+      "crates/reasoning-harness-cli/src/bin/product_external_info_v4.rs": "b159cd59ef435f8497941dc9df343a5caee03d0267d0e95fcd6b220faab3fbb9",
+      "crates/reasoning-harness-cli/src/bin/runtime_smoke.rs": "b5a90b8b776bceb07cf5006b60c58377529dd5e4b164865f244b53ce2b1aab5d",
+      "crates/reasoning-harness-cli/src/bin/semantic_preflight.rs": "b923eb4b19ea7d8f840ea13409cd32f39a5fdcea48f71a57826fb4ff28b75549",
+      "crates/reasoning-harness-cli/src/bin/source_attribution_development.rs": "a4b9cf785dde3cf8284aff43301d5087016a37ecfa83d00e82cf2b6831566937",
+      "crates/reasoning-harness-cli/src/bin/source_attribution_holdout.rs": "6b04fb2787f7a9714dffa2af43e80b9e2e07a6977a93e4ec3a204f56710e21c4",
+      "crates/reasoning-harness-cli/src/bin/source_attribution_holdout_v2.rs": "92206d9c4707918235c2a171038822876eff1a940d06fa88105933e8593a9814",
+      "crates/reasoning-harness-cli/src/bin/source_attribution_provider_smoke.rs": "3101121c30caa88f557a4e97f09522d207cd4dd69b0058f8e062af3636f90d07",
+      "crates/reasoning-harness-cli/src/bin/stability.rs": "5fd4c9b4b5b1e0bac056f0fd93af5612a44e132da7532a8fd4ae96d1742807f5",
+      "crates/reasoning-harness-cli/src/bin/sufficiency.rs": "86addd1014cd8bcf396f5d74aaa1e3d49ccc63f39e9852b5b44f49c6a4b0a937",
+      "crates/reasoning-harness-cli/src/bin/v36_raw_baseline.rs": "6954af1e7410c7098c74a90487a6ad81df7ee64612ee243a4c7c8dc30c924f60",
+      "crates/reasoning-harness-cli/src/config_commands.rs": "15cf0c03149d20e703cce604210a1bce7745525126e29c5f4d58132d339a24ca",
+      "crates/reasoning-harness-cli/src/diagnostic_trace.rs": "e2477cd506f7a4c25dd308c47f199403a3cb3a152bdd620bb7c5501558a6030a",
+      "crates/reasoning-harness-cli/src/doctor.rs": "cb6a292559edb88a1f444f1fdf4e6f02d05c515b8b68d150047c4b2c253f8079",
+      "crates/reasoning-harness-cli/src/human_presentation.rs": "af14255637893a9970edc6f65f6f60261b3fdfefe46262548176b0208785d1b8",
+      "crates/reasoning-harness-cli/src/interactive.rs": "914d578f73338e40228e633fce2d998019a505be7540e591d85124bb5c0b7d20",
+      "crates/reasoning-harness-cli/src/lifecycle.rs": "308743064c3bc4eebdd5bf22f121ec6cad553a6218dc8a3c457e475c956f0ed0",
+      "crates/reasoning-harness-cli/src/local_privacy.rs": "fe13686c43838885b4c81e37111e5ba290ac7d27862a8a96898ef3c8a9d95285",
+      "crates/reasoning-harness-cli/src/main.rs": "c2889dc17fa0366960d8dbe2706544437e4c26f3e40947e9195bbc96e5a6d82e",
+      "crates/reasoning-harness-cli/src/managed_session.rs": "1be4961df254d90d335a81ee39d45c22f1bd2a563213c7a9890fb17d01f7fcfc",
+      "crates/reasoning-harness-cli/src/mcp_commands.rs": "058efc26d0c5eddd3106128fdc3d3bc2333bd61817471b73756db42889588aba",
+      "crates/reasoning-harness-cli/src/mcp_oauth.rs": "0db5d215eb3353992fa7545e57b5cf2c8004e668aa3cb263d494a3dfbe4c6c88",
+      "crates/reasoning-harness-cli/src/model_catalog.rs": "a15af5e91ef7f0b6d31403eeba93ee08b5c1ec0a457c8948da5d3c1d7678c644",
+      "crates/reasoning-harness-cli/src/progress.rs": "1e9fb1b8fa17d15d65c6c4aea8a4d30eae066c7cda5634c87ec4eae8b47e6f62",
+      "crates/reasoning-harness-cli/src/project_trust.rs": "d4f8874254a26ce7038c7c680a8f5f80a63aea125d4c1ba8673c782c296d8a58",
+      "crates/reasoning-harness-cli/src/secure_credentials.rs": "1aa14326fe7a0bc2937236083757ecbfaac97d5386124f88745599b6c563b576",
+      "crates/reasoning-harness-cli/src/setup.rs": "b25a88a124b49968686f9f1015906b276b55a37ce8d94385f2464858aeec6608",
+      "crates/reasoning-harness-cli/src/terminal_presentation.rs": "42bdcd4792ea40e81ba772da2b0127c219e718f4bc4281af90a116aa933bd4d5",
+      "crates/reasoning-harness-cli/src/usage_budget.rs": "53645d91404c083c4e3e8bae408acaaaaedc9af654e2cb58ac7095f3bcd39f10"
+    },
+    "hits": [
+      {
+        "path": "crates/reasoning-harness-cli/src/bin/engine_0_6_1_launch_live.rs",
+        "line": 9,
+        "text": "derive_effective_evidence_local_qualification_v17, materialize_evidence_relevance_v30,",
+        "category": "evaluation_binary"
+      },
+      {
+        "path": "crates/reasoning-harness-cli/src/bin/engine_0_6_1_launch_live.rs",
+        "line": 261,
+        "text": "let effective = derive_effective_evidence_local_qualification_v17(",
+        "category": "evaluation_binary"
+      },
+      {
+        "path": "crates/reasoning-harness-cli/src/bin/engine_0_6_1_launch_live.rs",
+        "line": 269,
+        "text": "materialize_evidence_relevance_v30(&policy, &candidate, Some(&binding), Some(&raw))",
+        "category": "evaluation_binary"
+      },
+      {
+        "path": "crates/reasoning-harness-cli/src/bin/evidence_relevance_holdout_v12.rs",
+        "line": 26,
+        "text": "derive_effective_evidence_local_qualification_v17, materialize_evidence_relevance_v16,",
+        "category": "evaluation_binary"
+      },
+      {
+        "path": "crates/reasoning-harness-cli/src/bin/evidence_relevance_holdout_v12.rs",
+        "line": 31,
+        "text": "materialize_evidence_relevance_v30, parse_evidence_local_qualification_v8,",
+        "category": "evaluation_binary"
+      },
+      {
+        "path": "crates/reasoning-harness-cli/src/bin/evidence_relevance_holdout_v12.rs",
+        "line": 398,
+        "text": "derive_effective_evidence_local_qualification_v17(policy, candidate, proposal, raw)",
+        "category": "evaluation_binary"
+      },
+      {
+        "path": "crates/reasoning-harness-cli/src/bin/evidence_relevance_holdout_v12.rs",
+        "line": 428,
+        "text": "Self::V12 => materialize_evidence_relevance_v30(policy, candidate, proposal, raw),",
+        "category": "evaluation_binary"
+      },
+      {
+        "path": "crates/reasoning-harness-cli/src/bin/evidence_relevance_successor_v7_development.rs",
+        "line": 29,
+        "text": "derive_effective_evidence_local_qualification_v17, materialize_evidence_relevance_v16,",
+        "category": "evaluation_binary"
+      },
+      {
+        "path": "crates/reasoning-harness-cli/src/bin/evidence_relevance_successor_v7_development.rs",
+        "line": 35,
+        "text": "materialize_evidence_relevance_v29, materialize_evidence_relevance_v30,",
+        "category": "evaluation_binary"
+      },
+      {
+        "path": "crates/reasoning-harness-cli/src/bin/evidence_relevance_successor_v7_development.rs",
+        "line": 503,
+        "text": "derive_effective_evidence_local_qualification_v17(policy, candidate, proposal, raw)",
+        "category": "evaluation_binary"
+      },
+      {
+        "path": "crates/reasoning-harness-cli/src/bin/evidence_relevance_successor_v7_development.rs",
+        "line": 551,
+        "text": "materialize_evidence_relevance_v30(policy, candidate, proposal, raw)",
+        "category": "evaluation_binary"
+      }
+    ]
+  },
+  "candidate_core": {
+    "ref": "3ccda6b4263eb5210477660b11f6926ec0186f4e",
+    "file_sha256": {
+      "crates/reasoning-harness-core/src/adversarial.rs": "28b6bb09d872d8d14d8c48d0527ad680129d5e3353486db7191c2650062b6f39",
+      "crates/reasoning-harness-core/src/answer_safety.rs": "d7ed91733d8bc72d73dc5e5b489a5093f00a4d3976b4ae99c85a85473b7a9522",
+      "crates/reasoning-harness-core/src/assumption.rs": "fe2ef230b209446ea29a5a1e23d2e6ada002a33cf5f390ab8d043e4d8392b978",
+      "crates/reasoning-harness-core/src/assumption_benchmark.rs": "422d26b60913e045def71a723022ac3864d31b055d606855309e2e6c45113b63",
+      "crates/reasoning-harness-core/src/benchmark.rs": "76bca25fdf8541e30ff7a0c3d53558bd8d634325ef8a8449248945aedd3ee455",
+      "crates/reasoning-harness-core/src/candidate.rs": "caa083096f24ea11c9915221b39629eddc199a103bd79733995d6f36c55e9ae2",
+      "crates/reasoning-harness-core/src/causal.rs": "8490cf70f72db9c746760ed901622045b4cc4f8d8d21f276f916604a13c9e0f2",
+      "crates/reasoning-harness-core/src/causal_benchmark.rs": "6a854368cccbf03fd220080295f1b3f9dea8a6baba78f94dd8b2be3a638f0fff",
+      "crates/reasoning-harness-core/src/corpus.rs": "f7153d458234e244b8d731e4141efbb9d1fd71f769864dcaf7acbe755d85eaf8",
+      "crates/reasoning-harness-core/src/decision.rs": "f030823d71cd87be55b28ac72436734f2caa1175dac1b1e17f71569a9d844545",
+      "crates/reasoning-harness-core/src/diagnostic_stability.rs": "a64df6106ab9b679cc2e361ac55fe8adad0ece109c8d9fbdc54d57865a458999",
+      "crates/reasoning-harness-core/src/eval.rs": "8f65125214dccd4935ce8b3736b63a3bab24bf5c962fdb5ec9b7c22bec782008",
+      "crates/reasoning-harness-core/src/evidence_need.rs": "51753aca382e93286551a69bb1900ef5e194ccbce5650db4660f4eababbb057f",
+      "crates/reasoning-harness-core/src/evidence_qualification.rs": "94f403c6595eac8c22ba0a526202a49322327f72e0c8013a39d5d07e243b8626",
+      "crates/reasoning-harness-core/src/evidence_qualification_benchmark.rs": "327abb29ccb679266c82a9e85bc6f281f45203fcd1bb6ca7cb5589c2135a3ff0",
+      "crates/reasoning-harness-core/src/evidence_relevance.rs": "85a64b506f8c47828a4a3296c5d07c13e921c59b528ea27e10ec4993c5f636e2",
+      "crates/reasoning-harness-core/src/finalization.rs": "88715e3bce882f4e45cde785c675669fbf159d602214e2783ab9c25b62f4770a",
+      "crates/reasoning-harness-core/src/format_invariance.rs": "f484c76fd0a8c8c69c848d2cfd8309e9646f109584912e1d9c0d63ea0d8c5e2e",
+      "crates/reasoning-harness-core/src/frameworks/five_whys.rs": "65d065dbba2db2be687fb6a457eb63d1c9f64b330b2af50221354a60cf818dab",
+      "crates/reasoning-harness-core/src/frameworks/mod.rs": "9c3f12fbfa062f5d9e5cf34cc9a8b652be8f50e535b5482b2fc64e632ba452b3",
+      "crates/reasoning-harness-core/src/generation.rs": "67c7074ca168e773601726790e52f33c7ece15c75088d62c3f3e5254b6aca019",
+      "crates/reasoning-harness-core/src/harness.rs": "dca9229c693066493f08079da55a94f2d8239c7a7a73a78f7b5b8fc232860728",
+      "crates/reasoning-harness-core/src/investigation.rs": "7a1b42d7f3d4f9e812f93d258c497bde09c0567719c0d2768f367096f374294b",
+      "crates/reasoning-harness-core/src/lib.rs": "2428f523573a84a2d3af5ba16ccb843633390fce7c9c69c5a657fef5f66bef82",
+      "crates/reasoning-harness-core/src/metamorphic.rs": "bce5167148d2cb621be82d94b1b444f1f2954063ce114e164d605dc9cb94ee8d",
+      "crates/reasoning-harness-core/src/model.rs": "0257e0fa6fc998a106ecb5b5412bad389efc187e9cf00eee09377e0201d30148",
+      "crates/reasoning-harness-core/src/reasoning_policy.rs": "e28c3c7a78b92ba57eac047283389dd734e0651cdf97ebf6c0413b39d818fe79",
+      "crates/reasoning-harness-core/src/reasoning_thread.rs": "c2f0c79f876013b73edf9bd562b58d120d3a5ce5859242edf7c6ca27ebddb453",
+      "crates/reasoning-harness-core/src/resolution.rs": "2c39691f30aa4a22533d77aa613ea38df5d8643ca364a1f336f7cbb0589b3992",
+      "crates/reasoning-harness-core/src/resolution_benchmark.rs": "d0f0ab303db9ddfc0a11df0adb13bc173aa4734bcbf3de0bdd0ca6c13a1d9d65",
+      "crates/reasoning-harness-core/src/schema.rs": "6e2759f110cdb9f08d09fb833f2862b8f980cf98f160287780e8762f18e0bf82",
+      "crates/reasoning-harness-core/src/semantic_decidability.rs": "39e4460afc4b6a9b183f68effd840d25425156a3cc63f3e0b9d590b05a19194d",
+      "crates/reasoning-harness-core/src/semantic_judge.rs": "0a05a70ccb5a6bf18242fcf438affbd197e402c9983c95b9d9ced4c8d0051b9f",
+      "crates/reasoning-harness-core/src/semantic_materialization.rs": "b3d169eff385c54c671fde324f6590bf01a1d4bc815c95ac120b1d275622b329",
+      "crates/reasoning-harness-core/src/semantic_runtime.rs": "73622cbc1cdaa7fea2a1eec35a7b3026b33dbd35e69e3525990d74396c3aa2ce",
+      "crates/reasoning-harness-core/src/semantic_stability.rs": "31f9fbfe1cf3e57575f4d2413699f67acaff0bd6e086fca207dc7e6db9c94a20",
+      "crates/reasoning-harness-core/src/semantic_sufficiency.rs": "3aa14156ce819e7f354cd280a262acc11283c516090b98773544266beb511655",
+      "crates/reasoning-harness-core/src/source_attribution.rs": "7fe3bb5ab376f0eb926b61cff5d681033d7fda8311006495ac8a12eb4d84b098",
+      "crates/reasoning-harness-core/src/source_reconciliation.rs": "c5a26c777351d4692725e61d0048a28a06408c263ffdcb78bee66001a2c041fd",
+      "crates/reasoning-harness-core/src/types.rs": "9ab1e75bab8ed228a4415f365dfeb1129890dd7224c8a444e153c7cf6a6b9107",
+      "crates/reasoning-harness-core/src/validate.rs": "f71d36084bafd215abc875be08d4fbf05a1893ecebe195131b6ac325272ac8f5",
+      "crates/reasoning-harness-core/src/verification.rs": "4e5773cae48ffd736b849df6c64ece94a045b184262c5ba7ff25f94caa2cd635"
+    },
+    "hits": [
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 12651,
+        "text": "pub fn derive_effective_evidence_local_qualification_v17(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 13316,
+        "text": "pub fn materialize_evidence_relevance_v30(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 13325,
+        "text": "let effective = derive_effective_evidence_local_qualification_v17(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14617,
+        "text": "derive_effective_evidence_local_qualification_v17(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14630,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14646,
+        "text": "derive_effective_evidence_local_qualification_v17(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14658,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14715,
+        "text": "let q = derive_effective_evidence_local_qualification_v17(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14728,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14791,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14822,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14850,
+        "text": "let q = derive_effective_evidence_local_qualification_v17(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14863,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14876,
+        "text": "derive_effective_evidence_local_qualification_v17(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14888,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14897,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14937,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14951,
+        "text": "materialize_evidence_relevance_v30(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 14977,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15021,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15084,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15112,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15128,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15169,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15234,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15247,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15278,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15292,
+        "text": "materialize_evidence_relevance_v30(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15317,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15351,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15365,
+        "text": "materialize_evidence_relevance_v30(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15391,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15403,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15428,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15446,
+        "text": "materialize_evidence_relevance_v30(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15469,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15501,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15522,
+        "text": "materialize_evidence_relevance_v30(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15544,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15556,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15614,
+        "text": "materialize_evidence_relevance_v30(&policy, &valid, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15636,
+        "text": "materialize_evidence_relevance_v30(&policy, &negative, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 15650,
+        "text": "materialize_evidence_relevance_v30(&policy, &title_only, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 19238,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 19268,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 19286,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 19313,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 19355,
+        "text": "let effective = derive_effective_evidence_local_qualification_v17(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 19367,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 19391,
+        "text": "let effective = derive_effective_evidence_local_qualification_v17(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 19403,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 19429,
+        "text": "let effective = derive_effective_evidence_local_qualification_v17(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 19442,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 19473,
+        "text": "let effective = derive_effective_evidence_local_qualification_v17(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 19486,
+        "text": "materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "line": 19501,
+        "text": "derive_effective_evidence_local_qualification_v17(",
+        "category": "relevance_module"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/lib.rs",
+        "line": 217,
+        "text": "derive_effective_evidence_local_qualification_v17, evidence_local_qualification_schema,",
+        "category": "module_export"
+      },
+      {
+        "path": "crates/reasoning-harness-core/src/lib.rs",
+        "line": 236,
+        "text": "materialize_evidence_relevance_v29, materialize_evidence_relevance_v30,",
+        "category": "module_export"
+      }
+    ]
+  },
+  "non_evaluation_cli_source_symbol_matches": [],
+  "core_matches_outside_relevance_module_or_exports": [],
+  "scope": "Literal Rust symbol-reference inventory only; public re-exports and private module tests may appear. Not complete call graph, macro/FFI/dynamic proof, runtime evaluation, all Engine feature inactivity, final-answer improvement or CLI acceptance. Prior same-host fixed Node runtime public-API counter0 and direct control are separate preserved evidence. Need explicit ordinary path of evaluated APIs plus actual runtime acquisition/admission/display trace before M0.",
+  "engine_scorer_provider_model_network_calls": 0,
+  "files_mutated": 0
+}

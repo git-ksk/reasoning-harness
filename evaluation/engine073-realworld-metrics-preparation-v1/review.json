@@ -1,0 +1,40 @@
+{
+  "identity": "engine073-realworld-metrics-preparation-v1",
+  "saved_utc": "2026-10-17T07:21:52.670799+00:00",
+  "status": "PREPARATION_ONLY_NOT_FROZEN_NOT_SCORED_ACCEPTANCE_NO_GO",
+  "outcome": "Scoring definitions and readiness-gap review prepared; actual semantic scorer/host numeric/dependency/CLI gates not completed.",
+  "new_docs": {
+    "docs/engine073-realworld-metrics-preparation.md": "9e90707b295ee4e273f7101f0d7d33804bff64c4629d980f9209a1258e6f73e7",
+    "docs/engine073-realworld-metrics-preparation.ja.md": "30a4f73c4f0cd4a6aa2a284f3243d997dbc1f769751defcb7617659f6605df08"
+  },
+  "read_inputs_manifest_sha256": "76b41a7c06dc1893106695253dc303164e2905881cdeffabe26ca0251f7e36c0",
+  "author": "same sole authorized independent evaluator",
+  "new_cases": 0,
+  "new_gold_answers": 0,
+  "Engine_implementation_read": false,
+  "current_candidate_tests_read": false,
+  "current_independent_case_contents_read": false,
+  "root_diagnostics_development_read": false,
+  "provider_model_network_Oracle_calls": 0,
+  "runner_test_or_fixture_executions": 0,
+  "scorer_implementation_or_execution": 0,
+  "Git_operations": 0,
+  "additional_agents": 0,
+  "existing_protocol_freeze_first_results_scorer_modified": false,
+  "proposals": [
+    "atomic visible-claim grounding precision; required supported requirement-group recall and F1 with zero-denominator conventions",
+    "answerability, avoidable/correct withholding, citations, conflict/correction/time, usefulness, operations and accounting as separate axes",
+    "provider/track/arm/family denominators, complete cohorts, null totals and delivery coverage",
+    "M0 evaluator/host freeze then independent authoring then M1 gold/snapshot freeze; old results immutable"
+  ],
+  "remaining": [
+    "new complete semantic scorer and evidence/display trace validation",
+    "actual callback limits and dependency closure",
+    "numeric live reserve/headroom/monetary budget plan",
+    "actual current paired CLI invocation/active feature control",
+    "separate verified Groq recovery/shared organization admission",
+    "fresh independent real24 authoring after complete freeze",
+    "full provider/CLI/human/adoption acceptance"
+  ],
+  "preparation_doc_revision": "Pre-delivery design review clarified aggregate zero-denominator rules; answer-content versus conflict/withholding explanation; gold-answerability strata and no refusal-only answer gains; actual correction/time applicability; development-only active controls. No corpus/gold/first score exists or changed."
+}

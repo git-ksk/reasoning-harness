@@ -1,0 +1,50 @@
+{
+  "identity": "engine073-launch-independent-v23",
+  "status": "PRE_OBSERVATION",
+  "author": "same sole authorized independent evaluator; Engine source-blind",
+  "candidate_source_sha": "01dc78b6952ed77cd20001323f6ab032eeec361e",
+  "scope": "bounded #520 synthetic source launch retraction/denial/non-event gate",
+  "cases": 60,
+  "pairs": 30,
+  "positive": "v17 requested_relation AND v30 Relevant; fully specified non-launch property or uniquely foreign event corrections only",
+  "semantic_negative": 30,
+  "negative": "v17 not requested_relation AND v30 not Relevant; real target/global/existence denial or unresolved/mixed/conflicting/unknown/ownerless event/context",
+  "raw_risk": "independent of semantic relation; exact all60 raw/effective tuples retained without hidden component inference",
+  "raw_context_gap_ids": [
+    "li23-034",
+    "li23-048"
+  ],
+  "pure_raw_risk_joint_negatives": 0,
+  "budget": {
+    "max_model_attempts": 2,
+    "max_tokens": 192,
+    "max_elapsed_ms": 90000
+  },
+  "input_isolation": "Only id/policy/candidate/proposal/raw in inputs.json enters Engine; labels/rationale/polarity/axes outside. Each input has one independent unadorned full TARGET was launched. anchor, aliases empty, exact/exact proposal.",
+  "stages": [
+    "author AST/scope review semantic0",
+    "one generation and full schema STATIC_ONLY semantic0",
+    "unchanged public probe dedicated rustc compile only",
+    "complete manifest freezes all input/label/rationale/protocol/scorer/recorder/probe/exe/source/core/serde/opaque",
+    "first one process60 and scorer once",
+    "all first/errors/diagnostics/receipt/review/README/all old+new hashes readonly closure"
+  ],
+  "author_revisions": "None. If needed before complete freeze, archive exact original bytes/static result/diff/reason and preserve expected polarity. After freeze no changes/retry/relabel/rescore.",
+  "prior_sets": "v1-v22 all known development, including NOT_EVALUATED drafts; old case/author/input bodies unread and unused for v23",
+  "preserved": "old551 source artifacts plus separate5 metrics preparation files; separate parent closure not altered",
+  "prohibited": [
+    "provider/model/network/Oracle calls",
+    "cargo/shared target mutations",
+    "Git mutations",
+    "additional agents",
+    "Engine implementation/current tests/root trace/diagnostics/development F1/current case text reads",
+    "new real24 authorship"
+  ],
+  "limits": [
+    "finite synthetic source check only",
+    "not arbitrary language/graph/alias/numeric AST/chrono truth guarantee",
+    "not real24, ordinary CLI, provider, human, release/adoption acceptance",
+    "not a cross-corpus improvement rate"
+  ],
+  "parent_reported_only": "fixed01dc78b workspace1572 PASS/0FAIL/8 existing ignored; strict all-target Clippy/fmt,20fixtures/13archive,known1140/historical597 whole-output/original14 complete. No parent logs, implementation, tests or F1 read."
+}

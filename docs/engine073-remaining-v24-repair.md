@@ -1,0 +1,13 @@
+# Repair of the13 v24 misses
+
+Original independentv24 on3ccda6b remains firstFAIL47/60: both axes TP17/FP0/TN30/FN13, precision1, recall.566667, F1.723404. These cases are now consumed development. Separate test-only tracing found typed_reference_not_excluded first in all13, with effective tuples matching the first outputs. Later blockers were traced only after the first repair; failed proposals and boundary controls remain recorded.
+
+1. Prove complete physical/document properties and outer quoted attributes; keep document and event ownership separate.
+2. Preserve explicit unknown event ownership even away from a retraction or after a finite discourse adjunct. A second possessive property needs an independently owned first component; older nominal rules cannot supply its unknown antecedent.
+3. Mask heading/title literal bodies only after complete property proof. Keep actual omissions, raw risk and target/global denials. A literal-not-owner-supplement explanation also needs a separately proven foreign event.
+4. Candidate9505300: same60 development TP30/FP0/TN30/FN0, precision/recall/F1=1 on both APIs. Four additional owner-note controls withhold on both APIs. Known1264, original14 and historical597 whole-output byte equality PASS. Final isolated workspace1582PASS/0FAIL/8existing ignored, strict Clippy/fmt; the earlier overlapping validation is explicitly superseded. [Pinned evidence](../evaluation/engine073-launch-development-v24-structure/README.md).
+5. Fresh independentv25 must freeze evaluator and policy before any new case authoring, then freeze candidate, inputs and labels before one first observation. Under merged#547, each axis needs F1>=.90, precision>=.95, recall>=.85, safety-negative FP0, known regressions100%, original audit/history/provenance completeness. Keep >=60 cases with >=30 positives/negatives. Historicalv24 FAIL is never rescored. No retry, rescore or relabel.
+
+The sole authorized evaluator is preparing this pre-author freeze in a dedicated candidate copy; no freshv25 result yet. Real24=0/24, M0/M1 incomplete. Full semantic scorer, actual callback/dependency, numeric live/headroom/currency budget and a feature-active ordinary CLI path remain separate requirements. Groq stopped; provider/model/Oracle additional0. Published Engine0.7.2 and CLI0.5.5/Engine0.6.1 stay unchanged; release and CLI adoption remain NO-GO.
+
+Subsequent freshv25 firstFAIL35/60, both P1/R.166667/F1.285714. The above v24 repair remains consumed development. Source merge/release/adoption stay NO-GO. See [v25 decision](engine073-v25-decision.md); no next independent authoring before the newly known repairs and new candidate/evaluator freeze.

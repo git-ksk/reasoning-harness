@@ -1,0 +1,31 @@
+{
+  "identity": "engine073-launch-independent-v23",
+  "utc": "2026-10-17T08:31:04.667851+00:00",
+  "stage": "RESUMED_AFTER_STATIC_BEFORE_COMPILE_OR_SEMANTIC",
+  "existing_files": {
+    "author_cases.py": "929ff7cc018480fa27ad4aee3efab64930d149dc1b8e965a7a72092a402c8ab4",
+    "cases.json": "ad9ca3a38ac8971d5b7bab0b908f8b7f09bc6cc80b111c9487f791b0334b0dd9",
+    "draft-history/initial-static-v1/static-check.json": "37dd858422c590bfaef3cdb01a2124bbdb15191532edae7a6c70c7a782192125",
+    "draft-history/initial-static-v1/static_preflight.py": "462a760378899e7126ac436516af7c2f900ed62eb29483663d7e72212d22584d",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "inputs.json": "4f53750a2e1a9689f1c2eab327238016b1fd8bc10dbf47b63f0e0702b3976b88",
+    "pre-freeze-scope-review.json": "8cf5e904d9871e45801a7222d14132add3da4b7263f65accab2f9e8c4ec22243",
+    "pre-freeze-static-revision.json": "280ec8958af5cb50400eab4a690f7bbbf02c0e866ce9de327b2b0688b4c9b2e6",
+    "predecessor-artifact-hashes.json": "583ebd6041a10fa5374d3a452d96fe4aec1d3432c265f5404ec336564e51f3cb",
+    "preserved-preparation-hashes.json": "4ce3f90bbb870cda0f9771bfe31e57c3729b531034225f820f15a4489a0729ea",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "protocol.json": "3a7a4e3a5e0671e079a6e7326e511c0cfa6c10f2d53be35bfcf65fe246316b6f",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "static-preflight.json": "db3b041b588a21f24712c1190953379470ac1870b97a5ddcd8476058c597623d",
+    "static-stage-invocation.json": "b1f59fdfe116dfca47dd24c5d97cf5917b30712040a0983460d77e78b384289e",
+    "static_preflight.py": "7ca24cb29d0126f51593909e7c54514a4207af6b026bda327ff04966c15f89a5"
+  },
+  "previous_compile_command": "not executed: automatic approval review could not complete under service usage limit",
+  "pending_init_restart": "parent restarted same evaluator; author/static not repeated; inputs/labels/criteria unchanged",
+  "existing_first_or_scorer_markers": false,
+  "Engine_invocations_before_resume": 0,
+  "scorer_invocations_before_resume": 0,
+  "author_runs": 1,
+  "full_input_static_runs": 1,
+  "no_retry_of_executed_semantic": true
+}

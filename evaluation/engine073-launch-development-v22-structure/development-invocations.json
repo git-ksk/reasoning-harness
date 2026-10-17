@@ -1,0 +1,317 @@
+[
+  {
+    "before": {
+      "executable_sha256": "6d8d88dd26d7cb7c54de55be4c34c0abd3cb4410017fe16914920c6ec0bda26a",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/launch-520-521-final-validation/historical-compatibility-inputs.json",
+      "inputs_sha256": "49e7b409f9a5edcbc9f4bfb0a3bfd2cdafc964c551fda0fd0f7b6626d3a4fc71",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "historical-after.jsonl",
+    "stdout_sha256": "9f378662ae651f7c7a2394d7c00c918c9eec7701628ccd339c6d2d181fba47f5",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "23ca0bb7ddb64fd4a78257c86f34a242458fb30387adff4abcb6697e7ad0f652",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine-0.7.2-verification-audit-20261014/cases.json",
+      "inputs_sha256": "3fedf054223797615186c7004a1e4bb6af64825484fb86b072d784d2b006a4cc",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "original-audit-after.jsonl",
+    "stdout_sha256": "5c32b97127644a0be7094ba23cf629349bed75aa91e995897ec61870bd98d83b",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v2/inputs.json",
+      "inputs_sha256": "6d3e1ca0ec95373beb6d4ca67cbd0deec13a246e894ecb0f9d1cf1081eca74de",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v2-after.jsonl",
+    "stdout_sha256": "acc897a23e50d0575b3fec4025d6cee1b8cf45bb770327a4275e0792f15e7f56",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v3/inputs.json",
+      "inputs_sha256": "f3cc99a110a71d26d636f7cf39bf2fe75a333edfab16ba726d932d462f46f123",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v3-after.jsonl",
+    "stdout_sha256": "f7211277b5a04466ee10ad50ee715a497a7e3112baa3fde6f644042736d48129",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v4/inputs.json",
+      "inputs_sha256": "dd4259566d7cab85d29732f5ab5d1d25700da6e0a21cbe5ef6b81a71fbea9528",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v4-after.jsonl",
+    "stdout_sha256": "99ea2a1b07461ebc522591a7a2ddf5af6ef49d30aba463c028a9660d89fc34dd",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v5/inputs.json",
+      "inputs_sha256": "fbae5fc6b5c888fadd531a803efdde24d22efa36f02024569fc42d278e738bcf",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v5-after.jsonl",
+    "stdout_sha256": "24cffa7ec083b9eb08fe11326db5c91885522f6f0f6fb8f8ec33e2cbaca5a1e1",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v6/inputs.json",
+      "inputs_sha256": "ee078f4c861d1f8bb13801f4497a392b9c22bb08e4a52b55396f709d72063c67",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v6-after.jsonl",
+    "stdout_sha256": "968d51a79db3783c03b118a38ec7a12cb570ffde79502bfe5bff2de308729da9",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v7/inputs.json",
+      "inputs_sha256": "809269919365ff2f437aff574ba31fd7952ae45bebf5c8d7b37b93473857c6ed",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v7-after.jsonl",
+    "stdout_sha256": "215852736588714dc5d438d7d18d3f3b68acbd6888fa5e1c846fe4222d9a4fa4",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v8/inputs.json",
+      "inputs_sha256": "0604e2d55a5f81b8abfe536ca7672e98da7278f5487bec72067e9a524df99d99",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v8-after.jsonl",
+    "stdout_sha256": "dfb203dcd475aa651cb0020590f19525bed11c2ca6dbc5f9ddd6089da875794f",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v9/inputs.json",
+      "inputs_sha256": "b5851c915ee65eda6f768fdf3c1cd52d6387d6c21e321ca68da424962532650d",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v9-after.jsonl",
+    "stdout_sha256": "c64ad8c0756edf9a8098674efcf5eb0293aa38a9d5dadd37942b9faf05818957",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v10/inputs.json",
+      "inputs_sha256": "5c37025ae4e52496d2e1ba1bb251dfd72a1261037b929422b8d86006ddf53a34",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v10-after.jsonl",
+    "stdout_sha256": "98b270f07be576ca3a0ac05b6496f775c6469451bd3f9e51285e67b2b2a34dae",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v12/inputs.json",
+      "inputs_sha256": "ea5de8cfd12daca3740c9c9da6794ac284e3a385fe32b6acceb51ac4f0e4a09d",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v12-after.jsonl",
+    "stdout_sha256": "68db991bd5b1516b9147b5a25d118f3ae5c5946f0e22ca609df7f84cdf55df22",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v13/inputs.json",
+      "inputs_sha256": "985e0834756d294f52cf4e0c6f917dfa4bde6a9ff140d674e9df7ae2453d5973",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v13-after.jsonl",
+    "stdout_sha256": "a88538cbf5c0566bdd203ea115b07820c08d580bee187b0cff82adf6e77c1a76",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v14/inputs.json",
+      "inputs_sha256": "2fdb12c351d929fdc6f99d4a036d2cb5f8a0be2226dd159ea2ad9c980d7bde20",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v14-after.jsonl",
+    "stdout_sha256": "b71e4051af11ea78bbed30c9681b01b6a67c41201fc7e2fc53708359b01ffdbb",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v15/inputs.json",
+      "inputs_sha256": "02d0adaf0633ec44a9933152ab749f47c941f6b384cc679e1df57c85c729edd7",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v15-after.jsonl",
+    "stdout_sha256": "7f539d83d505d25f30cdffc32aa7420446e5c86eb6881115275334e7c1cf1f5c",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v16/inputs.json",
+      "inputs_sha256": "068744865ad4cfe560fbaa093d0767fa69e1eec6ddd4b129280ac5577068962f",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v16-after.jsonl",
+    "stdout_sha256": "6fed29f8708e4ec9b9d7b7c77aee16b1679e30087a27361adc24f612af43152e",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v18/inputs.json",
+      "inputs_sha256": "11f1aa8b973e41c3d849c85b2d86eac4cffb6bcdb6de3d6e66d94775619d5ee5",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v18-after.jsonl",
+    "stdout_sha256": "e4cab91c371a2d3209e315907ea7fd022dd13d3885ebf7049879c8fe32980011",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v19/inputs.json",
+      "inputs_sha256": "559e34af94070a60dfb93306289a7d2380e4b3de73662a40760b1365afff1c93",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v19-after.jsonl",
+    "stdout_sha256": "d9d7479b92de668cb365d0164899b85113475b9df595fe9341bcbef9c69bfda3",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v20/inputs.json",
+      "inputs_sha256": "05dc8fac16987e6092124f6bd3dc7be3dbaa4597022808a5f4ced61a4a2b1ac7",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v20-after.jsonl",
+    "stdout_sha256": "f08c2c0abfb33114318f5f1239f6009dc2045e1104374019257eff656df28863",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v21/inputs.json",
+      "inputs_sha256": "602d2d1c010c9998035d922e3dd784dd052efcfd5e6d298f8f226627dcd4b194",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v21-after.jsonl",
+    "stdout_sha256": "36ebbbb4dca140dfb33facb55f7a47e83166666b3874e0d0b2271ff89e857fda",
+    "stderr_empty": true,
+    "provider_calls": 0
+  },
+  {
+    "before": {
+      "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v22/inputs.json",
+      "inputs_sha256": "c971217116917ba70cb69fb739fe17d7f38b0652748b645ac63ba511d9dd7b37",
+      "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+      "core_sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae",
+      "serde_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "returncode": 0,
+    "stdout_file": "seen-v22-after.jsonl",
+    "stdout_sha256": "2cba44c6ddde38af7687d46188b6cbd8dd7a69b94bc4a01f7ad1f3a5b5d4735e",
+    "stderr_empty": true,
+    "provider_calls": 0
+  }
+]

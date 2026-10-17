@@ -1,0 +1,97 @@
+{
+  "identity": "engine073-launch-independent-v24",
+  "stage": "POST_FIRST_SCORER_DIAGNOSTIC_AGGREGATION_ONLY",
+  "spec_sha256": "fe5871ad8aa82852e7a978c47d138c8a17f1c647979fd7dc06a7605368b87da6",
+  "aggregator_sha256": "7a59e505a407f00d796655222cbad4274c865fb9e3ffa7d301a8360074bb97b7",
+  "first_results_sha256": "0b686ef9360eb52be659d0d2ab3e3054d72590f9260807ab4c3957300f81d6b0",
+  "first_summary_sha256": "6aec4593203dc47a53e1f11b18e7a90a8f87e9068a95410ec3660f31b897328b",
+  "complete": true,
+  "planned": 60,
+  "observed_valid": 60,
+  "planned_positive": 30,
+  "planned_negative": 30,
+  "axes": {
+    "v17": {
+      "counts": {
+        "TP": 17,
+        "FP": 0,
+        "TN": 30,
+        "FN": 13
+      },
+      "observed_counts_diagnostic": {
+        "TP": 17,
+        "FP": 0,
+        "TN": 30,
+        "FN": 13
+      },
+      "ratios": {
+        "Precision": {
+          "numerator": 17,
+          "denominator": 17,
+          "value": 1.0,
+          "null_reason": null
+        },
+        "Recall": {
+          "numerator": 17,
+          "denominator": 30,
+          "value": 0.5666666666666667,
+          "null_reason": null
+        },
+        "F1": {
+          "numerator": 34,
+          "denominator": 47,
+          "value": 0.723404255319149,
+          "null_reason": null
+        }
+      },
+      "observed_negative_unsafe": 0,
+      "unobserved_cases": 0
+    },
+    "v30": {
+      "counts": {
+        "TP": 17,
+        "FP": 0,
+        "TN": 30,
+        "FN": 13
+      },
+      "observed_counts_diagnostic": {
+        "TP": 17,
+        "FP": 0,
+        "TN": 30,
+        "FN": 13
+      },
+      "ratios": {
+        "Precision": {
+          "numerator": 17,
+          "denominator": 17,
+          "value": 1.0,
+          "null_reason": null
+        },
+        "Recall": {
+          "numerator": 17,
+          "denominator": 30,
+          "value": 0.5666666666666667,
+          "null_reason": null
+        },
+        "F1": {
+          "numerator": 34,
+          "denominator": 47,
+          "value": 0.723404255319149,
+          "null_reason": null
+        }
+      },
+      "observed_negative_unsafe": 0,
+      "unobserved_cases": 0
+    }
+  },
+  "joint_outcome": "FAIL",
+  "joint_passed": 47,
+  "ops": {
+    "operational_errors": [],
+    "operational_error_count": 0,
+    "incomplete": 0
+  },
+  "inherited_scorer_invocations": 1,
+  "additional_Engine_or_scorer_invocations": 0,
+  "gate": "All60/60 joint source cases and operational completeness still required; no F1 threshold substitution. Not answer grounding F1."
+}

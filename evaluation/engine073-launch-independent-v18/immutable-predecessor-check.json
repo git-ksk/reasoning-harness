@@ -1,0 +1,10 @@
+{
+  "verified_utc": "2026-10-16T16:37:24.914756+00:00",
+  "external_anchor": "1ab25325a5ecc1704057a778f675d6ee12c06dc93e615f344865fcc905b12ad3",
+  "anchored_entries": 367,
+  "anchor_itself_verified": true,
+  "old_v1_v17_files": 368,
+  "all_first_records_v11_and_v17_NOT_EVALUATED_unchanged": true,
+  "v17_draft_reused": false,
+  "semantic_observations": 0
+}

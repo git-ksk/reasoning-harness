@@ -4,6 +4,10 @@
 
 Status: **in progress / adoption NO-GO**, 2026-10-15 JST. [Issue #531](https://github.com/git-ksk/reasoning-harness/issues/531), [milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12). The published product is Reason CLI0.5.5 / Engine0.6.1. Engine0.7.2 is an independent source release, not an adopted CLI Engine.
 
+## Planned successor — Engine0.7.3
+
+Follow [the0.7.3 ordered roadmap](engine-0.7.3-roadmap.md) / [#538](https://github.com/git-ksk/reasoning-harness/issues/538).0.6.1 remains the product baseline;0.7.2 results remain immutable historical development evidence. Repair #520 first, complete safe runner/wiring, then freeze and freshly evaluate the pinned successor. #535 is merged and the #537 bridge passes26 offline tests; these do not complete live runner or acceptance gates.0.7.3 is not published or selected for CLI adoption.
+
 ## First development comparisons completed; acceptance remains incomplete
 
 [First v2/v3 results and limits](engine07-realworld-development-results.md) record both three-provider observations, exact source/build identities, preserved raw archives and verification. Both frozen runs FAIL; normal useful-answer gain was0 for Mistral/Google in v3 and Groq was quota-blocked. Opt-in helper display gain was2 for Mistral/Google, separately. No full safety, citation, fresh independent or adoption acceptance is claimed.

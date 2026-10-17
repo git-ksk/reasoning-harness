@@ -1,0 +1,26 @@
+    Checking reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+error: this `let...else` may be rewritten with the `?` operator
+    --> crates/reasoning-harness-core/src/evidence_relevance.rs:4780:5
+     |
+4780 | /     let Some(start) = value.find(['"', '“', '‘']) else {
+4781 | |         return None;
+4782 | |     };
+     | |______^ help: replace it with: `let start = value.find(['"', '“', '‘'])?;`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#question_mark
+     = note: `-D clippy::question-mark` implied by `-D warnings`
+     = help: to override `-D warnings` add `#[allow(clippy::question_mark)]`
+
+error: this `let...else` may be rewritten with the `?` operator
+    --> crates/reasoning-harness-core/src/evidence_relevance.rs:4795:5
+     |
+4795 | /     let Some(end) = quoted.find(closing) else {
+4796 | |         return None;
+4797 | |     };
+     | |______^ help: replace it with: `let end = quoted.find(closing)?;`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#question_mark
+
+error: could not compile `reasoning-harness-core` (lib) due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `reasoning-harness-core` (lib test) due to 2 previous errors

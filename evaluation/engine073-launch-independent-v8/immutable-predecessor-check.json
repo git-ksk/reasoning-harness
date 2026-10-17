@@ -1,0 +1,9 @@
+{
+  "stage": "STATIC_ONLY",
+  "anchor_file": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v7/final-artifact-manifest.json",
+  "anchor_sha256": "3c9b31690d2d7b5247690f07ef79d550b3d41e703479551e511bb92f0eedea32",
+  "all_anchored_v1_v7_files_verified": true,
+  "verified_files_including_anchor": 146,
+  "Engine_invocations": 0,
+  "semantic_observations": 0
+}

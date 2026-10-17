@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-17T15:30:23.085094+00:00",
+  "reason": "Freeze exact raw/effective risk diagnostic schema before authorship. Also require recorder/scorer process success and empty scorer stderr for driver PASS; helper gate remains separate and never rescored.",
+  "Engine_invocations": 0,
+  "real_cohort_scorer_invocations": 0,
+  "authored_cases": 0
+}

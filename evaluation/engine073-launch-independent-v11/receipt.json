@@ -1,0 +1,39 @@
+{
+  "identity": "engine073-launch-independent-v11",
+  "saved_utc": "2026-10-15T23:42:42.151618+00:00",
+  "state": "ABORTED_BY_PARENT_BEFORE_DATA_GENERATION_FREEZE_AND_SEMANTIC",
+  "outcome": "NOT_EVALUATED",
+  "candidate_source_sha": "26c3baa9f5dfae7b901cf67aac9da0602e079a3e",
+  "evaluation_manifest_exists": false,
+  "evaluation_manifest_sha256": null,
+  "generated_cases": 0,
+  "observed_cases": 0,
+  "Engine_invocations": 0,
+  "semantic_observations": 0,
+  "scorer_applications": 0,
+  "static_preflight_runs": 0,
+  "provider_calls": 0,
+  "original_five_draft_files_unchanged": true,
+  "draft_hashes": {
+    "author_cases.py": "f0af450ce26bc43487648874f8b00c58ac94fbd3e8b33eaddce8cc5cdec09afb",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "predecessor-artifact-hashes.json": "4280b10d39d51506a4c28244a105ef8c2d81706c1aef3762c58dbf7fb8bba4b3",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3"
+  },
+  "v1_v10_files_unchanged": true,
+  "old_files_verified": 212,
+  "old_anchor_sha256": "c629df03035af3350271c9f0f133d6faf29289f6566b659274863c723d4acacc",
+  "retries": 0,
+  "rescoring": 0,
+  "label_or_author_changes_after_stop": 0,
+  "files": {
+    "README.md": "8fe1cc83bf971ab1ef51969dcd3394995227c7a9f1d77ea354c8c8bd647a8b34",
+    "aborted-before-freeze.json": "6145a97fd990c41c469057c4e533596e972ff5bed79693089fe138a069646713",
+    "author_cases.py": "f0af450ce26bc43487648874f8b00c58ac94fbd3e8b33eaddce8cc5cdec09afb",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "predecessor-artifact-hashes.json": "4280b10d39d51506a4c28244a105ef8c2d81706c1aef3762c58dbf7fb8bba4b3",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3"
+  }
+}

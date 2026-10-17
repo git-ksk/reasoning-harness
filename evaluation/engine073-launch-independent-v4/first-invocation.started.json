@@ -1,0 +1,46 @@
+{
+  "state": "started",
+  "utc": "2026-10-15T12:32:35.509577+00:00",
+  "command": [
+    "/private/tmp/engine073-launch-independent-v4-probe/probe",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v4/inputs.json"
+  ],
+  "pre_invocation_identity": {
+    "verified_utc": "2026-10-15T12:32:35.509193+00:00",
+    "head": "4e36fa5184e76601643b6d12575f5d26c8fc1eec",
+    "artifacts": {
+      "evidence_relevance_source": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "sha256": "2757449cd606bb62c875c8078a3596f6faeba159049a88daeb1ced9cb75a64d3"
+      },
+      "core_rlib": {
+        "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-876be67fd4b1ef90.rlib",
+        "sha256": "58e2806e142655f0a7e9c6b9dda2dd95ea74e37e63bc0b11884e232dc75e0821"
+      },
+      "serde_json_rlib": {
+        "path": "/private/tmp/engine073-target/debug/deps/libserde_json-fdb0c033eb5b5773.rlib",
+        "sha256": "6790acd878f7472babebca4ae5c0e9e4dcaab113f41c3a212935db0380a2bd68"
+      },
+      "probe_executable": {
+        "path": "/private/tmp/engine073-launch-independent-v4-probe/probe",
+        "sha256": "f6e27e53def07d068c54fb74095e6b3dd06097c8c526b9092d1251958e01c07f"
+      }
+    },
+    "frozen_files": {
+      "author_cases.py": "e76e621333088b2d06e344e3e8d0f9f6b3e0f1d32b00f409476af4ee16b19459",
+      "cases.json": "d41e3a92f973fcb16f80b6fb9c7b70edc3a638d6e2a4f9a081d3d60f78f1f006",
+      "inputs.json": "dd4259566d7cab85d29732f5ab5d1d25700da6e0a21cbe5ef6b81a71fbea9528",
+      "protocol.json": "00a5580aebf93d14c0fcb0bd731ccd7b964943814a58d0fc868f8195936fc39b",
+      "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+      "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+      "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+      "static_preflight.py": "a95ce53a7a52cb898440feeb107e0621ad2a4fe9643fb0ac58e8a1135b0fc8a3",
+      "static-preflight.json": "5a9c6c18c0e43bb8e5a05af65d397cca6c638c061e9b396da4ffdfd3070c2460",
+      "pre-freeze-scope-review.json": "916fcdb53ccd1a22d04e74dbd43acfb887bae0c3953d2a53dbf77aee67c61fe4",
+      "predecessor-artifact-hashes.json": "c288cb895bd1277eaa3ee1e0cfa8f57ff0814a72b254540158ebf283c04dcd6b"
+    },
+    "manifest_sha256": "7ffcdff0c10874a166406e0542191cf5e7f3524563d75e8a72fb987cc89c5552"
+  },
+  "provider_calls": 0,
+  "retry": 0
+}

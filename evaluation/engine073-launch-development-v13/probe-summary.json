@@ -1,0 +1,66 @@
+{
+  "source_sha": "5edd26f25cfb55f9acee49c6f2b78308a1ed48b7",
+  "source_file_sha256": "2549d2d50d9d235f5ed6775478df4d7c0ddb621b9dc2f8da3ac9ab4c93fee8ba",
+  "historical_complete_equality": 597,
+  "original_audit": 14,
+  "known_seen_regression": {
+    "v2": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v3": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v4": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v5": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v6": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v7": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v8": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v9": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v10": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v12": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v13": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    }
+  },
+  "provider_calls": 0,
+  "fresh_independent_acceptance": false,
+  "core_rlib_sha256": "0b69e0cb7619f41d0b641c530ab3fb451c7fcca056e2a2f6addd531bd96055a4"
+}

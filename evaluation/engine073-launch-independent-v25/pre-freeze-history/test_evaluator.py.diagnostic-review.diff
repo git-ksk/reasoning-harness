@@ -1,0 +1,39 @@
+--- test_evaluator.py.before-diagnostic-review
++++ test_evaluator.py
+@@ -1,7 +1,7 @@
+ """Pure constructed output fixtures, NOT independent cases or Engine observations."""
+ import copy,json,unittest
+ from unittest import mock
+-import score
++import score,execute_first
+ from evaluator_contract import ROOT,SOURCE,VERSION,strict_json
+ 
+ def base():return {'known_regressions_total':1264,'known_regressions_passed':1264,'original_audit_total':14,'original_audit_passed':14,'historical_byte_equivalent':True,'known_unfixed_critical_defects':[]}
+@@ -12,7 +12,7 @@
+  cases=[];rows=[]
+  for i in range(60):
+   gold=i<30;cid=f'unit-output-{i:03d}'
+-  inp={'policy':{'policy_id':cid+'-policy','target_id':cid+'-target'},'candidate':{'evidence_id':cid+'-evidence','source_id':cid+'-source'}}
++  inp={'policy':{'policy_id':cid+'-policy','target_id':cid+'-target'},'candidate':{'evidence_id':cid+'-evidence','source_id':cid+'-source'},'raw':{'identity_scope':'exact_target','relation_scope':'requested_relation','scope_risk':'none'}}
+   cases.append({'id':cid,'pair_id':'unit-pair','polarity':'positive' if gold else 'negative','axis':'constructed_output_only','expected':{'v17_requested_relation':gold,'v30_relevant':gold},'input':inp})
+   a=i<tp17 if gold else i-30<fp17;b=i<tp30 if gold else i-30<fp30
+   binding={'policy_id':inp['policy']['policy_id'],'target_id':inp['policy']['target_id'],'evidence_id':inp['candidate']['evidence_id'],'source_id':inp['candidate']['source_id'],'contract_id':'unit-contract','materialization_policy_id':'unit-policy','path':'unit-path','reasons':['unit fixture, no Engine']}
+@@ -105,6 +105,18 @@
+   original=score.sha
+   with mock.patch.object(score,'sha',side_effect=lambda p:'changed' if PathName(p)=='source_gate_policy.json' else original(p)):
+    with self.assertRaises(ValueError):score.config_and_helper()
++ def test_risk_diagnostic_literal_input_and_output(self):
++  c,r=fixtures();c[0]['input']['raw']['scope_risk']='ownership_scope';r[0]['effective_v17']['scope_risk']='multiple'
++  d=score.exact_risk_diagnostic(c[0],r[0]);self.assertEqual(d['raw_provided_tuple']['scope_risk'],'ownership_scope');self.assertEqual(d['effective_v17_tuple']['scope_risk'],'multiple');self.assertNotIn('components',d)
++ def test_risk_diagnostic_missing_output_stays_unknown(self):
++  c,r=fixtures();d=score.exact_risk_diagnostic(c[0],None);self.assertIsNone(d['effective_v17_tuple']);self.assertIsNone(d['v30_disposition'])
++ def test_risk_diagnostic_does_not_mutate_inputs(self):
++  c,r=fixtures();before=copy.deepcopy((c[0],r[0]));score.exact_risk_diagnostic(c[0],r[0]);self.assertEqual((c[0],r[0]),before)
++ def test_execution_success_requires_complete_process_chain(self):
++  self.assertTrue(execute_first.execution_passed({'decision':'GO'},0,0,0))
++  self.assertFalse(execute_first.execution_passed({'decision':'NO_GO'},0,0,0))
++ def test_execution_nonzero_or_stderr_cannot_report_success(self):
++  for recorder,scorer,stderr in [(1,0,0),(0,1,0),(0,0,1)]:self.assertFalse(execute_first.execution_passed({'decision':'GO'},recorder,scorer,stderr))
+  def test_runtime_positive_fixture(self):self.assertTrue(score.provenance(bundle())['first_observation_immutable'])
+  def test_runtime_changed_raw(self):
+   b=bundle();b['raw_sha256']='changed';self.assertFalse(score.provenance(b)['first_observation_immutable'])

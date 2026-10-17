@@ -1,0 +1,1194 @@
+{
+  "identity": "engine073-launch-first-metrics-v1",
+  "current_version": "v25",
+  "final_archive_anchor": "f3ef8db2393aa6c458981e92099d23792856dd1e1431c5876bb51760aefab1aa",
+  "verified_archive_files": 725,
+  "archive_manifest_path": "evaluation/engine073-launch-independent-v25/final-artifact-manifest.json",
+  "current_independent_final_review_complete": true,
+  "positive_definition": "frozen label requires requested_relation for v17 / Relevant for v30",
+  "undefined_rule": "zero denominator => null; never substitute precision=1 for no positive predictions",
+  "interpretation": "Per-corpus synthetic API metrics only. Different corpus/source pairs are not a measured improvement trend. Predicted-positive rate is API coverage, not ordinary CLI answer rate. Seen replays are development regressions, not independent generalization. Real24=0/24; final-answer utility/precision/recall/F1 unmeasured.",
+  "mutation_engine_scorer_provider_calls": 0,
+  "versions": {
+    "v1": {
+      "status": "NOT_MEASURED",
+      "reason": "operational/no semantic first observation; not a successful negative"
+    },
+    "v2": {
+      "status": "MEASURED",
+      "source_sha": "b6c1598655a826b3eb5d3527d613dd50ed8b9bbc",
+      "joint_first_passed": 50,
+      "joint_first_failed": 10,
+      "first_summary_sha256": "9df07f70ac06c1c1e32b93dd78f7d4d333d7aeea94ee55c98cccca48c4580d1b",
+      "first_results_sha256": "43363368eaec79004ed76973813d5d963fe686e7721a2d622904dc145a405609",
+      "cases_sha256": "c7c226fd72d13782099fc6e33345f0018605e709dc9de2c0fdb76b96ee51347b",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 21,
+            "fp": 1,
+            "tn": 29,
+            "fn": 9
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.9545454545454546,
+          "recall": 0.7,
+          "f1_positive": 0.8076923076923077,
+          "specificity": 0.9666666666666667,
+          "accuracy": 0.8333333333333334,
+          "balanced_accuracy": 0.8333333333333333,
+          "predicted_positive_rate": 0.36666666666666664,
+          "false_accept_rate": 0.03333333333333333,
+          "false_withhold_rate": 0.3,
+          "mcc": 0.6917144638660746
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 21,
+            "fp": 1,
+            "tn": 29,
+            "fn": 9
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.9545454545454546,
+          "recall": 0.7,
+          "f1_positive": 0.8076923076923077,
+          "specificity": 0.9666666666666667,
+          "accuracy": 0.8333333333333334,
+          "balanced_accuracy": 0.8333333333333333,
+          "predicted_positive_rate": 0.36666666666666664,
+          "false_accept_rate": 0.03333333333333333,
+          "false_withhold_rate": 0.3,
+          "mcc": 0.6917144638660746
+        }
+      }
+    },
+    "v3": {
+      "status": "MEASURED",
+      "source_sha": "d8c777656688339f915a0f80a0b8af422c50ee7d",
+      "joint_first_passed": 39,
+      "joint_first_failed": 21,
+      "first_summary_sha256": "c768c0c63c353613896fc1d046fc1f051408a2e8b6bc90bb9e94559d50391bad",
+      "first_results_sha256": "b3e8b08b838d4c2400f4fcb890fd9b6f63af127bcd7840b6a98fb273ca496558",
+      "cases_sha256": "5ab93959fdfdaeb4e64f1ba3ee6199a7819e37ba2f7252c8a0353a66d0e107a5",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 11,
+            "fp": 2,
+            "tn": 28,
+            "fn": 19
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.8461538461538461,
+          "recall": 0.36666666666666664,
+          "f1_positive": 0.5116279069767442,
+          "specificity": 0.9333333333333333,
+          "accuracy": 0.65,
+          "balanced_accuracy": 0.65,
+          "predicted_positive_rate": 0.21666666666666667,
+          "false_accept_rate": 0.06666666666666667,
+          "false_withhold_rate": 0.6333333333333333,
+          "mcc": 0.3641010273282307
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 11,
+            "fp": 2,
+            "tn": 28,
+            "fn": 19
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.8461538461538461,
+          "recall": 0.36666666666666664,
+          "f1_positive": 0.5116279069767442,
+          "specificity": 0.9333333333333333,
+          "accuracy": 0.65,
+          "balanced_accuracy": 0.65,
+          "predicted_positive_rate": 0.21666666666666667,
+          "false_accept_rate": 0.06666666666666667,
+          "false_withhold_rate": 0.6333333333333333,
+          "mcc": 0.3641010273282307
+        }
+      }
+    },
+    "v4": {
+      "status": "MEASURED",
+      "source_sha": "4e36fa5184e76601643b6d12575f5d26c8fc1eec",
+      "joint_first_passed": 46,
+      "joint_first_failed": 14,
+      "first_summary_sha256": "d433c8adb7b11b365a514b40e0fc2c34101e35626cb5d892747a8f8e0f4c1830",
+      "first_results_sha256": "bbc23e1c288a8ae81724f8d994d12152c0563dea8b6964d0d9f50f42ce79a3fb",
+      "cases_sha256": "d41e3a92f973fcb16f80b6fb9c7b70edc3a638d6e2a4f9a081d3d60f78f1f006",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 20,
+            "fp": 4,
+            "tn": 26,
+            "fn": 10
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.8333333333333334,
+          "recall": 0.6666666666666666,
+          "f1_positive": 0.7407407407407407,
+          "specificity": 0.8666666666666667,
+          "accuracy": 0.7666666666666667,
+          "balanced_accuracy": 0.7666666666666666,
+          "predicted_positive_rate": 0.4,
+          "false_accept_rate": 0.13333333333333333,
+          "false_withhold_rate": 0.3333333333333333,
+          "mcc": 0.5443310539518174
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 20,
+            "fp": 0,
+            "tn": 30,
+            "fn": 10
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1_positive": 0.8,
+          "specificity": 1.0,
+          "accuracy": 0.8333333333333334,
+          "balanced_accuracy": 0.8333333333333333,
+          "predicted_positive_rate": 0.3333333333333333,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.3333333333333333,
+          "mcc": 0.7071067811865475
+        }
+      }
+    },
+    "v5": {
+      "status": "MEASURED",
+      "source_sha": "7e107f1c2c71cf55cd395d2b3aecb889e4f166a1",
+      "joint_first_passed": 43,
+      "joint_first_failed": 17,
+      "first_summary_sha256": "f812535c19028972ba104f2da1360d3c6542af65cc83256f2fd89ed771ef562c",
+      "first_results_sha256": "ad8497ee067e84d17367734719a477873c8562a03064bb22a78c306dd8e808f7",
+      "cases_sha256": "9cad5a2fca13d5869e72e26c817fea616eb708d2fff772aedea37e3df25c5f4f",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 15,
+            "fp": 2,
+            "tn": 28,
+            "fn": 15
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.8823529411764706,
+          "recall": 0.5,
+          "f1_positive": 0.6382978723404256,
+          "specificity": 0.9333333333333333,
+          "accuracy": 0.7166666666666667,
+          "balanced_accuracy": 0.7166666666666667,
+          "predicted_positive_rate": 0.2833333333333333,
+          "false_accept_rate": 0.06666666666666667,
+          "false_withhold_rate": 0.5,
+          "mcc": 0.48082236894595093
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 15,
+            "fp": 2,
+            "tn": 28,
+            "fn": 15
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.8823529411764706,
+          "recall": 0.5,
+          "f1_positive": 0.6382978723404256,
+          "specificity": 0.9333333333333333,
+          "accuracy": 0.7166666666666667,
+          "balanced_accuracy": 0.7166666666666667,
+          "predicted_positive_rate": 0.2833333333333333,
+          "false_accept_rate": 0.06666666666666667,
+          "false_withhold_rate": 0.5,
+          "mcc": 0.48082236894595093
+        }
+      }
+    },
+    "v6": {
+      "status": "MEASURED",
+      "source_sha": "06d6c0b8ce28adec71f688a44dfef7624df2ab3b",
+      "joint_first_passed": 55,
+      "joint_first_failed": 5,
+      "first_summary_sha256": "b55fe271776595b1718cebfd21e6fd9c55073d7b6d1562bc93fc5675426d1542",
+      "first_results_sha256": "71842dde8baddaa4c0972d42b7badd34196e7ed9c9cb009f48ec64157fbfa186",
+      "cases_sha256": "f7caffaeee0b94d6d3af767aeaf9a4d15cedcbf94e770acf816c50aaefd740b7",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 26,
+            "fp": 1,
+            "tn": 29,
+            "fn": 4
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.9629629629629629,
+          "recall": 0.8666666666666667,
+          "f1_positive": 0.9122807017543859,
+          "specificity": 0.9666666666666667,
+          "accuracy": 0.9166666666666666,
+          "balanced_accuracy": 0.9166666666666667,
+          "predicted_positive_rate": 0.45,
+          "false_accept_rate": 0.03333333333333333,
+          "false_withhold_rate": 0.13333333333333333,
+          "mcc": 0.83753151271601
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 26,
+            "fp": 1,
+            "tn": 29,
+            "fn": 4
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.9629629629629629,
+          "recall": 0.8666666666666667,
+          "f1_positive": 0.9122807017543859,
+          "specificity": 0.9666666666666667,
+          "accuracy": 0.9166666666666666,
+          "balanced_accuracy": 0.9166666666666667,
+          "predicted_positive_rate": 0.45,
+          "false_accept_rate": 0.03333333333333333,
+          "false_withhold_rate": 0.13333333333333333,
+          "mcc": 0.83753151271601
+        }
+      }
+    },
+    "v7": {
+      "status": "MEASURED",
+      "source_sha": "a80391e7daaa59832dee24e5ebed351ed3e02980",
+      "joint_first_passed": 41,
+      "joint_first_failed": 19,
+      "first_summary_sha256": "d4b0a3787d60abb373b32a07690c7d7c9b97b9238eb7170da03f365dd51bb0b4",
+      "first_results_sha256": "3a7d33e96beeb94f7983f50ee8ad14708bd04806ccc507651dce82a7066949b1",
+      "cases_sha256": "6783f7a43614b92d6d0bfc049543a4dcb8e32d42602a40af27f27e4e5ac7a10a",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 12,
+            "fp": 0,
+            "tn": 30,
+            "fn": 18
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.4,
+          "f1_positive": 0.5714285714285714,
+          "specificity": 1.0,
+          "accuracy": 0.7,
+          "balanced_accuracy": 0.7,
+          "predicted_positive_rate": 0.2,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.6,
+          "mcc": 0.5
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 11,
+            "fp": 0,
+            "tn": 30,
+            "fn": 19
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.36666666666666664,
+          "f1_positive": 0.5365853658536586,
+          "specificity": 1.0,
+          "accuracy": 0.6833333333333333,
+          "balanced_accuracy": 0.6833333333333333,
+          "predicted_positive_rate": 0.18333333333333332,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.6333333333333333,
+          "mcc": 0.47380354147934284
+        }
+      }
+    },
+    "v8": {
+      "status": "MEASURED",
+      "source_sha": "dd5b4884a23979399ab1f03110855d84d36aa28d",
+      "joint_first_passed": 50,
+      "joint_first_failed": 10,
+      "first_summary_sha256": "cb748853ea2248a967ca17b275cf71c30c284053dc6251760ffeb2e153c3b596",
+      "first_results_sha256": "841157758c131979e16f23ff501f1d63ccd972ae4ae998ce229db82d5dfbe8af",
+      "cases_sha256": "106405f47e091d9378fd0e9bb8a7eaea2ab4eeee58e0cf9bf049fa9c366d8289",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 20,
+            "fp": 0,
+            "tn": 30,
+            "fn": 10
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1_positive": 0.8,
+          "specificity": 1.0,
+          "accuracy": 0.8333333333333334,
+          "balanced_accuracy": 0.8333333333333333,
+          "predicted_positive_rate": 0.3333333333333333,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.3333333333333333,
+          "mcc": 0.7071067811865475
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 20,
+            "fp": 0,
+            "tn": 30,
+            "fn": 10
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1_positive": 0.8,
+          "specificity": 1.0,
+          "accuracy": 0.8333333333333334,
+          "balanced_accuracy": 0.8333333333333333,
+          "predicted_positive_rate": 0.3333333333333333,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.3333333333333333,
+          "mcc": 0.7071067811865475
+        }
+      }
+    },
+    "v9": {
+      "status": "MEASURED",
+      "source_sha": "92293072c686dc4000855816322ed58b3df905c8",
+      "joint_first_passed": 39,
+      "joint_first_failed": 21,
+      "first_summary_sha256": "51121dc65d03eaae74cfdef69c5011f377dc02515e15d393696b1d223a44aba1",
+      "first_results_sha256": "a050a7cab92417dfbaf40c51b2da5224af815e810283da0ee427de0e152ca9d1",
+      "cases_sha256": "ec4e3cb2063eb79ed026bebae12334cd28ea6c4c5317119d5d773c4dc3101264",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 15,
+            "fp": 5,
+            "tn": 25,
+            "fn": 15
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.75,
+          "recall": 0.5,
+          "f1_positive": 0.6,
+          "specificity": 0.8333333333333334,
+          "accuracy": 0.6666666666666666,
+          "balanced_accuracy": 0.6666666666666667,
+          "predicted_positive_rate": 0.3333333333333333,
+          "false_accept_rate": 0.16666666666666666,
+          "false_withhold_rate": 0.5,
+          "mcc": 0.35355339059327373
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 14,
+            "fp": 5,
+            "tn": 25,
+            "fn": 16
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.7368421052631579,
+          "recall": 0.4666666666666667,
+          "f1_positive": 0.5714285714285714,
+          "specificity": 0.8333333333333334,
+          "accuracy": 0.65,
+          "balanced_accuracy": 0.65,
+          "predicted_positive_rate": 0.31666666666666665,
+          "false_accept_rate": 0.16666666666666666,
+          "false_withhold_rate": 0.5333333333333333,
+          "mcc": 0.32245846375500836
+        }
+      }
+    },
+    "v10": {
+      "status": "MEASURED",
+      "source_sha": "e06c4ec5505644250669df97860ebbe9ccc5cde8",
+      "joint_first_passed": 43,
+      "joint_first_failed": 17,
+      "first_summary_sha256": "82f5fb8b1a94a55874a337e08d063f8f23423db336fd6708ae02a6c49de1d3b4",
+      "first_results_sha256": "7b06c61543f9194e67890d68f6fe425366d155a9807a5a4634e344adc351aabf",
+      "cases_sha256": "6e96450366223f14eeab4e33eff6168e9613e39ab5dfb04a3648cb0cd14f4e7d",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 13,
+            "fp": 0,
+            "tn": 30,
+            "fn": 17
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.43333333333333335,
+          "f1_positive": 0.6046511627906976,
+          "specificity": 1.0,
+          "accuracy": 0.7166666666666667,
+          "balanced_accuracy": 0.7166666666666667,
+          "predicted_positive_rate": 0.21666666666666667,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.5666666666666667,
+          "mcc": 0.5259237061407777
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 13,
+            "fp": 0,
+            "tn": 30,
+            "fn": 17
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.43333333333333335,
+          "f1_positive": 0.6046511627906976,
+          "specificity": 1.0,
+          "accuracy": 0.7166666666666667,
+          "balanced_accuracy": 0.7166666666666667,
+          "predicted_positive_rate": 0.21666666666666667,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.5666666666666667,
+          "mcc": 0.5259237061407777
+        }
+      }
+    },
+    "v11": {
+      "status": "NOT_MEASURED",
+      "reason": "operational/no semantic first observation; not a successful negative"
+    },
+    "v12": {
+      "status": "MEASURED",
+      "source_sha": "20e372dec25fcc936bc1cb21bb887e3b4ae605ba",
+      "joint_first_passed": 40,
+      "joint_first_failed": 20,
+      "first_summary_sha256": "50a2e53b56b1d5f0b18ed30e5dd6a32ad98a0fa29d155b066d6eefcc5bc14978",
+      "first_results_sha256": "d54049bb2ef0bdfab5b1c6c2198cbe2a45e4831876e7e9686201130f381fa88d",
+      "cases_sha256": "5d1de0368fb4b9f219b26ee9fe4c8c325d59adec0e8888ee7b82f4772b93f908",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 13,
+            "fp": 3,
+            "tn": 27,
+            "fn": 17
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.8125,
+          "recall": 0.43333333333333335,
+          "f1_positive": 0.5652173913043478,
+          "specificity": 0.9,
+          "accuracy": 0.6666666666666666,
+          "balanced_accuracy": 0.6666666666666667,
+          "predicted_positive_rate": 0.26666666666666666,
+          "false_accept_rate": 0.1,
+          "false_withhold_rate": 0.5666666666666667,
+          "mcc": 0.3768891807222045
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 13,
+            "fp": 3,
+            "tn": 27,
+            "fn": 17
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.8125,
+          "recall": 0.43333333333333335,
+          "f1_positive": 0.5652173913043478,
+          "specificity": 0.9,
+          "accuracy": 0.6666666666666666,
+          "balanced_accuracy": 0.6666666666666667,
+          "predicted_positive_rate": 0.26666666666666666,
+          "false_accept_rate": 0.1,
+          "false_withhold_rate": 0.5666666666666667,
+          "mcc": 0.3768891807222045
+        }
+      }
+    },
+    "v13": {
+      "status": "MEASURED",
+      "source_sha": "2b75f040caf3ed65c9774f7777498729433afba2",
+      "joint_first_passed": 40,
+      "joint_first_failed": 20,
+      "first_summary_sha256": "3543a4f98d817566398bb8a023418c571d3c53d5e532c3722b0257f6d21c1ea7",
+      "first_results_sha256": "52a3bfe34f04320f30b6c2e301b335273389a785787a6df0ee8350b1e9a40184",
+      "cases_sha256": "811cc70404b1748ace0837aa0908abf68157ab2df30d23303f6143864a5af7ab",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 12,
+            "fp": 0,
+            "tn": 30,
+            "fn": 18
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.4,
+          "f1_positive": 0.5714285714285714,
+          "specificity": 1.0,
+          "accuracy": 0.7,
+          "balanced_accuracy": 0.7,
+          "predicted_positive_rate": 0.2,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.6,
+          "mcc": 0.5
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 10,
+            "fp": 0,
+            "tn": 30,
+            "fn": 20
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1_positive": 0.5,
+          "specificity": 1.0,
+          "accuracy": 0.6666666666666666,
+          "balanced_accuracy": 0.6666666666666666,
+          "predicted_positive_rate": 0.16666666666666666,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.6666666666666666,
+          "mcc": 0.4472135954999579
+        }
+      }
+    },
+    "v14": {
+      "status": "MEASURED",
+      "source_sha": "5edd26f25cfb55f9acee49c6f2b78308a1ed48b7",
+      "joint_first_passed": 49,
+      "joint_first_failed": 11,
+      "first_summary_sha256": "79bfd1f14a1609be1f2c1f4c859f05890793866d2f097f5622dd9547ac3c88ec",
+      "first_results_sha256": "c8d70de5a12c89463f3f4f8785cfe108bf668ffc187bd6e710de33089d00d94e",
+      "cases_sha256": "ddd4d5e917769cbff66a5926ebe441ccf5cf18c4cabc85ce200700b8a0bec6bd",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 22,
+            "fp": 0,
+            "tn": 30,
+            "fn": 8
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.7333333333333333,
+          "f1_positive": 0.8461538461538461,
+          "specificity": 1.0,
+          "accuracy": 0.8666666666666667,
+          "balanced_accuracy": 0.8666666666666667,
+          "predicted_positive_rate": 0.36666666666666664,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.26666666666666666,
+          "mcc": 0.760885910252682
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 19,
+            "fp": 0,
+            "tn": 30,
+            "fn": 11
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.6333333333333333,
+          "f1_positive": 0.7755102040816326,
+          "specificity": 1.0,
+          "accuracy": 0.8166666666666667,
+          "balanced_accuracy": 0.8166666666666667,
+          "predicted_positive_rate": 0.31666666666666665,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.36666666666666664,
+          "mcc": 0.6807456457050177
+        }
+      }
+    },
+    "v15": {
+      "status": "MEASURED",
+      "source_sha": "9a40b9277b59ba7a2606eedad77819e833496659",
+      "joint_first_passed": 45,
+      "joint_first_failed": 15,
+      "first_summary_sha256": "4302e6446e6c825b692eb15a5d395bf5ee1f38c02818bc9deec0e60dad4c3baf",
+      "first_results_sha256": "d353ccda5af207d4f27a3ac13fb7348eb51656baaaba377f8ebf47d4350522b2",
+      "cases_sha256": "4be2168c1ddc1967242c0a0b9b78d8aabfc7d1ca12feab96deceb99d245577f1",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 16,
+            "fp": 1,
+            "tn": 29,
+            "fn": 14
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.9411764705882353,
+          "recall": 0.5333333333333333,
+          "f1_positive": 0.6808510638297872,
+          "specificity": 0.9666666666666667,
+          "accuracy": 0.75,
+          "balanced_accuracy": 0.75,
+          "predicted_positive_rate": 0.2833333333333333,
+          "false_accept_rate": 0.03333333333333333,
+          "false_withhold_rate": 0.4666666666666667,
+          "mcc": 0.5547950410914818
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 16,
+            "fp": 1,
+            "tn": 29,
+            "fn": 14
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.9411764705882353,
+          "recall": 0.5333333333333333,
+          "f1_positive": 0.6808510638297872,
+          "specificity": 0.9666666666666667,
+          "accuracy": 0.75,
+          "balanced_accuracy": 0.75,
+          "predicted_positive_rate": 0.2833333333333333,
+          "false_accept_rate": 0.03333333333333333,
+          "false_withhold_rate": 0.4666666666666667,
+          "mcc": 0.5547950410914818
+        }
+      }
+    },
+    "v16": {
+      "status": "MEASURED",
+      "source_sha": "854ef6d23d8089b6136dae38086941a9ced96c76",
+      "joint_first_passed": 50,
+      "joint_first_failed": 10,
+      "first_summary_sha256": "e0a50f8eb88e3a348744f7d0191c5e0b2f18a0d1f365df23615ecbe70bf26fac",
+      "first_results_sha256": "016fbd20cd2169212e9d9617b1701f9667101f6507b1bfc4b05c4fa5cbfb9487",
+      "cases_sha256": "b3f9571b130a5cee4c1e7264df1ae0fb5e3eb23e26983f210b01e2429219ee17",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 20,
+            "fp": 0,
+            "tn": 30,
+            "fn": 10
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1_positive": 0.8,
+          "specificity": 1.0,
+          "accuracy": 0.8333333333333334,
+          "balanced_accuracy": 0.8333333333333333,
+          "predicted_positive_rate": 0.3333333333333333,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.3333333333333333,
+          "mcc": 0.7071067811865475
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 20,
+            "fp": 0,
+            "tn": 30,
+            "fn": 10
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1_positive": 0.8,
+          "specificity": 1.0,
+          "accuracy": 0.8333333333333334,
+          "balanced_accuracy": 0.8333333333333333,
+          "predicted_positive_rate": 0.3333333333333333,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.3333333333333333,
+          "mcc": 0.7071067811865475
+        }
+      }
+    },
+    "v17": {
+      "status": "NOT_MEASURED",
+      "reason": "operational/no semantic first observation; not a successful negative"
+    },
+    "v18": {
+      "status": "MEASURED",
+      "source_sha": "258667bc55b82e23f3b00aaf6de9313e6109f450",
+      "joint_first_passed": 45,
+      "joint_first_failed": 15,
+      "first_summary_sha256": "c448273162a5cfc3dd706a27b06a5fec4823deaf563fc243dc604dfc41f8a65b",
+      "first_results_sha256": "5c21ce2e2320c8f54896ce54d42b99a8d0f040abc19225e48503d5a441d9df5c",
+      "cases_sha256": "ded25aa488d01ba785cc09e85c4751210b9088f9960e6936b92b9f7a289d36c4",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 16,
+            "fp": 1,
+            "tn": 29,
+            "fn": 14
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.9411764705882353,
+          "recall": 0.5333333333333333,
+          "f1_positive": 0.6808510638297872,
+          "specificity": 0.9666666666666667,
+          "accuracy": 0.75,
+          "balanced_accuracy": 0.75,
+          "predicted_positive_rate": 0.2833333333333333,
+          "false_accept_rate": 0.03333333333333333,
+          "false_withhold_rate": 0.4666666666666667,
+          "mcc": 0.5547950410914818
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 16,
+            "fp": 1,
+            "tn": 29,
+            "fn": 14
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.9411764705882353,
+          "recall": 0.5333333333333333,
+          "f1_positive": 0.6808510638297872,
+          "specificity": 0.9666666666666667,
+          "accuracy": 0.75,
+          "balanced_accuracy": 0.75,
+          "predicted_positive_rate": 0.2833333333333333,
+          "false_accept_rate": 0.03333333333333333,
+          "false_withhold_rate": 0.4666666666666667,
+          "mcc": 0.5547950410914818
+        }
+      }
+    },
+    "v19": {
+      "status": "MEASURED",
+      "source_sha": "f3d9ad15ae2e4fc81dadaed87c4e55fa8bce1c7d",
+      "joint_first_passed": 49,
+      "joint_first_failed": 11,
+      "first_summary_sha256": "e4d1bc2e1d3e5bfda98e2e6add0911c972b588242b0329d843ed24fc1a431979",
+      "first_results_sha256": "a7a9b9050f64bc95103d34435fcbe37952d057a08651152028aba199ffbd9d62",
+      "cases_sha256": "c28fd9555184835cab953d8fc59a8d6cbb39f6ec6f7222d414f1cf31e55b334a",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 19,
+            "fp": 0,
+            "tn": 30,
+            "fn": 11
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.6333333333333333,
+          "f1_positive": 0.7755102040816326,
+          "specificity": 1.0,
+          "accuracy": 0.8166666666666667,
+          "balanced_accuracy": 0.8166666666666667,
+          "predicted_positive_rate": 0.31666666666666665,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.36666666666666664,
+          "mcc": 0.6807456457050177
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 19,
+            "fp": 0,
+            "tn": 30,
+            "fn": 11
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.6333333333333333,
+          "f1_positive": 0.7755102040816326,
+          "specificity": 1.0,
+          "accuracy": 0.8166666666666667,
+          "balanced_accuracy": 0.8166666666666667,
+          "predicted_positive_rate": 0.31666666666666665,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.36666666666666664,
+          "mcc": 0.6807456457050177
+        }
+      }
+    },
+    "v20": {
+      "status": "MEASURED",
+      "source_sha": "fd091b182999d874b802dcf92483f71ce359627c",
+      "joint_first_passed": 51,
+      "joint_first_failed": 9,
+      "first_summary_sha256": "6e13fbf10a73f7d0659f121d96953a5fe110c14568b351064af176f7ff2b7ebd",
+      "first_results_sha256": "02a7934dd25bd0cc4a1521d5ad66c5ec85278561b6ac0ffc76313d599d1de98d",
+      "cases_sha256": "769a584bd8f188c379405432892584334e83697088db27df23e36bab75755881",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 24,
+            "fp": 3,
+            "tn": 27,
+            "fn": 6
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.8888888888888888,
+          "recall": 0.8,
+          "f1_positive": 0.8421052631578947,
+          "specificity": 0.9,
+          "accuracy": 0.85,
+          "balanced_accuracy": 0.8500000000000001,
+          "predicted_positive_rate": 0.45,
+          "false_accept_rate": 0.1,
+          "false_withhold_rate": 0.2,
+          "mcc": 0.7035264706814485
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 24,
+            "fp": 3,
+            "tn": 27,
+            "fn": 6
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 0.8888888888888888,
+          "recall": 0.8,
+          "f1_positive": 0.8421052631578947,
+          "specificity": 0.9,
+          "accuracy": 0.85,
+          "balanced_accuracy": 0.8500000000000001,
+          "predicted_positive_rate": 0.45,
+          "false_accept_rate": 0.1,
+          "false_withhold_rate": 0.2,
+          "mcc": 0.7035264706814485
+        }
+      }
+    },
+    "v21": {
+      "status": "MEASURED",
+      "source_sha": "d647ca44d38958858a9ff4582f48ba6240d75241",
+      "joint_first_passed": 48,
+      "joint_first_failed": 12,
+      "first_summary_sha256": "70e22c764cb06dc6ce7e71f9f84e869e08b8dfbce50cc33bfeff9e2372acd390",
+      "first_results_sha256": "d34a913ed98b4ce2aee3ebe447e63a8e063fecb2b97c90056b0e9c3421973ef2",
+      "cases_sha256": "7e548dd4eae69fe7b6b4af6fd376c37db26f00d49e4a84ed3a4cecba9d5c35b0",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 18,
+            "fp": 0,
+            "tn": 30,
+            "fn": 12
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.6,
+          "f1_positive": 0.75,
+          "specificity": 1.0,
+          "accuracy": 0.8,
+          "balanced_accuracy": 0.8,
+          "predicted_positive_rate": 0.3,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.4,
+          "mcc": 0.6546536707079772
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 18,
+            "fp": 0,
+            "tn": 30,
+            "fn": 12
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.6,
+          "f1_positive": 0.75,
+          "specificity": 1.0,
+          "accuracy": 0.8,
+          "balanced_accuracy": 0.8,
+          "predicted_positive_rate": 0.3,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.4,
+          "mcc": 0.6546536707079772
+        }
+      }
+    },
+    "v22": {
+      "status": "MEASURED",
+      "source_sha": "7431333d212938147a5d9ab32a0b8bdb44ee16b8",
+      "joint_first_passed": 30,
+      "joint_first_failed": 30,
+      "first_summary_sha256": "c6be611e191fdf85d7e766deccd0dcf9e1cfe27c898adea86d338875f3192321",
+      "first_results_sha256": "45d677736a34eacdb8b45d0d2f83d0789eda8496a82d480e94baa6f3cb664f1e",
+      "cases_sha256": "132ba8207c5fcc825beefab4cdd3725e6002f01048c6b380201fdca42351b83f",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 0,
+            "fp": 0,
+            "tn": 30,
+            "fn": 30
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": null,
+          "recall": 0.0,
+          "f1_positive": 0.0,
+          "specificity": 1.0,
+          "accuracy": 0.5,
+          "balanced_accuracy": 0.5,
+          "predicted_positive_rate": 0.0,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 1.0,
+          "mcc": null
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 0,
+            "fp": 0,
+            "tn": 30,
+            "fn": 30
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": null,
+          "recall": 0.0,
+          "f1_positive": 0.0,
+          "specificity": 1.0,
+          "accuracy": 0.5,
+          "balanced_accuracy": 0.5,
+          "predicted_positive_rate": 0.0,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 1.0,
+          "mcc": null
+        }
+      }
+    },
+    "v23": {
+      "status": "MEASURED",
+      "source_sha": "01dc78b6952ed77cd20001323f6ab032eeec361e",
+      "joint_first_passed": 40,
+      "joint_first_failed": 20,
+      "first_summary_sha256": "9ad87662c8af8d1847fe8d2a231a80be2fb51abcd14f1788321df5dfea76f7ce",
+      "first_results_sha256": "a0649be3d77a08c1a03fdf433c0dfc6ff27c5b3b1b9e39cd6d161a2736b6d1e1",
+      "cases_sha256": "ad9ca3a38ac8971d5b7bab0b908f8b7f09bc6cc80b111c9487f791b0334b0dd9",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 10,
+            "fp": 0,
+            "tn": 30,
+            "fn": 20
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1_positive": 0.5,
+          "specificity": 1.0,
+          "accuracy": 0.6666666666666666,
+          "balanced_accuracy": 0.6666666666666666,
+          "predicted_positive_rate": 0.16666666666666666,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.6666666666666666,
+          "mcc": 0.4472135954999579
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 10,
+            "fp": 0,
+            "tn": 30,
+            "fn": 20
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1_positive": 0.5,
+          "specificity": 1.0,
+          "accuracy": 0.6666666666666666,
+          "balanced_accuracy": 0.6666666666666666,
+          "predicted_positive_rate": 0.16666666666666666,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.6666666666666666,
+          "mcc": 0.4472135954999579
+        }
+      }
+    },
+    "v24": {
+      "status": "MEASURED",
+      "source_sha": "3ccda6b4263eb5210477660b11f6926ec0186f4e",
+      "joint_first_passed": 47,
+      "joint_first_failed": 13,
+      "first_summary_sha256": "6aec4593203dc47a53e1f11b18e7a90a8f87e9068a95410ec3660f31b897328b",
+      "first_results_sha256": "0b686ef9360eb52be659d0d2ab3e3054d72590f9260807ab4c3957300f81d6b0",
+      "cases_sha256": "873b4f02e7f45791f05cd1edc13d4aea0fe7bebfbd0c5f36f010a69a2b964948",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 17,
+            "fp": 0,
+            "tn": 30,
+            "fn": 13
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.5666666666666667,
+          "f1_positive": 0.723404255319149,
+          "specificity": 1.0,
+          "accuracy": 0.7833333333333333,
+          "balanced_accuracy": 0.7833333333333333,
+          "predicted_positive_rate": 0.2833333333333333,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.43333333333333335,
+          "mcc": 0.6287677132370127
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 17,
+            "fp": 0,
+            "tn": 30,
+            "fn": 13
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.5666666666666667,
+          "f1_positive": 0.723404255319149,
+          "specificity": 1.0,
+          "accuracy": 0.7833333333333333,
+          "balanced_accuracy": 0.7833333333333333,
+          "predicted_positive_rate": 0.2833333333333333,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.43333333333333335,
+          "mcc": 0.6287677132370127
+        }
+      }
+    },
+    "v25": {
+      "status": "MEASURED",
+      "source_sha": "95053007bba54c728eee428837b22eb9d52a4f61",
+      "joint_first_passed": 35,
+      "joint_first_failed": 25,
+      "first_summary_sha256": "d90d5c3eaa496dc3380ce9a972f2122e1943b914b992eec938563b6f26d90eb4",
+      "first_results_sha256": "75256cfc6fdbde0f588ab2f0d1ee43d2039665e5b7b506e1d04311ec6b7756e0",
+      "cases_sha256": "10213396b11cc6d0860d809c7a9e9b3a19c25ded98ae1617f41fc8d65e25a5fc",
+      "axes": {
+        "v17_requested_relation": {
+          "confusion": {
+            "tp": 5,
+            "fp": 0,
+            "tn": 30,
+            "fn": 25
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.16666666666666666,
+          "f1_positive": 0.2857142857142857,
+          "specificity": 1.0,
+          "accuracy": 0.5833333333333334,
+          "balanced_accuracy": 0.5833333333333334,
+          "predicted_positive_rate": 0.08333333333333333,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.8333333333333334,
+          "mcc": 0.30151134457776363
+        },
+        "v30_relevant": {
+          "confusion": {
+            "tp": 5,
+            "fp": 0,
+            "tn": 30,
+            "fn": 25
+          },
+          "n": 60,
+          "positive_support": 30,
+          "negative_support": 30,
+          "precision": 1.0,
+          "recall": 0.16666666666666666,
+          "f1_positive": 0.2857142857142857,
+          "specificity": 1.0,
+          "accuracy": 0.5833333333333334,
+          "balanced_accuracy": 0.5833333333333334,
+          "predicted_positive_rate": 0.08333333333333333,
+          "false_accept_rate": 0.0,
+          "false_withhold_rate": 0.8333333333333334,
+          "mcc": 0.30151134457776363
+        }
+      }
+    }
+  },
+  "verified_all_references_including_preparation": 730,
+  "manifest_schema": "v25 flat repository-relative files + explicit source/preparation inventories; anchored verified before first-metric arithmetic"
+}

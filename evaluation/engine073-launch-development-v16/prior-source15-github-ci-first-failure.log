@@ -1,0 +1,25 @@
+rust	Clippy	﻿2026-10-16T15:55:56.0441845Z ##[group]Run cargo clippy --locked --workspace --all-targets -- -D warnings
+rust	Clippy	2026-10-16T15:55:56.0442489Z ^[[36;1mcargo clippy --locked --workspace --all-targets -- -D warnings^[[0m
+rust	Clippy	2026-10-16T15:55:56.0505201Z shell: /usr/bin/bash -e {0}
+rust	Clippy	2026-10-16T15:55:56.0505501Z env:
+rust	Clippy	2026-10-16T15:55:56.0505726Z   CARGO_HOME: /home/runner/.cargo
+rust	Clippy	2026-10-16T15:55:56.0506009Z   CARGO_INCREMENTAL: 0
+rust	Clippy	2026-10-16T15:55:56.0506245Z   CARGO_TERM_COLOR: always
+rust	Clippy	2026-10-16T15:55:56.0506496Z   CACHE_ON_FAILURE: false
+rust	Clippy	2026-10-16T15:55:56.0506745Z ##[endgroup]
+rust	Clippy	2026-10-16T15:55:56.1900255Z ^[[1m^[[32m    Updating^[[0m crates.io index
+rust	Clippy	2026-10-16T15:55:57.0966172Z ^[[1m^[[32m    Checking^[[0m reasoning-harness-core v0.7.2 (/home/runner/work/reasoning-harness/reasoning-harness/crates/reasoning-harness-core)
+rust	Clippy	2026-10-16T15:56:06.0340302Z ^[[0m^[[1m^[[38;5;9merror^[[0m^[[0m^[[1m: this expression creates a reference which is immediately dereferenced by the compiler^[[0m
+rust	Clippy	2026-10-16T15:56:06.0342596Z ^[[0m    ^[[0m^[[0m^[[1m^[[38;5;12m--> ^[[0m^[[0mcrates/reasoning-harness-core/src/evidence_relevance.rs:4901:36^[[0m
+rust	Clippy	2026-10-16T15:56:06.0344097Z ^[[0m     ^[[0m^[[0m^[[1m^[[38;5;12m|^[[0m
+rust	Clippy	2026-10-16T15:56:06.0345173Z ^[[0m^[[1m^[[38;5;12m4901^[[0m^[[0m ^[[0m^[[0m^[[1m^[[38;5;12m|^[[0m^[[0m ^[[0m^[[0m                        normalized(&raw)^[[0m
+rust	Clippy	2026-10-16T15:56:06.0346775Z ^[[0m     ^[[0m^[[0m^[[1m^[[38;5;12m|^[[0m^[[0m                                    ^[[0m^[[0m^[[1m^[[38;5;9m^^^^^[[0m^[[0m ^[[0m^[[0m^[[1m^[[38;5;9mhelp: change this to: `raw`^[[0m
+rust	Clippy	2026-10-16T15:56:06.0347756Z ^[[0m     ^[[0m^[[0m^[[1m^[[38;5;12m|^[[0m
+rust	Clippy	2026-10-16T15:56:06.0349133Z ^[[0m     ^[[0m^[[0m^[[1m^[[38;5;12m= ^[[0m^[[0m^[[1mhelp^[[0m^[[0m: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow^[[0m
+rust	Clippy	2026-10-16T15:56:06.0356201Z ^[[0m     ^[[0m^[[0m^[[1m^[[38;5;12m= ^[[0m^[[0m^[[1mnote^[[0m^[[0m: `-D clippy::needless-borrow` implied by `-D warnings`^[[0m
+rust	Clippy	2026-10-16T15:56:06.0357693Z ^[[0m     ^[[0m^[[0m^[[1m^[[38;5;12m= ^[[0m^[[0m^[[1mhelp^[[0m^[[0m: to override `-D warnings` add `#[allow(clippy::needless_borrow)]`^[[0m
+rust	Clippy	2026-10-16T15:56:06.0358410Z 
+rust	Clippy	2026-10-16T15:56:09.3325662Z ^[[1m^[[31merror^[[0m^[[1m:^[[0m could not compile `reasoning-harness-core` (lib) due to 1 previous error
+rust	Clippy	2026-10-16T15:56:10.7034023Z ^[[1m^[[33mwarning^[[0m^[[1m:^[[0m build failed, waiting for other jobs to finish...
+rust	Clippy	2026-10-16T15:56:10.7034984Z ^[[1m^[[31merror^[[0m^[[1m:^[[0m could not compile `reasoning-harness-core` (lib test) due to 1 previous error
+rust	Clippy	2026-10-16T15:56:10.7382766Z ##[error]Process completed with exit code 101.

@@ -1,0 +1,41 @@
+[
+  {
+    "id": "canonical-no-owner-preexisting-diagnostic",
+    "policy": {
+      "policy_id": "li15-policy-01",
+      "target_id": "li15-target-01",
+      "target_question": "When was No Owner launched?",
+      "entity": {
+        "canonical_id": "diagnostic.no-owner",
+        "canonical_name": "No Owner",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li15-001-evidence",
+      "source_id": "li15-001-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "No Owner was launched. We deny the launch of Maple Queue."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  }
+]

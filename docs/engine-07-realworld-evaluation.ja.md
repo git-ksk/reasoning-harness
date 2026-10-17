@@ -4,6 +4,10 @@
 
 2026-10-15 JST時点で **評価作業中・CLI採用不可（NO-GO）**。[Issue #531](https://github.com/git-ksk/reasoning-harness/issues/531)／[Milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12)で管理します。公開製品はReason CLI0.5.5 / Engine0.6.1。Engine0.7.2は独立したソースリリースです。
 
+## 後継候補 — Engine0.7.3
+
+[0.7.3の順序付き計画](engine-0.7.3-roadmap.ja.md)／[#538](https://github.com/git-ksk/reasoning-harness/issues/538)で進めます。0.6.1は製品baseline、0.7.2の初回比較は過去の開発用証拠として保持します。#520修正、安全なrunner・接続確認を先行し、その後に候補と評価器を固定して新規受入へ進みます。#535はmerge済み、#537の変換・停止制御は26オフラインテスト合格ですが、runner全体や受入の完了ではありません。0.7.3は未公開・CLI採用未確定です。
+
 ## 開発用の初回比較を実施・全受入は未完了
 
 [初回v2/v3の結果・限界](engine07-realworld-development-results.ja.md)に、3社の両初回結果・実ビルド識別・元データ・検証を保存しました。両評価は不合格です。v3の通常回答はMistral・Googleで改善0件、Groqはquotaで測定できませんでした。補助APIの表示増加はMistral・Googleで各2件ですが別集計です。安全性・引用・新規独立受入・採用の合格とは扱いません。

@@ -1,0 +1,27 @@
+{
+  "identity": "engine073-launch-independent-v16",
+  "stage": "STATIC_ONLY",
+  "outcome": "PASS",
+  "planned": 60,
+  "positive": 30,
+  "semantic_negative": 30,
+  "pairs": 30,
+  "canonical_targets": 30,
+  "full_input_required_fields_valid": true,
+  "labels_excluded": true,
+  "budget": {
+    "max_model_attempts": 2,
+    "max_tokens": 192,
+    "max_elapsed_ms": 90000
+  },
+  "inherited_probe_scorer_recorder_identical": true,
+  "old_files_unchanged": 323,
+  "raw_context_gap": [
+    "li16-050",
+    "li16-054"
+  ],
+  "pure_raw_risk_joint_negatives": 0,
+  "semantic_observations": 0,
+  "Engine_invocations": 0,
+  "provider_network_calls": 0
+}

@@ -1,0 +1,25 @@
+{
+  "known_regressions_total": 1264,
+  "known_regressions_passed": 1264,
+  "original_audit_total": 14,
+  "original_audit_passed": 14,
+  "historical_byte_equivalent": true,
+  "known_unfixed_critical_defects": [],
+  "critical_defect_scope": "tested #520 source qualification only;#531/#540/release/CLI gates remain separate and incomplete",
+  "parent_reported_only": true,
+  "known_evidence_identity": {
+    "source_sha": "95053007bba54c728eee428837b22eb9d52a4f61",
+    "source_file_sha256": "9d8d3fa48a67f197d32282314813d992a374b9f54a6b079c39498b9a67f9207f",
+    "core_sha256": "d785adeaa51591b9902266c7c7bd114763aaed1671c5e65f4df65d83d9be7fd9",
+    "summary_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-development-v24-structure/summary.json",
+    "summary_sha256": "549c5351c06d87f38cb296412a86f394844a23fc93c56533e35e02d3ba708eb0",
+    "validation_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-development-v24-structure/validation-summary.json",
+    "validation_sha256": "7b5cc5bef4ba6cd5d03e0a40b0ffc2dc2761efff0ce3a4f7269fe1de35a19c12"
+  },
+  "required_runtime_provenance_checks": [
+    "labels_frozen_before_observation",
+    "candidate_frozen_before_observation",
+    "first_observation_immutable"
+  ],
+  "operational_failures_must_include_actual_new_errors": true
+}

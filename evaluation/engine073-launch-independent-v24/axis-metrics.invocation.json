@@ -1,0 +1,17 @@
+{
+  "identity": "engine073-launch-independent-v24",
+  "utc": "2026-10-17T09:41:52.550784+00:00",
+  "state": "finished",
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v24/axis_metrics.py"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 0.0442175418138504,
+  "stdout": "{\n  \"identity\": \"engine073-launch-independent-v24\",\n  \"stage\": \"POST_FIRST_SCORER_DIAGNOSTIC_AGGREGATION_ONLY\",\n  \"spec_sha256\": \"fe5871ad8aa82852e7a978c47d138c8a17f1c647979fd7dc06a7605368b87da6\",\n  \"aggregator_sha256\": \"7a59e505a407f00d796655222cbad4274c865fb9e3ffa7d301a8360074bb97b7\",\n  \"first_results_sha256\": \"0b686ef9360eb52be659d0d2ab3e3054d72590f9260807ab4c3957300f81d6b0\",\n  \"first_summary_sha256\": \"6aec4593203dc47a53e1f11b18e7a90a8f87e9068a95410ec3660f31b897328b\",\n  \"complete\": true,\n  \"planned\": 60,\n  \"observed_valid\": 60,\n  \"planned_positive\": 30,\n  \"planned_negative\": 30,\n  \"axes\": {\n    \"v17\": {\n      \"counts\": {\n        \"TP\": 17,\n        \"FP\": 0,\n        \"TN\": 30,\n        \"FN\": 13\n      },\n      \"observed_counts_diagnostic\": {\n        \"TP\": 17,\n        \"FP\": 0,\n        \"TN\": 30,\n        \"FN\": 13\n      },\n      \"ratios\": {\n        \"Precision\": {\n          \"numerator\": 17,\n          \"denominator\": 17,\n          \"value\": 1.0,\n          \"null_reason\": null\n        },\n        \"Recall\": {\n          \"numerator\": 17,\n          \"denominator\": 30,\n          \"value\": 0.5666666666666667,\n          \"null_reason\": null\n        },\n        \"F1\": {\n          \"numerator\": 34,\n          \"denominator\": 47,\n          \"value\": 0.723404255319149,\n          \"null_reason\": null\n        }\n      },\n      \"observed_negative_unsafe\": 0,\n      \"unobserved_cases\": 0\n    },\n    \"v30\": {\n      \"counts\": {\n        \"TP\": 17,\n        \"FP\": 0,\n        \"TN\": 30,\n        \"FN\": 13\n      },\n      \"observed_counts_diagnostic\": {\n        \"TP\": 17,\n        \"FP\": 0,\n        \"TN\": 30,\n        \"FN\": 13\n      },\n      \"ratios\": {\n        \"Precision\": {\n          \"numerator\": 17,\n          \"denominator\": 17,\n          \"value\": 1.0,\n          \"null_reason\": null\n        },\n        \"Recall\": {\n          \"numerator\": 17,\n          \"denominator\": 30,\n          \"value\": 0.5666666666666667,\n          \"null_reason\": null\n        },\n        \"F1\": {\n          \"numerator\": 34,\n          \"denominator\": 47,\n          \"value\": 0.723404255319149,\n          \"null_reason\": null\n        }\n      },\n      \"observed_negative_unsafe\": 0,\n      \"unobserved_cases\": 0\n    }\n  },\n  \"joint_outcome\": \"FAIL\",\n  \"joint_passed\": 47,\n  \"ops\": {\n    \"operational_errors\": [],\n    \"operational_error_count\": 0,\n    \"incomplete\": 0\n  },\n  \"inherited_scorer_invocations\": 1,\n  \"additional_Engine_or_scorer_invocations\": 0,\n  \"gate\": \"All60/60 joint source cases and operational completeness still required; no F1 threshold substitution. Not answer grounding F1.\"\n}\n",
+  "stderr": "",
+  "stdout_sha256": "33f013f19ebe247eaa1baf0bf62ede848f41a9917588d4f9daffb1fd22e3ebdc",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "aggregation_count": 1,
+  "additional_Engine_or_scorer_invocations": 0
+}

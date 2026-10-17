@@ -1,0 +1,37 @@
+{
+  "identity": "engine073-launch-independent-v17",
+  "outcome": "NOT_EVALUATED",
+  "saved_utc": "2026-10-16T16:21:01.529823+00:00",
+  "candidate_source_sha": "f3f1362c33bb4483de97607c4f7854162bfa148f",
+  "reason": "Parent reported3 unsafe unknown-owner foreign-antecedent loans in additional development boundaries and instructed stop before semantic execution. No independent semantic observation started.",
+  "parent_evidence": "Reported only; root additional audit inputs/raw/source implementation not read or rerun by independent evaluator. Candidate not admissible based on parent known-safety result, not an independent v17 score.",
+  "stage_at_stop": "Only author_cases.py plus inherited probe/scorer/recorder existed. No author generation, static full-input execution, full manifest freeze, rustc build, first recorder, Engine or scorer execution.",
+  "planned_cases": 60,
+  "planned_positive": 30,
+  "planned_semantic_negative": 30,
+  "generated_cases_or_inputs": 0,
+  "complete_manifest_frozen": false,
+  "draft_files_sha256": {
+    "author_cases.py": "699f3471184bdfb1b3827e9410e38c5461ed4ae6496f403089757eff08849a29",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635"
+  },
+  "draft_static": "AST/literal budget/pair-count checks only; full Engine input schema not validated.",
+  "Engine_processes": 0,
+  "Engine_cases_observed": 0,
+  "scorer_applications": 0,
+  "provider_network_calls": 0,
+  "retry_rescore_relabel": 0,
+  "draft_authoring_after_stop": false,
+  "next_freeze_reuse": "This draft is archived as seen/unused; never rename/reuse as fresh evaluation for next candidate.",
+  "scope": "Finite synthetic #520 source gate planned, not #531 real24/ordinaryCLI/provider/human/adoption/release.",
+  "isolation": {
+    "Engine_implementation_read": false,
+    "root_additional_audit_read": false,
+    "Oracle": false,
+    "additional_agents": 0,
+    "cargo_invocations": 0,
+    "Git_mutations": 0
+  }
+}

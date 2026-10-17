@@ -1,0 +1,10 @@
+{
+  "identity": "engine073-launch-independent-v24",
+  "utc": "2026-10-17T09:41:52.506374+00:00",
+  "state": "started",
+  "aggregation_only": true,
+  "first_results_sha256": "0b686ef9360eb52be659d0d2ab3e3054d72590f9260807ab4c3957300f81d6b0",
+  "aggregator_sha256": "7a59e505a407f00d796655222cbad4274c865fb9e3ffa7d301a8360074bb97b7",
+  "diagnostic_aggregation_count": 1,
+  "additional_Engine_or_scorer_invocations": 0
+}

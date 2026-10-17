@@ -1,0 +1,104 @@
+{
+  "identity": "engine073-launch-independent-v16-source-review",
+  "saved_utc": "2026-10-16T16:02:52.081115+00:00",
+  "outcome": "FAIL",
+  "first_summary_sha256": "e0a50f8eb88e3a348744f7d0191c5e0b2f18a0d1f365df23615ecbe70bf26fac",
+  "first_result_counts": {
+    "observed": 60,
+    "passed": 50,
+    "positive_passed": 20,
+    "negative_passed": 30,
+    "positive_withheld": 10,
+    "negative_v17_requested_violations": 0,
+    "negative_v30_relevant_violations": 0,
+    "operational_errors": 0
+  },
+  "failures": [
+    {
+      "id": "li16-009",
+      "axis": "heading_property_and_unknown_reference",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li16-011",
+      "axis": "title_foreign_owner_and_property_frame",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li16-015",
+      "axis": "property_detail_vs_event_detail",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li16-021",
+      "axis": "claim_apposition_after_foreign_notice",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li16-027",
+      "axis": "already_owned_frame_with_competing_reply",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li16-041",
+      "axis": "as_report_then_unresolved_appendix",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li16-043",
+      "axis": "and_reporting_component_property",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li16-045",
+      "axis": "whole_source_scope_vs_property_scope",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li16-051",
+      "axis": "foreign_claim_with_target_owner_supplement_conflict",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li16-057",
+      "axis": "mixed_event_owner_not_only_foreign",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    }
+  ],
+  "finding": "The precommitted finite-scope positive-preservation requirement fails on10 complete-property/foreign-owner combinations. All semantic negatives withhold in this new set. This is not a pass, proof of universal safety, cross-corpus score improvement or a diagnosis from source implementation.",
+  "raw_risk_diagnostic": {
+    "actual_gap_negative_ids": [
+      "li16-050",
+      "li16-054"
+    ],
+    "actual_gap_observed": "both unresolved/multiple/Ambiguous",
+    "canonical_full_clip_positive": "li16-055 requested_relation/none/Relevant",
+    "pure_raw_risk_joint_negative": 0,
+    "risk_component_inference": false
+  },
+  "external_gate": "Parent reports strictClippy needless_borrow failure while workspace/provider tests passed. Root lint repair and subsequent CI remain necessary; independently unread/unrerun here.",
+  "criteria_and_first_labels_unchanged": true,
+  "retries_rescores_relabels": 0,
+  "provider_network_calls": 0,
+  "limits": "Candidate-only finite synthetic public-source API check, not #531 real24/ordinaryCLI/provider/human/adoption/release. Parent build hash-verified but not independently rebuilt. Prior iterations acknowledged; v16 now consumed development."
+}

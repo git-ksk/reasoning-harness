@@ -1,0 +1,2486 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.24
+   Compiling quote v1.0.47
+   Compiling libc v0.2.190
+   Compiling syn v3.0.4
+   Compiling itoa v1.0.18
+   Compiling bytes v1.12.1
+   Compiling pin-project-lite v0.2.17
+   Compiling serde_core v1.0.229
+   Compiling mio v1.2.2
+   Compiling socket2 v0.6.5
+   Compiling tokio-macros v2.7.2
+   Compiling tokio v1.53.2
+   Compiling serde v1.0.229
+   Compiling zmij v1.0.23
+   Compiling serde_derive v1.0.229
+   Compiling serde_json v1.0.151
+   Compiling memchr v2.8.3
+   Compiling ref-cast v1.0.27
+   Compiling ref-cast-impl v1.0.27
+   Compiling serde_derive_internals v0.30.0
+   Compiling thiserror v2.0.21
+   Compiling schemars_derive v1.2.2
+   Compiling thiserror-impl v2.0.21
+   Compiling dyn-clone v1.0.20
+   Compiling schemars v1.2.2
+   Compiling syn v2.0.119
+   Compiling reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+   Compiling synstructure v0.13.2
+   Compiling zerofrom-derive v0.1.7
+   Compiling zerofrom v0.1.8
+   Compiling yoke-derive v0.8.2
+   Compiling stable_deref_trait v1.2.1
+   Compiling yoke v0.8.3
+   Compiling zerovec-derive v0.11.6
+   Compiling cfg-if v1.0.4
+   Compiling zerovec v0.11.8
+   Compiling displaydoc v0.2.7
+   Compiling shlex v2.0.1
+   Compiling futures-core v0.3.34
+   Compiling find-msvc-tools v0.1.11
+   Compiling cc v1.4.4
+   Compiling tinystr v0.8.4
+   Compiling litemap v0.8.3
+   Compiling smallvec v1.15.2
+   Compiling writeable v0.6.4
+   Compiling icu_locale_core v2.3.0
+   Compiling ring v0.17.14
+   Compiling zerotrie v0.2.5
+   Compiling potential_utf v0.1.6
+   Compiling icu_normalizer_data v2.3.0
+   Compiling utf8_iter v1.0.4
+   Compiling icu_properties_data v2.3.0
+   Compiling bitflags v2.13.1
+   Compiling icu_collections v2.3.0
+   Compiling icu_provider v2.3.1
+   Compiling http v1.5.0
+   Compiling once_cell v1.21.4
+   Compiling zeroize v1.9.0
+   Compiling percent-encoding v2.3.2
+   Compiling rustls-pki-types v1.15.1
+   Compiling http-body v1.1.0
+   Compiling getrandom v0.2.17
+   Compiling untrusted v0.9.0
+   Compiling futures-task v0.3.34
+   Compiling httparse v1.10.1
+   Compiling slab v0.4.12
+   Compiling futures-util v0.3.34
+   Compiling icu_properties v2.3.0
+   Compiling icu_normalizer v2.3.0
+   Compiling typenum v1.20.1
+   Compiling try-lock v0.2.5
+   Compiling rustls v0.23.43
+   Compiling tower-service v0.3.3
+   Compiling hybrid-array v0.4.14
+   Compiling want v0.3.1
+   Compiling idna_adapter v1.2.2
+   Compiling rustls-webpki v0.103.15
+   Compiling form_urlencoded v1.2.2
+   Compiling tracing-core v0.1.36
+   Compiling futures-channel v0.3.34
+   Compiling core-foundation-sys v0.8.7
+   Compiling subtle v2.6.1
+   Compiling objc2 v0.6.4
+   Compiling log v0.4.34
+   Compiling atomic-waker v1.1.2
+   Compiling utf8parse v0.2.2
+   Compiling hyper v1.11.1
+   Compiling anstyle-parse v1.0.0
+   Compiling tracing v0.1.44
+   Compiling idna v1.1.0
+   Compiling sync_wrapper v1.0.2
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling ipnet v2.12.1
+   Compiling base64 v0.22.1
+   Compiling tower-layer v0.3.3
+   Compiling anstyle-query v1.1.5
+   Compiling anstyle v1.0.14
+   Compiling colorchoice v1.0.5
+   Compiling rand_core v0.10.1
+   Compiling cfg_aliases v0.2.2
+   Compiling objc2-encode v4.1.0
+   Compiling getrandom v0.4.3
+   Compiling tokio-rustls v0.26.4
+   Compiling nix v0.31.3
+   Compiling anstream v1.0.0
+   Compiling tower v0.5.3
+   Compiling hyper-util v0.1.20
+   Compiling url v2.5.8
+   Compiling core-foundation v0.10.1
+   Compiling security-framework-sys v2.17.0
+   Compiling block-buffer v0.12.1
+   Compiling crypto-common v0.2.2
+   Compiling webpki-roots v1.0.9
+   Compiling ryu v1.0.23
+   Compiling const-oid v0.10.2
+   Compiling heck v0.5.0
+   Compiling strsim v0.11.1
+   Compiling clap_lex v1.1.0
+   Compiling clap_builder v4.6.6
+   Compiling digest v0.11.3
+   Compiling clap_derive v4.6.4
+   Compiling serde_urlencoded v0.7.1
+   Compiling hyper-rustls v0.27.9
+   Compiling security-framework v3.7.0
+   Compiling tower-http v0.6.11
+   Compiling block2 v0.6.2
+   Compiling chacha20 v0.10.2
+   Compiling keyring-core v1.0.0
+   Compiling http-body-util v0.1.5
+   Compiling cpufeatures v0.3.1
+   Compiling reqwest v0.12.28
+   Compiling sha2 v0.11.0
+   Compiling apple-native-keyring-store v1.0.2
+   Compiling rand v0.10.3
+   Compiling dispatch2 v0.3.1
+   Compiling clap v4.6.6
+   Compiling rtoolbox v0.0.6
+   Compiling httpdate v1.0.3
+   Compiling reasoning-harness-providers v0.4.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-providers)
+   Compiling clap_complete v4.6.9
+   Compiling rpassword v7.5.4
+   Compiling ctrlc v3.5.2
+   Compiling keyring v4.2.0
+   Compiling semver v1.0.28
+   Compiling fs2 v0.4.3
+   Compiling reasoning-harness-cli v0.5.4 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-cli)
+    Finished `test` profile [unoptimized] target(s) in 2m 18s
+     Running unittests src/main.rs (/private/tmp/engine073-validation-target/debug/deps/reason-07e6bf223dacba77)
+
+running 217 tests
+test auth::tests::provider_picker_accepts_numbers_names_and_google_aliases ... ok
+test auth::tests::stdin_secret_accepts_one_line_and_strips_only_line_ending ... ok
+test auth::tests::stdin_secret_rejects_multiline_empty_invalid_utf8_and_oversize ... ok
+test candidate_json_tests::examples_surface_prefers_natural_language_and_documents_separate_mcp_binary ... ok
+test candidate_json_tests::config_merge_is_fieldwise_and_higher_precedence_wins ... ok
+test candidate_json_tests::config_schema_accepts_usage_budget_fields_without_secret_surface ... ok
+test candidate_json_tests::config_schema_rejects_secret_like_unknown_fields ... ok
+test candidate_json_tests::config_schema_rejects_secret_like_external_resolver_fields ... ok
+test candidate_json_tests::correction_seed_removes_only_prior_user_fact_and_preserves_external_evidence ... ok
+test candidate_json_tests::explicit_local_fact_admission_rejects_other_resolvers ... ok
+test candidate_json_tests::accepts_one_complete_candidate_with_non_json_trailing_text ... ok
+test candidate_json_tests::external_admission_config_rejects_unranked_authority_and_secret_fields ... ok
+test candidate_json_tests::cancellation_is_typed_operational_failure ... ok
+test candidate_json_tests::external_admission_config_resolves_harness_owned_source_policy ... ok
+test candidate_json_tests::invalidated_session_never_reexposes_previous_turn_finalization ... ok
+test candidate_json_tests::investigation_acquisition_wrapper_blocks_candidate_revision ... ok
+test candidate_json_tests::bounded_local_resolution_reverifies_before_accepting ... ok
+test candidate_json_tests::investigation_exact_fact_claim_is_assumed_until_existing_verification_supports_it ... ok
+test candidate_json_tests::external_admission_constraints_are_rechecked_by_ordinary_qualification ... ok
+test candidate_json_tests::investigation_exact_fact_materialization_accepts_keyless_selected_target ... ok
+test candidate_json_tests::investigation_exact_fact_materialization_accepts_matching_explicit_target_key ... ok
+test candidate_json_tests::investigation_exact_fact_materialization_adds_observable_claim_alongside_matching_model_claim ... ok
+test candidate_json_tests::investigation_exact_fact_materialization_fails_closed_on_wrong_target_key ... ok
+test candidate_json_tests::investigation_exact_fact_materialization_fails_closed_on_write_or_multi_key_capability ... ok
+test candidate_json_tests::investigation_config_rejects_write_capability_and_authority_drift ... ok
+test candidate_json_tests::investigation_exact_fact_materialization_ignores_unadmitted_and_conflicting_values ... ok
+test candidate_json_tests::investigation_exact_fact_materialization_preserves_conflicting_model_claim ... ok
+test candidate_json_tests::investigation_finalization_bridge_accepts_harness_materialized_key_for_keyless_target ... ok
+test candidate_json_tests::external_resolver_zero_operational_limits_fail_closed ... ok
+test candidate_json_tests::investigation_finalization_bridge_fails_closed_on_conflicting_values ... ok
+test candidate_json_tests::investigation_finalization_bridge_requires_every_planned_target ... ok
+test candidate_json_tests::investigation_finalization_bridge_ignores_unadmitted_fact ... ok
+test candidate_json_tests::investigation_finalization_bridge_requires_exact_admitted_fact ... ok
+test candidate_json_tests::investigation_config_accepts_two_read_only_capabilities ... ok
+test candidate_json_tests::existing_subcommand_takes_precedence_over_natural_task ... ok
+test candidate_json_tests::live_corpus_identity_serializes_without_pooled_stratification ... ok
+test candidate_json_tests::live_provider_requires_explicit_or_configured_model ... ok
+test candidate_json_tests::local_and_remote_mcp_transports_are_mutually_exclusive ... ok
+test candidate_json_tests::live_soft_judge_operational_summary_reports_fallback_rate ... ok
+test candidate_json_tests::local_fact_resolver_returns_observed_value_for_reverification ... ok
+test candidate_json_tests::maps_operational_failure_classes_stably ... ok
+test candidate_json_tests::mcp_input_required_error_is_typed_actionable_and_secret_free ... ok
+test candidate_json_tests::live_soft_judge_family_summary_excludes_incomplete_trials ... ok
+test candidate_json_tests::mcp_admission_uses_mcp_resolver_identity ... ok
+test candidate_json_tests::mcp_fixed_arguments_keep_benign_nested_structures_compatible ... ok
+test candidate_json_tests::mcp_readonly_config_fails_closed_on_write_intent_unlisted_tool_or_secret_field ... ok
+test candidate_json_tests::mcp_readonly_config_requires_explicit_read_only_allowlist_and_class ... ok
+test candidate_json_tests::groq_generic_roles_share_provider_neutral_generation_contracts ... ok
+test candidate_json_tests::mcp_readonly_v3_protocol_policy_is_harness_bounded ... ok
+test candidate_json_tests::mcp_remote_admission_uses_remote_resolver_identity ... ok
+test candidate_json_tests::operational_summary_preserves_failed_generation_class ... ok
+test candidate_json_tests::mcp_fixed_arguments_reject_nested_credentials_without_echoing_values ... ok
+test candidate_json_tests::external_resolver_operational_limits_are_cli_and_config_compatible ... ok
+test candidate_json_tests::mcp_remote_config_fails_closed_on_write_unlisted_insecure_or_legacy_protocol ... ok
+test candidate_json_tests::hidden_research_and_low_level_natural_surfaces_remain_parseable ... ok
+test candidate_json_tests::mcp_remote_config_is_2026_read_only_and_secret_closed ... ok
+test candidate_json_tests::natural_output_contract_is_versioned ... ok
+test candidate_json_tests::groq_live_generator_variant_preserves_generic_provider_identity ... ok
+test candidate_json_tests::parses_current_safety_profile ... ok
+test candidate_json_tests::parses_config_schema_product_command ... ok
+test candidate_json_tests::parses_direct_natural_language_task_and_flags ... ok
+test candidate_json_tests::parses_external_resolver_command_without_shell_reinterpretation ... ok
+test candidate_json_tests::parses_live_concurrency ... ok
+test candidate_json_tests::parses_managed_session_list_surface ... ok
+test candidate_json_tests::parses_live_soft_judge_concurrency ... ok
+test candidate_json_tests::parses_nvidia_single_model_selection ... ok
+test candidate_json_tests::parses_natural_language_baseline_safety_rollback ... ok
+test candidate_json_tests::parses_legacy_v1_safety_profile_and_alias ... ok
+test candidate_json_tests::parses_provider_neutral_usage_budget_and_pricing_flags ... ok
+test candidate_json_tests::parses_opt_in_natural_diagnostic_trace_without_changing_output_format ... ok
+test candidate_json_tests::parses_managed_session_continue_resume_and_picker_flags ... ok
+test candidate_json_tests::parses_schema_product_command ... ok
+test candidate_json_tests::persisted_session_contract_contains_no_hidden_reasoning_surface ... ok
+test candidate_json_tests::parses_verbose_natural_progress_flag ... ok
+test candidate_json_tests::parses_semantic_check_explicit_rollback ... ok
+test candidate_json_tests::parses_semantic_check_product_command_with_current_default ... ok
+test candidate_json_tests::parses_semantic_check_legacy_v3_alias ... ok
+test candidate_json_tests::product_failure_envelope_is_machine_readable ... ok
+test candidate_json_tests::product_json_envelope_has_stable_contract_ids ... ok
+test candidate_json_tests::provider_override_requires_model_when_config_provider_changes ... ok
+test candidate_json_tests::parses_groq_generic_natural_language_provider ... ok
+test candidate_json_tests::recorded_candidate_ignores_configured_live_provider ... ok
+test candidate_json_tests::rejects_incomplete_candidate_json ... ok
+test candidate_json_tests::live_soft_judge_stability_excludes_incomplete_trials ... ok
+test candidate_json_tests::rejects_multiple_json_candidate_values ... ok
+test candidate_json_tests::remediation_catalog_covers_phase4_required_failure_families ... ok
+test candidate_json_tests::scalar_distribution_uses_population_standard_deviation ... ok
+test candidate_json_tests::parses_semantic_check_explicit_current_and_legacy_d3_alias ... ok
+test candidate_json_tests::parses_rollback_safety_profile_and_legacy_aliases ... ok
+test candidate_json_tests::session_correction_materialization_refuses_conflicting_explicit_facts ... ok
+test candidate_json_tests::session_correction_materialization_replaces_matching_model_claim_with_harness_owned_claim ... ok
+test candidate_json_tests::session_correction_target_accepts_unique_persisted_explicit_fact_without_model_claim ... ok
+test candidate_json_tests::session_correction_target_fails_closed_on_conflicting_grounded_prior_values ... ok
+test candidate_json_tests::session_correction_materialization_is_assumed_until_normal_verification ... ok
+test candidate_json_tests::session_correction_target_fails_closed_on_explicit_fact_conflict ... ok
+test candidate_json_tests::session_correction_target_fails_closed_without_grounded_prior_key ... ok
+test candidate_json_tests::session_correction_target_fails_closed_on_grounded_and_explicit_conflict ... ok
+test candidate_json_tests::session_correction_target_requires_one_unique_grounded_prior_proposition ... ok
+test candidate_json_tests::stdin_source_is_limited_to_one_per_command ... ok
+test candidate_json_tests::session_fork_is_non_destructive_and_uses_independent_lineage ... ok
+test candidate_json_tests::stability_excludes_incomplete_trials_from_correctness_distribution ... ok
+test candidate_json_tests::strict_text_fallback_rejects_trailing_prose ... ok
+test candidate_json_tests::structured_action_missing_discriminant_remains_protocol_failure ... ok
+test candidate_json_tests::strict_text_fallback_rejects_unknown_investigation_fields ... ok
+test candidate_json_tests::structured_call_accepts_complete_json_object_fallback_with_non_json_suffix ... ok
+test candidate_json_tests::plain_flag_is_parseable_without_changing_json_selection ... ok
+test candidate_json_tests::session_cli_surface_is_explicit_and_machine_parseable ... ok
+test candidate_json_tests::semantic_check_input_schema_is_closed ... ok
+test candidate_json_tests::structured_call_accepts_complete_primary_typed_json_with_non_json_suffix_without_fallback ... ok
+test candidate_json_tests::structured_parse_failure_preserves_incomplete_finish_metadata ... ok
+test candidate_json_tests::structured_call_rejects_second_primary_json_value_and_preserves_fallback ... ok
+test candidate_json_tests::structured_call_uses_json_object_fallback_after_typed_schema_capability_failure ... ok
+test candidate_json_tests::structured_parse_failure_distinguishes_complete_schema_data_error ... ok
+test candidate_json_tests::structured_call_degrades_json_object_capability_failure_to_strict_text ... ok
+test candidate_json_tests::terminal_status_diagnostic_keeps_incomplete_distinct_from_token_limit ... ok
+test candidate_json_tests::typed_json_decoder_accepts_one_complete_action_with_non_json_suffix ... ok
+test candidate_json_tests::typed_json_decoder_accepts_strict_action_without_normalization ... ok
+test candidate_json_tests::typed_json_decoder_does_not_fill_missing_acquire_identifier ... ok
+test candidate_json_tests::trusted_command_config_requires_explicit_trust_and_is_secret_closed ... ok
+test candidate_json_tests::typed_json_decoder_rejects_json_like_trailing_fragment ... ok
+test candidate_json_tests::typed_json_decoder_rejects_second_json_value ... ok
+test candidate_json_tests::typed_json_decoder_rejects_truncated_or_missing_action ... ok
+test candidate_json_tests::usage_budget_config_is_fieldwise_and_requires_pricing_provenance ... ok
+test candidate_json_tests::top_level_help_prioritizes_common_workflows_and_keeps_research_discoverable ... ok
+test config_commands::tests::surface_rejects_secrets_and_authority ... ok
+test candidate_json_tests::session_correction_persists_typed_invalidation_before_re_evaluation ... ok
+test config_commands::tests::typed_values_validate ... ok
+test diagnostic_trace::tests::diagnostic_wrapper_forwards_request_without_semantic_mutation ... ok
+test diagnostic_trace::tests::invalid_unstructured_response_content_is_not_persisted ... ok
+test doctor::installation_method_tests::recognizes_managed_package_paths_and_direct_install ... ok
+test diagnostic_trace::tests::model_request_diagnostic_records_each_structured_mode ... ok
+test diagnostic_trace::tests::diagnostic_wrapper_preserves_failure_classification_and_attempt_count ... ok
+test diagnostic_trace::tests::admitted_evidence_then_claim_drop_is_reconstructable_from_trace ... ok
+test diagnostic_trace::tests::request_and_structured_response_are_sanitized_without_raw_hidden_text ... ok
+test candidate_json_tests::session_replay_preserves_materialized_investigation_attempt_without_external_reexecution ... ok
+test human_presentation::tests::abstain_and_acquisition_rejection_are_explained_without_trace ... ok
+test human_presentation::tests::unicode_content_is_preserved_without_width_or_byte_truncation ... ok
+test human_presentation::tests::unresolved_and_qualification_reasons_are_typed_and_visible ... ok
+test human_presentation::tests::unresolved_answer_reports_unknown_without_renderer_text ... ok
+test human_presentation::tests::verified_facts_use_canonical_propositions_and_do_not_render_raw_prose ... ok
+test interactive::tests::bare_human_tty_enters_interactive_mode ... ok
+test interactive::tests::conversation_memory_is_untrusted_context_without_fact_authority ... ok
+test interactive::tests::ephemeral_mode_never_persists_managed_state_even_after_turns_exist ... ok
+test interactive::tests::explicit_plain_keeps_static_interactive_prompt_path_available ... ok
+test interactive::tests::parses_interactive_commands_without_shell_interpretation ... ok
+test interactive::tests::persisted_session_identity_never_silently_switches_provider_or_model ... ok
+test interactive::tests::task_pipe_and_json_never_auto_enter_interactive_mode ... ok
+test lifecycle::package_manager_tests::detects_homebrew_cellar_paths ... ok
+test lifecycle::package_manager_tests::detects_winget_custom_portable_root ... ok
+test lifecycle::package_manager_tests::detects_winget_portable_paths ... ok
+test lifecycle::tests::engine_061_adoption_and_engine_050_rollback_require_separate_explicit_consent ... ok
+test lifecycle::tests::automatic_release_selection_excludes_semver_prereleases_and_drafts ... ok
+test lifecycle::tests::engine_change_policy_requires_explicit_consent_in_both_directions ... ok
+test lifecycle::package_manager_tests::leaves_direct_installs_unmanaged ... ok
+test lifecycle::tests::managed_data_scope_never_discovers_arbitrary_session_files ... ok
+test lifecycle::tests::split_version_boundary_and_direction_are_explicit ... ok
+test lifecycle::tests::unchanged_engine_does_not_require_engine_change_consent ... ok
+test candidate_json_tests::session_file_round_trip_resume_preserves_checkpoint_state_without_external_replay ... ok
+test doctor::installation_method_tests::resolves_winget_link_to_package_root ... ok
+test managed_session::tests::generated_managed_session_ids_do_not_collide_in_one_process ... ok
+test managed_session::tests::managed_identity_is_stable_inside_record_and_title_is_bounded ... ok
+test managed_session::tests::managed_session_v1_wire_remains_usage_sidecar_free ... ok
+test managed_session::tests::managed_usage_sidecar_has_its_own_versioned_contract ... ok
+test managed_session::tests::managed_validation_rejects_memory_boundary_past_turns ... ok
+test local_privacy::tests::fresh_private_directory_and_file_are_user_only ... ok
+test managed_session::tests::source_digest_is_not_part_of_v1_wire_format ... ok
+test managed_session::tests::advisory_store_lock_excludes_second_writer ... ok
+test mcp_oauth::tests::authorization_url_uses_pkce_state_resource_and_scope_without_secret ... ok
+test lifecycle::tests::unix_replacement_is_atomic_at_destination_path ... ok
+test mcp_oauth::tests::bearer_challenge_parser_extracts_resource_metadata_and_scope_without_secrets ... ok
+test mcp_oauth::tests::native_os_store_round_trip ... ignored, mutates the native OS credential store; run only in isolated CI
+test mcp_oauth::tests::native_os_store_scoped_delete_does_not_cross_accounts ... ignored, mutates the native OS credential store; run only in isolated CI
+test managed_session::tests::optimistic_source_check_rejects_stale_overwrite ... ok
+test lifecycle::tests::manifest_identity_and_checksum_listing_fail_closed ... ok
+test managed_session::tests::atomic_replace_overwrites_existing_destination_without_remove_gap ... ok
+test mcp_oauth::tests::oauth_discovery_rejects_resource_issuer_and_insecure_metadata_mismatch ... ok
+test lifecycle::package_manager_tests::detects_winget_through_links_symlink ... ok
+test mcp_oauth::tests::oauth_requires_https_except_loopback ... ok
+test mcp_oauth::tests::stored_token_is_issuer_and_client_bound ... ok
+test model_catalog::tests::lifecycle_policy_never_silently_substitutes_non_current_models ... ok
+test model_catalog::tests::catalog_has_one_recommended_general_use_model_for_primary_providers ... ok
+test model_catalog::tests::nvidia_negative_control_is_visible_but_not_general_use ... ok
+test lifecycle::package_manager_tests::detects_homebrew_through_executable_symlink ... ok
+test progress::tests::ctrl_c_during_arming_is_preserved_after_token_reset ... ok
+test progress::tests::plain_mode_preserves_ctrl_c_cancellation_state_machine ... ok
+test progress::tests::progress_is_human_full_tty_and_non_plain_only ... ok
+test mcp_oauth::tests::authorization_code_exchange_uses_pkce_resource_and_never_requires_client_secret ... ok
+test progress::tests::provider_wait_wrapper_preserves_result_when_progress_is_disabled ... ok
+test mcp_oauth::tests::refresh_preserves_explicit_step_up_scope_when_server_omits_scope ... ok
+test mcp_oauth::tests::callback_requires_exact_state_and_rfc9207_issuer ... ok
+test run_diagnostics::tests::initial_provider_failure_retains_attempts_without_a_candidate_or_false_zero_tokens ... ok
+test secure_credentials::tests::absent_environment_uses_os_store ... ok
+test secure_credentials::tests::empty_environment_fails_without_store_fallback ... ok
+test secure_credentials::tests::environment_credential_wins_without_reading_store ... ok
+test mcp_oauth::tests::oauth_discovery_rejects_redirect_and_malformed_metadata ... ok
+test secure_credentials::tests::memory_store_replacement_and_delete_are_scoped ... ok
+test secure_credentials::tests::missing_and_unavailable_store_are_distinct_and_secret_free ... ok
+test secure_credentials::tests::native_os_store_round_trip ... ignored, mutates the native OS credential store; run only in isolated CI
+test run_diagnostics::tests::completed_trace_flushes_once_with_the_same_event_contract ... ok
+test secure_credentials::tests::provider_identity_is_versioned_and_google_gemma_share_one_secret ... ok
+test terminal_presentation::tests::explicit_plain_no_color_and_dumb_terminal_select_plain_mode ... ok
+test terminal_presentation::tests::json_and_redirected_streams_are_plain_and_decoration_free ... ok
+test terminal_presentation::tests::ordinary_human_full_tty_keeps_static_progress_available ... ok
+test usage_budget::tests::cumulative_guard_rejects_untracked_pre_usage_session_history ... ok
+test usage_budget::tests::failed_provider_attempt_makes_token_totals_unreported ... ok
+test usage_budget::tests::model_call_budget_is_checked_before_next_call ... ok
+test usage_budget::tests::output_budget_caps_next_request ... ok
+test usage_budget::tests::pricing_is_estimated_only_with_explicit_provenance ... ok
+test usage_budget::tests::strict_token_budget_fails_closed_when_provider_usage_is_missing ... ok
+test usage_budget::tests::usage_report_json_has_stable_provider_neutral_fields ... ok
+test run_diagnostics::tests::trace_write_failure_does_not_replace_the_original_budget_error ... ok
+test run_diagnostics::tests::missing_provider_usage_remains_unmeasurable_and_is_not_filled_with_zero ... ok
+test run_diagnostics::tests::budget_stop_preserves_the_actual_response_usage_and_partial_trace ... ok
+test mcp_oauth::tests::oauth_discovery_falls_back_to_root_prm_and_oidc_path_insertion ... ok
+test candidate_json_tests::supported_shell_completions_generate_to_memory ... ok
+test run_diagnostics::tests::cancelling_inflight_generation_flushes_trace_and_marks_usage_as_a_lower_bound ... ok
+test lifecycle::tests::verified_downloaded_release_replaces_destination_after_integrity_and_version_checks ... ok
+
+test result: ok. 214 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 0.47s
+
+     Running unittests src/bin/cross_model.rs (/private/tmp/engine073-validation-target/debug/deps/reason_cross_model_study-5714ee532bf36094)
+
+running 4 tests
+test tests::source_order_rotates_without_changing_membership ... ok
+test tests::source_spec_parser_accepts_supported_provider_model_pairs ... ok
+test tests::clear_case_coverage_counts_only_positive_and_negative_cases ... ok
+test tests::source_spec_validation_requires_two_distinct_sources ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/decidability.rs (/private/tmp/engine073-validation-target/debug/deps/reason_decidability_study-a2b736fb39706c74)
+
+running 5 tests
+test tests::ambiguous_permit_controls_have_their_own_denominator ... ok
+test tests::metrics_keep_force_abstention_out_of_semantic_recall_denominator ... ok
+test tests::d2_and_holdout_v5_surfaces_are_canonically_disjoint ... ok
+test tests::checkpoint_preserves_partial_cases_without_semantic_scoring ... ok
+test tests::holdout_v5_preflight_rejects_recorded_observations ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/bin/engine_0_6_1_launch_live.rs (/private/tmp/engine073-validation-target/debug/deps/reason_engine_061_launch_live-6d21c8d63e705a41)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/engine_0_7_independent.rs (/private/tmp/engine073-validation-target/debug/deps/reason_engine_070_independent_holdout-d0b7df4b13b9deb1)
+
+running 8 tests
+test tests::strict_model_json_rejects_extra_data_and_untrusted_text ... ok
+test tests::curated_compatible_source_gain_is_source_local_only ... ok
+test tests::provider_budget_violation_is_a_hard_failure ... ok
+test tests::no_review_or_advisory_false_does_not_create_compatibility ... ok
+test tests::replay_and_global_conflict_preserved_across_targets ... ok
+test tests::model_yes_cannot_overrule_opposition_or_context_mismatch ... ok
+test tests::no_overwrite_protects_canonical_evidence ... ok
+test tests::development_only_manifest_validates_all_twelve_before_any_model_call ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests src/bin/evidence_need_holdout.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_need_holdout_study-794c2979938c1db8)
+
+running 4 tests
+test tests::stronger_local_route_is_a_utility_miss_not_a_correctness_violation ... ok
+test tests::weaker_required_mode_is_a_correctness_violation ... ok
+test tests::exact_route_is_neither_violation_nor_utility_miss ... ok
+test tests::permitted_cheaper_route_is_not_a_correctness_or_utility_failure ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/evidence_need.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_need_study-78a6f84d975e7d8d)
+
+running 4 tests
+test tests::exact_route_is_neither_violation_nor_utility_miss ... ok
+test tests::stronger_local_route_is_a_utility_miss_not_a_correctness_violation ... ok
+test tests::permitted_cheaper_route_is_not_a_correctness_or_utility_failure ... ok
+test tests::weaker_required_mode_is_a_correctness_violation ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/evidence_relevance_holdout.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_holdout_study-23c1e1ec574e9395)
+
+running 5 tests
+test tests::checkpoint_profile_distinguishes_holdout_and_development_suites ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/evidence_relevance_holdout_v10.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_holdout_v10_study-4397fc13246f6675)
+
+running 6 tests
+test tests::issue_binding_is_explicit_per_profile ... ok
+test tests::checkpoint_profile_covers_every_declared_profile ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/evidence_relevance_holdout_v11.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_holdout_v11_study-39911184074e1f68)
+
+running 7 tests
+test tests::checkpoint_profile_covers_every_declared_profile ... ok
+test tests::issue_binding_is_explicit_per_profile ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v11_profile_is_bound_to_v15_v28_semantics ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/evidence_relevance_holdout_v12.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_holdout_v12_study-0aaa7d57f568a3f1)
+
+running 8 tests
+test tests::issue_binding_is_explicit_per_profile ... ok
+test tests::checkpoint_profile_covers_every_declared_profile ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v12_profile_is_bound_to_v17_v30_semantics ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v11_profile_is_bound_to_v15_v28_semantics ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running unittests src/bin/evidence_relevance_holdout_v6.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_holdout_v6_study-470cf68d4cc34143)
+
+running 5 tests
+test tests::checkpoint_profile_distinguishes_holdout_and_development_suites ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/evidence_relevance_holdout_v7.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_holdout_v7_study-fadb3851ba3c61f2)
+
+running 5 tests
+test tests::checkpoint_profile_covers_every_declared_profile ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/evidence_relevance_holdout_v8.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_holdout_v8_study-7b185c8b4ee4cb27)
+
+running 5 tests
+test tests::checkpoint_profile_covers_every_declared_profile ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/evidence_relevance_holdout_v9.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_holdout_v9_study-86c50a841b366055)
+
+running 6 tests
+test tests::issue_binding_is_explicit_per_profile ... ok
+test tests::checkpoint_profile_covers_every_declared_profile ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/evidence_relevance_identity_probe.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_identity_probe-add2ba16bad9eacd)
+
+running 1 test
+test tests::verifier_schema_is_one_sided ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/evidence_relevance_negative_relation_probe.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_negative_relation_probe-a06707c4b4be9f42)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/evidence_relevance.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_study-31ca273bb9bfeeb9)
+
+running 31 tests
+test tests::capacity_failure_streak_is_separate_from_protocol_and_quota ... ok
+test tests::full_diagnostic_mode_never_opens_operational_circuit ... ok
+test tests::fallback_respects_model_call_budget ... ok
+test tests::bounded_fallback_records_two_model_calls ... ok
+test tests::full_diagnostic_mode_can_disable_operational_circuit_break ... ok
+test tests::groq_local_qualification_uses_strict_json_text_as_primary_without_second_fallback ... ok
+test tests::effective_v3_preserves_corroborated_distinct_target_different_relation ... ok
+test tests::effective_metrics_are_separate_from_raw_verifier_metrics ... ok
+test tests::latency_percentiles_use_nearest_rank ... ok
+test tests::authority_metrics_mask_axes_only_when_blocking_risk_is_correct ... ok
+test tests::authority_metrics_keep_zero_risk_axes_strict ... ok
+test tests::groq_uses_strict_json_text_as_primary_without_second_fallback ... ok
+test tests::local_qualification_malformed_primary_and_fallback_fail_closed_without_third_call ... ok
+test tests::local_qualification_parser_returns_typed_state ... ok
+test tests::groq_strict_json_transport_budget_exceeds_semantic_schema_budget ... ok
+test tests::local_qualification_request_uses_bounded_json_schema_transport ... ok
+test tests::operational_failure_streak_counts_provider_failures_and_resets_on_response_failure ... ok
+test tests::persisted_provider_failures_redact_quota_identity_and_urls ... ok
+test tests::provider_token_budget_guard_reserves_capacity_before_next_case ... ok
+test tests::assessment_elapsed_budget_fails_typed_and_closed ... ok
+test tests::model_failure_keeps_compact_classification_and_separate_safe_diagnostic ... ok
+test tests::lexical_baseline_exposes_known_limitations ... ok
+test tests::public_safe_provider_diagnostic_is_limited_to_quota_and_rate_limit ... ok
+test tests::public_safe_quota_diagnostic_preserves_limit_evidence_but_redacts_identity ... ok
+test tests::local_qualification_still_runs_when_primary_relation_is_different ... ok
+test tests::local_qualification_uses_one_transport_fallback_on_malformed_primary ... ok
+test tests::local_qualification_unsupported_schema_uses_bounded_strict_json_text_fallback ... ok
+test tests::provider_token_budget_totals_usage_and_fails_closed_when_usage_is_missing ... ok
+test tests::relation_difference_requires_matching_local_confirmation ... ok
+test tests::local_qualification_timeout_is_operational_failure ... ok
+test tests::expected_primary_and_effective_qualification_materialize_all_v20_cases ... ok
+
+test result: ok. 31 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running unittests src/bin/evidence_relevance_successor_v10_development_v2.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_successor_v10_development_v2_study-6e309b3dae6b08c0)
+
+running 5 tests
+test tests::checkpoint_profile_covers_every_declared_profile ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/evidence_relevance_successor_v10_development_v3.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_successor_v10_development_v3_study-344380bfc3848863)
+
+running 5 tests
+test tests::checkpoint_profile_covers_every_declared_profile ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/evidence_relevance_successor_v10_development_v4.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_successor_v10_development_v4_study-6e1ea11647613e09)
+
+running 5 tests
+test tests::checkpoint_profile_covers_every_declared_profile ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/evidence_relevance_successor_v11_development.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_successor_v11_development_study-41d258f96618db14)
+
+running 5 tests
+test tests::checkpoint_profile_covers_every_declared_profile ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/evidence_relevance_successor_v11_development_v2.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_successor_v11_development_v2_study-7d036b1652d981b8)
+
+running 5 tests
+test tests::checkpoint_profile_covers_every_declared_profile ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/evidence_relevance_successor_v7_development.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_successor_v7_development_study-fa4a654e557a649e)
+
+running 5 tests
+test tests::checkpoint_profile_covers_every_declared_profile ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/evidence_relevance_successor_v8_development.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_successor_v8_development_study-c070220ed3d5698c)
+
+running 5 tests
+test tests::checkpoint_profile_covers_every_declared_profile ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/evidence_relevance_successor_v9_development.rs (/private/tmp/engine073-validation-target/debug/deps/reason_evidence_relevance_successor_v9_development_study-d0e70021697e0b89)
+
+running 5 tests
+test tests::checkpoint_profile_covers_every_declared_profile ... ok
+test tests::holdout_v1_identity_is_fresh_and_stratified ... ok
+test tests::holdout_v1_deterministic_risk_matches_frozen_expectations ... ok
+test tests::holdout_v1_has_no_exact_calibration_content_reuse ... ok
+test tests::holdout_v1_expected_observations_are_exact_under_v23_semantics ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/external_resolution_acceptance.rs (/private/tmp/engine073-validation-target/debug/deps/reason_external_resolution_acceptance-c4a38408562c55c4)
+
+running 2 tests
+test tests::declared_acceptance_set_covers_required_failure_shapes ... ok
+test tests::report_contract_is_not_a_frozen_research_identity ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/format_invariance.rs (/private/tmp/engine073-validation-target/debug/deps/reason_format_study-de1d9f863961158f)
+
+running 2 tests
+test format_study_failure_tests::finish_reason_classification_separates_provider_error_from_protocol_and_truncation ... ok
+test format_study_failure_tests::representation_order_rotates_across_fixtures_and_trials ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/materialization.rs (/private/tmp/engine073-validation-target/debug/deps/reason_materialization_study-dbbd76a8dc77b56d)
+
+running 1 test
+test tests::arm_order_counterbalances_across_fixture_and_trial ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/mcp_product.rs (/private/tmp/engine073-validation-target/debug/deps/reason_mcp-c5d286b804d4a6f2)
+
+running 6 tests
+test tests::native_ask_envelope_is_passed_through_with_finalization_and_identity ... ok
+test tests::ask_args_are_literal_closed_and_task_is_after_option_terminator ... ok
+test tests::scope_metadata_never_claims_to_verify_the_caller_loop ... ok
+test tests::modern_discovery_and_cache_hints_are_explicit ... ok
+test tests::tool_list_exposes_only_selected_native_surfaces ... ok
+test tests::schemas_reuse_native_types_and_are_closed_at_mcp_wrapper ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/bin/mcp_identity_gate_benchmark.rs (/private/tmp/engine073-validation-target/debug/deps/reason_mcp_identity_gate_benchmark-434602045efee97b)
+
+running 22 tests
+test v6_contract_tests::adapter_candidate_suggestion_is_not_a_planner_action ... ok
+test v6_contract_tests::canonical_follow_executes_exact_suggestion ... ok
+test v6_contract_tests::ambiguity_after_context_query_does_not_loop_the_same_context ... ok
+test v6_contract_tests::ambiguous_bare_surface_with_trusted_context_gets_canonical_followup ... ok
+test v6_contract_tests::direct_wikibase_verification_never_relaxes_bare_surface_rank_rule ... ok
+test v6_contract_tests::exact_trusted_context_is_allowed_without_suggestion_but_extra_terms_are_not ... ok
+test v6_contract_tests::candidate_churn_is_novelty_not_target_progress ... ok
+test v6_contract_tests::context_query_without_compatible_candidate_metadata_is_not_admitted ... ok
+test v6_contract_tests::direct_wikibase_verification_without_context_metadata_remains_unadmitted ... ok
+test v6_contract_tests::bare_rank1_fact_with_trusted_context_is_not_admitted ... ok
+test v6_contract_tests::freeform_search_is_unavailable_while_canonical_suggestion_exists ... ok
+test v6_contract_tests::invalid_feedback_preserves_suggestion_and_blocks_external_request ... ok
+test v6_contract_tests::planner_cannot_invent_identity_context ... ok
+test v6_contract_tests::rank1_fact_after_canonical_context_query_is_admitted ... ok
+test v6_contract_tests::rank2_with_trusted_context_remains_unadmitted_and_gets_canonical_suggestion ... ok
+test v6_contract_tests::rank2_without_trusted_context_remains_unadmitted_and_stops ... ok
+test v6_contract_tests::repair_limit_exhaustion_remains_safe_unknown ... ok
+test v6_contract_tests::semantic_duplicate_and_a_b_a_cycle_are_rejected ... ok
+test v6_contract_tests::semantic_false_decision_is_symmetric_for_terminal_wrong_answers ... ok
+test v6_contract_tests::unavailable_follow_is_typed_invalid_with_zero_external_requests ... ok
+test v6_contract_tests::trusted_context_direct_wikibase_verification_can_admit_without_search_rank ... ok
+test v6_contract_tests::unknown_expectation_treats_any_fact_decision_as_false_acceptance ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/product_dogfood.rs (/private/tmp/engine073-validation-target/debug/deps/reason_product_dogfood-c2a718f562c3f2a1)
+
+running 17 tests
+test tests::duplicate_grounded_target_claims_do_not_inflate_target_coverage ... ok
+test tests::failure_provenance_distinguishes_resolution_not_requested ... ok
+test tests::failure_provenance_identifies_non_target_claims_blocking_an_authorized_target ... ok
+test tests::failure_provenance_marks_accept_render_omission_as_canonical_recovery_eligible ... ok
+test tests::aggregate_counts_false_and_correct_abstention_separately ... ok
+test tests::direct_fact_support_requires_observed_value_agreement ... ok
+test tests::failure_provenance_records_exact_proposition_drift_without_fuzzy_matching ... ok
+test tests::target_metrics_preserve_safe_partial_facts_without_grounding_the_task_target ... ok
+test tests::support_probe_rejects_conflicting_qualified_values ... ok
+test tests::support_probe_rejects_stale_qualified_evidence ... ok
+test tests::support_probe_rejects_scope_mismatch ... ok
+test tests::checkpoint_identity_mismatch_refuses_observation_reuse ... ok
+test tests::checkpoint_resume_reuses_only_completed_prefix_and_reexecutes_active_case ... ok
+test tests::checkpoint_rejects_model_seed_runtime_and_executable_identity_changes ... ok
+test tests::fixture_fingerprint_changes_when_fixture_bytes_change ... ok
+test tests::checkpoint_preserves_operational_failure_history_across_resume ... ok
+test tests::sixteen_case_resume_starts_at_n_plus_one_and_preserves_semantic_aggregate ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/bin/product_external_info.rs (/private/tmp/engine073-validation-target/debug/deps/reason_product_external_info-5b6ac5aa206cb30e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/product_external_info_successor.rs (/private/tmp/engine073-validation-target/debug/deps/reason_product_external_info_successor-37bc1e13061e87f2)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/product_external_info_v3.rs (/private/tmp/engine073-validation-target/debug/deps/reason_product_external_info_v3-0313f2fd10bfc1e3)
+
+running 1 test
+test v3_tests::raw_semantic_context_preserves_matched_target_and_requirement ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/product_external_info_v4.rs (/private/tmp/engine073-validation-target/debug/deps/reason_product_external_info_v4-453b563d24de9542)
+
+running 1 test
+test v4_tests::raw_semantic_context_preserves_matched_target_and_requirement ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/semantic_preflight.rs (/private/tmp/engine073-validation-target/debug/deps/reason_semantic_preflight-b4334ab260906827)
+
+running 2 tests
+test tests::truncated_series_is_operationally_incomplete ... ok
+test tests::mixed_protocol_series_is_incompatible_not_compatible ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/runtime_smoke.rs (/private/tmp/engine073-validation-target/debug/deps/reason_semantic_runtime_smoke-ae9f660884a68ede)
+
+running 1 test
+test tests::smoke_pair_keeps_model_visible_semantics_matched_and_gate_dispositions_distinct ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/source_attribution_development.rs (/private/tmp/engine073-validation-target/debug/deps/reason_source_attribution_development_study-20b7f304d688d331)
+
+running 7 tests
+test tests::unresolved_source_does_not_false_positive_as_truth_promotion_for_verified_hard_fact ... ok
+test tests::qualified_source_plus_verified_hard_fact_stays_qualified_not_grounded ... ok
+test tests::frozen_surface_has_exact_shape_and_provider_roles ... ok
+test tests::prompt_injection_is_model_visible_only_as_inert_bound_source_data ... ok
+test tests::every_case_has_valid_harness_owned_binding_surface ... ok
+test tests::deterministic_cases_fail_closed_or_finalize_as_frozen ... ok
+test tests::model_cases_build_bounded_requests_without_provider_access ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/source_attribution_holdout.rs (/private/tmp/engine073-validation-target/debug/deps/reason_source_attribution_holdout_study-fd16aa77599367de)
+
+running 3 tests
+test tests::holdout_runner_identity_and_provider_set_are_frozen ... ok
+test tests::unresolved_source_does_not_false_positive_as_truth_promotion_for_verified_hard_fact ... ok
+test tests::qualified_source_plus_verified_hard_fact_stays_qualified_not_grounded ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/source_attribution_holdout_v2.rs (/private/tmp/engine073-validation-target/debug/deps/reason_source_attribution_holdout_v2_study-77f4cce8d8ba7846)
+
+running 3 tests
+test tests::holdout_runner_identity_and_provider_set_are_frozen ... ok
+test tests::qualified_source_plus_verified_hard_fact_stays_qualified_not_grounded ... ok
+test tests::unresolved_source_does_not_false_positive_as_truth_promotion_for_verified_hard_fact ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/source_attribution_provider_smoke.rs (/private/tmp/engine073-validation-target/debug/deps/reason_source_attribution_provider_smoke-4ae27b59c526377e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/source_review_local.rs (/private/tmp/engine073-validation-target/debug/deps/reason_source_review_local-d26409767e18d669)
+
+running 8 tests
+test tests::malformed_or_cross_reviewer_payload_denied ... ok
+test tests::hmac_rfc4231_reference ... ok
+test tests::target_local_cli_escapes_untrusted_control_and_bidi ... ok
+test tests::source_preview_escapes_untrusted_terminal_control_characters ... ok
+test tests::target_local_cli_preserves_conflict_and_quote_citations ... ok
+test tests::signature_and_replay_reject_modified_document ... ok
+test tests::synthetic_demo_roundtrip_is_private_and_preflight_does_not_approve ... ok
+test tests::precommitted_host_workflow_scenarios ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/bin/stability.rs (/private/tmp/engine073-validation-target/debug/deps/reason_stability_study-60ea64f255ad1520)
+
+running 1 test
+test tests::representation_order_rotates_without_changing_membership ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/sufficiency.rs (/private/tmp/engine073-validation-target/debug/deps/reason_sufficiency_study-6c304494e7772421)
+
+running 6 tests
+test tests::calibration_surface_refuses_sufficiency_holdout ... ok
+test tests::loader_refuses_semantic_holdout_paths ... ok
+test tests::holdout_surface_refuses_calibration_corpus ... ok
+test tests::conservative_metrics_separate_false_safe_from_false_abstain ... ok
+test tests::stability_distinguishes_exact_label_drift_from_binary_safety_drift ... ok
+test tests::stability_marks_sufficient_non_sufficient_flip_as_binary_instability ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/v36_raw_baseline.rs (/private/tmp/engine073-validation-target/debug/deps/v36_raw_baseline-83752f81b7e84466)
+
+running 2 tests
+test tests::operational_retry_policy_is_conservative ... ok
+test tests::committed_safety_contracts_validate ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/mcp_product_surface.rs (/private/tmp/engine073-validation-target/debug/deps/mcp_product_surface-9b2704c623550e28)
+
+running 5 tests
+test mcp_run_has_no_receipt_config_provider_or_raw_cli_bypass ... ok
+test native_spawn_failure_is_tool_operational_failure_not_semantic_unknown ... ok
+test mcp_discovery_is_modern_stateless_and_ask_has_no_raw_bypass ... ok
+test mcp_run_is_byte_semantically_equal_to_supported_native_run_contract ... ok
+test mcp_verify_and_schema_preserve_native_product_contracts ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.69s
+
+     Running tests/product_cli_contract.rs (/private/tmp/engine073-validation-target/debug/deps/product_cli_contract-5812640e8545d64d)
+
+running 30 tests
+test cli_usage_error_is_exit_two_and_not_an_epistemic_outcome ... ok
+test auth_login_help_has_only_non_secret_argv_controls ... ok
+test human_operational_failure_explains_execution_trust_and_safe_recovery ... ok
+test auth_noninteractive_stdin_requires_explicit_provider_before_store_access ... ok
+test generic_groq_empty_environment_override_is_typed_and_does_not_fall_back_to_os_store ... ok
+test json_operational_failure_is_exit_one_and_stays_machine_readable ... ok
+test doctor_reports_non_current_model_lifecycle_and_explicit_replacement_path ... ok
+test doctor_reports_versions_sources_and_secret_free_readiness_without_live_side_effects ... ok
+test doctor_keeps_invalid_config_diagnostic_machine_readable ... ok
+test doctor_reports_proxy_presence_and_invalid_custom_ca_without_leaking_values_or_tls_bypass_advice ... ok
+test doctor_live_check_honors_https_proxy_and_classifies_proxy_failure_before_provider_auth ... ok
+test lifecycle_help_is_explicit_and_has_no_insecure_provenance_bypass ... ok
+test mcp_help_exposes_remote_oauth_lifecycle_without_secret_valued_flags ... ok
+test remote_mcp_remove_reports_present_and_absent_credentials_without_cross_account_deletion ... ignored, mutates the native OS credential store; run only in isolated CI
+test rollback_rejects_historical_pre_attestation_release_before_mutation ... ok
+test remote_mcp_scope_step_up_requires_explicit_replace ... ok
+test remote_mcp_insufficient_scope_is_typed_actionable_and_secret_free ... ok
+test plain_presentation_never_changes_machine_json_contract ... ok
+test setup_help_has_no_secret_valued_argv_and_live_check_is_explicit ... ok
+test session_add_with_empty_nonterminal_stdin_is_not_rejected_as_piped_input ... ok
+test setup_noninteractive_uses_recommended_model_without_secret_leak ... ok
+test uninstall_dry_run_is_non_mutating_and_secret_free ... ok
+test supported_stdin_paths_preserve_the_same_machine_contract ... ok
+test unknown_is_a_successful_versioned_product_outcome ... ok
+test remote_mcp_management_persists_only_non_secret_oauth_metadata ... ok
+test schema_command_exposes_all_compatibility_tracked_contract_ids ... ok
+test mcp_management_add_list_inspect_remove_is_non_secret_and_machine_readable ... ok
+test model_catalog_and_default_switch_preserve_user_config_and_fail_closed ... ok
+test session_process_resume_and_fork_replay_no_external_side_effects ... ok
+test mcp_management_add_inspect_test_remove_is_read_only_and_secret_free ... ok
+
+test result: ok. 29 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.91s
+
+     Running tests/project_trust.rs (/private/tmp/engine073-validation-target/debug/deps/project_trust-7761bc539880e439)
+
+running 12 tests
+test project_config_symlink_escape_is_rejected ... ok
+test project_relative_executable_symlink_escape_is_rejected ... ok
+test safe_project_defaults_do_not_require_trust ... ok
+test remote_mcp_project_config_requires_trust_and_config_change_invalidates_it ... ok
+test trust_store_is_user_only_on_unix ... ok
+test trusted_command_is_never_authorized_by_project_trust ... ok
+test canonical_project_identity_treats_symlink_alias_as_same_project ... ok
+test revoke_and_no_config_are_fail_closed_and_hermetic ... ok
+test changed_high_risk_config_invalidates_existing_trust ... ok
+test moved_project_does_not_inherit_path_bound_trust ... ok
+test high_risk_project_config_is_fail_closed_until_explicitly_trusted ... ok
+test changed_project_executable_bytes_invalidate_existing_trust ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.44s
+
+     Running unittests src/lib.rs (/private/tmp/engine073-validation-target/debug/deps/reasoning_harness_core-af85518c4742fd08)
+
+running 330 tests
+test answer_safety::tests::successor_identity_has_explicit_baseline_rollback ... ok
+test answer_safety::tests::v2_identity_rolls_back_to_v1_and_uses_claim_local_policy ... ok
+test answer_safety::tests::verified_target_identity_rolls_back_to_v2 ... ok
+test adversarial::tests::soft_finding_never_changes_claim_state ... ok
+test answer_safety::tests::baseline_profile_never_calls_model ... ok
+test answer_safety::tests::request_builder_uses_only_existing_evidence_ids ... ok
+test answer_safety::tests::v2_request_builder_is_claim_local_and_scopes_evidence ... ok
+test adversarial::tests::conflicting_observed_values_are_contradiction ... ok
+test adversarial::tests::single_opposing_value_is_counterexample ... ok
+test answer_safety::tests::verified_target_profile_preserves_exact_trusted_support_without_model_sufficiency ... ok
+test assumption::tests::explicit_input_assumption_is_distinguished_without_a_finding ... ok
+test assumption::tests::inferred_premise_with_supported_derivation_is_accepted_as_derived_support ... ok
+test assumption::tests::inferred_label_without_supported_derivation_is_not_trusted ... ok
+test assumption::tests::repeated_semantic_premise_is_reported_once_with_all_edges ... ok
+test assumption::tests::supported_premise_is_not_an_assumption_finding ... ok
+test assumption::tests::typed_untrusted_premise_is_hard_unsupported_process_finding ... ok
+test answer_safety::tests::v2_rollback_still_honors_model_sufficiency_for_same_verified_target ... ok
+test answer_safety::tests::sufficient_can_only_preserve_baseline ... ok
+test answer_safety::tests::verified_target_profile_does_not_short_circuit_mixed_exact_target_state ... ok
+test answer_safety::tests::verified_target_profile_does_not_short_circuit_target_qualification_finding ... ok
+test answer_safety::tests::verified_target_profile_falls_back_to_model_when_hard_receipt_is_missing ... ok
+test assumption::tests::unbound_premise_remains_soft ... ok
+test candidate::tests::drops_duplicate_candidate_claim_id_but_preserves_first_claim ... ok
+test candidate::tests::drops_invalid_inference_but_preserves_claim_and_diagnostic ... ok
+test answer_safety::tests::non_sufficient_can_only_force_verification ... ok
+test candidate::tests::drops_missing_candidate_evidence_reference_but_keeps_valid_reference ... ok
+test causal::tests::conflicting_records_remain_unknown ... ok
+test causal::tests::association_only_is_soft_and_unknown ... ok
+test causal::tests::endpoint_truth_without_relation_evidence_remains_unknown ... ok
+test causal::tests::exact_harness_owned_support_marks_edge_supported ... ok
+test causal::tests::exact_refutation_is_hard ... ok
+test causal::tests::exact_relation_support_ignores_cause_order ... ok
+test causal::tests::malformed_harness_owned_causal_evidence_is_rejected ... ok
+test causal::tests::missing_binding_is_explicit_and_soft ... ok
+test causal::tests::reverse_support_does_not_refute_forward_relation ... ok
+test corpus::tests::score_compatibility_is_explicit ... ok
+test corpus::tests::superseded_case_requires_an_existing_distinct_target ... ok
+test corpus::tests::claim_aggregation_groups_category_and_difficulty_without_changing_case_identity ... ok
+test diagnostic_stability::tests::excludes_incomplete_trials_from_frequency_denominator ... ok
+test diagnostic_stability::tests::observation_includes_adversarial_candidate_and_causal_reasons ... ok
+test diagnostic_stability::tests::per_fixture_count_distribution_includes_zero_finding_trials ... ok
+test diagnostic_stability::tests::wilson_interval_is_regression_stable ... ok
+test diagnostic_stability::tests::repeated_diagnostic_report_serializes_without_provider_identity ... ok
+test evidence_need::tests::proposal_schema_binds_exact_target_and_disallows_extra_fields ... ok
+test evidence_need::tests::proposal_parser_rejects_unknown_fields ... ok
+test evidence_need::tests::trusted_mode_is_available_when_harness_requires_trusted_verification ... ok
+test evidence_need::tests::proposal_request_is_target_local_and_hides_internal_materialization_controls ... ok
+test evidence_need::tests::trusted_mode_is_hidden_without_harness_owned_trusted_requirement ... ok
+test evidence_qualification::tests::narrower_evidence_cannot_support_any_scope_requirement ... ok
+test evidence_qualification::tests::exact_metadata_match_is_qualified ... ok
+test evidence_qualification::tests::missing_required_metadata_remains_unknown_and_soft ... ok
+test evidence_qualification::tests::overlapping_scope_subset_is_supported ... ok
+test evidence_qualification::tests::qualification_pass_is_observational_even_for_hard_mismatch ... ok
+test evidence_relevance::tests::ascii_short_alias_matching_is_token_boundary_aware ... ok
+test evidence_relevance::tests::binding_parser_rejects_model_owned_final_disposition ... ok
+test evidence_relevance::tests::binding_materializer_keeps_final_disposition_harness_owned ... ok
+test evidence_relevance::tests::binding_schema_has_no_final_disposition_or_authority_fields ... ok
+test evidence_relevance::tests::binding_affirmative_difference_materializes_irrelevant ... ok
+test evidence_relevance::tests::binding_unresolved_materializes_ambiguous ... ok
+test evidence_relevance::tests::harness_alias_anchor_and_model_relevance_can_remain_eligible ... ok
+test evidence_relevance::tests::model_irrelevant_is_typed_without_creating_admission_authority ... ok
+test evidence_relevance::tests::harness_owned_cross_lingual_alias_can_anchor_identity ... ok
+test evidence_relevance::tests::navigation_or_footer_identity_signal_does_not_anchor_target ... ok
+test evidence_relevance::tests::negative_target_confirmation_schema_has_no_final_relevance_fields ... ok
+test evidence_relevance::tests::negative_target_confirmation_parser_rejects_extra_authority ... ok
+test evidence_relevance::tests::model_request_marks_candidate_text_as_untrusted_data ... ok
+test evidence_relevance::tests::non_ascii_identity_matching_preserves_localized_substring_behavior ... ok
+test evidence_relevance::tests::no_model_proposal_is_typed_ambiguous_not_implicit_relevant ... ok
+test evidence_relevance::tests::parser_rejects_authority_laundering_fields ... ok
+test evidence_relevance::tests::proposal_schema_excludes_authority_and_target_fields ... ok
+test evidence_relevance::tests::semantic_equivalent_policy_allows_non_lexical_model_relevance ... ok
+test evidence_relevance::tests::strict_identity_allows_safe_model_rejection_without_anchor ... ok
+test evidence_relevance::tests::strict_identity_requires_harness_owned_entity ... ok
+test evidence_relevance::tests::strict_identity_blocks_model_relevant_without_harness_anchor ... ok
+test evidence_relevance::tests::url_only_identity_signal_does_not_self_authorize_relevance ... ok
+test evidence_relevance::tests::v10_blocker_remains_fail_closed_even_with_positive_confirmation ... ok
+test evidence_relevance::tests::v10_exact_exact_conflicting_negative_confirmation_abstains ... ok
+test evidence_relevance::tests::v10_safety_decision_parsers_are_typed_and_reject_extra_fields ... ok
+test evidence_relevance::tests::v10_primary_negative_requires_matching_one_sided_confirmation ... ok
+test evidence_relevance::tests::v10_positive_confirmation_can_rescue_unresolved_primary_without_relaxing_identity_floor ... ok
+test evidence_relevance::tests::v10_safety_decision_requests_use_small_structured_contracts ... ok
+test evidence_relevance::tests::v11_unresolved_primary_positive_cannot_be_rescued ... ok
+test evidence_relevance::tests::v13_binding_request_separates_target_identity_from_relation_kind ... ok
+test evidence_relevance::tests::v12_local_qualification_request_uses_concrete_local_risk_semantics ... ok
+test evidence_relevance::tests::v13_local_qualification_uses_binary_observable_blocking_cues ... ok
+test evidence_relevance::tests::v14_compact_guard_schema_has_only_blocker_and_explicit_absence ... ok
+test evidence_relevance::tests::v14_binding_request_allows_semantic_equivalent_only_when_policy_allows_it ... ok
+test evidence_relevance::tests::v14_compact_guard_prompt_distinguishes_negative_evidence_from_blockers ... ok
+test evidence_relevance::tests::v16_local_scope_schema_is_orthogonal_and_closed ... ok
+test evidence_relevance::tests::v16_local_scope_prompt_has_no_final_disposition_authority ... ok
+test evidence_relevance::tests::v16_proposal_v5_prompt_preserves_identity_and_relation_boundaries ... ok
+test evidence_relevance::tests::v17_exact_proposal_raw_distinct_without_target_local_negative_abstains ... ok
+test evidence_relevance::tests::v17_context_only_target_mention_blocks_two_exact_model_outputs ... ok
+test evidence_relevance::tests::v17_context_only_target_mention_with_raw_distinct_is_irrelevant ... ok
+test evidence_relevance::tests::v17_context_only_canonical_does_not_hide_later_substantive_alias_support ... ok
+test evidence_relevance::tests::v17_target_owned_clause_before_comparison_remains_relevant ... ok
+test evidence_relevance::tests::v17_substantive_exact_target_positive_remains_relevant ... ok
+test evidence_relevance::tests::v17_unrelated_comparison_marker_does_not_poison_owned_target_support ... ok
+test evidence_relevance::tests::v18_repeated_sibling_subject_rejects_unresolved_primary_overbinding ... ok
+test evidence_relevance::tests::v18_generic_relation_phrase_is_not_a_sibling_subject ... ok
+test evidence_relevance::tests::v18_single_signal_near_sibling_stays_ambiguous ... ok
+test evidence_relevance::tests::v19_comparison_sibling_same_relation_keeps_requested_relation ... ok
+test evidence_relevance::tests::v18_partial_identity_split_across_signals_stays_ambiguous ... ok
+test evidence_relevance::tests::v18_semantic_equivalent_policy_does_not_use_sibling_rejection ... ok
+test evidence_relevance::tests::v19_context_only_alias_never_creates_positive_relevance ... ok
+test evidence_relevance::tests::v18_mapping_uncertainty_blocks_repeated_sibling_rejection ... ok
+test evidence_relevance::tests::v18_repeated_sibling_subject_rejects_two_exact_model_outputs ... ok
+test evidence_relevance::tests::v17_context_only_frames_never_create_positive_identity_authority ... ok
+test evidence_relevance::tests::v25_negative_relation_confirmation_parser_is_enum_only ... ok
+test evidence_relevance::tests::v18_url_only_identity_stays_ambiguous ... ok
+test evidence_relevance::tests::v19_single_signal_near_sibling_abstains_even_when_models_vote_distinct ... ok
+test evidence_relevance::tests::v25_negative_relation_confirmation_request_is_one_sided_text ... ok
+test evidence_relevance::tests::v19_url_only_unnamed_owner_is_context_gap ... ok
+test evidence_relevance::tests::v19_repeated_authorized_alias_recovers_positive_identity_disagreement ... ok
+test evidence_relevance::tests::v19_context_only_repeated_sibling_with_explicit_relation_exclusion_rejects ... ok
+test evidence_relevance::tests::v25_confirmation_cannot_reject_through_context_gap ... ok
+test evidence_relevance::tests::v26_availability_support_with_geography_remains_requested ... ok
+test evidence_relevance::tests::v26_context_gap_remains_ambiguous ... ok
+test evidence_relevance::tests::v26_distinct_target_cannot_use_exact_target_negative_relation_path ... ok
+test evidence_relevance::tests::v25_confirmation_cannot_override_requested_relation_authority ... ok
+test evidence_relevance::tests::v26_target_title_plus_other_entity_body_cannot_supply_negative_relation_authority ... ok
+test evidence_relevance::tests::v25_confirmation_cannot_turn_generic_absence_into_different_relation ... ok
+test evidence_relevance::tests::v25_not_confirmed_preserves_baseline_ambiguity ... ok
+test evidence_relevance::tests::v26_availability_feature_support_recovers_irrelevant ... ok
+test evidence_relevance::tests::v26_comparison_only_target_mention_cannot_supply_negative_relation_authority ... ok
+test evidence_relevance::tests::v28_comparison_only_definition_does_not_create_relation_authority ... ok
+test evidence_relevance::tests::v26_exact_target_limit_observation_recovers_irrelevant_without_model_vote ... ok
+test evidence_relevance::tests::v26_requested_limit_frame_remains_requested_relation ... ok
+test evidence_relevance::tests::v26_instruction_like_numeric_payload_is_not_relation_authority ... ok
+test evidence_relevance::tests::v28_distinct_target_definition_cannot_use_exact_target_negative_relation_path ... ok
+test evidence_relevance::tests::v25_two_key_exact_target_limit_observation_recovers_irrelevant ... ok
+test evidence_relevance::tests::v28_strict_requested_relation_absence_blocks_definition_recovery ... ok
+test evidence_relevance::tests::v28_clean_other_relation_segment_survives_separate_instruction_segment ... ok
+test evidence_relevance::tests::v28_instruction_only_model_negative_is_downgraded_to_ambiguous ... ok
+test evidence_relevance::tests::v28_defined_as_is_bounded_other_relation_evidence_for_launch_query ... ok
+test evidence_relevance::tests::v28_control_schema_instruction_only_model_negative_is_downgraded_to_ambiguous ... ok
+test evidence_relevance::tests::v28_control_schema_marker_does_not_erase_harness_requested_relation_authority ... ok
+test evidence_relevance::tests::v30_accepts_target_owned_has_made_generally_available_launch_frame ... ok
+test evidence_relevance::tests::v3_exact_target_different_relation_is_irrelevant ... ok
+test evidence_relevance::tests::v3_unresolved_target_dominates_relation_different ... ok
+test evidence_relevance::tests::v4_confirmed_distinct_entity_materializes_irrelevant ... ok
+test evidence_relevance::tests::v4_confirmed_target_absent_materializes_irrelevant ... ok
+test evidence_relevance::tests::v4_exact_target_relation_difference_remains_irrelevant_without_confirmation ... ok
+test evidence_relevance::tests::v4_missing_negative_confirmation_fails_closed_to_ambiguous ... ok
+test evidence_relevance::tests::v4_unconfirmed_negative_target_abstains ... ok
+test evidence_relevance::tests::v5_exact_exact_requires_positive_target_local_confirmation ... ok
+test evidence_relevance::tests::v5_exact_target_relation_difference_remains_irrelevant_without_confirmation ... ok
+test evidence_relevance::tests::v5_unresolved_target_not_confirmed_abstains ... ok
+test evidence_relevance::tests::v5_unresolved_target_requires_negative_confirmation_and_can_confirm_local_absence ... ok
+test evidence_relevance::tests::v28_instruction_marker_does_not_erase_harness_requested_relation_authority ... ok
+test evidence_relevance::tests::v6_model_cannot_bypass_required_harness_identity_anchor ... ok
+test evidence_relevance::tests::v6_negative_safety_decision_rejects_or_abstains_without_identity_promotion ... ok
+test evidence_relevance::tests::v6_positive_safety_decision_accepts_clear_local_binding_and_abstains_on_uncertainty ... ok
+test evidence_relevance::tests::v7_any_qualification_risk_forces_ambiguous ... ok
+test evidence_relevance::tests::v7_clear_other_target_requires_two_key_negative_agreement ... ok
+test evidence_relevance::tests::v7_explicit_local_absence_can_reject_cautious_unresolved_primary ... ok
+test evidence_relevance::tests::v7_positive_requires_primary_guard_agreement_and_harness_anchor ... ok
+test evidence_relevance::tests::v7_relation_disagreement_cannot_hard_reject_positive_evidence ... ok
+test evidence_relevance::tests::v7_url_only_identity_is_a_harness_owned_hard_floor ... ok
+test evidence_relevance::tests::v8_any_observable_blocking_cue_forces_ambiguous ... ok
+test evidence_relevance::tests::v8_exact_target_other_relation_requires_two_key_relation_rejection ... ok
+test evidence_relevance::tests::v8_explicit_local_absence_is_negative_evidence_not_context_gap ... ok
+test evidence_relevance::tests::v8_missing_qualification_remains_ambiguous ... ok
+test evidence_relevance::tests::v8_sibling_same_relation_requires_two_key_negative_agreement ... ok
+test evidence_relevance::tests::v9_compact_guard_blocker_forces_ambiguous ... ok
+test evidence_relevance::tests::v9_confirmation_parsers_are_enum_only_without_semantic_repair ... ok
+test evidence_relevance::tests::v9_confirmation_requests_use_text_transport ... ok
+test evidence_relevance::tests::v9_different_target_is_irrelevant_without_redundant_support_vote ... ok
+test evidence_relevance::tests::v9_exact_exact_conflicting_with_explicit_absence_fails_closed ... ok
+test evidence_relevance::tests::v9_explicit_local_absence_rejects_unresolved_target_without_context_blocker ... ok
+test evidence_relevance::tests::v9_explicit_requested_relation_absence_can_reject_exact_target_unresolved_relation ... ok
+test evidence_relevance::tests::v9_semantic_equivalent_policy_is_not_blocked_by_incidental_url_only_anchor ... ok
+test evidence_relevance::tests::v9_strict_identity_still_blocks_unanchored_exact_exact ... ok
+test evidence_relevance::tests::zero_assessment_budget_is_rejected ... ok
+test finalization::tests::canonical_verified_target_recovery_rejects_key_drift_and_unknown_verdict ... ok
+test finalization::tests::canonical_verified_target_recovery_deduplicates_exact_targets ... ok
+test finalization::tests::canonical_verified_target_recovery_requires_every_requested_target ... ok
+test finalization::tests::canonical_verified_target_recovery_uses_exact_authorized_targets ... ok
+test finalization::tests::exposed_qualified_text_preserves_uncertainty_mode ... ok
+test finalization::tests::exposed_grounded_text_is_canonicalized_from_verified_claims ... ok
+test finalization::tests::grounded_claim_requires_supported_artifact_proposition ... ok
+test finalization::tests::reject_target_partial_fails_closed_on_causal_coupling ... ok
+test finalization::tests::reject_target_partial_exposes_directly_verified_target_when_blocker_is_structurally_unrelated ... ok
+test finalization::tests::reject_target_partial_fails_closed_on_same_key_blocker ... ok
+test finalization::tests::reject_target_partial_fails_closed_on_shared_dependency ... ok
+test finalization::tests::reject_target_partial_fails_closed_on_target_contradiction ... ok
+test finalization::tests::reject_target_partial_fails_closed_on_target_qualification_failure ... ok
+test finalization::tests::reject_target_partial_fails_closed_when_target_and_blocker_share_evidence ... ok
+test finalization::tests::reject_target_partial_requires_direct_supported_verification ... ok
+test finalization::tests::reject_target_partial_requires_evidence_bound_direct_verification ... ok
+test finalization::tests::reject_target_partial_requires_typed_non_target_blockers ... ok
+test finalization::tests::renderer_cannot_introduce_a_new_grounded_fact ... ok
+test finalization::tests::renderer_downgrade_recovery_grounds_exact_authorized_target_under_unknown ... ok
+test finalization::tests::renderer_downgrade_recovery_never_overrides_reject_or_target_qualification ... ok
+test finalization::tests::renderer_downgrade_recovery_promotes_accept_rendering_only_from_artifact_authority ... ok
+test finalization::tests::renderer_downgrade_recovery_rejects_fuzzy_or_unrequested_renderer_claims ... ok
+test finalization::tests::target_scoped_partial_fails_closed_on_target_qualification_finding ... ok
+test finalization::tests::target_scoped_partial_fails_closed_when_requested_target_itself_is_unresolved ... ok
+test finalization::tests::target_scoped_partial_never_overrides_reject ... ok
+test finalization::tests::target_scoped_partial_preserves_verified_target_without_changing_unknown_verdict ... ok
+test finalization::tests::target_scoped_partial_rejects_mixed_authority_for_the_same_exact_target ... ok
+test finalization::tests::target_scoped_partial_requires_an_actual_non_target_blocker ... ok
+test finalization::tests::unknown_can_render_only_as_qualified_uncertainty ... ok
+test frameworks::five_whys::tests::cleanup_does_not_downgrade_independently_supported_claim ... ok
+test frameworks::five_whys::tests::cleanup_is_local_to_the_offending_edge ... ok
+test frameworks::five_whys::tests::cleanup_preserves_inferred_claim_with_surviving_non_five_whys_edge ... ok
+test frameworks::five_whys::tests::detects_timeout_restatement ... ok
+test frameworks::five_whys::tests::does_not_conflate_distinct_cause ... ok
+test generation::tests::final_answer_runtime_parser_remains_broad_when_factual_claims_are_omitted ... ok
+test evidence_relevance::tests::v28_clean_other_relation_segment_survives_separate_control_schema_instruction ... ok
+test generation::tests::final_answer_request_is_schema_constrained_and_non_authoritative ... ok
+test investigation::tests::action_request_exposes_typed_rejection_feedback_and_shape_rules ... ok
+test investigation::tests::action_request_schema_excludes_attempted_pair_but_keeps_untried_pair_and_stop ... ok
+test generation::tests::json_fallback_embeds_schema_and_uses_json_object_mode ... ok
+test investigation::tests::action_schema_structurally_discriminates_acquire_and_stop ... ok
+test investigation::tests::capability_selection_is_key_bounded ... ok
+test investigation::tests::duplicate_and_no_progress_actions_terminate_safely ... ok
+test investigation::tests::harness_does_not_auto_select_keyless_or_wildcard_pairs ... ok
+test investigation::tests::harness_does_not_override_ambiguous_action_selection ... ok
+test investigation::tests::harness_selects_only_a_unique_compatible_untried_pair ... ok
+test investigation::tests::action_request_schema_matches_current_runtime_pair_compatibility ... ok
+test investigation::tests::harness_unique_selection_requires_explicit_fact_key_binding ... ok
+test investigation::tests::invalid_shape_rejections_retain_exact_proposal_and_round ... ok
+test investigation::tests::no_result_can_reduce_selection_to_one_safe_follow_up ... ok
+test investigation::tests::no_result_continuation_reuses_trigger_round_without_new_planner_round ... ok
+test investigation::tests::no_result_followup_does_not_promote_keyless_or_wildcard_capabilities ... ok
+test investigation::tests::no_result_followup_does_not_trigger_for_other_typed_outcomes ... ok
+test investigation::tests::no_result_followup_executes_validated_action_without_extra_planner_call ... ok
+test investigation::tests::no_result_followup_is_available_at_round_boundary_before_new_round_terminalizes ... ok
+test investigation::tests::no_result_followup_requires_exactly_one_remaining_explicit_capability ... ok
+test investigation::tests::harness_owned_selection_priority_is_model_invisible ... ok
+test investigation::tests::no_result_followup_respects_terminal_budgets ... ok
+test investigation::tests::no_result_followup_stays_on_exact_target_despite_same_key_sibling ... ok
+test investigation::tests::plan_admission_keeps_canonical_missing_and_empty_expected_fact_keys_unchanged ... ok
+test investigation::tests::plan_admission_preserves_noncanonical_expected_fact_key_without_exact_selection ... ok
+test investigation::tests::plan_schema_is_closed_and_targets_remain_untrusted ... ok
+test investigation::tests::planner_cannot_select_unknown_or_write_capability ... ok
+test investigation::tests::precedence_excludes_keyless_wildcard_non_read_only_and_attempted_pairs ... ok
+test investigation::tests::precedence_falls_back_on_tie_or_missing_priority ... ok
+test investigation::tests::precedence_never_merges_same_key_sibling_targets ... ok
+test investigation::tests::plan_and_action_requests_keep_authority_outside_model_contract ... ok
+test investigation::tests::precedence_respects_terminal_and_action_budget_states ... ok
+test investigation::tests::non_shared_fact_families_keep_optional_plan_schema ... ok
+test investigation::tests::precedence_selects_unique_highest_priority_for_one_exact_target ... ok
+test investigation::tests::precedence_skip_diagnostic_reports_same_key_sibling_without_changing_selection ... ok
+test investigation::tests::precedence_then_no_result_uses_existing_exact_target_followup ... ok
+test investigation::tests::runtime_plan_parser_still_accepts_missing_expected_fact_key ... ok
+test investigation::tests::strict_plan_request_requires_and_names_exact_shared_key ... ok
+test investigation::tests::shared_exact_read_only_family_uses_required_exact_key_schema ... ok
+test investigation::tests::unconstrained_missing_capability_output_is_retained_then_rejected_fail_closed ... ok
+test model::tests::json_object_fallback_is_only_available_for_json_schema_requests ... ok
+test model::tests::json_object_fallback_preserves_request_semantics_and_budgets ... ok
+test investigation::tests::selection_priority_does_not_change_strict_plan_contract_or_request ... ok
+test model::tests::strict_json_text_fallback_is_only_available_for_json_schema_requests ... ok
+test investigation::tests::strict_plan_schema_generation_does_not_change_action_schema ... ok
+test model::tests::strict_json_text_fallback_preserves_schema_semantics_without_provider_json_mode ... ok
+test reasoning_policy::tests::direct_policy_input_fails_closed_on_invalid_identity_authority_and_scope ... ok
+test reasoning_policy::tests::policy_composition_is_restrictive_for_authority_scope_capabilities_and_resolvers ... ok
+test reasoning_policy::tests::resolution_policy_is_only_tightened ... ok
+test reasoning_policy::tests::soft_finding_can_trigger_work_but_never_authority ... ok
+test reasoning_policy::tests::invalidation_propagates_through_inference_dependencies ... ok
+test reasoning_policy::tests::supported_state_without_reconstructable_receipt_is_invalidated_on_policy_transition ... ok
+test reasoning_policy::tests::stricter_authority_invalidates_receipt_claim_and_grounded_finalization_without_mutating_old_snapshot ... ok
+test reasoning_policy::tests::temporal_and_scope_policy_changes_requalify_existing_evidence ... ok
+test resolution::tests::acquired_evidence_is_untrusted_by_default ... ok
+test resolution::tests::admission_policy_may_add_metadata_but_cannot_rewrite_acquired_facts ... ok
+test resolution::tests::admitted_evidence_is_reverified_before_resolution_succeeds ... ok
+test resolution::tests::budget_exhaustion_is_not_evidence ... ok
+test resolution::tests::already_supported_harness_target_is_not_requested_again ... ok
+test resolution::tests::harness_owned_target_precedes_unrelated_candidate_resolution ... ok
+test resolution::tests::harness_owned_requirement_target_closes_even_when_candidate_omits_it ... ok
+test resolution::tests::final_renderer_new_fact_is_routed_back_through_verification ... ok
+test resolution::tests::human_review_is_an_explicit_terminal_state ... ok
+test resolution::tests::missing_allowed_resolver_terminates_unavailable_without_fabricating_support ... ok
+test resolution::tests::legacy_malformed_error_remains_exhaustible_for_frozen_resolution_fixtures ... ok
+test resolution::tests::per_request_attempt_budget_is_reported_separately ... ok
+test resolution::tests::revised_candidate_reenters_the_full_untrusted_pipeline ... ok
+test resolution::tests::trusted_verifier_uses_a_separate_authority_boundary ... ok
+test semantic_judge::tests::abstention_is_preserved_and_positive_abstention_reduces_recall ... ok
+test semantic_judge::tests::agreement_excludes_abstentions_without_erasing_them ... ok
+test semantic_judge::tests::ambiguous_abstention_rate_is_absent_when_corpus_has_no_ambiguous_cases ... ok
+test semantic_judge::tests::ambiguous_labels_do_not_enter_precision_or_recall ... ok
+test semantic_judge::tests::finding_contract_has_no_hard_authority_field ... ok
+test semantic_judge::tests::finish_reason_diagnostic_uses_bounded_classes ... ok
+test semantic_judge::tests::output_shape_diagnostic_is_content_free_and_distinguishes_common_wrappers ... ok
+test semantic_judge::tests::nominal_alpha_is_one_for_perfect_agreement_across_both_categories ... ok
+test source_attribution::tests::assessment_parser_rejects_binding_attribution_cardinality_mismatch ... ok
+test source_attribution::tests::assessment_parser_injects_exact_proposal_identity ... ok
+test source_attribution::tests::attribution_cannot_repair_missing_hard_verification ... ok
+test source_attribution::tests::attributed_materialization_never_mutates_external_world_claims ... ok
+test source_attribution::tests::bound_span_is_metamorphically_invariant_to_unbound_surrounding_text ... ok
+test resolution::tests::typed_external_failures_are_operational_terminals_not_semantic_unknown_classes ... ok
+test source_attribution::tests::current_causal_and_universal_scope_additions_are_blocked ... ok
+test source_attribution::tests::compatible_sources_retain_all_citations_in_one_qualified_sentence ... ok
+test source_attribution::tests::conflicting_sources_are_not_collapsed_into_one_assertion ... ok
+test source_attribution::tests::english_to_japanese_translation_modality_is_a_semantic_hard_gate ... ok
+test source_attribution::tests::exact_quote_is_harness_constructed ... ok
+test source_attribution::tests::english_to_japanese_translation_remains_source_local_and_uses_japanese_attribution ... ok
+test source_attribution::tests::exact_quote_parser_discards_model_authored_text ... ok
+test source_attribution::tests::hard_target_stays_on_existing_verification_path ... ok
+test source_attribution::tests::invented_exact_quote_is_rejected ... ok
+test source_attribution::tests::every_cited_binding_requires_independent_attribution_and_replay_revalidates_it ... ok
+test source_attribution::tests::missing_or_tampered_binding_fails_closed_before_exposure ... ok
+test source_attribution::tests::no_attributed_state_means_no_attributed_exposure ... ok
+test source_attribution::tests::only_mechanically_provable_strengthening_is_blocked_deterministically ... ok
+test source_attribution::tests::parser_injects_harness_owned_target_bindings_and_translation_output_language ... ok
+test source_attribution::tests::paraphrase_requires_exact_preserved_assessment ... ok
+test source_attribution::tests::parser_rejects_authority_injection ... ok
+test source_attribution::tests::sibling_target_binding_is_rejected ... ok
+test source_attribution::tests::source_id_and_span_tampering_fail_artifact_validation ... ok
+test source_attribution::tests::transform_assessment_must_match_exact_target_bindings_and_statement ... ok
+test source_attribution::tests::source_prompt_injection_is_inert_data_and_cannot_change_owned_schema ... ok
+test source_attribution::tests::transformed_claim_requires_full_atomic_source_support ... ok
+test source_attribution::tests::transformed_claim_requires_source_assertion_not_mention_or_instruction ... ok
+test source_attribution::tests::translated_availability_is_not_itself_a_current_state_marker ... ok
+test verification::tests::qualified_verifier_supports_only_qualified_evidence ... ok
+test verification::tests::qualified_verifier_withholds_conflicting_qualified_evidence ... ok
+test verification::tests::qualified_verifier_withholds_insufficient_authority ... ok
+test verification::tests::qualified_verifier_withholds_stale_evidence ... ok
+test verification::tests::same_key_opposite_value_cannot_bypass_qualification_requirement ... ok
+test verification::tests::structured_fact_verifier_contradicts_different_fact ... ok
+test verification::tests::structured_fact_verifier_supports_equal_fact ... ok
+test verification::tests::structured_verification_replaces_provider_prose_with_canonical_fact ... ok
+test evidence_relevance::tests::v30_does_not_promote_negated_has_not_made_generally_available ... ok
+test evidence_relevance::tests::v30_does_not_accept_question_fiction_or_unverified_rumor_as_launch_fact ... ok
+test evidence_relevance::tests::v30_launch_authority_never_borrows_sibling_predicate ... ok
+test evidence_relevance::tests::v30_launch_frames_require_target_and_established_fact ... ok
+test evidence_relevance::tests::v30_has_made_launch_frame_does_not_promote_other_negations_or_unrelated_clauses ... ok
+test evidence_relevance::tests::issue512_bilingual_lambda_preparation_requires_local_affirmative_source_frame ... ok
+test evidence_relevance::tests::v30_made_available_requires_target_owned_affirmative_predicate ... ok
+
+test result: ok. 330 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+     Running tests/assumption_benchmark.rs (/private/tmp/engine073-validation-target/debug/deps/assumption_benchmark-1983966d51913298)
+
+running 1 test
+test assumption_fixture_suite_is_a_separate_deterministic_regression_baseline ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/benchmark.rs (/private/tmp/engine073-validation-target/debug/deps/benchmark-3eb177a09428190f)
+
+running 2 tests
+test detection_rates_ignore_findings_outside_labeled_cases ... ok
+test recorded_fixture_suite_is_a_stable_regression_baseline ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/bilingual_preparation_512.rs (/private/tmp/engine073-validation-target/debug/deps/bilingual_preparation_512-60084b939f41ba39)
+
+running 8 tests
+test previous_review_false_positives_do_not_supply_preparation_authority ... ok
+test japanese_preparation_bridge_preserves_historical_contracts ... ok
+test preparation_bridge_does_not_erase_unsupported_source_punctuation ... ok
+test preparation_bridge_does_not_expand_other_question_or_entity_contracts ... ok
+test preparation_bridge_preserves_signal_and_qualification_boundaries ... ok
+test preparation_bridge_requires_one_complete_lambda_owned_statement ... ok
+test preparation_bridge_preserves_governing_documentary_context ... ok
+test preparation_bridge_preserves_enclosing_factual_context ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.94s
+
+     Running tests/candidate.rs (/private/tmp/engine073-validation-target/debug/deps/candidate-8361bbf66032a90b)
+
+running 3 tests
+test model_cannot_inject_evidence_into_harness_owned_input ... ok
+test model_cannot_promote_its_own_claim_to_supported ... ok
+test candidate_schema_does_not_allow_model_owned_evidence ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/causal_benchmark.rs (/private/tmp/engine073-validation-target/debug/deps/causal_benchmark-a25e65633a7b7bd4)
+
+running 1 test
+test causal_fixture_suite_is_a_separate_deterministic_regression_baseline ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/corpus_manifest.rs (/private/tmp/engine073-validation-target/debug/deps/corpus_manifest-06653a97a098f1d5)
+
+running 2 tests
+test public_corpus_manifest_is_provider_neutral_and_secret_free ... ok
+test corpus_v1_covers_every_primary_fixture_with_stable_identity ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/engine_0_6_1_launch_independent_v2.rs (/private/tmp/engine073-validation-target/debug/deps/engine_0_6_1_launch_independent_v2-03a99597f485ee6f)
+
+running 1 test
+test independently_fixed_launch_authority_matrix_v2 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+
+     Running tests/engine_0_7_dev_baseline_v1.rs (/private/tmp/engine073-validation-target/debug/deps/engine_0_7_dev_baseline_v1-fa6cc089fcd47645)
+
+running 2 tests
+test source_order_and_evidence_order_cannot_change_baseline_authority_decisions ... ok
+test engine_0_7_dev_baseline_is_measured_from_precommitted_0_6_1_spec ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/evidence_need_routing.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_need_routing-c4dd28fbb793e189)
+
+running 24 tests
+test ambiguous_kind_fails_closed_to_external_required ... ok
+test follow_up_mode_is_recomputed_not_sticky ... ok
+test disallowed_model_local_mode_cannot_abort_or_weaken_safe_baseline ... ok
+test current_state_requirement_cannot_be_satisfied_by_context_only ... ok
+test external_optional_keeps_acquisition_optional_when_local_support_is_sufficient ... ok
+test explicit_user_verification_intent_is_a_floor ... ok
+test external_world_kind_is_a_hard_floor_against_context_authority_laundering ... ok
+test deterministic_non_factual_task_skips_acquisition ... ok
+test context_only_requires_actual_supplied_context_and_target_sufficiency ... ok
+test decision_round_trip_preserves_replay_state_without_external_action ... ok
+test harness_can_explicitly_permit_bounded_context_downgrade ... ok
+test insufficient_or_unknown_context_escalates_local_modes ... ok
+test invalid_policy_cannot_make_disabled_context_mode_authoritative ... ok
+test mixed_targets_materialize_independently ... ok
+test model_cannot_downgrade_without_harness_permission ... ok
+test non_factual_kind_blocks_model_over_acquisition ... ok
+test partial_context_remains_typed_when_explicitly_sufficient_for_target ... ok
+test stale_existing_evidence_never_silently_satisfies_current_target ... ok
+test prompt_injection_in_context_is_data_not_policy ... ok
+test trusted_mode_reuses_only_trusted_satisfaction ... ok
+test trusted_verification_requirement_is_strictest_floor ... ok
+test unknown_or_wrong_target_proposals_fail_closed ... ok
+test valid_existing_evidence_is_reused_before_reacquisition ... ok
+test fresh_calibration_fixture_matches_deterministic_materialization ... ok
+
+test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/evidence_qualification_benchmark.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_qualification_benchmark-338f14c594303189)
+
+running 1 test
+test evidence_qualification_suite_is_a_separate_deterministic_regression_baseline ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_successor_v2.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_holdout_successor_v2-646ae93f360e5a70)
+
+running 2 tests
+test successor_v2_replays_holdout_v1_safely_without_rewriting_it ... ok
+test successor_v2_replays_v23_without_regression ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+
+     Running tests/evidence_relevance_holdout_successor_v3.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_holdout_successor_v3-79c45e97a679efbd)
+
+running 3 tests
+test successor_v3_replays_holdout_v2_to_full_exact_without_rewriting_it ... ok
+test successor_v3_replays_holdout_v1_without_safety_regression ... ok
+test successor_v3_replays_v23_without_regression ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.29s
+
+     Running tests/evidence_relevance_holdout_successor_v4.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_holdout_successor_v4-7c2043e8d364224d)
+
+running 4 tests
+test successor_v4_replays_holdout_v3a_to_full_exact_without_rewriting_it ... ok
+test successor_v4_replays_holdout_v2_to_full_exact_without_rewriting_it ... ok
+test successor_v4_replays_holdout_v1_without_safety_regression ... ok
+test successor_v4_replays_v23_without_regression ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.28s
+
+     Running tests/evidence_relevance_holdout_successor_v5.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_holdout_successor_v5-84bf4a4e71b4b988)
+
+running 4 tests
+test immutable_holdout_v4_failures_remain_recorded_in_the_replay ... ok
+test successor_v5_recovers_the_failed_two_provider_development_observation ... ok
+test successor_v5_replays_immutable_holdout_v4_observations_exactly_under_new_semantics ... ok
+test successor_v5_preserves_all_pre_v4_immutable_replay_surfaces ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.19s
+
+     Running tests/evidence_relevance_holdout_successor_v6.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_holdout_successor_v6-2e7b6749deccd79b)
+
+running 3 tests
+test holdout_v5_provenance_and_historical_groq_miss_remain_immutable ... ok
+test successor_v6_replays_converged_two_provider_development_observation ... ok
+test successor_v6_replays_v23_and_holdouts_v1_through_v5_exactly ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.05s
+
+     Running tests/evidence_relevance_holdout_successor_v7.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_holdout_successor_v7-552bb6c616387406)
+
+running 6 tests
+test holdout_v7_provenance_and_historical_groq_miss_remain_immutable ... ok
+test holdout_v5_provenance_and_historical_groq_miss_remain_immutable ... ok
+test successor_v7_replays_converged_two_provider_development_observation ... ok
+test successor_v7_replays_independent_development_v2_observation ... ok
+test successor_v7_replays_prior_successor_v6_development_observation ... ok
+test successor_v7_replays_v23_and_observed_holdouts_through_v7_exactly ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.89s
+
+     Running tests/evidence_relevance_holdout_v10.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_holdout_v10-a8601aae56481408)
+
+running 4 tests
+test holdout_v10_identity_and_distribution_are_frozen_preobservation ... ok
+test holdout_v10_preserves_frozen_non_frame_relation_contract_and_operational_budget ... ok
+test holdout_v10_has_no_exact_identity_or_surface_reuse_from_prior_observed_corpora ... ok
+test holdout_v10_expected_observations_are_exact_under_frozen_v11_v23_semantics ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+     Running tests/evidence_relevance_holdout_v11.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_holdout_v11-acc514cbb07d5c97)
+
+running 6 tests
+test holdout_v11_strict_absence_survives_adversarial_different_vote ... ok
+test holdout_v11_instruction_controls_resist_adversarial_model_different_votes ... ok
+test holdout_v11_manifest_is_fresh_and_precommitted ... ok
+test holdout_v11_requested_cues_recover_under_conservative_model_outputs ... ok
+test holdout_v11_negative_cues_recover_under_conservative_model_outputs ... ok
+test holdout_v11_expected_path_matches_v15_v28_contract ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+     Running tests/evidence_relevance_holdout_v12.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_holdout_v12-f414605e5cc46ae7)
+
+running 8 tests
+test holdout_v12_preserve_risk_cases_match_harness_deterministic_risk ... ok
+test holdout_v12_ownership_floor_and_relation_only_controls_are_separated ... ok
+test holdout_v12_strict_absence_survives_adversarial_different_vote ... ok
+test holdout_v12_manifest_is_fresh_and_precommitted ... ok
+test holdout_v12_instruction_controls_resist_adversarial_model_different_votes ... ok
+test holdout_v12_requested_cues_recover_under_conservative_model_outputs ... ok
+test holdout_v12_negative_cues_recover_under_conservative_model_outputs ... ok
+test holdout_v12_expected_path_matches_v17_v30_contract ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+
+     Running tests/evidence_relevance_holdout_v4.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_holdout_v4-17dd52106cffb5c0)
+
+running 2 tests
+test holdout_v4_identity_and_distribution_are_frozen_preobservation ... ok
+test holdout_v4_expected_observations_are_exact_under_frozen_v6_v19_semantics ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/evidence_relevance_holdout_v5.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_holdout_v5-4bbf9caabd7988a6)
+
+running 3 tests
+test holdout_v5_identity_and_distribution_are_frozen_preobservation ... ok
+test holdout_v5_has_no_exact_identity_or_surface_reuse_from_prior_observed_corpora ... ok
+test holdout_v5_expected_observations_are_exact_under_frozen_v7_v20_semantics ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/evidence_relevance_holdout_v6.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_holdout_v6-820246054db1012a)
+
+running 3 tests
+test holdout_v6_identity_and_distribution_are_frozen_preobservation ... ok
+test holdout_v6_has_no_exact_identity_or_surface_reuse_from_prior_observed_corpora ... ok
+test holdout_v6_expected_observations_are_exact_under_frozen_v8_v21_semantics ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+     Running tests/evidence_relevance_holdout_v7.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_holdout_v7-dc10b312a4112fcb)
+
+running 3 tests
+test holdout_v7_identity_and_distribution_are_frozen_preobservation ... ok
+test holdout_v7_has_no_exact_identity_or_surface_reuse_from_prior_observed_corpora ... ok
+test holdout_v7_expected_observations_are_exact_under_frozen_v8_v21_semantics ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+     Running tests/evidence_relevance_holdout_v8.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_holdout_v8-e1ceffee3be46387)
+
+running 3 tests
+test holdout_v8_identity_and_distribution_are_frozen_preobservation ... ok
+test holdout_v8_has_no_exact_identity_or_surface_reuse_from_prior_observed_corpora ... ok
+test holdout_v8_expected_observations_are_exact_under_frozen_v9_v22_semantics ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+     Running tests/evidence_relevance_holdout_v9.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_holdout_v9-48d5aaf27df3ba97)
+
+running 3 tests
+test holdout_v9_identity_and_distribution_are_frozen_preobservation ... ok
+test holdout_v9_has_no_exact_identity_or_surface_reuse_from_prior_observed_corpora ... ok
+test holdout_v9_expected_observations_are_exact_under_frozen_v11_v23_semantics ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+     Running tests/evidence_relevance_routing.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing-bad2f23f099ad59a)
+
+running 4 tests
+test calibration_contains_required_positive_negative_and_ambiguous_families ... ok
+test wrong_target_expected_cases_never_materialize_relevant ... ok
+test production_motivating_product_is_not_a_tuning_fixture ... ok
+test fresh_calibration_expected_proposals_materialize_deterministically ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v10.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v10-43d0174b1e7f7b84)
+
+running 5 tests
+test v10_exact_relation_mismatch_needs_no_safety_decision ... ok
+test v10_action_decisions_cover_reject_accept_and_abstain_paths ... ok
+test v10_contains_independent_fresh_action_safety_stress_set ... ok
+test v10_production_motivating_product_is_not_a_tuning_fixture ... ok
+test fresh_calibration_v10_expected_bindings_materialize_deterministically ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/evidence_relevance_routing_v11.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v11-647f2dffe0468a5c)
+
+running 5 tests
+test v11_every_ambiguous_case_has_unresolved_support_or_fail_closed_risk ... ok
+test v11_contains_nine_fresh_independent_stress_families ... ok
+test v11_qualification_surface_covers_support_risk_and_explicit_absence ... ok
+test v11_production_motivating_product_is_not_a_tuning_fixture ... ok
+test v11_expected_primary_and_guard_materialize_all_cases ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/evidence_relevance_routing_v12.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v12-6f3c2b6d06169151)
+
+running 5 tests
+test v12_qualification_surface_covers_support_risk_and_explicit_absence ... ok
+test v12_every_ambiguous_case_has_unresolved_support_or_fail_closed_risk ... ok
+test v12_contains_eight_fresh_concrete_risk_semantic_families ... ok
+test v12_production_motivating_product_is_not_a_tuning_fixture ... ok
+test v12_expected_primary_and_guard_materialize_all_cases ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/evidence_relevance_routing_v13.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v13-4103863818b17087)
+
+running 8 tests
+test v13_every_expected_blocking_cue_remains_fail_closed ... ok
+test v13_target_and_relation_axes_are_observably_orthogonal ... ok
+test v13_explicit_local_absence_is_not_implicitly_a_context_gap ... ok
+test v13_contains_eight_fresh_atomic_and_cue_families ... ok
+test v13_annotation_protocol_is_internally_consistent_before_observation ... ok
+test v13_qualification_surface_covers_binary_cues_and_explicit_absence ... ok
+test v13_production_motivating_product_is_not_a_tuning_fixture ... ok
+test v13_expected_primary_and_guard_materialize_all_cases ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/evidence_relevance_routing_v14.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v14-936b08df62f54307)
+
+running 8 tests
+test v14_target_and_relation_axes_remain_orthogonal ... ok
+test v14_explicit_local_absence_is_negative_not_a_blocker ... ok
+test v14_each_compact_blocker_label_has_an_isolated_control ... ok
+test v14_every_blocking_reason_is_fail_closed_to_ambiguous ... ok
+test v14_fixed_core_has_balanced_disposition_and_blocker_coverage ... ok
+test v14_fixed_core_identity_and_case_order_are_exact ... ok
+test v14_production_motivating_product_is_not_a_tuning_fixture ... ok
+test v14_expected_proposal_and_compact_guard_materialize_all_48_cases ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/evidence_relevance_routing_v15.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v15-baa7e5d026c29c4c)
+
+running 8 tests
+test v15_each_compact_blocker_label_has_an_isolated_control ... ok
+test v15_every_blocking_reason_is_fail_closed_to_ambiguous ... ok
+test v15_fixed_core_identity_and_case_order_are_exact ... ok
+test v15_target_and_relation_axes_remain_orthogonal ... ok
+test v15_fixed_core_has_balanced_disposition_and_blocker_coverage ... ok
+test v15_binding_confirmation_coverage_matches_fixed_core_roles ... ok
+test v15_production_motivating_product_is_not_a_tuning_fixture ... ok
+test v15_expected_proposal_and_compact_guard_materialize_all_48_cases ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/evidence_relevance_routing_v16.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v16-d81405057218d1d9)
+
+running 9 tests
+test v16_any_scope_risk_is_fail_closed_to_ambiguous ... ok
+test v16_fixed_core_disposition_and_scope_coverage_are_exact ... ok
+test v16_target_and_relation_axes_remain_orthogonal ... ok
+test v16_local_absence_can_reject_without_positive_rescue_authority ... ok
+test v16_scope_risk_blocks_terminal_decisions_even_with_otherwise_exact_votes ... ok
+test v16_unresolved_primary_cannot_be_rescued_to_relevant ... ok
+test v16_fixed_core_identity_and_case_order_are_exact ... ok
+test v16_production_motivating_product_is_not_a_tuning_fixture ... ok
+test v16_expected_scope_annotations_materialize_all_48_cases ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/evidence_relevance_routing_v17.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v17-544ceadd9aa2fedf)
+
+running 11 tests
+test v17_scope_risk_blocks_terminal_decisions_even_with_otherwise_exact_votes ... ok
+test v17_semantic_equivalent_fallback_requires_exact_relation_no_risk_and_substantive_signal ... ok
+test v17_fixed_core_disposition_and_scope_coverage_are_exact ... ok
+test v17_target_and_relation_axes_remain_orthogonal ... ok
+test v17_any_scope_risk_is_fail_closed_to_ambiguous ... ok
+test v17_local_absence_can_reject_without_positive_rescue_authority ... ok
+test v17_fixed_core_identity_and_case_order_are_exact ... ok
+test v17_semantic_equivalent_fallback_is_policy_scoped_and_bounded ... ok
+test v17_production_motivating_product_is_not_a_tuning_fixture ... ok
+test v17_unresolved_primary_cannot_be_rescued_to_relevant ... ok
+test v17_expected_scope_annotations_materialize_all_48_cases ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/evidence_relevance_routing_v18.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v18-fadf842b063bef62)
+
+running 17 tests
+test v18_local_absence_does_not_override_exact_positive_relation ... ok
+test v18_fixed_core_identity_and_case_order_are_exact ... ok
+test v18_fixed_core_disposition_and_scope_coverage_are_exact ... ok
+test v18_local_absence_can_override_anchor_only_target_when_relation_is_not_exact ... ok
+test v18_local_absence_can_reject_without_positive_rescue_authority ... ok
+test v18_any_scope_risk_is_fail_closed_to_ambiguous ... ok
+test v18_deterministic_floor_blocks_false_local_absence_and_false_positive_terminal_votes ... ok
+test v18_production_motivating_product_is_not_a_tuning_fixture ... ok
+test v18_semantic_equivalent_fallback_is_policy_scoped_and_bounded ... ok
+test v18_relation_negative_can_reject_when_verifier_identity_is_also_negative ... ok
+test v18_scope_risk_blocks_terminal_decisions_even_with_otherwise_exact_votes ... ok
+test v18_semantic_equivalent_fallback_requires_exact_relation_no_risk_and_substantive_signal ... ok
+test v18_target_and_relation_axes_remain_orthogonal ... ok
+test v18_unresolved_primary_cannot_be_rescued_to_relevant ... ok
+test v18_verifier_prompt_preserves_orthogonality_injection_and_omission_boundaries ... ok
+test v18_deterministic_scope_floor_matches_fixed_risk_partition ... ok
+test v18_expected_scope_annotations_materialize_all_48_cases ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/evidence_relevance_routing_v19.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v19-d3e82b2570272a74)
+
+running 12 tests
+test v19_property_effective_identity_never_guesses_through_local_risk ... ok
+test v19_property_risk_classifier_is_name_invariant ... ok
+test v19_property_target_negative_rule_is_generic_and_fail_closed ... ok
+test v19_deterministic_risk_cannot_be_overridden_by_model_none ... ok
+test v19_target_negative_rule_accepts_unresolved_primary_only_for_distinct_target_no_risk ... ok
+test v19_raw_spurious_risk_stays_diagnostic_when_effective_positive_is_safe ... ok
+test v19_target_negative_rule_never_overrides_exact_primary_target ... ok
+test v19_inherits_the_frozen_v18_fixed_core_without_relabeling ... ok
+test v19_typed_deterministic_risk_matches_all_48_frozen_expectations ... ok
+test v19_effective_qualification_matches_all_48_frozen_expectations ... ok
+test v19_expected_effective_qualification_materializes_all_48_cases ... ok
+test v19_replays_immutable_v18_mistral_misses_to_zero_effective_qualification_misses ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/evidence_relevance_routing_v2.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v2-e7e3174a36b529bd)
+
+running 4 tests
+test calibration_contains_required_positive_negative_and_ambiguous_families ... ok
+test wrong_target_expected_cases_never_materialize_relevant ... ok
+test production_motivating_product_is_not_a_tuning_fixture ... ok
+test fresh_calibration_v2_expected_proposals_materialize_deterministically ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v20.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v20-c99e5f0fffcd5499)
+
+running 16 tests
+test v20_property_effective_identity_never_guesses_through_local_risk ... ok
+test v20_property_target_negative_rule_is_generic_and_fail_closed ... ok
+test v20_relation_negative_rule_accepts_independently_different_relation_only_fail_closed ... ok
+test v20_deterministic_risk_cannot_be_overridden_by_model_none ... ok
+test v20_property_risk_classifier_is_name_invariant ... ok
+test v20_relation_negative_rule_never_crosses_deterministic_context_gap ... ok
+test v20_raw_spurious_risk_stays_diagnostic_when_effective_positive_is_safe ... ok
+test v20_inherits_the_frozen_v18_fixed_core_without_relabeling ... ok
+test v20_target_negative_rule_accepts_unresolved_primary_only_for_distinct_target_no_risk ... ok
+test v20_target_negative_rule_never_overrides_exact_primary_target ... ok
+test v20_effective_qualification_matches_all_48_frozen_expectations ... ok
+test v20_typed_deterministic_risk_matches_all_48_frozen_expectations ... ok
+test v20_expected_effective_qualification_materializes_all_48_cases ... ok
+test v20_replays_immutable_v18_mistral_misses_to_zero_effective_qualification_misses ... ok
+test v20_google_case13_is_the_only_intended_v14_to_v15_disposition_change ... ok
+test v20_replays_immutable_v19_successful_observations_without_regression ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/evidence_relevance_routing_v21.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v21-bed95e642753aa34)
+
+running 20 tests
+test v21_property_risk_classifier_is_name_invariant ... ok
+test v21_property_effective_identity_never_guesses_through_local_risk ... ok
+test v21_raw_spurious_risk_stays_diagnostic_when_effective_positive_is_safe ... ok
+test v21_deterministic_risk_cannot_be_overridden_by_model_none ... ok
+test v21_property_target_negative_rule_is_generic_and_fail_closed ... ok
+test v21_inherits_the_frozen_v18_fixed_core_without_relabeling ... ok
+test v21_relation_conflict_does_not_override_deterministic_requested_relation ... ok
+test v21_relation_conflict_requires_strict_local_identity_anchor ... ok
+test v21_relation_negative_rule_never_crosses_deterministic_context_gap ... ok
+test v21_target_negative_rule_accepts_unresolved_primary_only_for_distinct_target_no_risk ... ok
+test v21_relation_negative_rule_accepts_independently_different_relation_only_fail_closed ... ok
+test v21_target_negative_rule_never_overrides_exact_primary_target ... ok
+test v21_typed_deterministic_risk_matches_all_48_frozen_expectations ... ok
+test v21_effective_qualification_matches_all_48_frozen_expectations ... ok
+test v21_expected_effective_qualification_materializes_all_48_cases ... ok
+test v21_google_case13_is_the_only_intended_v14_to_v15_disposition_change ... ok
+test v21_groq_case13_is_the_only_intended_v20_terminal_change ... ok
+test v21_replays_immutable_v18_mistral_misses_to_zero_effective_qualification_misses ... ok
+test v21_replays_immutable_v19_successful_observations_without_regression ... ok
+test v21_replays_immutable_v20_successful_observations_under_authority_gate ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+
+     Running tests/evidence_relevance_routing_v22.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v22-2e4fb46fac68c532)
+
+running 3 tests
+test v22_reuses_v21_semantic_contract_and_fixed_core ... ok
+test v22_is_semantically_identical_to_frozen_v21_cases ... ok
+test v22_expected_cases_remain_exact_under_v21_semantics ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/evidence_relevance_routing_v23.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v23-fa25529d8184c4c5)
+
+running 4 tests
+test v23_uses_effective_qualification_v3_and_fixed_core_v1 ... ok
+test v23_keeps_the_frozen_v22_case_surface ... ok
+test v23_expected_cases_remain_exact_under_v3_semantics ... ok
+test v23_replays_all_v22_provider_observations_to_required_exactness ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+
+     Running tests/evidence_relevance_routing_v3.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v3-e27ee8279ce86d6b)
+
+running 4 tests
+test calibration_contains_required_positive_negative_and_ambiguous_families ... ok
+test wrong_target_expected_cases_never_materialize_relevant ... ok
+test production_motivating_product_is_not_a_tuning_fixture ... ok
+test fresh_calibration_v3_expected_bindings_materialize_deterministically ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v4.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v4-9ed7ee96543202c6)
+
+running 4 tests
+test calibration_contains_required_positive_negative_and_ambiguous_families ... ok
+test wrong_target_expected_cases_never_materialize_relevant ... ok
+test production_motivating_product_is_not_a_tuning_fixture ... ok
+test fresh_calibration_v4_expected_bindings_materialize_deterministically ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v5.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v5-490e531a0ad01e1e)
+
+running 4 tests
+test calibration_contains_required_positive_negative_and_ambiguous_families ... ok
+test wrong_target_expected_cases_never_materialize_relevant ... ok
+test production_motivating_product_is_not_a_tuning_fixture ... ok
+test fresh_calibration_v5_expected_bindings_materialize_deterministically ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v6.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v6-76ebff8a069ed3a4)
+
+running 4 tests
+test calibration_contains_required_positive_negative_and_ambiguous_families ... ok
+test wrong_target_expected_cases_never_materialize_relevant ... ok
+test production_motivating_product_is_not_a_tuning_fixture ... ok
+test fresh_calibration_v6_expected_bindings_materialize_deterministically ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v7.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v7-9a8b6282557b8fb6)
+
+running 4 tests
+test calibration_contains_required_positive_negative_and_ambiguous_families ... ok
+test wrong_target_expected_cases_never_materialize_relevant ... ok
+test production_motivating_product_is_not_a_tuning_fixture ... ok
+test fresh_calibration_v7_expected_bindings_materialize_deterministically ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v8.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v8-0f620ce6e282e098)
+
+running 5 tests
+test calibration_contains_required_positive_negative_and_ambiguous_families ... ok
+test successor_adds_fresh_negative_confirmation_cases ... ok
+test wrong_target_expected_cases_never_materialize_relevant ... ok
+test production_motivating_product_is_not_a_tuning_fixture ... ok
+test fresh_calibration_v8_expected_bindings_materialize_deterministically ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v9.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_routing_v9-956f46998d027ca2)
+
+running 5 tests
+test v9_exact_relation_mismatch_needs_no_confirmation ... ok
+test v9_confirmation_subtypes_cover_safe_negative_and_abstention_paths ... ok
+test v9_contains_independent_fresh_identity_stress_set ... ok
+test v9_production_motivating_product_is_not_a_tuning_fixture ... ok
+test fresh_calibration_v9_expected_bindings_materialize_deterministically ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/evidence_relevance_successor_v10_development.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v10_development-f6404d48df2f7738)
+
+running 2 tests
+test successor_v10_manifest_is_fresh_balanced_and_bound_to_issue_468 ... ok
+test successor_v10_two_key_composition_is_monotone_on_fresh_surface ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+     Running tests/evidence_relevance_successor_v10_development_v2.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v10_development_v2-d60e3db12fa531a0)
+
+running 4 tests
+test successor_v10_v2_manifest_is_fresh_and_precommitted ... ok
+test successor_v10_v2_harness_owned_cue_is_monotone_on_fresh_surface ... ok
+test successor_v10_v2_replays_frozen_expected_contracts_without_change ... ok
+test successor_v10_v2_historical_v10_observations_fix_only_the_known_terminal_miss ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.94s
+
+     Running tests/evidence_relevance_successor_v10_development_v3.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v10_development_v3-2c61bdbc4de3089c)
+
+running 2 tests
+test successor_v10_v3_manifest_is_fresh_and_precommitted ... ok
+test successor_v10_v3_expected_path_matches_v14_v27_contract ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+     Running tests/evidence_relevance_successor_v10_development_v4.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v10_development_v4-a7e73216450a8741)
+
+running 5 tests
+test successor_v10_v4_context_gap_blocks_direct_definition_recovery ... ok
+test successor_v10_v4_manifest_is_fresh_and_precommitted ... ok
+test successor_v10_v4_instruction_controls_resist_adversarial_model_different_votes ... ok
+test successor_v10_v4_harness_cues_recover_under_conservative_model_outputs ... ok
+test successor_v10_v4_expected_path_matches_v15_v28_contract ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+     Running tests/evidence_relevance_successor_v10_materialization_v27_replay.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v10_materialization_v27_replay-904ebf074cb19401)
+
+running 3 tests
+test v27_immutable_v2_replay_fixes_only_mistral_composition_miss ... ok
+test v27_preserves_frozen_expected_contracts ... ok
+test v27_canonical_holdout_v10_replay_fixes_only_known_groq_miss ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.93s
+
+     Running tests/evidence_relevance_successor_v10_materialization_v28_replay.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v10_materialization_v28_replay-e9ccf541e4de6d44)
+
+running 5 tests
+test v28_v3_google_partial_replay_fixes_only_definition_gap ... ok
+test v28_immutable_v3_mistral_replay_fixes_exactly_both_observed_misses ... ok
+test v28_immutable_v2_replay_keeps_only_the_v27_composition_fix ... ok
+test v28_preserves_all_precommitted_expected_contracts ... ok
+test v28_canonical_holdout_v10_replay_changes_only_known_groq_miss ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.96s
+
+     Running tests/evidence_relevance_successor_v11_development.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v11_development-22e3a176552b756e)
+
+running 5 tests
+test successor_v11_strict_absence_survives_adversarial_model_different_votes ... ok
+test successor_v11_manifest_is_fresh_and_precommitted ... ok
+test successor_v11_harness_cues_recover_under_conservative_model_outputs ... ok
+test successor_v11_generic_controls_resist_adversarial_model_different_votes ... ok
+test successor_v11_expected_path_matches_v16_v29_contract ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+
+     Running tests/evidence_relevance_successor_v11_development_v2.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v11_development_v2-1fa86ca84b21e806)
+
+running 7 tests
+test successor_v11_v2_preserve_risk_cases_match_harness_deterministic_risk ... ok
+test successor_v11_v2_relation_only_context_gaps_keep_exact_identity ... ok
+test successor_v11_v2_ownership_gaps_remove_exact_identity_under_adversarial_exact_votes ... ok
+test successor_v11_v2_manifest_is_fresh_and_precommitted ... ok
+test successor_v11_v2_true_alternate_relations_recover_under_conservative_votes ... ok
+test successor_v11_v2_generic_controls_resist_adversarial_different_votes ... ok
+test successor_v11_v2_expected_path_matches_v17_v30_contract ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+     Running tests/evidence_relevance_successor_v11_materialization_v29_replay.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v11_materialization_v29_replay-571780f29626a9e4)
+
+running 4 tests
+test v16_keeps_harness_owned_true_different_relation_cases_negative ... ok
+test v29_holdout_v11_replay_repairs_terminal_miss_without_new_terminal_changes ... ok
+test v29_preserves_precommitted_successor_contracts ... ok
+test v29_replays_all_recent_immutable_provider_observations_to_frozen_terminal_contracts ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.05s
+
+     Running tests/evidence_relevance_successor_v11_materialization_v30_replay.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v11_materialization_v30_replay-36a683414b1c3553)
+
+running 3 tests
+test v17_does_not_downgrade_relation_only_context_gaps ... ok
+test v30_development_v1_live_replay_repairs_only_explicit_ownership_identity_gap ... ok
+test v30_replays_recent_immutable_provider_observations_to_frozen_terminal_contracts ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.98s
+
+     Running tests/evidence_relevance_successor_v5_controls.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v5_controls-80ddb1bc38ace49b)
+
+running 8 tests
+test navigation_only_target_cannot_override_repeated_sibling_ownership ... ok
+test truncated_context_cannot_be_promoted_to_relation_absence ... ok
+test ordinary_exact_target_requested_relation_stays_relevant ... ok
+test generic_catalog_wording_does_not_reject_an_exact_target_fact ... ok
+test explicit_separation_plus_repeated_sibling_is_negative_identity_authority ... ok
+test explicit_target_local_absence_can_reject_positive_proposal_when_qualifier_confirms_absence ... ok
+test explicit_absence_does_not_force_rejection_when_both_advisory_stages_are_positive ... ok
+test non_owning_target_context_with_single_near_subject_still_abstains ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/evidence_relevance_successor_v6_controls.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v6_controls-26465a6551690ea8)
+
+running 17 tests
+test prompt_instruction_is_inert_for_absence_authority ... ok
+test navigation_target_plus_repeated_sibling_remains_irrelevant ... ok
+test exact_positive_target_relation_remains_relevant ... ok
+test explicit_truncation_blocks_forced_negative ... ok
+test contradictory_positive_fact_in_same_signal_blocks_forced_negative ... ok
+test named_target_absence_overrides_positive_advisory_votes ... ok
+test broader_relation_synonym_positive_fact_blocks_forced_negative_materialization ... ok
+test contradictory_positive_fact_blocks_forced_negative_materialization ... ok
+test target_specific_relation_absence_gets_v8_relation_authority ... ok
+test prompt_instruction_cannot_create_absence_authority ... ok
+test signal_order_does_not_change_absence_disposition ... ok
+test prompt_instruction_with_target_relation_words_is_inert ... ok
+test uncertain_rename_mapping_remains_ambiguous ... ok
+test broad_generic_catalog_absence_is_not_new_v21_negative_authority ... ok
+test unresolved_shared_row_ownership_remains_ambiguous ... ok
+test unrelated_inert_text_does_not_change_absence_disposition ... ok
+test url_navigation_single_near_sibling_remains_ambiguous ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/evidence_relevance_successor_v7_controls.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v7_controls-37801a696186e4af)
+
+running 6 tests
+test content_bearing_target_anchor_is_not_downgraded ... ok
+test explicit_distinct_identity_evidence_is_not_weakened ... ok
+test missing_target_single_near_sibling_uses_the_same_identity_floor ... ok
+test navigation_only_single_near_sibling_uses_the_same_identity_floor ... ok
+test url_only_single_near_sibling_identity_floor_is_relation_orthogonal ... ok
+test identity_floor_changes_only_identity_and_preserves_v8_relation_and_risk ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/evidence_relevance_successor_v7_development.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v7_development-df99d1cc8a7c75cd)
+
+running 2 tests
+test successor_v7_development_has_no_exact_identity_or_surface_reuse ... ok
+test successor_v7_development_labels_are_self_consistent ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/evidence_relevance_successor_v8_development.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v8_development-f2d70ea8bca509b3)
+
+running 5 tests
+test successor_v8_development_metadata_and_distribution_are_fixed_before_live_observation ... ok
+test successor_v8_development_expected_inputs_remain_stable_under_v11_authority_floor ... ok
+test successor_v8_development_has_zero_exact_identity_task_signal_or_8token_reuse ... ok
+test successor_v8_development_is_exact_under_v10_with_frozen_v22_materialization ... ok
+test successor_v11_replays_v10_development_failure_as_relation_authority_evidence ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s
+
+     Running tests/evidence_relevance_successor_v8_relation_controls.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v8_relation_controls-831e3030b9e7b3e9)
+
+running 4 tests
+test successor_v10_keeps_explicit_absence_and_instruction_text_authoritative ... ok
+test successor_v10_replays_the_v8_relation_only_failure_without_touching_identity ... ok
+test successor_v10_does_not_promote_superficially_similar_non_frames ... ok
+test successor_v10_recovers_fresh_compositional_paraphrases_across_coarse_relations ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/evidence_relevance_successor_v9_development.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v9_development-39647055e3c26a9e)
+
+running 4 tests
+test successor_v9_development_metadata_and_authority_modes_are_fixed_before_observation ... ok
+test successor_v9_development_is_surface_independent_from_prior_holdouts_and_development ... ok
+test successor_v9_development_expected_inputs_are_exact_under_v11_v23 ... ok
+test successor_v9_captured_live_observation_replays_under_v11_v23 ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.32s
+
+     Running tests/evidence_relevance_successor_v9_historical_replay.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v9_historical_replay-60a15e8a99861498)
+
+running 2 tests
+test successor_v11_replays_canonical_holdout_v8_without_rewriting_history ... ok
+test successor_v11_does_not_regress_prior_actual_relation_authority ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.35s
+
+     Running tests/evidence_relevance_successor_v9_relation_controls.rs (/private/tmp/engine073-validation-target/debug/deps/evidence_relevance_successor_v9_relation_controls-637a33d676855c5c)
+
+running 11 tests
+test successor_v11_preserves_identity_scope_risk_and_prompt_injection_inertness ... ok
+test successor_v11_preserves_unconflicted_historical_lexical_requested_relation ... ok
+test successor_v11_authority_is_relation_only_for_exact_and_distinct_identity ... ok
+test successor_v11_treats_general_availability_launch_language_as_a_cross_frame_conflict ... ok
+test successor_v23_does_not_turn_distinct_target_relation_disagreement_relevant ... ok
+test successor_v11_preserves_positive_semantic_frames_across_all_coarse_relations ... ok
+test successor_v11_distinguishes_relation_frames_from_surface_lookalikes ... ok
+test successor_v11_abstains_across_model_disagreement_combinations_without_harness_evidence ... ok
+test successor_v11_abstains_on_model_only_requested_relation_from_v10_development_failures ... ok
+test successor_v23_blocks_exact_target_model_only_relation_relevance ... ok
+test successor_v23_preserves_relevant_when_harness_relation_frame_is_present ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/five_whys.rs (/private/tmp/engine073-validation-target/debug/deps/five_whys-9b9cc4c9fa5db8c6)
+
+running 1 test
+test flags_a_circular_restatement ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/format_invariance.rs (/private/tmp/engine073-validation-target/debug/deps/format_invariance-692bdff49a95e3fe)
+
+running 6 tests
+test format_flip_rate_uses_only_matched_successful_pairs ... ok
+test isomorphic_representation_parsers_preserve_binding_and_fail_closed ... ok
+test v3_representation_is_byte_for_byte_the_runtime_primary_request ... ok
+test protocol_failure_retains_provider_usage_for_operational_measurement ... ok
+test representation_variants_change_only_output_format ... ok
+test every_calibration_fixture_builds_every_r1_representation_without_reading_holdouts ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/harness.rs (/private/tmp/engine073-validation-target/debug/deps/harness-bdf724b1cd737c58)
+
+running 3 tests
+test strict_policy_preserves_unknown_as_a_successful_outcome ... ok
+test validates_input_even_when_there_are_no_passes ... ok
+test model_proposed_contradiction_cannot_force_runtime_reject ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/investigation_intent_materialization.rs (/private/tmp/engine073-validation-target/debug/deps/investigation_intent_materialization-649c28ac11329a57)
+
+running 12 tests
+test legacy_action_contract_identity_remains_v1 ... ok
+test keyless_and_wildcard_compatibility_never_materialize ... ok
+test one_exact_untried_capability_materializes_without_priority ... ok
+test stop_intent_is_shape_checked_and_never_counts_as_materialization ... ok
+test no_result_followup_remains_existing_exact_target_fast_path ... ok
+test intent_and_legacy_action_model_calls_remain_separate_telemetry_axes ... ok
+test attempted_pair_reduces_to_one_exact_capability_and_terminal_budget_blocks_it ... ok
+test intent_refusal_is_typed_and_never_creates_an_action ... ok
+test same_key_siblings_remain_distinct_and_harness_owns_capability_id ... ok
+test missing_priority_tie_and_write_only_are_not_materializable ... ok
+test telemetry_wire_keeps_legacy_fields_and_adds_intent_identity_only ... ok
+test intent_schema_bounds_targets_and_never_exposes_capability_identity ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/investigation_plan_request_contract.rs (/private/tmp/engine073-validation-target/debug/deps/investigation_plan_request_contract-bafc07ea6f0756e8)
+
+running 5 tests
+test single_read_only_capability_keeps_legacy_prompt_and_schema_contract ... ok
+test strict_shared_exact_family_keeps_mandatory_exact_key_contract ... ok
+test runtime_parser_remains_broad_and_action_schema_is_unchanged_by_planning_path ... ok
+test selection_priority_is_model_invisible_on_both_request_paths ... ok
+test non_shared_capability_families_keep_legacy_request ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_520_521.rs (/private/tmp/engine073-validation-target/debug/deps/launch_context_markers_520_521-e3ea1e35be4f019d)
+
+running 16 tests
+test explicit_other_target_context_and_neutral_false_alarm_description ... ok
+test generic_disclaimer_wrappers_and_passage_references ... ok
+test historical_v29_dispositions_remain_unchanged_for_original_audit ... ok
+test post_v5_development_controls_bind_feature_denials_to_their_antecedent ... ok
+test governing_context_and_original_marker_boundaries ... ok
+test post_v3_development_controls_keep_unbound_pronouns_withheld ... ok
+test post_v4_development_controls_preserve_direct_objects_and_plural_context ... ok
+test post_v6_development_controls_and_generic_documentary_disclaimers ... ok
+test original_audit_56_cases_preserve_positives_and_withhold_40_regressions ... ok
+test published_072_retraction_residuals_are_seen_development_controls ... ok
+test post_v1_development_controls_preserve_factual_signal_floor ... ok
+test post_v7_development_controls_keep_foreign_frames_local_and_global_colons_denied ... ok
+test post_v2_development_controls_preserve_statement_scope ... ok
+test post_v8_development_controls_preserve_collective_denials_and_actor_adjuncts ... ok
+test post_v9_development_controls_withhold_unresolved_adverse_references ... ok
+test successor_retraction_and_non_event_contexts_preserve_scope ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.51s
+
+     Running tests/launch_context_markers_independent_v1.rs (/private/tmp/engine073-validation-target/debug/deps/launch_context_markers_independent_v1-7ea11d5bcc748fa2)
+
+running 1 test
+test fresh_independent_launch_context_markers_first_observation ... ignored, Historical v1 first observation is RED; do not rerun/rescore or overwrite it
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v10.rs (/private/tmp/engine073-validation-target/debug/deps/launch_context_markers_independent_v10-54ba9ccb07cfbf9a)
+
+running 1 test
+test independent_launch_context_markers_v10 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.53s
+
+     Running tests/launch_context_markers_independent_v2.rs (/private/tmp/engine073-validation-target/debug/deps/launch_context_markers_independent_v2-4ebee783f87c3f8c)
+
+running 1 test
+test independent_launch_context_markers_v2 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.83s
+
+     Running tests/launch_context_markers_independent_v3.rs (/private/tmp/engine073-validation-target/debug/deps/launch_context_markers_independent_v3-7b1697e4d727a875)
+
+running 1 test
+test independent_launch_context_markers_v3 ... ignored, Historical v3 first observation is RED; do not rerun/rescore or overwrite it
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v4.rs (/private/tmp/engine073-validation-target/debug/deps/launch_context_markers_independent_v4-32b2ecbe67879bba)
+
+running 1 test
+test independent_launch_context_markers_v4 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.52s
+
+     Running tests/launch_context_markers_independent_v5.rs (/private/tmp/engine073-validation-target/debug/deps/launch_context_markers_independent_v5-28736816f2c58694)
+
+running 1 test
+test independent_launch_context_markers_v5 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.50s
+
+     Running tests/launch_context_markers_independent_v6.rs (/private/tmp/engine073-validation-target/debug/deps/launch_context_markers_independent_v6-86372ebc5e6442c4)
+
+running 1 test
+test independent_launch_context_markers_v6 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.51s
+
+     Running tests/launch_context_markers_independent_v7.rs (/private/tmp/engine073-validation-target/debug/deps/launch_context_markers_independent_v7-c3deb3d1c5e68d65)
+
+running 1 test
+test independent_launch_context_markers_v7 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s
+
+     Running tests/launch_context_markers_independent_v8.rs (/private/tmp/engine073-validation-target/debug/deps/launch_context_markers_independent_v8-4c5e28b15939351c)
+
+running 1 test
+test independent_launch_context_markers_v8 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.51s
+
+     Running tests/launch_context_markers_independent_v9.rs (/private/tmp/engine073-validation-target/debug/deps/launch_context_markers_independent_v9-e616dcbdc651a045)
+
+running 1 test
+test independent_launch_context_markers_v9 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.50s
+
+     Running tests/launch_independent_514_515.rs (/private/tmp/engine073-validation-target/debug/deps/launch_independent_514_515-e23ceeddac847073)
+
+running 1 test
+test independently_authored_launch_source_controls ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.25s
+
+     Running tests/launch_independent_514_515_v2.rs (/private/tmp/engine073-validation-target/debug/deps/launch_independent_514_515_v2-dd7d9b825922d517)
+
+running 1 test
+test independently_authored_launch_source_controls_v2 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.37s
+
+     Running tests/launch_independent_514_515_v3.rs (/private/tmp/engine073-validation-target/debug/deps/launch_independent_514_515_v3-ea1593b26cd5f544)
+
+running 1 test
+test independently_authored_launch_source_controls_v3 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s
+
+     Running tests/launch_independent_514_515_v4.rs (/private/tmp/engine073-validation-target/debug/deps/launch_independent_514_515_v4-360f2129869b0679)
+
+running 1 test
+test independently_authored_launch_source_controls_v4 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.29s
+
+     Running tests/launch_independent_514_515_v5.rs (/private/tmp/engine073-validation-target/debug/deps/launch_independent_514_515_v5-fab7dcff694a4f10)
+
+running 1 test
+test independently_authored_launch_source_controls_v5 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.28s
+
+     Running tests/launch_independent_514_515_v6.rs (/private/tmp/engine073-validation-target/debug/deps/launch_independent_514_515_v6-567b0832ef44cf80)
+
+running 1 test
+test independently_authored_launch_source_controls_v6 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.35s
+
+     Running tests/launch_independent_514_515_v7.rs (/private/tmp/engine073-validation-target/debug/deps/launch_independent_514_515_v7-23960691a6de3620)
+
+running 1 test
+test independently_authored_launch_source_controls_v7 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.46s
+
+     Running tests/launch_independent_514_515_v8.rs (/private/tmp/engine073-validation-target/debug/deps/launch_independent_514_515_v8-bd552aec7b31b4a1)
+
+running 1 test
+test independently_authored_launch_source_controls_v8 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.45s
+
+     Running tests/launch_independent_514_515_v9.rs (/private/tmp/engine073-validation-target/debug/deps/launch_independent_514_515_v9-15d5173b3dabf1f5)
+
+running 1 test
+test independently_authored_launch_source_controls_v9 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.39s
+
+     Running tests/launch_source_frames_514_515.rs (/private/tmp/engine073-validation-target/debug/deps/launch_source_frames_514_515-b4b78c10b7c4ea48)
+
+running 9 tests
+test recall_preserves_aliases_and_never_joins_signals ... ok
+test historical_v16_v29_recall_remains_unchanged ... ok
+test issue514_affirmative_launch_predicates ... ok
+test launch_recall_requires_factual_signal_identity_and_no_risk ... ok
+test issue515_dotted_names_and_decimal_versions ... ok
+test additional_launch_control_corpus ... ok
+test affirmative_ga_adjuncts_require_complete_owned_frames ... ok
+test issue514_launch_negatives ... ok
+test issue515_punctuation_must_not_borrow_predicates ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.74s
+
+     Running tests/metamorphic_benchmark.rs (/private/tmp/engine073-validation-target/debug/deps/metamorphic_benchmark-d9d6bb78e54cbf2d)
+
+running 1 test
+test deterministic_transform_families_preserve_hard_reasoning_outcomes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/model_backed_soft_judge.rs (/private/tmp/engine073-validation-target/debug/deps/model_backed_soft_judge-c67738e46f0185f7)
+
+running 7 tests
+test parser_accepts_one_object_with_non_json_trailing_text_but_rejects_multiple_objects ... ok
+test structured_schema_exposes_only_soft_decision_fields ... ok
+test successful_model_output_gets_harness_owned_identity_and_usage ... ok
+test unsupported_schema_mode_falls_back_without_promoting_authority ... ok
+test invalid_primary_output_uses_json_fallback_and_sums_usage ... ok
+test malformed_fallback_fails_closed ... ok
+test model_requests_define_kind_specific_finding_no_finding_and_abstain_semantics ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reasoning_policy_regression.rs (/private/tmp/engine073-validation-target/debug/deps/reasoning_policy_regression-06f71d4857a47635)
+
+running 1 test
+test policy_regression_fixtures_invalidate_only_new_snapshot_and_propagate_dependencies ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reasoning_thread_replay.rs (/private/tmp/engine073-validation-target/debug/deps/reasoning_thread_replay-c2df2fbb16f0d14c)
+
+running 11 tests
+test incomplete_input_change_is_fail_closed_until_typed_invalidation_arrives ... ok
+test persisted_contract_contains_only_explicit_typed_runtime_state_not_hidden_chain_of_thought ... ok
+test finalized_source_is_immutable_but_can_fork_from_prior_checkpoint ... ok
+test input_change_records_typed_invalidation_before_new_assertive_state_is_possible ... ok
+test policy_transition_replay_rejects_tampered_authority_state_and_rolls_back_append ... ok
+test fork_is_non_destructive_and_preserves_candidate_lineage_from_checkpoint ... ok
+test incomplete_policy_transition_and_interrupted_thread_cannot_finalize ... ok
+test checkpoint_interrupt_resume_reconstructs_equivalent_harness_state_without_replaying_side_effects ... ok
+test accepted_artifact_cannot_bypass_active_policy_after_policy_is_recorded ... ok
+test tampered_checkpoint_or_event_sequence_fails_deterministic_replay ... ok
+test policy_change_and_invalidation_are_separate_typed_events_and_checkpoint_records_policy_version ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/resolution_benchmark.rs (/private/tmp/engine073-validation-target/debug/deps/resolution_benchmark-9fa7d4bf0ec851f3)
+
+running 1 test
+test controlled_resolution_suite_preserves_base_case_identity_and_authority_boundaries ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/semantic_decidability.rs (/private/tmp/engine073-validation-target/debug/deps/semantic_decidability-b78ea0c579ceeb14)
+
+running 6 tests
+test composition_can_only_preserve_or_abstain ... ok
+test causal_endpoint_requirement_is_not_promoted_to_relation_sufficiency ... ok
+test missing_claim_target_fails_closed_without_inventing_binding ... ok
+test invalid_artifact_is_operational_error_not_semantic_abstention ... ok
+test calibration_pairs_are_deterministic_and_monotone ... ok
+test d2_study_manifest_keeps_semantic_and_eligibility_labels_separate ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/semantic_decidability_holdout_v5.rs (/private/tmp/engine073-validation-target/debug/deps/semantic_decidability_holdout_v5-9eb053d1288c9881)
+
+running 1 test
+test decidability_holdout_v5_is_observation_free_balanced_and_deterministic ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/semantic_judge_calibration.rs (/private/tmp/engine073-validation-target/debug/deps/semantic_judge_calibration-d4f8a6b8dba99b66)
+
+running 1 test
+test semantic_judge_calibration_corpus_preserves_labels_disagreement_and_abstention ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/semantic_judge_holdout.rs (/private/tmp/engine073-validation-target/debug/deps/semantic_judge_holdout-28a44235e2609338)
+
+running 1 test
+test semantic_judge_holdout_v1_is_separate_observation_free_and_stratified ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/semantic_judge_holdout_v2.rs (/private/tmp/engine073-validation-target/debug/deps/semantic_judge_holdout_v2-b809fe9a76f91abc)
+
+running 1 test
+test semantic_judge_holdout_v2_is_observation_free_unique_and_stratified ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/semantic_judge_holdout_v3.rs (/private/tmp/engine073-validation-target/debug/deps/semantic_judge_holdout_v3-73640e16df4328ce)
+
+running 1 test
+test semantic_judge_holdout_v3_is_observation_free_unique_and_stratified ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/semantic_judge_holdout_v4.rs (/private/tmp/engine073-validation-target/debug/deps/semantic_judge_holdout_v4-54b6e410c619071b)
+
+running 1 test
+test semantic_judge_holdout_v4_is_frozen_observation_free_unique_and_stratified ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/semantic_materialization.rs (/private/tmp/engine073-validation-target/debug/deps/semantic_materialization-376f600a8b70d016)
+
+running 13 tests
+test materialization_failure_classification_is_typed ... ok
+test non_finding_decisions_never_materialize_a_finding_even_with_note ... ok
+test finding_materialization_copies_request_binding_exactly ... ok
+test compact_representation_preserves_note_and_rejects_model_owned_binding_fields ... ok
+test parser_accepts_only_one_decision_object_and_fails_closed_on_extra_authority_fields ... ok
+test r2_representation_parsers_preserve_the_same_decision_contract ... ok
+test materialization_schema_exposes_only_decision_and_optional_note ... ok
+test r2_capability_preflight_rejects_model_owned_binding_fields ... ok
+test invalid_model_payload_retains_provider_usage_without_semantic_repair ... ok
+test r2_capability_preflight_checks_protocol_not_semantic_correctness ... ok
+test r2_representation_variants_change_only_output_format ... ok
+test materialization_preserves_v3_decision_guidance_and_request_controls ... ok
+test every_calibration_fixture_builds_r2_request_without_reading_holdouts ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/semantic_runtime.rs (/private/tmp/engine073-validation-target/debug/deps/semantic_runtime-163824e9b6cf61bb)
+
+running 7 tests
+test runtime_identity_and_rollback_are_frozen ... ok
+test serialized_runtime_identity_rejects_spoofed_configuration ... ok
+test default_runtime_executes_the_adopted_d3_profile ... ok
+test d3_runtime_preserves_permitted_base_decision ... ok
+test d3_runtime_only_preserves_or_forces_abstention ... ok
+test d3_runtime_never_repairs_materialization_protocol_failure_into_abstention ... ok
+test soft_semantic_v3_remains_an_executable_rollback_profile ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/semantic_stability.rs (/private/tmp/engine073-validation-target/debug/deps/semantic_stability-56c0016fcc6493be)
+
+running 5 tests
+test operational_failure_stays_separate_from_semantic_disagreement ... ok
+test unanimous_abstain_is_preserved_not_counted_as_escalation ... ok
+test unanimous_complete_probes_preserve_the_soft_decision ... ok
+test disagreement_escalates_to_abstain_without_majority_voting ... ok
+test no_successful_probe_is_never_converted_to_no_finding ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/semantic_sufficiency_rsd0.rs (/private/tmp/engine073-validation-target/debug/deps/semantic_sufficiency_rsd0-2651ebff93ab6978)
+
+running 3 tests
+test rsd0_fixture_loader_is_scoped_away_from_frozen_holdouts ... ok
+test rsd0_contract_rejects_typed_requirements_so_it_cannot_duplicate_d3 ... ok
+test rsd0_is_fresh_pre_observation_and_exposes_a_measurable_d3_residual_gap ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/semantic_sufficiency_rsd1.rs (/private/tmp/engine073-validation-target/debug/deps/semantic_sufficiency_rsd1-810183341240d7b6)
+
+running 6 tests
+test parser_rejects_authority_fields_and_multiple_json_values ... ok
+test output_schema_exposes_only_the_three_way_decision ... ok
+test successful_schema_output_is_observed_without_authority_promotion ... ok
+test invalid_authority_bearing_output_fails_closed_after_fallback ... ok
+test primary_and_fallback_requests_preserve_the_same_sufficiency_semantics ... ok
+test unsupported_schema_mode_falls_back_without_changing_the_contract ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/source_reconciliation_development_v1.rs (/private/tmp/engine073-validation-target/debug/deps/source_reconciliation_development_v1-77e75a9b3ba69079)
+
+running 5 tests
+test no_review_and_empty_target_lists_have_no_side_effects ... ok
+test reviewer_policy_and_serialized_anchor_tampering_fail_closed ... ok
+test trusted_review_reordering_does_not_change_view ... ok
+test modal_temporal_and_scope_strengthening_cannot_be_reviewed_away ... ok
+test precommitted_development_controls_are_fail_closed ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/target_presentation_development_v1.rs (/private/tmp/engine073-validation-target/debug/deps/target_presentation_development_v1-a245cc024b4bb745)
+
+running 1 test
+test frozen_target_local_presentation_scenarios ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/validate.rs (/private/tmp/engine073-validation-target/debug/deps/validate-76a45be177ee0eca)
+
+running 7 tests
+test rejects_an_inferred_claim_without_an_inference_edge ... ok
+test rejects_a_supported_claim_without_evidence ... ok
+test rejects_invalid_and_duplicate_harness_assumptions ... ok
+test rejects_invalid_harness_hypothesis ... ok
+test rejects_references_to_missing_evidence ... ok
+test rejects_invalid_evidence_qualification_configuration ... ok
+test accepts_an_evidence_backed_known_claim ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/verification.rs (/private/tmp/engine073-validation-target/debug/deps/verification-c6ddad5b0ccfd75d)
+
+running 4 tests
+test receipt_fails_closed_when_statement_does_not_match ... ok
+test trusted_contradiction_can_reject_exact_bound_claim ... ok
+test trusted_receipt_can_promote_exact_bound_claim ... ok
+test stale_structured_fact_cannot_create_a_hard_receipt_when_qualification_is_required ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests reasoning_harness_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

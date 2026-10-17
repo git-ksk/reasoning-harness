@@ -1,0 +1,38 @@
+{
+  "identity": "engine073-launch-independent-v16",
+  "verified_utc": "2026-10-16T16:02:52.078329+00:00",
+  "HEAD": "854ef6d23d8089b6136dae38086941a9ced96c76",
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "436b09d9f81386931213cb15048c86628d289c1b57d9bb31cc5c24bd5ecf4af5",
+      "unchanged": true
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "8aab14019e072369a5e44f316237b55b58e695efbbddf4d6a63758b279a7aca9",
+      "unchanged": true
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "unchanged": true
+    },
+    "opaque_parent_freeze": {
+      "path": "/private/tmp/engine073-source15-freeze.json",
+      "sha256": "a637ccbcfbb6e139d756d1ed8a14e003fb60397a2d24ea69b4ff53b03a9e8ca1",
+      "unchanged": true
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v16-probe/probe",
+      "sha256": "7a4414646f1b97c317fb144b3669e5fa4bc031f23f4279bd078df76f2d8865f6",
+      "unchanged": true
+    }
+  },
+  "source_and_opaque_parent_freeze_contents_read": false,
+  "all_frozen_inputs_labels_code_manifest_unchanged": true,
+  "old_v1_v15_artifact_count": 323,
+  "old_inventory_and_hashes_unchanged": true,
+  "v11_NOT_EVALUATED_unchanged": true,
+  "old_anchor": "88215c3c7fe6084d31a40661dd5b2c9394a45d974a2662f44fc21093d1b54795"
+}

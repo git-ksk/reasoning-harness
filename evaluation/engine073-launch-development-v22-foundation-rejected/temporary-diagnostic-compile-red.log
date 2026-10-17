@@ -1,0 +1,15 @@
+   Compiling reasoning-harness-core v0.7.2 (/private/tmp/engine073-source21-trace-shadow/crates/reasoning-harness-core)
+error[E0277]: `LaunchTypedObjectV17` doesn't implement `Debug`
+     --> crates/reasoning-harness-core/src/evidence_relevance.rs:13873:222
+      |
+13873 | ...17(&policy,&local),launch_typed_objects_v17(&policy,&local));
+      |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `LaunchTypedObjectV17` cannot be formatted using `{:?}`
+      |
+      = help: the trait `Debug` is not implemented for `LaunchTypedObjectV17`
+      = note: add `#[derive(Debug)]` to `LaunchTypedObjectV17` or manually `impl Debug for LaunchTypedObjectV17`
+      = help: the trait `Debug` is implemented for `Vec<T, A>`
+      = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `reasoning-harness-core` (lib test) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...

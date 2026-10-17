@@ -1,0 +1,3054 @@
+{
+  "schema": "engine073-launch-independent-v1",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "cases": [
+    {
+      "id": "i073-001",
+      "pair_id": "pair-01",
+      "polarity": "positive",
+      "axis": "trailing_explicit_retraction",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-001",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-01",
+          "target_question": "Was Asterloom Lantern launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-01",
+            "canonical_name": "Asterloom Lantern",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-001-evidence",
+          "source_id": "i073-001-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Asterloom Lantern was launched in August 2024. We retract our claim that Moonvine Spindle was launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-002",
+      "pair_id": "pair-01",
+      "polarity": "negative",
+      "axis": "trailing_explicit_retraction",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-002",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-01",
+          "target_question": "Was Asterloom Lantern launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-01",
+            "canonical_name": "Asterloom Lantern",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-002-evidence",
+          "source_id": "i073-002-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Asterloom Lantern was launched in August 2024. We retract our claim that Asterloom Lantern was launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-003",
+      "pair_id": "pair-02",
+      "polarity": "positive",
+      "axis": "leading_explicit_retraction",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-003",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-02",
+          "target_question": "Was Bramblequay Harp launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-02",
+            "canonical_name": "Bramblequay Harp",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-003-evidence",
+          "source_id": "i073-003-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "We retract our earlier launch claim for Moonvine Spindle. Bramblequay Harp was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-004",
+      "pair_id": "pair-02",
+      "polarity": "negative",
+      "axis": "leading_explicit_retraction",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-004",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-02",
+          "target_question": "Was Bramblequay Harp launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-02",
+            "canonical_name": "Bramblequay Harp",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-004-evidence",
+          "source_id": "i073-004-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "We retract our earlier launch claim for Bramblequay Harp. Bramblequay Harp was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-005",
+      "pair_id": "pair-03",
+      "polarity": "positive",
+      "axis": "title_same_target_denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-005",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-03",
+          "target_question": "Was Cindervale Mosaic launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-03",
+            "canonical_name": "Cindervale Mosaic",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-005-evidence",
+          "source_id": "i073-005-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Correction: Moonvine Spindle was not launched"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Cindervale Mosaic was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-006",
+      "pair_id": "pair-03",
+      "polarity": "negative",
+      "axis": "title_same_target_denial",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-006",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-03",
+          "target_question": "Was Cindervale Mosaic launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-03",
+            "canonical_name": "Cindervale Mosaic",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-006-evidence",
+          "source_id": "i073-006-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Correction: Cindervale Mosaic was not launched"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Cindervale Mosaic was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-007",
+      "pair_id": "pair-04",
+      "polarity": "positive",
+      "axis": "heading_retraction",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-007",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-04",
+          "target_question": "Was Dewharbor Loom launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-04",
+            "canonical_name": "Dewharbor Loom",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-007-evidence",
+          "source_id": "i073-007-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Retraction of the claim that Dewharbor Loom has a leather case"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Dewharbor Loom was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-008",
+      "pair_id": "pair-04",
+      "polarity": "negative",
+      "axis": "heading_retraction",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-008",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-04",
+          "target_question": "Was Dewharbor Loom launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-04",
+            "canonical_name": "Dewharbor Loom",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-008-evidence",
+          "source_id": "i073-008-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Retraction of the claim that Dewharbor Loom was launched"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Dewharbor Loom was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-009",
+      "pair_id": "pair-05",
+      "polarity": "positive",
+      "axis": "trailing_report_retraction",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-009",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-05",
+          "target_question": "Was Elmspire Prism launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-05",
+            "canonical_name": "Elmspire Prism",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-009-evidence",
+          "source_id": "i073-009-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Elmspire Prism was launched in August 2024. This launch report is archived."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-010",
+      "pair_id": "pair-05",
+      "polarity": "negative",
+      "axis": "trailing_report_retraction",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-010",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-05",
+          "target_question": "Was Elmspire Prism launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-05",
+            "canonical_name": "Elmspire Prism",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-010-evidence",
+          "source_id": "i073-010-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Elmspire Prism was launched in August 2024. This launch report is retracted; Elmspire Prism was not launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-011",
+      "pair_id": "pair-06",
+      "polarity": "positive",
+      "axis": "first_person_singular_retraction",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-011",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-06",
+          "target_question": "Was Fennelbrook Lyre launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-06",
+            "canonical_name": "Fennelbrook Lyre",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-011-evidence",
+          "source_id": "i073-011-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Fennelbrook Lyre was launched in August 2024. I retract my claim that Fennelbrook Lyre has a silver finish."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-012",
+      "pair_id": "pair-06",
+      "polarity": "negative",
+      "axis": "first_person_singular_retraction",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-012",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-06",
+          "target_question": "Was Fennelbrook Lyre launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-06",
+            "canonical_name": "Fennelbrook Lyre",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-012-evidence",
+          "source_id": "i073-012-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Fennelbrook Lyre was launched in August 2024. I retract my claim that Fennelbrook Lyre was launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-013",
+      "pair_id": "pair-07",
+      "polarity": "positive",
+      "axis": "first_person_plural_retraction",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-013",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-07",
+          "target_question": "Was Glimmerfen Atlas launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-07",
+            "canonical_name": "Glimmerfen Atlas",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-013-evidence",
+          "source_id": "i073-013-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "We retract our statement that Glimmerfen Atlas includes a printed manual. Glimmerfen Atlas was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-014",
+      "pair_id": "pair-07",
+      "polarity": "negative",
+      "axis": "first_person_plural_retraction",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-014",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-07",
+          "target_question": "Was Glimmerfen Atlas launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-07",
+            "canonical_name": "Glimmerfen Atlas",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-014-evidence",
+          "source_id": "i073-014-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "We retract our statement that Glimmerfen Atlas was launched. Glimmerfen Atlas was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-015",
+      "pair_id": "pair-08",
+      "polarity": "positive",
+      "axis": "leading_was_not_launched",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-015",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-08",
+          "target_question": "Was Hazelrift Compass launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-08",
+            "canonical_name": "Hazelrift Compass",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-015-evidence",
+          "source_id": "i073-015-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Moonvine Spindle was not launched. Hazelrift Compass was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-016",
+      "pair_id": "pair-08",
+      "polarity": "negative",
+      "axis": "leading_was_not_launched",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-016",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-08",
+          "target_question": "Was Hazelrift Compass launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-08",
+            "canonical_name": "Hazelrift Compass",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-016-evidence",
+          "source_id": "i073-016-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Hazelrift Compass was not launched. Hazelrift Compass was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-017",
+      "pair_id": "pair-09",
+      "polarity": "positive",
+      "axis": "trailing_has_not_launched",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-017",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-09",
+          "target_question": "Was Ilexhaven Ledger launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-09",
+            "canonical_name": "Ilexhaven Ledger",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-017-evidence",
+          "source_id": "i073-017-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Ilexhaven Ledger was launched in August 2024. Ilexhaven Ledger has no printed manual."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-018",
+      "pair_id": "pair-09",
+      "polarity": "negative",
+      "axis": "trailing_has_not_launched",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-018",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-09",
+          "target_question": "Was Ilexhaven Ledger launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-09",
+            "canonical_name": "Ilexhaven Ledger",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-018-evidence",
+          "source_id": "i073-018-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Ilexhaven Ledger was launched in August 2024. Ilexhaven Ledger has not launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-019",
+      "pair_id": "pair-10",
+      "polarity": "positive",
+      "axis": "trailing_did_not_launch",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-019",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-10",
+          "target_question": "Was Juniperquay Tapestry launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-10",
+            "canonical_name": "Juniperquay Tapestry",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-019-evidence",
+          "source_id": "i073-019-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Juniperquay Tapestry was launched in August 2024. Juniperquay Tapestry does not support Bluetooth."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-020",
+      "pair_id": "pair-10",
+      "polarity": "negative",
+      "axis": "trailing_did_not_launch",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-020",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-10",
+          "target_question": "Was Juniperquay Tapestry launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-10",
+            "canonical_name": "Juniperquay Tapestry",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-020-evidence",
+          "source_id": "i073-020-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Juniperquay Tapestry was launched in August 2024. Juniperquay Tapestry did not launch."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-021",
+      "pair_id": "pair-11",
+      "polarity": "positive",
+      "axis": "leading_never_happened",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-021",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-11",
+          "target_question": "Was Kestrelmere Sundial launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-11",
+            "canonical_name": "Kestrelmere Sundial",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-021-evidence",
+          "source_id": "i073-021-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "The launch of Moonvine Spindle never happened. Kestrelmere Sundial was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-022",
+      "pair_id": "pair-11",
+      "polarity": "negative",
+      "axis": "leading_never_happened",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-022",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-11",
+          "target_question": "Was Kestrelmere Sundial launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-11",
+            "canonical_name": "Kestrelmere Sundial",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-022-evidence",
+          "source_id": "i073-022-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "The launch of Kestrelmere Sundial never happened. Kestrelmere Sundial was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-023",
+      "pair_id": "pair-12",
+      "polarity": "positive",
+      "axis": "explicit_no_event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-023",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-12",
+          "target_question": "Was Larchwharf Capsule launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-12",
+            "canonical_name": "Larchwharf Capsule",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-023-evidence",
+          "source_id": "i073-023-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Larchwharf Capsule was launched in August 2024. No printed manual was supplied with Larchwharf Capsule."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-024",
+      "pair_id": "pair-12",
+      "polarity": "negative",
+      "axis": "explicit_no_event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-024",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-12",
+          "target_question": "Was Larchwharf Capsule launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-12",
+            "canonical_name": "Larchwharf Capsule",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-024-evidence",
+          "source_id": "i073-024-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Larchwharf Capsule was launched in August 2024. No launch of Larchwharf Capsule took place."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-025",
+      "pair_id": "pair-13",
+      "polarity": "positive",
+      "axis": "claim_false",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-025",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-13",
+          "target_question": "Was Mallowcrest Cabinet launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-13",
+            "canonical_name": "Mallowcrest Cabinet",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-025-evidence",
+          "source_id": "i073-025-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Mallowcrest Cabinet was launched in August 2024. The assertion that Mallowcrest Cabinet has a copper case is false."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-026",
+      "pair_id": "pair-13",
+      "polarity": "negative",
+      "axis": "claim_false",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-026",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-13",
+          "target_question": "Was Mallowcrest Cabinet launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-13",
+            "canonical_name": "Mallowcrest Cabinet",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-026-evidence",
+          "source_id": "i073-026-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Mallowcrest Cabinet was launched in August 2024. The assertion that Mallowcrest Cabinet was launched is false."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-027",
+      "pair_id": "pair-14",
+      "polarity": "positive",
+      "axis": "leading_present_denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-027",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-14",
+          "target_question": "Was Nectarford Relay launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-14",
+            "canonical_name": "Nectarford Relay",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-027-evidence",
+          "source_id": "i073-027-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "We deny that Nectarford Relay is made from titanium. Nectarford Relay was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-028",
+      "pair_id": "pair-14",
+      "polarity": "negative",
+      "axis": "leading_present_denial",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-028",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-14",
+          "target_question": "Was Nectarford Relay launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-14",
+            "canonical_name": "Nectarford Relay",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-028-evidence",
+          "source_id": "i073-028-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "We deny that Nectarford Relay launched. Nectarford Relay was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-029",
+      "pair_id": "pair-15",
+      "polarity": "positive",
+      "axis": "trailing_first_person_withdrawal",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-029",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-15",
+          "target_question": "Was Oatmeadow Beacon launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-15",
+            "canonical_name": "Oatmeadow Beacon",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-029-evidence",
+          "source_id": "i073-029-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Oatmeadow Beacon was launched in August 2024. We withdraw our claim that Oatmeadow Beacon costs ten credits."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-030",
+      "pair_id": "pair-15",
+      "polarity": "negative",
+      "axis": "trailing_first_person_withdrawal",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-030",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-15",
+          "target_question": "Was Oatmeadow Beacon launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-15",
+            "canonical_name": "Oatmeadow Beacon",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-030-evidence",
+          "source_id": "i073-030-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Oatmeadow Beacon was launched in August 2024. We withdraw our claim that Oatmeadow Beacon was launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-031",
+      "pair_id": "pair-16",
+      "polarity": "positive",
+      "axis": "heading_claim_withdrawn",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-031",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-16",
+          "target_question": "Was Pinehollow Tablet launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-16",
+            "canonical_name": "Pinehollow Tablet",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-031-evidence",
+          "source_id": "i073-031-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Pinehollow Tablet packaging claim withdrawn"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Pinehollow Tablet was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-032",
+      "pair_id": "pair-16",
+      "polarity": "negative",
+      "axis": "heading_claim_withdrawn",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-032",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-16",
+          "target_question": "Was Pinehollow Tablet launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-16",
+            "canonical_name": "Pinehollow Tablet",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-032-evidence",
+          "source_id": "i073-032-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Pinehollow Tablet launch claim withdrawn"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Pinehollow Tablet was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-033",
+      "pair_id": "pair-17",
+      "polarity": "positive",
+      "axis": "title_never_launched",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-033",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-17",
+          "target_question": "Was Quincehaven Vault launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-17",
+            "canonical_name": "Quincehaven Vault",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-033-evidence",
+          "source_id": "i073-033-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Correction: Quincehaven Vault is not battery powered"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Quincehaven Vault was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-034",
+      "pair_id": "pair-17",
+      "polarity": "negative",
+      "axis": "title_never_launched",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-034",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-17",
+          "target_question": "Was Quincehaven Vault launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-17",
+            "canonical_name": "Quincehaven Vault",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-034-evidence",
+          "source_id": "i073-034-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Correction: Quincehaven Vault was never launched"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Quincehaven Vault was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-035",
+      "pair_id": "pair-18",
+      "polarity": "positive",
+      "axis": "present_retraction",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-035",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-18",
+          "target_question": "Was Reedcove Canvas launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-18",
+            "canonical_name": "Reedcove Canvas",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-035-evidence",
+          "source_id": "i073-035-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "We presently retract the launch claim for Moonvine Spindle. Reedcove Canvas was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-036",
+      "pair_id": "pair-18",
+      "polarity": "negative",
+      "axis": "present_retraction",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-036",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-18",
+          "target_question": "Was Reedcove Canvas launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-18",
+            "canonical_name": "Reedcove Canvas",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-036-evidence",
+          "source_id": "i073-036-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "We presently retract the launch claim for Reedcove Canvas. Reedcove Canvas was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-037",
+      "pair_id": "pair-19",
+      "polarity": "positive",
+      "axis": "unambiguous_this_claim",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-037",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-19",
+          "target_question": "Was Saffronridge Bell launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-19",
+            "canonical_name": "Saffronridge Bell",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-037-evidence",
+          "source_id": "i073-037-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Saffronridge Bell was launched in August 2024. We retain this launch claim."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-038",
+      "pair_id": "pair-19",
+      "polarity": "negative",
+      "axis": "unambiguous_this_claim",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-038",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-19",
+          "target_question": "Was Saffronridge Bell launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-19",
+            "canonical_name": "Saffronridge Bell",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-038-evidence",
+          "source_id": "i073-038-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Saffronridge Bell was launched in August 2024. We retract this launch claim."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-039",
+      "pair_id": "pair-20",
+      "polarity": "positive",
+      "axis": "leading_report_reference",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-039",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-20",
+          "target_question": "Was Thistlebay Dial launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-20",
+            "canonical_name": "Thistlebay Dial",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-039-evidence",
+          "source_id": "i073-039-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "This launch report is archived. Thistlebay Dial was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-040",
+      "pair_id": "pair-20",
+      "polarity": "negative",
+      "axis": "leading_report_reference",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-040",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-20",
+          "target_question": "Was Thistlebay Dial launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-20",
+            "canonical_name": "Thistlebay Dial",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-040-evidence",
+          "source_id": "i073-040-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "This launch report is retracted. Thistlebay Dial was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-041",
+      "pair_id": "pair-21",
+      "polarity": "positive",
+      "axis": "two_targets_unclear_reference",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-041",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-21",
+          "target_question": "Was Umberfield Board launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-21",
+            "canonical_name": "Umberfield Board",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-041-evidence",
+          "source_id": "i073-041-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Umberfield Board was launched in August 2024. Our earlier reports said \"Umberfield Board was launched in August 2024.\" and \"Moonvine Spindle was launched in August 2024.\". We retract the launch claim for Moonvine Spindle."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-042",
+      "pair_id": "pair-21",
+      "polarity": "negative",
+      "axis": "two_targets_unclear_reference",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-042",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-21",
+          "target_question": "Was Umberfield Board launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-21",
+            "canonical_name": "Umberfield Board",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-042-evidence",
+          "source_id": "i073-042-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Umberfield Board was launched in August 2024. Our earlier reports said \"Umberfield Board was launched in August 2024.\" and \"Moonvine Spindle was launched in August 2024.\". We retract that launch claim."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-043",
+      "pair_id": "pair-22",
+      "polarity": "positive",
+      "axis": "multiple_claims_unspecified_one",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-043",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-22",
+          "target_question": "Was Vervainlake Lens launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-22",
+            "canonical_name": "Vervainlake Lens",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-043-evidence",
+          "source_id": "i073-043-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Vervainlake Lens was launched in August 2024. Moonvine Spindle was launched in August 2024. We retract only the launch claim for Moonvine Spindle."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-044",
+      "pair_id": "pair-22",
+      "polarity": "negative",
+      "axis": "multiple_claims_unspecified_one",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-044",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-22",
+          "target_question": "Was Vervainlake Lens launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-22",
+            "canonical_name": "Vervainlake Lens",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-044-evidence",
+          "source_id": "i073-044-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Vervainlake Lens was launched in August 2024. Moonvine Spindle was launched in August 2024. We retract one of those launch claims."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-045",
+      "pair_id": "pair-23",
+      "polarity": "positive",
+      "axis": "possessive_reference_withdrawn",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-045",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-23",
+          "target_question": "Was Willowroost Arbor launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-23",
+            "canonical_name": "Willowroost Arbor",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-045-evidence",
+          "source_id": "i073-045-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Willowroost Arbor was launched in August 2024. Its packaging claim is withdrawn."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-046",
+      "pair_id": "pair-23",
+      "polarity": "negative",
+      "axis": "possessive_reference_withdrawn",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-046",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-23",
+          "target_question": "Was Willowroost Arbor launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-23",
+            "canonical_name": "Willowroost Arbor",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-046-evidence",
+          "source_id": "i073-046-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Willowroost Arbor was launched in August 2024. Its launch claim is withdrawn."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-047",
+      "pair_id": "pair-24",
+      "polarity": "positive",
+      "axis": "report_scope_launch_vs_price",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-047",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-24",
+          "target_question": "Was Xylemshore Map launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-24",
+            "canonical_name": "Xylemshore Map",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-047-evidence",
+          "source_id": "i073-047-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Xylemshore Map was launched in August 2024. The Xylemshore Map pricing report is retracted."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-048",
+      "pair_id": "pair-24",
+      "polarity": "negative",
+      "axis": "report_scope_launch_vs_price",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-048",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-24",
+          "target_question": "Was Xylemshore Map launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-24",
+            "canonical_name": "Xylemshore Map",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-048-evidence",
+          "source_id": "i073-048-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Xylemshore Map was launched in August 2024. The Xylemshore Map launch report is retracted."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-049",
+      "pair_id": "pair-25",
+      "polarity": "positive",
+      "axis": "heading_unscoped_reference",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-049",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-25",
+          "target_question": "Was Yarrowport Cradle launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-25",
+            "canonical_name": "Yarrowport Cradle",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-049-evidence",
+          "source_id": "i073-049-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "We retract the packaging statement"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Yarrowport Cradle was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-050",
+      "pair_id": "pair-25",
+      "polarity": "negative",
+      "axis": "heading_unscoped_reference",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-050",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-25",
+          "target_question": "Was Yarrowport Cradle launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-25",
+            "canonical_name": "Yarrowport Cradle",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-050-evidence",
+          "source_id": "i073-050-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "We retract the launch statement"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Yarrowport Cradle was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-051",
+      "pair_id": "pair-26",
+      "polarity": "positive",
+      "axis": "title_unscoped_reference",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-051",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-26",
+          "target_question": "Was Zinniaford Wheel launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-26",
+            "canonical_name": "Zinniaford Wheel",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-051-evidence",
+          "source_id": "i073-051-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Packaging claim withdrawn"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Zinniaford Wheel was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-052",
+      "pair_id": "pair-26",
+      "polarity": "negative",
+      "axis": "title_unscoped_reference",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-052",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-26",
+          "target_question": "Was Zinniaford Wheel launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-26",
+            "canonical_name": "Zinniaford Wheel",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-052-evidence",
+          "source_id": "i073-052-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Launch claim withdrawn"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Zinniaford Wheel was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-053",
+      "pair_id": "pair-27",
+      "polarity": "positive",
+      "axis": "publisher_present_denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-053",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-27",
+          "target_question": "Was Amberthicket Globe launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-27",
+            "canonical_name": "Amberthicket Globe",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-053-evidence",
+          "source_id": "i073-053-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Amberthicket Globe was launched in August 2024. The publisher denies that Moonvine Spindle launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-054",
+      "pair_id": "pair-27",
+      "polarity": "negative",
+      "axis": "publisher_present_denial",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-054",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-27",
+          "target_question": "Was Amberthicket Globe launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-27",
+            "canonical_name": "Amberthicket Globe",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-054-evidence",
+          "source_id": "i073-054-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Amberthicket Globe was launched in August 2024. The publisher denies that Amberthicket Globe launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-055",
+      "pair_id": "pair-28",
+      "polarity": "positive",
+      "axis": "never_been_launched",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-055",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-28",
+          "target_question": "Was Birchdelta Flute launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-28",
+            "canonical_name": "Birchdelta Flute",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-055-evidence",
+          "source_id": "i073-055-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Birchdelta Flute was launched in August 2024. Birchdelta Flute has never included a printed manual."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-056",
+      "pair_id": "pair-28",
+      "polarity": "negative",
+      "axis": "never_been_launched",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-056",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-28",
+          "target_question": "Was Birchdelta Flute launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-28",
+            "canonical_name": "Birchdelta Flute",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-056-evidence",
+          "source_id": "i073-056-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Birchdelta Flute was launched in August 2024. Birchdelta Flute has never been launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-057",
+      "pair_id": "pair-29",
+      "polarity": "positive",
+      "axis": "leading_contrary_statement",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-057",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-29",
+          "target_question": "Was Cloverhollow Panel launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-29",
+            "canonical_name": "Cloverhollow Panel",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-057-evidence",
+          "source_id": "i073-057-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Cloverhollow Panel, contrary to the claim below, does not use a copper housing. Cloverhollow Panel was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-058",
+      "pair_id": "pair-29",
+      "polarity": "negative",
+      "axis": "leading_contrary_statement",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-058",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-29",
+          "target_question": "Was Cloverhollow Panel launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-29",
+            "canonical_name": "Cloverhollow Panel",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-058-evidence",
+          "source_id": "i073-058-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Cloverhollow Panel, contrary to the claim below, did not launch. Cloverhollow Panel was launched in August 2024."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-059",
+      "pair_id": "pair-30",
+      "polarity": "positive",
+      "axis": "multiline_correction_withdrawal",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The affirmative target launch remains factual; neutral context or a denial/retraction explicitly concerns another target or another property.",
+      "input": {
+        "id": "i073-059",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-30",
+          "target_question": "Was Dandelionquay Drum launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-30",
+            "canonical_name": "Dandelionquay Drum",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-059-evidence",
+          "source_id": "i073-059-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Dandelionquay Drum was launched in August 2024.\nCorrection: We withdraw our statement that Dandelionquay Drum includes a printed manual."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "i073-060",
+      "pair_id": "pair-30",
+      "polarity": "negative",
+      "axis": "multiline_correction_withdrawal",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A present denial/retraction/withdrawal/non-event concerns this target launch, or a launch retraction has an unresolved reference; an optimistic prebound launch label must not survive.",
+      "input": {
+        "id": "i073-060",
+        "policy": {
+          "policy_id": "i073-launch-policy-v1",
+          "target_id": "fictional-product-30",
+          "target_question": "Was Dandelionquay Drum launched in August 2024?",
+          "entity": {
+            "canonical_id": "fictional-product-30",
+            "canonical_name": "Dandelionquay Drum",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 0,
+            "max_tokens": 0,
+            "max_elapsed_ms": 0
+          }
+        },
+        "candidate": {
+          "evidence_id": "i073-060-evidence",
+          "source_id": "i073-060-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Dandelionquay Drum was launched in August 2024.\nCorrection: We withdraw our statement that Dandelionquay Drum was launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    }
+  ]
+}

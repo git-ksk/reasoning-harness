@@ -1,0 +1,90 @@
+{
+  "schema": "engine073-source23-lossless-evidence-packaging-v1",
+  "created_utc": "2026-10-17T08:43:24.069687+00:00",
+  "scope": "Parent-owned redundant full Rust source copies only; independent first artifacts/preparation5 never changed. All source bytes losslessly recoverable.",
+  "compression": "gzip level9,mtime0",
+  "original_total_bytes": 7307200,
+  "packed_total_bytes": 900656,
+  "entries": [
+    {
+      "logical_original_path": "evaluation/engine073-launch-development-v22-structure-prototypes/appearance01/source.rs",
+      "packed_path": "evaluation/engine073-launch-development-v22-structure-prototypes/appearance01/source.rs.gz",
+      "original_bytes": 736200,
+      "original_sha256": "0f74658fc4a5f652a218721445aecf88938d3163677cc9ae70ab410dd1c56e6b",
+      "packed_bytes": 92298,
+      "packed_sha256": "9012232e5d3fdb0cdaefb3452caa81d09b20fcf848bfee744faeb51485ca3176"
+    },
+    {
+      "logical_original_path": "evaluation/engine073-launch-development-v22-structure-prototypes/engine073-segmentation23-first-test-source.rs",
+      "packed_path": "evaluation/engine073-launch-development-v22-structure-prototypes/engine073-segmentation23-first-test-source.rs.gz",
+      "original_bytes": 758340,
+      "original_sha256": "420724c7a78a6876274329072ad0f0ddeb67df85b24805078652647adb51c54d",
+      "packed_bytes": 95051,
+      "packed_sha256": "3527463cc3dae8723ebbff5e01619c36bb726b78a9f2dd8900f3d7b159a88cde"
+    },
+    {
+      "logical_original_path": "evaluation/engine073-launch-development-v22-structure-prototypes/engine073-segmentation23-unknown-before-guard.rs",
+      "packed_path": "evaluation/engine073-launch-development-v22-structure-prototypes/engine073-segmentation23-unknown-before-guard.rs.gz",
+      "original_bytes": 758356,
+      "original_sha256": "57c4d037a61abc9585dd1bc9ed8000f4d38b26398d2486e9d66a934b11bba468",
+      "packed_bytes": 95048,
+      "packed_sha256": "77d731c656fe66bc5a97da995faf543cb40e96f2d3f973bc16fda9e45846fdf0"
+    },
+    {
+      "logical_original_path": "evaluation/engine073-launch-development-v22-structure-prototypes/global03/source.rs",
+      "packed_path": "evaluation/engine073-launch-development-v22-structure-prototypes/global03/source.rs.gz",
+      "original_bytes": 746436,
+      "original_sha256": "1f63a3c0f3ffef7e16c21c6d4d66378f77e83e98a9ae1f975976a0522578082c",
+      "packed_bytes": 93586,
+      "packed_sha256": "bc7de6fd39083f5c13da610293d1d3a7017e8e9d13a2599e51e2c0463093bfe1"
+    },
+    {
+      "logical_original_path": "evaluation/engine073-launch-development-v22-structure-prototypes/name06/source.rs",
+      "packed_path": "evaluation/engine073-launch-development-v22-structure-prototypes/name06/source.rs.gz",
+      "original_bytes": 762008,
+      "original_sha256": "01d613b35ab238d656568472379b1e86eb83c71a87e58d33456e52aeab6204ef",
+      "packed_bytes": 95688,
+      "packed_sha256": "81bffc5c0448405bbd84ee8675be16ff528457a33b766d83249f9771023604de"
+    },
+    {
+      "logical_original_path": "evaluation/engine073-launch-development-v22-structure-prototypes/printed02/source.rs",
+      "packed_path": "evaluation/engine073-launch-development-v22-structure-prototypes/printed02/source.rs.gz",
+      "original_bytes": 743378,
+      "original_sha256": "322ed2de5fa8d5bf3873573ed2c066cd95333b9052bea7b2a1bdbd13b5c39aee",
+      "packed_bytes": 93229,
+      "packed_sha256": "051d7aeab0c2cee8935554e620aa077ba12462926f3138cb96033112de223097"
+    },
+    {
+      "logical_original_path": "evaluation/engine073-launch-development-v22-structure-prototypes/segmentation05/source.rs",
+      "packed_path": "evaluation/engine073-launch-development-v22-structure-prototypes/segmentation05/source.rs.gz",
+      "original_bytes": 759219,
+      "original_sha256": "0b710b1cbb7bb24a8d940c45ed00255a9328da6497e81e21b2822956171a46c1",
+      "packed_bytes": 95223,
+      "packed_sha256": "f6d5b42054d0b6d317724ce1ee283acfd8e8aee66661c24751a882f93a88d810"
+    },
+    {
+      "logical_original_path": "evaluation/engine073-launch-development-v22-structure-prototypes/structure04/source.rs",
+      "packed_path": "evaluation/engine073-launch-development-v22-structure-prototypes/structure04/source.rs.gz",
+      "original_bytes": 754954,
+      "original_sha256": "0c1fd1f70aeea48796af2a729468e244cbf08f839f898da5c236ad2f5cd48662",
+      "packed_bytes": 94632,
+      "packed_sha256": "749d1372a8dd5dec704231189a478e39e205ce294680e3be7c8a69fa971e453c"
+    },
+    {
+      "logical_original_path": "evaluation/engine07-cli-path-preparation-v3/baseline-instrumented-relevance.rs",
+      "packed_path": "evaluation/engine07-cli-path-preparation-v3/baseline-instrumented-relevance.rs.gz",
+      "original_bytes": 502574,
+      "original_sha256": "527fccf91ad25c420bf2751add401e83683a9ecea966197a1992ac54705e8a09",
+      "packed_bytes": 49080,
+      "packed_sha256": "cee056d297e0b5722001774c8f14e71a94e775137eb983352b191278a72f8092"
+    },
+    {
+      "logical_original_path": "evaluation/engine07-cli-path-preparation-v3/candidate-instrumented-relevance.rs",
+      "packed_path": "evaluation/engine07-cli-path-preparation-v3/candidate-instrumented-relevance.rs.gz",
+      "original_bytes": 785735,
+      "original_sha256": "07496163bdf562a6a0f4d4256b5c75cb29eb767aa867e0da41b8fcb33ca2b473",
+      "packed_bytes": 96821,
+      "packed_sha256": "d72f80f3e37eb950face05f36c99b7479f84494ffa269c7ce02f09df27dd0da0"
+    }
+  ]
+}

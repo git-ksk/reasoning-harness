@@ -1,0 +1,31 @@
+{
+  "identity": "engine073-launch-independent-v21",
+  "stage": "PRE_FREEZE_SCOPE_REVIEW",
+  "outcome": "PASS",
+  "reviewed_utc": "2026-10-16T23:26:50.596616+00:00",
+  "reviewer": "same independent author; no second human/model review",
+  "semantic_observations": 0,
+  "all60_final_labels_rationales_reviewed": true,
+  "positive_scope": "Every adverse object is a complete physical/document property or separately explicitly owned foreign event; foreign document owners and quoted event owners are not conflated.",
+  "negative_scope": "Actual target/global/existence denial, unknown/mixed/conflicting event owner. Names in publishers/properties cannot fill a missing event.",
+  "fixed_decisions": [
+    "003 corrects font of target-event sentence in a foreign document, not its event content.",
+    "019 corrects ink colour of literal target-nonexistence words in foreign booklet, not asserted nonexistence.",
+    "035 literal owner-absence words are a font value, not actual missing source context.",
+    "Maintained statements026/058 explicitly assert target nonexistence; no double negation of that proposition.",
+    "Publisher/foreign-property names do not identify an independent event owner.",
+    "Multiple role/field references are explicit the/this/that same type after documented author-stage determiner clarification."
+  ],
+  "actual_gap": [
+    "li21-030",
+    "li21-050"
+  ],
+  "canonical_full_clip_positive": "li21-047",
+  "pure_risk_joint_negative": false,
+  "pre_freeze_author_revision": "pre-freeze-design-revision.json; initial bytes/AST/diff retained, meaning/polarity unchanged before generation/Engine.",
+  "author_and_full_input_static_runs": 1,
+  "old_or_unused_draft_reused": false,
+  "prior_exposure_seen": true,
+  "final_cases_sha256": "7e548dd4eae69fe7b6b4af6fd376c37db26f00d49e4a84ed3a4cecba9d5c35b0",
+  "post_observation_revision_allowed": false
+}

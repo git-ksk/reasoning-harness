@@ -1,0 +1,88 @@
+[
+  {
+    "id": "seen-v6-044-full-context",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-22",
+      "target_question": "Was Vesperwood Holder launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-22",
+        "canonical_name": "Vesperwood Holder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-044-evidence",
+      "source_id": "li6-044-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Vesperwood Holder was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the launch claim for Pearlreed Socket. No actual launch of Vesperwood Holder occurred."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "seen-v6-044-isolated-non-event",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-22",
+      "target_question": "Was Vesperwood Holder launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-22",
+        "canonical_name": "Vesperwood Holder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-044-evidence",
+      "source_id": "li6-044-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Vesperwood Holder was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "No actual launch of Vesperwood Holder occurred."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  }
+]

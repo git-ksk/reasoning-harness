@@ -1,0 +1,122 @@
+{
+  "identity": "engine073-launch-independent-v21",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "frozen_utc": "2026-10-16T23:26:51.041949+00:00",
+  "candidate": {
+    "source_sha": "d647ca44d38958858a9ff4582f48ba6240d75241",
+    "package_version": "0.7.2",
+    "source_file": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+    "source_sha256": "1abbec8d424d372a5713d57be7068af2dd231f1415ad6ad232f2b497e16baea6",
+    "identity_note": "Fixed unreleased source SHA identifies candidate, not unchanged package version."
+  },
+  "frozen_files": {
+    "author_cases.py": "1e64aae62abed9633d562fc57f09dd5688624693c46499825aad081545abac2b",
+    "build-preflight.json": "6eade5d9e5f868a15165b65b6a789f08eb6a77287624fe470a8d7a2d3815ef88",
+    "build.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cases.json": "7e548dd4eae69fe7b6b4af6fd376c37db26f00d49e4a84ed3a4cecba9d5c35b0",
+    "draft-history/initial-author-v1/author_cases.py": "bdd7cca8dc4d52099f24ea39120ebe508b9c0d560258a60cc93bbd7e9ef4107e",
+    "draft-history/initial-author-v1/initial-artifact-hashes.json": "6ff356907c7428eee60e42df3a080b8826bb73def1768df2ce845dc5411a5573",
+    "draft-history/initial-author-v1/static-author-stage-check.json": "98d4b97236e61c98945819c1226ac48a33ce61ba0176a6fe666696cef9c462b6",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "immutable-predecessor-check.json": "24d1c76c4d180b62562fa381dba47fc513261aa62444aac3dcc2c8de7c7a2e00",
+    "inputs.json": "602d2d1c010c9998035d922e3dd784dd052efcfd5e6d298f8f226627dcd4b194",
+    "pre-freeze-design-revision.json": "33eae9d774d5fa9b252c84d5db91da5964fa4947a322a60f35fca6fd951a5eb2",
+    "pre-freeze-scope-review.json": "a694d4432bbbc029d1aa1883dd4b2ed66862bc0d00ef84985c58a61025aea951",
+    "predecessor-artifact-hashes.json": "6df4d7bf5a2a9330a8fa9a00a3db6cd0ef5b64677cf0496c88456de0518c17a6",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "protocol.json": "92e392f6be270a66ca76a303ca3c18d07232c06b8f89148d0044c8c926088382",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "static-preflight.json": "edafec62428c505888eaa96d7f44a20d799a2f276b468f21adeda7c5bedfeb50",
+    "static_preflight.py": "1be7e40e6fbd6d2eb4a54882e9f6699297722dade78c5fc60013c831955b864e"
+  },
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "1abbec8d424d372a5713d57be7068af2dd231f1415ad6ad232f2b497e16baea6",
+      "bytes": 711613
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "1c1df020a80f6c2bedec5ed3e5daec21a5886484d593af56d3d27a54ad6f86c4",
+      "bytes": 31364896
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "bytes": 2110472
+    },
+    "opaque_parent_freeze": {
+      "path": "/private/tmp/engine073-source20-freeze-v2.json",
+      "sha256": "5c1d24ce66b10facaaa3ed9c52f3aa71c71262f271c65768f8a727031130335f",
+      "bytes": 571
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v21-probe/probe",
+      "sha256": "2f46670978f03eebf7746333627f305e90e6c2e24fa4fce373fd9203d973eab2",
+      "bytes": 3094344
+    }
+  },
+  "corpus": {
+    "cases": 60,
+    "positive": 30,
+    "semantic_negative": 30,
+    "pairs": 30,
+    "targets": 30,
+    "real_documents": 0,
+    "complete_Engine_input": "inputs.json",
+    "offline_labels": "cases.json",
+    "new_after_source_freeze": true,
+    "old_or_unused_draft_reused": false
+  },
+  "pre_freeze_author_revision": {
+    "record": "pre-freeze-design-revision.json",
+    "history": "draft-history/initial-author-v1",
+    "purpose": "Explicit this/that/the finite-role reference scope; the added to bare/coordinated roles.",
+    "meaning_polarity_rationales_unchanged": true,
+    "before_input_generation_and_Engine_scorer0": true,
+    "parent_authorized": true,
+    "author_and_full_input_static_runs": 1
+  },
+  "probe": {
+    "source_sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "inherited_byte_identical": true,
+    "parent_fixed_core": true,
+    "rustc_builds": 1,
+    "build_returncode": 0,
+    "semantic_observations_at_freeze": 0
+  },
+  "scoring": {
+    "source_sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "inherited_byte_identical": true,
+    "precommitted_before_API": true,
+    "positive": "requested_relation AND Relevant",
+    "negative": "not requested_relation AND not Relevant",
+    "protocol": "protocol.json",
+    "permissive_change": false,
+    "retry_rescore_relabel_after_freeze": 0
+  },
+  "stages": {
+    "static": "Initial AST-only author history plus final full-input STATIC_ONLY PASS;semantic0.",
+    "scope": "All60 final author expectations fixed before output.",
+    "semantic": "One exclusive first60 process planned, no sentinel."
+  },
+  "predecessors": {
+    "external_anchor": "9b0edb72270648f270c497b525658d9d17aa8b71c1375b018242786ab62b1396",
+    "old_v1_v20_recursive_files_unchanged": 478,
+    "all_unused_drafts_first_results_v19_history_unchanged": true,
+    "hashes": "predecessor-artifact-hashes.json"
+  },
+  "parent_reported_only": "Correctcandidate workspace1555/known1020/historical597/sourceCI19/19 and focused65/strictClippy PASS; not independently read/rerun.",
+  "isolation": {
+    "Engine_implementation_read": false,
+    "root_diagnostics_audits_tests_development_or_other_corpora_read": false,
+    "opaque_parent_freeze_contents_read": false,
+    "Oracle": false,
+    "additional_agents": 0,
+    "provider_network_calls": 0,
+    "cargo_invocations": 0,
+    "Git_mutations": 0
+  },
+  "first_result_contract": "One first60 local API process,one inherited scorer,no post-freeze retry/relabel/rescore/overwrite/scope easing. Preserve firstFAIL. Synthetic source only, not real24/CLI/provider/human/adoption."
+}

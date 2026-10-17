@@ -1,0 +1,26 @@
+{
+  "identity": "engine073-launch-independent-v20",
+  "stage": "PRE_FREEZE_SCOPE_REVIEW",
+  "outcome": "PASS",
+  "reviewed_utc": "2026-10-16T22:55:02.771610+00:00",
+  "reviewer": "same independent author; no second human/model review",
+  "semantic_observations": 0,
+  "all60_final_labels_rationales_reviewed": true,
+  "positive_scope": "Every adverse object completely owns a physical/document property or separately fully named foreign event, including source fields, finite three roles and mentioned literal values.",
+  "negative_scope": "Actual target/global/existence denial or unresolved/mixed/conflicting event owners, independent of earlier known foreign/property objects.",
+  "fixed_decisions": [
+    "009 corrects material of a complete label plate carrying literal target-nonexistence words; the words are not independently asserted as product truth.",
+    "043 corrects font of literal owner unidentified text, with a separate known foreign event; it is not actual missing owner context.",
+    "027/028 maintained Subject statements assert foreign non-event versus target nonexistence; no double-negation inference or withdrawal of that nonexistence claim.",
+    "Publisher names alone cannot fill event roles; positives explicitly give a separate complete owner.",
+    "Multiple separate fully owned events are distinct from one mixed-owner event.",
+    "Actual gaps030/050 independently omit event-owner context; no pure-risk joint-negative."
+  ],
+  "canonical_full_clip_positive": "li20-047",
+  "author_generation_and_static_runs": 1,
+  "pre_freeze_input_revisions": 0,
+  "old_or_unused_draft_reused": false,
+  "prior_exposure_seen": true,
+  "final_cases_sha256": "769a584bd8f188c379405432892584334e83697088db27df23e36bab75755881",
+  "post_observation_scope_revision_allowed": false
+}

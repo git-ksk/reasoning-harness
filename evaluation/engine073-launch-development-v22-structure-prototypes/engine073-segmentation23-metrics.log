@@ -1,0 +1,50 @@
+{
+  "stage": "segmentation05",
+  "v30": {
+    "confusion": {
+      "tp": 29,
+      "fp": 0,
+      "tn": 30,
+      "fn": 1
+    },
+    "n": 60,
+    "positive_support": 30,
+    "negative_support": 30,
+    "precision": 1.0,
+    "recall": 0.9666666666666667,
+    "f1_positive": 0.9830508474576272,
+    "specificity": 1.0,
+    "accuracy": 0.9833333333333333,
+    "balanced_accuracy": 0.9833333333333334,
+    "predicted_positive_rate": 0.48333333333333334,
+    "false_accept_rate": 0.0,
+    "false_withhold_rate": 0.03333333333333333,
+    "mcc": 0.9672041516493516
+  },
+  "v17": {
+    "confusion": {
+      "tp": 30,
+      "fp": 0,
+      "tn": 30,
+      "fn": 0
+    },
+    "n": 60,
+    "positive_support": 30,
+    "negative_support": 30,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_positive": 1.0,
+    "specificity": 1.0,
+    "accuracy": 1.0,
+    "balanced_accuracy": 1.0,
+    "predicted_positive_rate": 0.5,
+    "false_accept_rate": 0.0,
+    "false_withhold_rate": 0.0,
+    "mcc": 1.0
+  },
+  "joint_passed": 59,
+  "mismatches": [
+    "li22-045"
+  ],
+  "unsafe": []
+}

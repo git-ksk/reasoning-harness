@@ -1,0 +1,29 @@
+   Compiling reasoning-harness-core v0.7.2 (/private/tmp/engine073-source21-trace-shadow/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 19.37s
+     Running unittests src/lib.rs (/private/tmp/engine073-trace22-target/debug/deps/reasoning_harness_core-dcd4f612c7771d71)
+
+running 9 tests
+test evidence_relevance::tests::v30_accepts_target_owned_has_made_generally_available_launch_frame ... ok
+
+thread 'evidence_relevance::tests::v30_unowned_reference_determiners_require_unique_same_role_owner' panicked at crates/reasoning-harness-core/src/evidence_relevance.rs:13873:13:
+assertion `left == right` failed: Object: the launch claim. Object owner: Maple Queue. I retract the Object. Silver Lens was launched.
+  left: Ambiguous
+ right: Relevant
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test evidence_relevance::tests::v30_unowned_reference_determiners_require_unique_same_role_owner ... FAILED
+test evidence_relevance::tests::v30_does_not_promote_negated_has_not_made_generally_available ... ok
+test evidence_relevance::tests::v30_does_not_accept_question_fiction_or_unverified_rumor_as_launch_fact ... ok
+test evidence_relevance::tests::v30_launch_authority_never_borrows_sibling_predicate ... ok
+test evidence_relevance::tests::v30_launch_frames_require_target_and_established_fact ... ok
+test evidence_relevance::tests::v30_has_made_launch_frame_does_not_promote_other_negations_or_unrelated_clauses ... ok
+test evidence_relevance::tests::v30_made_available_requires_target_owned_affirmative_predicate ... ok
+test evidence_relevance::tests::v30_complete_claim_wrapper_preserves_only_proven_property_scope ... ok
+
+failures:
+
+failures:
+    evidence_relevance::tests::v30_unowned_reference_determiners_require_unique_same_role_owner
+
+test result: FAILED. 8 passed; 1 failed; 0 ignored; 0 measured; 323 filtered out; finished in 0.43s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --lib`

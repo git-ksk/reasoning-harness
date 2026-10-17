@@ -1,0 +1,15 @@
+{
+  "identity": "engine073-launch-independent-v12",
+  "verified_utc": "2026-10-15T23:54:55.982230+00:00",
+  "stage": "STATIC_ONLY",
+  "external_anchor": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v11/final-artifact-manifest.json",
+  "external_anchor_sha256": "7962554d0d4bf84bb25e223d17c0940849dccbe43ea06bb1fbc6b19f254a1b21",
+  "anchored_entries": 220,
+  "anchor_itself_verified": true,
+  "verified_total_files": 221,
+  "v1_v11_file_sets_and_bytes_unchanged": true,
+  "v11_NOT_EVALUATED_preserved": true,
+  "Engine_invocations": 0,
+  "semantic_observations": 0,
+  "provider_calls": 0
+}

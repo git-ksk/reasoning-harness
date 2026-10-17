@@ -1,0 +1,17 @@
+{
+  "identity": "engine073-launch-independent-v23",
+  "utc": "2026-10-17T08:32:22.922193+00:00",
+  "state": "finished",
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v23/score.py"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 0.05561395827680826,
+  "scorer_invocations": 1,
+  "Engine_additional_invocations": 0,
+  "provider_network_Oracle_calls": 0,
+  "retry": 0,
+  "stdout_sha256": "9ad87662c8af8d1847fe8d2a231a80be2fb51abcd14f1788321df5dfea76f7ce",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

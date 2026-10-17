@@ -1,0 +1,861 @@
+{
+  "identity": "engine073-launch-independent-v22",
+  "saved_utc": "2026-10-17T04:24:30.378531+00:00",
+  "outcome": "FAIL",
+  "first_summary_sha256": "c6be611e191fdf85d7e766deccd0dcf9e1cfe27c898adea86d338875f3192321",
+  "first_results_sha256": "45d677736a34eacdb8b45d0d2f83d0789eda8496a82d480e94baa6f3cb664f1e",
+  "bounded_conclusion": "FAIL. All 30 positive cases were withheld; all 30 semantic negatives were withheld with no v17/v30 safety violation. This is not adoption acceptance.",
+  "first_summary": {
+    "identity": "engine073-launch-independent-v22",
+    "candidate_source_sha": "7431333d212938147a5d9ab32a0b8bdb44ee16b8",
+    "manifest_sha256": "21a8b511a426f5239a7f238fff88e1fc95f8f61dfc2e69b420659058dfd28727",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 30,
+    "failed": 30,
+    "incomplete": 0,
+    "positive_passed": 0,
+    "negative_passed": 30,
+    "negative_v17_requested_relation_violations": 0,
+    "negative_v30_relevant_violations": 0,
+    "positive_v17_withheld": 30,
+    "positive_v30_withheld": 30,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "3b3a6405c6b8fd09e17969ed85c0978c16aa2aa7dee998adb2fbbae38ff0932c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "51945d9d7eed5c2e370be9deb39a5845656f7205a569339d1875672c1b60c884"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "failed_ids": [
+    "li22-001",
+    "li22-003",
+    "li22-005",
+    "li22-007",
+    "li22-009",
+    "li22-011",
+    "li22-013",
+    "li22-015",
+    "li22-017",
+    "li22-019",
+    "li22-021",
+    "li22-023",
+    "li22-025",
+    "li22-027",
+    "li22-029",
+    "li22-031",
+    "li22-033",
+    "li22-035",
+    "li22-037",
+    "li22-039",
+    "li22-041",
+    "li22-043",
+    "li22-045",
+    "li22-047",
+    "li22-049",
+    "li22-051",
+    "li22-053",
+    "li22-055",
+    "li22-057",
+    "li22-059"
+  ],
+  "failed_positive_observations": [
+    {
+      "id": "li22-001",
+      "pair_id": "li22-p01",
+      "axis": "seal-property versus target launch denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The fully named Object concerns only a physical seal shape; its withdrawal does not negate launch."
+    },
+    {
+      "id": "li22-003",
+      "pair_id": "li22-p02",
+      "axis": "foreign certificate property versus global notice denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "A complete physical property on the explicitly foreign product certificate is denied."
+    },
+    {
+      "id": "li22-005",
+      "pair_id": "li22-p03",
+      "axis": "literal non-event text as ink property versus assertion",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The Object is the ink color of a literal sentence in a named foreign insert, not the truth of that sentence."
+    },
+    {
+      "id": "li22-007",
+      "pair_id": "li22-p04",
+      "axis": "spine-property correction versus target existence denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The withdrawn manual binding property and maintained cover property are explicitly non-launch."
+    },
+    {
+      "id": "li22-009",
+      "pair_id": "li22-p05",
+      "axis": "printed units versus same-target event correction",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The Object refers to printed table units even though the booklet belongs to the target."
+    },
+    {
+      "id": "li22-011",
+      "pair_id": "li22-p06",
+      "axis": "caption alignment versus unresolved additional launch claim",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The caption alignment Subject is complete and non-launch."
+    },
+    {
+      "id": "li22-013",
+      "pair_id": "li22-p07",
+      "axis": "paper texture and measured property versus target non-event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "Both named roles describe complete physical paper properties of a foreign document."
+    },
+    {
+      "id": "li22-015",
+      "pair_id": "li22-p08",
+      "axis": "heading text property versus broad launch withdrawal",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The literal heading containing Launch is a type-style property with a full foreign document owner."
+    },
+    {
+      "id": "li22-017",
+      "pair_id": "li22-p09",
+      "axis": "foreign event plus foreign physical property versus unnamed event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The event Object and physical Subject have an explicit unique foreign owner."
+    },
+    {
+      "id": "li22-019",
+      "pair_id": "li22-p10",
+      "axis": "foreign manual quote event versus target event quoted in foreign manual",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The withdrawn event explicitly belongs to Bracken Lens, independently of the manual owner."
+    },
+    {
+      "id": "li22-021",
+      "pair_id": "li22-p11",
+      "axis": "foreign document publication property versus target launch quoted content",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The full Object is a printed line-count property, despite target launch words inside the heading."
+    },
+    {
+      "id": "li22-023",
+      "pair_id": "li22-p12",
+      "axis": "same-role immediate owner supplement versus actual owner gap",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "An otherwise unowned typed event receives one complete immediate same-role foreign owner."
+    },
+    {
+      "id": "li22-025",
+      "pair_id": "li22-p13",
+      "axis": "owner heading supplementation versus explicit target owner retained",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The explicit heading supplies a unique foreign owner to the otherwise unowned typed Object."
+    },
+    {
+      "id": "li22-027",
+      "pair_id": "li22-p14",
+      "axis": "reply owner supplement versus competing supplements",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The adjacent reply explicitly identifies the sole event owner as a complete foreign product."
+    },
+    {
+      "id": "li22-029",
+      "pair_id": "li22-p15",
+      "axis": "newline owner supplementation versus property-only owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "A single full foreign owner directly follows the same-role owner marker on the next line."
+    },
+    {
+      "id": "li22-031",
+      "pair_id": "li22-p16",
+      "axis": "foreign event apposition versus target event apposition",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The immediate complete claim apposition identifies a unique foreign event."
+    },
+    {
+      "id": "li22-033",
+      "pair_id": "li22-p17",
+      "axis": "explicit property denial object versus broader quoted event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The complete apposition is a physical engraving-depth property, not an event denial."
+    },
+    {
+      "id": "li22-035",
+      "pair_id": "li22-p18",
+      "axis": "two property roles plus foreign event versus target event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "All three roles are complete; the event is foreign and the other two are physical properties."
+    },
+    {
+      "id": "li22-037",
+      "pair_id": "li22-p19",
+      "axis": "two foreign events and document property versus ownerless third event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The two withdrawn events name complete foreign owners and the third role is printed border color."
+    },
+    {
+      "id": "li22-039",
+      "pair_id": "li22-p20",
+      "axis": "property context before separate whole-source denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "Every adverse role concerns a complete physical or printed sleeve property."
+    },
+    {
+      "id": "li22-041",
+      "pair_id": "li22-p21",
+      "axis": "typed property in title versus typed event in title",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The title fully declares a non-launch page-fold property; the excerpt refers to the same role."
+    },
+    {
+      "id": "li22-043",
+      "pair_id": "li22-p22",
+      "axis": "property heading versus unresolved claim in independent field",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The heading and role reference completely specify a non-launch lettering property."
+    },
+    {
+      "id": "li22-045",
+      "pair_id": "li22-p23",
+      "axis": "complete canonical name versus actual target denial with clip note",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "A complete canonical Clip name has no actual gap and the adverse Item is a magnetic-clasp property."
+    },
+    {
+      "id": "li22-047",
+      "pair_id": "li22-p24",
+      "axis": "complete literal missing-owner print property versus real context gap",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "Literal uncertainty words are inside a complete printed property, with no missing event context."
+    },
+    {
+      "id": "li22-049",
+      "pair_id": "li22-p25",
+      "axis": "maintained foreign non-event plus safe property versus maintained target nonexistence",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The property role and the maintained non-event both have explicit foreign scope."
+    },
+    {
+      "id": "li22-051",
+      "pair_id": "li22-p26",
+      "axis": "parenthesized full property correction versus parenthesized target denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The parenthesized correction explicitly repeats the same complete physical property scope."
+    },
+    {
+      "id": "li22-053",
+      "pair_id": "li22-p27",
+      "axis": "reporting clauses with complete foreign ownership versus owner ambiguity",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The reporting clause names the same foreign event; the second role is a complete paper property."
+    },
+    {
+      "id": "li22-055",
+      "pair_id": "li22-p28",
+      "axis": "time connector between safe corrections versus separate target denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "No chronology is inferred; the two adversely corrected clauses are a complete property and a foreign event."
+    },
+    {
+      "id": "li22-057",
+      "pair_id": "li22-p29",
+      "axis": "different role owners in one document versus mixed event ownership",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "Each role has an independently complete scope: a title punctuation property and a foreign launch."
+    },
+    {
+      "id": "li22-059",
+      "pair_id": "li22-p30",
+      "axis": "neutral document owner supplement versus explicit event owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "precommitted_rationale": "The adverse roles are a full printed property and a unique foreign event; publisher metadata is not event ownership."
+    }
+  ],
+  "common_input_and_preflight_review": {
+    "all_positive_cases": 30,
+    "shared_configuration": {
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      },
+      "target_aliases": [],
+      "canonical_anchor": "Exactly one separate excerpt signal: full TARGET was launched.",
+      "adverse_context": "Present first-person retraction/withdrawal/denial, explicitly scoped to finite typed Object/Subject/Item, a complete local apposition/property, or a unique foreign event. Source-field and role combinations vary.",
+      "source_kind": "fictional synthetic material, not real publication"
+    },
+    "observed_positive_effective_tuples": [
+      {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none",
+        "v30_disposition": "ambiguous",
+        "count": 29
+      },
+      {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap",
+        "v30_disposition": "ambiguous",
+        "count": 1
+      }
+    ],
+    "scope_preflight_correspondence": "The AST/scope review precommitted complete non-launch property or unique foreign-event semantics for positives. STATIC_ONLY verified counts, required public-schema fields, exact anchor, budget, external labels, raw axes, inherited hashes and old-file immutability. These are design/schema checks, not proof that Engine implements that semantic distinction. No Engine outputs were observed at preflight.",
+    "root_cause_limit": "The shared unresolved public output is an observation, not an implementation diagnosis. No Engine trace or implementation was inspected, no control was added or rerun, and no criteria were weakened after observation."
+  },
+  "diagnosis_limits": "Only public outputs observed. No Engine implementation, parent diagnosis/test/audit/development files inspected. No implementation root cause inferred. All v30 outputs were Ambiguous; no label weakened to pass the candidate.",
+  "scope_review": "All authored 30 pairs reviewed before generation and complete freeze; zero author revisions. Separate direct unadorned target anchor in each case; positive adverse scope is complete property or named foreign event. Negative is target/global denial or unknown/mixed/conflicting event scope, never raw-risk-only.",
+  "newness_limits": "New content/combinations authored after source21 freeze, no old author/case/input/draft text opened or transformed for this set. Prior development failures and declared boundary scope are known; public role grammar/schema repeated intentionally. This is iterative source qualification, not statistical human independence.",
+  "risk_observations": "See risk-diagnostics.json for exact all60 raw/effective values. Actual-gap negatives024/048 observed unresolved/unresolved/multiple/Ambiguous; canonical Clip note045/046 observed exact_target/unresolved/context_gap/Ambiguous. No hidden component risk conclusion follows from these enum values.",
+  "execution_integrity": {
+    "author_runs": 1,
+    "full_input_static_runs": 1,
+    "compile_only_runs": 1,
+    "Engine_first_processes": 1,
+    "Engine_cases": 60,
+    "scorer_processes": 1,
+    "retry": 0,
+    "rescore": 0,
+    "relabel": 0,
+    "post_freeze_input_or_rule_change": 0,
+    "provider_model_API_calls": 0,
+    "network_calls": 0,
+    "Oracle": 0,
+    "additional_agents": 0,
+    "Git_mutation": 0,
+    "cargo_shared_target_mutation": 0
+  },
+  "closure_interruption": "The first attempt to save final review artifacts was not executed because automatic approval review could not finish under usage limit. This authorized continuation reads the same 29 first/freeze artifacts and adds closure files only. No Engine/scorer run occurred on continuation. Parent closure record is separate and was not substituted for independent review.",
+  "remaining_gates": [
+    "Root source repair and separate validation; this first FAIL remains immutable and becomes seen development evidence.",
+    "A future independently authored source set requires a new source freeze and identity.",
+    "Real primary-source #531 24-question evaluation, ordinary CLI acquisition/final answer evaluation, provider/quota tests, human acceptance and adoption/release gates remain separate and unperformed here.",
+    "No arbitrary-language/graph/alias/chronology/property-truth guarantee and no improvement-rate claim across changing corpora."
+  ],
+  "parent_reported_only": "related80/strictClippy/fmt PASS; full/seen1080/historical597 separately in progress at dispatch; no root code/tests/diagnostics read"
+}

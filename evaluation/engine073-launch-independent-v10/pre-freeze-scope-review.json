@@ -1,0 +1,495 @@
+{
+  "identity": "engine073-launch-independent-v10",
+  "review_utc": "2026-10-15T23:25:08.165638+00:00",
+  "stage": "PRE_OBSERVATION",
+  "semantic_observations": 0,
+  "all60_reviewed": true,
+  "positive": 30,
+  "negative": 30,
+  "unknown_scope_ids": [
+    "li10-008",
+    "li10-012",
+    "li10-014",
+    "li10-016",
+    "li10-020",
+    "li10-036",
+    "li10-040",
+    "li10-042",
+    "li10-046",
+    "li10-054"
+  ],
+  "competing_quote_or_type_with_target_event_ids": [
+    "li10-034",
+    "li10-056"
+  ],
+  "canonical_clip_positive_ids": [
+    "li10-009",
+    "li10-019",
+    "li10-027",
+    "li10-053"
+  ],
+  "explicit_raw_context_gap_ids": [
+    "li10-020",
+    "li10-036",
+    "li10-054"
+  ],
+  "risk_axis_review": "No pure risk-only case forces relation removal. Three supplied context_gap cases also have semantically unknown withdrawn/denied launch scope. Unchanged joint scorer.",
+  "scope_interpretation": "Finite same-type local references; complete property apposition/quote and full foreign owner supplements positive only when unambiguous. Missing/mixed/competing/unselected launch scopes negative. No post-result easing.",
+  "newness_limit": "New boundary compositions, same finite API syntax necessarily reused; no old block replay/name substitution. Adaptive successor testing after prior failures, not a statistically independent release holdout.",
+  "precommitted_pairs": [
+    {
+      "pair_id": "v10-pair-01",
+      "axis": "heading_object_denial_and_neutral_publication_note",
+      "positive_id": "li10-001",
+      "negative_id": "li10-002",
+      "scope_rationale": "The same typed Object is explicitly width or target launch; an independent neutral publication note cannot change its scope.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-02",
+      "axis": "quoted_subject_with_same_type_withdrawal",
+      "positive_id": "li10-003",
+      "negative_id": "li10-004",
+      "scope_rationale": "A complete adjacent quoted Subject supplies material or target launch; this Subject refers to the same type.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-03",
+      "axis": "item_with_complete_owner_and_dimension_apposition",
+      "positive_id": "li10-005",
+      "negative_id": "li10-006",
+      "scope_rationale": "The complete same-sentence apposition defines the Item without a numbered or distant reference.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-04",
+      "axis": "same_object_article_reference_and_selected_owner",
+      "positive_id": "li10-007",
+      "negative_id": "li10-008",
+      "scope_rationale": "The positive Object has one fully named foreign owner; the negative explicitly leaves the launch owner unselected.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-05",
+      "axis": "complete_clip_name_property_vs_explicit_non_event",
+      "positive_id": "li10-009",
+      "negative_id": "li10-010",
+      "scope_rationale": "Clip is part of an explicitly complete canonical name, not a context-gap marker. The negative directly denies the target event.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-06",
+      "axis": "item_reply_with_following_complete_owner_supplement",
+      "positive_id": "li10-011",
+      "negative_id": "li10-012",
+      "scope_rationale": "An adjacent complete foreign-owner supplement makes the positive local Item unambiguous; the negative explicitly lacks its launch owner.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-07",
+      "axis": "separately_typed_property_cues_vs_additional_unknown_launch",
+      "positive_id": "li10-013",
+      "negative_id": "li10-014",
+      "scope_rationale": "Two separately named property types are safe in the positive; the property Object cannot waive the independent ownerless launch Subject.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-08",
+      "axis": "complete_property_apposition_vs_unselected_event_apposition",
+      "positive_id": "li10-015",
+      "negative_id": "li10-016",
+      "scope_rationale": "The positive complete same-sentence apposition is supported; the negative expressly leaves property versus launch scope unselected.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-09",
+      "axis": "document_subject_denial_with_layout_footer",
+      "positive_id": "li10-017",
+      "negative_id": "li10-018",
+      "scope_rationale": "The footer is neutral in both arms; the same explicit Subject type determines property versus event denial.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-10",
+      "axis": "canonical_clip_complete_context_vs_actual_owner_gap",
+      "positive_id": "li10-019",
+      "negative_id": "li10-020",
+      "scope_rationale": "A complete canonical Clip name plus a physical property is positive; the negative has actual missing owner context and a launch withdrawal, with explicit raw context_gap.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-11",
+      "axis": "adjacent_heading_owner_for_typed_object_reply",
+      "positive_id": "li10-021",
+      "negative_id": "li10-022",
+      "scope_rationale": "One adjacent heading completely names the owner of a singular launch Object; no alias or reference graph is requested.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-12",
+      "axis": "foreign_object_and_separately_owned_subject",
+      "positive_id": "li10-023",
+      "negative_id": "li10-024",
+      "scope_rationale": "A fully named foreign launch and target physical property are safe together; a foreign Object cannot mask the separate target-launch Subject.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-13",
+      "axis": "property_item_before_foreign_or_target_launch_object",
+      "positive_id": "li10-025",
+      "negative_id": "li10-026",
+      "scope_rationale": "Separate explicit typed corrections retain target launch only if the launch Object is fully foreign, never merely because the Item is a property.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-14",
+      "axis": "canonical_clip_title_and_typed_item_context",
+      "positive_id": "li10-027",
+      "negative_id": "li10-028",
+      "scope_rationale": "The exact complete canonical name must not itself imply clipping; the typed Item is explicitly material or target launch.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-15",
+      "axis": "same_subject_with_explicit_printed_type_clarification",
+      "positive_id": "li10-029",
+      "negative_id": "li10-030",
+      "scope_rationale": "The full Subject and adjacent type clarification agree; physical component modifiers are not event predicates.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-16",
+      "axis": "quotation_then_typed_item_then_same_type_reply",
+      "positive_id": "li10-031",
+      "negative_id": "li10-032",
+      "scope_rationale": "One adjacent complete quote plus matching Item type binds the reply to colour or target launch.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-17",
+      "axis": "subject_heading_and_quote_type_agreement_or_conflict",
+      "positive_id": "li10-033",
+      "negative_id": "li10-034",
+      "scope_rationale": "The positive heading and quote consistently identify a physical Subject; competing target-event Subject in the negative requires withholding.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-18",
+      "axis": "locally_bound_object_vs_distant_property_and_missing_reply_context",
+      "positive_id": "li10-035",
+      "negative_id": "li10-036",
+      "scope_rationale": "A local explicit foreign Object is positive. A remote property title cannot resolve a separate reply whose local launch/type/owner context is explicitly missing; raw context_gap is supplied.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-19",
+      "axis": "fully_explained_compound_property_item_apposition",
+      "positive_id": "li10-037",
+      "negative_id": "li10-038",
+      "scope_rationale": "A complete physical width-and-height apposition is one non-launch Item; the negative complete apposition is target launch.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-20",
+      "axis": "post_reply_owner_supplement_selected_or_mixed",
+      "positive_id": "li10-039",
+      "negative_id": "li10-040",
+      "scope_rationale": "The positive supplement names one full foreign owner; the negative explicitly leaves target-versus-foreign ownership unresolved.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-21",
+      "axis": "two_local_typed_properties_vs_ownerless_second_subject",
+      "positive_id": "li10-041",
+      "negative_id": "li10-042",
+      "scope_rationale": "Each type has its own adjacent reference; a clear property Object cannot excuse an independent ownerless launch Subject.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-22",
+      "axis": "generic_claim_with_adjacent_complete_font_or_event_quote",
+      "positive_id": "li10-043",
+      "negative_id": "li10-044",
+      "scope_rationale": "The generic claim reference has one adjacent complete quotation and explicit scope restatement, rather than borrowing a distant property type.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-23",
+      "axis": "ledger_item_heading_with_foreign_or_unselected_confirmation",
+      "positive_id": "li10-045",
+      "negative_id": "li10-046",
+      "scope_rationale": "Neutral ledger/layout context does not alter one explicit foreign Item or resolve the unselected owner of the negative Item.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-24",
+      "axis": "target_event_subject_before_safe_property_object",
+      "positive_id": "li10-047",
+      "negative_id": "li10-048",
+      "scope_rationale": "A later explicit property Object cannot erase an earlier fully named target-launch Subject denial; positive corrections are both property-only.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-25",
+      "axis": "complete_title_owner_with_same_item_reply",
+      "positive_id": "li10-049",
+      "negative_id": "li10-050",
+      "scope_rationale": "The adjacent title/heading/reply identify one complete owner of the typed launch Item; no alias or arbitrary graph is needed.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-26",
+      "axis": "generic_target_claim_with_complete_property_or_event_apposition",
+      "positive_id": "li10-051",
+      "negative_id": "li10-052",
+      "scope_rationale": "The generic claim is fully explained by an adjacent same-sentence apposition; no unresolved generic reference is forced positive.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-27",
+      "axis": "full_clip_name_vs_explicitly_missing_launch_owner_sentence",
+      "positive_id": "li10-053",
+      "negative_id": "li10-054",
+      "scope_rationale": "The positive Clip name is complete and the property scope explicit; the negative has a real missing owner sentence and denied launch Object plus raw context_gap.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-28",
+      "axis": "typed_item_and_quoted_owner_agreement_or_conflict",
+      "positive_id": "li10-055",
+      "negative_id": "li10-056",
+      "scope_rationale": "One fully foreign owner is safe; a target-launch Item competing with a foreign quote must not inherit foreign immunity.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-29",
+      "axis": "document_property_object_and_second_subject_with_neutral_printer_note",
+      "positive_id": "li10-057",
+      "negative_id": "li10-058",
+      "scope_rationale": "The independently typed second Subject can be physical colour or target launch; neither the document Object nor neutral printer note can mask it.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v10-pair-30",
+      "axis": "safe_subject_before_fully_owned_foreign_or_target_item",
+      "positive_id": "li10-059",
+      "negative_id": "li10-060",
+      "scope_rationale": "The first property Subject is safe in both arms; the separately typed launch Item must be evaluated by its complete owner.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    }
+  ],
+  "other_property_truth_approved": false,
+  "require_new_affirmative_syntax": false,
+  "require_arbitrary_graph": false,
+  "provider_calls": 0
+}

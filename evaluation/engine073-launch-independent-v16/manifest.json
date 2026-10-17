@@ -1,0 +1,110 @@
+{
+  "identity": "engine073-launch-independent-v16",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "frozen_utc": "2026-10-16T16:00:08.557706+00:00",
+  "candidate": {
+    "source_sha": "854ef6d23d8089b6136dae38086941a9ced96c76",
+    "package_version": "0.7.2",
+    "source_file": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+    "source_sha256": "436b09d9f81386931213cb15048c86628d289c1b57d9bb31cc5c24bd5ecf4af5",
+    "identity_note": "Unreleased source SHA distinguishes candidate; unchanged package version is not candidate identity."
+  },
+  "frozen_files": {
+    "author_cases.py": "8fef5d0bac0a348e0212ba3924102b7f9a13b1f5736b9338778118891da05eb3",
+    "build-preflight.json": "6d5332564d0e57ad273bcb77aa717a97d95ea3dfd8f79250b9322fcdfb338ea2",
+    "build.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cases.json": "b3f9571b130a5cee4c1e7264df1ae0fb5e3eb23e26983f210b01e2429219ee17",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "immutable-predecessor-check.json": "27ec98d9068c0cd2f175636e351e8e47d2bb18321ea75c221b566dec1c8e55ac",
+    "inputs.json": "068744865ad4cfe560fbaa093d0767fa69e1eec6ddd4b129280ac5577068962f",
+    "pre-freeze-scope-review.json": "66a6bff6771e17fa9d688d18b5293249405237d8e870afc5905158c3a809452b",
+    "predecessor-artifact-hashes.json": "b8a90853530ffcdc3f9c0d59e38123cd93c2902d1bebd2ba6cb5905017ba186a",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "protocol.json": "68c190a753d59dfa88824e4e53d66c9209fa61ba98e7c288477b663ac7be1fe8",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "static-preflight.json": "950748cb09e51d52456de8f816b38b557f1cfae5ab3a4b11cdd4097a0014d7b9",
+    "static_preflight.py": "850a6e3f9c22a52385739482ecf0c8a86563dab6df09c728f25c043b5a301698"
+  },
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "436b09d9f81386931213cb15048c86628d289c1b57d9bb31cc5c24bd5ecf4af5",
+      "bytes": 681259
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "8aab14019e072369a5e44f316237b55b58e695efbbddf4d6a63758b279a7aca9",
+      "bytes": 31078440
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "bytes": 2110472
+    },
+    "opaque_parent_freeze": {
+      "path": "/private/tmp/engine073-source15-freeze.json",
+      "sha256": "a637ccbcfbb6e139d756d1ed8a14e003fb60397a2d24ea69b4ff53b03a9e8ca1",
+      "bytes": 571
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v16-probe/probe",
+      "sha256": "7a4414646f1b97c317fb144b3669e5fa4bc031f23f4279bd078df76f2d8865f6",
+      "bytes": 2926424
+    }
+  },
+  "corpus": {
+    "count": 60,
+    "positive": 30,
+    "semantic_negative": 30,
+    "pairs": 30,
+    "targets": 30,
+    "real_documents": 0,
+    "cases": "cases.json",
+    "complete_engine_inputs": "inputs.json",
+    "new_after_freeze": true,
+    "previous_case_or_draft_name_template_reuse": false,
+    "old_sets_seen": true
+  },
+  "probe": {
+    "source_sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "inherited_byte_identical": true,
+    "parent_supplied_fixed_core": true,
+    "build_attempts": 1,
+    "build_returncode": 0,
+    "semantic_observations_at_freeze": 0
+  },
+  "scoring": {
+    "source_sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "inherited_byte_identical": true,
+    "precommitted_before_API": true,
+    "positive": "requested_relation AND Relevant",
+    "negative": "not requested_relation AND not Relevant",
+    "protocol": "protocol.json",
+    "permissive_change": false,
+    "retries": 0
+  },
+  "stages": {
+    "static": "STATIC_ONLY PASS; semantic0.",
+    "scope": "All60 labels/rationales fixed before outputs.",
+    "semantic": "One exclusive first60 process planned; no sentinel."
+  },
+  "predecessors": {
+    "external_anchor": "88215c3c7fe6084d31a40661dd5b2c9394a45d974a2662f44fc21093d1b54795",
+    "old_v1_v15_files_unchanged": 323,
+    "v11_NOT_EVALUATED_unchanged": true,
+    "hashes": "predecessor-artifact-hashes.json"
+  },
+  "external_known_gate": "Parent reports strictClippy needless_borrow; subsequent lint repair/CI required independently of this fixed candidate source score.",
+  "isolation": {
+    "production_implementation_read": false,
+    "root_tests_or_other_corpora_read": false,
+    "opaque_parent_freeze_contents_read": false,
+    "Oracle": false,
+    "additional_agents": 0,
+    "provider_network_calls": 0,
+    "cargo_invocations": 0,
+    "Git_mutations": 0
+  },
+  "first_result_contract": "One first60 Engine process, one inherited scorer; no retry/rescore/relabel/overwrite/scope easing, preserve firstFAIL. Limited synthetic source gate, not real24/CLI/provider/human/adoption."
+}

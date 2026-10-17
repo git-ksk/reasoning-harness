@@ -1,0 +1,27 @@
+{
+  "source_sha": "92293072c686dc4000855816322ed58b3df905c8",
+  "source_file_sha256": "644627ea637cac355d20b6ecd62131ecfad690e653ffcacdd7f72c1f9fce69c8",
+  "files": {
+    "README.md": "62c80c105856e7133e7e77c1374db489f736e474e1d4f70694db5dd62c99f566",
+    "archive.log": "e7f28b11075e6743aa71e5e393a2bf64528e6244197d2e6e53b13a18a2b683da",
+    "clippy.log": "4d6b2b7af61cf4a406dd081ca39fdca997323d319ca4baaa85c30f95fc3be3c2",
+    "fixtures.json": "808579a083c50b2fb107df3e87e19332825af73367981cc629e5d162fce4ffdf",
+    "fmt.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused-after.log": "f687a4816f56debe8ce311f38743fb091ca6eb3f84fc961c4c69f8036907d4c8",
+    "historical-current.jsonl": "9f378662ae651f7c7a2394d7c00c918c9eec7701628ccd339c6d2d181fba47f5",
+    "local-owner-red.log": "7e4c8e274efa56402cc02121f7f95880d3e1c5aafe155ff1cf4fb7318e8229a2",
+    "original-audit-after.jsonl": "5c32b97127644a0be7094ba23cf629349bed75aa91e995897ec61870bd98d83b",
+    "probe-summary.json": "21f40e277a2d71d7df5e1faba433bb6488449bfafcbeedcd9ccbdcadb55a918e",
+    "providers.log": "5632ae7ff0b775a7bf721afcb1d4810a305e96027c508e946ed9d920e3f1f516",
+    "seen-independent-v2-after.jsonl": "acc897a23e50d0575b3fec4025d6cee1b8cf45bb770327a4275e0792f15e7f56",
+    "seen-independent-v3-after.jsonl": "f7211277b5a04466ee10ad50ee715a497a7e3112baa3fde6f644042736d48129",
+    "seen-independent-v4-after.jsonl": "99ea2a1b07461ebc522591a7a2ddf5af6ef49d30aba463c028a9660d89fc34dd",
+    "seen-independent-v5-after.jsonl": "24cffa7ec083b9eb08fe11326db5c91885522f6f0f6fb8f8ec33e2cbaca5a1e1",
+    "seen-independent-v6-after.jsonl": "968d51a79db3783c03b118a38ec7a12cb570ffde79502bfe5bff2de308729da9",
+    "seen-independent-v7-after.jsonl": "215852736588714dc5d438d7d18d3f3b68acbd6888fa5e1c846fe4222d9a4fa4",
+    "seen-independent-v8-after.jsonl": "dfb203dcd475aa651cb0020590f19525bed11c2ca6dbc5f9ddd6089da875794f",
+    "summary.json": "fa0aa76c08bb8a14988a37ae70eeb297f4f6c2ea0a673435fdaea56cd1e1e04b",
+    "typed-object-red.log": "79d8a9b3f82e77d307005174233993c2be2f6451e9939a08134a57217fe4a4c1",
+    "workspace.log": "52822460c660ec509524aabeb19603d4d119666455d367a1682aec6007efdc26"
+  }
+}

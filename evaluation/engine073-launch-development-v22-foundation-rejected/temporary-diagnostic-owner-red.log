@@ -1,0 +1,22 @@
+   Compiling reasoning-harness-core v0.7.2 (/private/tmp/engine073-source21-trace-shadow/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 19.84s
+     Running unittests src/lib.rs (/private/tmp/engine073-trace22-target/debug/deps/reasoning_harness_core-dcd4f612c7771d71)
+
+running 1 test
+FOUNDATION_DIAGNOSTIC Ok(EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: Unresolved, scope_risk: None }) governing=true objects=[("object", "launch", false)]
+
+thread 'evidence_relevance::tests::v30_unowned_reference_determiners_require_unique_same_role_owner' panicked at crates/reasoning-harness-core/src/evidence_relevance.rs:13874:13:
+assertion `left == right` failed: Object: the launch claim. Object owner: Maple Queue. I retract the Object. Silver Lens was launched.
+  left: Ambiguous
+ right: Relevant
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test evidence_relevance::tests::v30_unowned_reference_determiners_require_unique_same_role_owner ... FAILED
+
+failures:
+
+failures:
+    evidence_relevance::tests::v30_unowned_reference_determiners_require_unique_same_role_owner
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 331 filtered out; finished in 0.03s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --lib`

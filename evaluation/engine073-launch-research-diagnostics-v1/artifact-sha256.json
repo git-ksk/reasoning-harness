@@ -1,0 +1,11 @@
+{
+  "identity": "engine073-launch-research-diagnostics-v1",
+  "original_first_manifest_sha256": "4f8fd8921fdf754de2088e3afe9ab23a86dbfbc25e89c3e3335c4ffcd02c930a",
+  "files": {
+    "README.md": "43045a389dc18f0a6051e6c61737c61dc74266e1f5ebde3e268d5565f75c2630",
+    "analyze.py": "2e33c6ad2c7d84b2350a0989e0f1401e74d7abf9e3f2decd8e233e44c7b0fbbf",
+    "report.json": "41c8bf89bdf7aa9b92f24999b33159251fc636cc8d418c69bcaa3c06fef29a0e",
+    "test_analyze.py": "3616f61b2e33553c32a5c950d496eb73f799a1c3f5b092c02f4515ad28a0c89a",
+    "tests.log": "648babf6d990ba693cc8d7bb86874c90a558addb12fc7b11a184f50c5204f031"
+  }
+}

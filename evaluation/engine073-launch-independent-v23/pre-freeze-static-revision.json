@@ -1,0 +1,17 @@
+{
+  "identity": "engine073-launch-independent-v23",
+  "stage": "PRE_COMPLETE_FREEZE_STATIC_CHECKER_ADAPTATION",
+  "utc": "2026-10-17T08:09:32.682920+00:00",
+  "original_static_sha256": "462a760378899e7126ac436516af7c2f900ed62eb29483663d7e72212d22584d",
+  "revised_static_sha256": "7ca24cb29d0126f51593909e7c54514a4207af6b026bda327ff04966c15f89a5",
+  "exact_diff": "--- initial-static-v1/static_preflight.py\n+++ static_preflight.py\n@@ -25,7 +25,7 @@\n   risk='context_gap' if c['id'] in ['li23-034','li23-048'] else 'none'\n   assert x['raw']=={'identity_scope':'exact_target','relation_scope':'requested_relation','scope_risk':risk}\n   if risk!='none':assert c['polarity']=='negative'\n-  if t.endswith(' Clip'):assert any('Canonical product name: '+t in s['text'] for s in ss)\n+  if t.endswith(' Clip'):assert any(t in s['text'] and 'canonical product name:' in s['text'].lower() for s in ss)\n  for i in range(0,60,2):\n   a,b=cases[i:i+2];assert a['pair_id']==b['pair_id'] and a['axis']==b['axis'] and a['polarity']=='positive' and b['polarity']=='negative'\n   assert a['input']['policy']['entity']==b['input']['policy']['entity']\n",
+  "reason": "Inherited author-style assertion required capitalized Canonical product name, although the new explicit heading says Complete canonical product name. Public canonical entity schema/full name is identical; this is a static formatting overconstraint.",
+  "author_sha256_unchanged": "929ff7cc018480fa27ad4aee3efab64930d149dc1b8e965a7a72092a402c8ab4",
+  "expected_polarity_unchanged": true,
+  "author_cases_inputs_labels_changed": false,
+  "new_cases_inputs_not_generated_yet": true,
+  "semantic_observations": 0,
+  "Engine_invocations": 0,
+  "scorer_invocations": 0,
+  "static_schema_not_scoring_rule": true
+}

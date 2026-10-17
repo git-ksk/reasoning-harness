@@ -1,0 +1,359 @@
+{
+  "identity": "engine073-launch-independent-v25",
+  "frozen_utc": "2026-10-17T17:45:39.511070+00:00",
+  "candidate": {
+    "source_sha": "95053007bba54c728eee428837b22eb9d52a4f61",
+    "package_version": "0.7.2",
+    "source_content_sha256": "9d8d3fa48a67f197d32282314813d992a374b9f54a6b079c39498b9a67f9207f",
+    "core_rlib_sha256": "d785adeaa51591b9902266c7c7bd114763aaed1671c5e65f4df65d83d9be7fd9",
+    "serde_rlib_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+    "opaque_freeze_sha256": "87fd6d094d4bf247cf609e81b5a4bae24953cc59c3feea5c062ecbc1cad4902c"
+  },
+  "frozen_files": {
+    "README.md": "299e51ab69f34a102cde8479623210b03c940fea9144fbf58e4a5ae2d9b50f77",
+    "author-generation.json": "4e32bc20421b1d33c4a0ce58c7056bdc6fbad861855726488cba4fc02ce48dea",
+    "author-generation.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author-generation.stdout.txt": "19761349f23b949847c751033e5eb3612eebe356dcb778f9e8e2f793f5fb0256",
+    "author_cases.py": "d0af5dfa213b7dc477f0fbf9a787622ef0a09b5f600c7b47f344f07315eb17ff",
+    "authoring-start.json": "6bb166e4597da9e6c962d54b277ecf68b55f27b2498c91c38e502dbaad4b43cd",
+    "build-preflight.json": "593f412452e8ad7d18fdf70297b043b7c3d7128f83c2dd0f63f6c8c8895b9064",
+    "build.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cases.json": "10213396b11cc6d0860d809c7a9e9b3a19c25ded98ae1617f41fc8d65e25a5fc",
+    "evaluator-freeze.json": "b172872d29b19e4308bf86bbce99b570f8d0198a087973def644f679fcb75ac6",
+    "evaluator_contract.py": "89f1004fff9e7b20b26da012312ed0f2de6cf39ae4cd8a4e3c4c38ab6574bb16",
+    "execute_first.py": "f49c6350e438078a399386e1fb908a57aa2b298e08d2d8cb670fe76addb5709f",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "fixed-artifacts.json": "68d78f747d40a181d55d39b5fa9313825393c92955105fcd73f0002123f8b83a",
+    "freeze_corpus.py": "054b56480844427fa22e9e59fd78f0518f869183dcfa98671a5420fe6c5b0de6",
+    "frozen-lib-hashes.json": "b9a1f8b1659c9118e583166aff1de23f4a2ca6ec4cb65718da9551ec4089dce8",
+    "inputs.json": "95be6aa3f505d87e8d3804ecc5f47ee26419f37fb15cb5122fac2a0a5fdfd462",
+    "legacy_parse_reference.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "metrics-spec.json": "5e2cde5250d17df5505e7ce111eb0977841221c8fbe906ce1326de79a28670b2",
+    "parent-controls-snapshot.json": "a1136548f4b424f797dc0ea617e7f37a1dff67d0f91994dd2b00437858ec41bf",
+    "parent-controls.opaque.json": "4e27e271e45a6a757e34c044cfc32619b4f34598aeb738ede7fbdbdca14eeb3f",
+    "parent-preauthor-review.opaque.json": "cef92a75a2b9f364bbebf946b068c80963d992d50a022d1deb57e9e27a99b1f4",
+    "pre-author-hash-verification.json": "b334fb29d9883333f6252dd8f49d4b970f910d01be15b4bd776c7cac7af8489d",
+    "pre-author-receipt.json": "303c11f11e7e38a76369f0117bc7af738dcd4275dbfaf826bee1016ad8da6ef9",
+    "pre-author-review.json": "45da16c597a5f90370cd3a03bb0334ab9b45fd8c0b4795a68a35f6f32cc6e122",
+    "pre-freeze-history/bool-review-revision.json": "b3838db61d6ad8debb3ef92d3f980a461909f23b742aae7104654325d334a4ed",
+    "pre-freeze-history/diagnostic-review-revision.json": "970a11a6c5996ed96e271b63b8abfb575bbbd89febe5b57f49ad83ee47447f6a",
+    "pre-freeze-history/execute_first.py.before-diagnostic-review.txt": "a0bd0b87b22f1ab6f0ac403fb0b2271f7a1bb0916ff1259ade2318392a39be9e",
+    "pre-freeze-history/execute_first.py.diagnostic-review.diff": "83fb4f3d0fabf7f61e743c7bdec54b8c5292193c82cd4470a2022aa2bddf83e5",
+    "pre-freeze-history/incomplete-review-red.json": "d814cf0368a715eeacf7a18345529835486b1750bf7ba69c75dabe8b6d43c5e9",
+    "pre-freeze-history/incomplete-review-red.stderr.txt": "f77491b541ceb4d6a46159ebfac3f303a2d1f51c43906e189b63013c82ade270",
+    "pre-freeze-history/incomplete-review-red.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pre-freeze-history/incomplete-review.diff": "21d79f70e2f3b59ae1b178b8e8ed10786a09a685bcf68827f4ba4149fd9439bd",
+    "pre-freeze-history/score.py.before-bool-review.txt": "f80aaf514c9ceca3340b93b24171128cde4e3b1330a5f74bd3632a5c9c628b2a",
+    "pre-freeze-history/score.py.before-diagnostic-review.txt": "6478febd0292eb14de8bcbeb02eda19294d4348e0b8672b2fbb63eb8471c870c",
+    "pre-freeze-history/score.py.before-incomplete-review.txt": "ea198222c182ab87a664c9090ff0f3d2a86ab1475ab0655253398e60054975a3",
+    "pre-freeze-history/score.py.diagnostic-review.diff": "260e7b868c17056e94836c7a4a7aa67729aba5024cae64b89cea71fb5cc49725",
+    "pre-freeze-history/static_preflight.py.before-bool-review.txt": "b05c6d5b3c16507f3e3c302ac9bf01b826d2dbd5624d064b7500a7379b5735d6",
+    "pre-freeze-history/test_evaluator.py.before-diagnostic-review.txt": "ad2d35421a6266d76da9ee32c4380f125600fe1fbff86913284710cd18cd0406",
+    "pre-freeze-history/test_evaluator.py.before-incomplete-review.txt": "406ea4e55b3c10eda84bfa9ae6528d8e59a9a3d00b0a66b9d04543ba8667d586",
+    "pre-freeze-history/test_evaluator.py.diagnostic-review.diff": "b40e9d3b5eaad982209be645ddb5c98f76d181bd5229c8a16e1d87cb1f163cd7",
+    "predecessor-artifact-hashes.json": "a80e6ef84616db85e8beee62b84cbeb17e9d76d592da3e7e87f856f921e70f81",
+    "preserved-preparation-hashes.json": "4ce3f90bbb870cda0f9771bfe31e57c3729b531034225f820f15a4489a0729ea",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "protocol.json": "3aa085f0aca7a7d6392c8ec9f2b4cf244dc86e30eb0a8d5691f26b868c165814",
+    "scope-review.json": "9dde7550d54c044f47bf85b9d57ce0e95c42710ef25b4be56d74363a89c2264e",
+    "score.py": "e786f7c0e3af45c17769552818c0e3be1d9ec5fa26d0f5472a3cff013d1f543b",
+    "selftest-attempt1.json": "e9d2cdcfff53e51a919f68f81057bbb1b9821215c6a39f423da55191a8710cfd",
+    "selftest-attempt1.stderr.txt": "6b329f59992f9bbd792dfc648a66d22b08456343c33b44c751bb5f4a6aaa15bc",
+    "selftest-attempt1.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "selftest-attempt2.json": "564445a0101c011e1b41f696f4752805879def3ee45b42cdb457d91d6f335896",
+    "selftest-attempt2.stderr.txt": "f76f36a793495573761b202ca346e8f24e79a7b1d6ac349dab2711aeb6ea1740",
+    "selftest-attempt2.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "selftest-attempt3.json": "230be0a1d062bc33f6a6781583dd7abf54b8205cc665893dc2ae18a22d41f9a0",
+    "selftest-attempt3.stderr.txt": "497354db88029c7df7aaf54680d3f904cfb98e79164fb09aa71e2655289f2b47",
+    "selftest-attempt3.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source_gate_helper.py": "00f6971900864ee9e89e4db6029d8196fabd0a4b6ab28e343f19506417735c6f",
+    "source_gate_policy.json": "3a6d37e3fbf134f4a49677fdcd7de8b1b625739988a40e1c1e78b94978099767",
+    "static-preflight.invocation.json": "49e91f518ce44a46ae5c570c3665b663f3a186f08611de16c66c3ea7568bcdd9",
+    "static-preflight.json": "97f2aa8c14b5416fdb4fd3072395dcaa790302bd91b1a2d046f51abd80ff7780",
+    "static-preflight.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "static-preflight.stdout.txt": "97f2aa8c14b5416fdb4fd3072395dcaa790302bd91b1a2d046f51abd80ff7780",
+    "static_preflight.py": "405995fa45de6fab26363a2615b87c0ceddd1416ec45d41541c0236f9f1b95d4",
+    "test_evaluator.py": "0150df7d5d8c2ada90a6ff95924846426cbc8a6a6c111fe9832c16a28855e0bc"
+  },
+  "checked_artifacts": {
+    "candidate_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "9d8d3fa48a67f197d32282314813d992a374b9f54a6b079c39498b9a67f9207f",
+      "bytes": 814044
+    },
+    "opaque_parent_freeze": {
+      "path": "/private/tmp/engine073-source25-independent-freeze.json",
+      "sha256": "87fd6d094d4bf247cf609e81b5a4bae24953cc59c3feea5c062ecbc1cad4902c",
+      "bytes": 1845
+    },
+    "opaque_parent_controls": {
+      "path": "/private/tmp/engine073-source25-regression-controls.json",
+      "sha256": "4e27e271e45a6a757e34c044cfc32619b4f34598aeb738ede7fbdbdca14eeb3f",
+      "bytes": 1422
+    },
+    "frozen_dependency_000": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/copied-artifacts.json",
+      "sha256": "3b34a4582921ae46d411b7a0c4f5786b642449275879ba7fcc6fe230ec266c03",
+      "bytes": 9236
+    },
+    "frozen_dependency_001": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libdyn_clone-6f556472d6b376d7.rlib",
+      "sha256": "e0e0e499a809c83c92f064c9cc53e60b0daaaf99e395335b13fc68e8323b2e80",
+      "bytes": 52144
+    },
+    "frozen_dependency_002": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libdyn_clone-6f556472d6b376d7.rmeta",
+      "sha256": "0b2c5e165180706738e05c834649c307fe657c9234322e50e5ff841732b23e25",
+      "bytes": 28466
+    },
+    "frozen_dependency_003": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libitoa-474d501d6102ed82.rlib",
+      "sha256": "7f7cb3a98ab7c4c0423ae1f27e57f04dd08b916b5da22ac8fbdf45187b1c5f1b",
+      "bytes": 108328
+    },
+    "frozen_dependency_004": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libitoa-474d501d6102ed82.rmeta",
+      "sha256": "e9df5973ba98c26dc0a90bfce1de0c992ecad6f55ffedc85f2b3d73bac9af25d",
+      "bytes": 60987
+    },
+    "frozen_dependency_005": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libmemchr-bc4d24ce62cf35aa.rlib",
+      "sha256": "a21bf067555dd3eeeb39d0eff832285193e2499a5ea23b3c817aa7d7fa936752",
+      "bytes": 1004936
+    },
+    "frozen_dependency_006": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libmemchr-bc4d24ce62cf35aa.rmeta",
+      "sha256": "c1c694591e5f14d888395e494d7aed45a7baf3735aea8182ea363cfa84882471",
+      "bytes": 883812
+    },
+    "frozen_dependency_007": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libproc_macro2-600ac2a972792ecd.rlib",
+      "sha256": "56a43539fb95897b17d1c18248cf2783d85a91995b7b4c980cf64113eaf97c4a",
+      "bytes": 913256
+    },
+    "frozen_dependency_008": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libproc_macro2-600ac2a972792ecd.rmeta",
+      "sha256": "8f966611f4f62578bc83c5f82d828036a979bbe60752d7881033151093c395b6",
+      "bytes": 338687
+    },
+    "frozen_dependency_009": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libquote-b116bcba763d449d.rlib",
+      "sha256": "a60efd38fdc208f70cbe0bb48a7efd22dc39d88930adc7f81f27ce182fdb6096",
+      "bytes": 425600
+    },
+    "frozen_dependency_010": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libquote-b116bcba763d449d.rmeta",
+      "sha256": "5094c49b33497e49bcb9519e46954d1456bb2a90043edc797bfeee936db03078",
+      "bytes": 269650
+    },
+    "frozen_dependency_011": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "d785adeaa51591b9902266c7c7bd114763aaed1671c5e65f4df65d83d9be7fd9",
+      "bytes": 31633976
+    },
+    "frozen_dependency_012": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libreasoning_harness_core-af992f1b2d90d349.rmeta",
+      "sha256": "356fc87869c105c12b089330c20bee7866040bc0a083f5ed7aca78e8ef7c9bed",
+      "bytes": 13491357
+    },
+    "frozen_dependency_013": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libreasoning_harness_core.rlib",
+      "sha256": "d785adeaa51591b9902266c7c7bd114763aaed1671c5e65f4df65d83d9be7fd9",
+      "bytes": 31633976
+    },
+    "frozen_dependency_014": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libref_cast-587bf35479d40d2d.rlib",
+      "sha256": "255d37dd6726946442222cd0c4e6be1e955b68ec1bea621d4e1ee43d41532da8",
+      "bytes": 24584
+    },
+    "frozen_dependency_015": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libref_cast-587bf35479d40d2d.rmeta",
+      "sha256": "ea590ff7de51ae9c015177c56fc567ba1240841f254eeb74b33fc9be635b0864",
+      "bytes": 23632
+    },
+    "frozen_dependency_016": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libref_cast_impl-3ab516a8cb6e5975.dylib",
+      "sha256": "150db489057e05d8e76e6e0967c59c6939ebc5043d55235309c6968d259534f0",
+      "bytes": 1797424
+    },
+    "frozen_dependency_017": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libschemars-73fcc1b797bd9d95.rlib",
+      "sha256": "2402cdc2fcfde53b00185c1266a5ff40bc1f59e217bd9f474a6f0b212d98387b",
+      "bytes": 2653120
+    },
+    "frozen_dependency_018": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libschemars-73fcc1b797bd9d95.rmeta",
+      "sha256": "e8c6c951ae7e0d2549f7c404fa930d9277c5396cda814962e22c1f9613887f63",
+      "bytes": 1189610
+    },
+    "frozen_dependency_019": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libschemars_derive-f6693c726c4440c7.dylib",
+      "sha256": "7369347236de9996cc5618d5762ccec4a975384aa4f9b2042a21e2b4ff8f5f6d",
+      "bytes": 3381600
+    },
+    "frozen_dependency_020": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libserde-29474bc4864db4fd.rlib",
+      "sha256": "0428b13a8ad68c6110128637e629fad5b7f35ade6dab3c7c0d3fffd53426f6af",
+      "bytes": 885336
+    },
+    "frozen_dependency_021": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libserde-29474bc4864db4fd.rmeta",
+      "sha256": "42d1bc6545c2403a376216b3cbdb7bdfdecac26307d2a27a6abc9b2db87fadd3",
+      "bytes": 811327
+    },
+    "frozen_dependency_022": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libserde_core-db622675fb170d9d.rlib",
+      "sha256": "b20fa1e20c4de99dbb8910fbdd22a1a5ac0581cb271eeaf3781059ee31ff920c",
+      "bytes": 4741760
+    },
+    "frozen_dependency_023": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libserde_core-db622675fb170d9d.rmeta",
+      "sha256": "47b3507cecbb69f846e7403560e68e5fc7950d8ae1f05a7002322a8b18a25c64",
+      "bytes": 4631796
+    },
+    "frozen_dependency_024": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libserde_derive-b3e282566d6939f4.dylib",
+      "sha256": "de4bb59569b87a9a6bd93faa2b1eda72fbca66d1847a854f3a87a1cd1f1f13b8",
+      "bytes": 3303072
+    },
+    "frozen_dependency_025": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libserde_derive_internals-f3ffaf4ac50fedc8.rlib",
+      "sha256": "f1d0267acac590394a2f4dba6d780fdb0347ce418e5215ae90d639920e21f797",
+      "bytes": 1337024
+    },
+    "frozen_dependency_026": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libserde_derive_internals-f3ffaf4ac50fedc8.rmeta",
+      "sha256": "34449deff887fbaa148ba252f4419db3a1b424d5709213bac5a790688e62a809",
+      "bytes": 197107
+    },
+    "frozen_dependency_027": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "bytes": 2110472
+    },
+    "frozen_dependency_028": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libserde_json-4247b0767bfe4a83.rmeta",
+      "sha256": "30bb34b5b062318fd0e567f05487c1b85196c3f1052326c12faa35544ecc35f6",
+      "bytes": 1390370
+    },
+    "frozen_dependency_029": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libsyn-65c1b76316221112.rlib",
+      "sha256": "4e20cfc6113313b026cfdaa75869243099ce12fba984191dfcb10867fa2e3a98",
+      "bytes": 4891336
+    },
+    "frozen_dependency_030": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libsyn-65c1b76316221112.rmeta",
+      "sha256": "2802030f3d08fce7b61d78f1ac9c47b527895ec9108f97ffa72611dd47bb19f5",
+      "bytes": 2206695
+    },
+    "frozen_dependency_031": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libthiserror-e0f2a66b060b8a58.rlib",
+      "sha256": "526f8f8fd363d4c237114efff7f281e10b101bec6d43b747ade467e6d9bf980f",
+      "bytes": 29792
+    },
+    "frozen_dependency_032": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libthiserror-e0f2a66b060b8a58.rmeta",
+      "sha256": "8c5338978b7a3141e62f442a37b7c54c021afa488ddf9e6e6a53475f5714895a",
+      "bytes": 28837
+    },
+    "frozen_dependency_033": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libthiserror_impl-67481e917fe8485d.dylib",
+      "sha256": "e060c6f9b1335ba43daa9e7f409c2113d32d7e50c984e6cbc94d002db1469ebf",
+      "bytes": 2526416
+    },
+    "frozen_dependency_034": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libunicode_ident-d9e62c08a060ccd0.rlib",
+      "sha256": "48adb4b16d01b7ade825e91e49fa003741bf39f259499325d73702cdf6231716",
+      "bytes": 50424
+    },
+    "frozen_dependency_035": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libunicode_ident-d9e62c08a060ccd0.rmeta",
+      "sha256": "e00441a8c0abe4bc606bed4be292bb970f79067d62283038677bea912b47b3f0",
+      "bytes": 32849
+    },
+    "frozen_dependency_036": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libzmij-ddfec70658a18947.rlib",
+      "sha256": "d77a2a3d6f4d3994c4808c3cf48151d035c2e878deb803d4b64ff0df51037726",
+      "bytes": 237168
+    },
+    "frozen_dependency_037": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libzmij-ddfec70658a18947.rmeta",
+      "sha256": "38eedef173c75a7f975396c61742ae061071936d8494e88168afc7ef7665a079",
+      "bytes": 154774
+    },
+    "frozen_dependency_038": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/origin-cargo-artifacts.jsonl",
+      "sha256": "82664dd4d9587210c71c3ea60dd66996d4c28bfac6bbe4769356820c027b0e85",
+      "bytes": 24334
+    },
+    "preserved_preparation_0": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/docs/engine073-realworld-metrics-preparation.md",
+      "sha256": "9e90707b295ee4e273f7101f0d7d33804bff64c4629d980f9209a1258e6f73e7",
+      "bytes": 25560
+    },
+    "preserved_preparation_1": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/docs/engine073-realworld-metrics-preparation.ja.md",
+      "sha256": "30a4f73c4f0cd4a6aa2a284f3243d997dbc1f769751defcb7617659f6605df08",
+      "bytes": 23762
+    },
+    "preserved_preparation_2": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/review.json",
+      "sha256": "787da5422330047f4ca23f1020df867bc66eb6794f45fd40c01f72314d7189fc",
+      "bytes": 2526
+    },
+    "preserved_preparation_3": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/reviewed-input-sha256.json",
+      "sha256": "76b41a7c06dc1893106695253dc303164e2905881cdeffabe26ca0251f7e36c0",
+      "bytes": 1898
+    },
+    "preserved_preparation_4": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/artifact-sha256.json",
+      "sha256": "6b83e2b6b090f46da65580bf27486ada831d53e9827d77c0081119fa5c969e22",
+      "bytes": 673
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v25-probe/probe",
+      "sha256": "2c692c87307fa1b3ccd73c2134151d08287d38ab3335f094329ec129b3a5083a",
+      "bytes": 3223592
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "d785adeaa51591b9902266c7c7bd114763aaed1671c5e65f4df65d83d9be7fd9",
+      "bytes": 31633976
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "bytes": 2110472
+    },
+    "copied_artifacts_inventory": {
+      "path": "/private/tmp/engine073-source25-frozen-libs/copied-artifacts.json",
+      "sha256": "3b34a4582921ae46d411b7a0c4f5786b642449275879ba7fcc6fe230ec266c03",
+      "bytes": 9236
+    }
+  },
+  "authoring": {
+    "evaluator_freeze_sha256": "b172872d29b19e4308bf86bbce99b570f8d0198a087973def644f679fcb75ac6",
+    "authoring_start_sha256": "6bb166e4597da9e6c962d54b277ecf68b55f27b2498c91c38e502dbaad4b43cd",
+    "parent_authorization_reference": "Parent /root NEW_TASK: parent review PASS and explicitly authorizes fresh v25 authorship/first-only observation after immutable M0."
+  },
+  "scoring": {
+    "policy_sha256": "3a6d37e3fbf134f4a49677fdcd7de8b1b625739988a40e1c1e78b94978099767",
+    "helper_sha256": "00f6971900864ee9e89e4db6029d8196fabd0a4b6ab28e343f19506417735c6f",
+    "score_sha256": "e786f7c0e3af45c17769552818c0e3be1d9ec5fa26d0f5472a3cff013d1f543b",
+    "mode": "single scorer process invokes helper once with explicit snapshot config; joint exactness diagnostic only"
+  },
+  "cohort": {
+    "planned": 60,
+    "positive": 30,
+    "negative": 30,
+    "labels_outside_Engine_input": true
+  },
+  "first_only": {
+    "Engine_processes": 1,
+    "scorer_processes": 1,
+    "retry_rescore_relabel": 0,
+    "raw_readonly_before_scorer": true
+  }
+}

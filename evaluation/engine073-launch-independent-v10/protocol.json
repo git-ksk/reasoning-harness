@@ -1,0 +1,112 @@
+{
+  "identity": "engine073-launch-independent-v10",
+  "purpose": "Independent finite synthetic #520 source check, separate from #531 real-primary-source24 and provider/final-answer/CLI/release adoption.",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "candidate": {
+    "source_sha": "e06c4ec5505644250669df97860ebbe9ccc5cde8",
+    "source_sha256": "e5e0bd4af579c1fffedb1000a0d1d90263fee2c38cbb693db5a95cefad9a472d",
+    "package_version": "0.7.2",
+    "identity": "Fixed final source SHA; not intermediate9eddf79 and not package number alone."
+  },
+  "prior_exposure": {
+    "known": "V1-v9 authored/observed; v1 had semantic0 operational failure. All now known development controls with immutable first files.",
+    "unread": "Production implementation, parent tests, historical/other corpora/fixtures.",
+    "parent_reported": "Completed stable parent build, Clippy/related53 and full workspace1517 PASS/8 ignored, fixtures/archive and CI19 PASS are parent reports, not independently read or rerun here. Root raw-risk boundary tests likewise not independent evidence.",
+    "fresh": "New manually authored30 local-type/owner/property/gap combinations after candidate fixed, not old block replay/name substitution. Successive adaptive development after prior failures remains a limitation."
+  },
+  "design": {
+    "cases": 60,
+    "positive": 30,
+    "negative": 30,
+    "matched_pairs": 30,
+    "canonical_targets": 30,
+    "real_documents": 0,
+    "affirmative": "Exactly one separate unadorned canonical TARGET was launched. excerpt in every case. No new affirmative predicate.",
+    "positive_rule": "Keep v17 requested_relation AND v30 Relevant when each current correction is explicitly a non-launch physical/document property, a fully named foreign launch owner, or neutral text. No other-property truth is approved.",
+    "negative_rule": "Same-target launch retraction/denial/withdrawal/non-event or genuinely unknown/mixed/competing launch owner/type/context requires non-requested relation AND non-Relevant. A safe earlier/later property or foreign cue must not excuse an independent target/unknown launch correction.",
+    "finite_reference": "This/that/the plus the same Object/Subject/Item type, with one explicit adjacent finite declaration. General claim references need an adjacent complete quotation, reply with full supplement, or complete same-sentence apposition. No arbitrary redefinition graph/numeric AST.",
+    "property_scope": "Clear physical component width/height/diameter/thickness/colour/material and printed font/colour/document page count. A launch component modifier is not itself a product event. No arbitrary vocabulary/syntax understanding required.",
+    "unknown_scope_ids": [
+      "li10-008",
+      "li10-012",
+      "li10-014",
+      "li10-016",
+      "li10-020",
+      "li10-036",
+      "li10-040",
+      "li10-042",
+      "li10-046",
+      "li10-054"
+    ],
+    "competing_quote_or_type_with_target_event_ids": [
+      "li10-034",
+      "li10-056"
+    ],
+    "canonical_clip_positive_ids": [
+      "li10-009",
+      "li10-019",
+      "li10-027",
+      "li10-053"
+    ],
+    "canonical_clip": "Complete full canonical product names in policy.entity.canonical_name, aliases empty, repeated as full names in source context. Clip in a full name is not evidence of clipping. Actual context loss is separately explicit.",
+    "explicit_raw_context_gap_ids": [
+      "li10-020",
+      "li10-036",
+      "li10-054"
+    ],
+    "public_risk_contract": {
+      "valid_scope_risk": [
+        "none",
+        "identity_mapping",
+        "ownership_scope",
+        "context_gap",
+        "multiple"
+      ],
+      "meaning": "Identity/relation/risk are independent public V6 axes. Raw context_gap alone does not require v17 relation to be unresolved; finalization may withhold while keeping requested_relation.",
+      "case_design": "No pure raw-risk case is scored with the joint negative label. Each context_gap negative independently contains a withdrawn/denied ownerless launch object or genuinely unidentified launch-relevant reply with missing local context.",
+      "risk_diagnostic": "Saved raw/effective risk can be described independently after first output; it is not a change to inherited joint relation/disposition scoring."
+    },
+    "scope_precommit": "All labels/rationale in pre-freeze-scope-review.json and cases.json before semantic observation, no forced ambiguous positives/post-result reinterpretation.",
+    "binding": "Optimistic exact/exact proposal and exact_target/requested_relation raw in all60; scope_risk none except3 predeclared actual-gap negatives. Not model extraction/equivalence.",
+    "budget": {
+      "max_model_attempts": 2,
+      "max_tokens": 192,
+      "max_elapsed_ms": 90000
+    },
+    "labels": "Offline evaluator-controlled expectations outside Engine inputs, not external universal or human-approved product truth."
+  },
+  "scoring": {
+    "byte_identical_inherited": true,
+    "sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "positive": "effective_v17.relation_scope == requested_relation AND v30.disposition == relevant",
+    "negative": "effective_v17.relation_scope != requested_relation AND v30.disposition != relevant",
+    "v29": "Diagnostic only.",
+    "PASS": "All60 fixed joint expectations, all60 unique valid rows, exit0/empty stderr, no operational absence counted safety success.",
+    "immutable": "No retry/relabel/input edit/scope easing/rescoring/raw overwrite. A negative requested_relation with Ambiguous still fails v17."
+  },
+  "stages": {
+    "static": "Count/schema/budget/label exclusion/same direct fact/inherited code/old immutable file checks only; Engine/semantic0.",
+    "freeze": "Full corpus/labels/inputs/scorer/probe/protocol/recorder and actual candidate source/core/serde/executable hashes before Engine.",
+    "semantic": "One first60 deterministic v17/v29/v30 process, no semantic sentinel.",
+    "score": "One unchanged inherited scorer application to first raw.",
+    "save": "Raw stdout/stderr, first score, exclusive receipt/README/all-version hashes including firstFAIL, no retries."
+  },
+  "execution": {
+    "external_provider_API_calls": 0,
+    "Oracle": false,
+    "additional_agents": false,
+    "cargo": false,
+    "Git_mutations": 0,
+    "identity_guard": "Immediately before first API verify HEAD, source bytes only by hash, linked core/serde/executable and all frozen files.",
+    "build_provenance": "Parent supplied stable core; evaluator links dedicated rustc probe after hashing, without source inspection or independent core rebuild."
+  },
+  "limits": [
+    "Finite synthetic source API evidence only, not #531 real acquisition/final answers, provider/quota/cost, CLI or release adoption.",
+    "Candidate only; no actual baseline delta, cross-set rate comparison or statistical independence of60 cases.",
+    "30 pairs/30 fictional targets and0 primary documents; no exhaustive language/coreference proof.",
+    "New positive predicates, arbitrary graphs/redefinition/alias/hierarchy/numeric AST/temporal/preparation/product truth reasoning excluded.",
+    "Risk diagnostic is separate; this set does not independently prove all public risk-only behavior.",
+    "Serialized model reason names do not mean model calls.",
+    "V10 is consumed after first observation and later reuse is seen development."
+  ]
+}

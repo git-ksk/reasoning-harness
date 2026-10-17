@@ -1,0 +1,11 @@
+{
+  "identity": "engine073-launch-independent-v25",
+  "utc": "2026-10-17T17:44:36.939468+00:00",
+  "returncode": 0,
+  "author_program_sha256": "d0af5dfa213b7dc477f0fbf9a787622ef0a09b5f600c7b47f344f07315eb17ff",
+  "stdout_sha256": "19761349f23b949847c751033e5eb3612eebe356dcb778f9e8e2f793f5fb0256",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "labels_outside_Engine_input": true
+}

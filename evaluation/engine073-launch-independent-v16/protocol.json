@@ -1,0 +1,110 @@
+{
+  "identity": "engine073-launch-independent-v16",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "purpose": "Finite synthetic #520 launch-source qualification only; not #531 real24, ordinaryCLI/provider/human/quality/adoption/release acceptance.",
+  "candidate": {
+    "source_sha": "854ef6d23d8089b6136dae38086941a9ced96c76",
+    "source_sha256": "436b09d9f81386931213cb15048c86628d289c1b57d9bb31cc5c24bd5ecf4af5",
+    "package_version": "0.7.2",
+    "opaque_parent_freeze_file": "/private/tmp/engine073-source15-freeze.json",
+    "opaque_parent_freeze_sha256": "a637ccbcfbb6e139d756d1ed8a14e003fb60397a2d24ea69b4ff53b03a9e8ca1",
+    "opaque_parent_freeze_contents_read": false
+  },
+  "prior_exposure": {
+    "known": "v1-v15 consumed development; v11 NOT_EVALUATED preserved. V15 firstFAIL45/60 and all earlier first failures unchanged. Common public probe/scorer/recorder/schema mechanics reused, case prose not copied.",
+    "new_after_freeze": "Thirty hand-authored new contrasts with new combinations of multiple typed properties/events, printed event content versus surrounding physical attributes, distinct-role owner completion, neutral target mentions beside owned foreign claims, separate unresolved events after safe corrections, reported/parenthetical/clausal boundaries, source-field withdrawal scope and actual quoted/heading omission. Not previous case renaming/template substitution or v11 draft reuse.",
+    "unread": "Engine implementation/root tests/historical other corpora and uncommitted root changes.",
+    "parent_reported_only": "Workspace/provider tests passed; strict Clippy currently fails one needless_borrow. Source/normal target kept fixed; lint correction/CI remain separate required gates. None of these root checks independently read/rerun here."
+  },
+  "design": {
+    "cases": 60,
+    "positive": "Uncontradicted target launch; each adverse object is completely identified non-launch physical/document property or one fully named foreign event. No property value truth inference or approval.",
+    "semantic_negative": 30,
+    "matched_pairs": 30,
+    "fictional_canonical_targets": 30,
+    "real_documents": 0,
+    "direct_supported_anchor": "One separate unadorned TARGET was launched. excerpt per case. No new affirmative predicate required.",
+    "negative": "Actual target/whole-source denial, target existence denial, unresolved launch referent/owner, mixed ownership or target-owner conflict; no requested_relation AND non-Relevant required.",
+    "finite_scope": [
+      "Explicit Object/Subject/Item; same-role local reference, complete quote/denial object/apposition, immediate author reply.",
+      "Owner supplement fills expressly unowned launch frame only, same role and single full name; directly adjacent next-line name and explicitly designated title/heading allowed. Existing target owner cannot be overwritten.",
+      "Complete physical/document attributes remain non-launch when their quoted values contain negation; actual printed event claims remain event claims.",
+      "Multiple adverse objects/clauses retain their individual scope. Safe property/foreign corrections cannot erase added target/global denial or unknown launch.",
+      "Cause/contrast/reporting/connective/parenthesis used only to separate stated scopes, not to infer chronology."
+    ],
+    "excluded": "Arbitrary graph/alias/hierarchy/number AST/novel affirmative predicates/general natural language or truth/chronology guarantees.",
+    "unknown_or_missing_event_ids": [
+      "li16-002",
+      "li16-006",
+      "li16-010",
+      "li16-012",
+      "li16-022",
+      "li16-032",
+      "li16-036",
+      "li16-042",
+      "li16-050",
+      "li16-054",
+      "li16-056"
+    ],
+    "target_owner_conflict_ids": [
+      "li16-028",
+      "li16-030",
+      "li16-052"
+    ],
+    "mixed_owner_ids": [
+      "li16-058"
+    ],
+    "whole_source_denial_ids": [
+      "li16-046"
+    ],
+    "actual_gap_ids": [
+      "li16-050",
+      "li16-054"
+    ],
+    "canonical_full_clip_positive_ids": [
+      "li16-055"
+    ],
+    "raw_risk_axis": "context_gap only for the2 actual missing-owner negatives, each also semantic-unknown. Pure raw-risk not used as joint-negative cause. Identity/relation/risk orthogonal; raw/effective diagnostic outside score; combined enum not component preservation proof.",
+    "binding": "All optimistic exact/exact proposals and exact_target/requested_relation raw; no model extraction/equivalence/authority test.",
+    "budget": {
+      "max_model_attempts": 2,
+      "max_tokens": 192,
+      "max_elapsed_ms": 90000
+    },
+    "labels": "Offline independent-author scope judgments/rationales outside Engine input, not externally universal or human-approved product truth.",
+    "precommit": "Every scope/label/rationale fixed before output observation; no after-output ambiguity reclassification."
+  },
+  "scoring": {
+    "sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "inherited_byte_identical": true,
+    "positive": "v17 requested_relation AND v30 relevant",
+    "negative": "v17 not requested_relation AND v30 not relevant",
+    "v29": "Diagnostic only.",
+    "PASS": "All60 joint expectations,60 unique valid rows,exit0/empty stderr, no operational/missing rows counted successful.",
+    "immutable": "One first60 process,one scorer application,no retry/rescore/relabel/input/scope changes based on output."
+  },
+  "stages": {
+    "static": "STATIC_ONLY complete input/count/budget/code/old hashes;Engine/semantic0.",
+    "freeze": "Full inputs/labels/protocol/static/scope/code/source/core/serde/executable hash manifest before API.",
+    "semantic": "One exclusive first60 local public API process;no sentinel/provider.",
+    "save": "All first raw/results/summary/receipt/review/README, before/after identity and old hashes; self-excluding final manifest/read-only seal."
+  },
+  "execution": {
+    "source_content_read": false,
+    "Oracle": false,
+    "additional_agents": 0,
+    "provider_network_calls": 0,
+    "cargo_invocations": 0,
+    "Git_mutations": 0,
+    "parent_core_build": "Hash-verified supplied stable build; independently linked probe, no independent core rebuild.",
+    "code_lint_gate": "Parent-reported needless_borrow lint failure remains separate; semantic gate does not waive it."
+  },
+  "limits": [
+    "Candidate-only synthetic source check, not baseline delta/cross-corpus improvement rate/statistically independent60 samples.",
+    "Prior failure-driven iteration acknowledged; this set consumed on first observation.",
+    "Not real24/source acquisition/final answer/provider/quota/billing/headroom/CLI/human/release acceptance.",
+    "No general arbitrary-language/coreference or property-truth promise; finite declared local scope only.",
+    "Raw risk diagnosis separate from inherited scoring; no pure-risk or risk-component proof.",
+    "Model-labelled serialized reasons do not indicate any provider calls."
+  ]
+}

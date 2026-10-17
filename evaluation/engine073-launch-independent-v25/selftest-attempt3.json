@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-17T15:30:46.022084+00:00",
+  "kind": "pure constructed output/provenance/process-chain fixtures; no real cohort",
+  "returncode": 0,
+  "tests": 48,
+  "Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "authored_cases": 0,
+  "files": {
+    "score.py": "e786f7c0e3af45c17769552818c0e3be1d9ec5fa26d0f5472a3cff013d1f543b",
+    "execute_first.py": "f49c6350e438078a399386e1fb908a57aa2b298e08d2d8cb670fe76addb5709f",
+    "test_evaluator.py": "0150df7d5d8c2ada90a6ff95924846426cbc8a6a6c111fe9832c16a28855e0bc"
+  },
+  "new_tests": "3 literal input/output risk extraction fixtures and 2 pure process-chain decision fixtures; no actual child process execution"
+}

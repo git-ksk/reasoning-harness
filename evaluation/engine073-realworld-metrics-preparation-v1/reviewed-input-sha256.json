@@ -1,0 +1,20 @@
+{
+  "identity": "engine073-realworld-metrics-preparation-v1",
+  "reviewed_utc": "2026-10-17T07:21:52.670425+00:00",
+  "scope": "Only allowed docs/protocol and #540 Python operational contracts/config/evaluator. No Engine implementation/current tests/independent corpus contents.",
+  "files": {
+    "docs/engine-07-realworld-evaluation.md": "c257ac7e81dd2c0d5130e3c56c475a712d9eb910de50a804d6a0577cf3b21adb",
+    "docs/engine-07-realworld-evaluation.ja.md": "5f783101084d2717df57636c17e46f8beb0f561c9527a6241bdfbd78b49cfad7",
+    "docs/engine07-realworld-development-results.md": "9e59ec0ef01ede0f061b5b7dd0f38e0fbd61fc350feac7fdd0ed981b28eee605",
+    "docs/engine07-realworld-development-results.ja.md": "0e32f8cc7adec56e1236c6d5e4e823c93443a641d13e633978bc3cb20438e1e8",
+    "evaluation/engine-07-realworld-protocol-v1.json": "39f7b0aa1a0bfd2d39ef533d5d8e7ac4048a50b6c6a989a8b5ce162ab4528f90",
+    "evaluation/engine07-realworld-runner-v1/README.md": "bd3bc95d0dee9d59078b3a69772e9e41a46ec6696276b970cff1d80ca88e7914",
+    "evaluation/engine07-realworld-runner-v1/runner.py": "a412d7a9b851f23b6378496cd78a52f06e3076b05f93abd31acd3917ff2688f9",
+    "evaluation/engine07-realworld-runner-v1/repair-verification-v2.json": "0ca7bf3c6aa9dfc6369d168e27ca8d6e143a5a20d73e642755006ed3879449e7",
+    "evaluation/engine07-realworld-operations-v1/README.md": "ef569b05e8f86de0b4a611b0b52891cb3d09c8569bc05c94eb01d3674ee16fe9",
+    "evaluation/engine07-realworld-operations-v1/guard.py": "49f1a8af052c5b162ba7e87c9ab43edb571ab2ede15a69e9f95bb55ac93da0a7",
+    "evaluation/engine07-realworld-operations-v1/bridge.py": "abae342729fdb1eceab1015041a676085cd4c051fb5816191ab0ebbb29088dcb",
+    "evaluation/engine07-realworld-operations-v1/groq-state.json": "762eb8035ea16e50e619a448658a72fbff01b25d89b39003a8c51e08cc16f46d"
+  },
+  "not_a_freeze": "This is an evidence snapshot of reviewed inputs, not M0 or M1."
+}

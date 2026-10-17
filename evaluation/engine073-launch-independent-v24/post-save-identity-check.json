@@ -1,0 +1,84 @@
+{
+  "identity": "engine073-launch-independent-v24",
+  "utc": "2026-10-17T09:43:53.985842+00:00",
+  "stage": "AFTER_SUBSTANTIVE_SAVE_BEFORE_RECEIPT_AND_FINAL_MANIFEST",
+  "head": "3ccda6b4263eb5210477660b11f6926ec0186f4e",
+  "head_unchanged": true,
+  "hash_only_checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "85a64b506f8c47828a4a3296c5d07c13e921c59b528ea27e10ec4993c5f636e2",
+      "bytes": 789778,
+      "unchanged": true
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "88e29a4efd212517bce73045c9a33e7a346c344f99892131554ac25233d61368",
+      "bytes": 31553296,
+      "unchanged": true
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "bytes": 2110472,
+      "unchanged": true
+    },
+    "opaque_parent_freeze": {
+      "path": "/private/tmp/engine073-source24-freeze.json",
+      "sha256": "34555ab86037995f90a53f9d7d9fce64c7a7ae084f7d3b5f5d415b75446646d7",
+      "bytes": 571,
+      "unchanged": true
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v24-probe/probe",
+      "sha256": "defe50fb13beb0b88ddc7f376da5efca70eeb1434fc8085d93995ace4628f5af",
+      "bytes": 3197864,
+      "unchanged": true
+    },
+    "preserved_metrics_preparation_1": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/docs/engine073-realworld-metrics-preparation.md",
+      "sha256": "9e90707b295ee4e273f7101f0d7d33804bff64c4629d980f9209a1258e6f73e7",
+      "bytes": 25560,
+      "unchanged": true
+    },
+    "preserved_metrics_preparation_2": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/docs/engine073-realworld-metrics-preparation.ja.md",
+      "sha256": "30a4f73c4f0cd4a6aa2a284f3243d997dbc1f769751defcb7617659f6605df08",
+      "bytes": 23762,
+      "unchanged": true
+    },
+    "preserved_metrics_preparation_3": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/review.json",
+      "sha256": "787da5422330047f4ca23f1020df867bc66eb6794f45fd40c01f72314d7189fc",
+      "bytes": 2526,
+      "unchanged": true
+    },
+    "preserved_metrics_preparation_4": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/reviewed-input-sha256.json",
+      "sha256": "76b41a7c06dc1893106695253dc303164e2905881cdeffabe26ca0251f7e36c0",
+      "bytes": 1898,
+      "unchanged": true
+    },
+    "preserved_metrics_preparation_5": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/artifact-sha256.json",
+      "sha256": "6b83e2b6b090f46da65580bf27486ada831d53e9827d77c0081119fa5c969e22",
+      "bytes": 673,
+      "unchanged": true
+    }
+  },
+  "old_recursive_source_files": 591,
+  "old_inventories_and_hashes_unchanged": true,
+  "preserved_preparation_files": {
+    "docs/engine073-realworld-metrics-preparation.md": "9e90707b295ee4e273f7101f0d7d33804bff64c4629d980f9209a1258e6f73e7",
+    "docs/engine073-realworld-metrics-preparation.ja.md": "30a4f73c4f0cd4a6aa2a284f3243d997dbc1f769751defcb7617659f6605df08",
+    "evaluation/engine073-realworld-metrics-preparation-v1/review.json": "787da5422330047f4ca23f1020df867bc66eb6794f45fd40c01f72314d7189fc",
+    "evaluation/engine073-realworld-metrics-preparation-v1/reviewed-input-sha256.json": "76b41a7c06dc1893106695253dc303164e2905881cdeffabe26ca0251f7e36c0",
+    "evaluation/engine073-realworld-metrics-preparation-v1/artifact-sha256.json": "6b83e2b6b090f46da65580bf27486ada831d53e9827d77c0081119fa5c969e22"
+  },
+  "all5_preparation_files_unchanged": true,
+  "complete_freeze_files_unchanged": true,
+  "first_results_summary_and_metrics_unchanged": true,
+  "semantic_reexecution": 0,
+  "rescoring": 0,
+  "relabels": 0
+}

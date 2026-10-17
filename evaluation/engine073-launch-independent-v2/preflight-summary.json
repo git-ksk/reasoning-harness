@@ -1,0 +1,10 @@
+{
+  "identity": "engine073-launch-independent-v2",
+  "outcome": "PASS",
+  "scope": "One distinct API-contract sentinel, no holdout inference",
+  "returncode": 0,
+  "execution_error": null,
+  "rows": 1,
+  "provider_calls": 0,
+  "retries": 0
+}

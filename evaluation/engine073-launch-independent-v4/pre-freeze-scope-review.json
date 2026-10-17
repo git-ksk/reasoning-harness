@@ -1,0 +1,24 @@
+{
+  "phase": "Pre-freeze review; v4 Engine/semantic observations 0",
+  "affirmative": "One independent unadorned Excerpt per case: canonical target was launched in May 2022. No new affirmative predicate, numbered fact prefix, alias mapping or structural reference AST.",
+  "positive_label_review": "Neutral publication administration and explicit other-product/non-launch-object scope preserve the factual launch. The notices need not be trusted as property facts; only their withdrawal/denial object is tested.",
+  "owner_ambiguity_negative_ids": [
+    "li4-048",
+    "li4-050",
+    "li4-052",
+    "li4-054",
+    "li4-056",
+    "li4-058",
+    "li4-060"
+  ],
+  "owner_ambiguity_policy": "Unspecified owner or launch claim reference is a precommitted withholding negative, never a forced positive.",
+  "scope_examples": [
+    "Physical specification notices: optical coating, voltage, thickness, waterproof rating, mass, infrared transmission, connector orientation, shock resistance.",
+    "Explicit other-product syndicated/editor/press notices identify the other canonical product in the operative denial/retraction clause.",
+    "Publication dateline, reuse permission, archive storage/indexing and proofreading corrections are administrative context, not retractions of launch facts.",
+    "Bench measurement and embossing trials are distinct activities explicitly separated from launch in matched non-event controls."
+  ],
+  "known_prior_data": "V2 and V3 semantics were observed by this evaluator and are seen development data; V1 failed before semantic observation.",
+  "novelty": "New complete publication-notice/control structures were authored after candidate freeze; not v2/v3 input/name substitutions. No ordinal/branch AST behavior is required.",
+  "post_observation_label_changes": 0
+}

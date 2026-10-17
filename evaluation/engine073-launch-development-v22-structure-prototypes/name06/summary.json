@@ -1,0 +1,109 @@
+{
+  "identity": {
+    "stage": "name06",
+    "started_utc": "2026-10-17T07:56:29.902462+00:00",
+    "kind": "consumed development prototype only; no independent acceptance",
+    "source_file_sha256": "01d613b35ab238d656568472379b1e86eb83c71a87e58d33456e52aeab6204ef",
+    "core_sha256": "bb49d0f33eadb3fab048940824544938169630101a90acb2fc689a59d7723e09",
+    "serde_sha256": "2ba2eda94734d666b378d4013f0f5d28a8ca6f87f478667e2472f50acdb486de",
+    "metadata_sha256": "bbd9643cbbc0b1bc9148f02a42453faafeaf9984f2b84e9f05b16145a8f3c8e4",
+    "inputs_sha256": "c971217116917ba70cb69fb739fe17d7f38b0652748b645ac63ba511d9dd7b37",
+    "cases_sha256": "132ba8207c5fcc825beefab4cdd3725e6002f01048c6b380201fdca42351b83f",
+    "probe_source_sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "probe_executable_sha256": "b90349b7445fc9679620e886e3b90a038ddf215c9d3012233952c6998c10708c",
+    "base_source_sha": "c20c5136d59cb3a0bfdac4fb8ca9dade2d93e076"
+  },
+  "after_development_axes": {
+    "v17_requested_relation": {
+      "confusion": {
+        "tp": 30,
+        "fp": 0,
+        "tn": 30,
+        "fn": 0
+      },
+      "n": 60,
+      "positive_support": 30,
+      "negative_support": 30,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_positive": 1.0,
+      "specificity": 1.0,
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "predicted_positive_rate": 0.5,
+      "false_accept_rate": 0.0,
+      "false_withhold_rate": 0.0,
+      "mcc": 1.0
+    },
+    "v30_relevant": {
+      "confusion": {
+        "tp": 30,
+        "fp": 0,
+        "tn": 30,
+        "fn": 0
+      },
+      "n": 60,
+      "positive_support": 30,
+      "negative_support": 30,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_positive": 1.0,
+      "specificity": 1.0,
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "predicted_positive_rate": 0.5,
+      "false_accept_rate": 0.0,
+      "false_withhold_rate": 0.0,
+      "mcc": 1.0
+    }
+  },
+  "before_c20_axes": {
+    "v17_requested_relation": {
+      "confusion": {
+        "tp": 10,
+        "fp": 0,
+        "tn": 30,
+        "fn": 20
+      },
+      "n": 60,
+      "positive_support": 30,
+      "negative_support": 30,
+      "precision": 1.0,
+      "recall": 0.3333333333333333,
+      "f1_positive": 0.5,
+      "specificity": 1.0,
+      "accuracy": 0.6666666666666666,
+      "balanced_accuracy": 0.6666666666666666,
+      "predicted_positive_rate": 0.16666666666666666,
+      "false_accept_rate": 0.0,
+      "false_withhold_rate": 0.6666666666666666,
+      "mcc": 0.4472135954999579
+    },
+    "v30_relevant": {
+      "confusion": {
+        "tp": 9,
+        "fp": 0,
+        "tn": 30,
+        "fn": 21
+      },
+      "n": 60,
+      "positive_support": 30,
+      "negative_support": 30,
+      "precision": 1.0,
+      "recall": 0.3,
+      "f1_positive": 0.46153846153846156,
+      "specificity": 1.0,
+      "accuracy": 0.65,
+      "balanced_accuracy": 0.65,
+      "predicted_positive_rate": 0.15,
+      "false_accept_rate": 0.0,
+      "false_withhold_rate": 0.7,
+      "mcc": 0.4200840252084029
+    }
+  },
+  "joint_passed": 60,
+  "mismatches": [],
+  "unsafe_ids": [],
+  "safety_gate": "PASS",
+  "scope": "same frozen consumed inputs; old independent first outputs/labels/scorer unchanged; partial prototype not merge/release acceptance"
+}

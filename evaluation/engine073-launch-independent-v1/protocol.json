@@ -1,0 +1,74 @@
+{
+  "identity": "engine073-launch-independent-v1",
+  "purpose": "Independent synthetic source-fix check for #520; not #531 real-document evaluation, fresh general acceptance, release acceptance or CLI adoption.",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "candidate": {
+    "source_sha": "b6c1598655a826b3eb5d3527d613dd50ed8b9bbc",
+    "evidence_relevance_rs_sha256": "8acd799ae90a1407320b8899a437e0d0db3c2104a60a90db138fd76dd601a6f8",
+    "package_version": "0.7.2",
+    "identity_note": "Unreleased candidate is identified by immutable source SHA, not package version."
+  },
+  "design": {
+    "scenarios": 60,
+    "matched_pairs": 30,
+    "positive": 30,
+    "negative": 30,
+    "documents": 0,
+    "synthetic": true,
+    "targets": "30 newly invented canonical product names, one separate comparison product; no aliases",
+    "context_positions": [
+      "leading excerpt",
+      "trailing excerpt",
+      "source_title",
+      "heading",
+      "multiline excerpt"
+    ],
+    "negative_axes": [
+      "present/first-person retraction",
+      "denial",
+      "withdrawal",
+      "explicit non-event",
+      "ambiguous multiple-claim or unresolved-reference retraction"
+    ],
+    "positive_controls": "Retain affirmative launch with neutral context or negation explicitly attached to a distinct target or distinct non-launch property.",
+    "raw_and_binding": "All cases intentionally provide optimistic exact target/exact relation proposal and exact_target/requested_relation/none raw qualification; engine must correct unsafe launch qualification. No model is used.",
+    "isolation": "Only authorized generic probe and public type definitions inspected. No source implementation, existing tests, cases, fixtures, old corpora, or prior outputs inspected for authoring."
+  },
+  "precommitted_scoring": {
+    "positive": "effective_v17.relation_scope == requested_relation AND v30.disposition == relevant",
+    "negative": "effective_v17.relation_scope != requested_relation AND v30.disposition != relevant",
+    "allowed_relation_scopes": [
+      "requested_relation",
+      "different_relation",
+      "relation_absent",
+      "unresolved"
+    ],
+    "allowed_dispositions": [
+      "relevant",
+      "irrelevant",
+      "ambiguous"
+    ],
+    "v29": "Diagnostic only; no acceptance rule or label inferred from v29.",
+    "pass": "60/60 expected outcomes; zero v17 negative requested_relation; zero negative v30 relevant; zero missing, duplicate, foreign, malformed or unexpected output rows; exit status 0 and no stderr.",
+    "unknown": "Incomplete or malformed observations are operational failures; never success.",
+    "labels": "Written before first API invocation; excluded from engine input and never changed/rescored based on observed results."
+  },
+  "execution": {
+    "provider_calls": 0,
+    "oracle": false,
+    "additional_agents": false,
+    "cargo": false,
+    "API": "Deterministic in-process public core functions v17/v29/v30 via one rustc-linked probe, one invocation, no retries.",
+    "first_result": "Create-exclusive invocation record/stdout/stderr/results; preserve FAIL and partial output.",
+    "source_guard": "Immediately before execution verify actual HEAD, source file SHA256 (hash only), core rlib, serde_json rlib, probe executable and frozen authored files.",
+    "link_provenance_limit": "Existing completed debug/deps build supplied by parent; source SHA and rlib hashes independently checked, no rebuild or implementation inspection performed."
+  },
+  "limits": [
+    "Synthetic narrow launch-context API check only; no actual acquired primary sources, final answers, providers, cost, quota, CLI workflow, or independent real-world E2E measured.",
+    "Only candidate arm; does not establish improvement size against baseline.",
+    "Optimistic prebinding and raw qualification are deliberate safety stress inputs; no model extraction/binding accuracy is measured.",
+    "Title/heading/excerpt contexts tested; not an exhaustive natural-language grammar or arbitrary negation scope proof.",
+    "No preparation, future availability, non-launch relations, aliases, or unrelated functionality generalized.",
+    "Expected outcomes are evaluator-authored controlled labels, not externally approved universal ground truth."
+  ]
+}

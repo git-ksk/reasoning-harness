@@ -1,0 +1,20 @@
+{
+  "workspace": {
+    "passed": 1572,
+    "failed": 0,
+    "ignored": 8
+  },
+  "strict_clippy": "PASS",
+  "fmt": "PASS",
+  "fixtures": 20,
+  "original_archive_files": 13,
+  "source_sha": "01dc78b6952ed77cd20001323f6ab032eeec361e",
+  "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+  "seen_regressions": 1140,
+  "historical_byte_identical": 597,
+  "original_audit": 14,
+  "scope": "source development only; new fresh independent acceptance in progress separately",
+  "fresh_independent_after_this_change": "RUNNING v23; not yet accepted when this record was closed",
+  "merge_release_cli_adoption": "NO_GO pending fresh/real gates",
+  "provider_model_Oracle_calls": 0
+}

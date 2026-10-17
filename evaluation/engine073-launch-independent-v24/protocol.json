@@ -1,0 +1,45 @@
+{
+  "identity": "engine073-launch-independent-v24",
+  "status": "PRE_OBSERVATION",
+  "candidate_source_sha": "3ccda6b4263eb5210477660b11f6926ec0186f4e",
+  "package_version": "0.7.2",
+  "author": "sole authorized independent evaluator; source-blind",
+  "scope": "finite #520 synthetic launch retraction/denial/non-event source gate",
+  "cases": 60,
+  "pairs": 30,
+  "positive": "v17 requested_relation AND v30 Relevant with only fully non-launch/uniquely foreign adverse contexts",
+  "semantic_negative": 30,
+  "negative": "v17 not requested_relation AND v30 not Relevant for actual target/global/existence denial or unresolved event scope",
+  "budget": {
+    "max_model_attempts": 2,
+    "max_tokens": 192,
+    "max_elapsed_ms": 90000
+  },
+  "input_isolation": "One separate unadorned full TARGET was launched. anchor; aliases empty; exact/exact proposal; raw exact_target/requested_relation/none except actual-gap012/052 context_gap. Expected labels/rationale/axis/polarity outside Engine input.",
+  "raw_context_gap_ids": [
+    "li24-012",
+    "li24-052"
+  ],
+  "pure_raw_risk_joint_negatives": 0,
+  "metrics": "Precommitted axis-metrics-spec.json diagnostic, inherited scorer bytes and all60 source gate unchanged; not future real24 #542 criteria.",
+  "stages": [
+    "author AST semantic scope review Engine0/scorer0",
+    "author generation once and full schema STATIC_ONLY once",
+    "unchanged probe dedicated rustc compile-only",
+    "complete manifest all inputs/labels/rationale/protocol/metrics/scorer/recorder/probe/exe/source/core/serde/opaque",
+    "first60 one process and inherited scorer once",
+    "exact diagnostics/axis counts and all first/errors/results/receipt/review/README/recursive readonly manifest"
+  ],
+  "pre_freeze_corrections": "If needed preserve original bytes/static result/exact diff/reason/polarity before complete freeze; none needed during original author scope review",
+  "post_freeze": "No input/label/criterion edit, semantic retry, relabel or rescore",
+  "prior_sets": "v1-v23 all seen development including unexecuted drafts; old bodies unread/reuse0",
+  "preservation": "old591 source files plus separateprep5 under previous anchor2d9fcc74cb6671f8eff56855d45a5e4d48e1e14dedcc29b7c3dbd466edb10d9c",
+  "blindness": "Engine implementation/current tests/root trace/diagnostics/case bodies/development metrics and old author/cases/inputs unread",
+  "prohibited": "provider/model/network/Oracle/extraagent/real24 authorship/cargo/sharedtarget/Git mutations0",
+  "parent_reported_only": "pinned3ccda6b strict all-targetClippy/fmt,workspace1578PASS/0FAIL/8existingignore,fixtures20/archive13,quality-counter10,known1200/original14/historical597 whole-output equality and all60v23v29 baseline equal. No parent logs/implementation/tests/metrics read.",
+  "limits": [
+    "not real primary-source24, normal CLI, live provider, human, release/adoption acceptance",
+    "not answer-level grounding precision/recall/F1",
+    "not arbitrary language/graph/alias/AST/chronology guarantee or changing-corpus improvement rate"
+  ]
+}

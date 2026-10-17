@@ -1,0 +1,15 @@
+{
+  "identity": "engine073-launch-independent-v25",
+  "utc": "2026-10-17T17:42:43.331954+00:00",
+  "evaluator_freeze_sha256": "b172872d29b19e4308bf86bbce99b570f8d0198a087973def644f679fcb75ac6",
+  "authorization_reference": "Parent /root NEW_TASK: parent review PASS and explicitly authorizes fresh v25 authorship/first-only observation after immutable M0.",
+  "parent_review_sha256": "cef92a75a2b9f364bbebf946b068c80963d992d50a022d1deb57e9e27a99b1f4",
+  "parent_review_path": "/private/tmp/engine073-source25-preauthor-parent-review.json",
+  "operator": "sole authorized independent evaluator /root/engine07_realworld_independent",
+  "M0_modified": false,
+  "Engine_invocations_before_authoring": 0,
+  "real_cohort_scorer_processes_before_authoring": 0,
+  "old_source_files_preserved": 632,
+  "separate_preparation_files_preserved": 5,
+  "provider_model_network_Oracle_calls": 0
+}

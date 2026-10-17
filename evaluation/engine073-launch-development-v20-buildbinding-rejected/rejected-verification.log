@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/private/tmp/engine073-verify-pinned20.py", line 41, in <module>
+    assert not mismatches,(v,mismatches)
+           ^^^^^^^^^^^^^^
+AssertionError: (20, [('li20-009', False, False), ('li20-011', False, False), ('li20-023', False, False), ('li20-024', True, True), ('li20-028', True, True), ('li20-029', False, False), ('li20-038', True, True), ('li20-045', False, False), ('li20-051', False, False)])

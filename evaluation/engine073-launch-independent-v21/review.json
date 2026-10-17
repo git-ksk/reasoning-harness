@@ -1,0 +1,135 @@
+{
+  "identity": "engine073-launch-independent-v21-source-review",
+  "saved_utc": "2026-10-16T23:29:28.091393+00:00",
+  "outcome": "FAIL",
+  "first_summary_sha256": "70e22c764cb06dc6ce7e71f9f84e869e08b8dfbce50cc33bfeff9e2372acd390",
+  "counts": {
+    "observed": 60,
+    "passed": 48,
+    "positive_passed": 18,
+    "negative_passed": 30,
+    "positive_withheld": 12,
+    "negative_v17_requested_violations": 0,
+    "negative_v30_relevant_violations": 0,
+    "operational_errors": 0
+  },
+  "failed_positives": [
+    {
+      "id": "li21-003",
+      "axis": "foreign_document_owner_vs_quoted_event_owner",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li21-011",
+      "axis": "foreign_paper_property_then_target_existence",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li21-025",
+      "axis": "foreign_metadata_and_maintained_subject",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li21-027",
+      "axis": "two_foreign_events_with_document_reference",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li21-031",
+      "axis": "compound_foreign_property_and_because_clause",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li21-033",
+      "axis": "field_owner_cannot_replace_declared_event",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li21-035",
+      "axis": "literal_property_words_and_accuracy_denial",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li21-037",
+      "axis": "publisher_neutral_with_target_material_claim",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li21-041",
+      "axis": "mixed_event_between_foreign_property_roles",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li21-043",
+      "axis": "quote_reply_locality_amid_owner_note",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li21-055",
+      "axis": "owner_supplement_not_publisher_or_property",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    },
+    {
+      "id": "li21-059",
+      "axis": "global_scope_amid_foreign_owner_fields",
+      "first_relation": "unresolved",
+      "first_disposition": "ambiguous",
+      "first_risk": "none"
+    }
+  ],
+  "finding": "All60 gate fails because12 precommitted complete-property/fully foreign contexts withhold. No unsafe negative observed in30 negatives, not universal safety or cross-corpus improvement. Source unread, no causal implementation claim.",
+  "author_stage_revision": {
+    "record": "pre-freeze-design-revision.json",
+    "initial_author_and_AST_bytes_retained": true,
+    "changed_case_ids": [
+      "li21-005",
+      "li21-006",
+      "li21-021",
+      "li21-022",
+      "li21-041",
+      "li21-042",
+      "li21-047",
+      "li21-048",
+      "li21-055",
+      "li21-056"
+    ],
+    "purpose": "Add the before bare/coordinated finite roles, avoiding new bare-role grammar.",
+    "meaning_polarity_rationales_unchanged": true,
+    "before_generation_and_Engine_scorer0": true,
+    "full_generation_static_runs": 1,
+    "parent_explicitly_authorized": true
+  },
+  "special_diagnostics": {
+    "literal_target_nonexistence_ink_property019": "requested_relation/none/Relevant",
+    "literal_owner_absence_font_property035": "unresolved/none/Ambiguous, original positive retained",
+    "actual_gap030_050": "raw context_gap -> effective unresolved/ownership_scope/Ambiguous; no internal risk-component conclusion",
+    "canonical_full_clip047": "requested_relation/none/Relevant",
+    "pure_risk_joint_negative": 0
+  },
+  "complete_frozen_inputs_scope_labels_unchanged": true,
+  "post_freeze_retry_rescore_relabel": 0,
+  "provider_network_calls": 0,
+  "limits": "Finite synthetic candidate source gate, not real24/ordinaryCLI/provider/human/adoption/release or arbitrary language/risk-component guarantee. Parent core supplied and hash-verified only."
+}

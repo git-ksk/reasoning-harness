@@ -1,0 +1,17 @@
+{
+  "workspace": {
+    "passed": 1564,
+    "failed": 0,
+    "ignored": 8
+  },
+  "strict_clippy": "PASS",
+  "fmt": "PASS",
+  "fixtures": 20,
+  "original_archive_files": 13,
+  "source_sha": "c20c5136d59cb3a0bfdac4fb8ca9dade2d93e076",
+  "source_file_sha256": "6b5aa28035bf23e6ad5eded264b323109786963354f3769a74fffd41ebe54a31",
+  "full_current_acceptance": "FAIL positive misses remain",
+  "fresh_independent_after_this_semantic_change": "NOT_RUN; resolve21 consumed misses before authoring another corpus",
+  "merge_release_cli_adoption": "NO_GO",
+  "provider_model_Oracle_calls": 0
+}

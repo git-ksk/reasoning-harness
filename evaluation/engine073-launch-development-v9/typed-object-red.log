@@ -1,0 +1,21 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+     Running tests/launch_context_markers_520_521.rs (/private/tmp/engine073-target/debug/deps/launch_context_markers_520_521-b0e02a47023b9070)
+
+running 1 test
+test typed_component_quotes_cannot_erase_launch_or_whole_source_denials ... FAILED
+
+failures:
+
+---- typed_component_quotes_cannot_erase_launch_or_whole_source_denials stdout ----
+
+thread 'typed_component_quotes_cannot_erase_launch_or_whole_source_denials' panicked at crates/reasoning-harness-core/tests/launch_context_markers_520_521.rs:66:5:
+"The unknown retraction object is socket plating.": expected=false, relation=RequestedRelation, disposition=Relevant
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    typed_component_quotes_cannot_erase_launch_or_whole_source_denials
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 31 filtered out; finished in 0.18s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_context_markers_520_521`

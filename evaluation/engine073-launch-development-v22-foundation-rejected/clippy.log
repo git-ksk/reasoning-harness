@@ -1,0 +1,4 @@
+    Checking reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+    Checking reasoning-harness-providers v0.4.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-providers)
+    Checking reasoning-harness-cli v0.5.4 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-cli)
+    Finished `dev` profile [unoptimized] target(s) in 42.01s

@@ -1,0 +1,34 @@
+# Harness Engine 0.7.3 — repair, measure, then adopt
+
+[日本語](engine-0.7.3-roadmap.ja.md) | English
+
+Unpublished/not accepted. Published CLI0.5.5/Engine0.6.1 and latest independent source0.7.2 remain unchanged. [Plan #538](https://github.com/git-ksk/reasoning-harness/issues/538)/[evaluation #531](https://github.com/git-ksk/reasoning-harness/issues/531). Version promotion/publication require a separate PR.
+
+## Latest repair, independent evaluation and remaining work
+
+**#520 policy revision (2026-10-17):** For **future newly frozen** independent synthetic source cohorts, unconditional 60/60 exact classification is no longer required. Instead each public API axis must satisfy **F1>=0.90, precision>=0.95, recall>=0.85**, **zero false Relevant/RequestedRelation on safety negatives**, 100% known regressions (including the original 14), historic API compatibility and complete operations. Keep at least60 independent examples with >=30 positives/30 negatives. Do not reinterpret or rescore v24/other immutable first FAIL archives. See [new source policy](../evaluation/engine073-source-gate-v1/README.md). #531 real24 per-provider/track final-answer safety/utility and #540 runner gates remain independent and unchanged; no Engine release or CLI adoption is implied.
+
+
+
+Candidate `9505300` passes consumed v24 development with both API F1=1.000,known1264/original14 controls,historical597 whole-output byte equality,workspace1582PASS/0FAIL/8existing ignored and strict Clippy/fmt. However, fresh independentv25 first observation is **FAIL/NO_GO**: both APIs TP5/FP0/TN30/FN25,precision1.000,recall.166667,F1 .285714. It withholds25 of30 positives;unsafe negative admissions,operational failures and missing observations are0. The #547 evaluator/policy was frozen before authoring;Engine60 in one process,scorer/helper once,no retry/rescore/relabel. All original v24/v25 first records stay unchanged. Development F1=1 does not establish acceptance. Next: trace the actual25 withholding paths and repair shared role/correction/owner binding. Real24=0/24,actual-answer F1 unmeasured;source merge/release/CLI adoption NO-GO. See [decision and next work](engine073-v25-decision.md).
+
+| Order | Evidence required | Current state |
+| --- | --- | --- |
+| 1 | #520 source safety, known regressions and fresh source gate | 9505300 known1264 PASS; freshv25 firstFAIL35/60, bothF1.285714/FP0/FN25; [decision](engine073-v25-decision.md); all first records preserved |
+| 2 | #540 shared stop/durable reserve/inflight/cancellation,actual callback/dependency/numeric budgets,normal CLI trace | #535/#537/#541 merged;47 offline/6 bounded independent controls PASS. Complete scorer/live closure/monetary budgets/external containment/active feature path remain |
+| 3 | Small offline checks and only separately admitted provider development checks | Provider/model/Oracle additional0;oldv2/v3 firstFAIL preserved |
+| 4 | CompleteM0 evaluator/host/model/budget/quality freeze→fresh independent real24→full snapshot/goldM1→same-host actual0.6.1/successor comparison | Real24=0/24,M0/M1 incomplete. Severe violations0,no positive regression,complete providers,paired useful-answer gain and quality floors required |
+| 5 | Dedicated Engine0.7.3 source release after every required declared-scope acceptance/CI gate | Unpublished;synthetic consumed API F1=1 does not authorize normal release |
+| 6 | Dedicated CLI adoption PR;Mac/Windows/Linux,distribution/install/update/rollback | Adoption1/6:development comparison/limits/NO-GO only |
+
+## Real-answer preparation
+
+[Real-answer metrics preparation](engine073-realworld-metrics-preparation.md) defines claim-grounding precision,required-claim recall/F1,citations,correct/avoidable abstention,usefulness,operational missingness and per-provider accounting. PREPARATION_ONLY;notM0/M1 and no answers scored. New scorer,actual callback/dependency closure,numeric live reserve/headroom/currency self-budget and an active-feature ordinary CLI path remain. [Previous01dc same-host offline CLI](../evaluation/engine07-cli-path-preparation-v3/README.md) records identical grounded answer/acquisition1/public relevance API0 for one fixed Node path;directv17/v30 controls confirm counters. This neither establishes all paths inactive nor the repair's final-answer effect. #541 shared runner is merged;#540 live preparation remains OPEN. #531 freshreal24=0/24/adoption1/6,Groq prohibition,provider/model/Oracle additional0 remain.
+
+Main's[#542 quality gates](engine073-quality-gate-integration.md) additionally require future per-provider/track caseF1>=.90/precision>=.95/recall>=.85 simultaneously. These differ from atomic-claim F1 and synthetic API F1;severe0/other gates remain. Complete semantic scorer/trace and both metric units/use must freezeM0 before independent real24 authorship.
+
+## Preserved evidence and next repair
+
+[Pinned development](../evaluation/engine073-launch-development-v24-structure/README.md),[prototypes and rejected controls](../evaluation/engine073-launch-development-v24-structure-prototypes/README.md),[actual trace](../evaluation/engine073-launch-trace-development-v7/README.md),and[originalv24 first record](../evaluation/engine073-launch-independent-v24/README.md) are preserved. [Fresh v25 first record](../evaluation/engine073-launch-independent-v25/README-results.md) is now closed FAIL. Follow[decision/next work](engine073-v25-decision.md). Cross-corpusF1 differences are not an improvement rate;measure each repair on the same consumed cases.
+
+Groq prohibition cannot clear by time/TPM pacing/tiny readiness/model substitution. Published tags,historicalv16/v29,all first records and old scorers stay unchanged. Operational missingness never becomes successful negative or zero cost. #488/#489/#491 remain measured-needs-only;#465 infrastructure/#506WinGet separate. No0.8 feature expansion or Oracle.

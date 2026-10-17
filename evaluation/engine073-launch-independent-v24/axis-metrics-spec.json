@@ -1,0 +1,23 @@
+{
+  "identity": "engine073-launch-independent-v24-axis-metrics-v1",
+  "stage": "PRE_OBSERVATION_SPEC",
+  "purpose": "Diagnostic binary source qualification per public axis, not answer grounding F1 and not a gate relaxation",
+  "gold_positive": "case.polarity == positive (30); negative30",
+  "axes": {
+    "v17": "predict positive iff observed v17_requested_relation is true; legal different_relation/relation_absent/unresolved are negative",
+    "v30": "predict positive iff observed v30_relevant is true; legal ambiguous/irrelevant are negative"
+  },
+  "counts": {
+    "TP": "gold positive and predicted positive",
+    "FP": "gold negative and predicted positive",
+    "TN": "gold negative and predicted negative",
+    "FN": "gold positive and predicted negative"
+  },
+  "precision": "TP/(TP+FP), null with reason no_predicted_positives if denominator0",
+  "recall": "TP/(TP+FN), null with reason no_gold_positives if denominator0",
+  "F1": "2TP/(2TP+FP+FN); null if denominator0. With gold positives but no predicted positives, F1=0. Exact numerator/denominator recorded.",
+  "ops_missing": "Primary metrics require all60 valid scored cases with no operational errors/incomplete. Otherwise primary counts/ratios unavailable and any observed valid cohort counts are separately diagnostic; missing/suppressed is not TN or correct withholding.",
+  "unsafe": "Each axis FP count separately; no downstream false answer claim inferred",
+  "joint_gate": "Unchanged inherited scorer and full60/60 joint pass with operational completeness required. No F1 threshold, #542 threshold, partial credit or post-output relaxation substitutes.",
+  "calculation": "Read saved first-results/first-summary once after inherited scorer runs once; no Engine/scorer retry or original rescore. New axis-metrics.json is a separate precommitted diagnostic."
+}

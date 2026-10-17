@@ -1,0 +1,20 @@
+{
+  "source_sha": "95053007bba54c728eee428837b22eb9d52a4f61",
+  "kind": "consumed development on newly pinned actual worktree source, not fresh independent acceptance or CLI integration",
+  "base_source_sha": "3ccda6b4263eb5210477660b11f6926ec0186f4e",
+  "base_source_file_sha256": "85a64b506f8c47828a4a3296c5d07c13e921c59b528ea27e10ec4993c5f636e2",
+  "source_file_sha256": "9d8d3fa48a67f197d32282314813d992a374b9f54a6b079c39498b9a67f9207f",
+  "core": {
+    "path": "/private/tmp/engine073-target/debug/libreasoning_harness_core.rlib",
+    "sha256": "d785adeaa51591b9902266c7c7bd114763aaed1671c5e65f4df65d83d9be7fd9"
+  },
+  "deps_core": {
+    "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+    "sha256": "d785adeaa51591b9902266c7c7bd114763aaed1671c5e65f4df65d83d9be7fd9"
+  },
+  "serde": {
+    "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+    "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+  },
+  "compiler_metadata_sha256": "82664dd4d9587210c71c3ea60dd66996d4c28bfac6bbe4769356820c027b0e85"
+}

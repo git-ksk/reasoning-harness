@@ -1,0 +1,12 @@
+{
+  "utc": "2026-10-17T13:56:19.932885+00:00",
+  "kind": "pure constructed output/provenance fixture tests, not real cohort scoring",
+  "returncode": 0,
+  "tests": 43,
+  "engine_invocations": 0,
+  "real_cohort_scorer_invocations": 0,
+  "authored_cases": 0,
+  "score_sha256": "6478febd0292eb14de8bcbeb02eda19294d4348e0b8672b2fbb63eb8471c870c",
+  "test_sha256": "ad2d35421a6266d76da9ee32c4380f125600fe1fbff86913284710cd18cd0406",
+  "change": "Incomplete status takes precedence over raw observed joint equality. Original RED and score bytes retained; no author/cases/inputs/labels/first artifacts exist."
+}

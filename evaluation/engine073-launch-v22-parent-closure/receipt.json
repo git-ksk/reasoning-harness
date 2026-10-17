@@ -1,0 +1,55 @@
+{
+  "identity": "engine073-launch-v22-parent-closure",
+  "verified_utc": "2026-10-17T04:22:28.813617+00:00",
+  "archive_manifest_sha256": "8b959734099d99a1190b2372110ed10372801d0d5c044dae9a666230056b6bbd",
+  "old516_unchanged": true,
+  "v22_files": 29,
+  "all_archive_files": 545,
+  "first_summary": {
+    "identity": "engine073-launch-independent-v22",
+    "candidate_source_sha": "7431333d212938147a5d9ab32a0b8bdb44ee16b8",
+    "manifest_sha256": "21a8b511a426f5239a7f238fff88e1fc95f8f61dfc2e69b420659058dfd28727",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 30,
+    "failed": 30,
+    "incomplete": 0,
+    "positive_passed": 0,
+    "negative_passed": 30,
+    "negative_v17_requested_relation_violations": 0,
+    "negative_v30_relevant_violations": 0,
+    "positive_v17_withheld": 30,
+    "positive_v30_withheld": 30,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "3b3a6405c6b8fd09e17969ed85c0978c16aa2aa7dee998adb2fbbae38ff0932c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "51945d9d7eed5c2e370be9deb39a5845656f7205a569339d1875672c1b60c884"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "source": {
+    "source_sha": "7431333d212938147a5d9ab32a0b8bdb44ee16b8",
+    "source_file_sha256": "b7fec3e0f7c6b76dfbff1b801dd085a22661df9b22457431653eb2073a4e08f0",
+    "reasoning_harness_core": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "ab615574b7b5487592e04cc07fcb6cd748c129cd7ea148bd599329d1bbb83ad1"
+    },
+    "serde_json": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    }
+  },
+  "source_core_serde_head_unchanged": true,
+  "independent_first_run_complete": true,
+  "independent_final_save_review_complete": false,
+  "interruption": "Authorized evaluator reported first FAIL, then tool status errored at usage limit before receipt/README/final recursive manifest. Parent preserved all existing bytes and verified frozen/run/source identities.",
+  "parent_freeze_release": true,
+  "release_reason": "Independent evaluator is stopped; parent archive closure preserves FAIL and interruption. No independent PASS/final completion is claimed.",
+  "Engine_scorer_provider_model_calls": 0,
+  "retry_relabel_original_artifact_edits": 0,
+  "merge_release_cli_adoption": "NO_GO"
+}

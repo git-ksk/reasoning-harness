@@ -1,0 +1,47 @@
+{
+  "source_sha": "d647ca44d38958858a9ff4582f48ba6240d75241",
+  "source_file_sha256": "1abbec8d424d372a5713d57be7068af2dd231f1415ad6ad232f2b497e16baea6",
+  "consumed_v21": 12,
+  "rules": {
+    "li21-003": [
+      "target_adverse_clause"
+    ],
+    "li21-011": [
+      "typed_reference_not_excluded"
+    ],
+    "li21-025": [
+      "typed_reference_not_excluded"
+    ],
+    "li21-027": [
+      "unresolved_adverse_scope"
+    ],
+    "li21-031": [
+      "typed_reference_not_excluded"
+    ],
+    "li21-033": [
+      "typed_reference_not_excluded"
+    ],
+    "li21-035": [
+      "typed_reference_not_excluded"
+    ],
+    "li21-037": [
+      "target_adverse_clause"
+    ],
+    "li21-041": [
+      "typed_reference_not_excluded"
+    ],
+    "li21-043": [
+      "typed_reference_not_excluded"
+    ],
+    "li21-055": [
+      "typed_reference_not_excluded"
+    ],
+    "li21-059": [
+      "typed_reference_not_excluded"
+    ]
+  },
+  "scope": "temporary instrumented development execution, not fresh acceptance; original first scores unchanged",
+  "provider_calls": 0,
+  "scorer_calls": 0,
+  "hooks_removed_and_exact_source_restored": true
+}

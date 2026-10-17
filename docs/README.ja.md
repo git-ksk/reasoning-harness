@@ -67,7 +67,10 @@
 
 - [プロジェクト状況](project-status.ja.md) — release済み、active work、主要gap。
 - [製品ロードマップ](product-roadmap.ja.md) — 現在のproduct / engine前進track。
-- [Engine0.7実戦評価・CLI採用計画](engine-07-realworld-evaluation.ja.md) — #531、再オープンした#520、実資料予備試験、未完了の3社/E2E/独立受入。
+- [Engine0.7実戦評価・CLI採用計画](engine-07-realworld-evaluation.ja.md) — #531、保持したv2/v3不合格、新規実資料・provider・E2E受入は未完了。
+- [Harness Engine0.7.3計画](engine-0.7.3-roadmap.ja.md) — #538の修正順序、安全なrunner #540、新規評価と別リリース・採用ゲート。
+- [Engine0.7.3の撤回判定修正](launch-retraction-520.ja.md) — Draft #539、既知の回帰例と不変の独立初回結果。公開・CLI受入は別判断。
+- [研究知見を反映したEngine0.7.3修正](engine-073-research-informed-repair.ja.md) — Claude/Codexの公開技術・NLP研究、保存済み結果の診断、次の範囲・参照の試作。
 - [Harness Engine 0.7計画](engine-0.7.0-roadmap.ja.md) — 公開済み0.7.0の範囲、保留中の機構、歴史的な評価条件。
 - [Harness Engine 0.7.1リリース](engine-0.7.1-release.ja.md) — 前回のソースパッチ、#512/#514/#515修正、検証と限界。
 - [Harness Engine 0.7.2リリース](engine-0.7.2-release.ja.md) — 現行の通常ソースパッチ、採用範囲・最終検証・公開座標。

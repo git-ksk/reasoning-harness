@@ -1,0 +1,1007 @@
+{
+  "identity": "engine073-launch-independent-v25",
+  "utc": "2026-10-17T17:47:52.247390+00:00",
+  "outcome": "FAIL",
+  "decision": "NO_GO",
+  "assessment_basis": "Original single scorer output under pre-author frozen #547 policy; no recomputation of API qualification/gold/metrics.",
+  "axes": {
+    "v17_requested_relation": {
+      "tp": 5,
+      "fp": 0,
+      "tn": 30,
+      "fn": 25,
+      "precision": 1.0,
+      "recall": 0.16666666666666666,
+      "f1": 0.2857142857142857,
+      "f0_5_diagnostic": 0.5
+    },
+    "v30_relevant": {
+      "tp": 5,
+      "fp": 0,
+      "tn": 30,
+      "fn": 25,
+      "precision": 1.0,
+      "recall": 0.16666666666666666,
+      "f1": 0.2857142857142857,
+      "f0_5_diagnostic": 0.5
+    }
+  },
+  "joint_diagnostic": {
+    "passed": 35,
+    "failed": 25,
+    "incomplete": 0,
+    "positive_passed": 5,
+    "negative_passed": 30,
+    "strict_joint_outcome": "FAIL"
+  },
+  "unsafe_false_requested_relation": 0,
+  "unsafe_false_relevant": 0,
+  "operational_errors": [],
+  "incomplete": 0,
+  "blockers": [
+    "v17_requested_relation:recall_below_floor_or_undefined",
+    "v17_requested_relation:f1_below_floor",
+    "v30_relevant:recall_below_floor_or_undefined",
+    "v30_relevant:f1_below_floor"
+  ],
+  "positive_effective_tuple_counts": [
+    {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none",
+      "count": 5
+    },
+    {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "context_gap",
+      "count": 1
+    },
+    {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none",
+      "count": 24
+    }
+  ],
+  "negative_effective_tuple_counts": [
+    {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none",
+      "count": 27
+    },
+    {
+      "identity_scope": "unresolved",
+      "relation_scope": "unresolved",
+      "scope_risk": "multiple",
+      "count": 2
+    },
+    {
+      "identity_scope": "unresolved",
+      "relation_scope": "unresolved",
+      "scope_risk": "ownership_scope",
+      "count": 1
+    }
+  ],
+  "v29_disposition_counts": {
+    "relevant": 56,
+    "ambiguous": 4
+  },
+  "positive_basis_status_counts": [
+    {
+      "semantic_basis": "combined_safe_context",
+      "planned": 7,
+      "first_joint_pass": 0,
+      "first_joint_fail": 7
+    },
+    {
+      "semantic_basis": "foreign_event",
+      "planned": 9,
+      "first_joint_pass": 3,
+      "first_joint_fail": 6
+    },
+    {
+      "semantic_basis": "non_launch_property",
+      "planned": 14,
+      "first_joint_pass": 2,
+      "first_joint_fail": 12
+    }
+  ],
+  "positive_pass_ids": [
+    "li25-009",
+    "li25-013",
+    "li25-039",
+    "li25-047",
+    "li25-055"
+  ],
+  "failed_cases": [
+    {
+      "id": "li25-001",
+      "pair_id": "li25-pair-01",
+      "axis": "seal_color_and_target_denial",
+      "semantic_basis": "non_launch_property",
+      "precommitted_rationale": "A seal-color denial explicitly concerns a physical property; the separate target launch is unchallenged.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-003",
+      "pair_id": "li25-pair-02",
+      "axis": "erratum_scope",
+      "semantic_basis": "non_launch_property",
+      "precommitted_rationale": "The named Subject is a specific document construction property; withdrawing it does not retract the launch.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-005",
+      "pair_id": "li25-pair-03",
+      "axis": "foreign_claim_and_unnamed_followup",
+      "semantic_basis": "foreign_event",
+      "precommitted_rationale": "The only withdrawn event names a complete foreign product, Alder Dock Sensor.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-007",
+      "pair_id": "li25-pair-04",
+      "axis": "two_properties_and_nonexistence",
+      "semantic_basis": "combined_safe_context",
+      "precommitted_rationale": "Both finite roles are fully specified physical/document properties, so neither correction denies the target event.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-011",
+      "pair_id": "li25-pair-06",
+      "axis": "unowned_role_owner_supplement",
+      "semantic_basis": "foreign_event",
+      "precommitted_rationale": "An initially unowned typed launch frame receives one explicit complete foreign owner before withdrawal.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-015",
+      "pair_id": "li25-pair-08",
+      "axis": "source_title_foreign_event",
+      "semantic_basis": "foreign_event",
+      "precommitted_rationale": "Source title and local explanation agree on the complete foreign event owner.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-017",
+      "pair_id": "li25-pair-09",
+      "axis": "two_event_roles",
+      "semantic_basis": "combined_safe_context",
+      "precommitted_rationale": "Each adverse role has its own complete foreign owner; both can be excluded from the target launch.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-019",
+      "pair_id": "li25-pair-10",
+      "axis": "parenthetical_scope",
+      "semantic_basis": "non_launch_property",
+      "precommitted_rationale": "The parenthetical explicitly limits correction to a physical finish claim.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-021",
+      "pair_id": "li25-pair-11",
+      "axis": "because_clause",
+      "semantic_basis": "non_launch_property",
+      "precommitted_rationale": "Both main and reason clauses concern the explicitly named physical property; no target event is denied.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-023",
+      "pair_id": "li25-pair-12",
+      "axis": "although_clause",
+      "semantic_basis": "combined_safe_context",
+      "precommitted_rationale": "The property withdrawal and contrast-clause event denial are each fully scoped away from the target.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-025",
+      "pair_id": "li25-pair-13",
+      "axis": "while_clause",
+      "semantic_basis": "non_launch_property",
+      "precommitted_rationale": "The while clause continues the same fully specified printed-color correction.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-027",
+      "pair_id": "li25-pair-14",
+      "axis": "before_clause",
+      "semantic_basis": "combined_safe_context",
+      "precommitted_rationale": "Regardless of clause order, only a sleeve property and a fully foreign event are denied; no chronology inference is needed.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-029",
+      "pair_id": "li25-pair-15",
+      "axis": "author_reply_local_subject",
+      "semantic_basis": "non_launch_property",
+      "precommitted_rationale": "A directly adjacent author reply explicitly refers to a complete physical Subject.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-031",
+      "pair_id": "li25-pair-16",
+      "axis": "quoted_printed_content",
+      "semantic_basis": "non_launch_property",
+      "precommitted_rationale": "Quoted words are explicitly the value of a printed title property, so denying that property does not deny launch.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-033",
+      "pair_id": "li25-pair-17",
+      "axis": "newline_owner_supplement",
+      "semantic_basis": "foreign_event",
+      "precommitted_rationale": "The immediately following line names one complete foreign owner for the initially unowned Item.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-035",
+      "pair_id": "li25-pair-18",
+      "axis": "reused_role_reference",
+      "semantic_basis": "combined_safe_context",
+      "precommitted_rationale": "Both local references explicitly continue the same complete document property.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-037",
+      "pair_id": "li25-pair-19",
+      "axis": "property_apposition_and_event",
+      "semantic_basis": "combined_safe_context",
+      "precommitted_rationale": "The Subject has complete printed-property apposition and the additional event names a foreign product.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-041",
+      "pair_id": "li25-pair-21",
+      "axis": "component_property",
+      "semantic_basis": "non_launch_property",
+      "precommitted_rationale": "The complete component and physical texture are explicit; the component's name does not make the correction a product-launch denial.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-043",
+      "pair_id": "li25-pair-22",
+      "axis": "opening_word_in_physical_property",
+      "semantic_basis": "non_launch_property",
+      "precommitted_rationale": "The modified physical/printed property is explicit; 'opening' is part of the illustration description, not a new event predicate.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-045",
+      "pair_id": "li25-pair-23",
+      "axis": "quote_with_owner_reply",
+      "semantic_basis": "foreign_event",
+      "precommitted_rationale": "The initially ownerless quoted event receives exactly one complete foreign owner in an adjacent explicit same-role reply.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-049",
+      "pair_id": "li25-pair-25",
+      "axis": "several_safe_clauses",
+      "semantic_basis": "combined_safe_context",
+      "precommitted_rationale": "All adverse clauses independently resolve to a complete physical property or one complete foreign event; neither role belongs to target launch.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-051",
+      "pair_id": "li25-pair-26",
+      "axis": "property_denial_description",
+      "semantic_basis": "non_launch_property",
+      "precommitted_rationale": "A directly adjacent complete denial-target explanation binds the Object to a physical property.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-053",
+      "pair_id": "li25-pair-27",
+      "axis": "canonical_Clip_and_actual_gap",
+      "semantic_basis": "non_launch_property",
+      "precommitted_rationale": "The full canonical name is explicit in context and the retraction concerns a complete physical Subject; Clip is part of the actual name.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "context_gap"
+        },
+        "v29_disposition": "ambiguous",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-057",
+      "pair_id": "li25-pair-29",
+      "axis": "document_property_vs_unowned_event",
+      "semantic_basis": "non_launch_property",
+      "precommitted_rationale": "The Item and reason clause both identify an exact printed-document material property.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    },
+    {
+      "id": "li25-059",
+      "pair_id": "li25-pair-30",
+      "axis": "foreign_explanation_cannot_override_unknown",
+      "semantic_basis": "foreign_event",
+      "precommitted_rationale": "The withdrawn Subject itself states a complete foreign owner, with an agreeing local explanation.",
+      "precommitted_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "first_observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ]
+    }
+  ],
+  "scope_review_correspondence": "All25 misses were labelled positive before M1 for a complete property/foreign-event scope under the declared bounded API. Their original rationale and expected values are retained verbatim here. The preflight validated schema/anchor/budget/axis separation; it did not demonstrate candidate semantics.",
+  "observational_conclusion": "Twenty-five complete positive observations differ from precommitted expectations. Zero complete negative observations are admitted on either axis. Recall and F1 fail the adopted floors. This does not establish the internal reason for withholding.",
+  "causal_limit": "No implementation or Engine trace was inspected. Reasons such as model_ambiguous are literal returned strings, not evidence that a real model/provider was called. Exact risk enums do not establish internal component retention/loss.",
+  "policy_history": "M0 policy/helper/scorer unchanged. Prior v1-v24 first outcomes and criteria remain immutable and were not rescored. The all60 joint equality field is diagnostic for this future v25 only.",
+  "parent_controls": "Known1264/1264, original14/14 and historical equality are parent-reported pinned source controls, not independent replay.",
+  "independence": "One authorized evaluator authored new contexts after immutable M0 and explicit parent go; no second human adjudication or general-language proof.",
+  "scope_limit": "Finite synthetic source qualification only. No real24, normal CLI, grounded-answer F1, provider/Groq recovery, human acceptance, release or adoption claim.",
+  "Engine_processes": 1,
+  "real_cohort_scorer_processes": 1,
+  "helper_calls_in_that_process": 1,
+  "retries_rescores_relabels": 0,
+  "provider_model_network_Oracle_calls": 0
+}

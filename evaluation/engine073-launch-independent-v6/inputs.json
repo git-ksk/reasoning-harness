@@ -1,0 +1,2726 @@
+[
+  {
+    "id": "li6-001",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-01",
+      "target_question": "Was Acornhaven Plinth launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-01",
+        "canonical_name": "Acornhaven Plinth",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-001-evidence",
+      "source_id": "li6-001-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Acornhaven Plinth was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the ductility claim for Acornhaven Plinth. We separately retract the bend-radius claim for Acornhaven Plinth."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-002",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-01",
+      "target_question": "Was Acornhaven Plinth launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-01",
+        "canonical_name": "Acornhaven Plinth",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-002-evidence",
+      "source_id": "li6-002-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Acornhaven Plinth was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the ductility claim for Acornhaven Plinth. We separately retract the launch claim for Acornhaven Plinth."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-003",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-02",
+      "target_question": "Was Bouldermere Kite launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-02",
+        "canonical_name": "Bouldermere Kite",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-003-evidence",
+      "source_id": "li6-003-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Bouldermere Kite was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw both the thread-pitch claim about Bouldermere Kite and the friction-coefficient claim about Bouldermere Kite. Both withdrawn objects are named in this sentence."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-004",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-02",
+      "target_question": "Was Bouldermere Kite launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-02",
+        "canonical_name": "Bouldermere Kite",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-004-evidence",
+      "source_id": "li6-004-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Bouldermere Kite was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw both the thread-pitch claim about Bouldermere Kite and the launch claim about Bouldermere Kite. Both withdrawn objects are named in this sentence."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-005",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-03",
+      "target_question": "Was Cobaltbrook Chute launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-03",
+        "canonical_name": "Cobaltbrook Chute",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-005-evidence",
+      "source_id": "li6-005-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Cobaltbrook Chute was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The coolant-flow assertion for Cobaltbrook Chute is retracted."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Current author statement: I deny the bearing-clearance assertion for Cobaltbrook Chute."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-006",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-03",
+      "target_question": "Was Cobaltbrook Chute launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-03",
+        "canonical_name": "Cobaltbrook Chute",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-006-evidence",
+      "source_id": "li6-006-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Cobaltbrook Chute was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The coolant-flow assertion for Cobaltbrook Chute is retracted."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Current author statement: I deny the launch assertion for Cobaltbrook Chute."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-007",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-04",
+      "target_question": "Was Deltawick Crank launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-04",
+        "canonical_name": "Deltawick Crank",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-007-evidence",
+      "source_id": "li6-007-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "We retract the humidity-tolerance claim for Deltawick Crank"
+        },
+        {
+          "kind": "heading",
+          "text": "We deny the dielectric-strength claim for Deltawick Crank"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Deltawick Crank was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-008",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-04",
+      "target_question": "Was Deltawick Crank launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-04",
+        "canonical_name": "Deltawick Crank",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-008-evidence",
+      "source_id": "li6-008-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "We retract the humidity-tolerance claim for Deltawick Crank"
+        },
+        {
+          "kind": "heading",
+          "text": "We deny the launch claim for Deltawick Crank"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Deltawick Crank was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-009",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-05",
+      "target_question": "Was Ebonridge Pylon launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-05",
+        "canonical_name": "Ebonridge Pylon",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-009-evidence",
+      "source_id": "li6-009-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ebonridge Pylon was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The corrosion-class claim for Ebonridge Pylon is withdrawn. Additional current correction: the impact-endurance claim for Ebonridge Pylon is withdrawn."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-010",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-05",
+      "target_question": "Was Ebonridge Pylon launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-05",
+        "canonical_name": "Ebonridge Pylon",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-010-evidence",
+      "source_id": "li6-010-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ebonridge Pylon was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The corrosion-class claim for Ebonridge Pylon is withdrawn. Additional current correction: the launch claim for Ebonridge Pylon is withdrawn."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-011",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-06",
+      "target_question": "Was Frostmead Ferrule launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-06",
+        "canonical_name": "Frostmead Ferrule",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-011-evidence",
+      "source_id": "li6-011-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Frostmead Ferrule was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the sentence \"Frostmead Ferrule has milled slots.\" We also withdraw the sentence \"Frostmead Ferrule has anodized rails.\""
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-012",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-06",
+      "target_question": "Was Frostmead Ferrule launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-06",
+        "canonical_name": "Frostmead Ferrule",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-012-evidence",
+      "source_id": "li6-012-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Frostmead Ferrule was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the sentence \"Frostmead Ferrule has milled slots.\" We also withdraw the sentence \"Frostmead Ferrule was launched.\""
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-013",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-07",
+      "target_question": "Was Greenquay Lever launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-07",
+        "canonical_name": "Greenquay Lever",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-013-evidence",
+      "source_id": "li6-013-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Greenquay Lever was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the launch claim for Pearlreed Socket. We also retract the launch claim for Maplecrest Sleeve. The record about Greenquay Lever appears on this page."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-014",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-07",
+      "target_question": "Was Greenquay Lever launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-07",
+        "canonical_name": "Greenquay Lever",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-014-evidence",
+      "source_id": "li6-014-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Greenquay Lever was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the launch claim for Pearlreed Socket. We also retract the launch claim for Greenquay Lever. The record about Maplecrest Sleeve appears on this page."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-015",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-08",
+      "target_question": "Was Hawthornreach Drum launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-08",
+        "canonical_name": "Hawthornreach Drum",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-015-evidence",
+      "source_id": "li6-015-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Hawthornreach Drum was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the lead-content claim for Hawthornreach Drum. Independently, we withdraw the launch claim for Pearlreed Socket."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-016",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-08",
+      "target_question": "Was Hawthornreach Drum launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-08",
+        "canonical_name": "Hawthornreach Drum",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-016-evidence",
+      "source_id": "li6-016-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Hawthornreach Drum was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the launch claim for Hawthornreach Drum. Independently, we withdraw the launch claim for Pearlreed Socket."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-017",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-09",
+      "target_question": "Was Indigowood Coupler launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-09",
+        "canonical_name": "Indigowood Coupler",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-017-evidence",
+      "source_id": "li6-017-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "We retract the launch claim for Pearlreed Socket"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Indigowood Coupler was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Additional author decision: I retract the thermal-conductivity claim for Indigowood Coupler."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-018",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-09",
+      "target_question": "Was Indigowood Coupler launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-09",
+        "canonical_name": "Indigowood Coupler",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-018-evidence",
+      "source_id": "li6-018-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "We retract the launch claim for Pearlreed Socket"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Indigowood Coupler was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Additional author decision: I retract the launch claim for Indigowood Coupler."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-019",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-10",
+      "target_question": "Was Jutefield Roller launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-10",
+        "canonical_name": "Jutefield Roller",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-019-evidence",
+      "source_id": "li6-019-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Jutefield Roller was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the shielding-thickness claim for Jutefield Roller. At the end of this update, I retract the load-capacity claim for Jutefield Roller."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-020",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-10",
+      "target_question": "Was Jutefield Roller launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-10",
+        "canonical_name": "Jutefield Roller",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-020-evidence",
+      "source_id": "li6-020-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Jutefield Roller was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the shielding-thickness claim for Jutefield Roller. At the end of this update, I retract the launch claim for Jutefield Roller."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-021",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-11",
+      "target_question": "Was Kornelmere Rudder launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-11",
+        "canonical_name": "Kornelmere Rudder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-021-evidence",
+      "source_id": "li6-021-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "We deny the surface-hardness claim for Kornelmere Rudder. The lubrication-cycle claim for Kornelmere Rudder is separately retracted."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Kornelmere Rudder was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-022",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-11",
+      "target_question": "Was Kornelmere Rudder launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-11",
+        "canonical_name": "Kornelmere Rudder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-022-evidence",
+      "source_id": "li6-022-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "We deny the launch claim for Kornelmere Rudder. The lubrication-cycle claim for Kornelmere Rudder is separately retracted."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Kornelmere Rudder was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-023",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-12",
+      "target_question": "Was Lilacshore Pedal launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-12",
+        "canonical_name": "Lilacshore Pedal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-023-evidence",
+      "source_id": "li6-023-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Consolidated independent author corrections"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Lilacshore Pedal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Material note: the flexural-strength claim for Lilacshore Pedal is withdrawn."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Event note: We deny the launch claim for Pearlreed Socket."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-024",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-12",
+      "target_question": "Was Lilacshore Pedal launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-12",
+        "canonical_name": "Lilacshore Pedal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-024-evidence",
+      "source_id": "li6-024-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Consolidated independent author corrections"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Lilacshore Pedal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Material note: the flexural-strength claim for Lilacshore Pedal is withdrawn."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Event note: We deny the launch claim for Lilacshore Pedal."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-025",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-13",
+      "target_question": "Was Mistvale Gimbal launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-13",
+        "canonical_name": "Mistvale Gimbal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-025-evidence",
+      "source_id": "li6-025-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Mistvale Gimbal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Current corrections:\n- We retract the groove-depth claim for Mistvale Gimbal.\n- We retract the insulation-class claim for Mistvale Gimbal."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-026",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-13",
+      "target_question": "Was Mistvale Gimbal launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-13",
+        "canonical_name": "Mistvale Gimbal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-026-evidence",
+      "source_id": "li6-026-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Mistvale Gimbal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Current corrections:\n- We retract the groove-depth claim for Mistvale Gimbal.\n- We retract the launch claim for Mistvale Gimbal."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-027",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-14",
+      "target_question": "Was Northfen Bracket launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-14",
+        "canonical_name": "Northfen Bracket",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-027-evidence",
+      "source_id": "li6-027-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Author correction sheet discussing Northfen Bracket and Pearlreed Socket"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Northfen Bracket was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the launch claim for Pearlreed Socket."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the seal-pressure claim for Northfen Bracket."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-028",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-14",
+      "target_question": "Was Northfen Bracket launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-14",
+        "canonical_name": "Northfen Bracket",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-028-evidence",
+      "source_id": "li6-028-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Author correction sheet discussing Northfen Bracket and Pearlreed Socket"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Northfen Bracket was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the launch claim for Pearlreed Socket."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the launch claim for Northfen Bracket."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-029",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-15",
+      "target_question": "Was Ochrebay Couplet launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-15",
+        "canonical_name": "Ochrebay Couplet",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-029-evidence",
+      "source_id": "li6-029-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ochrebay Couplet was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Ochrebay Couplet's porosity claim is withdrawn. Ochrebay Couplet's solder-composition claim is also withdrawn."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-030",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-15",
+      "target_question": "Was Ochrebay Couplet launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-15",
+        "canonical_name": "Ochrebay Couplet",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-030-evidence",
+      "source_id": "li6-030-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ochrebay Couplet was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Ochrebay Couplet's porosity claim is withdrawn. Ochrebay Couplet's launch claim is also withdrawn."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-031",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-16",
+      "target_question": "Was Poplarhaven Sprocket launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-16",
+        "canonical_name": "Poplarhaven Sprocket",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-031-evidence",
+      "source_id": "li6-031-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Poplarhaven Sprocket was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The author denies the tensile-strength claim for Poplarhaven Sprocket; independently, the author retracts the launch claim for Pearlreed Socket."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-032",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-16",
+      "target_question": "Was Poplarhaven Sprocket launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-16",
+        "canonical_name": "Poplarhaven Sprocket",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-032-evidence",
+      "source_id": "li6-032-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Poplarhaven Sprocket was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The author denies the tensile-strength claim for Poplarhaven Sprocket; independently, the author retracts the launch claim for Poplarhaven Sprocket."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-033",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-17",
+      "target_question": "Was Quicksedge Chassis launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-17",
+        "canonical_name": "Quicksedge Chassis",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-033-evidence",
+      "source_id": "li6-033-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Most of this note concerns cable properties. I withdraw the fuse-rating claim for Quicksedge Chassis. This is the author's current decision."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Quicksedge Chassis was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-034",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-17",
+      "target_question": "Was Quicksedge Chassis launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-17",
+        "canonical_name": "Quicksedge Chassis",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-034-evidence",
+      "source_id": "li6-034-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Most of this note concerns cable properties. I withdraw the launch claim for Quicksedge Chassis. This is the author's current decision."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Quicksedge Chassis was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-035",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-18",
+      "target_question": "Was Ravenford Stud launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-18",
+        "canonical_name": "Ravenford Stud",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-035-evidence",
+      "source_id": "li6-035-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ravenford Stud was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "I retract the drainage-groove claim about Ravenford Stud. I withdraw the separate launch statement about Pearlreed Socket."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-036",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-18",
+      "target_question": "Was Ravenford Stud launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-18",
+        "canonical_name": "Ravenford Stud",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-036-evidence",
+      "source_id": "li6-036-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ravenford Stud was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "I retract the drainage-groove claim about Ravenford Stud. I withdraw the separate launch statement about Ravenford Stud."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-037",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-19",
+      "target_question": "Was Sprucefield Seal launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-19",
+        "canonical_name": "Sprucefield Seal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-037-evidence",
+      "source_id": "li6-037-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "We retract the compressibility claim for Sprucefield Seal"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Sprucefield Seal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The granularity claim for Sprucefield Seal is withdrawn. The surface-roughness claim for Sprucefield Seal is retracted."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-038",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-19",
+      "target_question": "Was Sprucefield Seal launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-19",
+        "canonical_name": "Sprucefield Seal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-038-evidence",
+      "source_id": "li6-038-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "We retract the launch claim for Sprucefield Seal"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Sprucefield Seal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The granularity claim for Sprucefield Seal is withdrawn. The surface-roughness claim for Sprucefield Seal is retracted."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-039",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-20",
+      "target_question": "Was Tealmeadow Actuator launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-20",
+        "canonical_name": "Tealmeadow Actuator",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-039-evidence",
+      "source_id": "li6-039-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Two current publisher responses quoted in full"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Tealmeadow Actuator was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Publisher response: \"We deny the shear-strength claim for Tealmeadow Actuator.\" Separate publisher response: \"We withdraw the resonance-frequency claim for Tealmeadow Actuator.\""
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-040",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-20",
+      "target_question": "Was Tealmeadow Actuator launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-20",
+        "canonical_name": "Tealmeadow Actuator",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-040-evidence",
+      "source_id": "li6-040-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Two current publisher responses quoted in full"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Tealmeadow Actuator was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Publisher response: \"We deny the shear-strength claim for Tealmeadow Actuator.\" Separate publisher response: \"We withdraw the launch claim for Tealmeadow Actuator.\""
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-041",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-21",
+      "target_question": "Was Umbershore Beam launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-21",
+        "canonical_name": "Umbershore Beam",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-041-evidence",
+      "source_id": "li6-041-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Umbershore Beam was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the thermal-expansion claim for Umbershore Beam. The thermal trial for Umbershore Beam did not take place."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-042",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-21",
+      "target_question": "Was Umbershore Beam launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-21",
+        "canonical_name": "Umbershore Beam",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-042-evidence",
+      "source_id": "li6-042-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Umbershore Beam was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the thermal-expansion claim for Umbershore Beam. The launch of Umbershore Beam did not take place."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-043",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-22",
+      "target_question": "Was Vesperwood Holder launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-22",
+        "canonical_name": "Vesperwood Holder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-043-evidence",
+      "source_id": "li6-043-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Vesperwood Holder was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the launch claim for Pearlreed Socket. No actual durability test of Vesperwood Holder occurred."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-044",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-22",
+      "target_question": "Was Vesperwood Holder launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-22",
+        "canonical_name": "Vesperwood Holder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-044-evidence",
+      "source_id": "li6-044-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Vesperwood Holder was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the launch claim for Pearlreed Socket. No actual launch of Vesperwood Holder occurred."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-045",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-23",
+      "target_question": "Was Windpetal Ramp launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-23",
+        "canonical_name": "Windpetal Ramp",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-045-evidence",
+      "source_id": "li6-045-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Windpetal Ramp was not made with silver. This is the publisher's current material correction."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the launch claim for Pearlreed Socket."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Windpetal Ramp was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-046",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-23",
+      "target_question": "Was Windpetal Ramp launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-23",
+        "canonical_name": "Windpetal Ramp",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-046-evidence",
+      "source_id": "li6-046-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Windpetal Ramp was not launched. This is the publisher's current launch correction."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the launch claim for Pearlreed Socket."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Windpetal Ramp was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-047",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-24",
+      "target_question": "Was Xenialbrook Nozzle launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-24",
+        "canonical_name": "Xenialbrook Nozzle",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-047-evidence",
+      "source_id": "li6-047-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Xenialbrook Nozzle was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "An archived facsimile file has been withdrawn. This administrative note concerns the file copy alone."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The service benchmark for Xenialbrook Nozzle never happened."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-048",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-24",
+      "target_question": "Was Xenialbrook Nozzle launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-24",
+        "canonical_name": "Xenialbrook Nozzle",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-048-evidence",
+      "source_id": "li6-048-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Xenialbrook Nozzle was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "An archived facsimile file has been withdrawn. This administrative note concerns the file copy alone."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The launch of Xenialbrook Nozzle never happened."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-049",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-25",
+      "target_question": "Was Yamfield Shim launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-25",
+        "canonical_name": "Yamfield Shim",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-049-evidence",
+      "source_id": "li6-049-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Yamfield Shim was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the width claim for Yamfield Shim."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We separately retract the height claim for Yamfield Shim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-050",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-25",
+      "target_question": "Was Yamfield Shim launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-25",
+        "canonical_name": "Yamfield Shim",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-050-evidence",
+      "source_id": "li6-050-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Yamfield Shim was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the width claim for Yamfield Shim."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We separately retract a launch statement. The owner of that launch statement is omitted from the notice."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-051",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-26",
+      "target_question": "Was Zesthaven Anvil launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-26",
+        "canonical_name": "Zesthaven Anvil",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-051-evidence",
+      "source_id": "li6-051-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Zesthaven Anvil was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the launch claim for Pearlreed Socket."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the launch claim for Maplecrest Sleeve. Both owners are explicitly named in the operative clauses."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-052",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-26",
+      "target_question": "Was Zesthaven Anvil launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-26",
+        "canonical_name": "Zesthaven Anvil",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-052-evidence",
+      "source_id": "li6-052-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Zesthaven Anvil was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the launch claim for Pearlreed Socket."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw another launch claim. The notice does not identify which product owns this additional withdrawn claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-053",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-27",
+      "target_question": "Was Auburnquay Bolt launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-27",
+        "canonical_name": "Auburnquay Bolt",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-053-evidence",
+      "source_id": "li6-053-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "We withdraw the paint-colour claim for Auburnquay Bolt"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Auburnquay Bolt was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the mass-distribution claim for Auburnquay Bolt."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-054",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-27",
+      "target_question": "Was Auburnquay Bolt launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-27",
+        "canonical_name": "Auburnquay Bolt",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-054-evidence",
+      "source_id": "li6-054-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "We withdraw the paint-colour claim for Auburnquay Bolt"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Auburnquay Bolt was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract a launch assertion. The product referent for this launch assertion is missing."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-055",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-28",
+      "target_question": "Was Bluewillow Skid launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-28",
+        "canonical_name": "Bluewillow Skid",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-055-evidence",
+      "source_id": "li6-055-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Joint property review of Bluewillow Skid and Pearlreed Socket"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Bluewillow Skid was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the spindle-diameter claim for Bluewillow Skid. We retract the paint-viscosity claim for Pearlreed Socket."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-056",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-28",
+      "target_question": "Was Bluewillow Skid launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-28",
+        "canonical_name": "Bluewillow Skid",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-056-evidence",
+      "source_id": "li6-056-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Joint property review of Bluewillow Skid and Pearlreed Socket"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Bluewillow Skid was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the spindle-diameter claim for Bluewillow Skid. We retract one product's launch claim; the review does not say which product."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-057",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-29",
+      "target_question": "Was Cranehaven Cleat launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-29",
+        "canonical_name": "Cranehaven Cleat",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-057-evidence",
+      "source_id": "li6-057-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Cranehaven Cleat was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "This record covers Cranehaven Cleat, Pearlreed Socket, and Maplecrest Sleeve. Pearlreed Socket was launched. Maplecrest Sleeve was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the launch claim for Pearlreed Socket. The withdrawn owner is explicitly Pearlreed Socket."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-058",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-29",
+      "target_question": "Was Cranehaven Cleat launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-29",
+        "canonical_name": "Cranehaven Cleat",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-058-evidence",
+      "source_id": "li6-058-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Cranehaven Cleat was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "This record covers Cranehaven Cleat, Pearlreed Socket, and Maplecrest Sleeve. Pearlreed Socket was launched. Maplecrest Sleeve was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw a launch claim in this record. The notice does not identify which of the three products owns the withdrawn claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-059",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-30",
+      "target_question": "Was Duskgarden Hub launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-30",
+        "canonical_name": "Duskgarden Hub",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-059-evidence",
+      "source_id": "li6-059-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Current two-part author notice"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Duskgarden Hub was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The page margins were widened. The indexer note concerns document layout."
+        },
+        {
+          "kind": "excerpt",
+          "text": "I withdraw the engraving-alignment claim for Duskgarden Hub."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li6-060",
+    "policy": {
+      "policy_id": "independent-v6-launch-policy",
+      "target_id": "v6-fictional-target-30",
+      "target_question": "Was Duskgarden Hub launched?",
+      "entity": {
+        "canonical_id": "v6-fictional-target-30",
+        "canonical_name": "Duskgarden Hub",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li6-060-evidence",
+      "source_id": "li6-060-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Current two-part author notice"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Duskgarden Hub was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The page margins were widened. The indexer note concerns document layout."
+        },
+        {
+          "kind": "excerpt",
+          "text": "I withdraw a launch assertion. The corrected launch claim and its owner are not identified in this notice."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  }
+]
