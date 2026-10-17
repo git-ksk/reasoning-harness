@@ -4,6 +4,10 @@
 
 ## 最新の修正・独立評価と残件
 
+**#520 方針改定（2026-10-17）:** 今後の新規独立合成source gateは**60件すべて正解**を必須とせず、両公開API別に **F1>=0.90・Precision>=0.95・Recall>=0.85**、否定（撤回・明確な非実在/否認等）の誤採用0件、既知回帰100%（元14件監査を含む）、過去API互換と運用完全性を必須とする。独立60件以上（陽性/陰性各30以上）は維持。v24を含む凍結初回のFAILは変更せず、今後の評価契約だけに適用する。詳細は[新方針](../evaluation/engine073-source-gate-v1/README.md)。#531の実回答24問・各provider・実用性・安全性と#540のrunner要件は変更せず、公開/CLI採用もNO-GOのまま。
+
+
+
 候補`3ccda6b`でv23の既知20保留を修正した。同じ固定60件の開発比較は両APIともTP30/FP0/TN30/FN0、Precision・Recall・F1各1.000（元初回F1 0.500は不変）。全体1578成功/失敗0/既存ignore8、strict Clippy/fmt、既知1200・元監査14成功、歴史597全出力byte一致とv23のv29全60不変を確認。その固定候補で新たに著作した独立v24は **初回FAIL 47/60**。v17 TP17/FP0/TN30/FN13、Precision 1.000000・Recall 0.566667・F1 0.723404；v30 TP17/FP0/TN30/FN13、Precision 1.000000・Recall 0.566667・F1 0.723404。否定誤通過はv17=0件/v30=0件、運用/不完全0。初回Engine60一process・scorer1回、再実行/再採点/再ラベル0。全旧初回は変更しない。実回答F1は未測定で、マージ・公開・CLI採用は新規source gate不合格のためNO-GO。[評価と次の進め方](engine073-v24-decision.ja.md)を参照。
 
 [実回答の採点準備](engine073-realworld-metrics-preparation.ja.md)で主張grounding Precision、必要主張Recall/F1、引用、正しい/過剰保留、有用性、運用欠測、provider別会計を定義した。PREPARATION_ONLY、M0/M1未固定・実回答未採点。新scorer、実host callback/dependency closure・数値予算/headroom・金額自己上限、featureが働く通常CLI経路が残る。[過去候補01dcの同一host offline CLI](../evaluation/engine07-cli-path-preparation-v3/README.md)は固定Node1経路で両Engineの同じgrounded回答・取得1・関連性API呼出し0、直接v17/v30対照ではcounter動作を確認した。全経路の不活性や今回修正の実回答効果を確定した結果ではない。#541共有runnerはmerge済みだが#540のlive準備はOPEN。#531新規実24問0/24・採用1/6、Groq追加起動禁止、provider/model/Oracle追加0を維持する。

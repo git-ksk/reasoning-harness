@@ -4,7 +4,7 @@
 
 | 指標 | 正解と観測の単位 | 状況・用途 |
 | --- | --- | --- |
-| 合成API F1 | 固定ソースがv17 requested_relation / v30 Relevantであるべきか | #520の開発・独立source gate。実回答の品質下限へ転用しない。元60件全件成功というソース受入条件を緩和しない |
+| 合成API F1 | 固定ソースがv17 requested_relation / v30 Relevantであるべきか | #520の開発・独立source gate。実回答の品質下限へ転用しない。従来の60/60条件は過去の凍結評価のみ保持。#520の**今後の独立合成source gate**はF1>=0.90・Precision>=0.95・Recall>=0.85、否定誤採用0、既知回帰100%に改定（#531の実回答ゲートとは別） |
 | #542 候補品質F1 | 独立goldのclear positive/negative/ambiguousと、candidateの回答/保留。通常は完全で根拠付きの回答、helperは別承認された対象への出典付き表示 | 必須provider・trackごとに完全24件、clear陽性8以上・陰性1以上、F1>=0.90・Precision>=0.95・Recall>=0.85を同時達成。F0.5>=0.95は診断目標。別provider/trackを合算しない |
 | 主張grounding P・必要主張Recall/F1 | 実際に表示した原子的主張の支持、goldで必要なsupported主張groupの充足 | [採点準備](engine073-realworld-metrics-preparation.ja.md)で分母0・保留・欠測を定義。#542のcase二値F1と同じ値ではなく、未実装の完全scorer/rubricと接続してM0で用途・下限を固定する必要がある |
 

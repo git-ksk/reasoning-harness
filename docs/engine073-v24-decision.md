@@ -7,7 +7,7 @@ Candidate3ccda6b, new independent firstFAIL 47/60. v17 TP17/FP0/TN30/FN13、Prec
 | v17 |17|0|30|13|1.000|0.567|0.723|
 | v30 |17|0|30|13|1.000|0.567|0.723|
 
-This is a finite synthetic public-API source gate. All60 must pass and negative violations must be0; future real24 #542 thresholds do not relax it. Original v23 F1 .500 and every first failure remain immutable. Development v23 F1=1 is not independent acceptance. Different fresh corpora are not a measured improvement trend. First Engine/scorer once;no retry/rescore/relabel.
+This is the **historical v24 first observation** under the then-frozen strict 60/60 source gate: FAIL remains unchanged. **Future newly frozen #520 independent synthetic source gates** now require F1>=0.90, precision>=0.95 and recall>=0.85 for both API axes, zero unsafe negative admissions and 100% known regression tests. This is separate from #531 real24, and never retroactively passes v24. Original v23 F1 .500 and every first failure remain immutable. Development v23 F1=1 is not independent acceptance. Different fresh corpora are not a measured improvement trend. First Engine/scorer once;no retry/rescore/relabel.
 
 Next: inspect actual first governing blockers in the newly consumed v24 failures using a separate test-only instrumented copy, preserving first outputs. Repair the shared structural cause with target/global/unknown/mixed/conflicting owner and real-gap controls;track same60 confusion/P/R/F1 and reject any false acceptance. Preserve known1260,original14,historical597/full validation. Do not author freshv25 while known failures remain;new semantics require a new commit/build freeze first. No cause is inferred solely from the observed outcome.
 

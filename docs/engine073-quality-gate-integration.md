@@ -4,7 +4,7 @@
 
 | Metric | Gold/observation unit | Status and use |
 | --- | --- | --- |
-| Synthetic API F1 | Frozen source expected to requestv17 relation / yieldv30 Relevant | #520 consumed-development and fresh source gate;not final-answer quality. Preserve the inherited all60 source acceptance condition |
+| Synthetic API F1 | Frozen source expected to requestv17 relation / yieldv30 Relevant | #520 consumed-development and fresh source gate;not final-answer quality. New future independent source gate: both axes F1>=.90/precision>=.95/recall>=.85, safety-negative FP0 and known regressions100%; historical first FAIL archives unchanged. Separate from #531 real24 |
 | #542 candidate-quality F1 | Independent clear positive/negative/ambiguous gold and candidate answer/withhold;normal=complete grounded answer,helper=separately authorized source-scoped target display | Each required provider/track:complete24,at least8 clear positives/1 clear negative,F1>=.90/precision>=.95/recall>=.85 simultaneously. F0.5>=.95 is a diagnostic stretch. Never pool providers/tracks |
 | Claim-grounding P / required-claim recall/F1 | Support for visible atomic factual claims and coverage of required supported gold groups | Zero-denominator,abstention and missingness definitions prepared. Different from case binary F1;complete semantic scorer/rubric integration,use and floors still needM0 freeze |
 

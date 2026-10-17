@@ -6,6 +6,10 @@ Unpublished/not accepted. Published CLI0.5.5/Engine0.6.1 and latest independent 
 
 ## Latest repair, independent evaluation and remaining work
 
+**#520 policy revision (2026-10-17):** For **future newly frozen** independent synthetic source cohorts, unconditional 60/60 exact classification is no longer required. Instead each public API axis must satisfy **F1>=0.90, precision>=0.95, recall>=0.85**, **zero false Relevant/RequestedRelation on safety negatives**, 100% known regressions (including the original 14), historic API compatibility and complete operations. Keep at least60 independent examples with >=30 positives/30 negatives. Do not reinterpret or rescore v24/other immutable first FAIL archives. See [new source policy](../evaluation/engine073-source-gate-v1/README.md). #531 real24 per-provider/track final-answer safety/utility and #540 runner gates remain independent and unchanged; no Engine release or CLI adoption is implied.
+
+
+
 Candidate `3ccda6b` repairs the20 consumed v23 misses. Same frozen60 development cases: both APIsTP30/FP0/TN30/FN0,precision/recall/F1=1.000; original firstF1 .500 unchanged. Workspace1578PASS/0FAIL/8existing ignored,strict Clippy/fmt,known1200/original14 PASS,historical597 whole-output byte equality and all60v23v29 unchanged. A newly authored independentv24 on this fixed candidate firstFAIL 47/60: v17 TP17/FP0/TN30/FN13, Precision 1.000000/Recall 0.566667/F1 0.723404; v30 TP17/FP0/TN30/FN13, Precision 1.000000/Recall 0.566667/F1 0.723404. Negative violationsv17=0/v30=0;operational/incomplete0. FirstEngine60 oneprocess/scorer1;retry/rescore/relabel0. All old first records remain untouched. Actual-answer F1 unmeasured;merge/release/CLI adoption NO-GO because fresh source gate fails. See[decision and next work](engine073-v24-decision.md).
 
 | Order | Evidence required | Current state |
