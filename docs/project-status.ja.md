@@ -25,7 +25,7 @@
 
 [初回v2/v3の結果](engine07-realworld-development-results.ja.md)は不合格・不完全のままです。#535の診断保持・#537の停止制御・#541の共有runnerはmerge済みですが、live受入は未完了。Groqは記録済みの日次枯渇により追加起動を止めています。通常回答の改善と新規独立受入は未確認、採用1/6は開発比較・限界・NO-GO記録のみです。公開CLI0.5.5 / Engine0.6.1と#506の配布受入は別工程です。
 
-候補`3ccda6b`でv23の既知20保留を修正した。同じ固定60件の開発比較は両APIともTP30/FP0/TN30/FN0、Precision・Recall・F1各1.000（元初回F1 0.500は不変）。全体1578成功/失敗0/既存ignore8、strict Clippy/fmt、既知1200・元監査14成功、歴史597全出力byte一致とv23のv29全60不変を確認。その固定候補で新たに著作した独立v24は **初回FAIL 47/60**。v17 TP17/FP0/TN30/FN13、Precision 1.000000・Recall 0.566667・F1 0.723404；v30 TP17/FP0/TN30/FN13、Precision 1.000000・Recall 0.566667・F1 0.723404。否定誤通過はv17=0件/v30=0件、運用/不完全0。初回Engine60一process・scorer1回、再実行/再採点/再ラベル0。全旧初回は変更しない。実回答F1は未測定で、マージ・公開・CLI採用は新規source gate不合格のためNO-GO。[評価と次の進め方](engine073-v24-decision.ja.md)を参照。
+候補`9505300`でv24の既知13保留と追加のowner注記4対照を修正した。同じ固定60件の開発比較は両APIともTP30/FP0/TN30/FN0、Precision・Recall・F1各1.000。元の独立v24初回FAIL47/60・F1 0.723404は変更しない。固定ソースの全体テスト1582成功/失敗0/既存ignore8、strict Clippy/fmt、既知1264・元監査14成功、歴史597全出力byte一致を確認。新規独立v25は専用コピーで候補と評価器を著作前に固定する準備中で、まだ受入結果はない。将来の#520評価は両API別にF1>=0.90・Precision>=0.95・Recall>=0.85、否定誤採用0、既知回帰100%を要求する[#547方針](../evaluation/engine073-source-gate-v1/README.md)に従う。旧初回を再採点しない。実回答F1は未測定、実24問0/24・M0/M1未完了、公開・CLI採用NO-GO。[修正と次の順序](engine073-v24-decision.ja.md)を参照。
 
 ## 今できること
 

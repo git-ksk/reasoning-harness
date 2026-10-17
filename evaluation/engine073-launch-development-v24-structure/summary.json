@@ -1,0 +1,215 @@
+{
+  "identity": {
+    "source_sha": "95053007bba54c728eee428837b22eb9d52a4f61",
+    "kind": "consumed development on newly pinned actual worktree source, not fresh independent acceptance or CLI integration",
+    "base_source_sha": "3ccda6b4263eb5210477660b11f6926ec0186f4e",
+    "base_source_file_sha256": "85a64b506f8c47828a4a3296c5d07c13e921c59b528ea27e10ec4993c5f636e2",
+    "source_file_sha256": "9d8d3fa48a67f197d32282314813d992a374b9f54a6b079c39498b9a67f9207f",
+    "core": {
+      "path": "/private/tmp/engine073-target/debug/libreasoning_harness_core.rlib",
+      "sha256": "d785adeaa51591b9902266c7c7bd114763aaed1671c5e65f4df65d83d9be7fd9"
+    },
+    "deps_core": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "d785adeaa51591b9902266c7c7bd114763aaed1671c5e65f4df65d83d9be7fd9"
+    },
+    "serde": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    },
+    "compiler_metadata_sha256": "82664dd4d9587210c71c3ea60dd66996d4c28bfac6bbe4769356820c027b0e85"
+  },
+  "historical_byte_identical": 597,
+  "original_audit_passed": 14,
+  "seen_regressions": {
+    "v2": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v3": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v4": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v5": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v6": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v7": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v8": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v9": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v10": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v12": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v13": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v14": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v15": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v16": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v18": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v19": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v20": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v21": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v22": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v23": {
+      "passed": 60,
+      "mismatches": []
+    }
+  },
+  "v24": {
+    "inputs_sha256": "74569d5027c1db3faa8aa0db930220b356970daa8646ad3198f6ece7414c80bf",
+    "cases_sha256": "873b4f02e7f45791f05cd1edc13d4aea0fe7bebfbd0c5f36f010a69a2b964948",
+    "baseline_first_source_sha": "3ccda6b4263eb5210477660b11f6926ec0186f4e",
+    "before_first_axes": {
+      "v17_requested_relation": {
+        "confusion": {
+          "tp": 17,
+          "fp": 0,
+          "tn": 30,
+          "fn": 13
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 0.5666666666666667,
+        "f1_positive": 0.723404255319149,
+        "specificity": 1.0,
+        "accuracy": 0.7833333333333333,
+        "balanced_accuracy": 0.7833333333333333,
+        "predicted_positive_rate": 0.2833333333333333,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.43333333333333335,
+        "mcc": 0.6287677132370127
+      },
+      "v30_relevant": {
+        "confusion": {
+          "tp": 17,
+          "fp": 0,
+          "tn": 30,
+          "fn": 13
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 0.5666666666666667,
+        "f1_positive": 0.723404255319149,
+        "specificity": 1.0,
+        "accuracy": 0.7833333333333333,
+        "balanced_accuracy": 0.7833333333333333,
+        "predicted_positive_rate": 0.2833333333333333,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.43333333333333335,
+        "mcc": 0.6287677132370127
+      }
+    },
+    "after_development_axes": {
+      "v17_requested_relation": {
+        "confusion": {
+          "tp": 30,
+          "fp": 0,
+          "tn": 30,
+          "fn": 0
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_positive": 1.0,
+        "specificity": 1.0,
+        "accuracy": 1.0,
+        "balanced_accuracy": 1.0,
+        "predicted_positive_rate": 0.5,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.0,
+        "mcc": 1.0
+      },
+      "v30_relevant": {
+        "confusion": {
+          "tp": 30,
+          "fp": 0,
+          "tn": 30,
+          "fn": 0
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_positive": 1.0,
+        "specificity": 1.0,
+        "accuracy": 1.0,
+        "balanced_accuracy": 1.0,
+        "predicted_positive_rate": 0.5,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.0,
+        "mcc": 1.0
+      }
+    },
+    "passed": 60,
+    "mismatches": [],
+    "scope": "same frozen consumed input/labels, new pinned source on same consumed input/labels; first FAIL unchanged; not fresh acceptance",
+    "historical_v29_all60_equal": true
+  },
+  "fresh_independent_semantic_calls": 0,
+  "scorer_invocations": 0,
+  "provider_model_Oracle_calls": 0,
+  "development_probe_processes": 24,
+  "development_inputs": 1875,
+  "additional_owner_adjunct_controls": {
+    "passed": 4,
+    "failed": 0,
+    "both_public_axes_withheld": true,
+    "whole_output_equal_private_after": true
+  },
+  "known_controls_total": 1264
+}

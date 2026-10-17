@@ -1,13 +1,11 @@
-# Repair plan and observations for the13 v24 misses
+# Repair of the13 v24 misses
 
-Preserve original3ccda6b independent firstFAIL47/60,P1/R.566667/F1.723404. These13 now become consumed development. Separate cfg(test) trace confirms typed_reference_not_excluded is first in all13,with exact original effective tuples. This is not a complete later-cause explanation.
+Original independentv24 on3ccda6b remains firstFAIL47/60: both axes TP17/FP0/TN30/FN13, precision1, recall.566667, F1.723404. These cases are now consumed development. Separate test-only tracing found typed_reference_not_excluded first in all13, with effective tuples matching the first outputs. Later blockers were traced only after the first repair; failed proposals and boundary controls remain recorded.
 
-1. Prove complete physical/document predicates and outside literal attributes;separate document/event owners.
-2. Preserve explicit event-owner unavailability even away from retractions. Bind a possessive second attribute only to an independently owned first component;old nominal fallbacks cannot supply an unknown antecedent.
-3. Heading/title literal projection requires complete outside property proof;actual gaps/raw risk/target/global denials remain. A literal-not-owner-supplement note requires both independently complete printed property and foreign event.
-4. Track same60 P/R/F1/confusion/unsafe and preserve rejected boundary failures. Private prototype350 core tests and final development bothF1=1/FP0 are separate from root full/known1260/historical597/original14 and pinned-artifact verification.
-5. Only after known repairs/regressions and new commit/build freeze,sole authorized evaluator authors new independentv25 with first-only all60 gate,no retry/rescore/relabel.
+1. Prove complete physical/document properties and outer quoted attributes; keep document and event ownership separate.
+2. Preserve explicit unknown event ownership even away from a retraction or after a finite discourse adjunct. A second possessive property needs an independently owned first component; older nominal rules cannot supply its unknown antecedent.
+3. Mask heading/title literal bodies only after complete property proof. Keep actual omissions, raw risk and target/global denials. A literal-not-owner-supplement explanation also needs a separately proven foreign event.
+4. Candidate9505300: same60 development TP30/FP0/TN30/FN0, precision/recall/F1=1 on both APIs. Four additional owner-note controls withhold on both APIs. Known1264, original14 and historical597 whole-output byte equality PASS. Final isolated workspace1582PASS/0FAIL/8existing ignored, strict Clippy/fmt; the earlier overlapping validation is explicitly superseded. [Pinned evidence](../evaluation/engine073-launch-development-v24-structure/README.md).
+5. Fresh independentv25 must freeze evaluator and policy before any new case authoring, then freeze candidate, inputs and labels before one first observation. Under merged#547, each axis needs F1>=.90, precision>=.95, recall>=.85, safety-negative FP0, known regressions100%, original audit/history/provenance completeness. Keep >=60 cases with >=30 positives/negatives. Historicalv24 FAIL is never rescored. No retry, rescore or relabel.
 
-Real24=0/24,M0/M1 incomplete,ordinary active-feature path/full scorer/actual callback/dependency/numeric budgets remain. Groq stopped;provider/model/Oracle additional0;publishedsource0.7.2/CLI0.5.5-Engine0.6.1 unchanged. NO-GO during repair.
-
-Four added note controls found one v17-only requested relation after a finite discourse adjunct. Share adjunct parsing with existence denial;all4 now withhold on bothAPIs. Earlier root checks are superseded and overlapped a private target build;do not use as acceptance. Run final isolated root validation after all privateCargo completes.
+The sole authorized evaluator is preparing this pre-author freeze in a dedicated candidate copy; no freshv25 result yet. Real24=0/24, M0/M1 incomplete. Full semantic scorer, actual callback/dependency, numeric live/headroom/currency budget and a feature-active ordinary CLI path remain separate requirements. Groq stopped; provider/model/Oracle additional0. Published Engine0.7.2 and CLI0.5.5/Engine0.6.1 stay unchanged; release and CLI adoption remain NO-GO.

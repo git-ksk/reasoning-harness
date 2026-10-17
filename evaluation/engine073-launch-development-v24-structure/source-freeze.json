@@ -1,0 +1,12 @@
+{
+  "source_sha": "95053007bba54c728eee428837b22eb9d52a4f61",
+  "source_file_sha256": "9d8d3fa48a67f197d32282314813d992a374b9f54a6b079c39498b9a67f9207f",
+  "reasoning_harness_core": {
+    "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+    "sha256": "d785adeaa51591b9902266c7c7bd114763aaed1671c5e65f4df65d83d9be7fd9"
+  },
+  "serde_json": {
+    "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+    "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+  }
+}
