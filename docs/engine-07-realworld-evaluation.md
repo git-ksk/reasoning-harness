@@ -44,6 +44,18 @@ Only fully observed, independently labeled clear positive/negative cases enter t
 
 **All older hard gates are cumulative and unchanged:** zero observed critical safety/citation/authority violations, zero positive-control regressions, known defects closed, paired improvement over0.6.1, all required providers, runnable secure host and live budgets, complete independent full-source review, CLI/distribution acceptance. Freeze the final evaluator and these thresholds **before** authoring/executing the next new independent acceptance cohort; previous recorded first observations remain immutable. The small offline metric scorer is an integration building block, not itself a release gate or a completed live evaluator.
 
+## #520 source qualification gate revision (2026-10-17)
+
+The separate **synthetic** #520 source-qualification acceptance no longer requires an exact 60/60 first-pass score *for future independently frozen cohorts*. The [new explicit policy and offline tests](../evaluation/engine073-source-gate-v1/README.md) require both public API axes to achieve **F1 >=0.90, precision >=0.95, recall >=0.85**, with **zero false acceptance of negative/safety cases**, 100% of known safety regression controls and historical API compatibility, and complete immutable first-observation evidence. Legitimate positive abstention is measured as FN rather than a release-blocking error by itself. Past independent results (including v24 47/60) remain unmodified **FAIL under their original frozen gate**; no retrospective reclassification. The 60-case minimum and the future independent evaluator/source pre-freeze still apply.
+
+This revision changes **only #520's future synthetic source gate**. #531's per-provider and per-track real-answer case-quality F1/precision/recall, factual/citation safety, baseline utility improvement, execution budget/host completeness and independent acceptance remain separate mandatory gates, as does #540. It neither authorizes Engine release nor CLI adoption.
+
+## #520 source qualification gate revision (2026-10-17)
+
+The separate **synthetic** #520 source-qualification acceptance no longer requires an exact 60/60 first-pass score *for future independently frozen cohorts*. The [new explicit policy and offline tests](../evaluation/engine073-source-gate-v1/README.md) require both public API axes to achieve **F1 >=0.90, precision >=0.95, recall >=0.85**, with **zero false acceptance of negative/safety cases**, 100% of known safety regression controls and historical API compatibility, and complete immutable first-observation evidence. Legitimate positive abstention is measured as FN rather than a release-blocking error by itself. Past independent results (including v24 47/60) remain unmodified **FAIL under their original frozen gate**; no retrospective reclassification. The 60-case minimum and the future independent evaluator/source pre-freeze still apply.
+
+This revision changes **only #520's future synthetic source gate**. #531's per-provider and per-track real-answer case-quality F1/precision/recall, factual/citation safety, baseline utility improvement, execution budget/host completeness and independent acceptance remain separate mandatory gates, as does #540. It neither authorizes Engine release nor CLI adoption.
+
 ## Preparation evidence already collected
 
 - [Published0.7.2 audit](../evaluation/engine-0.7.2-verification-audit-20261014/README.md): a root-authored synthetic14-input targeted matrix finds ten false-Relevant negatives for present-tense retractions/denials and non-event statements. #520 is reopened under milestone#12. Its original repair, acceptance and published tags remain preserved. No downstream wrong answer or Known/Supported promotion was demonstrated.
