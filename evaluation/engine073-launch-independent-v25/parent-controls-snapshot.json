@@ -1,0 +1,26 @@
+{
+  "schema": "v25-parent-reported-source-controls-v1",
+  "source_sha": "95053007bba54c728eee428837b22eb9d52a4f61",
+  "scope": "tested #520 synthetic source qualification only; NOT #531/#540/real24/CLI/release",
+  "basis": "parent messages, not decoded parent controls/validation/diagnostics",
+  "opaque_reference_sha256": "4e27e271e45a6a757e34c044cfc32619b4f34598aeb738ede7fbdbdca14eeb3f",
+  "independently_rerun": false,
+  "reported_controls": {
+    "known_regressions_total": 1264,
+    "known_regressions_passed": 1264,
+    "original_audit_total": 14,
+    "original_audit_passed": 14,
+    "historical_byte_equivalent": true,
+    "known_unfixed_critical_defects": []
+  },
+  "additional_parent_reported": {
+    "historical_rows": 597,
+    "v24_v29_unchanged_rows": 60,
+    "workspace_passed": 1582,
+    "workspace_failed": 0,
+    "existing_ignored": 8,
+    "quality_counter_controls": 10,
+    "policy_helper_controls": 10
+  },
+  "future_provenance_flags": "intentionally absent; computed from actual M0/M1/first markers at runtime"
+}

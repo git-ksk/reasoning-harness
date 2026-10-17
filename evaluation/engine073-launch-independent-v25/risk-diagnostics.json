@@ -1,0 +1,1210 @@
+{
+  "identity": "engine073-launch-independent-v25",
+  "utc": "2026-10-17T17:47:52.245864+00:00",
+  "source_first_results_sha256": "75256cfc6fdbde0f588ab2f0d1ee43d2039665e5b7b506e1d04311ec6b7756e0",
+  "source_inputs_sha256": "95be6aa3f505d87e8d3804ecc5f47ee26419f37fb15cb5122fac2a0a5fdfd462",
+  "derivation": "Literal copy from first-results.exact_risk_diagnostic, bound to frozen inputs and original raw rows. No API/scorer/helper called.",
+  "internal_component_inferences": false,
+  "cases": [
+    {
+      "id": "li25-001",
+      "pair_id": "li25-pair-01",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-002",
+      "pair_id": "li25-pair-01",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-003",
+      "pair_id": "li25-pair-02",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-004",
+      "pair_id": "li25-pair-02",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-005",
+      "pair_id": "li25-pair-03",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-006",
+      "pair_id": "li25-pair-03",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-007",
+      "pair_id": "li25-pair-04",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-008",
+      "pair_id": "li25-pair-04",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-009",
+      "pair_id": "li25-pair-05",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-010",
+      "pair_id": "li25-pair-05",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-011",
+      "pair_id": "li25-pair-06",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-012",
+      "pair_id": "li25-pair-06",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-013",
+      "pair_id": "li25-pair-07",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-014",
+      "pair_id": "li25-pair-07",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-015",
+      "pair_id": "li25-pair-08",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-016",
+      "pair_id": "li25-pair-08",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-017",
+      "pair_id": "li25-pair-09",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-018",
+      "pair_id": "li25-pair-09",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-019",
+      "pair_id": "li25-pair-10",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-020",
+      "pair_id": "li25-pair-10",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-021",
+      "pair_id": "li25-pair-11",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-022",
+      "pair_id": "li25-pair-11",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-023",
+      "pair_id": "li25-pair-12",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-024",
+      "pair_id": "li25-pair-12",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-025",
+      "pair_id": "li25-pair-13",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-026",
+      "pair_id": "li25-pair-13",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-027",
+      "pair_id": "li25-pair-14",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-028",
+      "pair_id": "li25-pair-14",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-029",
+      "pair_id": "li25-pair-15",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-030",
+      "pair_id": "li25-pair-15",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-031",
+      "pair_id": "li25-pair-16",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-032",
+      "pair_id": "li25-pair-16",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-033",
+      "pair_id": "li25-pair-17",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-034",
+      "pair_id": "li25-pair-17",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-035",
+      "pair_id": "li25-pair-18",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-036",
+      "pair_id": "li25-pair-18",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-037",
+      "pair_id": "li25-pair-19",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-038",
+      "pair_id": "li25-pair-19",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-039",
+      "pair_id": "li25-pair-20",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-040",
+      "pair_id": "li25-pair-20",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "multiple"
+      },
+      "v29_disposition": "ambiguous",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-041",
+      "pair_id": "li25-pair-21",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-042",
+      "pair_id": "li25-pair-21",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-043",
+      "pair_id": "li25-pair-22",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-044",
+      "pair_id": "li25-pair-22",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-045",
+      "pair_id": "li25-pair-23",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-046",
+      "pair_id": "li25-pair-23",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-047",
+      "pair_id": "li25-pair-24",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-048",
+      "pair_id": "li25-pair-24",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-049",
+      "pair_id": "li25-pair-25",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-050",
+      "pair_id": "li25-pair-25",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-051",
+      "pair_id": "li25-pair-26",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-052",
+      "pair_id": "li25-pair-26",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-053",
+      "pair_id": "li25-pair-27",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "v29_disposition": "ambiguous",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-054",
+      "pair_id": "li25-pair-27",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "multiple"
+      },
+      "v29_disposition": "ambiguous",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-055",
+      "pair_id": "li25-pair-28",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "relevant",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-056",
+      "pair_id": "li25-pair-28",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-057",
+      "pair_id": "li25-pair-29",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-058",
+      "pair_id": "li25-pair-29",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-059",
+      "pair_id": "li25-pair-30",
+      "polarity": "positive",
+      "complete": true,
+      "first_status": "fail",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "v29_disposition": "relevant",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    },
+    {
+      "id": "li25-060",
+      "pair_id": "li25-pair-30",
+      "polarity": "negative",
+      "complete": true,
+      "first_status": "pass",
+      "raw_provided_tuple": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_v17_tuple": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "ownership_scope"
+      },
+      "v29_disposition": "ambiguous",
+      "v30_disposition": "ambiguous",
+      "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+    }
+  ]
+}

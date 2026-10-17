@@ -1,0 +1,27 @@
+{
+  "identity": "engine073-launch-independent-v25",
+  "utc": "2026-10-17T17:47:52.245018+00:00",
+  "files": {
+    "driver.started.json": "b9728cf779d58d424f615d34066320181864839e715686d8d3fd972e6b457602",
+    "driver.invocation.json": "9460eb72b0a9281721348ae199d6babbc0052f33b02f8629b8c9571b5e49d3fc",
+    "driver.stdout.txt": "8949e9212ba8a6919d33075401ffc448e0ceb366ab8a476e54c544518da25c39",
+    "driver.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "execution.started.json": "083370dab63ad595417f0194379525c5edfa4039dd444c48624c33c6afc5ecf5",
+    "first-run.stdout.txt": "5ed2dd1b0e8ae0e803ac470934175ad14680fa7c5e7bd2d1cc7461548ed6b8f1",
+    "first-run.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first-invocation.started.json": "032c0cad0c9a331f3db04a44af9359eb6a42d3597a26340f7f796e3f2e46eb52",
+    "first-invocation.json": "ca47d6f34cc4ffd40657a5de163d2a0ce73b1abed8e383f18b9ee4cc251072ef",
+    "first.stdout.jsonl": "2c1008019fc20e7e0c57efb8f057869e0c41f5e5b1ea28b4510e6444f61e1568",
+    "first.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first-score.started.json": "8286e23dd5ae67535f790a24cef9d2d6d0aab6ee6d8e8628902e8ca64f189b82",
+    "first-score.invocation.json": "f547e2cf4e039afcd5b558512e082cb3c32e111e4d1480afeac3e964999436e3",
+    "first-score.stdout.txt": "d90d5c3eaa496dc3380ce9a972f2122e1943b914b992eec938563b6f26d90eb4",
+    "first-score.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first-results.json": "75256cfc6fdbde0f588ab2f0d1ee43d2039665e5b7b506e1d04311ec6b7756e0",
+    "first-summary.json": "d90d5c3eaa496dc3380ce9a972f2122e1943b914b992eec938563b6f26d90eb4"
+  },
+  "purpose": "Literal initial artifacts after the one frozen run; not new scoring.",
+  "Engine_processes": 1,
+  "real_cohort_scorer_processes": 1,
+  "semantic_retries_rescores_relabels": 0
+}

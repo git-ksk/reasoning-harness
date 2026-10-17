@@ -1,0 +1,20 @@
+{
+  "identity": "parent-review-v25-pre-author",
+  "utc": "2026-10-17T15:32:44.158951+00:00",
+  "evaluator_freeze_sha256": "b172872d29b19e4308bf86bbce99b570f8d0198a087973def644f679fcb75ac6",
+  "source_sha": "95053007bba54c728eee428837b22eb9d52a4f61",
+  "source_file_sha256": "9d8d3fa48a67f197d32282314813d992a374b9f54a6b079c39498b9a67f9207f",
+  "frozen_files_verified": 51,
+  "checked_artifacts_verified": 51,
+  "old_source_files_verified": 632,
+  "preparation_files_verified": 5,
+  "new_authoring_or_first_artifacts_present": false,
+  "Engine_scorer_provider_model_Oracle_calls": 0,
+  "review_scope": "Code/fixture records and hashes only. No new semantic input authored or read. Frozen future #547 adapter, strict parsing/completeness and actual runtime provenance; unchanged historical FAILs. Does not approve release/CLI.",
+  "pure_fixture_tests_reviewed": 48,
+  "source_policy_and_adapter_review": "PASS; explicit pinned config, each API metric gate, safety FP0; joint exactness diagnostic",
+  "strictness_review": "PASS; bool gold, invalid/missing/duplicate/returncode/stderr/provenance failures block; incomplete cannot count pass",
+  "runtime_chain_review": "PASS; exclusive markers; recorder/scorer failure or scorer stderr cannot pass",
+  "literal_diagnostic_review": "PASS; exact tuples only, no inferred internal risk state, no extra helper/scorer call",
+  "authorization": "Parent approves subsequent new v25 authoring, full static/M1 freeze and one first-only Engine/scorer observation under this exact M0; existing user authorization; not release/CLI approval"
+}

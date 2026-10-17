@@ -10,11 +10,11 @@
 
 
 
-候補`9505300`でv24の既知13保留と追加のowner注記4対照を修正した。同じ固定60件の開発比較は両APIともTP30/FP0/TN30/FN0、Precision・Recall・F1各1.000。元の独立v24初回FAIL47/60・F1 0.723404は変更しない。固定ソースの全体テスト1582成功/失敗0/既存ignore8、strict Clippy/fmt、既知1264・元監査14成功、歴史597全出力byte一致を確認。新規独立v25は専用コピーで候補と評価器を著作前に固定する準備中で、まだ受入結果はない。将来の#520評価は両API別にF1>=0.90・Precision>=0.95・Recall>=0.85、否定誤採用0、既知回帰100%を要求する[#547方針](../evaluation/engine073-source-gate-v1/README.md)に従う。旧初回を再採点しない。実回答F1は未測定、実24問0/24・M0/M1未完了、公開・CLI採用NO-GO。[修正と次の順序](engine073-v24-decision.ja.md)を参照。
+候補`9505300`の既知v24修正は同じ60件の開発比較で両API F1=1.000、既知1264・元監査14成功、歴史597全出力byte一致、全体1582成功/失敗0/既存ignore8、strict Clippy/fmtを確認した。しかし、新しい独立v25の初回は **FAIL/NO_GO**。両APIともTP5/FP0/TN30/FN25、Precision1.000・Recall0.166667・F1 0.285714で、陽性30件中25件を保留した。否定誤採用・運用失敗・欠測は各0。#547の評価器/方針を著作前に固定し、Engine60件一process・scorer/helper各1回で観測、再実行/再採点/再ラベルなし。元v24と今回v25の初回は不変。修正に使った集合のF1=1だけでは受入できない。次は今回の25保留の実経路を計測し、役割・訂正先・ownerの共通処理を修正する。実24問0/24・実回答F1未測定、sourceマージ/公開/CLI採用NO-GO。[判定と次の順序](engine073-v25-decision.ja.md)を参照。
 
 | 順序 | 必要な証拠 | 現状 |
 | --- | --- | --- |
-| 1 | #520の対象/全体否定・未知owner保留、既知回帰と新規独立source gate | 9505300は既知1264成功、観測済みv24開発F1=1。新規v25評価器の固定準備中、元v24初回FAIL47/60は保持。[判定](engine073-v24-decision.ja.md)、全初回は不変 |
+| 1 | #520の対象/全体否定・未知owner保留、既知回帰と新規独立source gate | 9505300は既知1264成功、新規v25初回FAIL35/60・両API F1.285714/FP0/FN25。[判定](engine073-v25-decision.ja.md)、全初回は不変 |
 | 2 | #540共有停止・永続reserve/inflight・キャンセル、actual host callback/dependency/数値予算、通常経路trace | #535/#537/#541 merge、47 offline controls/限定独立6境界PASS。新scorer・live callback/dependency/数値予算・外部containment・featureが働く経路は残件 |
 | 3 | 小規模offline開発確認、必要かつ別途開始条件を満たしたprovider確認 | 今回provider/model/Oracle追加0。旧v2/v3初回FAILを維持 |
 | 4 | 完全M0評価器/host/model/予算/品質基準を固定→別作成者の新実資料24問→全文/gold M1固定→同hostで0.6.1/後継を比較 | 実24問0/24、M0/M1未完了。重大違反0・陽性退行0・provider別完全結果・有用性改善と品質下限が必須 |
@@ -29,6 +29,6 @@ mainの[#542品質ゲート](engine073-quality-gate-integration.ja.md)は、将�
 
 ## 保持する証拠と次の修正
 
-[固定候補の開発検証](../evaluation/engine073-launch-development-v24-structure/README.md)・[不採用対照を含む試作](../evaluation/engine073-launch-development-v24-structure-prototypes/README.md)・[実経路trace](../evaluation/engine073-launch-trace-development-v7/README.md)・[元の独立v24初回](../evaluation/engine073-launch-independent-v24/README.md)を保存。次は[判定と作業順序](engine073-v24-decision.ja.md)に従う。異なるコーパスのF1差を改善率とせず、同じ観測済み集合で修正効果を測る。
+[固定候補の開発検証](../evaluation/engine073-launch-development-v24-structure/README.md)・[不採用対照を含む試作](../evaluation/engine073-launch-development-v24-structure-prototypes/README.md)・[実経路trace](../evaluation/engine073-launch-trace-development-v7/README.md)・[元の独立v24初回](../evaluation/engine073-launch-independent-v24/README.md)を保存。[新規v25初回](../evaluation/engine073-launch-independent-v25/README-results.md)もFAILとして閉鎖した。次は[判定と作業順序](engine073-v25-decision.ja.md)に従う。異なるコーパスのF1差を改善率とせず、同じ観測済み集合で修正効果を測る。
 
 Groqの既知禁止は時間経過・TPM間隔・小さいreadiness・モデル交換で解除しない。公開tag・歴史v16/v29・全初回・旧評価器は不変。運用欠測は成功の陰性や費用0にしない。#488/#489/#491は実測で必要な場合のみ。#465基盤・#506WinGetは別。0.8.0機能拡大・Oracleは含めない。

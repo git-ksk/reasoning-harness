@@ -1,0 +1,1 @@
+{"stage": "AUTHOR_GENERATION_ONLY", "planned": 60, "positive": 30, "negative": 30, "cases_sha256": "10213396b11cc6d0860d809c7a9e9b3a19c25ded98ae1617f41fc8d65e25a5fc", "inputs_sha256": "95be6aa3f505d87e8d3804ecc5f47ee26419f37fb15cb5122fac2a0a5fdfd462", "Engine_invocations": 0, "real_cohort_scorer_processes": 0}

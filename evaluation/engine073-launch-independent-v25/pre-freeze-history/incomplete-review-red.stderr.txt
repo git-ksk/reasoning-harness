@@ -1,0 +1,41 @@
+FF
+======================================================================
+FAIL: test_invocation_failure_never_joint_success (test_evaluator.EvaluatorTests.test_invocation_failure_never_joint_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/evaluation/engine073-launch-independent-v25/test_evaluator.py", line 69, in test_invocation_failure_never_joint_success
+    self.assertEqual((x['positive_passed'],x['negative_passed'],x['passed'],x['failed'],x['incomplete']),(0,0,0,0,60))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (30, 30, 60, 0, 60) != (0, 0, 0, 0, 60)
+
+First differing element 0:
+30
+0
+
+- (30, 30, 60, 0, 60)
+?  -   -   -
+
++ (0, 0, 0, 0, 60)
+
+======================================================================
+FAIL: test_stderr_never_joint_success (test_evaluator.EvaluatorTests.test_stderr_never_joint_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/evaluation/engine073-launch-independent-v25/test_evaluator.py", line 73, in test_stderr_never_joint_success
+    self.assertEqual((x['positive_passed'],x['negative_passed'],x['passed'],x['failed'],x['incomplete']),(0,0,0,0,60))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (30, 30, 60, 0, 60) != (0, 0, 0, 0, 60)
+
+First differing element 0:
+30
+0
+
+- (30, 30, 60, 0, 60)
+?  -   -   -
+
++ (0, 0, 0, 0, 60)
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.007s
+
+FAILED (failures=2)

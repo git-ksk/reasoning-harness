@@ -4,7 +4,7 @@
 
 ## 最新の修正・独立評価と残件
 
-候補`9505300`でv24の既知13保留と追加のowner注記4対照を修正した。同じ固定60件の開発比較は両APIともTP30/FP0/TN30/FN0、Precision・Recall・F1各1.000。元の独立v24初回FAIL47/60・F1 0.723404は変更しない。固定ソースの全体テスト1582成功/失敗0/既存ignore8、strict Clippy/fmt、既知1264・元監査14成功、歴史597全出力byte一致を確認。新規独立v25は専用コピーで候補と評価器を著作前に固定する準備中で、まだ受入結果はない。将来の#520評価は両API別にF1>=0.90・Precision>=0.95・Recall>=0.85、否定誤採用0、既知回帰100%を要求する[#547方針](../evaluation/engine073-source-gate-v1/README.md)に従う。旧初回を再採点しない。実回答F1は未測定、実24問0/24・M0/M1未完了、公開・CLI採用NO-GO。[修正と次の順序](engine073-v24-decision.ja.md)を参照。
+候補`9505300`の既知v24修正は同じ60件の開発比較で両API F1=1.000、既知1264・元監査14成功、歴史597全出力byte一致、全体1582成功/失敗0/既存ignore8、strict Clippy/fmtを確認した。しかし、新しい独立v25の初回は **FAIL/NO_GO**。両APIともTP5/FP0/TN30/FN25、Precision1.000・Recall0.166667・F1 0.285714で、陽性30件中25件を保留した。否定誤採用・運用失敗・欠測は各0。#547の評価器/方針を著作前に固定し、Engine60件一process・scorer/helper各1回で観測、再実行/再採点/再ラベルなし。元v24と今回v25の初回は不変。修正に使った集合のF1=1だけでは受入できない。次は今回の25保留の実経路を計測し、役割・訂正先・ownerの共通処理を修正する。実24問0/24・実回答F1未測定、sourceマージ/公開/CLI採用NO-GO。[判定と次の順序](engine073-v25-decision.ja.md)を参照。
 
 [実回答の採点準備](engine073-realworld-metrics-preparation.ja.md)で主張grounding Precision、必要主張Recall/F1、引用、正しい/過剰保留、有用性、運用欠測、provider別会計を定義した。PREPARATION_ONLY、M0/M1未固定・実回答未採点。新scorer、実host callback/dependency closure・数値予算/headroom・金額自己上限、featureが働く通常CLI経路が残る。[過去候補01dcの同一host offline CLI](../evaluation/engine07-cli-path-preparation-v3/README.md)は固定Node1経路で両Engineの同じgrounded回答・取得1・関連性API呼出し0、直接v17/v30対照ではcounter動作を確認した。全経路の不活性や今回修正の実回答効果を確定した結果ではない。#541共有runnerはmerge済みだが#540のlive準備はOPEN。#531新規実24問0/24・採用1/6、Groq追加起動禁止、provider/model/Oracle追加0を維持する。
 

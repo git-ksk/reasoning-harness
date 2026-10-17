@@ -1,0 +1,16 @@
+{
+  "removed": [
+    {
+      "path": "/private/tmp/engine073-source24-trace-shadow",
+      "bytes_before": 81019862,
+      "evidence": "9505300 committed lossless source snapshots and development logs; private binaries provenance only"
+    },
+    {
+      "path": "/private/tmp/engine073-source25-extra-target",
+      "bytes_before": 127828507,
+      "evidence": "9505300 committed lossless source snapshots and development logs; private binaries provenance only"
+    }
+  ],
+  "normal_and_frozen_libraries_untouched": true,
+  "provider_model_Oracle_calls": 0
+}

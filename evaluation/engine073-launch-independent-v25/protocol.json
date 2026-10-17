@@ -1,0 +1,110 @@
+{
+  "identity": "engine073-launch-independent-v25",
+  "revision": "pre-author-evaluator-contract-v1",
+  "state": "PRE_AUTHOR_WAITING_PARENT_REVIEW",
+  "candidate": {
+    "source_sha": "95053007bba54c728eee428837b22eb9d52a4f61",
+    "package_version": "0.7.2",
+    "source_content_sha256": "9d8d3fa48a67f197d32282314813d992a374b9f54a6b079c39498b9a67f9207f"
+  },
+  "scope": "Existing direct canonical TARGET was launched fact, separately anchored, qualified by finite explicit retraction/denial/non-event, explicit local property/document role or uniquely foreign owner/event. No arbitrary reference graph, alias hierarchy, new positive launch predicate, chronology, or general-language guarantee.",
+  "before_authoring": {
+    "M0": "All evaluator/policy/helper/metrics/checker/recorder/probe/executable/candidate/dependency/control/hash specifications frozen now.",
+    "wait": "Parent must review M0 and explicitly notify authorship start. No independent cases/authorship/labels/inputs yet.",
+    "independence": "Do not read old author/cases/inputs/unused drafts or current source implementation, tests, parent diagnostics/development F1. Old artifacts preserved by hash only."
+  },
+  "future_stages": [
+    "After explicit parent go, create exclusive authoring-start.json with UTC, M0 SHA and authorization_reference.",
+    "Author genuinely new 30 semantic pairs/60 cases; positive30/negative30. Each has independent rationale/semantic_basis and separate unadorned canonical TARGET was launched. fact.",
+    "Separate inputs.json carries only id/policy/candidate/proposal/raw. Exact/exact proposal, raw exact_target/requested_relation/none baseline; no labels/rationale. Preserve raw-risk axes separately from semantic gold.",
+    "Before any observation, record independent scope review and static schema-only result. Any pre-M1 correction preserves original bytes/static result/exactdiff/reason and polarity purpose.",
+    "freeze_corpus.py verifies unchanged M0, full final author/input/label/rationale/scope/static hashes and ordered receipts, then creates M1 manifest.json and readonly frozen files.",
+    "execute_first.py runs inherited first-run.py once: one probe process for60 inputs, timeout60s. Raw output/errors/started/finished are exclusive fsynced files; no retry after interruption.",
+    "The new score.py process runs once, creates exclusive scorer-start marker, strictly parses actual rows, verifies runtime provenance and invokes frozen helper exactly once with explicit frozen config. It stores joint diagnostics and literal risk tuples with first results.",
+    "Preserve all first outputs/failures, report initial outcome separately from closure. Save review/receipt/README/recursive old+new+self-excluding final artifact manifest, fsync/readonly, recheck candidate/dependencies/old632+prep5, and notify final anchor/release. Stop; no next evaluation."
+  ],
+  "future_authoring_schema": {
+    "authoring-start.json": [
+      "utc",
+      "evaluator_freeze_sha256",
+      "authorization_reference"
+    ],
+    "cases.json_header": [
+      "identity",
+      "authored_utc",
+      "evaluator_freeze_sha256",
+      "authoring_start_sha256",
+      "cases"
+    ],
+    "case": [
+      "id",
+      "pair_id",
+      "polarity",
+      "axis",
+      "semantic_basis",
+      "rationale",
+      "expected",
+      "input"
+    ],
+    "expected": [
+      "v17_requested_relation strict bool",
+      "v30_relevant strict bool"
+    ],
+    "scope-review.json": [
+      "reviewed_utc",
+      "cases_sha256",
+      "inputs_sha256",
+      "reviewed_cases=60",
+      "Engine_invocations=0",
+      "scorer_invocations=0",
+      "labels_changed_after_observation=false"
+    ]
+  },
+  "budget": {
+    "max_model_attempts": 2,
+    "max_tokens": 192,
+    "max_elapsed_ms": 90000
+  },
+  "first_only": {
+    "Engine_processes": 1,
+    "inputs_in_process": 60,
+    "real_cohort_scorer_processes": 1,
+    "helper_calls_in_scorer": 1,
+    "probe_timeout_seconds": 60,
+    "semantic_retries": 0,
+    "rescores": 0,
+    "post_freeze_relabels": 0,
+    "restarts_after_marker": "Refuse; preserve partial/incomplete/operational failure."
+  },
+  "runtime_provenance": "M0 before authorship, M1 before first. All M0 evaluator files remain M1 subset. Checked artifacts are identical and actual-hash bound. Actual first pre-invocation guards match source/head/files/artifacts/command and raw bytes; first raw and markers readonly before scoring; scorer owns exclusive marker. These checks are derived from actual runtime files, not parent future assertions.",
+  "parent_controls": {
+    "normalized_snapshot": "parent-controls-snapshot.json",
+    "basis": "Parent messages, independently_rerun=false; opaque source controls bytes/hash preserved without body inspection.",
+    "critical_empty_scope": "Tested #520 source scope as reported at M0 only; does not close #531/#540/real24/CLI/release gates. A newly reported critical defect before first requires stop and preserved NOT_EVALUATED state, not altered labels/gate."
+  },
+  "immutability": {
+    "old_source_files": 632,
+    "separate_preparation_files": 5,
+    "old_anchor": "120f3c9e780512244c890635095069b100593ef8486300fba72390fcd2ae617a",
+    "pre_author_revisions": "pre-freeze-history preserves original source bytes/RED/exactdiff/reason. No case authorship or Engine observation occurred during changes.",
+    "M0_changes_after_notice": "Do not mutate existing M0. Any required contract repair before authorship needs preserved prior revision and new parent review before authoring."
+  },
+  "execution_environment": {
+    "probe_compile_only": "Dedicated tmp executable; frozen copied-libs only; no shared target mutation.",
+    "provider_model_network_Oracle_calls": 0,
+    "Cargo_calls": 0,
+    "Git_mutations": 0,
+    "extra_agents": 0,
+    "real24_authorship": 0
+  },
+  "limitations": [
+    "Cooperative operator filesystem freeze; no hostile-writer atomic check-exec proof.",
+    "UTC/hash ordering and declared receipts bind artifacts, not a semantic proof of human freshness.",
+    "Parent regression controls are pinned reported evidence, not independently rerun.",
+    "Pure output fixtures and compile-only success do not establish candidate behavior.",
+    "Synthetic source gate cannot replace real24, grounded answers, normal CLI/provider/human/release acceptance."
+  ],
+  "metrics_spec": "metrics-spec.json",
+  "policy_sha256": "3a6d37e3fbf134f4a49677fdcd7de8b1b625739988a40e1c1e78b94978099767",
+  "helper_sha256": "00f6971900864ee9e89e4db6029d8196fabd0a4b6ab28e343f19506417735c6f"
+}
