@@ -86,7 +86,29 @@
       "external acquisition or write side effects on replay"
     ],
     "aggregation": "separate provider / track / arm / family; no pooled average hides a failure; baseline failures recorded, candidate hard-gate failure prevents adoption",
-    "go_scope": "CLI adoption requires both complete tracks; helper-only approval is limited controlled API evidence, never product GO"
+    "go_scope": "CLI adoption requires both complete tracks; helper-only approval is limited controlled API evidence, never product GO",
+    "candidate_quality": {
+      "status": "required_for_future_fresh_independent_acceptance_after_complete_evaluator_freeze",
+      "unit": "per provider and per track (e2e_normal, helper_opt_in), candidate only; never pooled",
+      "reference": "independent source-reviewed labels frozen before the candidate's first observation",
+      "minimum_f1": 0.9,
+      "minimum_precision": 0.95,
+      "minimum_recall": 0.85,
+      "f_beta_0_5_stretch_goal_not_gate": 0.95,
+      "positive_class": "fully authorized supported answer or independently review-eligible scoped target display, depending on track",
+      "negative_class": "prelabeled clear non-eligible/unsafe-to-accept case; correctly withheld is TN",
+      "ambiguous_class": "separately labeled; excludes binary denominator but any unsupported acceptance fails hard safety",
+      "abstained_positive": "FN, not TN; missing/failed calls are incomplete, never abstentions",
+      "undefined_precision_or_zero_positive_prediction": "NO_GO",
+      "min_clear_positive_examples": 8,
+      "min_clear_negative_examples": 1,
+      "minimum_complete_rows_per_provider_track": 24,
+      "incomplete_missing_duplicate_or_failed_observation": "NO_GO",
+      "existing_hard_safety_and_positive_regression_gates": "unchanged and mandatory",
+      "comparison": "candidate must still pass separately frozen paired 0.6.1 utility, efficiency, safety and no-regression gates",
+      "small_sample_interpretation": "descriptive observed proportions only; no population-level accuracy guarantee",
+      "historical_freeze": "never rewrite, rescore or promote previous first observations"
+    }
   },
   "budgets": {
     "e2e_normal_per_task": {
@@ -128,7 +150,11 @@
     "unique source / origin-group / task-family denominators",
     "contract disposition expectation vs human source relevance",
     "affirmative support vs conflict retention vs authority refusal",
-    "active positive-parent precondition and one-factor ablation counts"
+    "active positive-parent precondition and one-factor ablation counts",
+    "candidate per-provider/per-track TP FP FN TN and separately labeled ambiguous/incomplete counts",
+    "candidate positive-class precision >=0.95, recall >=0.85 and F1 >=0.90, all required independently",
+    "candidate F0.5 >=0.95 stretch diagnostic only, not a release gate",
+    "answered/abstained coverage with false withholding; descriptive sample uncertainty and exact denominators"
   ],
   "authority_boundary": {
     "expected_labels_hidden_from_model": true,
@@ -149,7 +175,8 @@
     "contract expectation / source relevance / affirmative support / conflict / authority axes separated",
     "active positive-parent preconditions and one-factor ablations",
     "durable partial stdout/stderr with frozen arm-local input/probe hash checks",
-    "raw snapshot hash, locator, normalization version and derived synthetic lineage"
+    "raw snapshot hash, locator, normalization version and derived synthetic lineage",
+    "precommit exact source-reviewed binary/ambiguous gold labels, candidate metrics implementation, F1/precision/recall thresholds and denominator/completeness checks before new independent source cases"
   ],
   "current_blockers": [
     "published0.7.2 #520 residual",
