@@ -1,0 +1,10 @@
+from pathlib import Path
+import json,hashlib,subprocess
+r=Path('/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness');d=Path('/private/tmp/engine073-source23-maintained-variant-check');d.mkdir(exist_ok=False)
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+base=json.loads((r/'evaluation/engine07-cli-path-preparation-v1/positive-control-input.json').read_text())[0];name=base['policy']['entity']['canonical_name'];rows=[]
+for i,body in enumerate(['We maintain that an unknown product was never launched.','We maintain that an unknown product was not launched.','We maintain that it was never launched.','We maintain that Silver Lens was never launched.']):
+ c=json.loads(json.dumps(base));c['id']=f'maintained-variant-{i}';c['policy']['entity']['canonical_name']='Silver Lens';c['policy']['entity']['aliases']=[];c['candidate']['signals']=[{'kind':'excerpt','text':'Object: the claim that the Cedar Basket case has a recessed hinge. We withdraw the Object. Subject: the launch of Violet Bell. We deny the Subject, and '+body[0].lower()+body[1:]},{'kind':'excerpt','text':'Silver Lens was launched.'}];rows.append(c)
+p=d/'inputs.json';p.write_text(json.dumps(rows,indent=2)+'\n');exe=Path('/private/tmp/engine073-source23-seen-probe');identity={'source_sha':subprocess.check_output(['git','rev-parse','HEAD'],cwd=r,text=True).strip(),'source_file_sha256':sha(r/'crates/reasoning-harness-core/src/evidence_relevance.rs'),'executable_sha256':sha(exe),'inputs_sha256':sha(p),'scope':'new parent development boundary only; no independent cases/labels/scorer used','provider_model_Oracle_calls':0};(d/'identity-before.json').write_text(json.dumps(identity,indent=2)+'\n')
+res=subprocess.run([str(exe),str(p)],capture_output=True);(d/'stdout.jsonl').write_bytes(res.stdout);(d/'stderr.txt').write_bytes(res.stderr);assert res.returncode==0 and not res.stderr
+for row in map(json.loads,res.stdout.splitlines()):print(row['id'],row['effective_v17'],row['v30']['disposition'])

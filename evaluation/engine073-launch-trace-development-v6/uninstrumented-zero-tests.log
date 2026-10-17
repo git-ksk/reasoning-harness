@@ -1,0 +1,8 @@
+   Compiling reasoning-harness-core v0.7.2 (/private/tmp/engine073-source23-trace-shadow/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 10.56s
+     Running unittests src/lib.rs (/private/tmp/engine073-trace22-target/debug/deps/reasoning_harness_core-dcd4f612c7771d71)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 340 filtered out; finished in 0.00s
+

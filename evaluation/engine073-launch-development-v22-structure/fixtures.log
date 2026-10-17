@@ -1,0 +1,1498 @@
+{
+  "corpus": {
+    "corpus_version": "1.0.0",
+    "score_compatibility_id": "corpus-v1",
+    "stratification": {
+      "corpus_version": "1.0.0",
+      "score_compatibility_id": "corpus-v1",
+      "suite": "claim",
+      "cases": 20,
+      "by_category": [
+        {
+          "label": "causal_overreach",
+          "cases": 2,
+          "comparison": {
+            "baseline": {
+              "cases": 2,
+              "verdict_accuracy": 0.5,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 0.5,
+              "evidence_coverage": 0.75,
+              "unsupported_accepted_claims": 0,
+              "unsafe_accept_cases": 0,
+              "hidden_assumption_exposure_rate": 1.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 1,
+              "causal_edge_quality": 0.0,
+              "deterministic_verifier_failure_rate": 0.0
+            },
+            "harness": {
+              "cases": 2,
+              "verdict_accuracy": 1.0,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 1.0,
+              "evidence_coverage": 0.75,
+              "unsupported_accepted_claims": 0,
+              "unsafe_accept_cases": 0,
+              "hidden_assumption_exposure_rate": 1.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            }
+          }
+        },
+        {
+          "label": "contradiction",
+          "cases": 3,
+          "comparison": {
+            "baseline": {
+              "cases": 3,
+              "verdict_accuracy": 0.0,
+              "accept_recall": 1.0,
+              "reject_recall": 0.0,
+              "unknown_recall": 1.0,
+              "evidence_coverage": 1.0,
+              "unsupported_accepted_claims": 0,
+              "unsafe_accept_cases": 0,
+              "hidden_assumption_exposure_rate": 1.0,
+              "contradiction_detection_rate": 0.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            },
+            "harness": {
+              "cases": 3,
+              "verdict_accuracy": 1.0,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 1.0,
+              "evidence_coverage": 1.0,
+              "unsupported_accepted_claims": 0,
+              "unsafe_accept_cases": 0,
+              "hidden_assumption_exposure_rate": 1.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            }
+          }
+        },
+        {
+          "label": "counterexample",
+          "cases": 3,
+          "comparison": {
+            "baseline": {
+              "cases": 3,
+              "verdict_accuracy": 0.0,
+              "accept_recall": 1.0,
+              "reject_recall": 0.0,
+              "unknown_recall": 1.0,
+              "evidence_coverage": 1.0,
+              "unsupported_accepted_claims": 3,
+              "unsafe_accept_cases": 3,
+              "hidden_assumption_exposure_rate": 0.0,
+              "contradiction_detection_rate": 0.0,
+              "counterexample_detection_rate": 0.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            },
+            "harness": {
+              "cases": 3,
+              "verdict_accuracy": 1.0,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 1.0,
+              "evidence_coverage": 1.0,
+              "unsupported_accepted_claims": 0,
+              "unsafe_accept_cases": 0,
+              "hidden_assumption_exposure_rate": 1.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            }
+          }
+        },
+        {
+          "label": "direct_fact",
+          "cases": 5,
+          "comparison": {
+            "baseline": {
+              "cases": 5,
+              "verdict_accuracy": 1.0,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 1.0,
+              "evidence_coverage": 1.0,
+              "unsupported_accepted_claims": 0,
+              "unsafe_accept_cases": 0,
+              "hidden_assumption_exposure_rate": 1.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            },
+            "harness": {
+              "cases": 5,
+              "verdict_accuracy": 1.0,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 1.0,
+              "evidence_coverage": 1.0,
+              "unsupported_accepted_claims": 0,
+              "unsafe_accept_cases": 0,
+              "hidden_assumption_exposure_rate": 1.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            }
+          }
+        },
+        {
+          "label": "missing_evidence",
+          "cases": 1,
+          "comparison": {
+            "baseline": {
+              "cases": 1,
+              "verdict_accuracy": 0.0,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 0.0,
+              "evidence_coverage": 0.0,
+              "unsupported_accepted_claims": 1,
+              "unsafe_accept_cases": 1,
+              "hidden_assumption_exposure_rate": 0.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            },
+            "harness": {
+              "cases": 1,
+              "verdict_accuracy": 1.0,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 1.0,
+              "evidence_coverage": 0.0,
+              "unsupported_accepted_claims": 0,
+              "unsafe_accept_cases": 0,
+              "hidden_assumption_exposure_rate": 1.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            }
+          }
+        },
+        {
+          "label": "scope_overreach",
+          "cases": 4,
+          "comparison": {
+            "baseline": {
+              "cases": 4,
+              "verdict_accuracy": 0.0,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 0.0,
+              "evidence_coverage": 1.0,
+              "unsupported_accepted_claims": 4,
+              "unsafe_accept_cases": 4,
+              "hidden_assumption_exposure_rate": 0.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            },
+            "harness": {
+              "cases": 4,
+              "verdict_accuracy": 1.0,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 1.0,
+              "evidence_coverage": 1.0,
+              "unsupported_accepted_claims": 0,
+              "unsafe_accept_cases": 0,
+              "hidden_assumption_exposure_rate": 1.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            }
+          }
+        },
+        {
+          "label": "uncertainty_preservation",
+          "cases": 2,
+          "comparison": {
+            "baseline": {
+              "cases": 2,
+              "verdict_accuracy": 1.0,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 1.0,
+              "evidence_coverage": 0.0,
+              "unsupported_accepted_claims": 0,
+              "unsafe_accept_cases": 0,
+              "hidden_assumption_exposure_rate": 1.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            },
+            "harness": {
+              "cases": 2,
+              "verdict_accuracy": 1.0,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 1.0,
+              "evidence_coverage": 0.0,
+              "unsupported_accepted_claims": 0,
+              "unsafe_accept_cases": 0,
+              "hidden_assumption_exposure_rate": 1.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            }
+          }
+        }
+      ],
+      "by_difficulty": [
+        {
+          "label": "basic",
+          "cases": 6,
+          "comparison": {
+            "baseline": {
+              "cases": 6,
+              "verdict_accuracy": 1.0,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 1.0,
+              "evidence_coverage": 0.8333333333333334,
+              "unsupported_accepted_claims": 0,
+              "unsafe_accept_cases": 0,
+              "hidden_assumption_exposure_rate": 1.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            },
+            "harness": {
+              "cases": 6,
+              "verdict_accuracy": 1.0,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 1.0,
+              "evidence_coverage": 0.8333333333333334,
+              "unsupported_accepted_claims": 0,
+              "unsafe_accept_cases": 0,
+              "hidden_assumption_exposure_rate": 1.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            }
+          }
+        },
+        {
+          "label": "standard",
+          "cases": 8,
+          "comparison": {
+            "baseline": {
+              "cases": 8,
+              "verdict_accuracy": 0.125,
+              "accept_recall": 1.0,
+              "reject_recall": 0.0,
+              "unknown_recall": 0.2,
+              "evidence_coverage": 0.8,
+              "unsupported_accepted_claims": 3,
+              "unsafe_accept_cases": 3,
+              "hidden_assumption_exposure_rate": 0.0,
+              "contradiction_detection_rate": 0.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 1,
+              "causal_edge_quality": 0.0,
+              "deterministic_verifier_failure_rate": 0.0
+            },
+            "harness": {
+              "cases": 8,
+              "verdict_accuracy": 1.0,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 1.0,
+              "evidence_coverage": 0.8,
+              "unsupported_accepted_claims": 0,
+              "unsafe_accept_cases": 0,
+              "hidden_assumption_exposure_rate": 1.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            }
+          }
+        },
+        {
+          "label": "stress",
+          "cases": 6,
+          "comparison": {
+            "baseline": {
+              "cases": 6,
+              "verdict_accuracy": 0.16666666666666666,
+              "accept_recall": 1.0,
+              "reject_recall": 0.0,
+              "unknown_recall": 0.3333333333333333,
+              "evidence_coverage": 0.8571428571428571,
+              "unsupported_accepted_claims": 5,
+              "unsafe_accept_cases": 5,
+              "hidden_assumption_exposure_rate": 0.16666666666666666,
+              "contradiction_detection_rate": 0.0,
+              "counterexample_detection_rate": 0.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            },
+            "harness": {
+              "cases": 6,
+              "verdict_accuracy": 1.0,
+              "accept_recall": 1.0,
+              "reject_recall": 1.0,
+              "unknown_recall": 1.0,
+              "evidence_coverage": 0.8571428571428571,
+              "unsupported_accepted_claims": 0,
+              "unsafe_accept_cases": 0,
+              "hidden_assumption_exposure_rate": 1.0,
+              "contradiction_detection_rate": 1.0,
+              "counterexample_detection_rate": 1.0,
+              "bad_inference_edges_retained": 0,
+              "causal_edge_quality": 1.0,
+              "deterministic_verifier_failure_rate": 0.0
+            }
+          }
+        }
+      ]
+    }
+  },
+  "comparison": {
+    "baseline": {
+      "cases": 20,
+      "verdict_accuracy": 0.4,
+      "accept_recall": 1.0,
+      "reject_recall": 0.0,
+      "unknown_recall": 0.3333333333333333,
+      "evidence_coverage": 0.8260869565217391,
+      "unsupported_accepted_claims": 8,
+      "unsafe_accept_cases": 8,
+      "hidden_assumption_exposure_rate": 0.1111111111111111,
+      "contradiction_detection_rate": 0.0,
+      "counterexample_detection_rate": 0.0,
+      "bad_inference_edges_retained": 1,
+      "causal_edge_quality": 0.0,
+      "deterministic_verifier_failure_rate": 0.0
+    },
+    "harness": {
+      "cases": 20,
+      "verdict_accuracy": 1.0,
+      "accept_recall": 1.0,
+      "reject_recall": 1.0,
+      "unknown_recall": 1.0,
+      "evidence_coverage": 0.8260869565217391,
+      "unsupported_accepted_claims": 0,
+      "unsafe_accept_cases": 0,
+      "hidden_assumption_exposure_rate": 1.0,
+      "contradiction_detection_rate": 1.0,
+      "counterexample_detection_rate": 1.0,
+      "bad_inference_edges_retained": 0,
+      "causal_edge_quality": 1.0,
+      "deterministic_verifier_failure_rate": 0.0
+    }
+  },
+  "operational": {
+    "attempted_runs": 20,
+    "generated_runs": 0,
+    "failed_runs": 0,
+    "failure_classes": {},
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "total_tokens": 0,
+    "total_latency_ms": 0
+  },
+  "cases": [
+    {
+      "fixture_id": "causal-without-evidence",
+      "trial": 0,
+      "result": {
+        "fixture_id": "causal-without-evidence",
+        "expected_verdict": "unknown",
+        "expected_hidden_assumptions": 1,
+        "expected_contradiction": false,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "unknown",
+          "claims": 2,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 0.5,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 1,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "unknown",
+          "claims": 2,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 0.5,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 1,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "causal-without-evidence",
+        "signals": []
+      }
+    },
+    {
+      "fixture_id": "contradictory-count",
+      "trial": 0,
+      "result": {
+        "fixture_id": "contradictory-count",
+        "expected_verdict": "reject",
+        "expected_hidden_assumptions": 0,
+        "expected_contradiction": true,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": false,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "reject",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 1,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 1,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "contradictory-count",
+        "signals": [
+          {
+            "family": "adversarial",
+            "detector": "structured_fact_conflict",
+            "kind": "contradiction",
+            "strength": "hard",
+            "proposition": {
+              "key": "replicas.ready",
+              "value": "3"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fixture_id": "contradictory-evidence",
+      "trial": 0,
+      "result": {
+        "fixture_id": "contradictory-evidence",
+        "expected_verdict": "reject",
+        "expected_hidden_assumptions": 0,
+        "expected_contradiction": true,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 2,
+          "claims_with_evidence": 2,
+          "inference_edges": 0,
+          "verdict_correct": false,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "reject",
+          "claims": 2,
+          "claims_with_evidence": 2,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 1,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 2,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "contradictory-evidence",
+        "signals": [
+          {
+            "family": "adversarial",
+            "detector": "structured_fact_conflict",
+            "kind": "contradiction",
+            "strength": "hard",
+            "proposition": {
+              "key": "feature.enabled",
+              "value": "false"
+            }
+          },
+          {
+            "family": "adversarial",
+            "detector": "structured_fact_conflict",
+            "kind": "contradiction",
+            "strength": "hard",
+            "proposition": {
+              "key": "feature.enabled",
+              "value": "true"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fixture_id": "contradictory-version",
+      "trial": 0,
+      "result": {
+        "fixture_id": "contradictory-version",
+        "expected_verdict": "reject",
+        "expected_hidden_assumptions": 0,
+        "expected_contradiction": true,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": false,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "reject",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 1,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 1,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "contradictory-version",
+        "signals": [
+          {
+            "family": "adversarial",
+            "detector": "structured_fact_conflict",
+            "kind": "contradiction",
+            "strength": "hard",
+            "proposition": {
+              "key": "service.version",
+              "value": "2.1"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fixture_id": "counterexample-health",
+      "trial": 0,
+      "result": {
+        "fixture_id": "counterexample-health",
+        "expected_verdict": "reject",
+        "expected_hidden_assumptions": 1,
+        "expected_contradiction": true,
+        "expected_counterexample": true,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": false,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 1,
+          "unsafe_accept": true,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "reject",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 1,
+          "contradiction_claims_detected": 1,
+          "counterexamples_detected": 1,
+          "hard_adversarial_findings": 1,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "counterexample-health",
+        "signals": [
+          {
+            "family": "adversarial",
+            "detector": "structured_fact_conflict",
+            "kind": "counterexample",
+            "strength": "hard",
+            "proposition": {
+              "key": "workers.all_healthy",
+              "value": "true"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fixture_id": "counterexample-policy",
+      "trial": 0,
+      "result": {
+        "fixture_id": "counterexample-policy",
+        "expected_verdict": "reject",
+        "expected_hidden_assumptions": 1,
+        "expected_contradiction": true,
+        "expected_counterexample": true,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": false,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 1,
+          "unsafe_accept": true,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "reject",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 1,
+          "contradiction_claims_detected": 1,
+          "counterexamples_detected": 1,
+          "hard_adversarial_findings": 1,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "counterexample-policy",
+        "signals": [
+          {
+            "family": "adversarial",
+            "detector": "structured_fact_conflict",
+            "kind": "counterexample",
+            "strength": "hard",
+            "proposition": {
+              "key": "records.all_compliant",
+              "value": "true"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fixture_id": "counterexample",
+      "trial": 0,
+      "result": {
+        "fixture_id": "counterexample",
+        "expected_verdict": "reject",
+        "expected_hidden_assumptions": 1,
+        "expected_contradiction": true,
+        "expected_counterexample": true,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": false,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 1,
+          "unsafe_accept": true,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "reject",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 1,
+          "contradiction_claims_detected": 1,
+          "counterexamples_detected": 1,
+          "hard_adversarial_findings": 1,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "counterexample",
+        "signals": [
+          {
+            "family": "adversarial",
+            "detector": "structured_fact_conflict",
+            "kind": "counterexample",
+            "strength": "hard",
+            "proposition": {
+              "key": "requests.all_succeed",
+              "value": "true"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fixture_id": "cross-tenant-scope",
+      "trial": 0,
+      "result": {
+        "fixture_id": "cross-tenant-scope",
+        "expected_verdict": "unknown",
+        "expected_hidden_assumptions": 1,
+        "expected_contradiction": false,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": false,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 1,
+          "unsafe_accept": true,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "unknown",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 1,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "cross-tenant-scope",
+        "signals": []
+      }
+    },
+    {
+      "fixture_id": "direct-boolean",
+      "trial": 0,
+      "result": {
+        "fixture_id": "direct-boolean",
+        "expected_verdict": "accept",
+        "expected_hidden_assumptions": 0,
+        "expected_contradiction": false,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "direct-boolean",
+        "signals": []
+      }
+    },
+    {
+      "fixture_id": "direct-count",
+      "trial": 0,
+      "result": {
+        "fixture_id": "direct-count",
+        "expected_verdict": "accept",
+        "expected_hidden_assumptions": 0,
+        "expected_contradiction": false,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "direct-count",
+        "signals": []
+      }
+    },
+    {
+      "fixture_id": "direct-region",
+      "trial": 0,
+      "result": {
+        "fixture_id": "direct-region",
+        "expected_verdict": "accept",
+        "expected_hidden_assumptions": 0,
+        "expected_contradiction": false,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "direct-region",
+        "signals": []
+      }
+    },
+    {
+      "fixture_id": "direct-version",
+      "trial": 0,
+      "result": {
+        "fixture_id": "direct-version",
+        "expected_verdict": "accept",
+        "expected_hidden_assumptions": 0,
+        "expected_contradiction": false,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "direct-version",
+        "signals": []
+      }
+    },
+    {
+      "fixture_id": "evidence-sufficient",
+      "trial": 0,
+      "result": {
+        "fixture_id": "evidence-sufficient",
+        "expected_verdict": "accept",
+        "expected_hidden_assumptions": 0,
+        "expected_contradiction": false,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "evidence-sufficient",
+        "signals": []
+      }
+    },
+    {
+      "fixture_id": "five-whys-restatement",
+      "trial": 0,
+      "result": {
+        "fixture_id": "five-whys-restatement",
+        "expected_verdict": "unknown",
+        "expected_hidden_assumptions": 0,
+        "expected_contradiction": false,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 2,
+          "claims_with_evidence": 2,
+          "inference_edges": 1,
+          "verdict_correct": false,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 1,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "unknown",
+          "claims": 2,
+          "claims_with_evidence": 2,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "five-whys-restatement",
+        "signals": []
+      }
+    },
+    {
+      "fixture_id": "misleading-evidence",
+      "trial": 0,
+      "result": {
+        "fixture_id": "misleading-evidence",
+        "expected_verdict": "unknown",
+        "expected_hidden_assumptions": 1,
+        "expected_contradiction": false,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": false,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 1,
+          "unsafe_accept": true,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "unknown",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 1,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "misleading-evidence",
+        "signals": []
+      }
+    },
+    {
+      "fixture_id": "missing-evidence",
+      "trial": 0,
+      "result": {
+        "fixture_id": "missing-evidence",
+        "expected_verdict": "unknown",
+        "expected_hidden_assumptions": 1,
+        "expected_contradiction": false,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 0,
+          "inference_edges": 0,
+          "verdict_correct": false,
+          "evidence_coverage": 0.0,
+          "unsupported_accepted_claims": 1,
+          "unsafe_accept": true,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "unknown",
+          "claims": 1,
+          "claims_with_evidence": 0,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 0.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 1,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "missing-evidence",
+        "signals": []
+      }
+    },
+    {
+      "fixture_id": "partial-population",
+      "trial": 0,
+      "result": {
+        "fixture_id": "partial-population",
+        "expected_verdict": "unknown",
+        "expected_hidden_assumptions": 1,
+        "expected_contradiction": false,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": false,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 1,
+          "unsafe_accept": true,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "unknown",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 1,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "partial-population",
+        "signals": []
+      }
+    },
+    {
+      "fixture_id": "stale-scope",
+      "trial": 0,
+      "result": {
+        "fixture_id": "stale-scope",
+        "expected_verdict": "unknown",
+        "expected_hidden_assumptions": 1,
+        "expected_contradiction": false,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "accept",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": false,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 1,
+          "unsafe_accept": true,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "unknown",
+          "claims": 1,
+          "claims_with_evidence": 1,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 1.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 1,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "stale-scope",
+        "signals": []
+      }
+    },
+    {
+      "fixture_id": "unknown-correct",
+      "trial": 0,
+      "result": {
+        "fixture_id": "unknown-correct",
+        "expected_verdict": "unknown",
+        "expected_hidden_assumptions": 0,
+        "expected_contradiction": false,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "unknown",
+          "claims": 1,
+          "claims_with_evidence": 0,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 0.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "unknown",
+          "claims": 1,
+          "claims_with_evidence": 0,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 0.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "unknown-correct",
+        "signals": []
+      }
+    },
+    {
+      "fixture_id": "unknown-missing-timestamp",
+      "trial": 0,
+      "result": {
+        "fixture_id": "unknown-missing-timestamp",
+        "expected_verdict": "unknown",
+        "expected_hidden_assumptions": 0,
+        "expected_contradiction": false,
+        "expected_counterexample": false,
+        "baseline": {
+          "verdict": "unknown",
+          "claims": 1,
+          "claims_with_evidence": 0,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 0.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        },
+        "harness": {
+          "verdict": "unknown",
+          "claims": 1,
+          "claims_with_evidence": 0,
+          "inference_edges": 0,
+          "verdict_correct": true,
+          "evidence_coverage": 0.0,
+          "unsupported_accepted_claims": 0,
+          "unsafe_accept": false,
+          "hidden_assumptions_exposed": 0,
+          "contradiction_claims_detected": 0,
+          "counterexamples_detected": 0,
+          "hard_adversarial_findings": 0,
+          "soft_adversarial_findings": 0,
+          "bad_inference_edges_retained": 0,
+          "deterministic_failure": false
+        }
+      },
+      "diagnostics": {
+        "fixture_id": "unknown-missing-timestamp",
+        "signals": []
+      }
+    }
+  ]
+}

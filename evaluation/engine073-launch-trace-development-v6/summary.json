@@ -1,0 +1,11 @@
+{
+  "source_sha": "01dc78b6952ed77cd20001323f6ab032eeec361e",
+  "observed": 20,
+  "first_blocker_counts": {
+    "typed_reference_not_excluded": 20
+  },
+  "effective_tuples_match_first": 20,
+  "scope": "first actual blocker only; not complete causal explanation or fresh acceptance",
+  "provider_model_Oracle_calls": 0,
+  "scorer_invocations": 0
+}

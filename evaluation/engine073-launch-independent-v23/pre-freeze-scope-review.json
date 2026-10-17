@@ -1,0 +1,267 @@
+{
+  "identity": "engine073-launch-independent-v23",
+  "reviewed_utc": "2026-10-17T08:08:39.855457+00:00",
+  "stage": "PRE_FREEZE_AUTHOR_AST_SCOPE_REVIEW",
+  "author_sha256": "929ff7cc018480fa27ad4aee3efab64930d149dc1b8e965a7a72092a402c8ab4",
+  "semantic_observations": 0,
+  "Engine_invocations": 0,
+  "scorer_invocations": 0,
+  "provider_network_Oracle_calls": 0,
+  "cases_generated": false,
+  "author_revision_count": 0,
+  "scope_decision": "All 30 independently authored pairs retained with original polarity; no revisions needed. This is pre-output rubric review, not an Engine observation.",
+  "positive_rule": "Separate direct target launch is not withdrawn. Every adverse clause is fully assigned to a physical/printed non-launch property or one explicitly named foreign event; document/property owner and quoted event owner are not interchangeable.",
+  "negative_rule": "Actual target launch/existence/global withdrawal, mixed/conflicting/unknown/ownerless event or actual missing owner-bearing context. Both no requested_relation and non-Relevant required by unchanged scorer.",
+  "risk_rule": "Raw/effective identity/relation/risk axes remain separate. Actual gaps li23-034/048 are negatives for semantic owner/context uncertainty, never the raw enum alone. No internal component-risk retention/loss assertion from enum.",
+  "scope_clarifications": [
+    "Literal event/retraction/nonexistence words inside fully specified printed/physical properties remain property content; actual independent target-denial clauses remain adverse.",
+    "Only complete single same-role owner supplements resolve an unowned event; property owner, other role, conflicting supplement or already target-owned event cannot be rewritten.",
+    "Each clause is checked for its own explicit target/unknown adverse meaning; safe property/foreign explanations never cancel it.",
+    "Source-title and heading declarations name complete finite roles; no arbitrary numbered AST, alias hierarchy or long reference graph requested.",
+    "Osprey Clip is a full canonical product name explicitly given in policy and heading; actual missing heading/continuation remains gap in other cases.",
+    "Reporting/while/because/although clauses require complete owner/scope, not chronology inference."
+  ],
+  "pair_scope_reviews": [
+    {
+      "pair_id": "li23-p01",
+      "canonical_target": "Amber Viaduct",
+      "axis": "depicted launch words versus asserted event in an instrument legend",
+      "positive_basis": "A full printed underline property is withdrawn; the foreign diagram owner and depicted words are not event denial.",
+      "negative_basis": "The typed Object explicitly retracts the target event; diagram ownership cannot replace that event owner.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p02",
+      "canonical_target": "Larch Index",
+      "axis": "literal retraction wording as printed content versus a real independent retraction",
+      "positive_basis": "Literal withdrawal words are the content of a completely specified border property; no event is actually withdrawn.",
+      "negative_basis": "An independent first-person clause withdraws the target event in addition to a safe printed-property correction.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p03",
+      "canonical_target": "Meridian Cup",
+      "axis": "publisher ownership separated from event role and target physical role",
+      "positive_basis": "The event has a full foreign owner; the target-owned lid property is explicitly non-launch.",
+      "negative_basis": "The event Object already names the target; neither publisher ownership nor lid property makes it foreign.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p04",
+      "canonical_target": "Pebble Console",
+      "axis": "two complete foreign event roles versus an additional ownerless role",
+      "positive_basis": "Two fully owned foreign events and a complete foreign physical property are corrected.",
+      "negative_basis": "The third adverse event is expressly ownerless; two other foreign roles cannot identify it.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p05",
+      "canonical_target": "Heliotrope Board",
+      "axis": "same-role owner supplementation versus property-role owner loan",
+      "positive_basis": "The unowned event receives a single full same-role foreign owner; the second role is a complete finish property.",
+      "negative_basis": "The only explicit owner supplement belongs to the property Item; the event Object remains unknown.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p06",
+      "canonical_target": "Bramble Reader",
+      "axis": "supplement confirms a foreign event but cannot overwrite target event",
+      "positive_basis": "The heading repeats the fully foreign event owner; the target document correction is only its layout.",
+      "negative_basis": "A foreign owner heading conflicts with an already target-owned event and cannot overwrite it.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p07",
+      "canonical_target": "Silver Fen",
+      "axis": "local foreign-event apposition alongside target-name typography",
+      "positive_basis": "Immediate full apposition identifies a foreign event; target words in a separate italic property do not change that.",
+      "negative_basis": "The immediate apposition directly denies the target event despite the separate foreign ticket property.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p08",
+      "canonical_target": "Cress Shuttle",
+      "axis": "literal target-nonexistence words in a label versus adopted nonexistence",
+      "positive_basis": "The Item is a complete punctuation property of literal specimen text, not an assertion of product nonexistence.",
+      "negative_basis": "The additional assertion explicitly denies the target product existence and is not a property correction.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p09",
+      "canonical_target": "Zephyr Crate",
+      "axis": "quoted foreign denial and physical target specification versus mixed event",
+      "positive_basis": "The quoted launch event is uniquely foreign, while the target fitting property is explicitly non-launch.",
+      "negative_basis": "The denied Object mixes target and foreign launch owners, so it is not safely excluded.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p10",
+      "canonical_target": "Garnet Quilt",
+      "axis": "independent document properties with different owners versus a missing event owner",
+      "positive_basis": "Both roles are completely specified printed properties even though their documents have different owners.",
+      "negative_basis": "A named appendix property cannot supply the owner of a separately denied launch Subject.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p11",
+      "canonical_target": "Juniper Buoy",
+      "axis": "reason and contrast clauses each expressly foreign versus a target reason",
+      "positive_basis": "The adverse event and its reason refer to the same full foreign owner; the contrast is only a card property.",
+      "negative_basis": "The reason clause independently negates the target launch and cannot be swallowed by the foreign Object.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p12",
+      "canonical_target": "Acorn Dial",
+      "axis": "source-field property correction with neutral publisher data versus separately asserted target denial",
+      "positive_basis": "Publisher data is neutral and the adverse Subject is a complete footer-style property.",
+      "negative_basis": "The excerpt independently and explicitly denies target launch.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p13",
+      "canonical_target": "Vermilion Path",
+      "axis": "title supplies a complete property scope versus title withdraws all launch assertions",
+      "positive_basis": "The title declares a complete physical pamphlet property referenced by the excerpt.",
+      "negative_basis": "The title explicitly retracts the whole set of launch assertions including the target; a property context does not neutralize it.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p14",
+      "canonical_target": "Meadow Clamp",
+      "axis": "foreign-event role plus owned reference paper versus another ownerless event",
+      "positive_basis": "The complete foreign event and foreign paper property can both be safely corrected.",
+      "negative_basis": "An expressly ownerless other event cannot borrow the preceding foreign Subject owner.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p15",
+      "canonical_target": "Rowan Tile",
+      "axis": "single complete event-owner reply versus conflicting same-role reply",
+      "positive_basis": "The immediate reply supplies one full foreign event owner; the additional Object is a physical property.",
+      "negative_basis": "Two same-role owner replies conflict and one names the target, while the safe property remains separate.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p16",
+      "canonical_target": "Canary Basin",
+      "axis": "immediate newline owner plus printed title property versus target supplement",
+      "positive_basis": "The unowned Object receives a full foreign owner on the immediately following line; the target title property is non-launch.",
+      "negative_basis": "The same-role complete supplement identifies the target event, which is then explicitly denied.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p17",
+      "canonical_target": "Flint Reader",
+      "axis": "unowned event resolved by heading versus an actually omitted heading owner",
+      "positive_basis": "The heading explicitly binds the unowned event to one foreign product and the plate property is separate.",
+      "negative_basis": "The owner-bearing heading is actually missing; the property owner cannot repair this context gap.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p18",
+      "canonical_target": "Olive Stand",
+      "axis": "event and typography refer to different full owners versus target event",
+      "positive_basis": "The event is explicitly foreign and the target-name occurrence is a complete embossing property.",
+      "negative_basis": "The event explicitly belongs to the target despite the full foreign chart owner.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p19",
+      "canonical_target": "Sienna Grove",
+      "axis": "outer quotation-format property versus quoted event content assigned to the Object",
+      "positive_basis": "The Object is a completely specified quotation-format property, although its literal content names target launch.",
+      "negative_basis": "The Object is the quoted target event itself; the foreign guide owner does not own that event.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p20",
+      "canonical_target": "Iris Orbit",
+      "axis": "all adverse clauses have foreign scopes versus one clause denies target existence",
+      "positive_basis": "The physical correction and explicitly foreign event denial each have a complete scope; no time inference is needed.",
+      "negative_basis": "The although clause directly denies target existence in addition to safe foreign/property clauses.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p21",
+      "canonical_target": "Heath Frame",
+      "axis": "literal owner uncertainty as an index property versus real owner uncertainty",
+      "positive_basis": "The uncertainty words are literal typography, and the separate adverse event has a full foreign owner.",
+      "negative_basis": "The second Object is a genuinely ownerless event; typography in the Subject cannot identify it.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p22",
+      "canonical_target": "Tawny Relay",
+      "axis": "explicit separate scopes versus a reassuring property explanation that cannot cover target denial",
+      "positive_basis": "The complete physical Item and full foreign Object have independent, explicit scopes.",
+      "negative_basis": "The Object directly denies target launch; safe property explanation is expressly limited and cannot override it.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p23",
+      "canonical_target": "Osprey Clip",
+      "axis": "full canonical Clip name combined with target document property and foreign event",
+      "positive_basis": "The full canonical name has no actual gap; the target correction is printed lettering and the event is foreign.",
+      "negative_basis": "The canonical-name declaration does not remove a separately explicit target event denial.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p24",
+      "canonical_target": "Pine Crescent",
+      "axis": "complete owner in correction reply versus a true missing continuation",
+      "positive_basis": "The immediate reply completely names one foreign event owner; the later Object is a distinct header property.",
+      "negative_basis": "The required owner continuation is truly omitted; the header property owner is not the event owner.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p25",
+      "canonical_target": "Mariner Fold",
+      "axis": "literal target launch phrase in a physical label description versus direct first-person withdrawal",
+      "positive_basis": "The label edge is a complete physical property and the only withdrawn event is uniquely foreign.",
+      "negative_basis": "An independent first-person withdrawal covers the target event between two safely scoped corrections.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p26",
+      "canonical_target": "Cobalt Cairn",
+      "axis": "local complete physical apposition followed by a foreign event versus a target event",
+      "positive_basis": "The apposition completely specifies a physical property; the separate Item event is foreign.",
+      "negative_basis": "The Item withdraws target launch and cannot borrow the apposition property scope.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p27",
+      "canonical_target": "Apricot Compass",
+      "axis": "foreign denial in a reporting clause versus an ownerless reported event",
+      "positive_basis": "The report names the same complete foreign event; the other role is a full panel property.",
+      "negative_basis": "The separate report and Item concern an explicitly unidentified owner; safe foreign roles do not resolve it.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p28",
+      "canonical_target": "Basin Ember",
+      "axis": "safe correction with neutral archive title versus whole-source withdrawal in archive title",
+      "positive_basis": "The title is neutral ownership metadata and both adverse roles have complete non-target scope.",
+      "negative_basis": "The title separately withdraws the entire source and explicitly includes the target launch.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p29",
+      "canonical_target": "Glade Prism",
+      "axis": "property reference remains local versus a general claim lacking any event owner",
+      "positive_basis": "The role reference is the explicitly specified font property and the separate Object names a foreign event.",
+      "negative_basis": "A separate generic launch claim expressly lacks an owner; the fully scoped property cannot lend event scope.",
+      "label_change": false
+    },
+    {
+      "pair_id": "li23-p30",
+      "canonical_target": "Alder Keystone",
+      "axis": "three fully owned roles in different source fields versus mixed-owner event role",
+      "positive_basis": "The target-owned Object is a printed drawing property, and both distinct event roles are completely foreign.",
+      "negative_basis": "The Subject mixes the target and foreign event owners despite other safely bound roles and fields.",
+      "label_change": false
+    }
+  ],
+  "newness": "Authored after source23 freeze, without reading old author/cases/inputs, prior unused drafts or root development diagnostics. Public finite grammar and known iterative failure history shared; content and scope combinations newly authored. No population accuracy or statistical/cross-corpus improvement claim."
+}

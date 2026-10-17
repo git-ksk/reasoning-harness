@@ -2,6 +2,12 @@
 
 [日本語](engine-073-research-informed-repair.ja.md) | English
 
+## Latest repair, independent evaluation and remaining work
+
+Pinned candidate01dc78b resolves the21 known joint misses. Same fixed60 consumed development inputs: bothv17/v30 TP30/FP0/TN30/FN0,precision/recall/F1=1.000 (v30 F1 .461538 onc20 before this repair). Workspace1572 PASS/0FAIL/8 existing ignored,strict Clippy/fmt,known1140/original14,historical597 whole-output byte equality and all60v29 unchanged. These are consumed synthetic API metrics, not final-answer F1 or general precision. Fresh independentv23: firstFAIL40/60 (positive10/30,negative30/30;both APIs precision1.000/recall.333333/F1 .500,unsafe0/positive misses20/operational or incomplete0). Originalv22 firstFAIL30/60 and every old first result remain unchanged. Merge/publication/CLI adoption remainNO-GO. Trace the20 newly consumed misses on current source before repair and track same-input development metrics.
+
+[Real-answer metrics preparation](engine073-realworld-metrics-preparation.md) defines claim-grounding precision,required-claim recall/F1,citations,correct/avoidable abstention,usefulness,operational missingness and per-provider accounting. PREPARATION_ONLY;notM0/M1 and no answers scored. New scorer,actual callback/dependency closure,numeric live reserve/headroom/currency self-budget and an active-feature ordinary CLI path remain. [Current same-host offline CLI](../evaluation/engine07-cli-path-preparation-v3/README.md) records identical grounded answer/acquisition1/public relevance API0 for one fixed Node path;directv17/v30 controls confirm counters. This neither establishes all paths inactive nor the repair's final-answer effect. #541 shared runner is merged;#540 live preparation remains OPEN. #531 freshreal24=0/24/adoption1/6,Groq prohibition,provider/model/Oracle additional0 remain.
+
 Reviewed2026-10-17. Applies to [#520](https://github.com/git-ksk/reasoning-harness/issues/520), [#531](https://github.com/git-ksk/reasoning-harness/issues/531) and [the0.7.3 roadmap](engine-0.7.3-roadmap.md). This records public research and engineering guidance, our adaptation, and its implementation status.
 
 ## Sources and adaptations
@@ -45,7 +51,7 @@ Real24 remains0/24 and CLI adoption1/6. Actual0.6.1/successor comparison, critic
 
 The resumed independent evaluator completed final save: all551 files verified, anchor359a6712b07bc1a58fce4332f77f190578b6fec0bad4f9aab0e022c6b3fef160; firstFAIL unchanged. [Parent final verification](../evaluation/engine073-launch-v22-parent-final-verification.json) and [read-only first metrics](../evaluation/engine073-launch-first-metrics-v1/README.md) are saved. [Separate-copy actual tracing](../evaluation/engine073-launch-trace-development-v4/README.md) found first blockers typed-reference27, target-adverse2, unresolved-adverse1. The next bounded repair handles complete claim wrappers only when the inner proposition independently passes property checks, and equivalent determiner/unowned forms only with a unique same-role foreign owner. Target/global denials, conflicting/unknown owners and historical/raw-risk guards remain required. Measure same-input development F1 and safety counts; fresh acceptance remains separate. No merge/release/adoption.
 
-## Measured limited repair and remaining work
+## Historical c20 limited repair and remaining work
 
 [Candidatec20c513](../evaluation/engine073-launch-development-v22-foundation/README.md) compares the same60 inputs: v30 F1 0→0.4615,precision undefined→1.0 (nine positive predictions),recall0→0.30,API coverage0→0.15,FP0. V17 F1 0.5/recall1/3 differs because one visible relation still has blocking risk; keep APIs separate. This does not rescore any original first result. The first repairFP1 was rejected; retaining competing owner declarations restoresFP0. Workspace1564,old1080 and historical597 checks pass.
 
