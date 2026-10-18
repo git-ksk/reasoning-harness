@@ -9,3 +9,7 @@ M0 aaa4b0d2494c3a89d87b3c0714847ee8d468f84295e1f868e7518398e41635bb; M1 fb8a350d
 [Parent audit](../evaluation/engine073-launch-v27-parent-verification/final-copy-verification.json), [saved-first arithmetic](../evaluation/engine073-launch-first-metrics-v27-report.json), [actual consumed trace](../evaluation/engine073-launch-trace-development-v11/README.md).
 
 6件は005印字watermark属性、025括弧内clip-finish限定、029quoted wordのlettering属性、045ownerless quoteと同roleのforeign owner、049複数roleへの複数形assertions参照、053冠詞なし印字heading。完全な外側の型とowner/参照の共通規則で直し、列挙した文字列だけの特例にしない。修正後の同じ60件は開発評価であり、新規独立受入にはしない。
+
+## 保存した開発修正と評価の重点
+
+修正候補 `ab3c632` は、同じ観測済みv27の開発評価で両API TP30/FP0/TN30/FN0、P/R/F1=1.000。元の独立v27初回F1 .888889/Recall .8/NO_GOは変更しない。完全な印字属性・同roleのowner/複数参照・括弧内の属性限定を共通処理で修正した。修正した不具合と安全性境界の退行を確認し、全体1605PASS/0FAIL/既存ignore8・strict Clippy/fmt、元14・歴史597byte互換を保存。過去1400は同じsourceの通常成果物で一度確認し、rootでは必要な60/14/597照合に絞った。件数・開発満点を完成度にせず、次の合成60件は作らない。次は実資料・通常CLIのfeature-active経路/traceと完全採点器・数値予算へ重点を戻す。主張算術/表示binding部品32検証は準備のみ、独立部品レビューは利用上限で未完了。全928原参照は不変。実24問0/24・実回答F1未測定・Groq停止、sourceマージ/Engine公開/CLI採用NO_GO。[方針](engine073-evaluation-focus.ja.md)、[保存済み修正](../evaluation/engine073-launch-development-v27-bounded-properties/README.md)、[原独立判定](engine073-v27-decision.ja.md)。

@@ -1,0 +1,6 @@
+{
+  "stage": "SCRIPT_IN_MEMORY_BEFORE_SOURCE_WRITE",
+  "error": "ambiguous exact replacement occurs twice in source",
+  "source_changes": 0,
+  "correction": "bound replacement to named private foreign-owner function"
+}

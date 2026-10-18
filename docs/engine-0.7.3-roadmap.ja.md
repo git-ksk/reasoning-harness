@@ -1,5 +1,7 @@
 # Harness Engine 0.7.3 — 修正・測定・採用の順に進める
 
+**評価運用の見直し（2026-10-19）:** 合否は事前固定した独立F1/P/Rと安全性で判断する。既知対照の件数・満点は完成度にしない。着手済み6件の修正後は合成60件の追加・修正ループを止め、実資料・通常CLIの経路/traceと完全採点器へ重点を戻す。既知回帰は再発防止対象を著作前に定義し、新holdoutの全FNを自動で100%必須へ追加しない。凍結初回は不変。[詳細](engine073-evaluation-focus.ja.md)。
+
 日本語 | [English](engine-0.7.3-roadmap.md)
 
 未公開・未受入。公開CLI0.5.5/Engine0.6.1、最新独立Engine source release0.7.2は不変。[計画 #538](https://github.com/git-ksk/reasoning-harness/issues/538)・[評価 #531](https://github.com/git-ksk/reasoning-harness/issues/531)。0.7.3の版昇格・公開は別PRで判断する。
@@ -10,11 +12,11 @@
 
 
 
-候補 `26c98ad` の新規独立v27初回は **FAIL / NO_GO**。両API別 TP24 / FP0 / TN30 / FN6、Precision1.000 / Recall0.800 / F1 **0.888889**。安全性誤採用・運用失敗・欠測は各0だが、固定F1>=.90・Recall>=.85未達。joint54/60は診断。新99ファイル＋旧829＝928参照をbyte一致保存し、再実行/再採点/再ラベル0。原v26 F1 .846154/NO_GOも不変。候補の既存1400対照・元14・歴史597・全体1599PASS/0FAIL/既存ignore8、同ソース証拠head826c98dのCI19/19成功は別に保持。v27の6保留を含めた既知集合は1454/1460。5件typed_reference_not_excluded、025はunresolved_adverse_scopeと実経路で確認した。次は完全な印字属性・同じ局所role/owner・括弧内の限定訂正を共通処理し、未知/競合owner・対象/全体否定を維持して1460回帰を確認する。実資料向けには主張F1算術＋表示hash/UTF-8 span照合部品32検証を追加したが、完全意味scorer/M0ではない。実24問0/24・実回答F1未測定、Groq停止、sourceマージ/Engine公開/CLI採用NO-GO。[判定](engine073-v27-decision.ja.md)、[原初回](../evaluation/engine073-launch-independent-v27/README-results.md)、[主張採点準備](engine073-answer-metrics-development.ja.md)。
+修正候補 `ab3c632` は、同じ観測済みv27の開発評価で両API TP30/FP0/TN30/FN0、P/R/F1=1.000。元の独立v27初回F1 .888889/Recall .8/NO_GOは変更しない。完全な印字属性・同roleのowner/複数参照・括弧内の属性限定を共通処理で修正した。修正した不具合と安全性境界の退行を確認し、全体1605PASS/0FAIL/既存ignore8・strict Clippy/fmt、元14・歴史597byte互換を保存。過去1400は同じsourceの通常成果物で一度確認し、rootでは必要な60/14/597照合に絞った。件数・開発満点を完成度にせず、次の合成60件は作らない。次は実資料・通常CLIのfeature-active経路/traceと完全採点器・数値予算へ重点を戻す。主張算術/表示binding部品32検証は準備のみ、独立部品レビューは利用上限で未完了。全928原参照は不変。実24問0/24・実回答F1未測定・Groq停止、sourceマージ/Engine公開/CLI採用NO_GO。[方針](engine073-evaluation-focus.ja.md)、[保存済み修正](../evaluation/engine073-launch-development-v27-bounded-properties/README.md)、[原独立判定](engine073-v27-decision.ja.md)。
 
 | 順序 | 必要な証拠 | 現状 |
 | --- | --- | --- |
-| 1 | #520の対象/全体否定・未知owner保留、既知回帰と新規独立source gate | 26c98adの独立v27初回はF1 .888889/FP0/Recall .8、NO_GO。既知1454/1460の6保留を修正し新候補で回帰確認。全体1599/CI19成功は26cの別検証。元v25初回FAIL不変。[判定](engine073-v25-decision.ja.md)、全初回は不変 |
+| 1 | #520の対象/全体否定・未知owner保留、既知回帰と新規独立source gate | ab3c632の消費済みv27開発F1=1、元独立v27 .888889/NO_GO不変。全体1605成功。次の合成60追加は止め、実資料/通常CLIの評価器と経路へ重点移行。元v25初回FAIL不変。[判定](engine073-v25-decision.ja.md)、全初回は不変 |
 | 2 | #540共有停止・永続reserve/inflight・キャンセル、actual host callback/dependency/数値予算、通常経路trace | #535/#537/#541 merge、47 offline controls/限定独立6境界PASS。新scorer・live callback/dependency/数値予算・外部containment・featureが働く経路は残件 |
 | 3 | 小規模offline開発確認、必要かつ別途開始条件を満たしたprovider確認 | 今回provider/model/Oracle追加0。旧v2/v3初回FAILを維持 |
 | 4 | 完全M0評価器/host/model/予算/品質基準を固定→別作成者の新実資料24問→全文/gold M1固定→同hostで0.6.1/後継を比較 | 実24問0/24、M0/M1未完了。重大違反0・陽性退行0・provider別完全結果・有用性改善と品質下限が必須 |

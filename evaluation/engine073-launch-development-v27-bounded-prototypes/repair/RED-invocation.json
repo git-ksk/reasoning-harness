@@ -1,0 +1,13 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--offline",
+    "--locked",
+    "-p",
+    "reasoning-harness-core",
+    "--lib"
+  ],
+  "returncode": 101,
+  "expected": "new positive boundaries fail before change"
+}

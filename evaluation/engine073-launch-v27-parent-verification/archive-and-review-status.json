@@ -1,0 +1,8 @@
+{
+  "v27_freeze": "ARCHIVED_MANAGED_RECOVERABLE_SNAPSHOT",
+  "parent_copy_commit": "ab788bca0aaeb39eef2262e68aee5c01ec3c59eb",
+  "new_claim_component_independent_review": "INCOMPLETE_USAGE_LIMIT",
+  "new_independent_source_v28": "NOT_AUTHORED_NOT_RUN",
+  "provider_model_Groq_Oracle_calls": 0,
+  "whitespace_check": "non-raw code/docs PASS; frozen .diff/.patch and raw stdout preserved byte exact including original whitespace"
+}

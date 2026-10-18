@@ -1,0 +1,13 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--offline",
+    "--locked",
+    "-p",
+    "reasoning-harness-core",
+    "--lib"
+  ],
+  "returncode": 0,
+  "source_sha256": "2e9207177d9f1e91b8c031322dbbf83c2b374d8847e123e135dcca727b0214de"
+}

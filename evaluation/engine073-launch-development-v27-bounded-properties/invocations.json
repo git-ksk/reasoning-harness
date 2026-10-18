@@ -1,0 +1,44 @@
+[
+  {
+    "before": {
+      "source_sha": "ab3c6322921c8c738ec35bd018345917b5afa538",
+      "source_file_sha256": "2e9207177d9f1e91b8c031322dbbf83c2b374d8847e123e135dcca727b0214de",
+      "core_sha256": "f125cfbfa038341a596a69afe2d9e01b5950eb7ed4474b4396ab132efc8dd479",
+      "executable_sha256": "96f9d7ca9a9e44440823e0bb4c5fd9d486d80bf3d517d8edaf519d0137e082df",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/launch-520-521-final-validation/historical-compatibility-inputs.json",
+      "inputs_sha256": "49e7b409f9a5edcbc9f4bfb0a3bfd2cdafc964c551fda0fd0f7b6626d3a4fc71"
+    },
+    "stdout_file": "historical-after.jsonl",
+    "stdout_sha256": "9f378662ae651f7c7a2394d7c00c918c9eec7701628ccd339c6d2d181fba47f5",
+    "returncode": 0,
+    "stderr_bytes": 0
+  },
+  {
+    "before": {
+      "source_sha": "ab3c6322921c8c738ec35bd018345917b5afa538",
+      "source_file_sha256": "2e9207177d9f1e91b8c031322dbbf83c2b374d8847e123e135dcca727b0214de",
+      "core_sha256": "f125cfbfa038341a596a69afe2d9e01b5950eb7ed4474b4396ab132efc8dd479",
+      "executable_sha256": "70502d8af462bb20dfcf613d98354c1de0bc6e29e387a260785aa5e4e73d5ce7",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine-0.7.2-verification-audit-20261014/cases.json",
+      "inputs_sha256": "3fedf054223797615186c7004a1e4bb6af64825484fb86b072d784d2b006a4cc"
+    },
+    "stdout_file": "original-audit-after.jsonl",
+    "stdout_sha256": "5c32b97127644a0be7094ba23cf629349bed75aa91e995897ec61870bd98d83b",
+    "returncode": 0,
+    "stderr_bytes": 0
+  },
+  {
+    "before": {
+      "source_sha": "ab3c6322921c8c738ec35bd018345917b5afa538",
+      "source_file_sha256": "2e9207177d9f1e91b8c031322dbbf83c2b374d8847e123e135dcca727b0214de",
+      "core_sha256": "f125cfbfa038341a596a69afe2d9e01b5950eb7ed4474b4396ab132efc8dd479",
+      "executable_sha256": "5f6723d4d5fae46c3063980994a2d2db9f7919b44591c1bf52b9a6b5bf8b9077",
+      "inputs_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v27/inputs.json",
+      "inputs_sha256": "3aa14b15997652ce09564b3c10b7dc99ab4ac91becd13ce8ac6b8b5b2e4e7baf"
+    },
+    "stdout_file": "seen-v27-after.jsonl",
+    "stdout_sha256": "8d56f1e0d9f2c1c7c48deeb280efd5f32e2a592da6861a59d59c1f8e0d4ebdb2",
+    "returncode": 0,
+    "stderr_bytes": 0
+  }
+]

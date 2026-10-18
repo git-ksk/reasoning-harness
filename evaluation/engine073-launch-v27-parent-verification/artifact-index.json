@@ -1,6 +1,7 @@
 {
   "files": {
     "README.md": "cf6a34113aec56d5a8428e672931d34d5798c3b1e39d69da604f517502494b6f",
+    "archive-and-review-status.json": "2995a18c6e3928d8f6f6b9f7963ee286398906689c37a7aecc3113a5f3432e0a",
     "capture-v27.py": "ed6f67bcba634d4cde94434b655ac99855f7de07ca1f3453f8c562a433aefec3",
     "engine073-source28-capture-v27-before-schema-adaptation.py": "043453c2be9970dcb1147fb2a48e63b8edda746744d8c7df33782e062a1fc528",
     "engine073-source28-v27-copy-setup-failure.json": "168602281cb70a7b61b193e8bf863fa129ba01de83c97c104a1ab83d71b4748d",
@@ -36,6 +37,7 @@
     "frozen-parent-reference-snapshot/files/evaluation/engine073-launch-development-v26-local-references/summary.json": "570338048b30b73e3d42aafb97f8f82154f90d4a59397f6641b57c7e0423c6a5",
     "frozen-parent-reference-snapshot/files/evaluation/engine073-launch-development-v26-local-references/supplemental-literals-after.jsonl": "f5a36a6354ecee867a754c069e6b1f0aa967e989b1e11930837367c6b607dea0",
     "frozen-parent-reference-snapshot/receipt.json": "01e6f3a2dc478d62d23518b9226b85924882fabc7e75ba79aed0007693296756",
+    "independent-archive-safe-verification.json": "337c13d80982d54addcf816302b2db726e3eda58fa5a5afe9590f5a86066e382",
     "pre-author-M0-review/pure-fixtures.stderr.txt": "52de1fb3eaab3a20424aabe9db8e115e229a352717e7e23b5fef749de6f5a868",
     "pre-author-M0-review/pure-fixtures.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "pre-author-M0-review/review-M0.py": "84b3237944e3d273a85a8baed28bd6ec90b5ded363db559866e7176533046e0d",
