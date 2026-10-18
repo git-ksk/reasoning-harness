@@ -1,0 +1,15 @@
+{
+  "source_sha256": "4daf64b918532a9004dea9807b8001ec743244b20b5cd1892c7f3a7ce316d1ef",
+  "former_known_total": 1340,
+  "former_known_passed": 1340,
+  "new_v26_passed": 60,
+  "including_consumed_v26": 1400,
+  "known_total": 1400,
+  "owner_adjunct_passed": 4,
+  "supplemental_mismatches": [],
+  "development_Engine_processes": 24,
+  "inputs": 1340,
+  "original_firsts_unchanged": true,
+  "canonical_scorer_provider_model_Oracle_calls": 0,
+  "scope": "consumed development scan; no fresh acceptance"
+}

@@ -24,3 +24,9 @@
 M0 ad980eba8479eec16e78f5ef2c2d108ac949ed1cf4b6fe2277df4dc0e3742510、M1 7627332228e422c58b64890434f681066469d77ab3326a8037e9b8379508c366、最終anchor8214db3607e32d707da797fb90bb4af77b1101db976b6f0d0a60f96d49cdb921。親レビュー59純fixture、first-onlyの実行順/hash/readonly13 checksとF1算術を照合。[親照合](../evaluation/engine073-launch-v26-parent-verification/final-copy-verification.json)、[算術報告](../evaluation/engine073-launch-first-metrics-v26-report.json)。利用上限での中断は著作startのみ・意味実行前であり、同じstartから再開した。原初回のretryではない。
 
 908候補の全体1594PASS/0FAIL/既存ignore8・strict Clippy/fmt・fixtures/archiveと、証拠head1d7019aのCI19/19成功は別記録。新候補の合格へ流用しない。[現908の静的CLI参照準備v5](../evaluation/engine07-cli-path-preparation-v5/README.md)は42 core/62 host filesで対象APIの通常CLI literal参照を確認できなかった。完全call graphや全経路不活性の証明ではない。実資料M0前には対象機能が動く通常経路、取得/admission/claim/citation/display trace、完全意味scorer、actual callback/dependency/数値予算が必要。実24問は未著作・0/24、Groq停止。修正→新規独立受入→実資料評価→CLI採用の順序を維持する。
+
+## 現在の開発修正 — 2026-10-19 JST
+
+候補 `26c98ad` の同じ観測済みv26開発60件は両API別に TP30 / FP0 / TN30 / FN0、Precision/Recall/F1=1.000、両軸60/60。元初回 .846154→中間 .928571→1.000 は同じ集合の開発比較で、独立v26初回FAIL/NO_GOと原ラベル/scorerは不変。属性・所有者・局所参照の共通処理を修正し、既知1400/1400・元監査14成功、歴史597全出力byte一致、全体1599成功/失敗0/既存ignore8・strict workspace/all-targets Clippy/fmt確認。初回全体のlocalhost模擬通信5拒否は原ログを残し、同一sourceで実行条件修正後に全成功。次の独立v27は候補/評価器を著作前に固定し、親が純fixtureと実コードをレビューしてから初回1回だけ観測する。まだ未著作・未実行。元v26の99ファイル＋旧730＝829参照を保持。実24問0/24・実回答F1未測定・Groq停止・provider/model/Oracle追加0、sourceマージ/Engine公開/CLI採用NO-GO。[判定](engine073-v26-decision.ja.md)、[固定修正の検証](../evaluation/engine073-launch-development-v26-local-references/README.md)。
+
+[試作のRED/中間/最終](../evaluation/engine073-launch-development-v26-prototypes/README.md)も保存。private typed roleへ完全なforeign ownerを保持し、owned-by参照が同じownerに一致することを要求する。局所的な完全event/claim以外からは所有者を作らず、後続の確認は前の所有者を置き換えない。これは新規v27の合格ではない。

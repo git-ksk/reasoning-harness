@@ -1,0 +1,243 @@
+{
+  "identity": {
+    "source_sha": "26c98adbec19f9e8ea0d46f260f080d4319a8e60",
+    "source_file_sha256": "4daf64b918532a9004dea9807b8001ec743244b20b5cd1892c7f3a7ce316d1ef",
+    "core": {
+      "path": "/private/tmp/engine073-source28-actual-target/debug/libreasoning_harness_core.rlib",
+      "sha256": "07fb6e07902b2f79ea0f5c1454a500f81f29255f34d41ff8e5d510095df2d4ed"
+    },
+    "serde": {
+      "path": "/private/tmp/engine073-source28-actual-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "c250592b8e57a33a545d428af77b26dddb87138f327f4d88bc442442592e2444"
+    },
+    "cargo_metadata_sha256": "583b29c9ead57ea05edfdd762d5161910f9b1a9b2fff428b01dc79460c6605dc"
+  },
+  "historical_byte_identical": 597,
+  "original_audit_passed": 14,
+  "old_regressions": {
+    "v2": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v3": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v4": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v5": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v6": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v7": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v8": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v9": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v10": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v12": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v13": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v14": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v15": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v16": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v18": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v19": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v20": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v21": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v22": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v23": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v24": {
+      "passed": 60,
+      "mismatches": []
+    },
+    "v25": {
+      "passed": 60,
+      "mismatches": []
+    }
+  },
+  "source_scope": "same consumed v26 development; original first FAIL immutable; NOT new independent/real24",
+  "canonical_scorer_provider_model_Oracle_calls": 0,
+  "new_v27_authorship_or_engine_runs": 0,
+  "v26": {
+    "before_first_axes": {
+      "v17_requested_relation": {
+        "confusion": {
+          "tp": 22,
+          "fp": 0,
+          "tn": 30,
+          "fn": 8
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 0.7333333333333333,
+        "f1_positive": 0.8461538461538461,
+        "specificity": 1.0,
+        "accuracy": 0.8666666666666667,
+        "balanced_accuracy": 0.8666666666666667,
+        "predicted_positive_rate": 0.36666666666666664,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.26666666666666666,
+        "mcc": 0.760885910252682
+      },
+      "v30_relevant": {
+        "confusion": {
+          "tp": 22,
+          "fp": 0,
+          "tn": 30,
+          "fn": 8
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 0.7333333333333333,
+        "f1_positive": 0.8461538461538461,
+        "specificity": 1.0,
+        "accuracy": 0.8666666666666667,
+        "balanced_accuracy": 0.8666666666666667,
+        "predicted_positive_rate": 0.36666666666666664,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.26666666666666666,
+        "mcc": 0.760885910252682
+      }
+    },
+    "after_development_axes": {
+      "v17_requested_relation": {
+        "confusion": {
+          "tp": 30,
+          "fp": 0,
+          "tn": 30,
+          "fn": 0
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_positive": 1.0,
+        "specificity": 1.0,
+        "accuracy": 1.0,
+        "balanced_accuracy": 1.0,
+        "predicted_positive_rate": 0.5,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.0,
+        "mcc": 1.0
+      },
+      "v30_relevant": {
+        "confusion": {
+          "tp": 30,
+          "fp": 0,
+          "tn": 30,
+          "fn": 0
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_positive": 1.0,
+        "specificity": 1.0,
+        "accuracy": 1.0,
+        "balanced_accuracy": 1.0,
+        "predicted_positive_rate": 0.5,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.0,
+        "mcc": 1.0
+      }
+    },
+    "joint_passed": 60,
+    "remaining_ids": [],
+    "unsafe_ids": [],
+    "historical_v29_all60_equal": true,
+    "whole_output_equal_private_stage02": true,
+    "inputs_sha256": "c3c67d5b941d58f520f1e43b5711fa9eaa9b216debfe87a4509c7039ad52477f",
+    "cases_sha256": "8996a75d6da44c4fef0efc114d8de818d40b11780f0ab17c1ca4dd7e56355227"
+  },
+  "supplemental_parent_controls": {
+    "passed": 16,
+    "total": 16,
+    "positive_support": 12,
+    "negative_support": 4,
+    "cases_sha256": "66c5bfd3f858659297c10c4b510b5327d4d1acf89b03fa0bf3aaf9b887d4eaa9",
+    "inputs_sha256": "e29da3b34375b5939434295dcd231a8e4cd835d622ff70375251b55ffcde02ec",
+    "not_independent": true
+  },
+  "previous_development_stage01_axes": {
+    "v17_requested_relation": {
+      "tp": 26,
+      "fp": 0,
+      "tn": 30,
+      "fn": 4,
+      "precision": 1.0,
+      "recall": 0.8666666666666667,
+      "f1": 0.9285714285714286
+    },
+    "v30_relevant": {
+      "tp": 26,
+      "fp": 0,
+      "tn": 30,
+      "fn": 4,
+      "precision": 1.0,
+      "recall": 0.8666666666666667,
+      "f1": 0.9285714285714286
+    }
+  },
+  "known_with_v26_and_supplemental": 1400,
+  "old_known_controls_passed": 1340,
+  "new_v26_controls_passed": 60,
+  "new_v26_total": 60,
+  "development_probe_processes": 27,
+  "development_inputs": 2011,
+  "extra_owner_adjunct_passed": 4
+}

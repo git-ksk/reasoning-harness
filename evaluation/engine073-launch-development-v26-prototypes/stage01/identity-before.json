@@ -1,0 +1,18 @@
+{
+  "source_sha256": "2be99a5d6b2acb7312bd904395e82c74116d2bc0f0828103d37a2e37ade192b8",
+  "libraries": {
+    "serde_json": {
+      "path": "/private/tmp/engine073-source28-prototype-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "0fdbcbb326b559ee8cc75f1c05e027786cbedf01785899b2807376384c5723a5"
+    },
+    "reasoning_harness_core": {
+      "path": "/private/tmp/engine073-source28-prototype-target/debug/libreasoning_harness_core.rlib",
+      "sha256": "1fc2e964f31686c800a84ecd41c07171c0d0454834fd10a5fdfc6add62ecc325"
+    }
+  },
+  "probe_source_sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+  "executable_sha256": "74b651f8e8e1b93194c84ad2fb6659df166dc401646346a66ad617a7b21f7c4f",
+  "inputs_sha256": "c3c67d5b941d58f520f1e43b5711fa9eaa9b216debfe87a4509c7039ad52477f",
+  "labels_sha256": "8996a75d6da44c4fef0efc114d8de818d40b11780f0ab17c1ca4dd7e56355227",
+  "scope": "Normal standalone consumed development, not independent retry/scorer"
+}

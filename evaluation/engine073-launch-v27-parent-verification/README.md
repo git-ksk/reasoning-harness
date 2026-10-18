@@ -1,0 +1,3 @@
+# v27 parent preparation
+
+The30 source-only normal reference files and receipt01e6f3a2dc478d62d23518b9226b85924882fabc7e75ba79aed0007693296756 were captured before full-validation packaging. Keep them byte-exact,including their original summary. Later root summary includes1599PASS/0FAIL/8existing ignored and initial sandbox/local-mock repair logs. This intentional metadata difference does not change source26c98ad/4daf,normal runtimeb1c4 or control outputs. v27 is not authored/run at this record;M0/code/pure-fixture parent review and explicit next notice are still required. Real24/Groq/CLI/release gates are separate.
