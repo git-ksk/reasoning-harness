@@ -5563,9 +5563,85 @@ fn launch_typed_objects_v17(
             let copular_role = raw.to_ascii_lowercase().find(" is ").and_then(|index| {
                 let label = normalized(&raw[..index]);
                 let role = label.strip_prefix("the ").unwrap_or(&label);
-                ["object", "subject", "item"]
-                    .contains(&role)
-                    .then(|| (role.to_owned(), raw[index + 4..].trim().to_owned()))
+                if !["object", "subject", "item"].contains(&role) {
+                    return None;
+                }
+                let value = raw[index + 4..].trim();
+                let words = normalized(value);
+                let words = words.split_whitespace().collect::<Vec<_>>();
+                // A passive retraction is a state of the existing role, not a
+                // second declaration capable of replacing its complete value.
+                let passive = words
+                    .iter()
+                    .copied()
+                    .find(|word| {
+                        ![
+                            "not",
+                            "never",
+                            "formally",
+                            "explicitly",
+                            "also",
+                            "now",
+                            "being",
+                        ]
+                        .contains(word)
+                    })
+                    .is_some_and(launch_retraction_word_v17);
+                if passive {
+                    return None;
+                }
+                let body = words
+                    .strip_prefix(&["a"])
+                    .or_else(|| words.strip_prefix(&["the"]))
+                    .unwrap_or(&words);
+                let physical = matches!(
+                    body,
+                    [
+                        "physical",
+                        "colour" | "color" | "dimension" | "property" | "attribute",
+                        ..
+                    ]
+                );
+                let prior = declarations
+                    .iter()
+                    .filter(|(label, _)| label == role)
+                    .collect::<Vec<_>>();
+                let bounded_restatement = physical
+                    && !prior.is_empty()
+                    && !words.iter().any(|word| {
+                        [
+                            "object",
+                            "subject",
+                            "item",
+                            "unknown",
+                            "missing",
+                            "omitted",
+                            "unspecified",
+                            "not",
+                            "never",
+                        ]
+                        .contains(word)
+                    })
+                    && !words.iter().any(|word| launch_retraction_word_v17(word))
+                    && !target_identity_phrases(policy)
+                        .iter()
+                        .any(|target| normalized_phrase_matches(value, target))
+                    && prior.iter().all(|(_, prior_value)| {
+                        launch_typed_object_scope_v17(policy, prior_value) == Scope::Excluded
+                            && launch_complete_foreign_role_owner_v17(policy, prior_value).is_none()
+                            && words
+                                .windows(2)
+                                .filter(|pair| pair[0] == "that")
+                                .all(|pair| {
+                                    normalized(prior_value)
+                                        .split_whitespace()
+                                        .any(|word| word == pair[1])
+                                })
+                    });
+                if bounded_restatement {
+                    return None;
+                }
+                Some((role.to_owned(), value.to_owned()))
             });
             if let Some(declaration) = copular_role {
                 declarations.push(declaration);
@@ -14956,6 +15032,46 @@ mod tests {
             "The Object is the claim that Silver Lens was launched. We deny the claim represented by this Object.",
             false,
         );
+    }
+
+    #[test]
+    fn v30_copular_passives_and_restatements_keep_existing_role_values() {
+        for state in ["withdrawn", "retracted", "denied by its author"] {
+            check_current_role_context(
+                &format!(
+                    "Object: the green color of the tamper seal on Silver Lens. The Object is {state}."
+                ),
+                true,
+            );
+        }
+        for (context, expected) in [
+            (
+                "Object: the green color of the tamper seal on Silver Lens. The Object is physical colour. We deny this Object.",
+                true,
+            ),
+            (
+                "Object: the thickness of the protective film on Silver Lens. We retract this Object. The Object is a physical dimension of that film.",
+                true,
+            ),
+            (
+                "Object: the thickness of the protective film on Silver Lens. The Object is a physical dimension of that manual. We retract this Object.",
+                false,
+            ),
+            (
+                "Object: the green color of the tamper seal on Silver Lens. The Object is unknown. We deny this Object.",
+                false,
+            ),
+            (
+                "Object: the green color of the tamper seal on Silver Lens. The Object is a launch claim. We deny this Object.",
+                false,
+            ),
+            (
+                "Object: the launch of Violet Bell. The Object is physical colour. We deny this Object.",
+                false,
+            ),
+        ] {
+            check_current_role_context(context, expected);
+        }
     }
 
     #[test]
