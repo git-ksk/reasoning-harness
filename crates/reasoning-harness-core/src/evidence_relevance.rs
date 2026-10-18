@@ -5606,7 +5606,54 @@ fn launch_typed_objects_v17(
                     .iter()
                     .filter(|(label, _)| label == role)
                     .collect::<Vec<_>>();
-                let bounded_restatement = physical
+                let bounded_body = body
+                    .strip_prefix(&["only"])
+                    .or_else(|| body.strip_prefix(&["solely"]))
+                    .unwrap_or(body);
+                let bounded_body = bounded_body
+                    .strip_prefix(&["the"])
+                    .or_else(|| bounded_body.strip_prefix(&["a"]))
+                    .unwrap_or(bounded_body);
+                let property_summary = matches!(bounded_body, ["typography"])
+                    && prior.iter().all(|(_, prior_value)| {
+                        let prior_text = normalized(prior_value);
+                        prior_text.split_whitespace().any(|word| word == "printed")
+                    })
+                    || matches!(bounded_body, ["casing", "material", "claim"])
+                        && prior.iter().all(|(_, prior_value)| {
+                            let prior_words = launch_property_words_v17(policy, prior_value);
+                            prior_words.iter().any(|word| word == "casing")
+                                && prior_words.iter().any(|word| {
+                                    [
+                                        "steel",
+                                        "plastic",
+                                        "metal",
+                                        "wood",
+                                        "aluminium",
+                                        "aluminum",
+                                        "material",
+                                    ]
+                                    .contains(&word.as_str())
+                                })
+                        });
+                // A title reference may restate an already complete foreign
+                // event of this role. It cannot supply a missing event owner.
+                let title_event_restatement =
+                    matches!(bounded_body, ["event", "declared", "in", "the", "title"])
+                        && !prior.is_empty()
+                        && prior.iter().all(|(_, prior_value)| {
+                            launch_complete_foreign_role_owner_v17(policy, prior_value).is_some()
+                                && candidate.signals.iter().any(|source| {
+                                    source.kind == EvidenceRelevanceSignalKind::SourceTitle
+                                        && source.text.split_once(':').is_some_and(
+                                            |(label, value)| {
+                                                normalized(label) == role
+                                                    && normalized(value) == normalized(prior_value)
+                                            },
+                                        )
+                                })
+                        });
+                let bounded_restatement = (physical || property_summary)
                     && !prior.is_empty()
                     && !words.iter().any(|word| {
                         [
@@ -5638,7 +5685,7 @@ fn launch_typed_objects_v17(
                                         .any(|word| word == pair[1])
                                 })
                     });
-                if bounded_restatement {
+                if bounded_restatement || title_event_restatement {
                     return None;
                 }
                 Some((role.to_owned(), value.to_owned()))
@@ -15067,6 +15114,42 @@ mod tests {
             ),
             (
                 "Object: the launch of Violet Bell. The Object is physical colour. We deny this Object.",
+                true,
+            ),
+            (
+                "Object: the launch of Silver Lens. The Object is physical colour. We deny this Object.",
+                false,
+            ),
+        ] {
+            check_current_role_context(context, expected);
+        }
+    }
+
+    #[test]
+    fn v30_role_property_summaries_require_an_existing_complete_value() {
+        for (context, expected) in [
+            (
+                "Subject: the claim that the Silver Lens chapter title is printed in bold. We deny the Subject. The Subject is only typography.",
+                true,
+            ),
+            (
+                "Subject: the claim that Silver Lens was launched. We deny the Subject. The Subject is only typography.",
+                false,
+            ),
+            (
+                "Subject: unknown. We deny the Subject. The Subject is only typography.",
+                false,
+            ),
+            (
+                "Object: the claim that the Silver Lens sensor casing is steel. I retract the Object. The Object is solely the casing-material claim.",
+                true,
+            ),
+            (
+                "Object: the claim that Silver Lens was launched. I retract the Object. The Object is solely the casing-material claim.",
+                false,
+            ),
+            (
+                "Object: unknown. I retract the Object. The Object is solely the casing-material claim.",
                 false,
             ),
         ] {
