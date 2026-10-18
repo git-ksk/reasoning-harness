@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "rustc",
+    "--edition=2024",
+    "/private/tmp/engine073-active-source-host-development-v1/renderer_host.rs",
+    "-L",
+    "dependency=/private/tmp/engine073-source29-actual-target/debug/deps",
+    "--extern",
+    "reasoning_harness_core=/private/tmp/engine073-source29-actual-target/debug/libreasoning_harness_core.rlib",
+    "--extern",
+    "serde_json=/private/tmp/engine073-source29-actual-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+    "-o",
+    "/private/tmp/engine073-active-source-host-development-v1/renderer-candidate"
+  ],
+  "exit_code": 0
+}

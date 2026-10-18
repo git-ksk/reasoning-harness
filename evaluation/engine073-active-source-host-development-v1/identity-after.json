@@ -1,0 +1,28 @@
+{
+  "utc": "2026-10-18T23:52:20.125144+00:00",
+  "input_hashes": {
+    "/private/tmp/engine073-active-source-host-development-v1/input.json": "5807bfa29c56752f567fe78e915a575c539dca1517e66e3e4aa4fced1efc69eb",
+    "/private/tmp/engine07-realworld-snapshots-v2/node-buffer.txt": "8252ff58d1701eed6b80a20a183eef855dfde7b1b3b11bd9ffb2ec2c5125a4dc",
+    "/private/tmp/engine07-realworld-snapshots-v2/node-buffer.html": "23f92fc924708065b4998712ee080dda049e9fd2b4e16558b396d68694d6fa47",
+    "/private/tmp/engine073-active-source-host-development-v1/host.rs": "e0bf50ad19ffdb15c7bcdad04ca916c545e6c9881f07da4151a5be1b546750d7",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs": "2e9207177d9f1e91b8c031322dbbf83c2b374d8847e123e135dcca727b0214de"
+  },
+  "binaries": {
+    "baseline": {
+      "sha256": "950c69aec6710d2e17b5e6ef5205043c683bc6c052fae32664d65ff5993b419d"
+    },
+    "candidate": {
+      "sha256": "0eec2cc5d20abb34b3b91b90f5bf2909fd837e8ba0f410e3d92f0280611c9661"
+    }
+  },
+  "library_hashes": {
+    "baseline": {
+      "core_sha256": "3584f1d6581509c3b5b457b739abfa5c10e308708352908b3a3febc1fa0ca87b",
+      "serde_sha256": "c4735ebda03ab2fc0e99b98f92d1f46d1d7f9b8858d68a605b7c3c181ace9c7e"
+    },
+    "candidate": {
+      "core_sha256": "f125cfbfa038341a596a69afe2d9e01b5950eb7ed4474b4396ab132efc8dd479",
+      "serde_sha256": "69527ed24fcd187181c596636f83f6e78064a578ca6b0636c0468ae281172bff"
+    }
+  }
+}

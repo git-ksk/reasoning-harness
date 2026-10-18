@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "/private/tmp/engine073-active-source-host-development-v1/renderer-candidate",
+    "/private/tmp/engine073-active-source-host-development-v1/input.json"
+  ],
+  "exit_code": 0,
+  "host_source_sha256": "d749b6135f9439b8686505162ed8eb5f4d0e36924786d3f88c19617849e515fa",
+  "binary_sha256": "7bdc69685a71313c959e5f1c6c4086828f5f1e3f4e50223aefbb1505ba46ab00"
+}

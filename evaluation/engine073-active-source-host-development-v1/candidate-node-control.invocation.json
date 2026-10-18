@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "/private/tmp/engine073-active-source-host-development-v1/host-candidate",
+    "/private/tmp/engine073-active-source-host-development-v1/input.json"
+  ],
+  "cwd": "/private/tmp/engine073-active-source-host-development-v1",
+  "exit_code": 0,
+  "stdout_sha256": "a614a3bc68c1c44bc29091d7d9fe7222a736af10cb48aab0940dcb506d965668",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,75 @@
+{
+  "identity": "engine073-active-source-host-development-v1",
+  "verified_utc": "2026-10-18T23:54:37.691094+00:00",
+  "purpose": "unscored offline engineering controls; same existing captured Node question, not fresh cases",
+  "arms": {
+    "baseline": {
+      "engine_package_version": "0.6.1",
+      "core_commit": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+      "source_sha256": "7a9a8e77e90e07dbc1648f1984d25f3fc7d17ff3f90d505431c58dac442ce613",
+      "relevance_pipeline": {
+        "v17_relation": "unresolved",
+        "v30_disposition": "ambiguous",
+        "final_status": "unresolved",
+        "displayed_citations": 0,
+        "direct_host_calls_per_API": 1
+      },
+      "isolated_exact_quote_renderer": {
+        "manual_source_binding": true,
+        "relevance_calls": 0,
+        "final_status": "qualified",
+        "structured_citations": 1,
+        "text_has_exact_source_evidence_binding": true
+      },
+      "mismatched_quote_rejected_before_Engine_calls": true
+    },
+    "candidate": {
+      "engine_package_version": "0.7.2",
+      "core_commit": "ab3c6322921c8c738ec35bd018345917b5afa538",
+      "source_sha256": "2e9207177d9f1e91b8c031322dbbf83c2b374d8847e123e135dcca727b0214de",
+      "relevance_pipeline": {
+        "v17_relation": "unresolved",
+        "v30_disposition": "ambiguous",
+        "final_status": "unresolved",
+        "displayed_citations": 0,
+        "direct_host_calls_per_API": 1
+      },
+      "isolated_exact_quote_renderer": {
+        "manual_source_binding": true,
+        "relevance_calls": 0,
+        "final_status": "qualified",
+        "structured_citations": 1,
+        "text_has_exact_source_evidence_binding": true
+      },
+      "mismatched_quote_rejected_before_Engine_calls": true
+    }
+  },
+  "same_finalizations_across_arms": true,
+  "host_processes": 6,
+  "Engine_executing_processes": 4,
+  "relevance_pipeline_processes": 2,
+  "renderer_isolation_processes": 2,
+  "quote_guard_negative_processes_before_API": 2,
+  "direct_host_v17_calls": 2,
+  "direct_host_v30_calls": 2,
+  "nested_internal_API_calls_not_counted": true,
+  "model_provider_network_Oracle_calls": 0,
+  "fresh_synthetic_or_real_authorship": 0,
+  "real24_completed": 0,
+  "actual_answer_f1": null,
+  "acceptance": "NOT_EVALUATED",
+  "normal_cli_changed": false,
+  "production_source_changed": false,
+  "all928_original_references_exact": true,
+  "old_claim_display_component_unchanged": true,
+  "private_source_fulltext_published": false,
+  "current_candidate_discriminating_quality_or_performance_evidence": false,
+  "limitations": [
+    "host-controlled qualification/proposal, not a model response",
+    "retained definition question does not measure launch-repair discrimination",
+    "paired build profiles are identified, not a latency or cost comparison",
+    "active relevance pipeline withheld; isolated renderer is not a relevance success",
+    "no automatic scope/time semantic judgment or publisher authenticity attestation",
+    "ordinary CLI integration, semantic/citation adjudication, complete M0/budgets and independent review remain pending"
+  ]
+}
