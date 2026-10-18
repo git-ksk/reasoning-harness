@@ -1,0 +1,76 @@
+clippy 0
+fmt 0
+workspace 101
+:typed_external_failures_are_operational_terminals_not_semantic_unknown_classes ... ok
+test semantic_judge::tests::abstention_is_preserved_and_positive_abstention_reduces_recall ... ok
+test semantic_judge::tests::agreement_excludes_abstentions_without_erasing_them ... ok
+test semantic_judge::tests::ambiguous_abstention_rate_is_absent_when_corpus_has_no_ambiguous_cases ... ok
+test semantic_judge::tests::ambiguous_labels_do_not_enter_precision_or_recall ... ok
+test semantic_judge::tests::finding_contract_has_no_hard_authority_field ... ok
+test semantic_judge::tests::finish_reason_diagnostic_uses_bounded_classes ... ok
+test semantic_judge::tests::nominal_alpha_is_one_for_perfect_agreement_across_both_categories ... ok
+test semantic_judge::tests::output_shape_diagnostic_is_content_free_and_distinguishes_common_wrappers ... ok
+test source_attribution::tests::assessment_parser_injects_exact_proposal_identity ... ok
+test source_attribution::tests::assessment_parser_rejects_binding_attribution_cardinality_mismatch ... ok
+test source_attribution::tests::attributed_materialization_never_mutates_external_world_claims ... ok
+test source_attribution::tests::attribution_cannot_repair_missing_hard_verification ... ok
+test source_attribution::tests::bound_span_is_metamorphically_invariant_to_unbound_surrounding_text ... ok
+test source_attribution::tests::compatible_sources_retain_all_citations_in_one_qualified_sentence ... ok
+test source_attribution::tests::conflicting_sources_are_not_collapsed_into_one_assertion ... ok
+test source_attribution::tests::current_causal_and_universal_scope_additions_are_blocked ... ok
+test source_attribution::tests::english_to_japanese_translation_modality_is_a_semantic_hard_gate ... ok
+test source_attribution::tests::english_to_japanese_translation_remains_source_local_and_uses_japanese_attribution ... ok
+test source_attribution::tests::every_cited_binding_requires_independent_attribution_and_replay_revalidates_it ... ok
+test source_attribution::tests::exact_quote_is_harness_constructed ... ok
+test source_attribution::tests::exact_quote_parser_discards_model_authored_text ... ok
+test source_attribution::tests::hard_target_stays_on_existing_verification_path ... ok
+test source_attribution::tests::invented_exact_quote_is_rejected ... ok
+test source_attribution::tests::missing_or_tampered_binding_fails_closed_before_exposure ... ok
+test source_attribution::tests::no_attributed_state_means_no_attributed_exposure ... ok
+test source_attribution::tests::only_mechanically_provable_strengthening_is_blocked_deterministically ... ok
+test source_attribution::tests::paraphrase_requires_exact_preserved_assessment ... ok
+test source_attribution::tests::parser_injects_harness_owned_target_bindings_and_translation_output_language ... ok
+test source_attribution::tests::parser_rejects_authority_injection ... ok
+test source_attribution::tests::sibling_target_binding_is_rejected ... ok
+test source_attribution::tests::source_id_and_span_tampering_fail_artifact_validation ... ok
+test source_attribution::tests::source_prompt_injection_is_inert_data_and_cannot_change_owned_schema ... ok
+test source_attribution::tests::transform_assessment_must_match_exact_target_bindings_and_statement ... ok
+test source_attribution::tests::transformed_claim_requires_full_atomic_source_support ... ok
+test source_attribution::tests::transformed_claim_requires_source_assertion_not_mention_or_instruction ... ok
+test source_attribution::tests::translated_availability_is_not_itself_a_current_state_marker ... ok
+test verification::tests::qualified_verifier_supports_only_qualified_evidence ... ok
+test verification::tests::qualified_verifier_withholds_conflicting_qualified_evidence ... ok
+test verification::tests::qualified_verifier_withholds_insufficient_authority ... ok
+test verification::tests::qualified_verifier_withholds_stale_evidence ... ok
+test verification::tests::same_key_opposite_value_cannot_bypass_qualification_requirement ... ok
+test verification::tests::structured_fact_verifier_contradicts_different_fact ... ok
+test verification::tests::structured_fact_verifier_supports_equal_fact ... ok
+test verification::tests::structured_verification_replaces_provider_prose_with_canonical_fact ... ok
+test evidence_relevance::tests::v30_possessive_property_conjunction_requires_complete_same_component_scope ... ok
+test evidence_relevance::tests::v30_separate_maintained_non_event_and_parenthesis_keep_each_scope ... ok
+test evidence_relevance::tests::v30_owned_appearance_predicates_require_component_and_non_event_value ... ok
+test evidence_relevance::tests::v30_printed_attribute_requires_outside_type_owner_and_balanced_literal ... ok
+test evidence_relevance::tests::v30_quoted_event_owner_never_inherits_document_owner ... ok
+test evidence_relevance::tests::v30_quoted_owner_words_in_headings_do_not_hide_real_owner_gaps ... ok
+test evidence_relevance::tests::v30_unowned_reference_determiners_require_unique_same_role_owner ... ok
+test evidence_relevance::tests::v30_owned_document_predicates_and_carriers_keep_event_scope_separate ... ok
+test evidence_relevance::tests::v30_printed_component_proofs_keep_literal_roles_and_denials_inert ... ok
+
+failures:
+
+---- evidence_relevance::tests::v30_copular_passives_and_restatements_keep_existing_role_values stdout ----
+
+thread 'evidence_relevance::tests::v30_copular_passives_and_restatements_keep_existing_role_values' panicked at crates/reasoning-harness-core/src/evidence_relevance.rs:14990:9:
+assertion `left == right` failed: v17: Object: the launch of Violet Bell. The Object is physical colour. We deny this Object.
+  left: true
+ right: false
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    evidence_relevance::tests::v30_copular_passives_and_restatements_keep_existing_role_values
+
+test result: FAILED. 354 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.92s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --lib`
+

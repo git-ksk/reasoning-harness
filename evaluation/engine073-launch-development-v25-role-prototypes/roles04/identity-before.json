@@ -1,0 +1,16 @@
+{
+  "private_development_source_sha256": "ee9f1877566bb94efcf45c858b1300b7fff58fd74f2b3b10d67b710ce1f95320",
+  "base_source_commit": "95053007bba54c728eee428837b22eb9d52a4f61",
+  "core": {
+    "path": "/private/tmp/engine073-source26-prototype-target/debug/libreasoning_harness_core.rlib",
+    "sha256": "26d48d0db769f306da6b0f94dbb18fba324e611b2a41d45f9f723a741a32638a"
+  },
+  "serde": {
+    "path": "/private/tmp/engine073-source26-prototype-target/debug/deps/libserde_json-fdb0c033eb5b5773.rlib",
+    "sha256": "23eeba39a0048e6b47f5a478b5aae813c69e7858d40085c643ce1dbed61611d3"
+  },
+  "compiler_metadata_sha256": "d7416c9d73b1a5371f491006d0882857c40355c422ac6727877e3b0a67147a31",
+  "executable_sha256": "bd1e4acb10ac5558db203105898212c4c4f41f66ca4e7c3b434b9655c7b4febc",
+  "inputs_sha256": "95be6aa3f505d87e8d3804ecc5f47ee26419f37fb15cb5122fac2a0a5fdfd462",
+  "cases_sha256": "10213396b11cc6d0860d809c7a9e9b3a19c25ded98ae1617f41fc8d65e25a5fc"
+}

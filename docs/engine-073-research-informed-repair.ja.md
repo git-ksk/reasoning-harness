@@ -4,7 +4,7 @@
 
 ## 最新の修正・独立評価と残件
 
-候補`9505300`の既知v24修正は同じ60件の開発比較で両API F1=1.000、既知1264・元監査14成功、歴史597全出力byte一致、全体1582成功/失敗0/既存ignore8、strict Clippy/fmtを確認した。しかし、新しい独立v25の初回は **FAIL/NO_GO**。両APIともTP5/FP0/TN30/FN25、Precision1.000・Recall0.166667・F1 0.285714で、陽性30件中25件を保留した。否定誤採用・運用失敗・欠測は各0。#547の評価器/方針を著作前に固定し、Engine60件一process・scorer/helper各1回で観測、再実行/再採点/再ラベルなし。元v24と今回v25の初回は不変。修正に使った集合のF1=1だけでは受入できない。次は今回の25保留の実経路を計測し、役割・訂正先・ownerの共通処理を修正する。実24問0/24・実回答F1未測定、sourceマージ/公開/CLI採用NO-GO。[判定と次の順序](engine073-v25-decision.ja.md)を参照。
+候補`a3d772d`でrole宣言・訂正先・同じroleのownerを共通処理し、同じ観測済みv25の60件を開発比較した。v17はTP24/FP0/TN30/FN6・P1.000/R.800000/F1 .888889、v30はTP23/FP0/TN30/FN7・P1.000/R.766667/F1 .867925、両軸一致53/60。元初回の両API F1 .285714から改善したが、まだ基準未達・既知7保留が残る。以前の既知1264・元監査14成功、今回を含む既知1317/1324、歴史597全出力byte一致、全体1588成功/失敗0/既存ignore8・strict Clippy/fmt確認。Codex/OpenCodeの一次資料を参考に、ID/原文範囲付きtrace・修正/検証ループ・不採用案の保存を採用した。元の独立v25初回FAIL/NO_GO、全初回・ラベル・scorer・prepは不変。次は残る7件の実経路を修正し、新規v26著作はそれまで行わない。実24問0/24・実回答F1未測定、Groq停止・provider/model/Oracle追加0、sourceマージ/公開/CLI採用NO-GO。[判定と残件](engine073-v25-decision.ja.md)、[固定候補の検証](../evaluation/engine073-launch-development-v25-role-frames/README.md)、[参考資料と応用](engine073-codex-opencode-notes.ja.md)。
 
 [実回答の採点準備](engine073-realworld-metrics-preparation.ja.md)で主張grounding Precision、必要主張Recall/F1、引用、正しい/過剰保留、有用性、運用欠測、provider別会計を定義した。PREPARATION_ONLY、M0/M1未固定・実回答未採点。新scorer、実host callback/dependency closure・数値予算/headroom・金額自己上限、featureが働く通常CLI経路が残る。[過去候補01dcの同一host offline CLI](../evaluation/engine07-cli-path-preparation-v3/README.md)は固定Node1経路で両Engineの同じgrounded回答・取得1・関連性API呼出し0、直接v17/v30対照ではcounter動作を確認した。全経路の不活性や今回修正の実回答効果を確定した結果ではない。#541共有runnerはmerge済みだが#540のlive準備はOPEN。#531新規実24問0/24・採用1/6、Groq追加起動禁止、provider/model/Oracle追加0を維持する。
 
@@ -56,3 +56,7 @@
 [候補c20c513の記録](../evaluation/engine073-launch-development-v22-foundation/README.md)では、同じ60件のv30 F1 0→0.4615、Precision未定義→1.0（通した9件）、Recall0→0.30、API通過率0→0.15、FP0を確認。v17はF1 0.5・Recall1/3、relationが見えてもriskで保留する1件がありAPI間で混ぜない。過去初回を再採点したものではない。最初の修正のFP1は拒否し、競合する所有者の宣言を扱ってFP0へ戻した。全体1564成功、旧1080と歴史597を維持。
 
 残る21件は現在のコードで診断してから、物理/文書属性のhas・prints・uses/測定値、引用文字の外側の属性/owner証明、別製品イベントの引用・同格、canonical Clip名による偽欠落を限定修正する。毎回同じ開発セットのF1/Recall/Precision/FPを記録する。全肯定・否定の回帰を通して候補を再固定した後に、新規独立評価を用意する。現時点で追加の新規v23を消費しない。#531実24問の最終回答/主張の根拠・引用・有用性の指標は未測定で、合成API指標では代替しない。マージ・公開・CLI採用は保留。
+
+## Codex・OpenCodeの設計を今回の修正に反映
+
+[一次資料と実装への対応](engine073-codex-opencode-notes.ja.md)を追加。役割・訂正先・ownerを構造として扱い、実経路traceと同じ集合のF1で効果を検証する。

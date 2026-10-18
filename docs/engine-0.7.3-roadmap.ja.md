@@ -10,11 +10,11 @@
 
 
 
-候補`9505300`の既知v24修正は同じ60件の開発比較で両API F1=1.000、既知1264・元監査14成功、歴史597全出力byte一致、全体1582成功/失敗0/既存ignore8、strict Clippy/fmtを確認した。しかし、新しい独立v25の初回は **FAIL/NO_GO**。両APIともTP5/FP0/TN30/FN25、Precision1.000・Recall0.166667・F1 0.285714で、陽性30件中25件を保留した。否定誤採用・運用失敗・欠測は各0。#547の評価器/方針を著作前に固定し、Engine60件一process・scorer/helper各1回で観測、再実行/再採点/再ラベルなし。元v24と今回v25の初回は不変。修正に使った集合のF1=1だけでは受入できない。次は今回の25保留の実経路を計測し、役割・訂正先・ownerの共通処理を修正する。実24問0/24・実回答F1未測定、sourceマージ/公開/CLI採用NO-GO。[判定と次の順序](engine073-v25-decision.ja.md)を参照。
+候補`a3d772d`でrole宣言・訂正先・同じroleのownerを共通処理し、同じ観測済みv25の60件を開発比較した。v17はTP24/FP0/TN30/FN6・P1.000/R.800000/F1 .888889、v30はTP23/FP0/TN30/FN7・P1.000/R.766667/F1 .867925、両軸一致53/60。元初回の両API F1 .285714から改善したが、まだ基準未達・既知7保留が残る。以前の既知1264・元監査14成功、今回を含む既知1317/1324、歴史597全出力byte一致、全体1588成功/失敗0/既存ignore8・strict Clippy/fmt確認。Codex/OpenCodeの一次資料を参考に、ID/原文範囲付きtrace・修正/検証ループ・不採用案の保存を採用した。元の独立v25初回FAIL/NO_GO、全初回・ラベル・scorer・prepは不変。次は残る7件の実経路を修正し、新規v26著作はそれまで行わない。実24問0/24・実回答F1未測定、Groq停止・provider/model/Oracle追加0、sourceマージ/公開/CLI採用NO-GO。[判定と残件](engine073-v25-decision.ja.md)、[固定候補の検証](../evaluation/engine073-launch-development-v25-role-frames/README.md)、[参考資料と応用](engine073-codex-opencode-notes.ja.md)。
 
 | 順序 | 必要な証拠 | 現状 |
 | --- | --- | --- |
-| 1 | #520の対象/全体否定・未知owner保留、既知回帰と新規独立source gate | 9505300は既知1264成功、新規v25初回FAIL35/60・両API F1.285714/FP0/FN25。[判定](engine073-v25-decision.ja.md)、全初回は不変 |
+| 1 | #520の対象/全体否定・未知owner保留、既知回帰と新規独立source gate | a3d772dは同じv25開発53/60・F1.888889/.867925・FP0・7保留、以前の既知1264成功。元v25初回FAIL不変。[判定](engine073-v25-decision.ja.md)、全初回は不変 |
 | 2 | #540共有停止・永続reserve/inflight・キャンセル、actual host callback/dependency/数値予算、通常経路trace | #535/#537/#541 merge、47 offline controls/限定独立6境界PASS。新scorer・live callback/dependency/数値予算・外部containment・featureが働く経路は残件 |
 | 3 | 小規模offline開発確認、必要かつ別途開始条件を満たしたprovider確認 | 今回provider/model/Oracle追加0。旧v2/v3初回FAILを維持 |
 | 4 | 完全M0評価器/host/model/予算/品質基準を固定→別作成者の新実資料24問→全文/gold M1固定→同hostで0.6.1/後継を比較 | 実24問0/24、M0/M1未完了。重大違反0・陽性退行0・provider別完全結果・有用性改善と品質下限が必須 |

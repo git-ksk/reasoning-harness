@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/private/tmp/engine073-source26-measure-actual.py", line 26, in <module>
+    if v!=25:summary['old_regressions'][f'v{v}']={'passed':60-len(bad),'mismatches':bad};assert not bad,(v,bad)
+                                                                                                ^^^^^^^
+AssertionError: (24, ['li24-025', 'li24-041'])

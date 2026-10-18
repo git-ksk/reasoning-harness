@@ -1,0 +1,41 @@
+   Compiling reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 11.28s
+     Running unittests src/lib.rs (/private/tmp/engine073-validation-target/debug/deps/reasoning_harness_core-dcd4f612c7771d71)
+
+running 33 tests
+test evidence_relevance::tests::v30_accepts_target_owned_has_made_generally_available_launch_frame ... ok
+test evidence_relevance::tests::v30_does_not_promote_negated_has_not_made_generally_available ... ok
+test evidence_relevance::tests::v30_foreign_name_confirmation_requires_adjacent_same_owned_denial ... ok
+test evidence_relevance::tests::v30_does_not_accept_question_fiction_or_unverified_rumor_as_launch_fact ... ok
+test evidence_relevance::tests::v30_complete_printed_apposition_retains_event_and_global_denials ... ok
+test evidence_relevance::tests::v30_complete_clip_name_note_cannot_erase_actual_context_gap ... ok
+test evidence_relevance::tests::v30_complete_foreign_event_quote_does_not_borrow_document_owner ... ok
+test evidence_relevance::tests::v30_foreign_role_and_reported_non_event_are_distinct_clauses ... ok
+test evidence_relevance::tests::v30_has_made_launch_frame_does_not_promote_other_negations_or_unrelated_clauses ... ok
+test evidence_relevance::tests::v30_launch_authority_never_borrows_sibling_predicate ... ok
+test evidence_relevance::tests::v30_complete_foreign_quoted_event_and_reply_owner_remain_role_scoped ... ok
+test evidence_relevance::tests::v30_launch_frames_require_target_and_established_fact ... ok
+test evidence_relevance::tests::v30_copular_role_owners_cannot_be_borrowed_or_conflicted ... ok
+test evidence_relevance::tests::v30_gerund_target_denials_cannot_inherit_copular_property_scope ... ok
+test evidence_relevance::tests::v30_made_available_requires_target_owned_affirmative_predicate ... ok
+test evidence_relevance::tests::v30_immediate_and_competing_role_replies_keep_same_owner_checks ... ok
+test evidence_relevance::tests::v30_copular_roles_preserve_property_and_target_denial_boundaries ... ok
+test evidence_relevance::tests::v30_complete_claim_wrapper_preserves_only_proven_property_scope ... ok
+test evidence_relevance::tests::v30_printed_property_cannot_own_collective_event_withdrawal ... ok
+test evidence_relevance::tests::v30_copular_passives_and_restatements_keep_existing_role_values ... ok
+test evidence_relevance::tests::v30_prefixed_existence_denial_and_competing_reply_cannot_borrow_property_scope ... ok
+test evidence_relevance::tests::v30_quote_truth_status_is_not_a_printed_format_property ... ok
+test evidence_relevance::tests::v30_property_explanation_and_quoted_owner_need_independent_matching_role ... ok
+test evidence_relevance::tests::v30_possessive_property_conjunction_requires_complete_same_component_scope ... ok
+test evidence_relevance::tests::v30_owned_appearance_predicates_require_component_and_non_event_value ... ok
+test evidence_relevance::tests::v30_role_property_summaries_require_an_existing_complete_value ... ok
+test evidence_relevance::tests::v30_printed_attribute_requires_outside_type_owner_and_balanced_literal ... ok
+test evidence_relevance::tests::v30_separate_maintained_non_event_and_parenthesis_keep_each_scope ... ok
+test evidence_relevance::tests::v30_quoted_event_owner_never_inherits_document_owner ... ok
+test evidence_relevance::tests::v30_quoted_owner_words_in_headings_do_not_hide_real_owner_gaps ... ok
+test evidence_relevance::tests::v30_owned_document_predicates_and_carriers_keep_event_scope_separate ... ok
+test evidence_relevance::tests::v30_unowned_reference_determiners_require_unique_same_role_owner ... ok
+test evidence_relevance::tests::v30_printed_component_proofs_keep_literal_roles_and_denials_inert ... ok
+
+test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 323 filtered out; finished in 3.43s
+

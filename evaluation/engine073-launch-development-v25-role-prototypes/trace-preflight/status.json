@@ -1,0 +1,6 @@
+{
+  "status": "NOT_ACCEPTANCE",
+  "exclusive_name_collision": "current25 existed from earlier predecessor; refused before instrumentation/probe",
+  "mistaken_root_filter": "zero tests,350 filtered; corrected by separate shadow current26",
+  "successful_capture": "evaluation/engine073-launch-trace-development-v8/test.log"
+}

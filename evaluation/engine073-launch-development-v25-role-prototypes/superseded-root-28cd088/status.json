@@ -1,0 +1,10 @@
+{
+  "source_commit": "28cd088192bcaa15e9d064e025b6a1a4c67d0ade",
+  "source_sha256": "5264d210fb25f1c6f6c3c2eec3e50ff42379947f99bd64242ae761e019bd4711",
+  "status": "REJECTED_REGRESSION_NOT_ACCEPTANCE",
+  "known_regression_ids": [
+    "li24-025",
+    "li24-041"
+  ],
+  "new_parent_test_error": "Foreign Violet Bell launch and physical colour are both excluded from Silver Lens launch; expected false was incorrect. Original independent labels untouched. Add target-owned event counterpart expected false."
+}

@@ -1,0 +1,12 @@
+{
+  "scope": "consumed development diagnostic; not independent acceptance",
+  "files": {
+    "README.md": "537c9af5db1cc6aae4e7e1ef97ddabc0be209626ddb5a8b976863edd0abc1aa0",
+    "base-source.rs.gz": "75b2f3bc41893b2f81f9f892beaf639f15281d1106752afb063bcca54cba96dd",
+    "identity.json": "3fb345e0b94eec4d00bb0f35a70ee0e34aec9539a5ebdb14c0edd357923ed482",
+    "instrument.py": "34889e2fa485beafd52934adc792262e95ce384a7789bbda8c0ecdb21fcb12fc",
+    "instrumentation.patch": "2306fe1f7bb1270f7c6f448409d65ccdea9e3ac40a33fdffcb06511fdb7b9f97",
+    "test.log": "3289fa7eea1e3fdd48416736b1c12f543799bdcab0afa0dd477dfb04633beb54",
+    "trace.json": "42cb8f3ce58210cc01e8e88eaa5b2bc2bd19578d6033f70dedb9481fa5c0b86b"
+  }
+}
