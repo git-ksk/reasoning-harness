@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/private/tmp/engine073-source27-known-final.py", line 11, in <module>
+    inv.append({'version':v,'inputs_sha256':sha(d/'inputs.json'),'cases_sha256':sha(d/'cases.json'),'stdout_sha256':sha(out/f'v{v}.jsonl'),'executable_sha256':sha(exe),'mismatches':bad});(out/'invocations.json').write_text(json.dumps(inv,indent=2)+'\n');assert not bad,(v,bad);total+=60
+                                                                                                                                                                                                                                                                     ^^^^^^^
+AssertionError: (9, ['li9-057'])

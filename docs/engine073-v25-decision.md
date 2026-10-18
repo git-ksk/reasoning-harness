@@ -13,7 +13,7 @@ M0 evaluator b172872d... was reviewed with48 pure fixtures and hashes before new
 
 The25 misses comprise12 non-launch properties,7 combined safe contexts and6 foreign events. All supplied raw tuples are exact_target/requested_relation/none. Effective tuples are exact_target/unresolved/none24 and context_gap1. These enums do not establish an internal risk-loss or governing rule.
 
-Current sequence:
+Sequence after the original firstFAIL (current completion below):
 
 1. The25 observed misses and current7 remaining paths were traced in a separate test-only copy. Preserve original first artifacts.
 2. Shared role declarations, correction referents and foreign owners are partly repaired. Repair the remaining7 reference/quotation/risk paths with target/global denial, unknown/mixed/conflicting owner, actual gap and raw-risk controls. Diagnose the context-gap case from its actual path.
@@ -25,10 +25,16 @@ Consumed v24 same-set F1.723404→1 is measured repair, but freshv25 generalizat
 
 Source merge/Engine0.7.3 release/CLI adoption NO_GO. Real24=0/24, real-worldM0/M1 incomplete, actual-answer F1 unmeasured. Published Engine0.7.2/CLI0.5.5-Engine0.6.1 unchanged;Groq stopped;provider/model/Oracle additional0.
 
-## Current consumed repair (2026-10-18)
+## Previous consumed repair at a3d772d (2026-10-18)
 
 Candidate `a3d772d` repairs shared role declarations, correction referents and same-role owners. On the same consumedv25 set, v17 has TP24/FP0/TN30/FN6,P1.000/R.800000/F1 .888889; v30 has TP23/FP0/TN30/FN7,P1.000/R.766667/F1 .867925; joint53/60. This improves on the original first F1 .285714 but still misses floors and leaves7 known cases. Former1264/original14 pass;includingv25 known1317/1324,historical597 whole-output byte equality,workspace1588PASS/0FAIL/8existing ignored,strict Clippy/fmt PASS. Codex/OpenCode primary sources inform ID/source-span traces,review/repair/validation and rejected-attempt preservation. Original independentv25 firstFAIL/NO_GO,all first raw/labels/scorers/prep remain unchanged. Repair the actual remaining paths before newv26 authorship. Real24=0/24,actual-answer F1 unmeasured,Groq stopped,provider/model/Oracle additional0;source merge/release/CLI adoption NO-GO. See [decision/remaining work](engine073-v25-decision.md),[pinned verification](../evaluation/engine073-launch-development-v25-role-frames/README.md),[research adaptation](engine073-codex-opencode-notes.md).
 
 [Original25 actual paths](../evaluation/engine073-launch-trace-development-v8/README.md) first block at typed_reference_not_excluded. [Current seven-case trace](../evaluation/engine073-launch-trace-development-v9/README.md):031/035/037/043/045/051 retain that first rule;053 has no governing block,RequestedRelation/ContextGap andv30 withholding. Next shared repairs cover quoted printed titles,possessive property references,appositional roles,printed illustrations,quoted event with owner reply,adjacent denial-target frames,and canonical Clip risk projection. Do not infer raw-risk loss from enums.
 
 [Rejected prototypes/regressions](../evaluation/engine073-launch-development-v25-role-prototypes/README.md) preserve the unsafe2-admission first proposal,older-case regressions,and correction of a wrong new parent control;none are acceptance. Independent labels stay unchanged. Next independent evaluator/policy must freeze before authorship and retain first once;known1324 are regressions. Current1317/1324 does not authorize authorship.
+
+## Current development validation at9082365
+
+Candidate `9082365` passes the same consumedv25 development60: each API TP30/FP0/TN30/FN0,precision/recall/F1=1.000,joint60/60. The7 remaining cases at a3d772d (F1 .888889/.867925) are repaired. Former1264+consumed60+parent16=1340 controlsPASS,original14 separatelyPASS,historical597 whole-output byte equality,workspace1594PASS/0FAIL/8existing ignored,strict Clippy/fmtPASS. Shared processing distinguishes outside property type,quoted discourse,same-role references/owners,independent correction clauses,explicit nonexistence and opaque canonical names. Original independentv25 firstFAIL/NO_GO/F1 .285714,all first raw/labels/scorers/prep stay unchanged. This is consumed development,not fresh acceptance. Next: freeze candidate/evaluator/policy before authorship,parent-review pure scorer fixtures,then freshv26 first once. Real24=0/24,actual-answer F1 unmeasured,Groq stopped,provider/model/Oracle additional0;source merge/release/CLI adoption NO-GO. See [decision](engine073-v25-decision.md),[pinned validation](../evaluation/engine073-launch-development-v25-reference-frames/README.md).
+
+[Rejected attempts and supplemental controls](../evaluation/engine073-launch-development-v25-reference-prototypes/README.md) remain preserved. Stage04's highF1 still rejects due to explicit-nonexistence FP;older safe-case regressions are not acceptance. Sixteen printed-title controls containing denial/missing-context words improve8/16→16/16 with unchanged labels;quoted author replies remain actual correction discourse. Freshv26 authorship/first observation must follow1340 regressions/original14/full checks and parent M0 review. No retrospective oldFAIL acceptance.

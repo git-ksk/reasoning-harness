@@ -10,11 +10,11 @@
 
 
 
-候補`a3d772d`でrole宣言・訂正先・同じroleのownerを共通処理し、同じ観測済みv25の60件を開発比較した。v17はTP24/FP0/TN30/FN6・P1.000/R.800000/F1 .888889、v30はTP23/FP0/TN30/FN7・P1.000/R.766667/F1 .867925、両軸一致53/60。元初回の両API F1 .285714から改善したが、まだ基準未達・既知7保留が残る。以前の既知1264・元監査14成功、今回を含む既知1317/1324、歴史597全出力byte一致、全体1588成功/失敗0/既存ignore8・strict Clippy/fmt確認。Codex/OpenCodeの一次資料を参考に、ID/原文範囲付きtrace・修正/検証ループ・不採用案の保存を採用した。元の独立v25初回FAIL/NO_GO、全初回・ラベル・scorer・prepは不変。次は残る7件の実経路を修正し、新規v26著作はそれまで行わない。実24問0/24・実回答F1未測定、Groq停止・provider/model/Oracle追加0、sourceマージ/公開/CLI採用NO-GO。[判定と残件](engine073-v25-decision.ja.md)、[固定候補の検証](../evaluation/engine073-launch-development-v25-role-frames/README.md)、[参考資料と応用](engine073-codex-opencode-notes.ja.md)。
+候補`9082365`の同じ観測済みv25開発60件は、両API別にTP30/FP0/TN30/FN0・Precision/Recall/F1=1.000、両軸60/60となった。前候補a3d772dのF1 .888889/.867925から残る7件を解消。以前の既知1264＋今回60＋親の追加16＝1340成功、元監査14は別途成功、歴史597全出力byte一致、全体1594成功/失敗0/既存ignore8・strict Clippy/fmt確認。属性の外側の型、引用された発話、同じroleの参照・owner、独立した訂正節、明確な非実在、opaqueな正式名称を共通処理した。元の独立v25初回FAIL/NO_GO・F1 .285714と全初回/ラベル/scorer/prepは不変。これは開発比較であり、新規独立受入ではない。次は候補と評価器/方針を著作前に固定し、評価器を親レビューしてから新規v26を初回1回で観測する。実24問0/24・実回答F1未測定、Groq停止・provider/model/Oracle追加0、sourceマージ/公開/CLI採用NO-GO。[判定](engine073-v25-decision.ja.md)、[固定候補の検証](../evaluation/engine073-launch-development-v25-reference-frames/README.md)。
 
 | 順序 | 必要な証拠 | 現状 |
 | --- | --- | --- |
-| 1 | #520の対象/全体否定・未知owner保留、既知回帰と新規独立source gate | a3d772dは同じv25開発53/60・F1.888889/.867925・FP0・7保留、以前の既知1264成功。元v25初回FAIL不変。[判定](engine073-v25-decision.ja.md)、全初回は不変 |
+| 1 | #520の対象/全体否定・未知owner保留、既知回帰と新規独立source gate | 9082365は同じv25開発60/60・両API F1=1.000・FP0、既知1340成功。新規v26は著作前固定/親レビュー後に初回1回を予定。元v25初回FAIL不変。[判定](engine073-v25-decision.ja.md)、全初回は不変 |
 | 2 | #540共有停止・永続reserve/inflight・キャンセル、actual host callback/dependency/数値予算、通常経路trace | #535/#537/#541 merge、47 offline controls/限定独立6境界PASS。新scorer・live callback/dependency/数値予算・外部containment・featureが働く経路は残件 |
 | 3 | 小規模offline開発確認、必要かつ別途開始条件を満たしたprovider確認 | 今回provider/model/Oracle追加0。旧v2/v3初回FAILを維持 |
 | 4 | 完全M0評価器/host/model/予算/品質基準を固定→別作成者の新実資料24問→全文/gold M1固定→同hostで0.6.1/後継を比較 | 実24問0/24、M0/M1未完了。重大違反0・陽性退行0・provider別完全結果・有用性改善と品質下限が必須 |

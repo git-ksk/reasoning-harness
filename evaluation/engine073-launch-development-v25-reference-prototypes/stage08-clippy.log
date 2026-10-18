@@ -1,0 +1,24 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.24
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling syn v3.0.4
+   Compiling zmij v1.0.23
+   Compiling ref-cast v1.0.27
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.151
+   Compiling serde_derive v1.0.229
+   Compiling ref-cast-impl v1.0.27
+   Compiling serde_derive_internals v0.30.0
+    Checking itoa v1.0.18
+    Checking memchr v2.8.3
+   Compiling thiserror v2.0.21
+   Compiling schemars_derive v1.2.2
+   Compiling thiserror-impl v2.0.21
+    Checking dyn-clone v1.0.20
+    Checking schemars v1.2.2
+   Compiling tokio-macros v2.7.2
+    Checking pin-project-lite v0.2.17
+    Checking tokio v1.53.2
+    Checking reasoning-harness-core v0.7.2 (/private/tmp/engine073-source27-prototype/crates/reasoning-harness-core)
+    Finished `dev` profile [unoptimized] target(s) in 32.03s

@@ -1,0 +1,5 @@
+{
+  "status": "PATCH_ASSERTION_FAILED_BEFORE_WRITE",
+  "source_sha256": "6de139c5cd2e4553f4dc5f2e26066d808bde033a9dcaa83ce156ef1301465f1b",
+  "stage04-core-log": "repeat on unchanged stage03 source,361PASS/1FAIL; not a new source validation"
+}

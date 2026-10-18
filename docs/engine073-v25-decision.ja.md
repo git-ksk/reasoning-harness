@@ -13,7 +13,7 @@
 
 失敗は意味上の非launch属性12件、複数の安全な文脈7件、別製品イベント6件。保存されたrawは全てexact_target/requested_relation/none。effectiveはexact_target/unresolved/noneが24件、context_gapが1件。これらのenumだけから内部risk喪失や最初の保留ruleを推定しない。
 
-現在の作業順序:
+初回FAIL後の作業順序（今回の実施状況は下記）:
 
 1. 今回の25件の最初の実保留経路を別コピーのテスト専用traceで確認済み。現候補の残る7件も実経路を保存した。元の初回を再実行・変更しない。
 2. 役割宣言、訂正が指す対象、別製品ownerの共通処理を修正済み。残る7件の参照・引用・riskを共通構造として修正する。対象/全体否定・不明/混在/競合owner・実欠落・raw riskの対照を維持する。context_gapの1件も実際の判定経路から調べる。
@@ -25,10 +25,16 @@ v24の同じ開発60件でF1.723404→1.000の修正効果は確認済みだが�
 
 sourceマージ/Engine0.7.3公開/CLI採用NO-GO。実24問0/24、実資料M0/M1未完了、実回答F1未測定。公開Engine0.7.2/CLI0.5.5-Engine0.6.1は不変。Groq停止、provider/model/Oracle追加0。
 
-## 現在の開発修正（2026-10-18）
+## 前候補a3d772dの開発修正（2026-10-18）
 
 候補`a3d772d`でrole宣言・訂正先・同じroleのownerを共通処理し、同じ観測済みv25の60件を開発比較した。v17はTP24/FP0/TN30/FN6・P1.000/R.800000/F1 .888889、v30はTP23/FP0/TN30/FN7・P1.000/R.766667/F1 .867925、両軸一致53/60。元初回の両API F1 .285714から改善したが、まだ基準未達・既知7保留が残る。以前の既知1264・元監査14成功、今回を含む既知1317/1324、歴史597全出力byte一致、全体1588成功/失敗0/既存ignore8・strict Clippy/fmt確認。Codex/OpenCodeの一次資料を参考に、ID/原文範囲付きtrace・修正/検証ループ・不採用案の保存を採用した。元の独立v25初回FAIL/NO_GO、全初回・ラベル・scorer・prepは不変。次は残る7件の実経路を修正し、新規v26著作はそれまで行わない。実24問0/24・実回答F1未測定、Groq停止・provider/model/Oracle追加0、sourceマージ/公開/CLI採用NO-GO。[判定と残件](engine073-v25-decision.ja.md)、[固定候補の検証](../evaluation/engine073-launch-development-v25-role-frames/README.md)、[参考資料と応用](engine073-codex-opencode-notes.ja.md)。
 
 [初回25件の実経路](../evaluation/engine073-launch-trace-development-v8/README.md)は全件の最初のgoverning-context保留がtyped_reference_not_excluded。修正後の[残る7件の現候補trace](../evaluation/engine073-launch-trace-development-v9/README.md)は、031/035/037/043/045/051が同じrule、053はgoverning blockなしでRequestedRelation/ContextGap・v30保留。引用title、所有格の属性参照、同格role、印刷illustration、quotedイベントとowner返信、隣接Denial target、canonical Clipのrisk判定を共通構造として修正する。元rawのrisk消失と推定しない。
 
 [不採用案と退行](../evaluation/engine073-launch-development-v25-role-prototypes/README.md)も保存。誤採用2件の初案、旧ケース退行、誤った新規parent対照の訂正を成功扱いにしない。元独立ラベルは変更なし。次の独立評価は新規著作前の評価器/方針固定と初回保存を維持し、既知1324件を回帰対象にする。現在は1317/1324なので着手しない。
+
+## 現候補9082365の開発検証
+
+候補`9082365`の同じ観測済みv25開発60件は、両API別にTP30/FP0/TN30/FN0・Precision/Recall/F1=1.000、両軸60/60となった。前候補a3d772dのF1 .888889/.867925から残る7件を解消。以前の既知1264＋今回60＋親の追加16＝1340成功、元監査14は別途成功、歴史597全出力byte一致、全体1594成功/失敗0/既存ignore8・strict Clippy/fmt確認。属性の外側の型、引用された発話、同じroleの参照・owner、独立した訂正節、明確な非実在、opaqueな正式名称を共通処理した。元の独立v25初回FAIL/NO_GO・F1 .285714と全初回/ラベル/scorer/prepは不変。これは開発比較であり、新規独立受入ではない。次は候補と評価器/方針を著作前に固定し、評価器を親レビューしてから新規v26を初回1回で観測する。実24問0/24・実回答F1未測定、Groq停止・provider/model/Oracle追加0、sourceマージ/公開/CLI採用NO-GO。[判定](engine073-v25-decision.ja.md)、[固定候補の検証](../evaluation/engine073-launch-development-v25-reference-frames/README.md)。
+
+[不採用案・追加対照](../evaluation/engine073-launch-development-v25-reference-prototypes/README.md)も保存。高F1でも明確な非実在を誤採用したstage04は不採用。過去の安全な例を保留した中間案も受入扱いにしない。印刷タイトルに「否定・欠落」と書かれた16対照を元ラベルのまま8/16→16/16へ修正し、引用された作者の返信は実際の訂正節として解析する。新たな独立v26は1340件の回帰・元14件・全体検証の成功後、M0を親レビューしてから著作/初回観測する。旧FAILを後付けで合格にしない。

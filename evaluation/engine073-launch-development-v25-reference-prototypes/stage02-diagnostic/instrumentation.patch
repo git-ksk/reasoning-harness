@@ -1,0 +1,230 @@
+--- a/crates/reasoning-harness-core/src/evidence_relevance.rs
++++ b/crates/reasoning-harness-core/src/evidence_relevance.rs
+@@ -7339,7 +7339,7 @@
+ ) -> bool {
+     let targets = target_identity_phrases(policy);
+     let typed_objects = launch_typed_objects_v17(policy, candidate);
+-    for signal in candidate.signals.iter().filter(|signal| {
++    for (signal_index, signal) in candidate.signals.iter().enumerate().filter(|(_, signal)| {
+         matches!(
+             signal.kind,
+             EvidenceRelevanceSignalKind::SourceTitle
+@@ -7368,6 +7368,14 @@
+                 continue;
+             }
+             if launch_collective_event_withdrawal_v17(&segment.raw) {
++                #[cfg(test)]
++                tests::record_launch_development_trace_v17(
++                    signal_index,
++                    index,
++                    &signal.text,
++                    &segment.raw,
++                    "collective_event_withdrawal",
++                );
+                 return true;
+             }
+             // An explicitly unowned event cannot borrow a preceding property
+@@ -7407,12 +7415,28 @@
+                                 && !launch_explicit_property_context_v17(policy, &neighbor.raw)
+                         }))
+             {
++                #[cfg(test)]
++                tests::record_launch_development_trace_v17(
++                    signal_index,
++                    index,
++                    &signal.text,
++                    &segment.raw,
++                    "unknown_owner_note",
++                );
+                 return true;
+             }
+             if launch_complete_foreign_denial_report_v17(policy, &segment.raw) {
+                 continue;
+             }
+             if launch_target_nonexistence_v17(policy, &segment.raw) {
++                #[cfg(test)]
++                tests::record_launch_development_trace_v17(
++                    signal_index,
++                    index,
++                    &signal.text,
++                    &segment.raw,
++                    "target_nonexistence",
++                );
+                 return true;
+             }
+             // An expressly unknown event owner cannot inherit a preceding
+@@ -7433,6 +7457,14 @@
+                     })
+                 })
+             {
++                #[cfg(test)]
++                tests::record_launch_development_trace_v17(
++                    signal_index,
++                    index,
++                    &signal.text,
++                    &segment.raw,
++                    "unresolved_non_event_owner",
++                );
+                 return true;
+             }
+ 
+@@ -7486,6 +7518,14 @@
+                     !(foreign_frame || quoted_property)
+                 })
+             {
++                #[cfg(test)]
++                tests::record_launch_development_trace_v17(
++                    signal_index,
++                    index,
++                    &signal.text,
++                    &segment.raw,
++                    "broad_colon_context",
++                );
+                 return true;
+             }
+             if segment.raw.split_once(':').is_some_and(|(label, value)| {
+@@ -7600,6 +7640,14 @@
+                 if excluded {
+                     continue;
+                 } else {
++                    #[cfg(test)]
++                    tests::record_launch_development_trace_v17(
++                        signal_index,
++                        index,
++                        &signal.text,
++                        &segment.raw,
++                        "typed_reference_not_excluded",
++                    );
+                     return true;
+                 }
+             }
+@@ -7699,6 +7747,14 @@
+                         && (words.iter().any(|word| ["not", "never"].contains(word))
+                             || launch_contracted_denial_v17(&words))))
+             {
++                #[cfg(test)]
++                tests::record_launch_development_trace_v17(
++                    signal_index,
++                    index,
++                    &signal.text,
++                    &segment.raw,
++                    "target_adverse_clause",
++                );
+                 return true;
+             }
+             let context_head = words.iter().copied().find(|word| {
+@@ -7816,6 +7872,14 @@
+                     EvidenceRelevanceSignalKind::Heading | EvidenceRelevanceSignalKind::SourceTitle
+                 )
+             {
++                #[cfg(test)]
++                tests::record_launch_development_trace_v17(
++                    signal_index,
++                    index,
++                    &signal.text,
++                    &segment.raw,
++                    "denied_heading",
++                );
+                 return true;
+             }
+             let marker_only = words.is_empty() && segment.denied;
+@@ -7943,6 +8007,14 @@
+             {
+                 continue;
+             }
++            #[cfg(test)]
++            tests::record_launch_development_trace_v17(
++                signal_index,
++                index,
++                &signal.text,
++                &segment.raw,
++                "unresolved_adverse_scope",
++            );
+             return true;
+         }
+     }
+@@ -15226,6 +15298,84 @@
+ #[cfg(test)]
+ mod tests {
+     use super::*;
++
++    std::thread_local! {
++        static LAUNCH_DEVELOPMENT_TRACE: std::cell::RefCell<Vec<serde_json::Value>> = const { std::cell::RefCell::new(Vec::new()) };
++    }
++
++    pub(super) fn record_launch_development_trace_v17(
++        signal_index: usize,
++        segment_index: usize,
++        original: &str,
++        raw: &str,
++        rule: &str,
++    ) {
++        let spans = original
++            .match_indices(raw)
++            .map(|(start, matched)| (start, start + matched.len()))
++            .collect::<Vec<_>>();
++        let exact_span = if spans.len() == 1 {
++            Some(spans[0])
++        } else {
++            None
++        };
++        LAUNCH_DEVELOPMENT_TRACE.with_borrow_mut(|trace|trace.push(serde_json::json!({"signal_index":signal_index,"segment_index":segment_index,"rule":rule,"segment_raw":raw,"exact_original_utf8_byte_span":exact_span,"span_limit":"none means reconstructed or repeated segment; no guessed source offset"})));
++    }
++
++    #[test]
++    fn development_consumed_current30_rule_trace() {
++        let corpus: serde_json::Value = serde_json::from_str(include_str!(
++            "../../../evaluation/engine073-launch-independent-v25/cases.json"
++        ))
++        .unwrap();
++        let failed = [
++            "li25-031", "li25-035", "li25-037", "li25-043", "li25-045", "li25-051", "li25-053",
++        ];
++        let mut count = 0;
++        for case in corpus["cases"].as_array().unwrap() {
++            let id = case["id"].as_str().unwrap();
++            if !failed.contains(&id) {
++                continue;
++            }
++            let input = &case["input"];
++            let policy: EvidenceRelevanceTargetPolicy =
++                serde_json::from_value(input["policy"].clone()).unwrap();
++            let candidate: EvidenceRelevanceCandidate =
++                serde_json::from_value(input["candidate"].clone()).unwrap();
++            let proposal: EvidenceRelevanceBindingProposal =
++                serde_json::from_value(input["proposal"].clone()).unwrap();
++            let raw: EvidenceLocalQualificationV6 =
++                serde_json::from_value(input["raw"].clone()).unwrap();
++            LAUNCH_DEVELOPMENT_TRACE.with_borrow_mut(Vec::clear);
++            let effective = derive_effective_evidence_local_qualification_v17(
++                &policy,
++                &candidate,
++                Some(&proposal),
++                Some(&raw),
++            )
++            .unwrap();
++            let derive_rule_trace = LAUNCH_DEVELOPMENT_TRACE.with_borrow(|trace| trace.clone());
++            let governing_blocks = launch_governing_context_blocks_v17(&policy, &candidate);
++            let target_fact = target_owned_launch_fact_v17(&policy, &candidate);
++            let rule_trace = LAUNCH_DEVELOPMENT_TRACE.with_borrow(|trace| trace.clone());
++            let objects = launch_typed_objects_v17(&policy, &candidate);
++            let typed=objects.iter().map(|object|serde_json::json!({"label":object.label,"scope":match object.scope {LaunchTypedScopeV17::Excluded=>"excluded",LaunchTypedScopeV17::Launch=>"launch",LaunchTypedScopeV17::Unresolved=>"unresolved"},"foreign_event":object.foreign_event,"declared_value":object.declared_value})).collect::<Vec<_>>();
++            let mut segments = Vec::new();
++            for (signal_index, signal) in candidate.signals.iter().enumerate() {
++                let parts = launch_adverse_segments_v17(&policy, &signal.text);
++                for (index, segment) in parts.iter().enumerate() {
++                    segments.push(serde_json::json!({"signal_index":signal_index,"segment_index":index,"raw":segment.raw,"denied":segment.denied,"foreign_object":launch_retraction_other_object_v17(&policy,&segment.raw),"property_context":launch_explicit_property_context_v17(&policy,&segment.raw),"nominal_property":launch_complete_nominal_property_v17(&policy,&segment.raw),"bound_property":launch_bound_property_reference_v17(&policy,&segment.raw,index.checked_sub(1).and_then(|i|parts.get(i)),&objects),"declared_foreign":launch_declared_foreign_object_v17(&policy,&segment.raw),"resolved_foreign":launch_resolved_foreign_reference_v17(&policy,&segment.raw,index.checked_sub(1).and_then(|i|parts.get(i)),parts.get(index+1)),"complete_foreign_report":launch_complete_foreign_denial_report_v17(&policy,&segment.raw),"nonlaunch":launch_explicit_nonlaunch_statement_v17(&policy,&segment.raw),"correction_frame":launch_property_correction_frame_v17(&policy,&segment.raw),"apposition":launch_property_apposition_v17(&policy,&segment.raw),"unknown_owner":launch_unavailable_owner_note_v17(&segment.raw),"typed_reference":launch_typed_reference_v17(&policy,&segment.raw,&objects,index.checked_sub(1).and_then(|i|parts.get(i)),parts.get(index+1))}));
++                }
++            }
++            println!(
++                "DEVELOPMENT_TRACE {}",
++                serde_json::json!({"id":id,"effective":effective,"governing_blocks":governing_blocks,"target_fact":target_fact,"rule_trace":rule_trace,"derive_rule_trace":derive_rule_trace,"typed_objects":typed,"segments":segments,"scope":"consumed diagnostic, not fresh score"})
++            );
++            count += 1;
++        }
++        assert_eq!(count, 7);
++    }
++
+     fn check_current_role_context(context: &str, expected: bool) {
+         let policy = launch_policy_for_v28();
+         let proposal = EvidenceRelevanceBindingProposal {
