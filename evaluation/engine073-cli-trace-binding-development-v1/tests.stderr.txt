@@ -1,0 +1,26 @@
+test_accepted_output_and_last_trace_display_must_be_equal (test_trace_binding.CaptureBinding.test_accepted_output_and_last_trace_display_must_be_equal) ... ok
+test_actual_display_is_not_the_unexposed_renderer_text (test_trace_binding.CaptureBinding.test_actual_display_is_not_the_unexposed_renderer_text) ... ok
+test_admission_requires_same_acquisition_target (test_trace_binding.CaptureBinding.test_admission_requires_same_acquisition_target) ... ok
+test_bool_returncode_and_failure_do_not_become_abstentions (test_trace_binding.CaptureBinding.test_bool_returncode_and_failure_do_not_become_abstentions) ... ok
+test_duplicate_json_keys_are_rejected (test_trace_binding.CaptureBinding.test_duplicate_json_keys_are_rejected) ... ok
+test_fact_swap_even_in_both_output_and_trace_is_caught_by_acquisition (test_trace_binding.CaptureBinding.test_fact_swap_even_in_both_output_and_trace_is_caught_by_acquisition) ... ok
+test_hash_anchor_and_changed_capture_rejected_before_parse (test_trace_binding.CaptureBinding.test_hash_anchor_and_changed_capture_rejected_before_parse) ... ok
+test_host_authority_and_effective_time_are_required (test_trace_binding.CaptureBinding.test_host_authority_and_effective_time_are_required) ... ok
+test_missing_model_terminal_is_incomplete (test_trace_binding.CaptureBinding.test_missing_model_terminal_is_incomplete) ... ok
+test_model_correlation_phase_and_sequence_must_match (test_trace_binding.CaptureBinding.test_model_correlation_phase_and_sequence_must_match) ... ok
+test_model_response_without_request_rejected (test_trace_binding.CaptureBinding.test_model_response_without_request_rejected) ... ok
+test_orphan_receipt_and_extra_unadmitted_claim_evidence_fail (test_trace_binding.CaptureBinding.test_orphan_receipt_and_extra_unadmitted_claim_evidence_fail) ... ok
+test_question_and_scope_must_match_the_captured_task (test_trace_binding.CaptureBinding.test_question_and_scope_must_match_the_captured_task) ... ok
+test_receipt_cannot_bind_a_different_proposition (test_trace_binding.CaptureBinding.test_receipt_cannot_bind_a_different_proposition) ... ok
+test_receipt_is_needed_even_for_a_claim_marked_supported (test_trace_binding.CaptureBinding.test_receipt_is_needed_even_for_a_claim_marked_supported) ... ok
+test_reused_journal_request_identity_is_ambiguous (test_trace_binding.CaptureBinding.test_reused_journal_request_identity_is_ambiguous) ... ok
+test_saved_pair_joins_display_to_sources_without_semantic_score (test_trace_binding.CaptureBinding.test_saved_pair_joins_display_to_sources_without_semantic_score) ... ok
+test_source_quote_and_corpus_binding_cannot_be_substituted (test_trace_binding.CaptureBinding.test_source_quote_and_corpus_binding_cannot_be_substituted) ... ok
+test_raw_and_normalized_snapshot_changes_fail (test_trace_binding.FullSnapshotBinding.test_raw_and_normalized_snapshot_changes_fail) ... ok
+test_raw_normalization_and_exact_quote_chain (test_trace_binding.FullSnapshotBinding.test_raw_normalization_and_exact_quote_chain) ... ok
+test_wrong_locator_version_and_quote_are_rejected (test_trace_binding.FullSnapshotBinding.test_wrong_locator_version_and_quote_are_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 0.034s
+
+OK

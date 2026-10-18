@@ -1,5 +1,7 @@
 # Project status
 
+**Practical scoring preparation (2026-10-19):** A new adapter joins retained ordinaryCLI acquisition/admission/receipts/display and verifies full captured HTML/normalization/quote bytes. Both saved Node development arms match structurally;display citations0 and prior normal API calls0 are preserved,not credited as answerF1/utility. No current-candidate execution,freshreal24 or semantic scoring. Next:an active experimentalhost and complete scoring. See[details](engine073-cli-trace-binding-development.md).
+
 **Evaluation focus (2026-10-19):** Judge frozen independent F1/P/R and safety,not known-case count or development perfection. Finish the current six repairs,then stop the fresh-synthetic60 repair loop and prioritize actual-document/ordinary-CLI paths,traces and complete scoring. Define concrete mandatory regressions before future authorship;do not automatically require every new safe holdoutFN to become perfect. Frozen first results remain unchanged. See [focus](engine073-evaluation-focus.md).
 
 [日本語](project-status.ja.md) | English

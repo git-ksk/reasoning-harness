@@ -1,0 +1,28 @@
+{
+  "unit_checks_passed": 21,
+  "integration_inspection": "PASS_STRUCTURAL_JOIN_ONLY",
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "/private/tmp/engine073-cli-trace-binding-development-v1/inspect_saved_pair.py",
+    "--repo",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness",
+    "--capture",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine07-cli-path-preparation-v3",
+    "--corpus",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine07-realworld-v3/corpus.json",
+    "--snapshots",
+    "/private/tmp/engine07-realworld-snapshots-v2",
+    "--expected-index-sha256",
+    "b876e06c7c36b31a8e98c657301c0a6f50df5178a7c87eafa07e1c9249a13e16",
+    "--output",
+    "/private/tmp/engine073-cli-trace-binding-final-inspection-v2"
+  ],
+  "capture_index_sha256": "b876e06c7c36b31a8e98c657301c0a6f50df5178a7c87eafa07e1c9249a13e16",
+  "Engine_provider_model_Oracle_calls": 0,
+  "new_synthetic_cases": 0,
+  "independent_real24_cases": 0,
+  "independent_component_review": "NOT_PERFORMED",
+  "actual_answer_f1": null,
+  "acceptance": "NOT_EVALUATED"
+}

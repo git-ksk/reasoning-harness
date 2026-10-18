@@ -1,0 +1,14 @@
+{
+  "README.md": "e7beb12c5821fdf3c0f628e162cf109bcd157f94055535198100acf308918ed8",
+  "inspect_saved_pair.py": "dd487c6a8ee0a2e53a7fead1642a123c5d3aecf9242d0896d41e1535b6516c23",
+  "inspection.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "inspection.stdout.txt": "ef78d9ce38e5ff80aeeeb132448708f325ea0840f69e8508e0668d2c3733326a",
+  "preservation-check.json": "4714931b9279b8e1c54d96f4b99c94ba1fa3970de2730243a09d891b5713b849",
+  "saved-inspection/artifact-sha256.json": "aea5dcb95095c8db7623574ead472bfa219394a671dc4c43778db6732f6026f7",
+  "saved-inspection/inspection.json": "34777305790bcacb7d17f181b61c386ec0ee246764362698147b47bbba9f3957",
+  "test_trace_binding.py": "787991a3ee4f327218210573317f0770ac57147c7978f5a19f70e51ba6796dbc",
+  "tests.stderr.txt": "1ad5c17c829ca8bb7c3416f8b69086c04dc2ef567dac1ebd44583e4579342bd5",
+  "tests.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "trace_binding.py": "d4c44e434de36565e31be52a78703e3a2d73f20e875aaeeb3d5430df878f9a72",
+  "validation.json": "b6053e70e3d1bc7f6e900b604943bf60e08e608bf182173e71ddc097b060a5c2"
+}
