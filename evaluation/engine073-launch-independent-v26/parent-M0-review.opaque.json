@@ -1,0 +1,39 @@
+{
+  "reviewed_utc": "2026-10-18T02:37:40.140654+00:00",
+  "stage": "PARENT_PRE_AUTHOR_M0_REVIEW",
+  "outcome": "PASS",
+  "evaluator_freeze_sha256": "ad980eba8479eec16e78f5ef2c2d108ac949ed1cf4b6fe2277df4dc0e3742510",
+  "candidate_commit": "9082365ffecfafaa9ba0ac65ce56368ac77d4228",
+  "source_sha256": "4f82b2e41614394f1bd528f01c817f0e962f1c546d7212f75f15c2f9c5787999",
+  "probe_sha256": "6818b375e06549e01f5c203cfd8e881f180d285e3ca86c20d1f8895485377bd7",
+  "old_independent_files": 725,
+  "preparation_files": 5,
+  "pure_fixture_tests": 59,
+  "pure_fixture_returncode": 0,
+  "review_record_repair": "attempt01 records formatting failure after PASS; existing pure logs retained, no fixture rerun",
+  "candidate_Engine_invocations": 0,
+  "case_authorship": 0,
+  "real_cohort_scorer_processes": 0,
+  "reviewed": [
+    "strict output enums and exact identity binding",
+    "duplicate/missing/refused/malformed rows fail closed",
+    "nonzero/bool/missing process envelope and stderr fail closed",
+    "one helper call with exact pinned config",
+    "per-axis F1/precision/recall and safety FP zero",
+    "source controls exclude pre-asserted future provenance",
+    "M0 precedes authoring, M1 precedes observation, raw readonly before scorer",
+    "exclusive one-run markers forbid retries/rescores",
+    "old archives and preparation exact"
+  ],
+  "root_full_validation": {
+    "code": "9082365ffecfafaa9ba0ac65ce56368ac77d4228",
+    "passed": 1594,
+    "failed": 0,
+    "existing_ignored": 8,
+    "strict_clippy_fmt": "PASS",
+    "known_controls": 1340,
+    "original14": "PASS",
+    "history597": "whole byte exact"
+  },
+  "limits": "Cooperative filesystem/agent provenance; synthetic source gate only, no real-answer or CLI acceptance."
+}

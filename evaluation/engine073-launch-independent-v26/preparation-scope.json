@@ -1,0 +1,18 @@
+{
+  "identity": "engine073-launch-independent-v26-pre-author",
+  "utc": "2026-10-18T02:35:04.713086+00:00",
+  "authority": "Parent authorizes evaluator preparation only. Explicitly prohibits new case/label/input authorship or candidate/cohort execution until M0 review and next notice.",
+  "Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "authored_cases": 0,
+  "provider_model_network_Oracle_calls": 0,
+  "runtime_compile_calls": 0,
+  "source_implementation_read": false,
+  "old_case_author_input_draft_bodies_read": false,
+  "parent36_bodies_read": false,
+  "receipt_metadata_read_for_hash_inventory": true,
+  "runtime_binary_cargo_metadata_identity_hash_only": true,
+  "no_archived_worktree_restored": true,
+  "pending_next_stage": "Parent M0 review then explicit go, not inferred.",
+  "Groq": "STOPPED"
+}

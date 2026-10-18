@@ -1,0 +1,7 @@
+# Current9082365 source / common CLI host — static preparation v5
+
+Candidate core9082365ffecfafaa9ba0ac65ce56368ac77d4228/source SHA2564f82b2e41614394f1bd528f01c817f0e962f1c546d7212f75f15c2f9c5787999; common published CLI0.5.5 hostec6e55ff95b8364f9a5d09b8bbfe0ecc0c9d19d7. Exact git bytes across42 candidate core Rust source files and62 host Rust source files are hashed. The scan is pinned to Git objects, independent of working-tree docs.
+
+No literal symbol references to derive_effective_evidence_local_qualification_v17 or materialize_evidence_relevance_v30 occur in ordinary CLI files outside evaluation binaries, or in core outside the relevance module and exports. These are static symbol references, not a complete call graph, runtime all-path proof, inactivity of all Engine features, or ordinary answer acceptance. Old01dc fixed same-host Node API counters0/direct active controls remain historical evidence; no old runtime run is repeated or attributed to908.
+
+Before real-world M0, an explicitly selected ordinary path with the evaluated APIs active, same-host baseline/candidate builds, acquisition/admission/evidence/claim/citation/display trace, complete semantic scorer and callback/dependency/budget gates are still required. Source synthetic F1 does not establish real answer utility. This scan executes no Engine, scorer, provider, model or network; production source and all old preparation artifacts remain unchanged. Real24=0/24, Groq stopped, release/CLI adoption NO_GO.

@@ -1,0 +1,9 @@
+{
+  "state": "review_record_write_failed_after_all_hash_checks_and_59_fixture_tests",
+  "error": "AttributeError: str object has no attribute read_bytes at probe_sha256 record formatting",
+  "source_or_evaluator_or_inputs_changed": false,
+  "candidate_Engine_runs": 0,
+  "real_cohort_scorer_runs": 0,
+  "fixture_stdout": "pure-fixtures.stdout.txt",
+  "fixture_stderr": "pure-fixtures.stderr.txt"
+}

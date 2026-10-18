@@ -1,0 +1,59 @@
+--- test_evaluator.py.before-trace-review
++++ test_evaluator.py
+@@ -2,7 +2,9 @@
+ import copy,json,unittest
+ from unittest import mock
+ import score,execute_first
+-from evaluator_contract import ROOT,SOURCE,VERSION,strict_json
++from evaluator_contract import ROOT,SOURCE,VERSION,strict_json,checked_artifacts,sha
++from tempfile import TemporaryDirectory
++from pathlib import Path
+ 
+ def base():return {'known_regressions_total':1340,'known_regressions_passed':1340,'original_audit_total':14,'original_audit_passed':14,'historical_byte_equivalent':True,'known_unfixed_critical_defects':[]}
+ def proof():return {'checks':{'unit_fixture_only':True},'labels_frozen_before_observation':True,'candidate_frozen_before_observation':True,'first_observation_immutable':True}
+@@ -97,7 +99,7 @@
+   with self.assertRaises(ValueError):score.validate_gold(c)
+  def test_helper_called_once_with_explicit_config(self):
+   c,r=fixtures();proxy=mock.Mock();proxy.score.side_effect=self.helper.score
+-  score.assess(c,'\n'.join(json.dumps(x) for x in r),{'state':'finished','returncode':0},0,base(),proof(),self.config,proxy)
++  score.assess(c,'\n'.join(json.dumps(x) for x in r),{'state':'finished','returncode':0,'execution_error':None},0,base(),proof(),self.config,proxy)
+   self.assertEqual(proxy.score.call_count,1);self.assertIs(proxy.score.call_args.kwargs['config'],self.config)
+  def test_default_helper_policy_not_used(self):
+   with mock.patch.object(self.helper,'policy',side_effect=AssertionError('must pass snapshot config')):self.assertTrue(self.run_fixture()['summary']['gate']['gate_pass'])
+@@ -117,6 +119,36 @@
+   self.assertFalse(execute_first.execution_passed({'decision':'NO_GO'},0,0,0))
+  def test_execution_nonzero_or_stderr_cannot_report_success(self):
+   for recorder,scorer,stderr in [(1,0,0),(0,1,0),(0,0,1)]:self.assertFalse(execute_first.execution_passed({'decision':'GO'},recorder,scorer,stderr))
++ def test_bool_returncode_is_incomplete_not_success(self):
++  x=self.run_fixture(30,invocation={'state':'finished','returncode':False,'execution_error':None})['summary']
++  self.assertEqual((x['decision'],x['passed'],x['incomplete']),('NO_GO',0,60))
++ def test_missing_execution_error_field_is_incomplete(self):
++  x=self.run_fixture(30,invocation={'state':'finished','returncode':0})['summary']
++  self.assertEqual((x['decision'],x['passed'],x['incomplete']),('NO_GO',0,60))
++ def test_refused_observation_not_safe_negative(self):
++  c,r=fixtures(30);r[-1]={'id':c[-1]['id'],'error':'pure fixture refused'}
++  x=self.run_fixture(raw='\n'.join(json.dumps(v) for v in r))['summary']
++  self.assertEqual((x['decision'],x['incomplete'],x['axes']['v30_relevant']['tn']),('NO_GO',1,29))
++ def test_runtime_after_guard_artifact_disagreement(self):
++  b=bundle();b['after']['pre_invocation_identity']['artifacts']['probe_executable']['sha256']='changed';self.assertFalse(score.provenance(b)['first_observation_immutable'])
++ def test_runtime_wrong_score_hash(self):
++  b=bundle();b['score_start']['scorer_sha256']='changed';self.assertFalse(score.provenance(b)['first_observation_immutable'])
++ def test_runtime_wrong_input_command(self):
++  b=bundle();b['before']['command']=['/private/tmp/foreign-probe','/private/tmp/foreign-inputs'];self.assertFalse(score.provenance(b)['first_observation_immutable'])
++ def test_runtime_changed_complete_freeze(self):
++  b=bundle();b['M1_files_match']=False;self.assertFalse(score.provenance(b)['first_observation_immutable'])
++ def test_runtime_score_precedes_first_finish(self):
++  b=bundle();b['score_start']['utc']='2000-01-01T00:00:04+00:00';self.assertFalse(score.provenance(b)['first_observation_immutable'])
++ def test_checked_artifact_hash_and_size(self):
++  with TemporaryDirectory(prefix='engine073-v26-pure-artifact-') as d:
++   f=Path(d)/'constructed-bytes';f.write_bytes(b'pure fixture, no runtime')
++   a={'unit':{'path':str(f),'sha256':sha(f),'bytes':f.stat().st_size}}
++   self.assertTrue(checked_artifacts(a));a['unit']['bytes']+=1;self.assertFalse(checked_artifacts(a));a['unit']['bytes']-=1;a['unit']['sha256']='changed';self.assertFalse(checked_artifacts(a))
++ def test_missing_parent_control_rejected(self):
++  b=base();b.pop('known_unfixed_critical_defects')
++  with self.assertRaises(ValueError):self.run_fixture(base=b)
++ def test_execution_bool_returncode_rejected(self):
++  self.assertFalse(execute_first.execution_passed({'decision':'GO'},False,0,0));self.assertFalse(execute_first.execution_passed({'decision':'GO'},0,False,0))
+  def test_runtime_positive_fixture(self):self.assertTrue(score.provenance(bundle())['first_observation_immutable'])
+  def test_runtime_changed_raw(self):
+   b=bundle();b['raw_sha256']='changed';self.assertFalse(score.provenance(b)['first_observation_immutable'])

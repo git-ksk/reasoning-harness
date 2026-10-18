@@ -1,0 +1,97 @@
+{
+  "total": 16,
+  "passed": 8,
+  "mismatches": [
+    {
+      "id": "extra27-02",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "actual": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "extra27-03",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "actual": {
+        "v17_requested_relation": true,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "extra27-06",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "actual": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "extra27-07",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "actual": {
+        "v17_requested_relation": true,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "extra27-10",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "actual": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "extra27-11",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "actual": {
+        "v17_requested_relation": true,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "extra27-14",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "actual": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "extra27-15",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "actual": {
+        "v17_requested_relation": true,
+        "v30_relevant": false
+      }
+    }
+  ],
+  "Engine_development_processes": 1,
+  "canonical_scorer_provider_model_Oracle_calls": 0,
+  "scope": "new parent controls, not independent acceptance"
+}

@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-18T02:31:09.213052+00:00",
+  "kind": "Pure fabricated invalid metadata RED; no candidate/cohort",
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "-m",
+    "unittest",
+    "test_evaluator.EvaluatorTests.test_bool_returncode_is_incomplete_not_success",
+    "test_evaluator.EvaluatorTests.test_missing_execution_error_field_is_incomplete",
+    "test_evaluator.EvaluatorTests.test_execution_bool_returncode_rejected"
+  ],
+  "returncode": 1,
+  "Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "authored_cases": 0
+}

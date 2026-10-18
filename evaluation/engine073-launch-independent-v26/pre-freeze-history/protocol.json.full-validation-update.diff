@@ -1,0 +1,11 @@
+--- protocol.json.before-full-validation-update
++++ protocol.json
+@@ -98,7 +98,7 @@
+     "historical_whole_output": 597,
+     "known_critical": "[] explicitly confirmed by parent for tested source scope only.",
+     "verification": "Receipt metadata/inventory read; copied36 reference bodies hash-only. No independent regression execution.",
+-    "full_validation_prerequisite": "Parent reports8 commands exit0; final workspace/count/archive record pending at preparation. Separate explicit authoring go still required."
++    "full_validation_prerequisite": "Completed parent-reported before M0:8 commands exit0; workspace1594PASS/0FAIL/8existingignore; evidence commit1d7019a55d2efd5a1ac3e6b6a49eced71755468a. Not independently rerun. Separate explicit authoring go after M0 review still required."
+   },
+   "runtime_identity_boundary": "Parent built source908 with real Cargo and supplied the normal executable/cargo metadata/identity. Evaluator hashes4 runtime files, pins source/probe digest and receipt provenance; does not independently rebuild/execute binary, inspect implementation or decode compiler metadata/runtime identity. Copied source25 runtime is never used.",
+   "preservation": {

@@ -38,3 +38,7 @@ sourceマージ/Engine0.7.3公開/CLI採用NO-GO。実24問0/24、実資料M0/M1
 候補`9082365`の同じ観測済みv25開発60件は、両API別にTP30/FP0/TN30/FN0・Precision/Recall/F1=1.000、両軸60/60となった。前候補a3d772dのF1 .888889/.867925から残る7件を解消。以前の既知1264＋今回60＋親の追加16＝1340成功、元監査14は別途成功、歴史597全出力byte一致、全体1594成功/失敗0/既存ignore8・strict Clippy/fmt確認。属性の外側の型、引用された発話、同じroleの参照・owner、独立した訂正節、明確な非実在、opaqueな正式名称を共通処理した。元の独立v25初回FAIL/NO_GO・F1 .285714と全初回/ラベル/scorer/prepは不変。これは開発比較であり、新規独立受入ではない。次は候補と評価器/方針を著作前に固定し、評価器を親レビューしてから新規v26を初回1回で観測する。実24問0/24・実回答F1未測定、Groq停止・provider/model/Oracle追加0、sourceマージ/公開/CLI採用NO-GO。[判定](engine073-v25-decision.ja.md)、[固定候補の検証](../evaluation/engine073-launch-development-v25-reference-frames/README.md)。
 
 [不採用案・追加対照](../evaluation/engine073-launch-development-v25-reference-prototypes/README.md)も保存。高F1でも明確な非実在を誤採用したstage04は不採用。過去の安全な例を保留した中間案も受入扱いにしない。印刷タイトルに「否定・欠落」と書かれた16対照を元ラベルのまま8/16→16/16へ修正し、引用された作者の返信は実際の訂正節として解析する。新たな独立v26は1340件の回帰・元14件・全体検証の成功後、M0を親レビューしてから著作/初回観測する。旧FAILを後付けで合格にしない。
+
+## 後続の独立v26
+
+候補9082365の新規v26初回はF1 .846154・FP0でNO_GO。v25開発1.000と区別し、[別の初回判定](engine073-v26-decision.ja.md)へ保存した。元v25初回/本記録は変更しない。

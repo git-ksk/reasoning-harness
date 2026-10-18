@@ -1,0 +1,14 @@
+{
+  "stage": "PRE_AUTHOR_READ_ONLY_VERIFY",
+  "old_source_files": 725,
+  "separate_preparation_files": 5,
+  "parent_reference_files": 36,
+  "runtime_files": 4,
+  "checked_artifacts": 47,
+  "M0_sha256": null,
+  "candidate_source": "9082365ffecfafaa9ba0ac65ce56368ac77d4228",
+  "Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "authored_cases": 0,
+  "all_hash_inventory_checks": "PASS"
+}

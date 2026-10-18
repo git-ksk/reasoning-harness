@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-18T02:35:47.254943+00:00",
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-source26-freeze/reasoning-harness/evaluation/engine073-launch-independent-v26/verify_preparation.py"
+  ],
+  "returncode": 0,
+  "stdout_sha256": "edddba02a983ffb7105df2c1f81a5065aef5e0ba19df5f3b597f5f6a6e852178",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "authored_cases": 0
+}

@@ -1,0 +1,130 @@
+{
+  "identity": "engine073-launch-independent-v26",
+  "revision": "pre-author-evaluator-contract-v1",
+  "state": "PRE_AUTHOR_ONLY_WAIT_EXPLICIT_PARENT_REVIEW_AND_GO",
+  "candidate": {
+    "source_sha": "9082365ffecfafaa9ba0ac65ce56368ac77d4228",
+    "source_content_sha256": "4f82b2e41614394f1bd528f01c817f0e962f1c546d7212f75f15c2f9c5787999",
+    "package_version": "0.7.2",
+    "runtime_executable": "/private/tmp/engine073-independent-v26-runtime/probe",
+    "runtime_sha256": "6818b375e06549e01f5c203cfd8e881f180d285e3ca86c20d1f8895485377bd7"
+  },
+  "scope": "Future finite #520 synthetic source qualification using separate canonical TARGET was launched anchor, exact/exact proposal and declared local retraction/denial/non-event/property/foreign-owner boundaries. No general reference graph, alias hierarchy, new affirmative predicate, chronology, or universal language guarantee.",
+  "current_stage": {
+    "new_authorship_authorized": false,
+    "authored_cases": 0,
+    "labels_created": 0,
+    "inputs_created": 0,
+    "actual_Engine_invocations": 0,
+    "real_cohort_scorer_processes": 0,
+    "runtime_compile_or_execution": "None. Supplied runtime and its4 files are hash checked only.",
+    "next": "Close M0 then STOP. Parent must review actual M0 and explicitly authorize authorship after prerequisite verification. No inferred permission."
+  },
+  "future_stages": [
+    "Exclusive authoring-start.json only after explicit next parent notice; bind M0 SHA and authorization reference.",
+    "Genuinely new30 semantic pairs/60 cases, positive30/negative30, independent rationale/semantic basis. Do not read/rename/transform any v1-v25 author/case/input/draft bodies.",
+    "Inputs carry only id/policy/candidate/proposal/raw. Labels/rationale stay outside Engine; each case has a separate unadorned canonical TARGET was launched. anchor and no aliases. Raw exact_target/requested_relation/none baseline; raw risk alone cannot make semantic negative gold.",
+    "Pre-observation scope and static schema review. Preserve original bytes/static/error/exactdiff/reason and polarity purpose for any correction before complete M1 freeze.",
+    "Frozen freeze_corpus.py checks M0/input/label/scope/author/hash/time binding and creates readonly complete M1 manifest.",
+    "Frozen execute_first.py runs unchanged first-run.py one time; one supplied probe process handles60 inputs under timeout60s. Preserve exclusive raw/started/finished/stderr and errors.",
+    "New score.py one real process: exclusive start marker, strict parse/typed observation and invocation completeness, actual runtime provenance checks, one pinned helper.score call with explicit frozen policy config. No legacy scorer invocation.",
+    "Preserve literal raw/effective tuples with first results. Copy-only post-observation diagnostics cannot alter observations, gold, criteria or metrics.",
+    "Save first outcome, review/receipt/new result README and old+new recursive self-excluding final manifest; fsync/readonly, recheck candidate/runtime/parent references/old source725+prep5, report final anchor and freeze release, then stop."
+  ],
+  "future_authoring_schema": {
+    "authoring-start.json": [
+      "utc",
+      "evaluator_freeze_sha256",
+      "authorization_reference"
+    ],
+    "cases.json_header": [
+      "identity",
+      "authored_utc",
+      "evaluator_freeze_sha256",
+      "authoring_start_sha256",
+      "cases"
+    ],
+    "case": [
+      "id",
+      "pair_id",
+      "polarity",
+      "axis",
+      "semantic_basis",
+      "rationale",
+      "expected",
+      "input"
+    ],
+    "expected": [
+      "v17_requested_relation strict bool",
+      "v30_relevant strict bool"
+    ],
+    "scope-review.json": [
+      "reviewed_utc",
+      "cases_sha256",
+      "inputs_sha256",
+      "reviewed_cases=60",
+      "Engine_invocations=0",
+      "scorer_invocations=0",
+      "labels_changed_after_observation=false"
+    ]
+  },
+  "policy_sha256": "3a6d37e3fbf134f4a49677fdcd7de8b1b625739988a40e1c1e78b94978099767",
+  "helper_sha256": "00f6971900864ee9e89e4db6029d8196fabd0a4b6ab28e343f19506417735c6f",
+  "helper_config": "Explicit source_gate_policy.json snapshot. No mutable default lookup or threshold override.",
+  "gate": "Both API axes F1>=.90/P>=.95/R>=.85 and FP0; complete first60, known regressions100%, original14/history compatibility/no known critical, actual runtime provenance. See unchanged policy and frozen metrics-spec.",
+  "joint_exactness": "Diagnostic only under adopted future policy. Original v1-v25 first labels/scorers/outcomes stay immutable and are never retrospectively rescored.",
+  "budget": {
+    "max_model_attempts": 2,
+    "max_tokens": 192,
+    "max_elapsed_ms": 90000
+  },
+  "first_only": {
+    "Engine_processes": 1,
+    "inputs_in_process": 60,
+    "real_cohort_scorer_processes": 1,
+    "helper_calls_in_scorer": 1,
+    "timeout_seconds": 60,
+    "retry_rescore_relabel": 0,
+    "restart_after_marker": "Refuse and preserve partial/incomplete; never turn missing/refused/failed metadata into TN."
+  },
+  "strict_observation": "Duplicate/nonfinite JSON, missing/foreign/duplicate ID, schema/enum/ENGINE_VERSION/binding/contract errors, refusal/error row, invalid invocation type/required field, nonzero exit, stderr, incomplete or provenance failure => NO_GO. Incomplete does not count as joint success or any TP/FP/TN/FN.",
+  "runtime_provenance": "M0 before authoring, M1 before first. All M0 files remain an unchanged M1 subset. Actual checked artifact hashes/head/command/markers/time/raw readonly and scorer marker verified; no future provenance flags trusted from parent regression snapshot.",
+  "source_only_controls": {
+    "snapshot": "parent-controls-snapshot.json",
+    "receipt": "parent-controls.opaque.json",
+    "receipt_sha256": "d8426d4fc9e83c3db65e4128c63ac8b93f1a1ede38f3f08c72c8ca4f1e7ebb93",
+    "known": 1340,
+    "original_audit": 14,
+    "historical_whole_output": 597,
+    "known_critical": "[] explicitly confirmed by parent for tested source scope only.",
+    "verification": "Receipt metadata/inventory read; copied36 reference bodies hash-only. No independent regression execution.",
+    "full_validation_prerequisite": "Parent reports8 commands exit0; final workspace/count/archive record pending at preparation. Separate explicit authoring go still required."
+  },
+  "runtime_identity_boundary": "Parent built source908 with real Cargo and supplied the normal executable/cargo metadata/identity. Evaluator hashes4 runtime files, pins source/probe digest and receipt provenance; does not independently rebuild/execute binary, inspect implementation or decode compiler metadata/runtime identity. Copied source25 runtime is never used.",
+  "preservation": {
+    "old_source_files": 725,
+    "separate_preparation_files": 5,
+    "old_anchor": "f3ef8db2393aa6c458981e92099d23792856dd1e1431c5876bb51760aefab1aa",
+    "old_reference_files_including_anchor": 730,
+    "parent_source_reference_files": 36,
+    "source_bodies_read": false
+  },
+  "risk_diagnostics": "Literal raw/effective tuples and dispositions only. Missing output remains null. Returned reason strings are not evidence of a real model call. No inference of internal risk-component retention/loss.",
+  "unperformed_or_separate": [
+    "No new independent v26 case or actual observation.",
+    "Full project completion is parent-reported and separate; not independent source acceptance.",
+    "Real24/grounded answer metrics/normal CLI/live provider/human/release/adoption gates remain unproven.",
+    "Groq remains STOPPED; no live callbacks or quota recovery performed."
+  ],
+  "limitations": [
+    "Cooperative operator artifact freeze and hash checks; runtime file modes are recorded but not altered outside the allowed prefix. No hostile-writer atomic check-exec guarantee.",
+    "Hash/UTC/receipt ordering is not semantic proof of fresh authorship or a second human adjudication.",
+    "Known control/source-to-binary build provenance is pinned parent evidence, not independently replayed/rebuilt."
+  ],
+  "forbidden": {
+    "provider_model_network_Oracle": 0,
+    "Cargo_shared_target_Git_mutations": 0,
+    "additional_agents": 0,
+    "real24_authorship": 0
+  }
+}

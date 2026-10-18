@@ -1,0 +1,7 @@
+# Parent v26 first-artifact verification
+
+Independent first outcome remainsFAIL/NO_GO,F1.846154/FP0 perAPI. Parent reproduces59 pure evaluator fixtures before authorship,checks M0/code/runtime/old730/parent36 identities,and verifies99 original v26 files/829 total corpus references byte-exact after closure. First raw/expected/observed checks and stored arithmetic agree;13 provenance checks pass. No parent canonical Engine/scorer/helper call or semantic rescore occurs. A separate consumed8-case cfg(test) trace follows the immutable first. Source merge/release/CLI adoption remainNO_GO.
+
+Parent review formatting failed once after successful hashes/fixtures due to a str/Path record conversion; attempt01 code/error and successful logs remain saved. Recording was repaired without a fixture rerun or any real observation. The automatic approval reviewer/independent agent later hit a usage limit before author-save/M1/Engine/scorer. Its existing author-start was retained and resumed after the reset time. Latest exact-head1d7019a CI19/19SUCCESS is captured separately from source/fresh acceptance.
+
+frozen-parent-reference-snapshot preserves the original36 source-only copies/receipt before later root full-validation metadata. It intentionally differs from the final root summary; original bytes and provenance paths are retained. All original v1-v25 firsts and prep5 remain exact. See final-copy-verification.json and the v26 immutable final manifest8214db... for actual first status.

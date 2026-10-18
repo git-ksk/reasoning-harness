@@ -1,0 +1,13 @@
+--- author_cases.py.draft0
++++ author_cases.py
+@@ -128,8 +128,8 @@
+  "Clip is explicitly part of the full canonical target name; the only withdrawn event completely names a foreign product and no actual gap is stated.",
+  "The full canonical target name identifies the withdrawn target event; the name note cannot neutralize a genuine target retraction."),
+ ("Zenith Silt Controller","neutral_publication_context","non_launch_property",
+- [("excerpt","Packing note: the Zenith Silt Controller booklet and cable are stored together. The Object is the blue thread in the booklet stitching. We deny the assertion about this Object; the correction concerns the stitching thread's color.")],
+- "nonexistence",[("excerpt","Packing note: the Zenith Silt Controller booklet and cable are stored together. The Object is the blue thread in the booklet stitching. We deny the assertion about this Object. Zenith Silt Controller itself does not exist.")],
++ [("excerpt","Packing note: the Zenith Silt Controller booklet and cable are stored together. The Object is the blue stitching thread in the Zenith Silt Controller booklet. We deny the assertion about this Object; the correction concerns the stitching thread's color.")],
++ "nonexistence",[("excerpt","Packing note: the Zenith Silt Controller booklet and cable are stored together. The Object is the blue stitching thread in the Zenith Silt Controller booklet. We deny the assertion about this Object. Zenith Silt Controller itself does not exist.")],
+  "Neutral storage context introduces no adverse event; the denial is limited to a fully specified physical booklet property.",
+  "The direct target-nonexistence assertion is separate from the safe thread-color correction."),
+ ("Amity Gorge Scanner","property_context_then_unestablished_event","non_launch_property",

@@ -1,0 +1,690 @@
+[
+  {
+    "id": "extra27-01",
+    "policy": {
+      "policy_id": "extra27-01-policy",
+      "target_id": "extra27-01-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-01-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-01-evidence",
+      "source_id": "extra27-01-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title 'Launch notice' on the Silver Lens booklet. We deny this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "extra27-02",
+    "policy": {
+      "policy_id": "extra27-02-policy",
+      "target_id": "extra27-02-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-02-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-02-evidence",
+      "source_id": "extra27-02-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title 'We deny that Silver Lens was launched' on the Silver Lens booklet. We deny this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "extra27-03",
+    "policy": {
+      "policy_id": "extra27-03-policy",
+      "target_id": "extra27-03-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-03-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-03-evidence",
+      "source_id": "extra27-03-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title 'The product label is missing' on the Silver Lens booklet. We deny this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "extra27-04",
+    "policy": {
+      "policy_id": "extra27-04-policy",
+      "target_id": "extra27-04-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-04-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-04-evidence",
+      "source_id": "extra27-04-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title 'Launch notice' on the Silver Lens booklet. We deny this Object. We deny that Silver Lens was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "extra27-05",
+    "policy": {
+      "policy_id": "extra27-05-policy",
+      "target_id": "extra27-05-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-05-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-05-evidence",
+      "source_id": "extra27-05-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title \"Launch notice\" on the Silver Lens booklet. We deny this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "extra27-06",
+    "policy": {
+      "policy_id": "extra27-06-policy",
+      "target_id": "extra27-06-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-06-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-06-evidence",
+      "source_id": "extra27-06-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title \"We deny that Silver Lens was launched\" on the Silver Lens booklet. We deny this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "extra27-07",
+    "policy": {
+      "policy_id": "extra27-07-policy",
+      "target_id": "extra27-07-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-07-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-07-evidence",
+      "source_id": "extra27-07-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title \"The product label is missing\" on the Silver Lens booklet. We deny this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "extra27-08",
+    "policy": {
+      "policy_id": "extra27-08-policy",
+      "target_id": "extra27-08-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-08-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-08-evidence",
+      "source_id": "extra27-08-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title \"Launch notice\" on the Silver Lens booklet. We deny this Object. We deny that Silver Lens was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "extra27-09",
+    "policy": {
+      "policy_id": "extra27-09-policy",
+      "target_id": "extra27-09-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-09-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-09-evidence",
+      "source_id": "extra27-09-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title \u2018Launch notice\u2019 on the Silver Lens booklet. We deny this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "extra27-10",
+    "policy": {
+      "policy_id": "extra27-10-policy",
+      "target_id": "extra27-10-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-10-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-10-evidence",
+      "source_id": "extra27-10-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title \u2018We deny that Silver Lens was launched\u2019 on the Silver Lens booklet. We deny this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "extra27-11",
+    "policy": {
+      "policy_id": "extra27-11-policy",
+      "target_id": "extra27-11-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-11-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-11-evidence",
+      "source_id": "extra27-11-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title \u2018The product label is missing\u2019 on the Silver Lens booklet. We deny this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "extra27-12",
+    "policy": {
+      "policy_id": "extra27-12-policy",
+      "target_id": "extra27-12-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-12-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-12-evidence",
+      "source_id": "extra27-12-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title \u2018Launch notice\u2019 on the Silver Lens booklet. We deny this Object. We deny that Silver Lens was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "extra27-13",
+    "policy": {
+      "policy_id": "extra27-13-policy",
+      "target_id": "extra27-13-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-13-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-13-evidence",
+      "source_id": "extra27-13-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title \u201cLaunch notice\u201d on the Silver Lens booklet. We deny this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "extra27-14",
+    "policy": {
+      "policy_id": "extra27-14-policy",
+      "target_id": "extra27-14-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-14-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-14-evidence",
+      "source_id": "extra27-14-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title \u201cWe deny that Silver Lens was launched\u201d on the Silver Lens booklet. We deny this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "extra27-15",
+    "policy": {
+      "policy_id": "extra27-15-policy",
+      "target_id": "extra27-15-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-15-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-15-evidence",
+      "source_id": "extra27-15-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title \u201cThe product label is missing\u201d on the Silver Lens booklet. We deny this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "extra27-16",
+    "policy": {
+      "policy_id": "extra27-16-policy",
+      "target_id": "extra27-16-target",
+      "target_question": "Was Silver Lens launched?",
+      "entity": {
+        "canonical_id": "extra27-16-target",
+        "canonical_name": "Silver Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "extra27-16-evidence",
+      "source_id": "extra27-16-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title \u201cLaunch notice\u201d on the Silver Lens booklet. We deny this Object. We deny that Silver Lens was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  }
+]

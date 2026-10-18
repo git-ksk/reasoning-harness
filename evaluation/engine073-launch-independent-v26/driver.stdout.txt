@@ -1,0 +1,127 @@
+{
+  "execution_outcome": "FAIL",
+  "first_recorder_returncode": 0,
+  "scorer_returncode": 0,
+  "summary": {
+    "identity": "engine073-launch-independent-v26",
+    "candidate_source_sha": "9082365ffecfafaa9ba0ac65ce56368ac77d4228",
+    "engine_version": "0.7.2",
+    "outcome": "FAIL",
+    "decision": "NO_GO",
+    "gate": {
+      "gate_pass": false,
+      "blockers": [
+        "v17_requested_relation:recall_below_floor_or_undefined",
+        "v17_requested_relation:f1_below_floor",
+        "v30_relevant:recall_below_floor_or_undefined",
+        "v30_relevant:f1_below_floor"
+      ],
+      "observations": 60,
+      "positives": 30,
+      "negatives": 30,
+      "incomplete": 0,
+      "axes": {
+        "v17_requested_relation": {
+          "tp": 22,
+          "fp": 0,
+          "tn": 30,
+          "fn": 8,
+          "precision": 1.0,
+          "recall": 0.7333333333333333,
+          "f1": 0.8461538461538461,
+          "f0_5_diagnostic": 0.9322033898305084
+        },
+        "v30_relevant": {
+          "tp": 22,
+          "fp": 0,
+          "tn": 30,
+          "fn": 8,
+          "precision": 1.0,
+          "recall": 0.7333333333333333,
+          "f1": 0.8461538461538461,
+          "f0_5_diagnostic": 0.9322033898305084
+        }
+      },
+      "scope": "#520 future synthetic source API only, NOT #531 real-answer/CLI approval"
+    },
+    "axes": {
+      "v17_requested_relation": {
+        "tp": 22,
+        "fp": 0,
+        "tn": 30,
+        "fn": 8,
+        "precision": 1.0,
+        "recall": 0.7333333333333333,
+        "f1": 0.8461538461538461,
+        "f0_5_diagnostic": 0.9322033898305084
+      },
+      "v30_relevant": {
+        "tp": 22,
+        "fp": 0,
+        "tn": 30,
+        "fn": 8,
+        "precision": 1.0,
+        "recall": 0.7333333333333333,
+        "f1": 0.8461538461538461,
+        "f0_5_diagnostic": 0.9322033898305084
+      }
+    },
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 52,
+    "failed": 8,
+    "incomplete": 0,
+    "joint_exactness_is_diagnostic": true,
+    "strict_joint_outcome": "FAIL",
+    "positive_passed": 22,
+    "negative_passed": 30,
+    "operational_errors": [],
+    "controls": {
+      "known_regressions_total": 1340,
+      "known_regressions_passed": 1340,
+      "original_audit_total": 14,
+      "original_audit_passed": 14,
+      "historical_byte_equivalent": true,
+      "known_unfixed_critical_defects": [],
+      "operational_failures": 0,
+      "labels_frozen_before_observation": true,
+      "candidate_frozen_before_observation": true,
+      "first_observation_immutable": true
+    },
+    "parent_regressions": "parent-reported pinned source qualification only; future provenance separately verified",
+    "runtime_provenance": {
+      "checks": {
+        "candidate_identity": true,
+        "same_checked_artifacts": true,
+        "M0_evaluator_hashes": true,
+        "M1_all_frozen_hashes": true,
+        "gold_and_input_pinned": true,
+        "authorship_after_M0": true,
+        "author_start_bound": true,
+        "first_pre_invocation_manifest": true,
+        "first_pre_invocation_artifacts": true,
+        "first_command_and_markers": true,
+        "first_raw_hashes": true,
+        "first_order": true,
+        "first_score_marker": true
+      },
+      "labels_frozen_before_observation": true,
+      "candidate_frozen_before_observation": true,
+      "first_observation_immutable": true,
+      "boundary": "Cooperative operator freeze/hash/marker ordering, not proof against hostile filesystem writer or semantic proof of independent authorship."
+    },
+    "policy_sha256": "3a6d37e3fbf134f4a49677fdcd7de8b1b625739988a40e1c1e78b94978099767",
+    "helper_sha256": "00f6971900864ee9e89e4db6029d8196fabd0a4b6ab28e343f19506417735c6f",
+    "provider_calls": 0,
+    "retries": 0,
+    "rescores": 0,
+    "scope": "Future #520 synthetic source gate only; no historical rescore/real24/CLI/release approval",
+    "manifest_sha256": "7627332228e422c58b64890434f681066469d77ab3326a8037e9b8379508c366",
+    "evaluator_freeze_sha256": "ad980eba8479eec16e78f5ef2c2d108ac949ed1cf4b6fe2277df4dc0e3742510",
+    "raw": {
+      "stdout_sha256": "f597a76f9583043721a6b8952328cc24bfa32f4227ec23b704a9862e5aa65c76",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "07e1d334ba3d6f5087e0ac9970ceb16408269952d0322fcab50d54dd3907a423"
+    }
+  }
+}

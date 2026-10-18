@@ -1,0 +1,12 @@
+{
+  "utc": "2026-10-18T14:16:37.653344+00:00",
+  "stage": "PRE_GENERATION_AST_AND_SCOPE_ONLY",
+  "author_sha256": "48fcd2e4e6022e3c9e011365e5f812ccae55726d8d2bd2b35ff9175433f63952",
+  "AST": "PASS",
+  "cases_generated": 0,
+  "inputs_generated": 0,
+  "Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "finding": "Pair26 physical booklet-property description uses the booklet after a preceding packing-note owner declaration. Clarify complete canonical ownership in the property sentence so the positive does not require general noun resolution.",
+  "polarity_purpose_unchanged": true
+}

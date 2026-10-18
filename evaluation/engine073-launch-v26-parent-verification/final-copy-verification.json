@@ -1,0 +1,78 @@
+{
+  "verified_utc": "2026-10-18T14:25:09.134882+00:00",
+  "outcome": "FIRST_ARTIFACTS_VERIFIED",
+  "semantic_first_outcome": "FAIL/NO_GO",
+  "anchor": "8214db3607e32d707da797fb90bb4af77b1101db976b6f0d0a60f96d49cdb921",
+  "new_files": 99,
+  "old_preserved_references": 730,
+  "all_corpus_references": 829,
+  "M0_sha256": "ad980eba8479eec16e78f5ef2c2d108ac949ed1cf4b6fe2277df4dc0e3742510",
+  "M1_sha256": "7627332228e422c58b64890434f681066469d77ab3326a8037e9b8379508c366",
+  "parent_M0_review_sha256": "9ca7b97928078e682275035e3da3d6a0519f62196ef353dd43f131ae98e35e47",
+  "source_candidate": "9082365ffecfafaa9ba0ac65ce56368ac77d4228",
+  "source_sha256": "4f82b2e41614394f1bd528f01c817f0e962f1c546d7212f75f15c2f9c5787999",
+  "runtime_sha256": "6818b375e06549e01f5c203cfd8e881f180d285e3ca86c20d1f8895485377bd7",
+  "arithmetic": {
+    "status": "MEASURED",
+    "source_sha": "9082365ffecfafaa9ba0ac65ce56368ac77d4228",
+    "joint_first_passed": 52,
+    "joint_first_failed": 8,
+    "first_summary_sha256": "23f04080d8f1e4d7e365b356e124c4610799ac23ebc22544622faa923d11139e",
+    "first_results_sha256": "c3dd05fbc86868dae14bd47ab1684fb9e68320f6faf839c4383b97d52294017c",
+    "cases_sha256": "8996a75d6da44c4fef0efc114d8de818d40b11780f0ab17c1ca4dd7e56355227",
+    "axes": {
+      "v17_requested_relation": {
+        "confusion": {
+          "tp": 22,
+          "fp": 0,
+          "tn": 30,
+          "fn": 8
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 0.7333333333333333,
+        "f1_positive": 0.8461538461538461,
+        "specificity": 1.0,
+        "accuracy": 0.8666666666666667,
+        "balanced_accuracy": 0.8666666666666667,
+        "predicted_positive_rate": 0.36666666666666664,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.26666666666666666,
+        "mcc": 0.760885910252682
+      },
+      "v30_relevant": {
+        "confusion": {
+          "tp": 22,
+          "fp": 0,
+          "tn": 30,
+          "fn": 8
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 0.7333333333333333,
+        "f1_positive": 0.8461538461538461,
+        "specificity": 1.0,
+        "accuracy": 0.8666666666666667,
+        "balanced_accuracy": 0.8666666666666667,
+        "predicted_positive_rate": 0.36666666666666664,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.26666666666666666,
+        "mcc": 0.760885910252682
+      }
+    }
+  },
+  "provenance13_checks": "PASS",
+  "canonical_engine_processes": 1,
+  "canonical_scorer_processes": 1,
+  "canonical_helper_calls": 1,
+  "parent_additional_Engine_scorer_helper_calls": 0,
+  "parent_readonly_verification": true,
+  "copy_bytes_all_exact": true,
+  "retry_rescore_relabel": 0,
+  "separate_development": "Parent cfg(test) consumed eight-miss route trace is separate, not independent rerun or rescoring.",
+  "candidate_freeze_release": "Not released by this capture; root commit/push/agent notice follows."
+}
