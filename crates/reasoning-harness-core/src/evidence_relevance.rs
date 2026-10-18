@@ -3984,6 +3984,7 @@ struct LaunchTypedObjectV17 {
     label: String,
     scope: LaunchTypedScopeV17,
     foreign_event: bool,
+    foreign_owner: Option<String>,
     declared_value: String,
 }
 
@@ -4025,13 +4026,29 @@ fn launch_owned_material_object_v17(value: &str) -> bool {
             break;
         }
     }
-    if folded[start..].starts_with("paper ") {
-        start += 6;
-    }
-    if !folded[start..].starts_with("material ") {
+    let material = if folded[start..].starts_with("material ") {
+        start
+    } else if let Some(index) = folded[start..].find(" material ") {
+        start + index + 1
+    } else {
+        return false;
+    };
+    let modifier = normalized(&value[start..material]);
+    let modifiers = modifier.split_whitespace().collect::<Vec<_>>();
+    if modifiers.len() > 3
+        || modifiers.iter().any(|word| {
+            launch_scope_or_reference_word_v17(word)
+                || launch_adverse_context_word_v17(word)
+                || launch_retraction_word_v17(word)
+                || [
+                    "and", "or", "but", "not", "never", "is", "was", "has", "have",
+                ]
+                .contains(word)
+        })
+    {
         return false;
     }
-    start += 9;
+    start = material + 9;
     for noun in ["claim ", "assertion ", "statement "] {
         if folded[start..].starts_with(noun) {
             start += noun.len();
@@ -4044,7 +4061,12 @@ fn launch_owned_material_object_v17(value: &str) -> bool {
     else {
         return false;
     };
-    launch_named_property_owner_tail_v17(value[start + link.len()..].trim())
+    let owner = value[start + link.len()..].trim();
+    let owner = ["the ", "a ", "an "]
+        .iter()
+        .find_map(|article| owner.strip_prefix(article))
+        .unwrap_or(owner);
+    launch_named_property_owner_tail_v17(owner)
 }
 
 fn launch_complete_printed_property_correction_v17(
@@ -4208,6 +4230,9 @@ fn launch_complete_assertion_body_v17(value: &str) -> &str {
         "the claim that ",
         "the assertion that ",
         "the statement that ",
+        "claim that ",
+        "assertion that ",
+        "statement that ",
     ]
     .iter()
     .find(|prefix| folded.starts_with(**prefix))
@@ -4869,16 +4894,46 @@ fn launch_owned_printed_nominal_v17(policy: &EvidenceRelevanceTargetPolicy, valu
 
 // Colon and copular declarations establish the same outside printed type.
 // Reply labels are wrappers only; they confer no source trust or event owner.
-fn launch_printed_declaration_v17(policy: &EvidenceRelevanceTargetPolicy, statement: &str) -> bool {
-    let statement = statement
-        .split_once(':')
-        .map_or(statement, |(label, value)| {
-            if launch_owner_reply_label_v17(label) {
-                value.trim()
-            } else {
-                statement
-            }
+// A non-adverse local correction label may introduce one complete copular
+// role declaration. The role/value still supplies its own type and owner;
+// target/global denials and unknown labels never acquire that property's scope.
+fn launch_local_role_declaration_body_v17(statement: &str) -> &str {
+    let Some((label, value)) = statement.split_once(':') else {
+        return statement;
+    };
+    if launch_owner_reply_label_v17(label) {
+        return value.trim();
+    }
+    let text = normalized(label);
+    let words = text.split_whitespace().collect::<Vec<_>>();
+    let Some(context) = words.strip_suffix(&["correction"]) else {
+        return statement;
+    };
+    let value = value.trim();
+    let copular_role = value
+        .to_ascii_lowercase()
+        .find(" is ")
+        .is_some_and(|index| {
+            let head = normalized(&value[..index]);
+            ["object", "subject", "item"].contains(&head.strip_prefix("the ").unwrap_or(&head))
         });
+    if copular_role
+        && (1..=3).contains(&context.len())
+        && context.iter().all(|word| {
+            !launch_scope_or_reference_word_v17(word)
+                && !launch_adverse_context_word_v17(word)
+                && !launch_retraction_word_v17(word)
+                && !["all", "entire", "whole", "both", "not", "no", "never"].contains(word)
+        })
+    {
+        value
+    } else {
+        statement
+    }
+}
+
+fn launch_printed_declaration_v17(policy: &EvidenceRelevanceTargetPolicy, statement: &str) -> bool {
+    let statement = launch_local_role_declaration_body_v17(statement);
     if statement.split_once(':').is_some_and(|(label, value)| {
         ["object", "subject", "item"].contains(&normalized(label).as_str())
             && launch_printed_quoted_property_v17(policy, value.trim())
@@ -4960,6 +5015,48 @@ fn launch_single_retracted_role_v17(statement: &str) -> Option<String> {
 fn launch_printed_quoted_property_v17(policy: &EvidenceRelevanceTargetPolicy, value: &str) -> bool {
     if let Some((head, _, tail)) = launch_literal_parts_v17(value) {
         let head = normalized(head);
+        let words = head.split_whitespace().collect::<Vec<_>>();
+        let spacing = matches!(
+            words.as_slice(),
+            [
+                "the",
+                "physical",
+                "letter" | "word" | "line",
+                "spacing",
+                "in",
+                "the",
+                "printed",
+                "sentence"
+            ]
+        );
+        let position = matches!(
+            words.as_slice(),
+            [
+                "the",
+                "position",
+                "of",
+                "the",
+                "printed",
+                "heading" | "title" | "label"
+            ]
+        );
+        if spacing || position {
+            return tail
+                .trim()
+                .strip_prefix("on ")
+                .or_else(|| tail.trim().strip_prefix("in "))
+                .is_some_and(|owner| {
+                    launch_owned_appearance_subject_v17(policy, owner)
+                        || (spacing
+                            && matches!(
+                                normalized(owner)
+                                    .split_whitespace()
+                                    .collect::<Vec<_>>()
+                                    .as_slice(),
+                                ["a" | "the", "poster" | "label" | "sheet"]
+                            ))
+                });
+        }
         if [
             "the printed cover title",
             "the printed title",
@@ -5230,6 +5327,7 @@ fn launch_typed_object_scope_v17(
     if launch_owned_material_object_v17(value)
         || launch_owned_printed_nominal_v17(policy, value)
         || launch_complete_quoted_foreign_event_v17(policy, value)
+        || launch_complete_foreign_role_owner_v17(policy, value).is_some()
         || launch_complete_property_proposition_v17(policy, value)
         || launch_compound_attribute_object_v17(policy, value)
         || launch_printed_quoted_property_v17(policy, value)
@@ -5492,6 +5590,9 @@ fn launch_typed_owner_v17(
                 [
                     "the",
                     "full",
+                    "complete",
+                    "named",
+                    "explicitly",
                     "product",
                     "owner",
                     "of",
@@ -5632,10 +5733,11 @@ fn launch_owner_frame_role_v17(label: &str) -> Option<Option<&str>> {
         return Some(None);
     }
     let words = words.strip_prefix(&["the"]).unwrap_or(&words);
-    let words = words
-        .strip_prefix(&["sole"])
-        .or_else(|| words.strip_prefix(&["full"]))
-        .unwrap_or(words);
+    let modifier_count = words
+        .iter()
+        .take_while(|word| ["sole", "full", "complete", "named", "explicitly"].contains(word))
+        .count();
+    let words = &words[modifier_count..];
     let words = words.strip_prefix(&["product"]).unwrap_or(words);
     match words {
         [
@@ -5805,16 +5907,7 @@ fn launch_typed_objects_v17(
                 let end = quoted.find(closing).unwrap();
                 declarations.push(("claim".to_owned(), quoted[..end].to_owned()));
             }
-            let raw = segment
-                .raw
-                .split_once(':')
-                .map_or(segment.raw.as_str(), |(label, value)| {
-                    if launch_owner_reply_label_v17(label) {
-                        value.trim()
-                    } else {
-                        segment.raw.as_str()
-                    }
-                });
+            let raw = launch_local_role_declaration_body_v17(&segment.raw);
             let copular_role = raw.to_ascii_lowercase().find(" is ").and_then(|index| {
                 let label = normalized(&raw[..index]);
                 let role = label.strip_prefix("the ").unwrap_or(&label);
@@ -5992,26 +6085,27 @@ fn launch_typed_objects_v17(
             .filter(|(owner_role, _)| owner_role.is_none() || *owner_role == role)
             .map(|(_, owner)| owner)
             .collect::<Vec<_>>();
-        !matching.is_empty()
-            && matching.iter().all(|owner| {
-                owner.as_ref().is_some_and(|(name, scope)| {
-                    *scope == Scope::Excluded
-                        && matching
-                            .first()
-                            .and_then(|first| first.as_ref())
-                            .is_some_and(|first| first.0 == *name)
-                })
+        let (first, _) = matching.first().and_then(|owner| owner.as_ref())?;
+        matching
+            .iter()
+            .all(|owner| {
+                owner
+                    .as_ref()
+                    .is_some_and(|(name, scope)| *scope == Scope::Excluded && name == first)
             })
+            .then(|| first.clone())
     };
     declarations
         .iter()
         .filter_map(|(label, value)| {
             if let Some(role) = launch_owner_frame_role_v17(label) {
-                let usable = role.is_none() && unique_foreign_owner(None);
+                let owner = unique_foreign_owner(None);
+                let usable = role.is_none() && owner.is_some();
                 return Some(LaunchTypedObjectV17 {
                     declared_value: value.to_owned(),
                     label: "owner supplement".to_owned(),
                     foreign_event: usable,
+                    foreign_owner: if usable { owner } else { None },
                     scope: launch_typed_owner_v17(policy, value).map_or(
                         Scope::Unresolved,
                         |(_, scope)| {
@@ -6097,7 +6191,8 @@ fn launch_typed_objects_v17(
                             "claim" | "statement" | "assertion"
                         ]
                 );
-            let owner_bound = unowned && unique_foreign_owner(Some(label));
+            let role_owner = unique_foreign_owner(Some(label));
+            let owner_bound = unowned && role_owner.is_some();
             if owner_bound {
                 scope = Scope::Excluded;
             }
@@ -6134,6 +6229,15 @@ fn launch_typed_objects_v17(
                 label: label.clone(),
                 scope,
                 foreign_event,
+                foreign_owner: if foreign_event {
+                    if owner_bound {
+                        role_owner
+                    } else {
+                        launch_complete_foreign_role_owner_v17(policy, value)
+                    }
+                } else {
+                    None
+                },
                 declared_value: value.to_owned(),
             })
         })
@@ -6577,6 +6681,90 @@ fn launch_bound_property_reference_v17(
         })
 }
 
+// Resolve an event anaphor only from an immediately adjacent complete
+// full-name event/claim. A following explicit product confirmation can narrow
+// that existing owner, never invent or replace it.
+fn launch_adjacent_foreign_event_reference_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    statement: &str,
+    previous: Option<&LaunchFactualSegmentV17>,
+    next: Option<&LaunchFactualSegmentV17>,
+) -> bool {
+    let Some(previous) = previous else {
+        return false;
+    };
+    let text = normalized(statement);
+    let words = text.split_whitespace().collect::<Vec<_>>();
+    let Some(verb) = words
+        .iter()
+        .position(|word| launch_retraction_word_v17(word))
+    else {
+        return false;
+    };
+    if words[..verb].is_empty()
+        || !words[..verb]
+            .iter()
+            .all(|word| ["we", "i", "also", "hereby", "formally", "explicitly"].contains(word))
+    {
+        return false;
+    }
+    let noun = match &words[verb + 1..] {
+        [
+            "this" | "that",
+            noun @ ("claim" | "assertion" | "statement"),
+        ] => *noun,
+        [
+            "this" | "that",
+            "product",
+            "s",
+            "launch" | "release",
+            noun @ ("claim" | "assertion" | "statement"),
+        ] => *noun,
+        _ => return false,
+    };
+    let raw = previous.raw.trim();
+    let folded = raw.to_ascii_lowercase();
+    let body = [
+        "the correction concerns ",
+        "the denial concerns ",
+        "the withdrawal concerns ",
+        "the retraction concerns ",
+    ]
+    .iter()
+    .find(|prefix| folded.starts_with(**prefix))
+    .map_or(raw, |prefix| raw[prefix.len()..].trim());
+    let non_event_owner = ["no launch took place for ", "no release took place for "]
+        .iter()
+        .find(|prefix| folded.starts_with(**prefix))
+        .map(|prefix| raw[prefix.len()..].trim())
+        .filter(|owner| {
+            launch_named_subject_v17(owner)
+                && !target_identity_phrases(policy)
+                    .iter()
+                    .any(|target| normalized_phrase_matches(owner, target))
+        })
+        .map(normalized);
+    let Some(owner) =
+        non_event_owner.or_else(|| launch_complete_foreign_role_owner_v17(policy, body))
+    else {
+        return false;
+    };
+    if let Some(next) = next {
+        if let Some(index) = next.raw.to_ascii_lowercase().find(" is ") {
+            let label = normalized(&next.raw[..index]);
+            let label_words = label.split_whitespace().collect::<Vec<_>>();
+            let confirmation = matches!(label_words.as_slice(),
+                ["the", role, "s", "explicitly", "named", "product"]
+                    | ["the", role, "s", "named", "product"] if *role == noun);
+            if confirmation {
+                let stated = next.raw[index + 4..].trim();
+                return launch_named_subject_v17(stated) && normalized(stated) == owner;
+            }
+        }
+    }
+    true
+}
+
 fn launch_typed_reference_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     statement: &str,
@@ -6647,6 +6835,9 @@ fn launch_typed_reference_v17(
         launch_retraction_word_v17(word) && !launch_retraction_negated_v17(&words[..i])
     }) {
         return None;
+    }
+    if launch_adjacent_foreign_event_reference_v17(policy, statement, previous, next) {
+        return Some(true);
     }
     if let Some((head, restatement)) = statement.split_once(" and only this fully named ") {
         let property = launch_property_words_v17(policy, restatement);
@@ -6866,6 +7057,20 @@ fn launch_typed_reference_v17(
     // An exclusion describes one complete retraction clause. It cannot swallow
     // a target event denial in a reason/contrast/timing clause or appended text.
     let event_reference = selected.iter().all(|object| object.foreign_event);
+    if let Some((head, owner)) = statement.split_once(" owned by ") {
+        if label.is_some() && launch_single_retracted_role_v17(head).as_deref() == label {
+            let owner = owner.trim();
+            let name = normalized(owner);
+            return Some(
+                launch_named_subject_v17(owner)
+                    && event_reference
+                    && selected.iter().all(|object| {
+                        object.scope == Scope::Excluded
+                            && object.foreign_owner.as_deref() == Some(name.as_str())
+                    }),
+            );
+        }
+    }
     if words.iter().any(|word| {
         [
             "launched",
@@ -6908,6 +7113,7 @@ fn launch_typed_reference_v17(
             &["the", "event", "claim", "represented", "by"][..],
             &["the", "claim", "represented", "by"][..],
             &["the", "statement", "represented", "by"][..],
+            &["the", "assertion", "represented", "by"][..],
         ] {
             if let Some(rest) = tail.strip_prefix(prefix) {
                 tail = rest;
@@ -15413,6 +15619,149 @@ mod tests {
                 == EvidenceRelevanceDisposition::Relevant,
             expected,
             "v30: {context}"
+        );
+    }
+
+    #[test]
+    fn v30_prefixed_physical_role_and_material_attributes_bind_locally() {
+        for (context, expected) in [
+            (
+                "Workshop correction: The Object is the stated physical weight of the woven strap supplied with Silver Lens. I retract the assertion about this Object. My correction concerns the strap's weight.",
+                true,
+            ),
+            (
+                "Workshop correction: The Object is unknown. I retract the assertion about this Object. My correction concerns the strap's weight.",
+                false,
+            ),
+            (
+                "Workshop correction: The Object is the stated physical weight of the woven strap supplied with Silver Lens. I retract the assertion about this Subject.",
+                false,
+            ),
+            (
+                "Workshop correction: The Object is the stated physical weight of the woven strap supplied with Silver Lens. I retract the assertion about this Object, but we deny that Silver Lens was launched.",
+                false,
+            ),
+            (
+                "The Subject is the transparent material of the Silver Lens storage box. I retract the statement about this Subject. The assertion concerns the box's material, not the existence of the product.",
+                true,
+            ),
+            (
+                "The Subject is the transparent material of the Silver Lens storage box. I retract the statement about this Subject. Silver Lens itself has never existed.",
+                false,
+            ),
+            (
+                "The Subject is the transparent material of an unknown product's storage box. I retract the statement about this Subject.",
+                false,
+            ),
+            (
+                "The Subject is the claim that Silver Lens exists. I retract the statement about this Subject. The assertion concerns the box's material.",
+                false,
+            ),
+        ] {
+            check_current_role_context(context, expected);
+        }
+    }
+
+    #[test]
+    fn v30_printed_layout_attributes_keep_literal_event_words_inert() {
+        for (open, close) in [("'", "'"), ("\"", "\""), ("‘", "’"), ("“", "”")] {
+            let spacing = format!(
+                "The Object is the physical letter spacing in the printed sentence {open}Silver Lens was launched.{close} on a poster. I deny the assertion about this Object. This correction concerns letter spacing alone, not the event asserted by the printed words."
+            );
+            let position = format!(
+                "The Item is the position of the printed heading {open}launch date{close} on the Silver Lens label. We retract the assertion about that Item. The correction concerns only where the heading was printed, not a launch date or an event."
+            );
+            for context in [&spacing, &position] {
+                check_current_role_context(context, true);
+                check_current_role_context(
+                    &format!("{context} We deny that Silver Lens was launched."),
+                    false,
+                );
+            }
+            check_current_role_context(
+                &format!(
+                    "The Object is the truth of the printed sentence {open}Silver Lens was launched.{close} on a poster. I deny the assertion about this Object."
+                ),
+                false,
+            );
+        }
+        check_current_role_context(
+            "The Object is the physical letter spacing in the printed sentence 'Silver Lens was launched. on a poster. I deny the assertion about this Object.",
+            false,
+        );
+        check_current_role_context(
+            "The Item is the position of the printed heading 'launch date' on an unknown label. We retract the assertion about that Item.",
+            false,
+        );
+    }
+
+    #[test]
+    fn v30_foreign_role_owner_complements_require_matching_declarations() {
+        for (declaration, reference, expected) in [
+            ("Violet Bell", "Violet Bell", true),
+            ("Silver Lens", "Violet Bell", false),
+            ("Violet Bell", "Silver Lens", false),
+            ("unknown", "Violet Bell", false),
+            ("Violet Bell and Silver Lens", "Violet Bell", false),
+        ] {
+            let context = format!(
+                "Item owner: {declaration}. The Item is a launch claim. The Subject is the brushed finish on the Silver Lens mounting plate. We retract the Item owned by {reference} and deny the assertion about that Subject."
+            );
+            check_current_role_context(&context, expected);
+        }
+        check_current_role_context(
+            "Item owner: Violet Bell. The Item is a launch claim. The Subject is the brushed finish on the Silver Lens mounting plate. We retract the Item owned by Violet Bell and deny that Silver Lens was launched.",
+            false,
+        );
+    }
+
+    #[test]
+    fn v30_finite_foreign_claim_and_complete_owner_explanation_agree() {
+        for (claim_owner, declared_owner, expected) in [
+            ("Violet Bell", "Violet Bell", true),
+            ("Silver Lens", "Silver Lens", false),
+            ("Violet Bell", "Silver Lens", false),
+            ("Violet Bell", "Cedar Basket", false),
+            ("an unknown product", "Violet Bell", false),
+        ] {
+            let context = format!(
+                "Object: claim that {claim_owner} was launched. We withdraw the assertion represented by this Object. The complete named owner of the Object is {declared_owner}."
+            );
+            check_current_role_context(&context, expected);
+        }
+        check_current_role_context(
+            "Object: claim that Violet Bell was launched. We withdraw the assertion represented by this Object. The complete named owner of the Subject is Violet Bell. Owner of the Object: Silver Lens.",
+            false,
+        );
+    }
+
+    #[test]
+    fn v30_adjacent_foreign_product_and_claim_references_stay_scoped() {
+        for (owner, expected) in [
+            ("Violet Bell", true),
+            ("Silver Lens", false),
+            ("an unknown product", false),
+        ] {
+            let context = format!(
+                "No launch took place for {owner}. We deny that product's launch claim. We also retract the Object, the silver print on the Silver Lens booklet spine."
+            );
+            check_current_role_context(&context, expected);
+            let context = format!(
+                "The correction concerns the claim that {owner} was launched. I deny that claim. The claim's explicitly named product is {owner}."
+            );
+            check_current_role_context(&context, expected);
+        }
+        check_current_role_context(
+            "No launch took place for Violet Bell. We deny that product's launch claim and the launch of Silver Lens.",
+            false,
+        );
+        check_current_role_context(
+            "The correction concerns the claim that Violet Bell was launched. I deny that claim. The claim's explicitly named product is Silver Lens.",
+            false,
+        );
+        check_current_role_context(
+            "The correction concerns the claim that Violet Bell was launched and Silver Lens was launched. I deny that claim.",
+            false,
         );
     }
 
