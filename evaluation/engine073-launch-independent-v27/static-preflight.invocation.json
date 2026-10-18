@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-18T15:16:42.800123+00:00",
+  "stage": "STATIC_ONLY",
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-independent-v27/static_preflight.py"
+  ],
+  "returncode": 0,
+  "checker_sha256": "f1265b0d60de5fcca8df939c0a09556ca01a22e2457e7b19f5130d0cb0540326",
+  "stdout_sha256": "46863fd90fc608882efe6fb069eed593b31d3a6ed7cbec32b39dcd87a0a4d855",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0
+}

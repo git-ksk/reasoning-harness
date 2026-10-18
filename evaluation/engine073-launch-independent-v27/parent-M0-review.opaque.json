@@ -1,0 +1,38 @@
+{
+  "reviewed_utc": "2026-10-18T15:08:57.272061+00:00",
+  "stage": "PARENT_PRE_AUTHOR_M0_REVIEW",
+  "outcome": "PASS",
+  "evaluator_freeze_sha256": "aaa4b0d2494c3a89d87b3c0714847ee8d468f84295e1f868e7518398e41635bb",
+  "candidate_commit": "26c98adbec19f9e8ea0d46f260f080d4319a8e60",
+  "source_sha256": "4daf64b918532a9004dea9807b8001ec743244b20b5cd1892c7f3a7ce316d1ef",
+  "probe_sha256": "b1c482ab5d20cf370868b27d0a3f62a67f1eb210f46731db7258016f56d31821",
+  "old_independent_files": 824,
+  "preparation_files": 5,
+  "pure_fixture_tests": 59,
+  "pure_fixture_returncode": 0,
+  "candidate_Engine_invocations": 0,
+  "case_authorship": 0,
+  "real_cohort_scorer_processes": 0,
+  "reviewed": [
+    "strict output enums and exact identity binding",
+    "duplicate/missing/refused/malformed rows fail closed",
+    "nonzero/bool/missing process envelope and stderr fail closed",
+    "one helper call with exact pinned config",
+    "per-axis F1/precision/recall and safety FP zero",
+    "source controls exclude pre-asserted future provenance",
+    "M0 precedes authoring, M1 precedes observation, raw readonly before scorer",
+    "exclusive one-run markers forbid retries/rescores",
+    "old archives and preparation exact"
+  ],
+  "root_full_validation": {
+    "code": "26c98adbec19f9e8ea0d46f260f080d4319a8e60",
+    "passed": 1599,
+    "failed": 0,
+    "existing_ignored": 8,
+    "strict_clippy_fmt": "PASS",
+    "known_controls": 1400,
+    "original14": "PASS",
+    "history597": "whole byte exact"
+  },
+  "limits": "Cooperative filesystem/agent provenance; synthetic source gate only, no real-answer or CLI acceptance."
+}

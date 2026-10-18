@@ -1,0 +1,371 @@
+{
+  "identity": "engine073-launch-independent-v27",
+  "recorded_utc": "2026-10-18T15:22:55.461849+00:00",
+  "files": {
+    "evaluator-freeze.json": {
+      "sha256": "aaa4b0d2494c3a89d87b3c0714847ee8d468f84295e1f868e7518398e41635bb",
+      "bytes": 21060
+    },
+    "manifest.json": {
+      "sha256": "fb8a350de68ee6dfc61e4d440411a96eb217b54a4fdec7bfe5a6ebf02709d82c",
+      "bytes": 22008
+    },
+    "authoring-start.json": {
+      "sha256": "2b30ef6a54dac4cd4fe296970e9ca11282c50893f4174b707a66dbcded2c9538",
+      "bytes": 1265
+    },
+    "parent-M0-review.opaque.json": {
+      "sha256": "0d4a2017c06df6d3c046bf52832995f84b15f80dd29e46ffab2cee260e11f0f6",
+      "bytes": 1615
+    },
+    "author_cases.py": {
+      "sha256": "4bb92c08bc9a7415166c296974743056e0c2291d2c50a06645ca04b740849e60",
+      "bytes": 25852
+    },
+    "cases.json": {
+      "sha256": "2d164ab42b1d2f0c558f3b50b340be42e91bc50654bc77ee1bc5bdac18086ab7",
+      "bytes": 115449
+    },
+    "inputs.json": {
+      "sha256": "3aa14b15997652ce09564b3c10b7dc99ab4ac91becd13ce8ac6b8b5b2e4e7baf",
+      "bytes": 78317
+    },
+    "scope-review.json": {
+      "sha256": "5e160cd9d519115188283f74e5e2824fd7a183b3d99dfde4f2f9efaaa33febb2",
+      "bytes": 21308
+    },
+    "static-preflight.json": {
+      "sha256": "46863fd90fc608882efe6fb069eed593b31d3a6ed7cbec32b39dcd87a0a4d855",
+      "bytes": 875
+    },
+    "source_gate_policy.json": {
+      "sha256": "3a6d37e3fbf134f4a49677fdcd7de8b1b625739988a40e1c1e78b94978099767",
+      "bytes": 1793
+    },
+    "source_gate_helper.py": {
+      "sha256": "00f6971900864ee9e89e4db6029d8196fabd0a4b6ab28e343f19506417735c6f",
+      "bytes": 5879
+    },
+    "score.py": {
+      "sha256": "3994f3981b4748b0686fdb4df075b4dc83eac11b49c852be2b57123641b0a095",
+      "bytes": 13877
+    },
+    "evaluator_contract.py": {
+      "sha256": "003383e055d9f385356b0df7c4d6f69bbdba922062b7384d67fe3a646f8e160e",
+      "bytes": 2853
+    },
+    "first-run.py": {
+      "sha256": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+      "bytes": 2774
+    },
+    "execute_first.py": {
+      "sha256": "5fb253c0751965e25c988082f2c6a387eec3149ffab756b803ac7198d145a8d2",
+      "bytes": 3120
+    },
+    "probe.rs": {
+      "sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+      "bytes": 1764
+    },
+    "risk-diagnostics.json": {
+      "sha256": "e299b295594933e52c28448b632e0a01ca162e375c93367091fdfdbe447559c8",
+      "bytes": 44001
+    },
+    "observation-review.json": {
+      "sha256": "a90fecdb9f90228d5a0eb5702c9ea236818a8366d997af1a70dbdf8963c2a412",
+      "bytes": 21475
+    },
+    "README-results.md": {
+      "sha256": "4916ba231807a37dec5042347e949aaa784421f87d29def6ea8f6284f22bbd96",
+      "bytes": 3767
+    },
+    "closure-save.py": {
+      "sha256": "b053404c8792ea7cd425e8537f59727c969592d72548e91d79580fa8c7e48e7e",
+      "bytes": 19530
+    },
+    "closure-preparation-error.json": {
+      "sha256": "8a9234e699ae38d495b4a93e72b753761f8b30f0bf04c7e90fb45d2cd5e1bac2",
+      "bytes": 820
+    },
+    "driver.started.json": {
+      "sha256": "cd89ab3f4e308560bed733fabaf732ae2a6a02507b5774175ca2aaa70cb1abf7",
+      "bytes": 696
+    },
+    "driver.stdout.txt": {
+      "sha256": "bb295c2d5be741720f75ba21874e2cacad3650018edbbdcef7441a9f6d72d3d3",
+      "bytes": 4332
+    },
+    "driver.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "driver.invocation.json": {
+      "sha256": "cfcafe0647579bde6588d4dff8e769dba9152453e05188a9f2ded43b0979af27",
+      "bytes": 613
+    },
+    "execution.started.json": {
+      "sha256": "e4143b979ed0507e61b09341f1a53773f986b2898769e0eacf7b9da942baa192",
+      "bytes": 267
+    },
+    "first-run.stdout.txt": {
+      "sha256": "e42670ed512673dfddae4674e001c0389bac58099717703f97416184cfa78a75",
+      "bytes": 81
+    },
+    "first-run.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "first-invocation.started.json": {
+      "sha256": "7e7d6f942a2774a845d57bd308fe40c2355b2263c4bf5c1881e85c6c7ec7cb7a",
+      "bytes": 20301
+    },
+    "first-invocation.json": {
+      "sha256": "7e5a4ff53beccfe9020dddd7070b8182a56b2f842a9b23fd2bafbd62622e0549",
+      "bytes": 20564
+    },
+    "first.stdout.jsonl": {
+      "sha256": "5aae42baa25b9c38178136df4df57c1078189ab05b9749ef3262f02f004c0a89",
+      "bytes": 60591
+    },
+    "first.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "first-score.started.json": {
+      "sha256": "9216958165b8db0b5770bfd51f7e7b84f29da7298d2623ec7dac1a3e6c6d7eda",
+      "bytes": 296
+    },
+    "first-score.stdout.txt": {
+      "sha256": "38bb2b05b3cadf2ed3bd034655d9d4d91796dc7ba96553575538a6e3f954d765",
+      "bytes": 3982
+    },
+    "first-score.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "first-score.invocation.json": {
+      "sha256": "b0fec36f79b55d373032f277bc4fddb94cf8f0f6febc63742b14b1112696419b",
+      "bytes": 611
+    },
+    "first-results.json": {
+      "sha256": "2099de4335798878b9201aa8b9cc9325657dcbe75627ee206f766635835213a3",
+      "bytes": 180382
+    },
+    "first-summary.json": {
+      "sha256": "38bb2b05b3cadf2ed3bd034655d9d4d91796dc7ba96553575538a6e3f954d765",
+      "bytes": 3982
+    }
+  },
+  "actual_checked_artifacts": {
+    "candidate_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "4daf64b918532a9004dea9807b8001ec743244b20b5cd1892c7f3a7ce316d1ef",
+      "bytes": 872196
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-independent-v27-runtime/probe",
+      "sha256": "b1c482ab5d20cf370868b27d0a3f62a67f1eb210f46731db7258016f56d31821",
+      "bytes": 3364616
+    },
+    "runtime_probe_source": {
+      "path": "/private/tmp/engine073-independent-v27-runtime/probe.rs",
+      "sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+      "bytes": 1764
+    },
+    "runtime_cargo_metadata": {
+      "path": "/private/tmp/engine073-independent-v27-runtime/cargo-build.jsonl",
+      "sha256": "583b29c9ead57ea05edfdd762d5161910f9b1a9b2fff428b01dc79460c6605dc",
+      "bytes": 25193
+    },
+    "runtime_identity": {
+      "path": "/private/tmp/engine073-independent-v27-runtime/identity.json",
+      "sha256": "01e6f3a2dc478d62d23518b9226b85924882fabc7e75ba79aed0007693296756",
+      "bytes": 6880
+    },
+    "opaque_parent_controls": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-independent-v27-parent-controls/receipt.json",
+      "sha256": "01e6f3a2dc478d62d23518b9226b85924882fabc7e75ba79aed0007693296756",
+      "bytes": 6880
+    },
+    "parent_reference_00": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/historical-after.jsonl",
+      "sha256": "9f378662ae651f7c7a2394d7c00c918c9eec7701628ccd339c6d2d181fba47f5",
+      "bytes": 334716
+    },
+    "parent_reference_01": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/identity-before.json",
+      "sha256": "9931d1a6b6bd6259d83fadbba3211fb959aa73b0b0911684bcf1768845dd8ba2",
+      "bytes": 653
+    },
+    "parent_reference_02": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/invocations.json",
+      "sha256": "16c410cc16abdd56d82632ad2b8819e6a913926b837b1d84e3c3e483d2036e95",
+      "bytes": 21880
+    },
+    "parent_reference_03": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/original-audit-after.jsonl",
+      "sha256": "5c32b97127644a0be7094ba23cf629349bed75aa91e995897ec61870bd98d83b",
+      "bytes": 5580
+    },
+    "parent_reference_04": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/owner-adjunct-after.jsonl",
+      "sha256": "80ffe4d9e5b92fc2add8c80b26b2b8ebb0e20d0742d694bf72ccefffe1d687be",
+      "bytes": 4212
+    },
+    "parent_reference_05": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v10-after.jsonl",
+      "sha256": "bfa86a686abdec2896394f63d5309df8c32bd1ee29bdeb3cfeb7df4d97e2d41f",
+      "bytes": 64862
+    },
+    "parent_reference_06": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v12-after.jsonl",
+      "sha256": "898d1d0e828cdeb76a2fef857e68efd51a0fab0692bc68c474ce3dfde8c96155",
+      "bytes": 64658
+    },
+    "parent_reference_07": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v13-after.jsonl",
+      "sha256": "a83ee704e95a4b772e1f0a6274d08f426e277584e847a54cc847a10ddb4deab2",
+      "bytes": 64602
+    },
+    "parent_reference_08": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v14-after.jsonl",
+      "sha256": "68e2b408f08e368922ff372d064b7d18b2cf9bdd4a3dee4b73ed2ddbd0de0f29",
+      "bytes": 64678
+    },
+    "parent_reference_09": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v15-after.jsonl",
+      "sha256": "b6b7a1c86a49c50aee79faef7da105686b7313c86a9fae0080f61b4c7878b559",
+      "bytes": 61673
+    },
+    "parent_reference_10": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v16-after.jsonl",
+      "sha256": "9142282f21b9b1c40ff4834ceeb4d42dd7ea8ea078f4f53b28b82148312f3d97",
+      "bytes": 61630
+    },
+    "parent_reference_11": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v18-after.jsonl",
+      "sha256": "1d9361a27b24827779822e8d8771f1eed343a8872e9415fc347930cda6590721",
+      "bytes": 61662
+    },
+    "parent_reference_12": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v19-after.jsonl",
+      "sha256": "d9d7479b92de668cb365d0164899b85113475b9df595fe9341bcbef9c69bfda3",
+      "bytes": 61749
+    },
+    "parent_reference_13": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v2-after.jsonl",
+      "sha256": "acc897a23e50d0575b3fec4025d6cee1b8cf45bb770327a4275e0792f15e7f56",
+      "bytes": 63190
+    },
+    "parent_reference_14": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v20-after.jsonl",
+      "sha256": "f08c2c0abfb33114318f5f1239f6009dc2045e1104374019257eff656df28863",
+      "bytes": 61795
+    },
+    "parent_reference_15": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v21-after.jsonl",
+      "sha256": "797a074cadd325a890376d4e858bb6d764f24f7ced96bf2585c58fa3f3d4d231",
+      "bytes": 61546
+    },
+    "parent_reference_16": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v22-after.jsonl",
+      "sha256": "bd567c9d37f11ea22ecd7e798598afcc1852e412b338e71c6601f65c66211349",
+      "bytes": 61601
+    },
+    "parent_reference_17": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v23-after.jsonl",
+      "sha256": "8f260f2ca713b1c903d1c45a1dd4360bee2cce06123e7c29816cc73350185f7b",
+      "bytes": 61676
+    },
+    "parent_reference_18": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v24-after.jsonl",
+      "sha256": "cbd379e2f20b09a74ab7af34ebfb8647473ae2d7ea0981d7a40fcb1978acc983",
+      "bytes": 61813
+    },
+    "parent_reference_19": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v25-after.jsonl",
+      "sha256": "d1c9fc03eb543df29fa6897406899d173cee275270d3572581757eaf29cce522",
+      "bytes": 60551
+    },
+    "parent_reference_20": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v26-after.jsonl",
+      "sha256": "e9b1dce31f8c59257f217e8b7a8dbcfc716d0e08eca4ce77512beda42f409d70",
+      "bytes": 60770
+    },
+    "parent_reference_21": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v3-after.jsonl",
+      "sha256": "f7211277b5a04466ee10ad50ee715a497a7e3112baa3fde6f644042736d48129",
+      "bytes": 64065
+    },
+    "parent_reference_22": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v4-after.jsonl",
+      "sha256": "99ea2a1b07461ebc522591a7a2ddf5af6ef49d30aba463c028a9660d89fc34dd",
+      "bytes": 65493
+    },
+    "parent_reference_23": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v5-after.jsonl",
+      "sha256": "24cffa7ec083b9eb08fe11326db5c91885522f6f0f6fb8f8ec33e2cbaca5a1e1",
+      "bytes": 64010
+    },
+    "parent_reference_24": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v6-after.jsonl",
+      "sha256": "968d51a79db3783c03b118a38ec7a12cb570ffde79502bfe5bff2de308729da9",
+      "bytes": 64158
+    },
+    "parent_reference_25": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v7-after.jsonl",
+      "sha256": "215852736588714dc5d438d7d18d3f3b68acbd6888fa5e1c846fe4222d9a4fa4",
+      "bytes": 64304
+    },
+    "parent_reference_26": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v8-after.jsonl",
+      "sha256": "dfb203dcd475aa651cb0020590f19525bed11c2ca6dbc5f9ddd6089da875794f",
+      "bytes": 63922
+    },
+    "parent_reference_27": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v9-after.jsonl",
+      "sha256": "c64ad8c0756edf9a8098674efcf5eb0293aa38a9d5dadd37942b9faf05818957",
+      "bytes": 64224
+    },
+    "parent_reference_28": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/summary.json",
+      "sha256": "570338048b30b73e3d42aafb97f8f82154f90d4a59397f6641b57c7e0423c6a5",
+      "bytes": 6091
+    },
+    "parent_reference_29": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/supplemental-literals-after.jsonl",
+      "sha256": "f5a36a6354ecee867a754c069e6b1f0aa967e989b1e11930837367c6b607dea0",
+      "bytes": 16480
+    },
+    "preserved_preparation_0": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/docs/engine073-realworld-metrics-preparation.ja.md",
+      "sha256": "30a4f73c4f0cd4a6aa2a284f3243d997dbc1f769751defcb7617659f6605df08",
+      "bytes": 23762
+    },
+    "preserved_preparation_1": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/docs/engine073-realworld-metrics-preparation.md",
+      "sha256": "9e90707b295ee4e273f7101f0d7d33804bff64c4629d980f9209a1258e6f73e7",
+      "bytes": 25560
+    },
+    "preserved_preparation_2": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/artifact-sha256.json",
+      "sha256": "6b83e2b6b090f46da65580bf27486ada831d53e9827d77c0081119fa5c969e22",
+      "bytes": 673
+    },
+    "preserved_preparation_3": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/review.json",
+      "sha256": "787da5422330047f4ca23f1020df867bc66eb6794f45fd40c01f72314d7189fc",
+      "bytes": 2526
+    },
+    "preserved_preparation_4": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/reviewed-input-sha256.json",
+      "sha256": "76b41a7c06dc1893106695253dc303164e2905881cdeffabe26ca0251f7e36c0",
+      "bytes": 1898
+    }
+  },
+  "old_source_files_verified": 824,
+  "separate_preparation_files_verified": 5,
+  "parent_references_verified": 30,
+  "runtime_files_verified": 4,
+  "source_HEAD_verified": "26c98adbec19f9e8ea0d46f260f080d4319a8e60",
+  "no_Engine_scorer_helper_execution_by_closure": true
+}

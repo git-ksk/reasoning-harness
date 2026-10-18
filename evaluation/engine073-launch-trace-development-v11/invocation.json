@@ -1,0 +1,16 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--offline",
+    "--locked",
+    "-p",
+    "reasoning-harness-core",
+    "--lib",
+    "development_consumed_source29_v27_rule_trace",
+    "--",
+    "--nocapture"
+  ],
+  "returncode": 0,
+  "scope": "consumed v27 diagnosis only, not an independent rerun"
+}

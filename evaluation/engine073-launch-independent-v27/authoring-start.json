@@ -1,0 +1,18 @@
+{
+  "identity": "engine073-launch-independent-v27",
+  "utc": "2026-10-18T15:11:43.759605+00:00",
+  "evaluator_freeze_sha256": "aaa4b0d2494c3a89d87b3c0714847ee8d468f84295e1f868e7518398e41635bb",
+  "authorization_reference": "Parent /root NEW_TASK: v27 M0 review PASS closed; separate explicit instruction permits new30pairs60cases, scope/static/M1, first Engine1process60 and scorer1/helper1, then read-only closure.",
+  "parent_review_sha256": "0d4a2017c06df6d3c046bf52832995f84b15f80dd29e46ffab2cee260e11f0f6",
+  "parent_review_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-v27-parent-verification/pre-author-M0-review/review.json",
+  "operator": "sole authorized independent evaluator /root/engine07_realworld_independent",
+  "M0_modified": false,
+  "Engine_invocations_before_authoring": 0,
+  "real_cohort_scorer_processes_before_authoring": 0,
+  "old_source_files_verified": 824,
+  "separate_preparation_files_verified": 5,
+  "parent_reference_files_verified": 30,
+  "runtime_probe_sha256": "b1c482ab5d20cf370868b27d0a3f62a67f1eb210f46731db7258016f56d31821",
+  "provider_model_network_Oracle_calls": 0,
+  "freeze_release": "Held until parent final copy/commit/safety acknowledgement."
+}

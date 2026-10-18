@@ -1,0 +1,35 @@
+test_binding_changes_fail (test_claim_metrics.ClaimMetrics.test_binding_changes_fail) ... ok
+test_bool_unknown_grounding_and_foreign_gold_fail (test_claim_metrics.ClaimMetrics.test_bool_unknown_grounding_and_foreign_gold_fail) ... ok
+test_conflicting_occurrence_annotations_conservatively_remove_credit (test_claim_metrics.ClaimMetrics.test_conflicting_occurrence_annotations_conservatively_remove_credit) ... ok
+test_duplicate_and_foreign_ids_fail (test_claim_metrics.ClaimMetrics.test_duplicate_and_foreign_ids_fail) ... ok
+test_equivalent_alternatives_and_repeats_are_one_point (test_claim_metrics.ClaimMetrics.test_equivalent_alternatives_and_repeats_are_one_point) ... ok
+test_grounded_extra_claim_cannot_create_recall (test_claim_metrics.ClaimMetrics.test_grounded_extra_claim_cannot_create_recall) ... ok
+test_macro_excludes_null_but_retains_null_count (test_claim_metrics.ClaimMetrics.test_macro_excludes_null_but_retains_null_count) ... ok
+test_micro_uses_same_complete_cohort_and_delivered_includes_missing (test_claim_metrics.ClaimMetrics.test_micro_uses_same_complete_cohort_and_delivered_includes_missing) ... ok
+test_negation_is_a_distinct_reviewed_proposition (test_claim_metrics.ClaimMetrics.test_negation_is_a_distinct_reviewed_proposition) ... ok
+test_no_acceptance_or_mutation_from_pure_calculation (test_claim_metrics.ClaimMetrics.test_no_acceptance_or_mutation_from_pure_calculation) ... ok
+test_no_claims_with_required_groups_has_zero_f1 (test_claim_metrics.ClaimMetrics.test_no_claims_with_required_groups_has_zero_f1) ... ok
+test_no_completed_rows_is_unavailable_not_perfect (test_claim_metrics.ClaimMetrics.test_no_completed_rows_is_unavailable_not_perfect) ... ok
+test_no_required_groups_keeps_f1_null_with_or_without_claims (test_claim_metrics.ClaimMetrics.test_no_required_groups_keeps_f1_null_with_or_without_claims) ... ok
+test_observed_answer_requires_hash_but_missing_bundle_does_not (test_claim_metrics.ClaimMetrics.test_observed_answer_requires_hash_but_missing_bundle_does_not) ... ok
+test_partial_output_is_unavailable_but_known_violation_is_retained (test_claim_metrics.ClaimMetrics.test_partial_output_is_unavailable_but_known_violation_is_retained) ... ok
+test_strata_separate_provider_track_arm_family_and_answerability (test_claim_metrics.ClaimMetrics.test_strata_separate_provider_track_arm_family_and_answerability) ... ok
+test_unreviewed_success_is_not_semantic_success (test_claim_metrics.ClaimMetrics.test_unreviewed_success_is_not_semantic_success) ... ok
+test_unsupported_word_match_is_not_recall (test_claim_metrics.ClaimMetrics.test_unsupported_word_match_is_not_recall) ... ok
+test_bool_span_and_stale_annotation_text_fail (test_display_binding.DisplayBinding.test_bool_span_and_stale_annotation_text_fail) ... ok
+test_claim_without_span_fails (test_display_binding.DisplayBinding.test_claim_without_span_fails) ... ok
+test_duplicate_artifact_or_segment_id_fails (test_display_binding.DisplayBinding.test_duplicate_artifact_or_segment_id_fails) ... ok
+test_empty_artifact_needs_no_span (test_display_binding.DisplayBinding.test_empty_artifact_needs_no_span) ... ok
+test_missing_caption_artifact_cannot_be_silently_omitted (test_display_binding.DisplayBinding.test_missing_caption_artifact_cannot_be_silently_omitted) ... ok
+test_missing_tail_is_not_full_coverage (test_display_binding.DisplayBinding.test_missing_tail_is_not_full_coverage) ... ok
+test_nonfact_reason_required_and_cannot_bind_claim (test_display_binding.DisplayBinding.test_nonfact_reason_required_and_cannot_bind_claim) ... ok
+test_overlap_fails (test_display_binding.DisplayBinding.test_overlap_fails) ... ok
+test_swapped_claim_proposition_fails (test_display_binding.DisplayBinding.test_swapped_claim_proposition_fails) ... ok
+test_swapped_or_changed_display_bytes_fail (test_display_binding.DisplayBinding.test_swapped_or_changed_display_bytes_fail) ... ok
+test_utf8_boundary_is_in_bytes_not_characters (test_display_binding.DisplayBinding.test_utf8_boundary_is_in_bytes_not_characters) ... ok
+test_utf8_full_coverage (test_display_binding.DisplayBinding.test_utf8_full_coverage) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 0.002s
+
+OK

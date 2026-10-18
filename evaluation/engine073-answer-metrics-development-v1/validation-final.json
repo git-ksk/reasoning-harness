@@ -1,0 +1,23 @@
+{
+  "identity": "engine073-answer-metrics-development-v1-final",
+  "tests_passed": 32,
+  "tests_failed": 0,
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "/private/tmp/engine073-answer-metrics-development-v1",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "independent_review": "NOT_PERFORMED",
+  "acceptance": "NOT_EVALUATED",
+  "actual_answer_F1": "UNMEASURED",
+  "real_document_cases": 0,
+  "provider_model_network_Engine_Oracle_calls": 0,
+  "historical_rescores": 0
+}

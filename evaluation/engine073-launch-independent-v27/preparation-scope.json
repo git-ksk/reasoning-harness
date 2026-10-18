@@ -1,0 +1,20 @@
+{
+  "identity": "engine073-launch-independent-v27-pre-author",
+  "utc": "2026-10-18T15:02:44.742665+00:00",
+  "authority": "Parent permits M0 preparation only; prohibits new authoring-start/cases/labels/inputs/Engine/real cohort scoring until closed M0 review and separate explicit notice.",
+  "new_authorship_started": false,
+  "authoring_start_created": false,
+  "authored_cases": 0,
+  "Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "runtime_compile_calls": 0,
+  "provider_model_network_Oracle_calls": 0,
+  "source_body_read": false,
+  "old_author_case_input_draft_bodies_read": false,
+  "parent30_bodies_read": false,
+  "receipt_metadata_read_for_inventory": true,
+  "runtime_binary_compiler_identity_hash_only": true,
+  "no_archived_source26_restored": true,
+  "Groq": "STOPPED",
+  "parent_full_validation": "Completed parent-report only; does not grant next permission."
+}

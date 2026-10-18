@@ -1,0 +1,35 @@
+{
+  "source": "v26 reviewed M0 evaluator and59 constructed-output fixtures only; no old author/case/input/draft/results body opened. No archived checkout restored.",
+  "files": {
+    "evaluator_contract.py": "ee226b3eeb0f570c7846e8e1f2d236a5dce63b97b2b16e6a5ca22e51d4376897",
+    "score.py": "62d95b1fbbdb1e9a4c204979d2b6502653af1ed9e78c07e4edc779448cf337e6",
+    "test_evaluator.py": "d3428441809f8035b9e3721570fbe92584bcc2cd0c1f6aab43fa015ff87e2dd8",
+    "static_preflight.py": "e8660fc1a28d1065203c7060b777492fa62dc7e3c51bc64324a61b0cef23e54e",
+    "freeze_corpus.py": "9827ef2153b804c91ea13c4aad672a7acd2abceb9779859eba2e2bbd3e3fc13b",
+    "execute_first.py": "47880cf22c7efcc4a87b506e88be855ab1f7b68415dbc3da308911b487d78772",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "legacy_parse_reference.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "selftest.py": "703738f130465076586b6b82254b21a0c21ff44b4abb52886c72c7ce7f7a64ca",
+    "verify_preparation.py": "eb9ce6ec72b80d1b14b920e8dbf2beb8998e4b5c1f2128fee0ed7453e374b525"
+  },
+  "changes": {
+    "evaluator_contract.py": "Only v27 identity/expected IDs/runtime directory, candidate SHA, old source count824 and parent pure count1400 as applicable. No behavioral changes.",
+    "score.py": "Only v27 identity/expected IDs/runtime directory, candidate SHA, old source count824 and parent pure count1400 as applicable. No behavioral changes.",
+    "test_evaluator.py": "Only v27 identity/expected IDs/runtime directory, candidate SHA, old source count824 and parent pure count1400 as applicable. No behavioral changes.",
+    "static_preflight.py": "Only v27 identity/expected IDs/runtime directory, candidate SHA, old source count824 and parent pure count1400 as applicable. No behavioral changes.",
+    "freeze_corpus.py": "Only v27 identity/expected IDs/runtime directory, candidate SHA, old source count824 and parent pure count1400 as applicable. No behavioral changes.",
+    "execute_first.py": "Only v27 identity/expected IDs/runtime directory, candidate SHA, old source count824 and parent pure count1400 as applicable. No behavioral changes.",
+    "selftest.py": "Only v27 identity/expected IDs/runtime directory, candidate SHA, old source count824 and parent pure count1400 as applicable. No behavioral changes.",
+    "verify_preparation.py": "Only v27 identity/expected IDs/runtime directory, candidate SHA, old source count824 and parent pure count1400 as applicable. No behavioral changes."
+  },
+  "byte_identical_semantics": [
+    "policy",
+    "helper",
+    "public probe",
+    "first recorder",
+    "strict score/driver/provenance logic",
+    "budget2/192/90000"
+  ],
+  "no_behavioral_repair_required_before_M0": true
+}

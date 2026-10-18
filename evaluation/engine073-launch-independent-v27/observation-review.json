@@ -1,0 +1,604 @@
+{
+  "identity": "engine073-launch-independent-v27",
+  "reviewed_utc": "2026-10-18T15:22:55.460729+00:00",
+  "reviewer": "same sole authorized independent evaluator; not separate human adjudication",
+  "first_summary_sha256": "38bb2b05b3cadf2ed3bd034655d9d4d91796dc7ba96553575538a6e3f954d765",
+  "first_results_sha256": "2099de4335798878b9201aa8b9cc9325657dcbe75627ee206f766635835213a3",
+  "original_outcome": "FAIL",
+  "original_decision": "NO_GO",
+  "original_gate": {
+    "gate_pass": false,
+    "blockers": [
+      "v17_requested_relation:recall_below_floor_or_undefined",
+      "v17_requested_relation:f1_below_floor",
+      "v30_relevant:recall_below_floor_or_undefined",
+      "v30_relevant:f1_below_floor"
+    ],
+    "observations": 60,
+    "positives": 30,
+    "negatives": 30,
+    "incomplete": 0,
+    "axes": {
+      "v17_requested_relation": {
+        "tp": 24,
+        "fp": 0,
+        "tn": 30,
+        "fn": 6,
+        "precision": 1.0,
+        "recall": 0.8,
+        "f1": 0.8888888888888888,
+        "f0_5_diagnostic": 0.9523809523809523
+      },
+      "v30_relevant": {
+        "tp": 24,
+        "fp": 0,
+        "tn": 30,
+        "fn": 6,
+        "precision": 1.0,
+        "recall": 0.8,
+        "f1": 0.8888888888888888,
+        "f0_5_diagnostic": 0.9523809523809523
+      }
+    },
+    "scope": "#520 future synthetic source API only, NOT #531 real-answer/CLI approval"
+  },
+  "axes_copied_without_rescoring": {
+    "v17_requested_relation": {
+      "tp": 24,
+      "fp": 0,
+      "tn": 30,
+      "fn": 6,
+      "precision": 1.0,
+      "recall": 0.8,
+      "f1": 0.8888888888888888,
+      "f0_5_diagnostic": 0.9523809523809523
+    },
+    "v30_relevant": {
+      "tp": 24,
+      "fp": 0,
+      "tn": 30,
+      "fn": 6,
+      "precision": 1.0,
+      "recall": 0.8,
+      "f1": 0.8888888888888888,
+      "f0_5_diagnostic": 0.9523809523809523
+    }
+  },
+  "joint_exactness_diagnostic": {
+    "passed": 54,
+    "failed": 6,
+    "positive_passed": 24,
+    "negative_passed": 30,
+    "incomplete": 0
+  },
+  "unsafe_false_positives_by_axis": {
+    "v17_requested_relation": 0,
+    "v30_relevant": 0
+  },
+  "operational_errors": [],
+  "literal_tuple_counts_by_polarity": {
+    "positive": {
+      "cases": 30,
+      "status_counts": {
+        "pass": 24,
+        "fail": 6
+      },
+      "raw_tuples": [
+        {
+          "value": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "count": 30
+        }
+      ],
+      "effective_v17_tuples": [
+        {
+          "value": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "count": 24
+        },
+        {
+          "value": {
+            "identity_scope": "exact_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "none"
+          },
+          "count": 6
+        }
+      ],
+      "v29_dispositions": {
+        "relevant": 30
+      },
+      "v30_dispositions": {
+        "relevant": 24,
+        "ambiguous": 6
+      }
+    },
+    "negative": {
+      "cases": 30,
+      "status_counts": {
+        "pass": 30
+      },
+      "raw_tuples": [
+        {
+          "value": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "count": 30
+        }
+      ],
+      "effective_v17_tuples": [
+        {
+          "value": {
+            "identity_scope": "exact_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "none"
+          },
+          "count": 29
+        },
+        {
+          "value": {
+            "identity_scope": "unresolved",
+            "relation_scope": "unresolved",
+            "scope_risk": "multiple"
+          },
+          "count": 1
+        }
+      ],
+      "v29_dispositions": {
+        "relevant": 29,
+        "ambiguous": 1
+      },
+      "v30_dispositions": {
+        "ambiguous": 30
+      }
+    }
+  },
+  "semantic_basis_status_counts": {
+    "combined_safe_context": {
+      "pass": 7,
+      "fail": 1
+    },
+    "conflicting_owner": {
+      "pass": 2
+    },
+    "foreign_event": {
+      "pass": 5,
+      "fail": 1
+    },
+    "global_denial": {
+      "pass": 4
+    },
+    "missing_context": {
+      "pass": 1
+    },
+    "mixed_owner": {
+      "pass": 3
+    },
+    "non_launch_property": {
+      "pass": 12,
+      "fail": 4
+    },
+    "nonexistence": {
+      "pass": 3
+    },
+    "target_denial": {
+      "pass": 10
+    },
+    "unknown_owner": {
+      "pass": 7
+    }
+  },
+  "nonpassing_cases": [
+    {
+      "id": "li27-005",
+      "pair_id": "li27-pair-03",
+      "polarity": "positive",
+      "axis": "watermark_property_and_source_scope",
+      "semantic_basis": "non_launch_property",
+      "original_pre_observation_rationale": "The complete printed-property Subject and explicit scope limitation leave the factual target launch intact.",
+      "original_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "original_input_signals": [
+        {
+          "kind": "excerpt",
+          "text": "Canyon Prism Reader was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Subject is the pale green watermark printed along the Canyon Prism Reader booklet page edge. We deny the assertion about that Subject. Only the printed watermark's color is disputed."
+        }
+      ],
+      "scope_review_pair": {
+        "pair_id": "li27-pair-03",
+        "positive_id": "li27-005",
+        "negative_id": "li27-006",
+        "axis": "watermark_property_and_source_scope",
+        "positive_semantic_basis": "non_launch_property",
+        "negative_semantic_basis": "global_denial",
+        "positive_rationale": "The complete printed-property Subject and explicit scope limitation leave the factual target launch intact.",
+        "negative_rationale": "The denial explicitly extends to every source assertion, including the independently supplied target launch.",
+        "polarity_precommitted": true
+      },
+      "first_observed_booleans": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "fail",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li27-025",
+      "pair_id": "li27-pair-13",
+      "polarity": "positive",
+      "axis": "parenthetical_property_scope",
+      "semantic_basis": "non_launch_property",
+      "original_pre_observation_rationale": "The Object and parenthetical both specify the physical clip-finish claim as the complete correction scope.",
+      "original_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "original_input_signals": [
+        {
+          "kind": "excerpt",
+          "text": "Maple Lantern Recorder was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the silver finish of the Maple Lantern Recorder metal clip. I retract the claim about this Object (the withdrawal covers the clip-finish description only)."
+        }
+      ],
+      "scope_review_pair": {
+        "pair_id": "li27-pair-13",
+        "positive_id": "li27-025",
+        "negative_id": "li27-026",
+        "axis": "parenthetical_property_scope",
+        "positive_semantic_basis": "non_launch_property",
+        "negative_semantic_basis": "target_denial",
+        "positive_rationale": "The Object and parenthetical both specify the physical clip-finish claim as the complete correction scope.",
+        "negative_rationale": "The parenthesis adds an explicit target-launch denial, which cannot inherit the clip-property exclusion.",
+        "polarity_precommitted": true
+      },
+      "first_observed_booleans": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "fail",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li27-029",
+      "pair_id": "li27-pair-15",
+      "polarity": "positive",
+      "axis": "printed_withdrawn_word_and_global_retraction",
+      "semantic_basis": "non_launch_property",
+      "original_pre_observation_rationale": "WITHDRAWN is explicitly the printed value of a physical typography property; the actual correction is scoped to lettering.",
+      "original_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "original_input_signals": [
+        {
+          "kind": "excerpt",
+          "text": "Orbit Thicket Adapter was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Item is the uppercase lettering of the word 'WITHDRAWN' printed on the Orbit Thicket Adapter storage tag. We withdraw the assertion about that Item. This corrects the lettering, not a launch statement."
+        }
+      ],
+      "scope_review_pair": {
+        "pair_id": "li27-pair-15",
+        "positive_id": "li27-029",
+        "negative_id": "li27-030",
+        "axis": "printed_withdrawn_word_and_global_retraction",
+        "positive_semantic_basis": "non_launch_property",
+        "negative_semantic_basis": "global_denial",
+        "positive_rationale": "WITHDRAWN is explicitly the printed value of a physical typography property; the actual correction is scoped to lettering.",
+        "negative_rationale": "The retraction covers the whole source, expressly including target launch, rather than merely the tag's typography.",
+        "polarity_precommitted": true
+      },
+      "first_observed_booleans": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "fail",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li27-045",
+      "pair_id": "li27-pair-23",
+      "polarity": "positive",
+      "axis": "quoted_unowned_item_requires_complete_owner",
+      "semantic_basis": "foreign_event",
+      "original_pre_observation_rationale": "An initially ownerless quoted event is bound by an adjacent same-role complete foreign owner and repeated explanation.",
+      "original_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "original_input_signals": [
+        {
+          "kind": "excerpt",
+          "text": "Wave Birch Bridge was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Item is the quoted claim: 'The product was launched.' Immediate reply: Item owner is Mica Quill Panel. We withdraw this Item, the claim about Mica Quill Panel's launch."
+        }
+      ],
+      "scope_review_pair": {
+        "pair_id": "li27-pair-23",
+        "positive_id": "li27-045",
+        "negative_id": "li27-046",
+        "axis": "quoted_unowned_item_requires_complete_owner",
+        "positive_semantic_basis": "foreign_event",
+        "negative_semantic_basis": "unknown_owner",
+        "positive_rationale": "An initially ownerless quoted event is bound by an adjacent same-role complete foreign owner and repeated explanation.",
+        "negative_rationale": "The quotation's product is expressly unidentified. An adjacent reply without a complete owner cannot establish foreignness.",
+        "polarity_precommitted": true
+      },
+      "first_observed_booleans": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "fail",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li27-049",
+      "pair_id": "li27-pair-25",
+      "polarity": "positive",
+      "axis": "three_roles_one_event_two_properties",
+      "semantic_basis": "combined_safe_context",
+      "original_pre_observation_rationale": "One event has a complete foreign owner and both other finite roles are complete physical/printed properties.",
+      "original_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "original_input_signals": [
+        {
+          "kind": "excerpt",
+          "text": "Yew Station Sensor was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the claim that Oak Quill Receiver was launched. The Subject is the embossed border of the Yew Station Sensor badge. The Item is the printed title alignment of the Olive Compass Controller booklet. We deny this Object and retract the assertions about that Subject and this Item."
+        }
+      ],
+      "scope_review_pair": {
+        "pair_id": "li27-pair-25",
+        "positive_id": "li27-049",
+        "negative_id": "li27-050",
+        "axis": "three_roles_one_event_two_properties",
+        "positive_semantic_basis": "combined_safe_context",
+        "negative_semantic_basis": "mixed_owner",
+        "positive_rationale": "One event has a complete foreign owner and both other finite roles are complete physical/printed properties.",
+        "negative_rationale": "The Object denies target launch. Two safe property roles cannot cover that independent adverse event.",
+        "polarity_precommitted": true
+      },
+      "first_observed_booleans": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "fail",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li27-053",
+      "pair_id": "li27-pair-27",
+      "polarity": "positive",
+      "axis": "printed_launch_inventory_title",
+      "semantic_basis": "non_launch_property",
+      "original_pre_observation_rationale": "The quoted heading is the value of a complete printed-content property; launch words alone do not turn it into an event correction.",
+      "original_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "original_input_signals": [
+        {
+          "kind": "excerpt",
+          "text": "Aster Channel Dial was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Object: printed heading 'Launch inventory' on the Aster Channel Dial paper insert"
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the assertion about this Object. The correction concerns what heading was printed on the insert, not a launch event or an inventory of real events."
+        }
+      ],
+      "scope_review_pair": {
+        "pair_id": "li27-pair-27",
+        "positive_id": "li27-053",
+        "negative_id": "li27-054",
+        "axis": "printed_launch_inventory_title",
+        "positive_semantic_basis": "non_launch_property",
+        "negative_semantic_basis": "target_denial",
+        "positive_rationale": "The quoted heading is the value of a complete printed-content property; launch words alone do not turn it into an event correction.",
+        "negative_rationale": "The second retraction expressly covers target launch independently of the printed-heading correction.",
+        "polarity_precommitted": true
+      },
+      "first_observed_booleans": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "fail",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    }
+  ],
+  "scope_preflight_correspondence": {
+    "scope_review_sha256": "5e160cd9d519115188283f74e5e2824fd7a183b3d99dfde4f2f9efaaa33febb2",
+    "static_preflight_sha256": "46863fd90fc608882efe6fb069eed593b31d3a6ed7cbec32b39dcd87a0a4d855",
+    "M1_sha256": "fb8a350de68ee6dfc61e4d440411a96eb217b54a4fdec7bfe5a6ebf02709d82c",
+    "all_original_rationales_match_pre_observation_pair_review": true,
+    "pre_M1_corrections": [],
+    "scope_review_Engine_calls": 0,
+    "scope_review_scorer_calls": 0,
+    "scope_static_pass_is_not_candidate_pass": true
+  },
+  "observation_limits": [
+    "All6 missed positives were supplied exact_target/requested_relation/none and returned effective exact_target/unresolved/none with v30 ambiguous. This is an output observation, not an internal-cause conclusion.",
+    "Four missed positives concern complete non-launch properties; one a complete foreign event; one a combination of separately safe finite roles. Original rationale/labels are retained unchanged.",
+    "The literal reason strings model_ambiguous/model_relevant and path model_assisted are API outputs with supplied raw values; no live model/provider was invoked.",
+    "This synthetic cohort does not measure real answers, ordinary CLI behavior, separate human agreement or arbitrary language correctness. Different authored cohorts do not support an improvement-rate claim.",
+    "Parent known1400/original14/history597/full1599 are pinned parent-reported controls, not evaluator replay. Source-scoped critical=[] does not complete #531/#540/CLI/release/Groq gates."
+  ],
+  "retry": 0,
+  "rescore": 0,
+  "relabel": 0,
+  "extra_Engine_scorer_helper_invocations": 0
+}

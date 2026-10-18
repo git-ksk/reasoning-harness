@@ -10,11 +10,11 @@
 
 
 
-候補 `26c98ad` の同じ観測済みv26開発60件は両API別に TP30 / FP0 / TN30 / FN0、Precision/Recall/F1=1.000、両軸60/60。元初回 .846154→中間 .928571→1.000 は同じ集合の開発比較で、独立v26初回FAIL/NO_GOと原ラベル/scorerは不変。属性・所有者・局所参照の共通処理を修正し、既知1400/1400・元監査14成功、歴史597全出力byte一致、全体1599成功/失敗0/既存ignore8・strict workspace/all-targets Clippy/fmt確認。初回全体のlocalhost模擬通信5拒否は原ログを残し、同一sourceで実行条件修正後に全成功。次の独立v27は候補/評価器を著作前に固定し、親が純fixtureと実コードをレビューしてから初回1回だけ観測する。まだ未著作・未実行。元v26の99ファイル＋旧730＝829参照を保持。実24問0/24・実回答F1未測定・Groq停止・provider/model/Oracle追加0、sourceマージ/Engine公開/CLI採用NO-GO。[判定](engine073-v26-decision.ja.md)、[固定修正の検証](../evaluation/engine073-launch-development-v26-local-references/README.md)。
+候補 `26c98ad` の新規独立v27初回は **FAIL / NO_GO**。両API別 TP24 / FP0 / TN30 / FN6、Precision1.000 / Recall0.800 / F1 **0.888889**。安全性誤採用・運用失敗・欠測は各0だが、固定F1>=.90・Recall>=.85未達。joint54/60は診断。新99ファイル＋旧829＝928参照をbyte一致保存し、再実行/再採点/再ラベル0。原v26 F1 .846154/NO_GOも不変。候補の既存1400対照・元14・歴史597・全体1599PASS/0FAIL/既存ignore8、同ソース証拠head826c98dのCI19/19成功は別に保持。v27の6保留を含めた既知集合は1454/1460。5件typed_reference_not_excluded、025はunresolved_adverse_scopeと実経路で確認した。次は完全な印字属性・同じ局所role/owner・括弧内の限定訂正を共通処理し、未知/競合owner・対象/全体否定を維持して1460回帰を確認する。実資料向けには主張F1算術＋表示hash/UTF-8 span照合部品32検証を追加したが、完全意味scorer/M0ではない。実24問0/24・実回答F1未測定、Groq停止、sourceマージ/Engine公開/CLI採用NO-GO。[判定](engine073-v27-decision.ja.md)、[原初回](../evaluation/engine073-launch-independent-v27/README-results.md)、[主張採点準備](engine073-answer-metrics-development.ja.md)。
 
 | 順序 | 必要な証拠 | 現状 |
 | --- | --- | --- |
-| 1 | #520の対象/全体否定・未知owner保留、既知回帰と新規独立source gate | 26c98adの同じv26開発は60/60・両API F1=1.000/FP0・既知1400全成功、全体1599成功。元v26初回F1 .846154/NO_GO不変。新規v27は著作前固定/親レビュー待ち、未著作。元v25初回FAIL不変。[判定](engine073-v25-decision.ja.md)、全初回は不変 |
+| 1 | #520の対象/全体否定・未知owner保留、既知回帰と新規独立source gate | 26c98adの独立v27初回はF1 .888889/FP0/Recall .8、NO_GO。既知1454/1460の6保留を修正し新候補で回帰確認。全体1599/CI19成功は26cの別検証。元v25初回FAIL不変。[判定](engine073-v25-decision.ja.md)、全初回は不変 |
 | 2 | #540共有停止・永続reserve/inflight・キャンセル、actual host callback/dependency/数値予算、通常経路trace | #535/#537/#541 merge、47 offline controls/限定独立6境界PASS。新scorer・live callback/dependency/数値予算・外部containment・featureが働く経路は残件 |
 | 3 | 小規模offline開発確認、必要かつ別途開始条件を満たしたprovider確認 | 今回provider/model/Oracle追加0。旧v2/v3初回FAILを維持 |
 | 4 | 完全M0評価器/host/model/予算/品質基準を固定→別作成者の新実資料24問→全文/gold M1固定→同hostで0.6.1/後継を比較 | 実24問0/24、M0/M1未完了。重大違反0・陽性退行0・provider別完全結果・有用性改善と品質下限が必須 |

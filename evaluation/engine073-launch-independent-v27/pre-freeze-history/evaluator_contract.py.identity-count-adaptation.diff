@@ -1,0 +1,31 @@
+--- evaluator_contract.py.v26
++++ evaluator_contract.py.v27
+@@ -1,10 +1,10 @@
+-"""Frozen v26 evaluator contract; no Engine/provider execution on import."""
++"""Frozen v27 evaluator contract; no Engine/provider execution on import."""
+ from pathlib import Path
+ from datetime import datetime,timezone
+ import hashlib,json,os,subprocess
+ ROOT=Path(__file__).resolve().parent
+ REPO=ROOT.parent.parent
+-SOURCE='9082365ffecfafaa9ba0ac65ce56368ac77d4228'
++SOURCE='26c98adbec19f9e8ea0d46f260f080d4319a8e60'
+ VERSION='0.7.2'
+ POLICY_SHA='3a6d37e3fbf134f4a49677fdcd7de8b1b625739988a40e1c1e78b94978099767'
+ HELPER_SHA='00f6971900864ee9e89e4db6029d8196fabd0a4b6ab28e343f19506417735c6f'
+@@ -37,13 +37,13 @@
+   for n,h in fs.items():
+    if sha(d/n)!=h:raise ValueError('old_hash_changed:'+v+'/'+n)
+   total+=len(fs)
+- if total!=725:raise ValueError('old725_required')
++ if total!=824:raise ValueError('old824_required')
+  prep=load(root/'preserved-preparation-hashes.json')
+  if len(prep)!=5 or any(sha(root.parent.parent/n)!=h for n,h in prep.items()):raise ValueError('preparation_changed')
+  return total,len(prep)
+ def evaluator_integrity(root=ROOT):
+  freeze=load(root/'evaluator-freeze.json')
+- if freeze['identity']!='engine073-launch-independent-v26-pre-author':raise ValueError('wrong_M0_identity')
++ if freeze['identity']!='engine073-launch-independent-v27-pre-author':raise ValueError('wrong_M0_identity')
+  if any(sha(root/n)!=h for n,h in freeze['frozen_files'].items()):raise ValueError('M0_frozen_file_changed')
+  if not checked_artifacts(freeze['checked_artifacts']):raise ValueError('M0_artifact_changed')
+  if freeze['candidate']['source_sha']!=SOURCE or freeze['candidate']['package_version']!=VERSION:raise ValueError('wrong_M0_candidate')

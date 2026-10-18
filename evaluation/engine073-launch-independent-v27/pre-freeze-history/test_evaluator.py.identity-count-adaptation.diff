@@ -1,0 +1,45 @@
+--- test_evaluator.py.v26
++++ test_evaluator.py.v27
+@@ -6,7 +6,7 @@
+ from tempfile import TemporaryDirectory
+ from pathlib import Path
+ 
+-def base():return {'known_regressions_total':1340,'known_regressions_passed':1340,'original_audit_total':14,'original_audit_passed':14,'historical_byte_equivalent':True,'known_unfixed_critical_defects':[]}
++def base():return {'known_regressions_total':1400,'known_regressions_passed':1400,'original_audit_total':14,'original_audit_passed':14,'historical_byte_equivalent':True,'known_unfixed_critical_defects':[]}
+ def proof():return {'checks':{'unit_fixture_only':True},'labels_frozen_before_observation':True,'candidate_frozen_before_observation':True,'first_observation_immutable':True}
+ def fixtures(tp17=26,tp30=None,fp17=0,fp30=None):
+  if tp30 is None:tp30=tp17
+@@ -25,13 +25,13 @@
+  m0hash='0'*64;mh='1'*64;ah='2'*64;raw='3'*64;err='4'*64;ss='5'*64
+  m0files={'score.py':ss,'protocol.json':'6'*64};frozen=dict(m0files,**{'evaluator-freeze.json':m0hash,'cases.json':'a'*64,'inputs.json':'b'*64,'author_cases.py':'c'*64,'authoring-start.json':ah,'scope-review.json':'d'*64,'static-preflight.json':'e'*64})
+  artifacts={'probe_executable':{'path':'/private/tmp/unit-only-not-a-real-probe','sha256':'f'*64,'bytes':1}}
+- m0={'identity':'engine073-launch-independent-v26-pre-author','candidate':{'source_sha':SOURCE,'package_version':VERSION},'frozen_utc':'2000-01-01T00:00:00+00:00','frozen_files':m0files,'checked_artifacts':copy.deepcopy(artifacts)}
++ m0={'identity':'engine073-launch-independent-v27-pre-author','candidate':{'source_sha':SOURCE,'package_version':VERSION},'frozen_utc':'2000-01-01T00:00:00+00:00','frozen_files':m0files,'checked_artifacts':copy.deepcopy(artifacts)}
+  m={'candidate':{'source_sha':SOURCE,'package_version':VERSION},'frozen_utc':'2000-01-01T00:00:03+00:00','frozen_files':frozen,'checked_artifacts':artifacts,'authoring':{'evaluator_freeze_sha256':m0hash,'authoring_start_sha256':ah}}
+  guard={'manifest_sha256':mh,'frozen_files':copy.deepcopy(frozen),'head':SOURCE,'artifacts':{k:{'path':v['path'],'sha256':v['sha256']} for k,v in artifacts.items()}}
+  command=[artifacts['probe_executable']['path'],str(ROOT/'inputs.json')]
+  before={'state':'started','utc':'2000-01-01T00:00:04+00:00','command':command,'pre_invocation_identity':copy.deepcopy(guard)}
+  after={'state':'finished','utc':'2000-01-01T00:00:05+00:00','command':command,'pre_invocation_identity':copy.deepcopy(guard),'stdout_sha256':raw,'stderr_sha256':err}
+- return {'m0':m0,'manifest':m,'before':before,'after':after,'author_start':{'utc':'2000-01-01T00:00:01+00:00','evaluator_freeze_sha256':m0hash,'authorization_reference':'unit-fixture-only'},'score_start':{'identity':'engine073-launch-independent-v26','state':'started','utc':'2000-01-01T00:00:06+00:00','scorer_sha256':ss,'manifest_sha256':mh},'cases_header':{'evaluator_freeze_sha256':m0hash,'authoring_start_sha256':ah,'authored_utc':'2000-01-01T00:00:02+00:00'},'current_head':SOURCE,'artifacts_match':True,'M0_files_match':True,'M1_files_match':True,'M0_sha256':m0hash,'manifest_sha256':mh,'author_start_sha256':ah,'raw_sha256':raw,'stderr_sha256':err,'scorer_sha256':ss,'raw_readonly':True}
++ return {'m0':m0,'manifest':m,'before':before,'after':after,'author_start':{'utc':'2000-01-01T00:00:01+00:00','evaluator_freeze_sha256':m0hash,'authorization_reference':'unit-fixture-only'},'score_start':{'identity':'engine073-launch-independent-v27','state':'started','utc':'2000-01-01T00:00:06+00:00','scorer_sha256':ss,'manifest_sha256':mh},'cases_header':{'evaluator_freeze_sha256':m0hash,'authoring_start_sha256':ah,'authored_utc':'2000-01-01T00:00:02+00:00'},'current_head':SOURCE,'artifacts_match':True,'M0_files_match':True,'M1_files_match':True,'M0_sha256':m0hash,'manifest_sha256':mh,'author_start_sha256':ah,'raw_sha256':raw,'stderr_sha256':err,'scorer_sha256':ss,'raw_readonly':True}
+ 
+ class EvaluatorTests(unittest.TestCase):
+  @classmethod
+@@ -75,7 +75,7 @@
+   self.assertEqual((x['positive_passed'],x['negative_passed'],x['passed'],x['failed'],x['incomplete']),(0,0,0,0,60))
+   self.assertEqual(x['decision'],'NO_GO')
+  def test_known_regression_failure(self):
+-  b=base();b['known_regressions_passed']=1339;self.assertFalse(self.run_fixture(base=b)['summary']['gate']['gate_pass'])
++  b=base();b['known_regressions_passed']=1399;self.assertFalse(self.run_fixture(base=b)['summary']['gate']['gate_pass'])
+  def test_original_audit_failure(self):
+   b=base();b['original_audit_passed']=13;self.assertFalse(self.run_fixture(base=b)['summary']['gate']['gate_pass'])
+  def test_history_failure(self):
+@@ -140,7 +140,7 @@
+  def test_runtime_score_precedes_first_finish(self):
+   b=bundle();b['score_start']['utc']='2000-01-01T00:00:04+00:00';self.assertFalse(score.provenance(b)['first_observation_immutable'])
+  def test_checked_artifact_hash_and_size(self):
+-  with TemporaryDirectory(prefix='engine073-v26-pure-artifact-') as d:
++  with TemporaryDirectory(prefix='engine073-v27-pure-artifact-') as d:
+    f=Path(d)/'constructed-bytes';f.write_bytes(b'pure fixture, no runtime')
+    a={'unit':{'path':str(f),'sha256':sha(f),'bytes':f.stat().st_size}}
+    self.assertTrue(checked_artifacts(a));a['unit']['bytes']+=1;self.assertFalse(checked_artifacts(a));a['unit']['bytes']-=1;a['unit']['sha256']='changed';self.assertFalse(checked_artifacts(a))

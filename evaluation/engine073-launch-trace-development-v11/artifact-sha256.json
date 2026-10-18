@@ -1,0 +1,12 @@
+{
+  "README.md": "df07e0e2e2f1b57e2e281aff0dbc8d4fdd850afd3223d28bbc3a2993d3e350c7",
+  "command.stderr.txt": "6edd3f929d353760476ff52154ebc0a2660c490ea3e5e6c51209b0188b47f1d1",
+  "command.stdout.txt": "5fe94e40772faa7561a3f3a8d5d6b7085c7c8670d2c34303d19d3a3c301d6e31",
+  "engine073-launch-trace-source29_v27-identity.json": "3e27af07dd9fe82dc6799483cac4f7fbf0c69bd5dcaa29a280854524fde2d31a",
+  "engine073-launch-trace-source29_v27-instrumentation.patch": "76dd04f992b1bf68a49ff9a85c7bdcae17caa705d8a39f3ba01009ac21a4ad3a",
+  "instrument.py": "f255f1ab1888d109105b4e85fa29ed465ffbfc713ccd721da1c3fa077fc2ef94",
+  "instrumented-source.rs.gz": "e5211a1c3c847974b2e3a8313333dba1832928a29cb96fa11413941e279cb41d",
+  "invocation.json": "c0dfab94802e7d547fe0c504998422a61c3848d04b4fa5adbf5aaa9c3dae5284",
+  "parsed-traces.json": "ac92c66027f4cd141fa840a491fd4dc867f3f4f2297a687a011d007c29e4a0c1",
+  "summary.json": "9d518985c8ced0235c589776c07f8b8b4a08afd8258e806d21c50540704581c7"
+}

@@ -25,7 +25,7 @@
 
 [初回v2/v3の結果](engine07-realworld-development-results.ja.md)は不合格・不完全のままです。#535の診断保持・#537の停止制御・#541の共有runnerはmerge済みですが、live受入は未完了。Groqは記録済みの日次枯渇により追加起動を止めています。通常回答の改善と新規独立受入は未確認、採用1/6は開発比較・限界・NO-GO記録のみです。公開CLI0.5.5 / Engine0.6.1と#506の配布受入は別工程です。
 
-候補 `26c98ad` の同じ観測済みv26開発60件は両API別に TP30 / FP0 / TN30 / FN0、Precision/Recall/F1=1.000、両軸60/60。元初回 .846154→中間 .928571→1.000 は同じ集合の開発比較で、独立v26初回FAIL/NO_GOと原ラベル/scorerは不変。属性・所有者・局所参照の共通処理を修正し、既知1400/1400・元監査14成功、歴史597全出力byte一致、全体1599成功/失敗0/既存ignore8・strict workspace/all-targets Clippy/fmt確認。初回全体のlocalhost模擬通信5拒否は原ログを残し、同一sourceで実行条件修正後に全成功。次の独立v27は候補/評価器を著作前に固定し、親が純fixtureと実コードをレビューしてから初回1回だけ観測する。まだ未著作・未実行。元v26の99ファイル＋旧730＝829参照を保持。実24問0/24・実回答F1未測定・Groq停止・provider/model/Oracle追加0、sourceマージ/Engine公開/CLI採用NO-GO。[判定](engine073-v26-decision.ja.md)、[固定修正の検証](../evaluation/engine073-launch-development-v26-local-references/README.md)。
+候補 `26c98ad` の新規独立v27初回は **FAIL / NO_GO**。両API別 TP24 / FP0 / TN30 / FN6、Precision1.000 / Recall0.800 / F1 **0.888889**。安全性誤採用・運用失敗・欠測は各0だが、固定F1>=.90・Recall>=.85未達。joint54/60は診断。新99ファイル＋旧829＝928参照をbyte一致保存し、再実行/再採点/再ラベル0。原v26 F1 .846154/NO_GOも不変。候補の既存1400対照・元14・歴史597・全体1599PASS/0FAIL/既存ignore8、同ソース証拠head826c98dのCI19/19成功は別に保持。v27の6保留を含めた既知集合は1454/1460。5件typed_reference_not_excluded、025はunresolved_adverse_scopeと実経路で確認した。次は完全な印字属性・同じ局所role/owner・括弧内の限定訂正を共通処理し、未知/競合owner・対象/全体否定を維持して1460回帰を確認する。実資料向けには主張F1算術＋表示hash/UTF-8 span照合部品32検証を追加したが、完全意味scorer/M0ではない。実24問0/24・実回答F1未測定、Groq停止、sourceマージ/Engine公開/CLI採用NO-GO。[判定](engine073-v27-decision.ja.md)、[原初回](../evaluation/engine073-launch-independent-v27/README-results.md)、[主張採点準備](engine073-answer-metrics-development.ja.md)。
 
 ## 今できること
 

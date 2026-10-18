@@ -1,0 +1,16 @@
+{
+  "README.md": "ff36dbde65bbec54b1494e6db24c3e866289a18f971e07dd453e4a778094c6ab",
+  "claim_metrics.py": "bc8ea0f2564d46294caefb90eee8b5074185001392388dee79afd1e087e6314c",
+  "display_binding.py": "c8ac4f596b0a348b7e46627e60a11523550d55e6b5ccde91c5a6be862d22db1f",
+  "test_claim_metrics.py": "e8659e7727fec7cbad0cad7cf2dad6703e484b4020e7936d8da09119674e16d5",
+  "test_display_binding.py": "b51b612accc26fb9c641a954e37e0a07dd10e7892e71bad1443556124c161758",
+  "tests-final.stderr.txt": "3bf3dcb23d8319d25c4132ef3e01cc52f75d0c904fb64fd28ad524b0370f95eb",
+  "tests-final.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "tests-span-binding.stderr.txt": "34fcf5b4640d2414291bf44d81a316e1d6aaa995c482f94c3b12fc1ee0bc20c4",
+  "tests-span-binding.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "tests.stderr.txt": "fc5c0f38c9e73da93ea297ee596b4869397292b62abbe91cf75523934f8cc4d3",
+  "tests.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "validation-final.json": "85cff3dfbc8ee66fd7be407031e0951e9df7190755f4c61d6afaa9ad3dd79f24",
+  "validation-span-binding.json": "9e35c791888ca2232b1c53f22fb7d5b12569491c471e8258d225beb58b3d1b98",
+  "validation.json": "21d97efdf7a0880664743988d173e54a041ff3029bbcb5870250dc7cd8f85d05"
+}
