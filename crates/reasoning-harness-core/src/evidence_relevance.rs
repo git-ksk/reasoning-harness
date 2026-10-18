@@ -5715,6 +5715,8 @@ fn launch_typed_objects_v17(
             let nominal_foreign_event = value
                 .strip_prefix("the launch of ")
                 .or_else(|| value.strip_prefix("the release of "))
+                .or_else(|| value.strip_prefix("launch of "))
+                .or_else(|| value.strip_prefix("release of "))
                 .is_some_and(launch_named_subject_v17);
             let explicit_event = nominal_foreign_event
                 || words.windows(2).any(|pair| {
@@ -6294,10 +6296,7 @@ fn launch_typed_reference_v17(
     });
     // An explicit foreign event owner is not an unspecified reference to a
     // typed property elsewhere in the source. Named roles still bind first.
-    if label.is_none()
-        && previous_role.is_none()
-        && launch_retraction_other_object_v17(policy, statement)
-    {
+    if label.is_none() && launch_retraction_other_object_v17(policy, statement) {
         return None;
     }
     let selected_label = label.or(previous_role.as_deref());
@@ -15025,6 +15024,13 @@ mod tests {
 
     #[test]
     fn v30_gerund_target_denials_cannot_inherit_copular_property_scope() {
+        for context in [
+            "The Object is the green color of the tamper seal on Silver Lens. We withdraw that Object before denying the separate claim that Violet Bell was launched.",
+            "The Object is the green color of the tamper seal on Silver Lens. We withdraw that Object, although we also deny the separate claim that Violet Bell was launched.",
+            "Item: launch of Violet Bell. We deny the event claim represented by this Item.",
+        ] {
+            check_current_role_context(context, true);
+        }
         for clause in [
             "while denying that Silver Lens was launched",
             "before denying the claim that Silver Lens was launched",
