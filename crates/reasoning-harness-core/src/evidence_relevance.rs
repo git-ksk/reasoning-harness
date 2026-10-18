@@ -2999,6 +2999,7 @@ fn launch_retraction_word_v17(word: &str) -> bool {
         "deny",
         "denies",
         "denied",
+        "denying",
         "withdraw",
         "withdraws",
         "withdrew",
@@ -3172,6 +3173,11 @@ fn launch_retraction_other_object_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     statement: &str,
 ) -> bool {
+    let gerund = statement
+        .trim()
+        .strip_prefix("denying ")
+        .map(|body| format!("We deny {body}"));
+    let statement = gerund.as_deref().unwrap_or(statement);
     let statement = if target_identity_phrases(policy)
         .iter()
         .any(|target| normalized_phrase_matches(statement, target))
@@ -3284,6 +3290,8 @@ fn launch_retraction_other_object_v17(
                         "",
                         "our claim ",
                         "the claim ",
+                        "the separate claim ",
+                        "a separate claim ",
                         "our statement ",
                         "the statement ",
                         "this claim ",
@@ -5349,6 +5357,12 @@ fn launch_owner_frame_role_v17(label: &str) -> Option<Option<&str>> {
             .contains(word)
         })
         .map_or(words.as_slice(), |(_, rest)| rest);
+    let short = statement_words
+        .strip_prefix(&["the"])
+        .unwrap_or(statement_words);
+    if let [role @ ("object" | "subject" | "item"), "owner"] = short {
+        return Some(Some(role));
+    }
     if let [
         "owner",
         "statement",
@@ -5464,10 +5478,45 @@ fn launch_quoted_claim_property_v17(
 
 // Reply labels are syntactic wrappers, not trust authority. Every complete
 // same-role owner declaration inside one participates in uniqueness checks.
+fn launch_complete_foreign_role_owner_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    value: &str,
+) -> Option<String> {
+    if let Some(owner) = launch_complete_quoted_foreign_event_owner_v17(policy, value) {
+        return Some(owner);
+    }
+    let body = launch_complete_assertion_body_v17(value);
+    let owner = [
+        " was launched",
+        " was released",
+        " was not launched",
+        " was not released",
+    ]
+    .iter()
+    .find_map(|suffix| body.strip_suffix(suffix))
+    .or_else(|| {
+        [
+            "the launch of ",
+            "the release of ",
+            "launch of ",
+            "release of ",
+        ]
+        .iter()
+        .find_map(|prefix| body.strip_prefix(prefix))
+    })?;
+    (launch_named_subject_v17(owner)
+        && !target_identity_phrases(policy)
+            .iter()
+            .any(|target| normalized_phrase_matches(owner, target)))
+    .then(|| normalized(owner))
+}
+
 fn launch_owner_reply_label_v17(label: &str) -> bool {
     let text = normalized(label);
     let words = text.split_whitespace().collect::<Vec<_>>();
-    words == ["reply"]
+    matches!(words.as_slice(), [actor,"statement"] if ["author","editor","publisher"].contains(actor))
+        || matches!(words.as_slice(), [kind,actor,"reply"|"statement"] if ["immediate","first","second","third","additional","another","alternative","competing","subsequent"].contains(kind) && ["author","editor","publisher"].contains(actor))
+        || words == ["reply"]
         || matches!(words.as_slice(), [kind,"reply"] if ["author","editor","publisher","first","second","third","fourth","fifth","additional","another","alternative","competing","further","subsequent"].contains(kind))
 }
 
@@ -5511,7 +5560,16 @@ fn launch_typed_objects_v17(
                         segment.raw.as_str()
                     }
                 });
-            if let Some((label, value)) = raw.split_once(':') {
+            let copular_role = raw.to_ascii_lowercase().find(" is ").and_then(|index| {
+                let label = normalized(&raw[..index]);
+                let role = label.strip_prefix("the ").unwrap_or(&label);
+                ["object", "subject", "item"]
+                    .contains(&role)
+                    .then(|| (role.to_owned(), raw[index + 4..].trim().to_owned()))
+            });
+            if let Some(declaration) = copular_role {
+                declarations.push(declaration);
+            } else if let Some((label, value)) = raw.split_once(':') {
                 let label = normalized(label);
                 let value =
                     if value.trim().is_empty() && launch_owner_frame_role_v17(&label).is_some() {
@@ -5580,8 +5638,7 @@ fn launch_typed_objects_v17(
                 return None;
             }
             let mut scope = launch_typed_object_scope_v17(policy, value);
-            if let Some(event_owner) = launch_complete_quoted_foreign_event_owner_v17(policy, value)
-            {
+            if let Some(event_owner) = launch_complete_foreign_role_owner_v17(policy, value) {
                 if owners
                     .iter()
                     .filter(|(role, _)| role.is_none() || *role == Some(label.as_str()))
@@ -6400,6 +6457,20 @@ fn launch_typed_reference_v17(
     let mut tail = &words[verb + 1..];
     if label.is_some() && tail.starts_with(&["the", "accuracy", "of"]) {
         tail = &tail[3..];
+    }
+    if label.is_some() {
+        // A finite claim wrapper points to the already selected role; it
+        // supplies no event ownership or scope of its own.
+        for prefix in [
+            &["the", "event", "claim", "represented", "by"][..],
+            &["the", "claim", "represented", "by"][..],
+            &["the", "statement", "represented", "by"][..],
+        ] {
+            if let Some(rest) = tail.strip_prefix(prefix) {
+                tail = rest;
+                break;
+            }
+        }
     }
     let plain_tail = tail.iter().all(|word| {
         [
@@ -14823,6 +14894,150 @@ pub fn parse_evidence_relevance_proposal(
 #[cfg(test)]
 mod tests {
     use super::*;
+    fn check_current_role_context(context: &str, expected: bool) {
+        let policy = launch_policy_for_v28();
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "Silver Lens was launched.",
+            ),
+            (EvidenceRelevanceSignalKind::Excerpt, context),
+        ]);
+        assert_eq!(
+            derive_effective_evidence_local_qualification_v17(
+                &policy,
+                &local,
+                Some(&proposal),
+                Some(&raw)
+            )
+            .unwrap()
+            .relation_scope
+                == EvidenceLocalRelationScope::RequestedRelation,
+            expected,
+            "v17: {context}"
+        );
+        assert_eq!(
+            materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                .unwrap()
+                .disposition
+                == EvidenceRelevanceDisposition::Relevant,
+            expected,
+            "v30: {context}"
+        );
+    }
+
+    #[test]
+    fn v30_copular_roles_preserve_property_and_target_denial_boundaries() {
+        for declaration in ["Object: ", "The Object is ", "Object is "] {
+            for (value, expected) in [
+                ("the green color of the tamper seal on Silver Lens", true),
+                ("the claim that Silver Lens was launched", false),
+                ("an unknown launch claim", false),
+            ] {
+                check_current_role_context(
+                    &format!("{declaration}{value}. We deny the claim about this Object."),
+                    expected,
+                );
+            }
+        }
+        check_current_role_context(
+            "The Object is the green color of the tamper seal on Silver Lens. We deny the claim represented by this Object.",
+            true,
+        );
+        check_current_role_context(
+            "The Object is the claim that Silver Lens was launched. We deny the claim represented by this Object.",
+            false,
+        );
+    }
+
+    #[test]
+    fn v30_copular_role_owners_cannot_be_borrowed_or_conflicted() {
+        for (context, expected) in [
+            (
+                "The Object is a launch claim. Object owner: Violet Bell. We withdraw the claim represented by this Object.",
+                true,
+            ),
+            (
+                "The Object is a launch claim. Object owner: Silver Lens. We withdraw the claim represented by this Object.",
+                false,
+            ),
+            (
+                "The Object is a launch claim. Object owner: unknown. We withdraw the claim represented by this Object.",
+                false,
+            ),
+            (
+                "The Object is a launch claim. Object owner: Violet Bell. Second Object owner: Cedar Basket. We withdraw this Object.",
+                false,
+            ),
+            (
+                "The Object is a launch claim. Subject owner: Violet Bell. We withdraw this Object.",
+                false,
+            ),
+            (
+                "The Object is the claim that Violet Bell was launched. Object owner: Cedar Basket. We withdraw this Object.",
+                false,
+            ),
+            (
+                "The Object is the claim that Violet Bell was launched. Object owner: Silver Lens. We withdraw this Object.",
+                false,
+            ),
+            (
+                "The Object is the claim that Violet Bell was launched. Object owner: Violet Bell. We withdraw this Object.",
+                true,
+            ),
+        ] {
+            check_current_role_context(context, expected);
+        }
+    }
+
+    #[test]
+    fn v30_immediate_and_competing_role_replies_keep_same_owner_checks() {
+        for (context, expected) in [
+            (
+                "The Object is a launch claim. Immediate author reply: Object owner is Violet Bell. We deny that Object.",
+                true,
+            ),
+            (
+                "The Object is a launch claim. Immediate author reply: Object owner is Violet Bell. Second author reply: Object owner is Silver Lens. We deny that Object.",
+                false,
+            ),
+            (
+                "The Object is a launch claim. Immediate author reply: Subject owner is Violet Bell. We deny that Object.",
+                false,
+            ),
+            (
+                "Author statement: The Subject is the green color of the tamper seal on Silver Lens. Author reply: We withdraw the assertion about this Subject.",
+                true,
+            ),
+        ] {
+            check_current_role_context(context, expected);
+        }
+    }
+
+    #[test]
+    fn v30_gerund_target_denials_cannot_inherit_copular_property_scope() {
+        for clause in [
+            "while denying that Silver Lens was launched",
+            "before denying the claim that Silver Lens was launched",
+        ] {
+            check_current_role_context(
+                &format!(
+                    "The Object is the green color of the tamper seal on Silver Lens. We withdraw that Object {clause}."
+                ),
+                false,
+            );
+        }
+    }
+
     #[test]
     fn v30_possessive_property_conjunction_requires_complete_same_component_scope() {
         let policy = launch_policy_for_v28();
