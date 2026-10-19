@@ -1,0 +1,10 @@
+{
+  "name": "existing-trace-inmemory4",
+  "tests_run": 4,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "successful": true,
+  "elapsed_seconds": 0.0010293330997228622,
+  "Engine_provider_model_network_Oracle_real_cohort_scorer_calls": 0
+}

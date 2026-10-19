@@ -1,0 +1,137 @@
+name: engine073-realworld-independent-v1
+on:
+  pull_request:
+    paths:
+      - 'evaluation/engine073-realworld-evaluator-v1/**'
+      - '.github/workflows/engine073-realworld-independent-v1.yml'
+  push:
+    tags:
+      - 'engine073-realworld-m0-build-v*'
+      - 'engine073-realworld-independent-v1-freeze'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  static:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - run: python3 -B -m unittest discover -s evaluation/engine073-realworld-evaluator-v1 -p 'test_*.py' -v
+      - run: python3 -c "import pathlib; [compile(p.read_text(),str(p),'exec') for p in pathlib.Path('evaluation/engine073-realworld-evaluator-v1').glob('*.py')]"
+  m0-runtime:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/engine073-realworld-m0-build-v')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Build exact paired non-test hosts inside one builder
+        run: |
+          set -euo pipefail
+          mkdir /tmp/paired-build /tmp/runtime-context /tmp/m0-artifact
+          docker build -f evaluation/engine073-realworld-evaluator-v1/Dockerfile.build -t engine073-builder .
+          docker run --rm -v "$GITHUB_WORKSPACE:/repo:ro" -v /tmp/paired-build:/build engine073-builder python3 /repo/evaluation/engine073-realworld-evaluator-v1/build.py --repo /repo --work-dir /build/paired --fetch-dependencies
+          python3 evaluation/engine073-realworld-evaluator-v1/assemble_image.py --repo . --bin-dir /tmp/paired-build/paired/bin --context /tmp/runtime-context
+          docker build -f evaluation/engine073-realworld-evaluator-v1/Dockerfile.runtime -t engine073-runtime /tmp/runtime-context
+          docker image inspect engine073-runtime > /tmp/m0-artifact/image-inspect.json
+          docker image save engine073-runtime | gzip -1 > /tmp/m0-artifact/runtime-image.tar.gz
+          sha256sum /tmp/m0-artifact/runtime-image.tar.gz > /tmp/m0-artifact/runtime-image.sha256
+          cp /tmp/paired-build/paired/bin/identity.json /tmp/m0-artifact/paired-host-identity.json
+      - name: Verify actual runtime loopback controls without provider credentials
+        run: |
+          set -euo pipefail
+          mkdir /tmp/runtime-controls
+          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/runtime-controls:/output engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/preflight.py --bin-dir /eval/bin --output /output/loopback
+          docker run --rm --read-only --network none --tmpfs /tmp engine073-runtime python3 -B -m unittest discover -s /repo/evaluation/engine073-realworld-evaluator-v1 -p 'test_*.py' -v > /tmp/runtime-controls/scorer.stdout 2> /tmp/runtime-controls/scorer.stderr
+          cp -R /tmp/runtime-controls /tmp/m0-artifact/
+      - name: Preserve build logs including failures
+        if: always()
+        run: |
+          mkdir -p /tmp/m0-artifact/build-logs
+          find /tmp/paired-build -maxdepth 2 -type f \( -name '*stderr' -o -name '*jsonl' \) -exec cp {} /tmp/m0-artifact/build-logs/ \;
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: engine073-realworld-M0-runtime-${{ github.run_id }}
+          path: /tmp/m0-artifact/
+          if-no-files-found: error
+          retention-days: 30
+  live:
+    if: github.event_name == 'push' && github.ref == 'refs/tags/engine073-realworld-independent-v1-freeze' && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 220
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        provider: [mistral, google, groq]
+    concurrency:
+      group: ${{ matrix.provider == 'mistral' && 'reasoning-harness-mistral-live' || format('engine07-realworld-{0}-live', matrix.provider) }}
+      cancel-in-progress: false
+    name: first-${{ matrix.provider }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Verify unique first identity and download the reviewed M0 runtime
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = 1
+          gh api 'repos/${{ github.repository }}/actions/runs?event=push&head_sha=${{ github.sha }}&per_page=100' > /tmp/run-reservation.json
+          python3 - <<'PYGUARD'
+          import json,os
+          runs=json.load(open('/tmp/run-reservation.json'))['workflow_runs']
+          matching=[r for r in runs if r['path']=='.github/workflows/engine073-realworld-independent-v1.yml']
+          assert len(matching)==1 and str(matching[0]['id'])==os.environ['GITHUB_RUN_ID']
+          PYGUARD
+          artifact_id=$(python3 -c "import json; print(json.load(open('evaluation/engine073-realworld-M0-v1/receipt.json'))['runtime_artifact_id'])")
+          gh api "repos/${{ github.repository }}/actions/artifacts/$artifact_id/zip" > /tmp/runtime.zip
+          mkdir /tmp/m0-runtime /tmp/frozen /tmp/results
+          unzip -q /tmp/runtime.zip -d /tmp/m0-runtime
+          docker load -i /tmp/m0-runtime/runtime-image.tar.gz
+          image_id=$(docker image inspect engine073-runtime --format '{{.Id}}')
+          cp evaluation/engine073-realworld-M0-v1/receipt.json /tmp/frozen/M0.json
+          cp -R evaluation/engine073-realworld-independent-v1-input /tmp/frozen/corpus
+          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/m0-runtime:/image:ro engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/verify_M0.py --receipt /frozen/M0.json --image-archive /image/runtime-image.tar.gz --actual-image-id "$image_id" --repo /repo
+          m1=$(sha256sum /tmp/frozen/corpus/manifest.json | cut -d' ' -f1)
+          docker run --rm --read-only --tmpfs /tmp -v /tmp/frozen:/frozen engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/prepare_sources.py --corpus-dir /frozen/corpus --M1-sha256 "$m1"
+          recovery=()
+          if test '${{ matrix.provider }}' = groq; then
+            cp evaluation/engine073-realworld-M0-v1/groq-recovery.json /tmp/frozen/groq-recovery.json
+            recovery=(--groq-recovery-file /frozen/groq-recovery.json)
+          fi
+          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen -v /tmp/results:/output engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/make_plan.py --M0-receipt /frozen/M0.json --corpus-dir /frozen/corpus --M1-sha256 "$m1" --provider '${{ matrix.provider }}' --output /output/plan.json "${recovery[@]}"
+          chmod -R a-w /tmp/frozen
+      - name: First live lane with external container containment
+        env:
+          MISTRAL_API_KEY: ${{ matrix.provider == 'mistral' && secrets.MISTRAL_API_KEY || '' }}
+          GEMINI_API_KEY: ${{ matrix.provider == 'google' && secrets.GEMINI_API_KEY || '' }}
+          GROQ_API_KEY: ${{ matrix.provider == 'groq' && secrets.GROQ_API_KEY || '' }}
+        run: |
+          set -euo pipefail
+          name=engine073-first-${{ matrix.provider }}-${{ github.run_id }}
+          trap 'docker rm -f "$name" >/dev/null 2>&1 || true' EXIT INT TERM
+          timeout --signal=INT --kill-after=5s 200m docker run --name "$name" --read-only --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/results:/output -e MISTRAL_API_KEY -e GEMINI_API_KEY -e GROQ_API_KEY engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/run_lane.py --plan /output/plan.json --output /output/lane --protocol /repo/evaluation/engine073-realworld-evaluator-v1/protocol.json
+      - name: Collect complete and incomplete observation bytes without scoring
+        if: always()
+        run: |
+          set -euo pipefail
+          test -f /tmp/results/lane/plan.json || exit 0
+          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/results:/output engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/collect.py --corpus-dir /frozen/corpus --provider '${{ matrix.provider }}' --lane /output/lane --output /output/observations
+      - name: Stop any remaining contained processes
+        if: always()
+        run: docker rm -f engine073-first-${{ matrix.provider }}-${{ github.run_id }} >/dev/null 2>&1 || true
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: engine073-realworld-first-${{ matrix.provider }}-${{ github.run_id }}
+          path: |
+            /tmp/results/
+            /tmp/run-reservation.json
+          if-no-files-found: warn
+          retention-days: 30

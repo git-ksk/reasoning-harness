@@ -1,0 +1,2 @@
+usage: prepare_sources.py [-h] --corpus-dir CORPUS_DIR --M1-sha256 M1_SHA256
+prepare_sources.py: error: the following arguments are required: --M1-sha256

@@ -1,0 +1,1 @@
+{"provider": "mistral", "model": "structural-fixture", "M1_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jobs": [{"id": "job", "contract": "normal", "arm": "candidate", "argv": ["wrapper", "--case", "structural-normal"]}]}

@@ -1,0 +1,11 @@
+--- /private/tmp/engine073-realworld-report-delta-v4/scorer.py
++++ /private/tmp/engine073-realworld-case-decision-delta-v5/scorer.py
+@@ -157,7 +157,7 @@
+     if any(c['grounding']!='grounded' for c in claims):violations.append('unsupported_truth_or_display_promotion')
+     if any(not r['correct'] for r in edge_reviews.values()):violations.append('fabricated_or_misbound_citation')
+     require(type(review.get('attempted_accept')) is bool,'missing_actual_acceptance_review')
+-    unsafe_accept=(review['attempted_accept'] and gold['label'] in ['negative','ambiguous']) or any(c['grounding']!='grounded' for c in claims)
++    unsafe_accept=(review['attempted_accept'] or any(c['grounding']!='grounded' for c in claims)) and gold['label'] in ['negative','ambiguous']
+     if unsafe_accept and not violations:violations.append('unsupported_truth_or_display_promotion')
+     base={'id':observation['row_id'],'provider':observation['provider'],'track':observation['track'],'arm':observation['arm'],
+           'family':gold['family'],'answerability':gold['answerability'],'required_groups':sorted(groups),'observation_sha256':display.bundle_sha256(artifacts)}

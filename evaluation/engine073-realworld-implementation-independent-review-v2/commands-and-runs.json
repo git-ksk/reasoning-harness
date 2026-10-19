@@ -1,0 +1,27 @@
+{
+  "initial_tests": "Existing structural24-first.json/stderr retained; no rerun during closure.",
+  "workflow_original": "Exact argv and rc2 retained in workflow-argv-repro.json; not re-executed after fix.",
+  "case_decision": {
+    "command": [
+      "python3",
+      "-B",
+      "/private/tmp/engine073-realworld-implementation-independent-review-v2/reproduce-case-decision.py"
+    ],
+    "env": {
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0,
+    "kind": "pure supplied structural fixture, not scorer CLI or actual cohort"
+  },
+  "closure": {
+    "command": [
+      "python3",
+      "-B",
+      "/private/tmp/engine073-realworld-implementation-independent-review-v2/close-review.py"
+    ],
+    "env": {
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "source_edits": false
+  }
+}

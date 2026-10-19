@@ -1,0 +1,1 @@
+{"sources": {"s": {"quote": "Inert bytes.", "context_summary": "structural only", "document_id": "d", "url": "https://fixture.invalid/", "locator": "unit", "source_version": "v", "origin_group": "o", "scope": {"product": "unit"}, "synthetic_mutation": false, "reference_facts": {"expected.key": "yes"}, "retrieved_at_unix_seconds": 100}}}

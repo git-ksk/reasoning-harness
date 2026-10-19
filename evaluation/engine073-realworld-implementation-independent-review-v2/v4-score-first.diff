@@ -1,0 +1,20 @@
+--- /private/tmp/engine073-realworld-evaluator-review-snapshot-v2/score_first.py
++++ /private/tmp/engine073-realworld-report-delta-v4/score_first.py
+@@ -20,7 +20,7 @@
+                 g=records[case['id']+'/'+track]
+                 for arm in ['baseline','candidate']:
+                     opaque=sha((a.M1_sha256+'|'+provider+'|'+case['id']+'|'+track+'|'+arm).encode())[:24]
+-                    planned.append({'id':case['id'],'row_id':opaque,'provider':provider,'track':track,'arm':arm,'expected':g['label'],'required_groups_G':len(g['groups'])})
++                    planned.append({'id':case['id'],'row_id':opaque,'provider':provider,'track':track,'arm':arm,'expected':g['label'],'family':g['family'],'required_groups_G':len(g['groups'])})
+                     op=a.observations/(opaque+'.json');rp=a.reviews/(opaque+'.json')
+                     if not op.exists() or not rp.exists():continue
+                     observation=read(op);review=read(rp)
+@@ -42,7 +42,7 @@
+             ratios[name]=(cand-base if name=='mean_logical_calls' else cand/base) if base is not None and base>0 and cand is not None else None
+         ok=len(pairs)==24 and ratios['mean_logical_calls'] is not None and ratios['mean_logical_calls']<=1 and ratios['aggregate_total_tokens'] is not None and ratios['aggregate_total_tokens']<=1.25 and ratios['p95_wall_ratio'] is not None and ratios['p95_wall_ratio']<=1.5
+         runtime[provider]={'paired_complete_cases':len(pairs),'ratios':ratios,'efficiency_gate_pass':ok};runtime_pass &= ok
+-    report.update(runtime_efficiency=runtime,annotation_failures=errors,semantic_review_authority='independent agent, no human attestation',small_sample='descriptive correlated24-task sample; no population accuracy guarantee')
++    report.update(source_denominators={'cases':len(data['cases']),'unique_documents':len(data['documents']),'unique_products':len({d['product'] for d in data['documents'].values()}),'origin_groups':len({s['origin_group'] for s in data['sources'].values()})},runtime_efficiency=runtime,annotation_failures=errors,semantic_review_authority='independent agent, no human attestation',small_sample='descriptive correlated24-task sample; no population accuracy guarantee')
+     report['acceptance']='GO_FOR_DECLARED_QUALITY_SCOPE_ONLY' if report['semantic_gate_pass'] and runtime_pass and not errors else 'NO_GO'
+     report['source_merge_release_CLI_distribution']='SEPARATE_GATES_NOT_APPROVED_BY_THIS_REPORT'
+     dump(a.output/'rows.json',scored);dump(a.output/'report.json',report)

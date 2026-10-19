@@ -1,0 +1,7 @@
+{
+  "common_host_core_tree": "fa32450addcbe9dfa3ad74f6ef8e94fbc7eda119",
+  "baseline_tag_core_tree": "fa32450addcbe9dfa3ad74f6ef8e94fbc7eda119",
+  "candidate_core_tree": "535d2f1ad21457905fa43722c74510de59015695",
+  "baseline_source_tree_matches_current_fixed_host": true,
+  "lookup": "git rev-parse <pinned commit>:crates/reasoning-harness-core; no implementation contents read or Git mutation"
+}

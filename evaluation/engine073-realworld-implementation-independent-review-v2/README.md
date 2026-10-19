@@ -1,0 +1,5 @@
+限定独立再レビューを閉鎖しました。既知境界の修正と別提供v3/v4/v5差分を合わせたコードレビューはPASSです。元v2のworkflow必須引数欠落(rc2)と、未根拠positiveがcase TPになる反例はそのまま保存しています。v3は前者を静的に修正、v5は後者を8件の純構造対照で修正確認しました。独立実行した既存24構造試験は全PASSです。v4のbaseline/family別P/R/F1・引用分母nullの集計は記述追加で、合否gateを変更していません。
+
+これは完全M0や本評価のPASSではありません。実Linux image/digestとdependency closure、実ホストloopback、予算・停止の実callback経路、Groq回復は独立未検証です。新精度ケース、gold、Engine精度観測、実cohort scorer、provider/model/network/Oracle呼出しは0です。親が実装を統合し完全M0を固定するまで、新24問著作や実行は開始しません。
+
+旧928参照(うちprep5)、元v1レビュー65ファイル、旧公開部品、v2全28入力とv3/v4/v5のmanifest/hashを再照合しました。原firstと既存スコアは変更していません。入力・diff・再現・原出力・レビューの全hashは自己除外artifact-manifest.jsonに保存し、全ファイルをread-only化しています。

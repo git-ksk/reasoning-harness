@@ -1,0 +1,75 @@
+{
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": "expected.key = yes"
+    }
+  ],
+  "display_citations": [],
+  "acquired_source_ids": [
+    "s"
+  ],
+  "admitted_source_ids": [
+    "s"
+  ],
+  "admission_routes": {
+    "e": {
+      "source_id": "s",
+      "admission_sequence": 2,
+      "metadata": {
+        "scope": {
+          "product": {
+            "kind": "values",
+            "values": [
+              "unit"
+            ]
+          }
+        },
+        "provenance_class": "primary",
+        "temporal": {
+          "effective_from_unix_seconds": 100,
+          "effective_until_unix_seconds": 200
+        }
+      }
+    }
+  },
+  "internal_claims": [
+    {
+      "id": "claim",
+      "state": "supported",
+      "proposition": {
+        "key": "expected.key",
+        "value": "yes"
+      },
+      "evidence_ids": [
+        "e"
+      ]
+    }
+  ],
+  "verification_receipts": [
+    {
+      "id": "receipt",
+      "claim_id": "claim",
+      "proposition": {
+        "key": "expected.key",
+        "value": "yes"
+      },
+      "conclusion": "supported",
+      "evidence_ids": [
+        "e"
+      ],
+      "verifier": "structured_fact_equality"
+    }
+  ],
+  "usage": {
+    "generations": 1,
+    "input_tokens": 12,
+    "output_tokens": 2,
+    "total_tokens": 14,
+    "provider_attempts": 1,
+    "logical_model_operations": 1
+  },
+  "terminal_status": "grounded_answer",
+  "ordinary_feature_effect": "not inferred from dependency version"
+}

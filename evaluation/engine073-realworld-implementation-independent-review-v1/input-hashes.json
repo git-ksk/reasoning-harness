@@ -1,0 +1,27 @@
+{
+  "snapshot": "/private/tmp/engine073-realworld-evaluator-review-snapshot-v1",
+  "manifest_sha256": "df60b2df43ae40f5f494f79b271f7ab41c23ad374a0bc4ce4640a5d654299ac9",
+  "files": {
+    "build.py": "89a0348a75720ba6dcf52f1603540cc357ebcb1761ea6d64d62c0659cf4f6d23",
+    "collect.py": "be6d46791cf9dfbe39070102140b6a788fb612eae1cec8540ccc2b5634d86d03",
+    "run_lane.py": "ec6a00a4488698347a6f662f305cb62aa4427d4900ada40d7ac3dcfa027cce6c",
+    "prepare_sources.py": "5a998ab660bd6f3143a2265bd9ba1bc6737f6403b6ec6cbb7181946b2cf33b2a",
+    "source_host.rs": "b1f7a441827fe3aa49f90fece55a735bf810a0a8e47f3ba0857a6a9710d8345f",
+    "audit_probe.rs": "3c3176575dbcd4927210fa0d9893af0612fead217b6c962d89aeb0ab3a7496b3",
+    "audit.rs": "20fac0d979e1de4b9c863d66871c32faf87145b04f408af4572f1cfee571c87d",
+    "Dockerfile.runtime": "da2f09c9e295db0676f9b51e2a409d1287f0e36c0027614b2a1d4d8453dbe4a4",
+    "make_plan.py": "6b53fc6c4ed18e42846d5ef9a233dc1caf598977b0e6b42701b8affc3a5fd7ed",
+    "test_scorer.py": "b072c57f9eb29a3c27df5f5085121fc93b8fc554cbb5a3f4744bc01156fe97bc",
+    "capture.py": "c7b4f75ba139f90cd7678db121bf5253e5f343d841b51f91573a070c17f687d0",
+    "resolver.py": "31bf96227a424f583f34276ad7f1c89ede7436d230390130002980d21790be6a",
+    "protocol.json": "f23f94853b175ddc85167b748a56504c40231ad0a3e7b25e2dcd468e12427be3",
+    "run_task.py": "f7c9ab710fa97bb4d6de987895e7f6d55d9840d1b242b9fed49c969dd7c2623c",
+    "verify_M0.py": "c088d9878aaa627c67daab41f0175f2415c82829486ee82b788276de0cd18950",
+    "adviser.rs": "055b1384751d329aef7a885219fb19218f3b329902784a7270f750c487724df0",
+    "corpus.py": "dcb0705a7508123b674d5126b7362323e317e1bf538e9c3eea82d2142c10a395",
+    "score_first.py": "cdbd6bb672024dcec37f30169f1eca158c7c1ebee826dc62db52fa567177fa75",
+    "preflight.py": "77465f920bf4afff75b91117ad4ff2806ad31c6ccdff2b5e9d403231dcb9118b",
+    "scorer.py": "b5f131a9a18f86ee6fd5bc80a3be3a360a6f3ec298d204331796d4415afd880c",
+    "Dockerfile.build": "7badf230a1ec1c909e0d51d31be105943e2ac8fd16e95fca43d195ad43be6843"
+  }
+}

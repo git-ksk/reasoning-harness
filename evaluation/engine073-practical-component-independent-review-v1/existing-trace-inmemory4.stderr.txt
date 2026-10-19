@@ -1,0 +1,9 @@
+test_raw_and_normalized_snapshot_changes_fail (test_trace_binding.FullSnapshotBinding.test_raw_and_normalized_snapshot_changes_fail) ... ok
+test_raw_normalization_and_exact_quote_chain (test_trace_binding.FullSnapshotBinding.test_raw_normalization_and_exact_quote_chain) ... ok
+test_wrong_locator_version_and_quote_are_rejected (test_trace_binding.FullSnapshotBinding.test_wrong_locator_version_and_quote_are_rejected) ... ok
+test_duplicate_json_keys_are_rejected (test_trace_binding.CaptureBinding.test_duplicate_json_keys_are_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+OK

@@ -1,0 +1,16 @@
+{
+  "identity": "engine073-realworld-implementation-independent-review-v2",
+  "closed_utc": "2026-10-19T04:39:06.380863+00:00",
+  "author": "/root/engine07_realworld_independent",
+  "scope": "Known structural repair verification and supplied static deltas only; no new accuracy corpus or observations.",
+  "input_manifest_sha256": "0e6cfbd4413d9b62323935c1b4a3d0425dd5690954e551d42af7518db5c4d3a5",
+  "delta_manifests": {
+    "v3": "6676873340bb9589a273322411aeafad367ea15edd9c4dde64594452788c7998",
+    "v4": "6529d379d1e4d8b32c931953a1920070b01f28b7f9add5c8193079d9dfaa9160",
+    "v5": "048333aa09b05946b34898f779e3b18a5cab198f99e5e3826bc94f1d4afd9a3a"
+  },
+  "preserved_first_artifacts": true,
+  "no_actual_accuracy_or_external_calls": true,
+  "state": "CLOSED_NO_NEXT_AUTHORING_OR_EXECUTION",
+  "manifest_self_excluding": true
+}

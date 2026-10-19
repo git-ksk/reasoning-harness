@@ -1,0 +1,4 @@
+{"generation":1,"kind":"model_request","model":"fixture-model","provider":"mistral","request":{"max_tokens":32,"output_format":{"type":"text"},"random_seed":1,"task":"Engineering guard control."},"request_bytes":101,"reserved_attempts":1,"reserved_input_token_upper_bound":613,"reserved_output_token_upper_bound":32}
+{"body":{"max_tokens":32,"messages":[{"content":"Engineering guard control.","role":"user"}],"model":"fixture-model","random_seed":1,"response_format":{"type":"text"},"temperature":0.0},"generation":1,"kind":"wire_request","provider":"mistral","wire_bytes":177}
+{"generation":1,"kind":"wire_http_response","provider":"mistral","rate_headers":{},"status":200}
+{"generation":1,"kind":"model_response","response":{"finish_reason":"stop","model":"fixture-model","provider_attempts":1,"text":"fixture","usage":{"input_tokens":12,"output_tokens":8,"total_tokens":20}}}

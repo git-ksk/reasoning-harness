@@ -1,0 +1,90 @@
+{
+  "payload": {
+    "result": {
+      "output_contract": "reason-natural-output-v4",
+      "configuration": {
+        "provider": "mistral",
+        "model": "structural-fixture"
+      },
+      "usage": {
+        "run": {
+          "model_calls": 1
+        }
+      },
+      "finalization": {
+        "status": "unresolved",
+        "text": ""
+      },
+      "final_outcome": {
+        "artifact": {
+          "evidence": [],
+          "claims": [],
+          "verification_receipts": []
+        }
+      }
+    }
+  },
+  "trace": {
+    "events": [
+      {
+        "sequence": 0,
+        "kind": "grounding_state",
+        "outcome": {
+          "artifact": {
+            "evidence": [],
+            "claims": [],
+            "verification_receipts": []
+          }
+        }
+      },
+      {
+        "sequence": 1,
+        "kind": "finalization_state",
+        "result": {
+          "status": "unresolved",
+          "text": ""
+        }
+      }
+    ]
+  },
+  "model_events": [
+    {
+      "kind": "model_request",
+      "generation": 1,
+      "provider": "mistral",
+      "model": "structural-fixture",
+      "request": {
+        "task": "structural test only",
+        "max_tokens": 16
+      }
+    },
+    {
+      "kind": "wire_request",
+      "generation": 1,
+      "provider": "mistral",
+      "body": {
+        "model": "structural-fixture"
+      }
+    },
+    {
+      "kind": "wire_http_response",
+      "generation": 1,
+      "provider": "mistral",
+      "status": 200
+    },
+    {
+      "kind": "model_response",
+      "generation": 1,
+      "response": {
+        "text": "inert fixture",
+        "model": "structural-fixture",
+        "usage": {
+          "input_tokens": 12,
+          "output_tokens": 2,
+          "total_tokens": 14
+        },
+        "provider_attempts": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "existing-metrics-pure32",
+  "tests_run": 32,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "successful": true,
+  "elapsed_seconds": 0.0030038757249712944,
+  "Engine_provider_model_network_Oracle_real_cohort_scorer_calls": 0
+}

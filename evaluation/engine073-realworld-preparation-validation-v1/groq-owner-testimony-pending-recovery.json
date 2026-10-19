@@ -1,0 +1,14 @@
+{
+  "provider": "groq",
+  "requested_model": "openai/gpt-oss-120b",
+  "new_live_run_allowed": false,
+  "other_organization_usage_stopped": true,
+  "owner_testimony_utc_date": "2026-10-19",
+  "owner_report": "No other usage; full claimed free allowance after a prior payment.",
+  "tier_verified": false,
+  "observed_TPM": null,
+  "daily_reserve_capacity_verified": false,
+  "previous_state_sha256": "762eb8035ea16e50e619a448658a72fbff01b25d89b39003a8c51e08cc16f46d",
+  "historical_record_unchanged": true,
+  "decision": "PENDING_TIER_AND_FULL_COHORT_HEADROOM_NOT_RECOVERED"
+}

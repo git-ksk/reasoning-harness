@@ -1,3 +1,16 @@
+## 本評価実行の準備再開 — 2026-10-19 JST
+
+ユーザーの再指示により、未使用の実資料24問でbaseline0.6.1と候補ab3c632を比較し、実測のcase/claim P/R/F1を報告する。合成の新規60問ループは再開しない。
+
+- 採点器の限定独立再レビューPASS。独立24構造試験・修正対照8件を保存。実際の両armのprovider模擬HTTP18件もPASS（Google応答fixtureの初回失敗は別保持）。精度評価の問題数へ加算しない。
+- 採点器・通常CLI/補助host・閉じたLinux runtime・数値予算をM0で固定してから、別作成者の新規24問と全文source/goldをM1で固定する。各社/通常/helper/各armの288観測を別分母で報告する。
+- 通常CLIの引用表示不足を事前宣言。case F1が高くても引用・有用性が不足すれば採用NO_GO。未根拠positiveをcase TPにせず、誤肯定negative/ambiguousをFP/hardとして保持。
+- Groqは「他利用なし・残量フル」の新owner申告を記録。旧枯渇記録は不変。別の一度きり・微小予算のquota確認で実上限を読み、全cohortのheadroomが不足する場合は停止する。自動課金プラン変更はしない。
+
+現時点で新規実24問0/24、actual-answer F1未測定、M0未完了、Engine公開/CLI採用はNO_GO。以下の過去記録と原FAILは保持する。
+
+---
+
 # Harness Engine 0.7.3 — 修正・測定・採用の順に進める
 
 **実資料評価の接続準備（2026-10-19）:** 通常CLI保存記録と全文資料・引用位置の照合に加え、既存Node開発入力で対象APIを呼ぶ実験hostを保存した。0.6.1/現在候補とも関連性は保留・引用0。別の手動binding対照では出典付き原文表示を確認し、関連性成功へ混ぜない。新規独立問題0・実回答F1未測定。次は意味/引用裁定・欠測会計・数値予算を完全M0へ結ぶ。[実験host](engine073-active-source-host-development.ja.md)、[通常CLI記録の照合](engine073-cli-trace-binding-development.ja.md)。

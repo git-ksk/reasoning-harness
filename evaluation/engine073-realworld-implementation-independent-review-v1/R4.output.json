@@ -1,0 +1,333 @@
+{
+  "scope": "semantic independent real-source evaluation only; not release/CLI distribution",
+  "provider_tracks": {
+    "mistral/e2e_normal": {
+      "case_quality": {
+        "metric_gate_pass": true,
+        "provider": "mistral",
+        "track": "e2e_normal",
+        "arm": "candidate",
+        "blockers": [],
+        "rows": 24,
+        "expected_rows": 24,
+        "tp": 12,
+        "fp": 0,
+        "fn": 0,
+        "tn": 12,
+        "ambiguous": 0,
+        "incomplete": 0,
+        "hard_violations": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f0_5_diagnostic": 1.0,
+        "f0_5_stretch_met": true,
+        "binary_denominator": 24,
+        "accepted_coverage": 0.5,
+        "scope": "metric gate only; NEVER standalone CLI/source release approval"
+      },
+      "claim_micro": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f1_null_or_zero_reason": null
+      },
+      "claim_counts": {
+        "displayed_unique_claims_A": 24,
+        "grounded_claims_S": 24,
+        "required_groups_G": 24,
+        "satisfied_groups_H": 24,
+        "displayed_claim_occurrences": 24
+      },
+      "citation_counts": {
+        "edges": 24,
+        "correct_edges": 24,
+        "claims_requiring_citation": 24,
+        "correctly_cited_occurrences": 24,
+        "literal_quotes": 24,
+        "faithful_literal_quotes": 24
+      },
+      "delivered_required_coverage": 1.0,
+      "planned_required_groups": 24,
+      "paired_utility": {
+        "net_gain": 2,
+        "regressions": 0,
+        "paired_cases": 24
+      }
+    },
+    "mistral/helper_opt_in": {
+      "case_quality": {
+        "metric_gate_pass": true,
+        "provider": "mistral",
+        "track": "helper_opt_in",
+        "arm": "candidate",
+        "blockers": [],
+        "rows": 24,
+        "expected_rows": 24,
+        "tp": 12,
+        "fp": 0,
+        "fn": 0,
+        "tn": 12,
+        "ambiguous": 0,
+        "incomplete": 0,
+        "hard_violations": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f0_5_diagnostic": 1.0,
+        "f0_5_stretch_met": true,
+        "binary_denominator": 24,
+        "accepted_coverage": 0.5,
+        "scope": "metric gate only; NEVER standalone CLI/source release approval"
+      },
+      "claim_micro": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f1_null_or_zero_reason": null
+      },
+      "claim_counts": {
+        "displayed_unique_claims_A": 24,
+        "grounded_claims_S": 24,
+        "required_groups_G": 24,
+        "satisfied_groups_H": 24,
+        "displayed_claim_occurrences": 24
+      },
+      "citation_counts": {
+        "edges": 24,
+        "correct_edges": 24,
+        "claims_requiring_citation": 24,
+        "correctly_cited_occurrences": 24,
+        "literal_quotes": 24,
+        "faithful_literal_quotes": 24
+      },
+      "delivered_required_coverage": 1.0,
+      "planned_required_groups": 24,
+      "paired_utility": {
+        "net_gain": 12,
+        "regressions": 0,
+        "paired_cases": 24
+      }
+    },
+    "google/e2e_normal": {
+      "case_quality": {
+        "metric_gate_pass": true,
+        "provider": "google",
+        "track": "e2e_normal",
+        "arm": "candidate",
+        "blockers": [],
+        "rows": 24,
+        "expected_rows": 24,
+        "tp": 12,
+        "fp": 0,
+        "fn": 0,
+        "tn": 12,
+        "ambiguous": 0,
+        "incomplete": 0,
+        "hard_violations": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f0_5_diagnostic": 1.0,
+        "f0_5_stretch_met": true,
+        "binary_denominator": 24,
+        "accepted_coverage": 0.5,
+        "scope": "metric gate only; NEVER standalone CLI/source release approval"
+      },
+      "claim_micro": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f1_null_or_zero_reason": null
+      },
+      "claim_counts": {
+        "displayed_unique_claims_A": 24,
+        "grounded_claims_S": 24,
+        "required_groups_G": 24,
+        "satisfied_groups_H": 24,
+        "displayed_claim_occurrences": 24
+      },
+      "citation_counts": {
+        "edges": 24,
+        "correct_edges": 24,
+        "claims_requiring_citation": 24,
+        "correctly_cited_occurrences": 24,
+        "literal_quotes": 24,
+        "faithful_literal_quotes": 24
+      },
+      "delivered_required_coverage": 1.0,
+      "planned_required_groups": 24,
+      "paired_utility": {
+        "net_gain": 2,
+        "regressions": 0,
+        "paired_cases": 24
+      }
+    },
+    "google/helper_opt_in": {
+      "case_quality": {
+        "metric_gate_pass": true,
+        "provider": "google",
+        "track": "helper_opt_in",
+        "arm": "candidate",
+        "blockers": [],
+        "rows": 24,
+        "expected_rows": 24,
+        "tp": 12,
+        "fp": 0,
+        "fn": 0,
+        "tn": 12,
+        "ambiguous": 0,
+        "incomplete": 0,
+        "hard_violations": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f0_5_diagnostic": 1.0,
+        "f0_5_stretch_met": true,
+        "binary_denominator": 24,
+        "accepted_coverage": 0.5,
+        "scope": "metric gate only; NEVER standalone CLI/source release approval"
+      },
+      "claim_micro": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f1_null_or_zero_reason": null
+      },
+      "claim_counts": {
+        "displayed_unique_claims_A": 24,
+        "grounded_claims_S": 24,
+        "required_groups_G": 24,
+        "satisfied_groups_H": 24,
+        "displayed_claim_occurrences": 24
+      },
+      "citation_counts": {
+        "edges": 24,
+        "correct_edges": 24,
+        "claims_requiring_citation": 24,
+        "correctly_cited_occurrences": 24,
+        "literal_quotes": 24,
+        "faithful_literal_quotes": 24
+      },
+      "delivered_required_coverage": 1.0,
+      "planned_required_groups": 24,
+      "paired_utility": {
+        "net_gain": 12,
+        "regressions": 0,
+        "paired_cases": 24
+      }
+    },
+    "groq/e2e_normal": {
+      "case_quality": {
+        "metric_gate_pass": true,
+        "provider": "groq",
+        "track": "e2e_normal",
+        "arm": "candidate",
+        "blockers": [],
+        "rows": 24,
+        "expected_rows": 24,
+        "tp": 12,
+        "fp": 0,
+        "fn": 0,
+        "tn": 12,
+        "ambiguous": 0,
+        "incomplete": 0,
+        "hard_violations": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f0_5_diagnostic": 1.0,
+        "f0_5_stretch_met": true,
+        "binary_denominator": 24,
+        "accepted_coverage": 0.5,
+        "scope": "metric gate only; NEVER standalone CLI/source release approval"
+      },
+      "claim_micro": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f1_null_or_zero_reason": null
+      },
+      "claim_counts": {
+        "displayed_unique_claims_A": 24,
+        "grounded_claims_S": 24,
+        "required_groups_G": 24,
+        "satisfied_groups_H": 24,
+        "displayed_claim_occurrences": 24
+      },
+      "citation_counts": {
+        "edges": 24,
+        "correct_edges": 24,
+        "claims_requiring_citation": 24,
+        "correctly_cited_occurrences": 24,
+        "literal_quotes": 24,
+        "faithful_literal_quotes": 24
+      },
+      "delivered_required_coverage": 1.0,
+      "planned_required_groups": 24,
+      "paired_utility": {
+        "net_gain": 2,
+        "regressions": 0,
+        "paired_cases": 24
+      }
+    },
+    "groq/helper_opt_in": {
+      "case_quality": {
+        "metric_gate_pass": true,
+        "provider": "groq",
+        "track": "helper_opt_in",
+        "arm": "candidate",
+        "blockers": [],
+        "rows": 24,
+        "expected_rows": 24,
+        "tp": 12,
+        "fp": 0,
+        "fn": 0,
+        "tn": 12,
+        "ambiguous": 0,
+        "incomplete": 0,
+        "hard_violations": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f0_5_diagnostic": 1.0,
+        "f0_5_stretch_met": true,
+        "binary_denominator": 24,
+        "accepted_coverage": 0.5,
+        "scope": "metric gate only; NEVER standalone CLI/source release approval"
+      },
+      "claim_micro": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f1_null_or_zero_reason": null
+      },
+      "claim_counts": {
+        "displayed_unique_claims_A": 24,
+        "grounded_claims_S": 24,
+        "required_groups_G": 24,
+        "satisfied_groups_H": 24,
+        "displayed_claim_occurrences": 24
+      },
+      "citation_counts": {
+        "edges": 24,
+        "correct_edges": 24,
+        "claims_requiring_citation": 24,
+        "correctly_cited_occurrences": 24,
+        "literal_quotes": 24,
+        "faithful_literal_quotes": 24
+      },
+      "delivered_required_coverage": 1.0,
+      "planned_required_groups": 24,
+      "paired_utility": {
+        "net_gain": 12,
+        "regressions": 0,
+        "paired_cases": 24
+      }
+    }
+  },
+  "semantic_gate_pass": true,
+  "blockers": [],
+  "runtime_efficiency_gate": "REQUIRED_SEPARATE_PINNED_RUNTIME_REPORT",
+  "acceptance": "PENDING_RUNTIME_AND_ACCEPTANCE_OWNER"
+}

@@ -1,0 +1,78 @@
+{
+  "plan": {
+    "id": "fixture-run",
+    "provider": "fixture",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "family": "structural",
+    "answerability": "full",
+    "required_groups": [
+      "required"
+    ],
+    "observation_sha256": "be42093d2a0ddb2ff3bc4413d1d7807ca5661d622ddc7e8c227e1473633965d7"
+  },
+  "review": {
+    "id": "fixture-run",
+    "provider": "fixture",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "family": "structural",
+    "answerability": "full",
+    "observation_sha256": "be42093d2a0ddb2ff3bc4413d1d7807ca5661d622ddc7e8c227e1473633965d7",
+    "operation": "complete",
+    "review_complete": true,
+    "reviewer": {
+      "id": "fixture",
+      "role": "host"
+    },
+    "hard_violations": [],
+    "claims": [
+      {
+        "id": "one-occurrence",
+        "proposition_id": "one-proposition",
+        "grounding": "grounded",
+        "satisfied_groups": [
+          "required"
+        ]
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": "Fixture fact."
+    },
+    {
+      "id": "card",
+      "kind": "claim_card",
+      "text": "Fixture fact."
+    }
+  ],
+  "expected_artifact_ids": [
+    "answer",
+    "card"
+  ],
+  "segments": [
+    {
+      "id": "span-answer",
+      "artifact_id": "answer",
+      "start_byte": 0,
+      "end_byte": 13,
+      "text": "Fixture fact.",
+      "kind": "fact",
+      "claim_id": "one-occurrence",
+      "proposition_id": "one-proposition"
+    },
+    {
+      "id": "span-card",
+      "artifact_id": "card",
+      "start_byte": 0,
+      "end_byte": 13,
+      "text": "Fixture fact.",
+      "kind": "fact",
+      "claim_id": "one-occurrence",
+      "proposition_id": "one-proposition"
+    }
+  ]
+}

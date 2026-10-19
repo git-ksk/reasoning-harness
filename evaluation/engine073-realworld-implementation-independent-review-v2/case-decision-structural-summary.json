@@ -1,0 +1,14 @@
+{
+  "scope": "pure supplied structural annotation fixture; no accuracy questions or cohort",
+  "function_checks": 8,
+  "all_assertions_pass": true,
+  "original_v2": {
+    "unsupported_positive_decision": "accept",
+    "case_confusion_implication": "TP despite A1/S0/G1/H0; hard gate still rejects"
+  },
+  "repaired_v5": {
+    "unsupported_positive_decision": "abstain",
+    "case_confusion_implication": "FN; negative/ambiguous unsafe accept still FP/hard"
+  },
+  "accuracy_Engine_actual_cohort_scorer_provider_model_network_Oracle_calls": 0
+}

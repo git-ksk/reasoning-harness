@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "/private/tmp/engine073-realworld-evaluator-review-snapshot-v1/collect.py",
+    "--corpus-dir",
+    "/private/tmp/engine073-realworld-implementation-independent-review-v1/collect-corpus-stub",
+    "--provider",
+    "google",
+    "--lane",
+    "/private/tmp/engine073-realworld-implementation-independent-review-v1/partial-helper-lane",
+    "--output",
+    "/private/tmp/engine073-realworld-implementation-independent-review-v1/collect-output"
+  ],
+  "returncode": 0,
+  "Engine_or_provider_calls": 0
+}

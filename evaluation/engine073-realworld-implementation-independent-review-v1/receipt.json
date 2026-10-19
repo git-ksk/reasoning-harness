@@ -1,0 +1,43 @@
+{
+  "identity": "engine073-realworld-implementation-independent-review-v1",
+  "closed_utc": "2026-10-19T04:25:54.902930+00:00",
+  "result": "FAIL_BLOCKERS_BEFORE_COMPLETE_M0",
+  "input_snapshot_manifest_sha256": "df60b2df43ae40f5f494f79b271f7ab41c23ad374a0bc4ce4640a5d654299ac9",
+  "input_snapshot_files": {
+    "build.py": "89a0348a75720ba6dcf52f1603540cc357ebcb1761ea6d64d62c0659cf4f6d23",
+    "collect.py": "be6d46791cf9dfbe39070102140b6a788fb612eae1cec8540ccc2b5634d86d03",
+    "run_lane.py": "ec6a00a4488698347a6f662f305cb62aa4427d4900ada40d7ac3dcfa027cce6c",
+    "prepare_sources.py": "5a998ab660bd6f3143a2265bd9ba1bc6737f6403b6ec6cbb7181946b2cf33b2a",
+    "source_host.rs": "b1f7a441827fe3aa49f90fece55a735bf810a0a8e47f3ba0857a6a9710d8345f",
+    "audit_probe.rs": "3c3176575dbcd4927210fa0d9893af0612fead217b6c962d89aeb0ab3a7496b3",
+    "audit.rs": "20fac0d979e1de4b9c863d66871c32faf87145b04f408af4572f1cfee571c87d",
+    "Dockerfile.runtime": "da2f09c9e295db0676f9b51e2a409d1287f0e36c0027614b2a1d4d8453dbe4a4",
+    "make_plan.py": "6b53fc6c4ed18e42846d5ef9a233dc1caf598977b0e6b42701b8affc3a5fd7ed",
+    "test_scorer.py": "b072c57f9eb29a3c27df5f5085121fc93b8fc554cbb5a3f4744bc01156fe97bc",
+    "capture.py": "c7b4f75ba139f90cd7678db121bf5253e5f343d841b51f91573a070c17f687d0",
+    "resolver.py": "31bf96227a424f583f34276ad7f1c89ede7436d230390130002980d21790be6a",
+    "protocol.json": "f23f94853b175ddc85167b748a56504c40231ad0a3e7b25e2dcd468e12427be3",
+    "run_task.py": "f7c9ab710fa97bb4d6de987895e7f6d55d9840d1b242b9fed49c969dd7c2623c",
+    "verify_M0.py": "c088d9878aaa627c67daab41f0175f2415c82829486ee82b788276de0cd18950",
+    "adviser.rs": "055b1384751d329aef7a885219fb19218f3b329902784a7270f750c487724df0",
+    "corpus.py": "dcb0705a7508123b674d5126b7362323e317e1bf538e9c3eea82d2142c10a395",
+    "score_first.py": "cdbd6bb672024dcec37f30169f1eca158c7c1ebee826dc62db52fa567177fa75",
+    "preflight.py": "77465f920bf4afff75b91117ad4ff2806ad31c6ccdff2b5e9d403231dcb9118b",
+    "scorer.py": "b5f131a9a18f86ee6fd5bc80a3be3a360a6f3ec298d204331796d4415afd880c",
+    "Dockerfile.build": "7badf230a1ec1c909e0d51d31be105943e2ac8fd16e95fca43d195ad43be6843"
+  },
+  "external_public_component_dependency_hashes": {
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-answer-metrics-development-v1/claim_metrics.py": "bc8ea0f2564d46294caefb90eee8b5074185001392388dee79afd1e087e6314c",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-answer-metrics-development-v1/display_binding.py": "c8ac4f596b0a348b7e46627e60a11523550d55e6b5ccde91c5a6be862d22db1f",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine07-quality-gates-v1/metrics.py": "5264aaf337404113d81dfd5707c0dd631784e21062e397e6f856bcb43b5be8db",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine07-realworld-runner-v1/runner.py": "a412d7a9b851f23b6378496cd78a52f06e3076b05f93abd31acd3917ff2688f9",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine07-realworld-operations-v1/bridge.py": "abae342729fdb1eceab1015041a676085cd4c051fb5816191ab0ebbb29088dcb"
+  },
+  "review_sha256": "cdc9a6152f166124dc702abd9e1630ee3c7065a2ec3bdc31a118d10a75427590",
+  "original_observations_sha256": "0119d6e81d8eb61c38e84bd017a923598d55a09155a0d7fcd19ef641114d94cf",
+  "one_factor_confirmations_sha256": "8f9ebb574aeedbf91a1d1372f2ba4b4c2e3effac8e395fcfb2de0da12c0f28ba",
+  "all928_refs_unchanged": true,
+  "old_components_unchanged": true,
+  "closure_reexecuted_Engine_or_checks": false,
+  "all_accuracy_and_external_execution_counts": 0
+}

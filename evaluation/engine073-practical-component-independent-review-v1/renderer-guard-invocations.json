@@ -1,0 +1,16 @@
+{
+  "compile_command": [
+    "rustc",
+    "--edition=2024",
+    "/private/tmp/engine073-practical-component-independent-review-v1/renderer_option_guard.rs",
+    "-o",
+    "/private/tmp/engine073-practical-component-independent-review-v1/renderer_option_guard"
+  ],
+  "compile_returncode": 0,
+  "run_command": [
+    "/private/tmp/engine073-practical-component-independent-review-v1/renderer_option_guard"
+  ],
+  "run_returncode": 0,
+  "Engine_linked_or_executed": false,
+  "Cargo_shared_target_changes": 0
+}

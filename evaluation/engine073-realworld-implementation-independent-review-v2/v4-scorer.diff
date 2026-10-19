@@ -1,0 +1,51 @@
+--- /private/tmp/engine073-realworld-evaluator-review-snapshot-v2/scorer.py
++++ /private/tmp/engine073-realworld-report-delta-v4/scorer.py
+@@ -181,7 +181,7 @@
+     # A correctly explained none-answerable case is a withholding, never an
+     # accepted truth answer merely because its explanation contains facts.
+     decision='accept' if supported_answer or unsafe_accept else ('withhold' if review.get('explicit_withhold') is True else 'abstain')
+-    return {'id':gold['case_id'],'row_id':observation['row_id'],'provider':observation['provider'],'track':observation['track'],'arm':observation['arm'],
++    return {'id':gold['case_id'],'family':gold['family'],'row_id':observation['row_id'],'provider':observation['provider'],'track':observation['track'],'arm':observation['arm'],
+             'expected':gold['label'],'decision':decision,'complete':operation=='complete','hard_violations':violations,'claim_metrics':counted,
+             'citation_counts':{'edges':len(edges),'correct_edges':len(good_edges),'claims_requiring_citation':len(needed),'correctly_cited_occurrences':len(cited),'literal_quotes':literal_total,'faithful_literal_quotes':literal_good},
+             'complete_useful_answer':positive_useful,'correct_withhold':useful and not eligible and gold['answerability']=='none'}
+@@ -197,7 +197,7 @@
+     present={r['row_id'] for r in scored}
+     for p in planned:
+         if p['row_id'] not in present:
+-            scored.append({'id':p['id'],'row_id':p['row_id'],'provider':p['provider'],'track':p['track'],'arm':p['arm'],
++            scored.append({'id':p['id'],'family':p.get('family','unavailable'),'row_id':p['row_id'],'provider':p['provider'],'track':p['track'],'arm':p['arm'],
+                           'expected':p['expected'],'decision':'abstain','complete':False,'hard_violations':[],
+                           'claim_metrics':{'counts':{'displayed_unique_claims_A':None,'grounded_claims_S':None,'required_groups_G':p['required_groups_G'],'satisfied_groups_H':None}},
+                           'citation_counts':{},'complete_useful_answer':False,'correct_withhold':False,'unavailable_reason':'missing_observation_or_semantic_review'})
+@@ -236,8 +236,29 @@
+             reports[prefix]['paired_utility']={'net_gain':gain,'regressions':regressions,'paired_cases':len(baselines.keys()&candidates.keys())}
+             need=protocol['paired_gates']['minimum_net_useful_answer_gain_normal_per_provider' if track=='e2e_normal' else 'minimum_net_authorized_helper_gain_per_provider']
+             if len(baselines)!=24 or gain<need or regressions:blockers.append(prefix+':paired_utility')
++    strata=defaultdict(list)
++    for row in scored:
++        key=(row['provider'],row['track'],row['arm'])
++        strata['/'.join(key)].append(row)
++        strata['/'.join(key+('family',row.get('family','unavailable')))].append(row)
++    descriptive={}
++    for key,inventory in sorted(strata.items()):
++        complete=[r for r in inventory if r['complete']];counts=Counter();cite=Counter();confusion=Counter()
++        for row in complete:
++            counts.update(row['claim_metrics']['counts']);cite.update(row['citation_counts'])
++            if row['expected']=='ambiguous':confusion['ambiguous']+=1
++            elif row['expected']=='positive':confusion['tp' if row['decision']=='accept' else 'fn']+=1
++            else:confusion['fp' if row['decision']=='accept' else 'tn']+=1
++        tp,fp,fn=confusion['tp'],confusion['fp'],confusion['fn']
++        case={'precision':tp/(tp+fp) if tp+fp else None,'recall':tp/(tp+fn) if tp+fn else None,'f1':2*tp/(2*tp+fp+fn) if 2*tp+fp+fn else None}
++        macro=[r['claim_metrics']['f1'] for r in complete if r['claim_metrics'].get('f1') is not None]
++        ratios={name:cite[n]/cite[d] if cite[d] else None for name,n,d in [('edge_precision','correct_edges','edges'),('claim_occurrence_coverage','correctly_cited_occurrences','claims_requiring_citation'),('literal_fidelity','faithful_literal_quotes','literal_quotes')]}
++        descriptive[key]={'planned_rows':len(inventory),'complete_rows':len(complete),'incomplete_rows':len(inventory)-len(complete),'case_counts':dict(confusion),'case_metrics':case,
++                          'claim_counts':dict(counts),'claim_micro':arithmetic.ratios(counts['displayed_unique_claims_A'],counts['grounded_claims_S'],counts['required_groups_G'],counts['satisfied_groups_H']),
++                          'claim_macro_f1_defined_rows':len(macro),'claim_macro_f1':sum(macro)/len(macro) if macro else None,'citation_counts':dict(cite),'citation_metrics':ratios,
++                          'hard_violations_including_partial':sum(len(r['hard_violations']) for r in inventory),'not_a_population_or_pooled_gate':True}
+     # Efficiency is computed by the runtime report over all same paired rows.
+     # A missing runtime gate cannot be converted to success by this scorer.
+-    return {'scope':'semantic independent real-source evaluation only; not release/CLI distribution','provider_tracks':reports,
++    return {'scope':'semantic independent real-source evaluation only; not release/CLI distribution','provider_tracks':reports,'descriptive_by_provider_track_arm_family':descriptive,
+             'semantic_gate_pass':not blockers,'blockers':sorted(set(blockers)),
+             'runtime_efficiency_gate':'REQUIRED_SEPARATE_PINNED_RUNTIME_REPORT','acceptance':'PENDING_RUNTIME_AND_ACCEPTANCE_OWNER'}

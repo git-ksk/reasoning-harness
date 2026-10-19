@@ -1,0 +1,16 @@
+[
+  {
+    "model": "fixture-model",
+    "input": "Engineering guard control.",
+    "response_format": {
+      "type": "text",
+      "mime_type": "text/plain"
+    },
+    "generation_config": {
+      "max_output_tokens": 32,
+      "seed": 1,
+      "temperature": 1.0
+    },
+    "store": false
+  }
+]

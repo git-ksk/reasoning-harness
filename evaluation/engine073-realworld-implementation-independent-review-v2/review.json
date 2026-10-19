@@ -1,0 +1,69 @@
+{
+  "identity": "engine073-realworld-implementation-independent-review-v2",
+  "verdict": "BOUNDED_CODE_REVIEW_PASS_WITH_EXPLICIT_V3_V4_V5_DELTAS",
+  "original_snapshot_verdict": "NOT_RUNNABLE_WORKFLOW_M1_ARGV_MISSING_AND_POSITIVE_UNSUPPORTED_CASE_TP_INCONSISTENCY",
+  "final_M0_or_acceptance": "NOT_COMPLETED_NOT_APPROVED_BY_THIS_REVIEW",
+  "scope": "Known structural repair verification and supplied static deltas only; no new accuracy corpus or observations.",
+  "independent_checks": {
+    "supplied_structural_tests": {
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "reruns": 0
+    },
+    "workflow_original_argv": {
+      "returncode": 2,
+      "stage": "argparse before input/provider access",
+      "preserved": true
+    },
+    "v3_workflow_fix": "M1 hash computed before prepare; required --M1-sha256 supplied. Static only.",
+    "v4_report_delta": "Baseline/candidate and family case/claim P/R/F1, citation null denominators and source counts added prospectively. Existing acceptance gates retained.",
+    "v5_case_decision": {
+      "function_checks": 8,
+      "pass": true,
+      "unsupported_positive": "abstain => FN; claim recall0 and hard violations preserved",
+      "negative_and_ambiguous_unsafe": "accept => FP/hard preserved",
+      "grounded_positive": "accept/useful preserved"
+    }
+  },
+  "fixed_known_boundaries": [
+    "factual occurrence uniqueness across displayed artifacts",
+    "response before terminal with real response schema and usage",
+    "explicit quote type and UTF8 range",
+    "citation edges cannot be orphaned",
+    "correct citation support must be admitted as well as acquired",
+    "helper displayed artifact kind matches final_answer schema",
+    "both arms complete and paired before useful gain",
+    "actual model trace request/response/usage binding",
+    "nonempty receipt and request target/source binding",
+    "strict complete M1 file inventory and hashes",
+    "partial helper raw output retained without completion promotion",
+    "provider plan and collection identity match",
+    "preHTTP wire size/reservation/single send audit guard"
+  ],
+  "remaining_reproduced_code_blockers_after_supplied_deltas": [],
+  "remaining_gates": [
+    "Parent must compose and freeze the exact reviewed snapshot plus v3/v4/v5 bytes; this review does not validate an unprovided assembled revision.",
+    "Actual Linux OCI build/image digest, runtime dependency closure and same-image M1 loading remain unverified by this reviewer.",
+    "Actual paired host loopback controls, actual audit callback enforcement and approved provider/budget/quota configuration remain unverified; Groq remains stopped.",
+    "Complete M0 review, post-M0 independent accuracy authorship, M1 freeze and first-only provider evaluation have not occurred. This is not real24, CLI quality, release or human acceptance."
+  ],
+  "execution_accounting": {
+    "accuracy_questions_authored": 0,
+    "Engine_accuracy_observations": 0,
+    "actual_cohort_scorer_processes": 0,
+    "provider_model_network_Oracle_calls": 0,
+    "new_agents": 0,
+    "implementation_edits": 0,
+    "Git_mutations": 0
+  },
+  "preservation": {
+    "snapshot_v2_files": 28,
+    "old_source_refs_plus_preparation": 928,
+    "preparation_files_included_in_928": 5,
+    "old_review_v1_files_including_manifest": 65,
+    "first_outputs_overwritten": false,
+    "old_labels_scores_or_results_changed": false
+  },
+  "important_interpretation": "Original v2 case-TP issue could inflate case metrics, but hard unsupported/citation gates already prevented a final false GO. V5 corrects the prospective case metric without rescoring any accuracy observations."
+}

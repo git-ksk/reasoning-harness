@@ -1,0 +1,17 @@
+[
+  {
+    "model": "fixture-model",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Engineering guard control."
+      }
+    ],
+    "response_format": {
+      "type": "text"
+    },
+    "max_tokens": 32,
+    "random_seed": 1,
+    "temperature": 0.0
+  }
+]

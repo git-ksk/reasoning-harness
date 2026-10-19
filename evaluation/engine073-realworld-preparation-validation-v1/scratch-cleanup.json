@@ -1,0 +1,21 @@
+{
+  "superseded_engineering_builds_only": true,
+  "no_real_accuracy_observations_removed": true,
+  "removed": [
+    {
+      "build_dir": "engine073-independent-realworld-actual-build",
+      "bytes_removed": 997888526,
+      "metadata_retained": "/private/tmp/engine073-realworld-superseded-build-evidence-v1/engine073-independent-realworld-actual-build"
+    },
+    {
+      "build_dir": "engine073-independent-realworld-actual-build-v2",
+      "bytes_removed": 416461570,
+      "metadata_retained": "/private/tmp/engine073-realworld-superseded-build-evidence-v1/engine073-independent-realworld-actual-build-v2"
+    },
+    {
+      "build_dir": "engine073-independent-realworld-actual-build-v3",
+      "bytes_removed": 1071426223,
+      "metadata_retained": "/private/tmp/engine073-realworld-superseded-build-evidence-v1/engine073-independent-realworld-actual-build-v3"
+    }
+  ]
+}

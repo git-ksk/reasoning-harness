@@ -1,0 +1,25 @@
+{
+  "valid_capture_control": "ACCEPTED",
+  "empty_receipt_only": "ACCEPTED",
+  "wrong_target_only": "ACCEPTED",
+  "complete_provider_relabel": {
+    "underlying_lane_and_model_journal_provider": "mistral",
+    "collected_provider": "google",
+    "operation": "complete",
+    "returncode": 0
+  },
+  "collect_command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "/private/tmp/engine073-realworld-evaluator-review-snapshot-v1/collect.py",
+    "--corpus-dir",
+    "/private/tmp/engine073-realworld-implementation-independent-review-v1/provider-relabel-corpus",
+    "--provider",
+    "google",
+    "--lane",
+    "/private/tmp/engine073-realworld-implementation-independent-review-v1/provider-relabel-complete-lane",
+    "--output",
+    "/private/tmp/engine073-realworld-implementation-independent-review-v1/provider-relabel-complete-output"
+  ],
+  "Engine_provider_accuracy_actual_scorer_calls": 0
+}
