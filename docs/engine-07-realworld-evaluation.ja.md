@@ -1,5 +1,7 @@
 # Engine 0.7 実戦評価とCLI採用
 
+**最新状況（2026-10-19、完全M0固定済み）:** [実装・実行環境の固定](../evaluation/engine073-realworld-M0-v1/README.md)は独立レビューPASS。実Engine対照bin・固定Linux環境・完全意味/表示scorer・数値予算・永続guard・外部containmentの証拠を固定receiptへ結合した。完成M0の後に未使用の実資料24問の独立著作を開始。M1固定と本評価F1はまだ未完了。Mistral・Googleを先行し、Groqは実測無料枠が変更なしの全量予約に不足するため認証前に延期する。Groq予定96観測は欠測/F1=nullとして残し、3社全体の合格にはしない。新規合成60件ループ・source merge・公開・CLI採用は行わない。以下の日付付き準備記録は履歴として保持。
+
 日本語 | [English](engine-07-realworld-evaluation.md)
 
 2026-10-15 JST時点で **評価作業中・CLI採用不可（NO-GO）**。[Issue #531](https://github.com/git-ksk/reasoning-harness/issues/531)／[Milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12)で管理します。公開製品はReason CLI0.5.5 / Engine0.6.1。Engine0.7.2は独立したソースリリースです。

@@ -1,5 +1,7 @@
 # Engine 0.7 real-world evaluation and CLI adoption
 
+**Current checkpoint (2026-10-19, completed M0):** The [software/runtime freeze](../evaluation/engine073-realworld-M0-v1/README.md) now has independent implementation-review PASS. The exact paired binaries/runtime, full semantic/display scorer, numeric budgets, durable guards and external containment evidence are bound by the frozen receipt. Fresh real24 authorship has started only after completed M0; M1 and actual first-cohort F1 are not complete yet. Mistral/Google execute first. Groq is explicitly deferred before credentials because observed Free capacity cannot admit the unchanged full-cohort conservative reserve; its96 planned observations remain incomplete with actual F1 null and block all3provider acceptance. No fresh synthetic60 loop, source merge, release or CLI adoption. The dated preparation entries below are retained history.
+
 [日本語](engine-07-realworld-evaluation.ja.md) | English
 
 Status: **in progress / adoption NO-GO**, 2026-10-15 JST. [Issue #531](https://github.com/git-ksk/reasoning-harness/issues/531), [milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12). The published product is Reason CLI0.5.5 / Engine0.6.1. Engine0.7.2 is an independent source release, not an adopted CLI Engine.
