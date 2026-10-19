@@ -1,0 +1,88 @@
+{
+  "identity": "engine073-realworld-independent-v1",
+  "reviewer": "/root/engine07_realworld_independent",
+  "reviewed_utc": "2026-10-19T11:58:40.134661+00:00",
+  "stage": "pre-M1 prospective independent source/gold review; zero accuracy observations",
+  "result": "PASS_FOR_STATIC_M1_FREEZE",
+  "cases": 24,
+  "gold_records": 48,
+  "source_records": 48,
+  "documents": 12,
+  "products": [
+    "cmake",
+    "curl",
+    "git",
+    "openssl",
+    "redis",
+    "sqlite"
+  ],
+  "publisher_repository_origins": [
+    "upstream:Kitware/CMake",
+    "upstream:curl/curl",
+    "upstream:git/git",
+    "upstream:openssl/openssl",
+    "upstream:redis/redis",
+    "upstream:sqlite/sqlite"
+  ],
+  "gold_counts": {
+    "e2e_normal": {
+      "positive": 17,
+      "negative": 7
+    },
+    "helper_opt_in": {
+      "positive": 8,
+      "negative": 16
+    }
+  },
+  "family_counts": {
+    "e2e_normal": {
+      "compatible": 3,
+      "conflict": 3,
+      "revision_or_history": 3,
+      "untrusted_control": 3,
+      "scope": 3,
+      "missing_or_unrelated": 3,
+      "duplicate_or_lineage": 3,
+      "wrong_target": 3
+    },
+    "helper_opt_in": {
+      "compatible": 3,
+      "conflict": 3,
+      "revision_or_history": 3,
+      "untrusted_control": 3,
+      "scope": 3,
+      "missing_or_unrelated": 3,
+      "duplicate_or_lineage": 3,
+      "wrong_target": 3
+    }
+  },
+  "normal_positive_partial_cases": [
+    "rw-11",
+    "rw-17"
+  ],
+  "all_full_context_reviews_complete": true,
+  "full_context_review_sha256": "fdcb8baf56e310e8b4d9199347910394fa38ce2fd886a822183fef53c5a685ba",
+  "quote_bytes_hash_scope_version_retrieval_binding": "PASS via frozen corpus/check_source contract",
+  "all_gold_group_witnesses_case_local": true,
+  "all_documents_used": true,
+  "immutable_40hex_raw_capture_urls": true,
+  "controlled_reference_authorized_positive8_only": true,
+  "synthetic_mutations": 0,
+  "maximum_native_shape_ModelRequest_UTF8_bytes": 2880,
+  "frozen_ModelRequest_limit": 3584,
+  "reserved_input_upper_bound_maximum": 3392,
+  "labels_rationales_and_gold_not_in_helper_packet": true,
+  "pre_freeze_changes": "Initial bytes, static checks, exact diffs and rationale preserved outside corpus. Questions/labels/answerability/families unchanged; no result-based repair.",
+  "limits": [
+    "12 complete official documents from six repository origins are reused across24 questions, not24 independent documents.",
+    "Conflict family tests apparent tensions with explicit option/mode/recipe conditions; does not fabricate contradictory upstream statements.",
+    "Untrusted-control family uses genuine upstream warnings/example commands/code as inert data, without synthetic prompt injection.",
+    "No inference from a duplicate capture to independent publisher corroboration.",
+    "Curated host reference_facts are bounded extractions reviewed against full documents, not raw extraction performance or universal/human-approved truth.",
+    "Scoped API documentation does not establish unobserved private configuration, live state, current support or different identifier namespaces.",
+    "Helper version hashes remain distinct where original documents differ; positive equivalence is limited to authorized same-version propositions.",
+    "Semantic labels are prospective independent-agent annotations; no candidate model/Engine output was observed."
+  ],
+  "Engine_actual_scorer_model_provider_Oracle_calls": 0,
+  "old_cohort_or_parent_case_bodies_read_for_authorship": false
+}

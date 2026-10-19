@@ -1,0 +1,13 @@
+{
+  "product": "openssl",
+  "repository": "openssl/openssl",
+  "ref": "openssl-3.0.15",
+  "commit": "c523121f902fde2929909dc7f76b13ceb4961efe",
+  "path": "doc/man3/SSL_CTX_set_verify.pod",
+  "capture_url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_CTX_set_verify.pod",
+  "retrieved_at_unix_seconds": 1792409988,
+  "sha256": "aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde",
+  "bytes": 15181,
+  "saved_path": "/private/tmp/engine073-realworld-independent-v1-authoring/acquired/openssl-2-replacement.raw",
+  "reason": "Original nonexistent SSL_get_verify_mode.pod404 retained; documented function is covered by SSL_CTX_set_verify.pod. No semantic cases yet frozen or observed."
+}

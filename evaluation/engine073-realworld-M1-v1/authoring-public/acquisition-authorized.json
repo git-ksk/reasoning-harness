@@ -1,0 +1,172 @@
+[
+  {
+    "product": "curl",
+    "repository": "curl/curl",
+    "ref": "curl-8_10_1",
+    "attempts": [
+      {
+        "path": "docs/cmdline-opts/retry.md",
+        "capture_url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry.md",
+        "final_url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry.md",
+        "retrieved_at_unix_seconds": 1792409895,
+        "sha256": "d164104079fbac52eefc1147bfb1eb152bfbb1d883e6c0f963df25a4e7a505e2",
+        "bytes": 1088,
+        "saved_path": "/private/tmp/engine073-realworld-independent-v1-authoring/acquired/curl-1.raw",
+        "HTTP_status": 200
+      },
+      {
+        "path": "docs/cmdline-opts/retry-all-errors.md",
+        "capture_url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md",
+        "final_url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md",
+        "retrieved_at_unix_seconds": 1792409895,
+        "sha256": "a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+        "bytes": 1763,
+        "saved_path": "/private/tmp/engine073-realworld-independent-v1-authoring/acquired/curl-2.raw",
+        "HTTP_status": 200
+      }
+    ],
+    "commit": "7eb8c048470ed2cc14dca75be9c1cdae7ac8498b",
+    "ref_resolved_at_unix_seconds": 1792409895
+  },
+  {
+    "product": "git",
+    "repository": "git/git",
+    "ref": "v2.47.0",
+    "attempts": [
+      {
+        "path": "Documentation/git-check-ignore.txt",
+        "capture_url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt",
+        "final_url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt",
+        "retrieved_at_unix_seconds": 1792409895,
+        "sha256": "ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+        "bytes": 4156,
+        "saved_path": "/private/tmp/engine073-realworld-independent-v1-authoring/acquired/git-1.raw",
+        "HTTP_status": 200
+      },
+      {
+        "path": "Documentation/git-check-attr.txt",
+        "capture_url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-attr.txt",
+        "final_url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-attr.txt",
+        "retrieved_at_unix_seconds": 1792409895,
+        "sha256": "7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa",
+        "bytes": 3390,
+        "saved_path": "/private/tmp/engine073-realworld-independent-v1-authoring/acquired/git-2.raw",
+        "HTTP_status": 200
+      }
+    ],
+    "commit": "777489f9e09c8d0dd6b12f9d90de6376330577a2",
+    "ref_resolved_at_unix_seconds": 1792409895
+  },
+  {
+    "product": "cmake",
+    "repository": "Kitware/CMake",
+    "ref": "v3.31.0",
+    "attempts": [
+      {
+        "path": "Help/command/return.rst",
+        "capture_url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/return.rst",
+        "final_url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/return.rst",
+        "retrieved_at_unix_seconds": 1792409895,
+        "sha256": "64bf74bba3708146a4c52fc2ab7e4a5ee8fd476838df9c72760f090116a6ec77",
+        "bytes": 3292,
+        "saved_path": "/private/tmp/engine073-realworld-independent-v1-authoring/acquired/cmake-1.raw",
+        "HTTP_status": 200
+      },
+      {
+        "path": "Help/command/break.rst",
+        "capture_url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/break.rst",
+        "final_url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/break.rst",
+        "retrieved_at_unix_seconds": 1792409895,
+        "sha256": "4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114",
+        "bytes": 208,
+        "saved_path": "/private/tmp/engine073-realworld-independent-v1-authoring/acquired/cmake-2.raw",
+        "HTTP_status": 200
+      }
+    ],
+    "commit": "e22c8383b9ae4f27a78f7a8849693c03ca29c7bb",
+    "ref_resolved_at_unix_seconds": 1792409894
+  },
+  {
+    "product": "openssl",
+    "repository": "openssl/openssl",
+    "ref": "openssl-3.0.15",
+    "attempts": [
+      {
+        "path": "doc/man3/SSL_get_verify_result.pod",
+        "capture_url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_get_verify_result.pod",
+        "final_url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_get_verify_result.pod",
+        "retrieved_at_unix_seconds": 1792409895,
+        "sha256": "4f7c46dd3228e880870cdf8d70cf4dabd0ade3ffea98bf480e0cfc251dc05569",
+        "bytes": 2010,
+        "saved_path": "/private/tmp/engine073-realworld-independent-v1-authoring/acquired/openssl-1.raw",
+        "HTTP_status": 200
+      },
+      {
+        "path": "doc/man3/SSL_get_verify_mode.pod",
+        "capture_url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_get_verify_mode.pod",
+        "failure_type": "HTTPError",
+        "error": "HTTP Error 404: Not Found"
+      }
+    ],
+    "commit": "c523121f902fde2929909dc7f76b13ceb4961efe",
+    "ref_resolved_at_unix_seconds": 1792409895
+  },
+  {
+    "product": "sqlite",
+    "repository": "sqlite/sqlite",
+    "ref": "version-3.47.2",
+    "attempts": [
+      {
+        "path": "README.md",
+        "capture_url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/README.md",
+        "final_url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/README.md",
+        "retrieved_at_unix_seconds": 1792409896,
+        "sha256": "589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+        "bytes": 21554,
+        "saved_path": "/private/tmp/engine073-realworld-independent-v1-authoring/acquired/sqlite-1.raw",
+        "HTTP_status": 200
+      },
+      {
+        "path": "doc/compile-for-unix.md",
+        "capture_url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/doc/compile-for-unix.md",
+        "final_url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/doc/compile-for-unix.md",
+        "retrieved_at_unix_seconds": 1792409896,
+        "sha256": "72376ad8eb150197a422bdbab5299f3a643f504f36de264f035ccffe5a5d9220",
+        "bytes": 2330,
+        "saved_path": "/private/tmp/engine073-realworld-independent-v1-authoring/acquired/sqlite-2.raw",
+        "HTTP_status": 200
+      }
+    ],
+    "commit": "262de1bebb0647eb6fa6a2b0434111c7d831a14d",
+    "ref_resolved_at_unix_seconds": 1792409895
+  },
+  {
+    "product": "redis",
+    "repository": "redis/redis",
+    "ref": "7.2.5",
+    "attempts": [
+      {
+        "path": "README.md",
+        "capture_url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/README.md",
+        "final_url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/README.md",
+        "retrieved_at_unix_seconds": 1792409896,
+        "sha256": "b475ab7922c5ad2c42c8ccde2bc6f1a4f7f8b3ba999426fa3e6b00452362cf50",
+        "bytes": 22607,
+        "saved_path": "/private/tmp/engine073-realworld-independent-v1-authoring/acquired/redis-1.raw",
+        "HTTP_status": 200
+      },
+      {
+        "path": "SECURITY.md",
+        "capture_url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/SECURITY.md",
+        "final_url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/SECURITY.md",
+        "retrieved_at_unix_seconds": 1792409896,
+        "sha256": "2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff",
+        "bytes": 1695,
+        "saved_path": "/private/tmp/engine073-realworld-independent-v1-authoring/acquired/redis-2.raw",
+        "HTTP_status": 200
+      }
+    ],
+    "commit": "f60370ce28b946c1146dcea77c9c399d39601aaa",
+    "ref_resolved_at_unix_seconds": 1792409895
+  }
+]

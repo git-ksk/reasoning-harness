@@ -1,0 +1,20 @@
+{
+  "pre_M1": true,
+  "observations": 0,
+  "labels_answerability_questions_families_unchanged": true,
+  "original_bytes_preserved": true,
+  "reason": "Avoid gold-like target-specific hints in visible context; provide accurate per-group witnesses and avoid an unasked extra fact requirement. All are author/schema/scope review before any semantic observation, not outcome-dependent repair.",
+  "source_raw_normalized_unchanged": true,
+  "old": {
+    "corpus.json": "d81646e2c2878eb2187cfca9b678e7c596ff2421a62814f2afc8d8aef31f8669",
+    "gold.json": "fbad6806a310c77fb0ac9ef486864c471ef1b02120f04c6f0dbc6182ffe0a2f6",
+    "host-policy.json": "7ab19dfea942b47fa44afd497529352b6722ad52965e5931fbc56da3632c1932",
+    "preparation.json": "effcecd35af011c677483ef8d19b79f64b0c678438ffbe357873021c69ae2c23"
+  },
+  "new": {
+    "corpus.json": "a8441dd8da20a0f7d860e3ef83742cf6a3375cd5706497452b690b280b0bf59f",
+    "gold.json": "5932d3cb12255e4df3730fa92a1fe3eac28bb578acf5c4c177cec69ba3bbb7c5",
+    "host-policy.json": "7ab19dfea942b47fa44afd497529352b6722ad52965e5931fbc56da3632c1932",
+    "preparation.json": "8774485a64b26c99a5137b06b05a90d125a43b2fccd302aacb464a63ba041861"
+  }
+}

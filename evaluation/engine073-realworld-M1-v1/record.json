@@ -1,0 +1,47 @@
+{
+  "identity": "engine073-realworld-M1-v1",
+  "M0_receipt_sha256": "4023eb552ee964e0e99550a61a9f4c2d2800d2d994b7e42c439cf3cf7669d4d2",
+  "M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+  "authoring_notes_manifest_sha256": "d8d25f7f92107bf08230ebb70f8283dbd40b0ef2567d51fe50c668bd1149134e",
+  "independent_author": "/root/engine07_realworld_independent",
+  "cases": 24,
+  "documents": 12,
+  "products": 6,
+  "full_context_review_complete": true,
+  "labels": {
+    "e2e_normal": {
+      "positive": 17,
+      "negative": 7
+    },
+    "helper_opt_in": {
+      "positive": 8,
+      "negative": 16
+    }
+  },
+  "plans": {
+    "mistral": {
+      "plan_sha256": "dd516fa5937061f62cd35f97b166533044763a543077af426dbde212a47cabab",
+      "jobs": 72,
+      "normal_jobs": 48,
+      "helper_jobs": 24,
+      "conservative_tokens": 1456128,
+      "model": "ministral-8b-2512",
+      "currency_self_cap_USD": 2.5
+    },
+    "google": {
+      "plan_sha256": "00bf297fb6ba724f18658290efbe59864bff8618d83fc2f04e81ea69f4e45067",
+      "jobs": 72,
+      "normal_jobs": 48,
+      "helper_jobs": 24,
+      "conservative_tokens": 1456128,
+      "model": "gemini-3.5-flash-lite",
+      "currency_self_cap_USD": 7.5
+    }
+  },
+  "provider_or_Engine_or_actual_scorer_calls_before_freeze": 0,
+  "validation": "Frozen runtime corpus/provenance plus both72-job plans PASS; no model calls",
+  "publication": "Five M1 metadata files in sibling input directory; full raw/normalized source bytes and full42-file authoring closure retained private. authoring-public is the unmodified30-file non-acquired subset, not the full original closure. Its original manifest intentionally also binds12 private acquired source files.",
+  "groq": "96 observations deferred before credentials, actualF1 null, full3provider acceptance NO_GO",
+  "first_canonical_tag": "engine073-realworld-independent-v1-freeze",
+  "rescore_or_relabel": false
+}

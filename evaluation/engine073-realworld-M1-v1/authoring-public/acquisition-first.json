@@ -1,0 +1,50 @@
+[
+  {
+    "product": "curl",
+    "repository": "curl/curl",
+    "ref": "curl-8_10_1",
+    "attempts": [],
+    "failure_type": "URLError",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "product": "git",
+    "repository": "git/git",
+    "ref": "v2.47.0",
+    "attempts": [],
+    "failure_type": "URLError",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "product": "cmake",
+    "repository": "Kitware/CMake",
+    "ref": "v3.31.0",
+    "attempts": [],
+    "failure_type": "URLError",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "product": "openssl",
+    "repository": "openssl/openssl",
+    "ref": "openssl-3.0.15",
+    "attempts": [],
+    "failure_type": "URLError",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "product": "sqlite",
+    "repository": "sqlite/sqlite",
+    "ref": "version-3.47.2",
+    "attempts": [],
+    "failure_type": "URLError",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "product": "redis",
+    "repository": "redis/redis",
+    "ref": "7.2.5",
+    "attempts": [],
+    "failure_type": "URLError",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  }
+]

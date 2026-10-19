@@ -1,0 +1,48 @@
+{
+  "validated_utc": "2026-10-19T11:58:40.151596+00:00",
+  "mode": "STATIC_ONLY",
+  "command": "corpus.validate(ROOT, M1_sha256); corpus.verify_provenance(ROOT, final_M0_receipt)",
+  "frozen_validator_corpus_py_sha256": "659e6e8ecdcdfb7bbe46ac581d0e2f1a14a532c937deebd83645d8c313b45cb2",
+  "M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+  "M0_receipt_sha256": "4023eb552ee964e0e99550a61a9f4c2d2800d2d994b7e42c439cf3cf7669d4d2",
+  "schema": "PASS",
+  "manifest": "PASS",
+  "provenance": "PASS",
+  "corpus_files_self_excluding_manifest": 28,
+  "corpus_files_including_manifest": 29,
+  "counts": {
+    "e2e_normal": {
+      "positive": 17,
+      "negative": 7
+    },
+    "helper_opt_in": {
+      "positive": 8,
+      "negative": 16
+    }
+  },
+  "family_counts": {
+    "e2e_normal": {
+      "compatible": 3,
+      "conflict": 3,
+      "revision_or_history": 3,
+      "untrusted_control": 3,
+      "scope": 3,
+      "missing_or_unrelated": 3,
+      "duplicate_or_lineage": 3,
+      "wrong_target": 3
+    },
+    "helper_opt_in": {
+      "compatible": 3,
+      "conflict": 3,
+      "revision_or_history": 3,
+      "untrusted_control": 3,
+      "scope": 3,
+      "missing_or_unrelated": 3,
+      "duplicate_or_lineage": 3,
+      "wrong_target": 3
+    }
+  },
+  "helper_maximum_request_bytes": 2880,
+  "Engine_actual_scorer_model_provider_Oracle_calls": 0,
+  "old928_hash_only_unchanged": true
+}
