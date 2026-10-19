@@ -1,0 +1,14 @@
+{
+  "identity": "engine073-realworld-first-semantic-annotations-v1",
+  "recording_started_utc": "2026-10-19T12:33:19.507700+00:00",
+  "reviewer": {
+    "role": "agent",
+    "id": "/root/engine07_realworld_independent"
+  },
+  "authorization": "Parent explicitly authorized first192-row semantic annotation after unchanged initial collection.",
+  "prior_semantic_annotation_or_actual_scoring": 0,
+  "capture_manifest_sha256": "8a0f9fbfcf86a9cc04e41fcd1a6f143dab0e814daffc6292b63fec34274b8f70",
+  "M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+  "models_Engine_actual_aggregate_scorer_Oracle_calls": 0,
+  "blindness_limit": "Packets omit provider/arm; prior operational postmortem exposed provider/arm and completed-job counts, so full blindness is not claimed."
+}

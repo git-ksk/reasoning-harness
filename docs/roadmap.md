@@ -2,7 +2,7 @@
 
 > Historical engineering/acceptance ledger below. Current direction: [product roadmap](product-roadmap.md) and [#531 Engine0.7 real-world evaluation](engine-07-realworld-evaluation.md). Published CLI is0.5.5 / Engine0.6.1;0.7.2 adoption evaluation is incomplete. Current successor plan: [Engine0.7.3](engine-0.7.3-roadmap.md).
 
-> 2026-10-19 checkpoint: [completeM0](../evaluation/engine073-realworld-M0-v1/README.md) independently reviewed PASS; freshreal24 authoring follows the freeze. ActualF1 is pending. Mistral/Google first, Groq explicitly deferred/null; full3provider adoption remains NO_GO.
+> 2026-10-19 checkpoint: M0/M1 complete; [first live results and independent score](../evaluation/engine073-realworld-first-v1a-results/README.md) are NO_GO. Both active providers stopped early; full24 actual F1 remains null. Only Google helper n=1/arm: case F1=0.00, claim F1=1.00. Repair #540 collection/binding/failure diagnostics before the next separately frozen evaluation; Groq remains deferred. Dated entries below are retained history.
 
 ## Project direction
 

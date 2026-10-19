@@ -1,0 +1,15 @@
+{
+  "identity": "engine073-realworld-v1a-diagnostic-first-capture-v1",
+  "started_unix_seconds": 1792412766,
+  "run_id": 39250362193,
+  "raw_manifest_sha256": "24762d6b1702871be22db82ba97cc898c9b3df196ae9bccc3ae5a15fe13fd2e6",
+  "M0_sha256": "4023eb552ee964e0e99550a61a9f4c2d2800d2d994b7e42c439cf3cf7669d4d2",
+  "M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+  "collector": "Unmodified frozen collect.py in original reviewed runtime; first invocation on original captured raw because CI host permission guard silently exited before invoking collector.",
+  "original_CI_observations": 0,
+  "model_or_Engine_execution": 0,
+  "rerun_rescore_relabel": false,
+  "raw_mount": "read_only",
+  "output": "exclusive new capture namespace",
+  "eligibility": "Only rows passing unchanged frozen bind/capture may become complete; normal2 finalization events remain binder FAIL; entire24 actualF1 null."
+}

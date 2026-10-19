@@ -1,0 +1,21 @@
+{
+  "identity": "engine073-realworld-independent-v1a-first-results",
+  "files": {
+    "README.md": "190dac54eb442dc3daf831f3e6ccd181359ab27dffec8b19b3e67194a721e2c5",
+    "all-provider-first-raw-manifest.json": "2bf7e5ada330b388ddb4a81b0de5664e395f929b69879bc01191efb8effa1dae",
+    "final-run.json": "638cfeea0f93421938a839231dc2be2b2fa95984f6b43fd7315428ec5055a7e6",
+    "first-capture-manifest.json": "8a0f9fbfcf86a9cc04e41fcd1a6f143dab0e814daffc6292b63fec34274b8f70",
+    "first-capture-recovery-receipt.json": "35d989e01e1cb852883e5b2fb77114760bbb74b2ec276a0b3292471da48601cb",
+    "first-score/first-score-started.json": "899a12e77577e7ebfd2da8d063b6820a16062fc00fe3f4aa949ec49adb2e4478",
+    "first-score/report.json": "a9b705814c1d18d410728087a7dbed851eb446b3e7b77ecd9df188393a806841",
+    "first-score/rows.json": "d217566a8925a57f50d21cb0fd0e149d298d7a2d6584f67a6a856025c39a7995",
+    "independent-annotations/annotation-start.json": "094b50c7baf705a2c9a9e39445a339f14232f47395bbec05a1fa3ce361fa30a4",
+    "independent-annotations/artifact-manifest.json": "0f1c4a1af1e84880ae61d441759cf844618304a16b0fe42f7b76df08eee81db9",
+    "independent-annotations/semantic-review-notes.json": "582382311d46839adc1dcb1f8209de63f25f428848ae8b32bfaa5a855e19a3ce",
+    "independent-postmortem/README.md": "7079b99cdc22a5a8b20ba7f24b808f7b95ec93d76b1d858725ffe28fedc9cd0f",
+    "independent-postmortem/artifact-manifest.json": "eec6907121d2a30f51d2c3bbd93db57a94319faf4efd7ca7d31a183d62a35203",
+    "independent-postmortem/postmortem.json": "0aa823afe5ea7e721058123c146c44ed37171fd62652bb093c8615cd2538b4c2",
+    "status.json": "778358e300d03ccea950413ade10fa215f03b15525acb14e5b60aa6bcb62424e"
+  },
+  "self_exclusion": "artifact-manifest.json"
+}

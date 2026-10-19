@@ -1,0 +1,145 @@
+{
+  "identity": "engine073-realworld-independent-v1a-first-results",
+  "closed_utc": "2026-10-19T12:36:29.547948+00:00",
+  "run_id": 39250362193,
+  "run_head": "9558bad07e73ab14eeefb4f1a81102dc611ee221",
+  "M0_sha256": "4023eb552ee964e0e99550a61a9f4c2d2800d2d994b7e42c439cf3cf7669d4d2",
+  "M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+  "baseline_engine": "0.6.1/4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+  "candidate_core": "ab3c6322921c8c738ec35bd018345917b5afa538",
+  "candidate_identity": "unreleased 0.7.3 repair source; package string remains 0.7.2; not published 0.7.2 performance",
+  "common_CLI": "0.5.5/ec6e55ff95b8364f9a5d09b8bbfe0ecc0c9d19d7",
+  "acceptance": "NO_GO",
+  "full_actual_answer_f1": null,
+  "source_cases": 24,
+  "unique_documents": 12,
+  "unique_products": 6,
+  "planned_observations": 288,
+  "captured_observations": 192,
+  "deferred_groq_observations": 96,
+  "captured_status_counts": {
+    "complete": 2,
+    "incomplete": 4,
+    "not_run": 186
+  },
+  "independent_annotation_rows": 192,
+  "first_aggregate_score_executions": 1,
+  "annotation_failures": 2,
+  "eligible_subset": {
+    "baseline": {
+      "planned_rows": 24,
+      "complete_rows": 1,
+      "incomplete_rows": 23,
+      "case_counts": {
+        "fn": 1
+      },
+      "case_metrics": {
+        "precision": null,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "claim_counts": {
+        "displayed_unique_claims_A": 2,
+        "grounded_claims_S": 2,
+        "required_groups_G": 1,
+        "satisfied_groups_H": 1,
+        "displayed_claim_occurrences": 3
+      },
+      "claim_micro": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f1_null_or_zero_reason": null
+      },
+      "claim_macro_f1_defined_rows": 1,
+      "claim_macro_f1": 1.0,
+      "citation_counts": {
+        "edges": 3,
+        "correct_edges": 3,
+        "claims_requiring_citation": 3,
+        "correctly_cited_occurrences": 3,
+        "literal_quotes": 3,
+        "faithful_literal_quotes": 3
+      },
+      "citation_metrics": {
+        "edge_precision": 1.0,
+        "claim_occurrence_coverage": 1.0,
+        "literal_fidelity": 1.0
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "candidate": {
+      "planned_rows": 24,
+      "complete_rows": 1,
+      "incomplete_rows": 23,
+      "case_counts": {
+        "fn": 1
+      },
+      "case_metrics": {
+        "precision": null,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "claim_counts": {
+        "displayed_unique_claims_A": 2,
+        "grounded_claims_S": 2,
+        "required_groups_G": 1,
+        "satisfied_groups_H": 1,
+        "displayed_claim_occurrences": 3
+      },
+      "claim_micro": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f1_null_or_zero_reason": null
+      },
+      "claim_macro_f1_defined_rows": 1,
+      "claim_macro_f1": 1.0,
+      "citation_counts": {
+        "edges": 3,
+        "correct_edges": 3,
+        "claims_requiring_citation": 3,
+        "correctly_cited_occurrences": 3,
+        "literal_quotes": 3,
+        "faithful_literal_quotes": 3
+      },
+      "citation_metrics": {
+        "edge_precision": 1.0,
+        "claim_occurrence_coverage": 1.0,
+        "literal_fidelity": 1.0
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    }
+  },
+  "usage_not_original_guard_accounting": {
+    "mistral": {
+      "journal_tokens": 8956,
+      "journal_HTTP_attempts": 9,
+      "guard_known_tokens": 0,
+      "guard_known_attempts": 0
+    },
+    "google": {
+      "journal_tokens": 11606,
+      "journal_HTTP_attempts": 17,
+      "guard_known_tokens": 7822,
+      "guard_known_attempts": 11
+    }
+  },
+  "limits": [
+    "one compatible helper question per arm, not a full24 score",
+    "independent agent review, not fully blinded or human adjudication",
+    "host curated facts, fixed official documentation, not open-web extraction",
+    "no provider/model/Engine retry; no scorer rerun or relabel",
+    "all first raw, frozen code, gold and budgets unchanged"
+  ],
+  "private_evidence_root": "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/engine073-realworld-first-v1a",
+  "new_collection_scoring_model_or_Engine_calls": 0,
+  "next": [
+    "repair normal terminal-chain binding and host collection permissions in a new evaluator identity",
+    "preserve diagnostic usage on CLI logical-call budget failure; retain this fixed-budget failure",
+    "exercise real normal/helper control paths before a separately frozen future evaluation; no retrospective pass",
+    "resolve Groq full-cohort admission before any further Groq start"
+  ]
+}
