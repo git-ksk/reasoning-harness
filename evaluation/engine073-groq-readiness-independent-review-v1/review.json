@@ -1,0 +1,64 @@
+{
+  "identity": "engine073-groq-readiness-independent-review-v1",
+  "verdict": "BOUNDED_ONE_SHOT_OBSERVATION_CODE_REVIEW_PASS_AFTER_BUDGET_REPAIR",
+  "input_sha256": {
+    "initial_script": "4310aaae80764d8e2f968813652deda46a3f1e2c6e3df599037a976134ba6778",
+    "repaired_script": "a6bd9dc8b2875714cd6dc15f9c25e312b6b05aa6bd62bfeebf3592872d80955f",
+    "workflow": "fc9f72734dc1200aaef54c209195cf17de743b0f497a3943dcbe3ff2c35775e9"
+  },
+  "checks": {
+    "reservation_before_authorization_generation": true,
+    "exclusive_output_and_file_creation": true,
+    "reservation_and_request_file_fsync": true,
+    "maximum_HTTP_attempts": 1,
+    "redirects": "disabled by NoRedirect",
+    "request_input_bound": "fixed wire UTF8 bytes plus128 allowance checked <=512 before credential access",
+    "output_cap": 64,
+    "price_ceiling_assumptions_USD_per_million": {
+      "input": "1",
+      "output": "2"
+    },
+    "worst_case_local_reservation_USD": "0.000640",
+    "currency_self_cap_USD": "0.001",
+    "socket_timeout_seconds": 35,
+    "outer_timeout_seconds": 45,
+    "hard_kill_grace_seconds": 3,
+    "model_tier_retry_or_fallback": "no code path",
+    "workflow_unique_identity_check": "run_attempt1 plus pre-credential Actions run list match and run ID; serialized Groq concurrency group",
+    "artifacts": "always upload reservation/request/body/status headers and first Actions query"
+  },
+  "offline_control": {
+    "scope": "offline supplied script structural control only",
+    "network_provider_model_calls": 0,
+    "mock_send_attempts": 1,
+    "script_exitcode": 1,
+    "status": 429,
+    "usage": null,
+    "reservation_before_mock_send": true,
+    "interpretation": "HTTP429 is retained with unknown usage and exit1; no retry or automatic quota recovery."
+  },
+  "initial_control_interruption": "Initial original-hash guard rejected concurrently repaired source before any script execution/mock send. Preserved; separate repaired snapshot/control used after explicit parent instruction.",
+  "remaining_clear_code_blockers_for_this_observation_scope": [],
+  "limits": [
+    "Local512-token bound uses an explicit128 framing allowance; provider hidden framing and billing are not guaranteed by this reservation.",
+    "Price ceilings are configured conservative assumptions; reviewer did not query provider pricing, account tier or remaining quota.",
+    "Workflow success is not full cohort readiness; saved status/headers require separate tier/headroom decision before M0. Free tier must not trigger automatic budget or tier increase.",
+    "Actual Actions identity history, secret delivery, HTTP transmission, response headers, usage and timeout behavior were not exercised. Existing depleted-state file is unchanged; this is no automatic recovery or cohort authorization.",
+    "M0/new accuracy authorship/real evaluation remain prohibited and unperformed by this review."
+  ],
+  "actual_calls": {
+    "provider": 0,
+    "model": 0,
+    "network": 0,
+    "Oracle": 0,
+    "accuracy_Engine": 0,
+    "actual_cohort_scorer": 0
+  },
+  "mutations": {
+    "provided_code": 0,
+    "existing_artifacts": 0,
+    "Git": 0,
+    "new_agents": 0
+  },
+  "closed_utc": "2026-10-19T05:28:56.702770+00:00"
+}

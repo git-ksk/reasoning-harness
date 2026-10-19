@@ -1,0 +1,30 @@
+{
+  "identity": "engine073-groq-readiness-independent-review-v1",
+  "self_exclusion": "artifact-manifest.json",
+  "files": {
+    "README.md": "d1638606958160a9389358b7d26b708087de1b722fe929b74bdd6dbd6f966367",
+    "commands.json": "e179d1bb6d7f52d2cbd409664ee9c41c8fbd05f05767d33fed2281f342b534f5",
+    "http429-repaired-control-result.json": "a9c0c55599a677014372e19f608317edfb301da0b1b3b0209e82984cadde1649",
+    "http429-repaired-first/observation.json": "0deb33a3b178492f8845ecbac0525bbfacd32bfa605f1db617573efe7fff3ac4",
+    "http429-repaired-first/request.json": "86f7b46a193575e4bc4e0563e24ad1bbe83142f3613f8f01469284b1053e3cf4",
+    "http429-repaired-first/reservation.json": "8c70fbd651d15e458fd20fa4c3b0fadc5f1167e70988a1dbac9301ffa48bca39",
+    "http429-repaired-first/response-body.json": "8d5cf344c91182a90ebdafdd1880c5a633053b27aef5028aa22e2983874980e7",
+    "http429-repaired-first.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "http429-repaired-first.stdout": "85749db95ee14245bcab530256df15a80d756039854070eff70229f7b3a62191",
+    "initial-control-not-run.json": "946353c9767cb2d82521427e7afecdac6e5fc25a9fa42221119ad1b1191b704e",
+    "offline-control.py": "cfd583dabfa878ed48d220948e8e6e802cc0137098b947c62dc74c4e41bdd139",
+    "offline-repaired-control.py": "94d241e1c5facf550a785079043822ef0f7fdfccc1f5d9903df51c5df9a679e3",
+    "readiness.reviewed.py": "a6bd9dc8b2875714cd6dc15f9c25e312b6b05aa6bd62bfeebf3592872d80955f",
+    "review.json": "1906dbb1274f589c7b69d2f70ed57a21f1d7a046fc44706ae69a4885ebf8c51a",
+    "workflow.reviewed.yml": "fc9f72734dc1200aaef54c209195cf17de743b0f497a3943dcbe3ff2c35775e9"
+  },
+  "files_self_excluding": 15,
+  "files_including_manifest": 16,
+  "input_sha256": {
+    "initial_script": "4310aaae80764d8e2f968813652deda46a3f1e2c6e3df599037a976134ba6778",
+    "repaired_script": "a6bd9dc8b2875714cd6dc15f9c25e312b6b05aa6bd62bfeebf3592872d80955f",
+    "workflow": "fc9f72734dc1200aaef54c209195cf17de743b0f497a3943dcbe3ff2c35775e9"
+  },
+  "verdict": "BOUNDED_ONE_SHOT_OBSERVATION_CODE_REVIEW_PASS_AFTER_BUDGET_REPAIR",
+  "actual_external_calls": 0
+}

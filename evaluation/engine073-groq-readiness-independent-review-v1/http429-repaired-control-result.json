@@ -1,0 +1,10 @@
+{
+  "scope": "offline supplied script structural control only",
+  "network_provider_model_calls": 0,
+  "mock_send_attempts": 1,
+  "script_exitcode": 1,
+  "status": 429,
+  "usage": null,
+  "reservation_before_mock_send": true,
+  "interpretation": "HTTP429 is retained with unknown usage and exit1; no retry or automatic quota recovery."
+}
