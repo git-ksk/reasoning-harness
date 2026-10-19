@@ -1,0 +1,13 @@
+# Evaluator v2 development checkpoint — 2026-10-20 JST
+
+M0 is not complete and no fresh accuracy cases exist. Engine source ab3c632, baseline0.6.1 and all original v1/M0/M1/raw/gold/first scores remain unchanged. Source merge/release/CLI adoption remain NO_GO. Full first-cohort actual F1 remains null.
+
+The v1 failure-diagnostic omission was caused by using common CLI ec6e55, which predates merged #535 diagnostics. v2 uses common main8525330 with both core trees explicitly swapped. That host's actual CLI package is0.5.4, not the published0.5.5 artifact. Both arms have identical audit/provider changes.
+
+[Build39342116310](https://github.com/git-ksk/reasoning-harness/actions/runs/39342116310) at48b73d2 passed: paired non-test binaries,18 adapter loopback controls,12 actual normal-success/budget-stop CLI controls and3 paired helper controls,35 structural tests. All external provider calls0; these are execution controls, not accuracy questions. Artifact12230091080 ZIP SHA25628d333feae4983fc4b616e02f670c58cdd1d14cbed8c181dce3e08eae4bef8c5.
+
+Subsequent v2 changes add explicit pinned safety runtime, retry-grounding binding and two actual acquisition/admission/receipt/capture controls. Parent41 structural tests PASS. These latest changes still require the refreshed-image actual controls. Identical compiled binaries can be reused only after checking old artifact ZIP, all8 binary hashes and all declared Rust build inputs byte-for-byte.
+
+Independent terminal reviews preserve the original findings and their resolution. First review CHANGES_REQUIRED; second review independently reproduced runtime downgrade and grounding substitution despite17 existing test passes. The third limited review verifies both fixes (17 tests plus3 independent structural controls); it is not full-runtime, development-driver or complete-M0 approval. Full readonly snapshots remain private under target/private-evaluation-pending/engine073-realworld-v2-development/independent-reviews. Selected notes/manifests below do not constitute each complete snapshot inventory.
+
+The seen24 diagnostic path is separately named CONSUMED_REAL24_ENGINEERING_DIAGNOSTIC_NOT_ACCEPTANCE and requires a separate reviewed runtime receipt before any provider credentials. No such live admission is currently enabled. Development profile12 logical operations/24 adapter generations/360s retains24000 input+4096 output aggregate caps and both-arm parity. Groq remains deferred. Unknown usage/quota/cancellation/restart barriers remain; a failed case does not become a correct negative. Fresh independent acceptance must follow complete reviewed M0 and use different products/documents from all consumed data.

@@ -1,5 +1,8 @@
 # Engine 0.7 実戦評価とCLI採用
 
+**最新状況（2026-10-20、評価基盤v2の修正中）:** 修正済み共通CLIと両EngineのLinuxビルド、実CLIの正常終了・上限停止12対照・補助API3対照を無課金で確認した。独立レビューのruntime設定・再試行groundingの漏れも修正。最新の取得→受入→採点接続を実環境で確認中。次は既存24問で予算・完走を確認し、その後に完全M0固定と新規独立評価へ進む。今回の構造試験数は精度問題数に加算しない。旧初回の全体F1=null/NO_GOは不変、Groq延期・0.7.3未公開・CLI未採用。[修正と検証範囲](../evaluation/engine073-realworld-v2-development-preparation/README.md)。
+
+以下は2026-10-19の初回結果です。
 **最新状況（2026-10-19、初回実戦評価・独立採点済み）:** M0/M1を固定し、未使用だった公式12文書・6製品の実資料24問でMistral/Googleを実行したが、CLI論理呼び出し上限6と失敗時の使用量欠落で早期停止。通常回答は評価器の2段階終端照合にも不備があり、24問全体のF1は全provider/trackで`null`、**採用NO_GO**。採点可能なGoogle補助API1問/armのみ、baseline/候補ともcase F1=0.00・claim F1=1.00（最終判定conflict、改善なし）。これは全体性能ではない。[初回結果・独立レビュー・修正順序](../evaluation/engine073-realworld-first-v1a-results/README.md)。次は#540の結果回収・終端照合・失敗時診断を修正して実経路を確認し、別途固定した評価へ進む。Groqは認証前延期を維持。元raw/gold/予算/初回FAILは不変、モデル再試行・再採点なし。公開CLI0.5.5/Engine0.6.1、Engine0.7.3未公開。以下の日付付き準備記録は履歴。
 
 日本語 | [English](engine-07-realworld-evaluation.md)

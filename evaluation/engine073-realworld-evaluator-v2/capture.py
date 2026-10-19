@@ -1,11 +1,14 @@
 """Bind real host outputs to source/admission bytes before semantic annotation."""
 import json
+from pathlib import Path
 from trace_audit import bind as bind_trace_audit
 from scorer import require,sha,keyed,check_model_journal,check_terminal_order
 
 def bind_normal(payload,trace,journal,config,corpus,model_events,provider,model):
     result=payload.get('result',{});require(result.get('output_contract')=='reason-natural-output-v4' and 'failure' not in result,'normal_run_incomplete')
     require(result['configuration']['provider']==provider and result['configuration']['model']==model,'runtime_identity_mismatch')
+    pinned=json.loads((Path(__file__).parent/'protocol.json').read_text())['normal_bound']['safety_runtime']
+    require(result.get('safety_runtime')==pinned,'unfrozen_safety_runtime')
     check_terminal_order(trace,result)
     usage=check_model_journal(model_events,provider,model,24)
     bind_trace_audit(trace,model_events,provider,model)

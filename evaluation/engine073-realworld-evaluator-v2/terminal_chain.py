@@ -49,7 +49,7 @@ def check(trace, result, require):
         if previous_terminal is not None:
             require(previous_terminal['result']['status']=='requires_verification','retry_after_nonverification_terminal')
             retries=[e for e in grounding if e.get('phase')=='finalization_retry_resolution' and e.get('round')==n-1]
-            require(len(retries)==1 and retries[0]['outcome']['artifact']!=previous_artifact,'retry_without_changed_grounding')
+            require(len(grounding)==len(retries)==1 and retries[0]['outcome']['artifact']!=previous_artifact,'retry_without_changed_grounding')
         before=[e for e in events if previous_end<e['sequence']<chain[0]['sequence'] and e.get('kind')=='final_render_state' and e.get('round')==n]
         require(len(before)==1 and before[-1].get('source') in ['model','canonical_fallback'],'renderer_candidate_without_render')
         initial_render=before[0];consumed_renders.add(initial_render['sequence'])

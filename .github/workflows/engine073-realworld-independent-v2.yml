@@ -7,6 +7,7 @@ on:
   push:
     tags:
       - 'engine073-realworld-v2-m0-build-v*'
+      - 'engine073-realworld-v2-m0-refresh-v*'
 permissions:
   contents: read
   actions: read
@@ -20,7 +21,7 @@ jobs:
       - run: python3 -B -m unittest discover -s evaluation/engine073-realworld-evaluator-v2 -p 'test_*.py' -v
       - run: python3 -c "import pathlib; [compile(p.read_text(),str(p),'exec') for p in pathlib.Path('evaluation/engine073-realworld-evaluator-v2').glob('*.py')]"
   m0-runtime:
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/engine073-realworld-v2-m0-build-v')
+    if: github.event_name == 'push' && (startsWith(github.ref, 'refs/tags/engine073-realworld-v2-m0-build-v') || startsWith(github.ref, 'refs/tags/engine073-realworld-v2-m0-refresh-v'))
     runs-on: ubuntu-24.04
     timeout-minutes: 50
     steps:
@@ -28,17 +29,56 @@ jobs:
         with:
           fetch-depth: 0
       - name: Build exact paired non-test hosts inside one builder
+        if: startsWith(github.ref, 'refs/tags/engine073-realworld-v2-m0-build-v')
         run: |
           set -euo pipefail
-          mkdir /tmp/paired-build /tmp/runtime-context /tmp/m0-artifact
+          mkdir /tmp/paired-build
           docker build -f evaluation/engine073-realworld-evaluator-v2/Dockerfile.build -t engine073-builder-v2 .
           docker run --rm -v "$GITHUB_WORKSPACE:/repo:ro" -v /tmp/paired-build:/build engine073-builder-v2 python3 /repo/evaluation/engine073-realworld-evaluator-v2/build.py --repo /repo --work-dir /build/paired --fetch-dependencies
+      - name: Reuse only the exact reviewed-build binaries after source and artifact checks
+        if: startsWith(github.ref, 'refs/tags/engine073-realworld-v2-m0-refresh-v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/reuse /tmp/paired-build/paired /tmp/prior-compiled-source
+          artifact=$(python3 -c "import json;print(json.load(open('evaluation/engine073-realworld-evaluator-v2/runtime-reuse-v1.json'))['artifact_id'])")
+          gh api "repos/${{ github.repository }}/actions/artifacts/$artifact/zip" > /tmp/reuse.zip
+          python3 - <<'PYZIP'
+          import json,hashlib,zipfile
+          from pathlib import Path
+          spec=json.load(open('evaluation/engine073-realworld-evaluator-v2/runtime-reuse-v1.json'))
+          assert hashlib.sha256(Path('/tmp/reuse.zip').read_bytes()).hexdigest()==spec['artifact_zip_sha256']
+          with zipfile.ZipFile('/tmp/reuse.zip') as z:z.extractall('/tmp/reuse')
+          PYZIP
+          docker load -i /tmp/reuse/runtime-image.tar.gz
+          docker create --name engine073-reuse engine073-runtime-v2
+          docker cp engine073-reuse:/eval/bin /tmp/paired-build/paired/bin
+          docker cp engine073-reuse:/repo/evaluation/engine073-realworld-evaluator-v2/. /tmp/prior-compiled-source/
+          docker rm engine073-reuse
+          python3 - <<'PYCHECK'
+          import json,hashlib
+          from pathlib import Path
+          sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+          root=Path('evaluation/engine073-realworld-evaluator-v2');spec=json.loads((root/'runtime-reuse-v1.json').read_bytes())
+          for name in spec['required_unchanged_sources']:assert sha(root/name)==sha(Path('/tmp/prior-compiled-source')/name),name
+          bins=Path('/tmp/paired-build/paired/bin');identity=json.loads((bins/'identity.json').read_bytes())
+          assert sha(root/'build.py')==identity['build_script_sha256'] and sha(root/'audit.rs')==identity['audit_module_sha256']
+          for arm,record in identity['arms'].items():
+              for name,digest in record['binaries'].items():assert sha(bins/(name+'-'+arm))==digest
+          Path('/tmp/reused-binaries.json').write_text(json.dumps({'source_artifact_id':spec['artifact_id'],'source_zip_sha256':spec['artifact_zip_sha256'],'binary_reuse':'byte-exact','new_Rust_builds':0},indent=2)+'\n')
+          PYCHECK
+      - name: Assemble the current runtime and preserve exact identity
+        run: |
+          set -euo pipefail
+          mkdir /tmp/runtime-context /tmp/m0-artifact
           python3 evaluation/engine073-realworld-evaluator-v2/assemble_image.py --repo . --bin-dir /tmp/paired-build/paired/bin --context /tmp/runtime-context
           docker build -f evaluation/engine073-realworld-evaluator-v2/Dockerfile.runtime -t engine073-runtime-v2 /tmp/runtime-context
           docker image inspect engine073-runtime-v2 > /tmp/m0-artifact/image-inspect.json
           docker image save engine073-runtime-v2 | gzip -1 > /tmp/m0-artifact/runtime-image.tar.gz
           sha256sum /tmp/m0-artifact/runtime-image.tar.gz > /tmp/m0-artifact/runtime-image.sha256
           cp /tmp/paired-build/paired/bin/identity.json /tmp/m0-artifact/paired-host-identity.json
+          if test -f /tmp/reused-binaries.json; then cp /tmp/reused-binaries.json /tmp/m0-artifact/; fi
       - name: Verify actual runtime loopback controls without provider credentials
         run: |
           set -euo pipefail
@@ -48,6 +88,26 @@ jobs:
           docker run --rm --read-only --network none --tmpfs /tmp engine073-runtime-v2 python3 -B -m unittest discover -s /repo/evaluation/engine073-realworld-evaluator-v2 -p 'test_*.py' -v > /tmp/runtime-controls/scorer.stdout 2> /tmp/runtime-controls/scorer.stderr
           sudo mkdir -p /tmp/m0-artifact/runtime-controls
           sudo cp -R /tmp/runtime-controls/. /tmp/m0-artifact/runtime-controls/
+      - name: Record small hash-bound runtime proof after controls
+        run: |
+          set -euo pipefail
+          docker run --rm -i --read-only --network none --tmpfs /tmp engine073-runtime-v2 python3 -B - <<'PYPROOF' | tee /tmp/m0-artifact/runtime-proof.json
+          import json,hashlib,sys
+          from pathlib import Path
+          sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+          root=Path('/repo');files={str(p.relative_to(root)):sha(p) for p in sorted(root.rglob('*')) if p.is_file() and '__pycache__' not in p.parts}
+          identity=Path('/eval/bin/identity.json');data=json.loads(identity.read_bytes())
+          print(json.dumps({'identity':'engine073-realworld-v2-runtime-proof','files':files,'runtime_files_sha256':hashlib.sha256(json.dumps(files,sort_keys=True,separators=(',',':')).encode()).hexdigest(),'paired_host_identity_sha256':sha(identity),'paired_binaries':{arm:rec['binaries'] for arm,rec in data['arms'].items()},'python':sys.version,'provider_model_calls':0},sort_keys=True))
+          PYPROOF
+          python3 - <<'PYIMAGE'
+          import json,hashlib
+          from pathlib import Path
+          image=json.load(open('/tmp/m0-artifact/image-inspect.json'))[0]
+          sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
+          value={'runtime_image_id':image['Id'],'runtime_image_archive_sha256':sha('/tmp/m0-artifact/runtime-image.tar.gz'),'paired_host_identity_sha256':sha('/tmp/m0-artifact/paired-host-identity.json'),'runtime_proof_sha256':sha('/tmp/m0-artifact/runtime-proof.json')}
+          Path('/tmp/m0-artifact/runtime-descriptor.json').write_text(json.dumps(value,indent=2)+'\n')
+          print('ENGINE073_RUNTIME_DESCRIPTOR='+json.dumps(value,sort_keys=True))
+          PYIMAGE
       - name: Preserve build logs including failures
         if: always()
         run: |

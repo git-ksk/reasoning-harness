@@ -62,7 +62,17 @@
     "wall_ms": 360000,
     "cancel_grace_ms": 1000,
     "aggregate_request_preflight": "before every generation, observed input plus serialized request bytes+512 <=24000, observed output plus requested output cap <=4096; unknown usage stops",
-    "total_provider_attempts": 24
+    "total_provider_attempts": 24,
+    "safety_runtime": {
+      "identity_version": "answer-safety-identity-v1",
+      "profile": "verified_target_v1",
+      "configuration_id": "verified-target-answer-gate-v1",
+      "decidability_contract": "deterministic-explicit-typed-preconditions-v1",
+      "sufficiency_contract": "evidence-sufficiency-coordinate-rsd1-v1",
+      "requirement_policy": "claim-local-answer-sufficiency-requirements-v1",
+      "rollback_configuration_id": "d3-sufficiency-answer-gate-v2"
+    },
+    "CLI_safety_profile_arg": "current"
   },
   "helper_bound": {
     "adapter_generations": 1,

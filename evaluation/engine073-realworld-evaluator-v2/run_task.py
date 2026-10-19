@@ -22,7 +22,7 @@ def main():
     (work/'model-journal.jsonl').touch(mode=0o600,exist_ok=False)
     if a.track=='e2e_normal':
         dump(work/'config.json',config(corpus,case,a.corpus,work/'resolver.jsonl'))
-        cmd=[str(a.bin_dir/('reason-'+a.arm)),case['question'],'--provider',a.provider,'--model',a.model,'--seed',str(seed),'--max-tokens','1024','--max-model-calls','12','--max-output-tokens','4096','--max-total-tokens','28096','--config',str(work/'config.json'),'--format','json','--diagnostic-trace',str(work/'trace.json')]
+        cmd=[str(a.bin_dir/('reason-'+a.arm)),case['question'],'--provider',a.provider,'--model',a.model,'--seed',str(seed),'--max-tokens','1024','--safety-profile','current','--max-model-calls','12','--max-output-tokens','4096','--max-total-tokens','28096','--config',str(work/'config.json'),'--format','json','--diagnostic-trace',str(work/'trace.json')]
         rc,result=invoke(cmd,'actual-cli',env)
         # Preserve the actual CLI envelope. Do not turn an error into abstention.
         print(json.dumps(result));return rc

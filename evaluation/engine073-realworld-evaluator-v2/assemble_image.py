@@ -11,5 +11,6 @@ def main():
         shutil.copytree(source,dest,ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
     target=root/'repo/.github/workflows';target.mkdir(parents=True)
     shutil.copyfile(a.repo/'.github/workflows/engine073-realworld-independent-v2.yml',target/'engine073-realworld-independent-v2.yml')
+    shutil.copyfile(a.repo/'.github/workflows/engine073-realworld-development-v2.yml',target/'engine073-realworld-development-v2.yml')
     shutil.copytree(a.bin_dir,root/'eval/bin')
 if __name__=='__main__':main()

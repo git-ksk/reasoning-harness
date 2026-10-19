@@ -4,7 +4,7 @@ import argparse,hashlib,json,os,sys,time
 from pathlib import Path
 
 def scope(value):return {k:{'kind':'values','values':[v]} for k,v in value.items()}
-def host_id(case):return 'harness:independent-v1:captured-origin-manifest:'+case['id']
+def host_id(case):return 'harness:independent-v2:captured-origin-manifest:'+case['id']
 def host_facts(corpus,case):
     if 'e2e_host_facts' not in case:return {}
     name=case['id'].split('-')[1]
@@ -35,7 +35,7 @@ def config(corpus,case,corpus_path,journal):
     admission={'authority_ranks':{'primary':20,'reference_host':20,'untrusted':0},'minimum_authority_class':'primary','required_scope':scope(case['required_scope']),'evaluation_time_unix_seconds':max(d['retrieved_at_unix_seconds'] for d in corpus['documents'].values())+1,'sources':sources}
     capabilities=[]
     for slot,record in enumerate(records(corpus,case)):
-        cap={'id':'independent-v1-source-'+str(slot),'kind':'external_command','program':sys.executable,'args':[str(Path(__file__).resolve()),'--corpus',str(Path(corpus_path).resolve()),'--case',case['id'],'--slot',str(slot),'--journal',str(Path(journal).resolve())],'read_only':True,'supported_fact_keys':sorted(set(record['facts'])|{case['lookup_key']}),'timeout_ms':5000,'max_response_bytes':65536,'admission':admission}
+        cap={'id':'independent-v2-source-'+str(slot),'kind':'external_command','program':sys.executable,'args':[str(Path(__file__).resolve()),'--corpus',str(Path(corpus_path).resolve()),'--case',case['id'],'--slot',str(slot),'--journal',str(Path(journal).resolve())],'read_only':True,'supported_fact_keys':sorted(set(record['facts'])|{case['lookup_key']}),'timeout_ms':5000,'max_response_bytes':65536,'admission':admission}
         capabilities.append(cap)
     return {'schema_version':'reason-config-v1','resolution':{'investigation':{'capabilities':capabilities,'max_actions':4,'max_no_progress_rounds':2,'max_rounds':3,'max_targets':3,'planner_max_tokens':256}}}
 

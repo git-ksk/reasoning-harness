@@ -13,6 +13,7 @@ def normal_fixture():
     prop={'key':'value','value':'4'};admitted={**record,'metadata':{'scope':scope,'provenance_class':'primary','temporal':{'effective_from_unix_seconds':100,'effective_until_unix_seconds':200}}}
     artifact={'evidence':[admitted],'claims':[{'id':'c','state':'supported','proposition':prop,'evidence_ids':['e']}],
               'verification_receipts':[{'id':'r','claim_id':'c','proposition':prop,'conclusion':'supported','evidence_ids':['e'],'verifier':'qualified_structured_fact_equality'}]}
+    runtime=json.loads((Path(__file__).parent/'protocol.json').read_text())['normal_bound']['safety_runtime']
     final={'status':'grounded_answer','text':'value = 4','uncovered_propositions':[]};outcome={'verdict':'accept','artifact':artifact};request={'task':'inert transport fixture','max_tokens':16}
     rendered={'text':final['text'],'factual_claims':[{'mode':'grounded','proposition':prop}]}
     response={'model':model,'text':json.dumps(rendered),'usage':{'input_tokens':12,'output_tokens':2,'total_tokens':14},'provider_attempts':1}
@@ -28,10 +29,10 @@ def normal_fixture():
         {**identity,'sequence':3,'kind':'model_response','response':{'model':model,'usage':response['usage'],'provider_attempts':1,'bytes':len(response['text'].encode()),'structured':True,'value':rendered}},
         {'sequence':4,'kind':'final_render_state','phase':'final_render','round':1,'source':'model','candidate':{'text':final['text'],'factual_claims':[{'mode':'grounded','proposition':prop}]}},
         {'sequence':5,'kind':'finalization_state','phase':'finalization','round':1,'stage':'renderer_candidate','result':final},
-        {'sequence':6,'kind':'answer_safety_state','round':1,'phase':'answer_safety','observation':{'render_round':1,'observation':{'runtime':{'profile':'verified_target_v1'},'target':prop,'disposition':'preserve_baseline'}}},
+        {'sequence':6,'kind':'answer_safety_state','round':1,'phase':'answer_safety','observation':{'render_round':1,'observation':{'runtime':runtime,'target':prop,'disposition':'preserve_baseline'}}},
         {'sequence':7,'kind':'finalization_state','phase':'finalization','round':1,'stage':'answer_safety','result':final}],
         'completion_status':'completed'}
-    payload={'schema_version':'reason-cli-output-v1','command':'ask','result':{'output_contract':'reason-natural-output-v4','task':case['question'],'configuration':{'provider':provider,'model':model},'usage':{'run':{'model_calls':1}},'safety_runtime':{'profile':'verified_target_v1'},'safety_observations':[trace['events'][6]['observation']],'finalization':final,'final_outcome':outcome}}
+    payload={'schema_version':'reason-cli-output-v1','command':'ask','result':{'output_contract':'reason-natural-output-v4','task':case['question'],'configuration':{'provider':provider,'model':model},'usage':{'run':{'model_calls':1}},'safety_runtime':runtime,'safety_observations':[trace['events'][6]['observation']],'finalization':final,'final_outcome':outcome}}
     policy={'sources':{'s':{'scope':scope,'authority_class':'primary','max_age_seconds':100}},'required_scope':scope,'authority_ranks':{'primary':20},'minimum_authority_class':'primary','evaluation_time_unix_seconds':150}
     config={'resolution':{'investigation':{'capabilities':[{'id':'cap','admission':policy}]}}}
     journal=[{'corpus_sha256':'c'*64,'case':case['id'],'request':{'schema_version':'reason-investigation-external-resolver-request-v1','request':{'id':'investigation:target:cap','target':{'target_id':'target','expected_fact_key':'value'}}},'response':{'schema_version':'reason-external-resolver-response-v1','contribution':{'kind':'acquired_evidence','evidence':[record]}}}]

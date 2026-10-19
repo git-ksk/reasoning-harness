@@ -1,0 +1,162 @@
+{
+  "identity": "engine073-realworld-v2-trace-design-independent-review-v1",
+  "reviewer": "/root/engine07_realworld_independent",
+  "reviewed_utc": "2026-10-19T14:10:11.093686+00:00",
+  "result": "PROSPECTIVE_REQUIREMENTS_ONLY_NOT_IMPLEMENTATION_OR_M0_PASS",
+  "confirmed_v1_defect": "check_terminal_order treats every finalization_state as a sole terminal. Actual successful common host emits pre-safety renderer_candidate then answer_safety, so len==1 is the wrong event-level invariant.",
+  "correct_v2_verifier_conditions": [
+    {
+      "id": "T1",
+      "condition": "Pin the new host trace contract plus completion_status=completed and successful CLI envelope; partial/failed/cancelled traces never prove a complete answer, even if an earlier finalization event exists."
+    },
+    {
+      "id": "T2",
+      "condition": "Validate sequence0..N-1, provider/model/seed/case identities, unique request(correlation_id,attempt), and request-response/failure phase+round matching. Complete observations need closed successful audit/request/response accounting; final-round committed terminal comes after all complete responses."
+    },
+    {
+      "id": "T3",
+      "condition": "Parse finalization_state by round and declared stage. renderer_candidate is intermediate. Pin legal optional stages from the host: canonical_verified_target, canonical_verified_target_partial, renderer_downgrade_recovery, canonical_verified_target_reject_partial, followed by exactly one answer_safety per completed round. Reject unknown stages or duplicate same-stage/same-round; do not require exactly two total events."
+    },
+    {
+      "id": "T4",
+      "condition": "Within each round require renderer candidate and any corresponding final_render recovery events before answer_safety observations and the answer_safety finalization. Zero answer_safety_state observations can be legal when the rendered factual list is empty; do not manufacture a required safety observation. If present, observation round/render_round must match."
+    },
+    {
+      "id": "T5",
+      "condition": "Support declared finalization retry rounds (host loop bounded to2). Round1 requires-verification can be followed by resolution/grounding/model events and round2. Intermediate round commits are not the externally displayed final answer. Use the final completed round answer_safety result; reject response after its commit, backward/unknown rounds or a missing final commit."
+    },
+    {
+      "id": "T6",
+      "condition": "Bind the selected final answer_safety result exactly to payload.result.finalization, and final grounding/artifact plus acquisition/admission/claim/receipt bytes to the displayed observation. Earlier renderer/canonical candidate text may legitimately differ; never substitute it for final exposed canonical text."
+    },
+    {
+      "id": "T7",
+      "condition": "Keep existing source, URL/hash/version/time/scope/claim/citation/admission binding and full model-journal checks. A completed trace or eligible terminal alone is not proof of factual support or case success. Partial trace accounting uses a separate path and no semantic credit."
+    }
+  ],
+  "minimum_boundary_plan_no_execution": [
+    {
+      "name": "actual_success_two_stages",
+      "expected": "Original Google baseline/candidate raw passes new stage-aware structural binding without editing raw or old result."
+    },
+    {
+      "name": "legal_optional_recovery",
+      "expected": "Declared canonical/recovery intermediate stage before answer_safety passes; last exposed answer may differ from renderer text. All optional stage/source pairs have correct round/order."
+    },
+    {
+      "name": "legal_two_round_finalization",
+      "expected": "Round1 pre-safety and answer-safety, retry resolution/model events, then round2 stage chain passes and selects only final round. Zero factual claims/safety-observation-list also has a legal control."
+    },
+    {
+      "name": "payload_swap_or_earlier_stage_promotion",
+      "expected": "Changed final result, substitute renderer result, different artifact/task/provider/model/seed/case/source/version/locator/hash/usage is rejected even when an earlier stage matches."
+    },
+    {
+      "name": "reverse_duplicate_missing_unknown",
+      "expected": "Reverse renderer/safety order, duplicate committed same-round stage, missing final answer_safety, unknown stage/round or noncontiguous sequence rejected."
+    },
+    {
+      "name": "late_or_unpaired_model_io",
+      "expected": "Response after final committed stage, orphan/duplicate/correlation/attempt/phase/round mismatch, request left pending rejected as complete."
+    },
+    {
+      "name": "failed_budget_or_cancel_partial",
+      "expected": "New host emits failure+partial usage/trace; known closed usage may be accounted but operation remains failed. Cancel/pending or missing usage stays unknown/null and latched; a prior grounded stage does not rescue a partial run."
+    },
+    {
+      "name": "actual_container_collection_chain",
+      "expected": "Actual new image nonroot host/root0700 output reproducer reaches collector, yields full96-observation inventory per provider, preserves empty/partial raws and uploads0600 content. A host test-f denied by traversal must not silently imply no lane."
+    }
+  ],
+  "M0_v2_must_close_before_new_authoring": [
+    "Freeze verifier/scorer/trace-stage schema, failures, lifecycle and first-only workflows plus corrected permission/collection ordering before authoring. Original v1 trace/raw/gold/M0/M1/score remain immutable; replays are consumed development controls only.",
+    "Build one explicit common host8525330 for both pinned cores, preserve identical audit/cap patch and dependency closure. Record actual package0.5.4, source commit and each binary/core hash; do not relabel it v1 CLI0.5.5 or infer feature use from core version.",
+    "Validate the entire actual host→audit/resolver→failure/success trace→collector→opaque packet→annotation schema→score pipeline offline before M0. Previously passing18 loopbacks/24 structures did not establish that collector accepts real two-stage traces or nonroot can traverse root0700 outputs.",
+    "Calibrate logical-operation, adapter-generation, wire-attempt, input/output/total token, wall and currency reserve separately on consumed data before freezing numeric bounds. Main diagnostics alone do not increase logical6 or permit a complete cohort.",
+    "Precommit whether a fully measured case-local budget failure stops the entire provider or only that case. If continuing case-local failures is desired, it requires explicit successor policy and known complete accounting/reserve; unknown/lower-bound usage, provider quota, cancellation, unsafe inflight or aggregate cap still stop. A failed case remains incomplete, never a semantic TN.",
+    "Preserve planned3provider/2track/2arm24 denominators and all missing rows; Groq remains deferred until separately authorized readiness/reserve. Subset F1, source qualification, build success or byte equality cannot satisfy complete-cohort/CLI/release gates."
+  ],
+  "not_done": [
+    "No code changes",
+    "No pure fixture or implementation test execution",
+    "No new question/gold/corpus authoring",
+    "No Engine/provider/model/scorer execution or metric recalculation",
+    "No M0 v2 acceptance issued"
+  ],
+  "new_host_confirmation": {
+    "old_host": "ec6e55ff95b8364f9a5d09b8bbfe0ecc0c9d19d7",
+    "new_host": "8525330ea3cadb897c50d6688228c4895558d3dc",
+    "old_package_version": "0.5.5",
+    "new_package_version": "0.5.4",
+    "source_read_scope": "CLI host/diagnostic contracts only; no evidence_relevance/core implementation or accuracy corpus/test bodies. Generic CLI failure-module source was inspected, no tests executed.",
+    "new_failure_contract": {
+      "CLI_shared_context": "UsageTracker and DiagnosticTraceRecorder preserve snapshots on Drop; execute_natural attaches partial observations to failed envelope.",
+      "trace": "preserve_on_exit starts partial, successful output marks completed; failures/cancellation still attempt trace write and record pending adapter count.",
+      "usage": "complete=false always; usage_is_lower_bound for cancelled or pending generation. Unknown totals/cost remain null; no provider-success or semantic answer promoted.",
+      "old_difference": "No run_diagnostics module/partial_diagnostics envelope; trace write occurs only just before successful return."
+    },
+    "important_limit": "New diagnostics restore accounting visibility, not logical6 budgets, completeness, or the scheduler rule that any non-capacity failure stops the entire lane. No new runtime/build behavior was executed by this review.",
+    "input_hashes": {
+      "ec6e55ff95b8364f9a5d09b8bbfe0ecc0c9d19d7:crates/reasoning-harness-cli/src/main.rs": {
+        "returncode": 0,
+        "stdout_sha256": "c2889dc17fa0366960d8dbe2706544437e4c26f3e40947e9195bbc96e5a6d82e",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "ec6e55ff95b8364f9a5d09b8bbfe0ecc0c9d19d7:crates/reasoning-harness-cli/src/diagnostic_trace.rs": {
+        "returncode": 0,
+        "stdout_sha256": "e2477cd506f7a4c25dd308c47f199403a3cb3a152bdd620bb7c5501558a6030a",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "ec6e55ff95b8364f9a5d09b8bbfe0ecc0c9d19d7:crates/reasoning-harness-cli/src/usage_budget.rs": {
+        "returncode": 0,
+        "stdout_sha256": "53645d91404c083c4e3e8bae408acaaaaedc9af654e2cb58ac7095f3bcd39f10",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "ec6e55ff95b8364f9a5d09b8bbfe0ecc0c9d19d7:crates/reasoning-harness-cli/src/run_diagnostics.rs": {
+        "returncode": 128,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e19d1a021a2f1c24f5f73e0ceefe721fc06f464a32955ac7ff58940057a3dec3"
+      },
+      "ec6e55ff95b8364f9a5d09b8bbfe0ecc0c9d19d7:crates/reasoning-harness-cli/Cargo.toml": {
+        "returncode": 0,
+        "stdout_sha256": "bd4e580c0f245d097b3315a3adf3c28c7ab30fe5aa474c4c433f7004bc29f8b9",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "8525330ea3cadb897c50d6688228c4895558d3dc:crates/reasoning-harness-cli/src/main.rs": {
+        "returncode": 0,
+        "stdout_sha256": "f98029e0c360dbf8400bec715e4d7a40dbe0abace536060f770946c777f6c1a4",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "8525330ea3cadb897c50d6688228c4895558d3dc:crates/reasoning-harness-cli/src/diagnostic_trace.rs": {
+        "returncode": 0,
+        "stdout_sha256": "70faee7b39d4f883ff627d52af247e5b7d7954878d92b1ca0814091ad59ac48e",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "8525330ea3cadb897c50d6688228c4895558d3dc:crates/reasoning-harness-cli/src/usage_budget.rs": {
+        "returncode": 0,
+        "stdout_sha256": "0eacd0beb557d91930fbfaff9df3d7c9fe29d32b4990ad6908df8daa840967e6",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "8525330ea3cadb897c50d6688228c4895558d3dc:crates/reasoning-harness-cli/src/run_diagnostics.rs": {
+        "returncode": 0,
+        "stdout_sha256": "e9cdf89490d139eef32a051d3da7734b63e5fe59431d407c1707956c82500e66",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "8525330ea3cadb897c50d6688228c4895558d3dc:crates/reasoning-harness-cli/Cargo.toml": {
+        "returncode": 0,
+        "stdout_sha256": "a342d52cbd2d6994e275576b112e568be41f3e341fe52fa0116b7ef67422aa67",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "/private/tmp/engine073-complete-M0-independent-review-v1/runtime-code-v2/repo/evaluation/engine073-realworld-evaluator-v1/scorer.py": {
+        "sha256": "22988b14451deca5991d744b3871d7eeaeea3a8a2ae1ed391759bf4a88317d18"
+      },
+      "/private/tmp/engine073-realworld-v1a-google-39250362193/results/lane/rw-01-baseline/trace.json": {
+        "sha256": "342917ac30cb8860a72e703804498c85cb30b2d3534b66f440e8abb5c165a57e"
+      },
+      "/private/tmp/engine073-realworld-v1a-google-39250362193/results/lane/rw-01-candidate/trace.json": {
+        "sha256": "9d314db3dfbef2d8ca7aa7f91f0f3cb546b284915245b2c2e50e6899633b7cc3"
+      }
+    }
+  },
+  "original_inputs_unchanged": true
+}
