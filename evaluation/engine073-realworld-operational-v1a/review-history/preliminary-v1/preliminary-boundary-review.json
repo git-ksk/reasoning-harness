@@ -1,0 +1,54 @@
+{
+  "reviewed_utc": "2026-10-19T12:06:08.051813+00:00",
+  "reviewer": "/root/engine07_realworld_independent",
+  "result": "BOUNDARY_CONDITIONALLY_ACCEPTABLE_PENDING_NEW_WRAPPER_REVIEW",
+  "input_hashes": {
+    "/private/tmp/engine073-realworld-first-39248903567/engine073-realworld-first-google-39248903567/results/plan.json": "00bf297fb6ba724f18658290efbe59864bff8618d83fc2f04e81ea69f4e45067",
+    "/private/tmp/engine073-realworld-first-39248903567/engine073-realworld-first-google-39248903567/run-reservation.json": "7d07049cf12c305cc3c4b27b9b297a8c81d1d2de228c44ce1be87dcf656d9897",
+    "/private/tmp/engine073-realworld-first-39248903567/engine073-realworld-first-groq-39248903567/results/provider-deferred.json": "85b154982c2be3eb44aedfd0e058e7fdb95a7a8eb054785574c5af7cf94f4eef",
+    "/private/tmp/engine073-realworld-first-39248903567/engine073-realworld-first-mistral-39248903567/results/plan.json": "dd516fa5937061f62cd35f97b166533044763a543077af426dbde212a47cabab",
+    "/private/tmp/engine073-realworld-first-39248903567/engine073-realworld-first-mistral-39248903567/run-reservation.json": "e476c5183fa7e8d8b0c0c36ef0211432f4ca143bf7c149e4a9f99776c03c7a69",
+    "/private/tmp/engine073-realworld-first-39248903567-failed.log": "eace3c6682873309675e300216f8e15b248c5c69cdd9bdacdb7a4fa692464ba0"
+  },
+  "lanes": {
+    "mistral": {
+      "planned_jobs": 72,
+      "M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+      "model": "ministral-8b-2512",
+      "saved_files": [
+        "results/plan.json",
+        "run-reservation.json"
+      ],
+      "actual_model_lane_present": false
+    },
+    "google": {
+      "planned_jobs": 72,
+      "M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+      "model": "gemini-3.5-flash-lite",
+      "saved_files": [
+        "results/plan.json",
+        "run-reservation.json"
+      ],
+      "actual_model_lane_present": false
+    }
+  },
+  "observed_sequence": [
+    "M0 VERIFIED/model_provider_calls0",
+    "full_sources_verified12/model_provider_calls0",
+    "planned_jobs72/auth_or_model_calls0",
+    "chmod root-owned raw/norm EPERM; exit1 before model credential step"
+  ],
+  "conclusion": "Saved artifacts/log are consistent with pre-credential operational FAIL and zero model/accuracy observation. No new corpus/gold authoring is required for a separately declared operational successor preserving all frozen semantic/runtime settings.",
+  "job_step_skipped_status": "Parent-reported; supplied failed-step log proves stop position, but is not full Actions jobs-status JSON.",
+  "original_result": "Operational FAIL, incomplete/NOT_OBSERVED, F1 null; never a successful negative or zero-valued accuracy sample.",
+  "required_successor_conditions": [
+    "Preserve original raw/log/reservation/plan byte hashes and original identity; no rerun under original identity.",
+    "Declare new operational continuation identity, unique first-only guard/artifact/tag and external immutable amendment receipt.",
+    "Bind new wrapper hash, original first input hashes and verified zero-observation basis, same M0/M1/runtime before credentials.",
+    "Restrict functional diff to sudo chmod of the same literal /tmp/frozen path; keep provider/model/seed/Engine/prompt/source/budget/gold/scorer unchanged.",
+    "Reverify frozen hashes after permission-only operation and use read-only frozen mount; identical repair for both active provider lanes.",
+    "Keep Groq deferred and full3-provider incomplete; no new readiness assertion."
+  ],
+  "limits": "No successor workflow supplied/reviewed yet; no live provider/Engine/scorer calls or operational replay performed by reviewer.",
+  "reviewer_model_provider_Engine_actual_scorer_Oracle_calls": 0
+}

@@ -1,0 +1,6 @@
+{
+  "self_exclusion": "manifest.json excluded; external SHA256 is anchor",
+  "files": {
+    "preliminary-boundary-review.json": "d03e03d3497ee651dcb77d8667362ed715b11269206c39a1c3fd74fd6ab471f0"
+  }
+}

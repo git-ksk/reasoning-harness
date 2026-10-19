@@ -1,0 +1,28 @@
+{
+  "identity": "engine073-realworld-operational-amendment-independent-review-v2",
+  "result": "PASS",
+  "scope": "Bounded static review of permission-only successor wrapper; not live execution or acceptance of actual accuracy.",
+  "input_hashes": {
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/.github/workflows/engine073-realworld-independent-v1.yml": "70ae24f709a4ea77731d7f07cb9e34baa8184635b38b9e19607d28495e23ed8c",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/.github/workflows/engine073-realworld-independent-v1a.yml": "6b0414f06b13a1540e5a73ce907c42222daffd4fd19f2e7171c9c805a7bd9b9b",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-operational-v1a/receipt.json": "6e09027ced2fea50e24748b08978e10c9a40142067935311a9e71f4ac5d574f8",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-first-v1-operational-fail/manifest.json": "4061670a15ab061d592be9ad1770e41aa6e1703bd625d1dc2690a86d8b794884",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-first-v1-operational-fail/run.json": "0a8019c408c0a55554ff3371d5b1a4e658564bd7020fa01c8dc75e6e99aef00f",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-first-v1-operational-fail/failed.log": "eace3c6682873309675e300216f8e15b248c5c69cdd9bdacdb7a4fa692464ba0"
+  },
+  "files": {
+    "amendment-receipt.draft.json": "6e09027ced2fea50e24748b08978e10c9a40142067935311a9e71f4ac5d574f8",
+    "original-failed.log": "eace3c6682873309675e300216f8e15b248c5c69cdd9bdacdb7a4fa692464ba0",
+    "original-first-manifest.json": "4061670a15ab061d592be9ad1770e41aa6e1703bd625d1dc2690a86d8b794884",
+    "original-run.json": "0a8019c408c0a55554ff3371d5b1a4e658564bd7020fa01c8dc75e6e99aef00f",
+    "original-workflow.yml": "70ae24f709a4ea77731d7f07cb9e34baa8184635b38b9e19607d28495e23ed8c",
+    "review.json": "db034f8088890f814efec9dc8c07c28756cf5ce76e5cbc463db805102cc0e265",
+    "shell-0.sh": "d8abb02b97cc4274bcbcb21e29d0bd3caaf484d4b8a452a3a26d7cb03384b7bf",
+    "shell-1.sh": "1e343bf7f2e8185ed1254f30b6751984e989cccb17d999d80215f39778ee37df",
+    "shell-2.sh": "ab3c7e2c69df25025c4a2396edcfa18352913c244d9801c01bb75be7cde62f50",
+    "shell-3.sh": "b61856fd70b46c7da7787e5494d0a9a8124d907def54299f980d141d98b297e1",
+    "successor-workflow.yml": "6b0414f06b13a1540e5a73ce907c42222daffd4fd19f2e7171c9c805a7bd9b9b",
+    "workflow.diff": "9e723481bd94af58cbb1b348f0301c4ac07f42d0ede41b9c9cca0dab5d3a270f"
+  },
+  "self_exclusion": "artifact-manifest.json excluded; external SHA256 binds this immutable bounded review."
+}

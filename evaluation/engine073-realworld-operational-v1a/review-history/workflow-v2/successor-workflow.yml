@@ -1,0 +1,115 @@
+name: engine073-realworld-independent-v1a
+on:
+  push:
+    tags:
+      - 'engine073-realworld-independent-v1a-freeze'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  live:
+    if: github.event_name == 'push' && github.ref == 'refs/tags/engine073-realworld-independent-v1a-freeze' && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 220
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        provider: [mistral, google, groq]
+    concurrency:
+      group: ${{ matrix.provider == 'mistral' && 'reasoning-harness-mistral-live' || format('engine07-realworld-{0}-live', matrix.provider) }}
+      cancel-in-progress: false
+    name: first-${{ matrix.provider }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Read frozen provider readiness before credentials
+        id: readiness
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/results
+          python3 - <<'PYREADY'
+          import json,os,hashlib
+          from pathlib import Path
+          digest=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
+          amendment=json.load(open('evaluation/engine073-realworld-operational-v1a/receipt.json'))
+          assert amendment['identity']=='engine073-realworld-independent-v1a-operational-continuation'
+          assert amendment['original_run_id']==39248903567 and amendment['original_provider_calls']==amendment['original_accuracy_observations']==0
+          assert amendment['semantic_or_profile_changes'] is False and amendment['gold_or_questions_changed'] is False
+          assert amendment['independent_review']['result']=='PASS' and amendment['independent_review']['reviewer']=='/root/engine07_realworld_independent'
+          assert digest('evaluation/engine073-realworld-operational-v1a/independent-review/artifact-manifest.json')==amendment['independent_review']['manifest_sha256']
+          assert digest('.github/workflows/engine073-realworld-independent-v1a.yml')==amendment['workflow_sha256']
+          assert digest('evaluation/engine073-realworld-first-v1-operational-fail/manifest.json')==amendment['original_first_manifest_sha256']
+          assert digest('evaluation/engine073-realworld-M0-v1/receipt.json')==amendment['M0_receipt_sha256']
+          assert digest('evaluation/engine073-realworld-independent-v1-input/manifest.json')==amendment['M1_sha256']
+          m=json.load(open('evaluation/engine073-realworld-M0-v1/receipt.json'))
+          provider='${{ matrix.provider }}';r=m['required_provider_readiness'][provider]
+          allowed=r['new_live_run_allowed'] is True
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('allowed='+str(allowed).lower()+'\n')
+          if not allowed:
+              record={'provider':provider,'state':'DEFERRED_BEFORE_CREDENTIALS','reason':r['reason'],'planned_observations':96,'complete_observations':0,'actual_answer_f1':None,'provider_attempts':0,'full_three_provider_acceptance':'NO_GO'}
+              with open('/tmp/results/provider-deferred.json','x') as f:json.dump(record,f,indent=2)
+          PYREADY
+      - name: Verify unique first identity and download the reviewed M0 runtime
+        if: steps.readiness.outputs.allowed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = 1
+          gh api 'repos/${{ github.repository }}/actions/runs?event=push&head_sha=${{ github.sha }}&per_page=100' > /tmp/run-reservation.json
+          python3 - <<'PYGUARD'
+          import json,os
+          runs=json.load(open('/tmp/run-reservation.json'))['workflow_runs']
+          matching=[r for r in runs if r['path']=='.github/workflows/engine073-realworld-independent-v1a.yml']
+          assert len(matching)==1 and str(matching[0]['id'])==os.environ['GITHUB_RUN_ID']
+          PYGUARD
+          artifact_id=$(python3 -c "import json; print(json.load(open('evaluation/engine073-realworld-M0-v1/receipt.json'))['runtime_artifact_id'])")
+          gh api "repos/${{ github.repository }}/actions/artifacts/$artifact_id/zip" > /tmp/runtime.zip
+          mkdir -p /tmp/m0-runtime /tmp/frozen /tmp/results
+          unzip -q /tmp/runtime.zip -d /tmp/m0-runtime
+          docker load -i /tmp/m0-runtime/runtime-image.tar.gz
+          image_id=$(docker image inspect engine073-runtime --format '{{.Id}}')
+          cp evaluation/engine073-realworld-M0-v1/receipt.json /tmp/frozen/M0.json
+          cp evaluation/engine073-realworld-M0-v1/groq-recovery.json /tmp/frozen/groq-recovery.json
+          cp -R evaluation/engine073-realworld-independent-v1-input /tmp/frozen/corpus
+          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/m0-runtime:/image:ro engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/verify_M0.py --provider '${{ matrix.provider }}' --receipt /frozen/M0.json --image-archive /image/runtime-image.tar.gz --actual-image-id "$image_id" --repo /repo
+          m1=$(sha256sum /tmp/frozen/corpus/manifest.json | cut -d' ' -f1)
+          docker run --rm --read-only --tmpfs /tmp -v /tmp/frozen:/frozen engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/prepare_sources.py --corpus-dir /frozen/corpus --M1-sha256 "$m1"
+          recovery=()
+          if test '${{ matrix.provider }}' = groq; then
+            recovery=(--groq-recovery-file /frozen/groq-recovery.json)
+          fi
+          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen -v /tmp/results:/output engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/make_plan.py --M0-receipt /frozen/M0.json --corpus-dir /frozen/corpus --M1-sha256 "$m1" --provider '${{ matrix.provider }}' --output /output/plan.json "${recovery[@]}"
+          sudo chmod -R a-w /tmp/frozen
+          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro engine073-runtime python3 -B -c "import sys,json;sys.path.insert(0,'/repo/evaluation/engine073-realworld-evaluator-v1');from corpus import validate,verify_provenance;verify_provenance('/frozen/corpus','/frozen/M0.json');validate('/frozen/corpus',sys.argv[1]);print(json.dumps({'post_chmod_M1':'VERIFIED','model_provider_calls':0}))" "$m1"
+      - name: First live lane with external container containment
+        if: steps.readiness.outputs.allowed == 'true'
+        env:
+          MISTRAL_API_KEY: ${{ matrix.provider == 'mistral' && secrets.MISTRAL_API_KEY || '' }}
+          GEMINI_API_KEY: ${{ matrix.provider == 'google' && secrets.GEMINI_API_KEY || '' }}
+          GROQ_API_KEY: ${{ matrix.provider == 'groq' && secrets.GROQ_API_KEY || '' }}
+        run: |
+          set -euo pipefail
+          name=engine073-v1a-first-${{ matrix.provider }}-${{ github.run_id }}
+          trap 'docker rm -f "$name" >/dev/null 2>&1 || true' EXIT INT TERM
+          timeout --signal=INT --kill-after=5s 200m docker run --name "$name" --read-only --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/results:/output -e MISTRAL_API_KEY -e GEMINI_API_KEY -e GROQ_API_KEY engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/run_lane.py --plan /output/plan.json --output /output/lane --protocol /repo/evaluation/engine073-realworld-evaluator-v1/protocol.json
+      - name: Collect complete and incomplete observation bytes without scoring
+        if: always() && steps.readiness.outputs.allowed == 'true'
+        run: |
+          set -euo pipefail
+          test -f /tmp/results/lane/plan.json || exit 0
+          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/results:/output engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/collect.py --corpus-dir /frozen/corpus --provider '${{ matrix.provider }}' --lane /output/lane --output /output/observations
+      - name: Stop any remaining contained processes
+        if: always()
+        run: docker rm -f engine073-v1a-first-${{ matrix.provider }}-${{ github.run_id }} >/dev/null 2>&1 || true
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: engine073-realworld-first-v1a-${{ matrix.provider }}-${{ github.run_id }}
+          path: |
+            /tmp/results/
+            /tmp/run-reservation.json
+          if-no-files-found: warn
+          retention-days: 30
