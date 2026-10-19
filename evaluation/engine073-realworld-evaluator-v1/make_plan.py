@@ -8,7 +8,9 @@ HERE=Path(__file__).resolve().parent;REPO=HERE.parents[1]
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def main():
     p=argparse.ArgumentParser();p.add_argument('--M0-receipt',type=Path,required=True);p.add_argument('--corpus-dir',type=Path,required=True);p.add_argument('--M1-sha256',required=True);p.add_argument('--provider',required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--groq-recovery-file',type=Path);a=p.parse_args()
-    verify_provenance(a.corpus_dir,a.M0_receipt);data,_,_=validate(a.corpus_dir,a.M1_sha256);protocol=json.loads((HERE/'protocol.json').read_text());settings=protocol['providers'][a.provider]
+    m0=verify_provenance(a.corpus_dir,a.M0_receipt)
+    if m0['required_provider_readiness'][a.provider]['new_live_run_allowed'] is not True:raise ValueError('selected provider deferred before credentials')
+    data,_,_=validate(a.corpus_dir,a.M1_sha256);protocol=json.loads((HERE/'protocol.json').read_text());settings=protocol['providers'][a.provider]
     root=a.corpus_dir.resolve();bins=Path('/eval/bin');jobs=[]
     for index,c in enumerate(data['cases']):
         arms=['baseline','candidate'] if index%2==0 else ['candidate','baseline']
@@ -26,7 +28,7 @@ def main():
     paths.extend([Path(sys.executable),a.M0_receipt.resolve()]);artifacts={str(p):sha(p) for p in sorted(set(paths))}
     plan={'schema':'engine07-operational-plan-v1','callback_contract':'audited-aggregate-callback-v1','provider':a.provider,'model':settings['model'],
           'token_budget':sum(j['budget']['aggregate_input_tokens']+j['budget']['aggregate_output_tokens'] for j in jobs),
-          'artifacts':artifacts,'jobs':jobs,'case_ids':[c['id'] for c in data['cases']],'M1_sha256':a.M1_sha256,'currency_self_cap_USD':settings['currency_self_cap_USD']}
+          'M0_receipt_file':str(a.M0_receipt.resolve()),'artifacts':artifacts,'jobs':jobs,'case_ids':[c['id'] for c in data['cases']],'M1_sha256':a.M1_sha256,'currency_self_cap_USD':settings['currency_self_cap_USD']}
     if a.provider=='groq':
         if a.groq_recovery_file is None:raise ValueError('separate Groq recovery record required')
         plan['groq_recovery_file']=str(a.groq_recovery_file.resolve());plan['artifacts'][plan['groq_recovery_file']]=sha(a.groq_recovery_file)

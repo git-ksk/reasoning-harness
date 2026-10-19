@@ -207,7 +207,7 @@ def summarize(scored,planned,protocol,dependencies):
         for track in protocol['tracks']:
             rows=groups[(provider,track,'candidate')]
             q=quality.score_quality(rows,protocol['case_quality_gate'],protocol['sample']['cases'])
-            prefix=provider+'/'+track;reports[prefix]={'case_quality':q}
+            prefix=provider+'/'+track;reports[prefix]={'case_quality':q,'actual_answer_f1':q['f1'] if len(rows)==24 and all(r['complete'] for r in rows) else None,'measurement_status':'COMPLETE' if len(rows)==24 and all(r['complete'] for r in rows) else 'UNAVAILABLE_INCOMPLETE_NEVER_TN_OR_PERFECT'}
             if not q['metric_gate_pass']:blockers.append(prefix+':case_quality_or_completeness')
             counts=Counter();citations=Counter()
             for row in rows:

@@ -132,3 +132,18 @@ Do not retry a failed cohort, alter gold, relabel cases or add new cases after
 seeing results. Repairs require a separately declared successor identity; the
 original first remains intact. Passing completes only this declared quality
 scope. Merge, release and CLI distribution/platform acceptance are separate.
+
+
+## Provider execution readiness and staged measurement
+
+Before any new authorship, M0 freezes the complete evaluator, runtime, all three
+provider profiles and their readiness/defer decisions. This software freeze is
+separate from permission to start a provider lane. verify_M0 --provider, the
+immutable plan.provider and the credential lane must agree. Deferred providers
+start no request and retain the entire planned denominator with unavailable/null
+actual-answer F1; they are never semantic TNs or successful zero-cost evaluations.
+Mistral and Google may be measured first while Groq is predeclared deferred for
+insufficient whole-cohort free-tier capacity. The all-three acceptance gate is
+unchanged: any deferred provider means overall NO_GO. A later Groq run requires a
+separate explicit first identity, fresh recovery/headroom verification and
+preservation of all earlier first observations; no automatic restart or retry.

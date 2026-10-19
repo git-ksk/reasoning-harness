@@ -23,6 +23,8 @@ def aggregate_reserve(budget):
 
 def check_plan(plan,protocol):
     provider=plan['provider'];settings=protocol['providers'][provider]
+    m0=json.loads(Path(plan['M0_receipt_file']).read_bytes())
+    if m0['required_provider_readiness'][provider]['new_live_run_allowed'] is not True:raise ValueError('selected provider deferred before credentials')
     if plan['model']!=settings['model']:raise ValueError('model swap')
     if plan.get('callback_contract')!='audited-aggregate-callback-v1':raise ValueError('unrecognized callback bounds')
     if len(plan['jobs'])!=72:raise ValueError('complete48 normal +24 helper plan required')

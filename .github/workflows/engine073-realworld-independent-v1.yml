@@ -76,7 +76,23 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
+      - name: Read frozen provider readiness before credentials
+        id: readiness
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/results
+          python3 - <<'PYREADY'
+          import json,os,hashlib
+          m=json.load(open('evaluation/engine073-realworld-M0-v1/receipt.json'))
+          provider='${{ matrix.provider }}';r=m['required_provider_readiness'][provider]
+          allowed=r['new_live_run_allowed'] is True
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('allowed='+str(allowed).lower()+'\n')
+          if not allowed:
+              record={'provider':provider,'state':'DEFERRED_BEFORE_CREDENTIALS','reason':r['reason'],'planned_observations':96,'complete_observations':0,'actual_answer_f1':None,'provider_attempts':0,'full_three_provider_acceptance':'NO_GO'}
+              with open('/tmp/results/provider-deferred.json','x') as f:json.dump(record,f,indent=2)
+          PYREADY
       - name: Verify unique first identity and download the reviewed M0 runtime
+        if: steps.readiness.outputs.allowed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -91,14 +107,14 @@ jobs:
           PYGUARD
           artifact_id=$(python3 -c "import json; print(json.load(open('evaluation/engine073-realworld-M0-v1/receipt.json'))['runtime_artifact_id'])")
           gh api "repos/${{ github.repository }}/actions/artifacts/$artifact_id/zip" > /tmp/runtime.zip
-          mkdir /tmp/m0-runtime /tmp/frozen /tmp/results
+          mkdir -p /tmp/m0-runtime /tmp/frozen /tmp/results
           unzip -q /tmp/runtime.zip -d /tmp/m0-runtime
           docker load -i /tmp/m0-runtime/runtime-image.tar.gz
           image_id=$(docker image inspect engine073-runtime --format '{{.Id}}')
           cp evaluation/engine073-realworld-M0-v1/receipt.json /tmp/frozen/M0.json
           cp evaluation/engine073-realworld-M0-v1/groq-recovery.json /tmp/frozen/groq-recovery.json
           cp -R evaluation/engine073-realworld-independent-v1-input /tmp/frozen/corpus
-          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/m0-runtime:/image:ro engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/verify_M0.py --receipt /frozen/M0.json --image-archive /image/runtime-image.tar.gz --actual-image-id "$image_id" --repo /repo
+          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/m0-runtime:/image:ro engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/verify_M0.py --provider '${{ matrix.provider }}' --receipt /frozen/M0.json --image-archive /image/runtime-image.tar.gz --actual-image-id "$image_id" --repo /repo
           m1=$(sha256sum /tmp/frozen/corpus/manifest.json | cut -d' ' -f1)
           docker run --rm --read-only --tmpfs /tmp -v /tmp/frozen:/frozen engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/prepare_sources.py --corpus-dir /frozen/corpus --M1-sha256 "$m1"
           recovery=()
@@ -108,6 +124,7 @@ jobs:
           docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen -v /tmp/results:/output engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/make_plan.py --M0-receipt /frozen/M0.json --corpus-dir /frozen/corpus --M1-sha256 "$m1" --provider '${{ matrix.provider }}' --output /output/plan.json "${recovery[@]}"
           chmod -R a-w /tmp/frozen
       - name: First live lane with external container containment
+        if: steps.readiness.outputs.allowed == 'true'
         env:
           MISTRAL_API_KEY: ${{ matrix.provider == 'mistral' && secrets.MISTRAL_API_KEY || '' }}
           GEMINI_API_KEY: ${{ matrix.provider == 'google' && secrets.GEMINI_API_KEY || '' }}
@@ -118,7 +135,7 @@ jobs:
           trap 'docker rm -f "$name" >/dev/null 2>&1 || true' EXIT INT TERM
           timeout --signal=INT --kill-after=5s 200m docker run --name "$name" --read-only --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/results:/output -e MISTRAL_API_KEY -e GEMINI_API_KEY -e GROQ_API_KEY engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/run_lane.py --plan /output/plan.json --output /output/lane --protocol /repo/evaluation/engine073-realworld-evaluator-v1/protocol.json
       - name: Collect complete and incomplete observation bytes without scoring
-        if: always()
+        if: always() && steps.readiness.outputs.allowed == 'true'
         run: |
           set -euo pipefail
           test -f /tmp/results/lane/plan.json || exit 0

@@ -6,7 +6,7 @@ from scorer import require,sha as blob_sha
 
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--receipt',type=Path,required=True);p.add_argument('--image-archive',type=Path,required=True);p.add_argument('--actual-image-id',required=True);p.add_argument('--repo',type=Path,required=True);p.add_argument('--bin-dir',type=Path,default=Path('/eval/bin'));a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--provider',choices=['mistral','google','groq'],required=True);p.add_argument('--receipt',type=Path,required=True);p.add_argument('--image-archive',type=Path,required=True);p.add_argument('--actual-image-id',required=True);p.add_argument('--repo',type=Path,required=True);p.add_argument('--bin-dir',type=Path,default=Path('/eval/bin'));a=p.parse_args()
     m=json.loads(a.receipt.read_text());repo=a.repo.resolve()
     require(m['identity']=='engine073-realworld-M0-v1' and m['state']=='COMPLETE_FROZEN','M0_not_complete')
     review=m['independent_implementation_review']
@@ -23,8 +23,12 @@ def main():
         for name,digest in record['binaries'].items():require(sha(a.bin_dir/(name+'-'+arm))==digest,'binary_changed')
     require(type(m['independent_case_authorship_before_M0']) is int and m['independent_case_authorship_before_M0']==0 and type(m['completed_unix_seconds']) is int,'authorship_order_missing')
     protocol=json.loads((repo/'evaluation/engine073-realworld-evaluator-v1/protocol.json').read_text())
-    require(m['required_provider_readiness']['groq']['new_live_run_allowed'] is True and protocol['providers']['groq']['currency_self_cap_USD']>0,'required_Groq_lane_not_ready')
-    recovery=a.receipt.parent/'groq-recovery.json'
-    require(sha(recovery)==m['required_provider_readiness']['groq']['recovery_sha256'],'Groq_recovery_receipt_changed')
+    readiness=m['required_provider_readiness'][a.provider]
+    require(readiness['new_live_run_allowed'] is True,'selected_provider_deferred_before_credentials')
+    if a.provider=='groq':
+        require(protocol['providers']['groq']['currency_self_cap_USD']>0,'Groq_budget_missing')
+        recovery=a.receipt.parent/'groq-recovery.json';record=json.loads(recovery.read_bytes())
+        require(sha(recovery)==readiness['recovery_sha256'],'Groq_recovery_receipt_changed')
+        require(record['new_live_run_allowed'] is True and record['daily_reserve_capacity_verified'] is True and record['other_organization_usage_stopped'] is True and record['observed_TPM']>=100000,'Groq_full_cohort_headroom_unverified')
     print(json.dumps({'M0':'VERIFIED','model_provider_calls':0}))
 if __name__=='__main__':main()
