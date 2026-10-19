@@ -1,0 +1,4 @@
+PID                 PPID                SID                 COMMAND
+79483               79460               79483               /usr/bin/qemu-x86_64 /usr/local/bin/python3 /usr/local/bin/python3 -B /repo/evaluation/engine07-realworld-runner-v1/runner.py --plan /review/pid1-plan.json --output /review/pid1-run
+79551               79483               79551               /usr/bin/qemu-x86_64 /usr/local/bin/python3 /usr/local/bin/python3 /repo/evaluation/engine07-realworld-runner-v1/fixture_child.py --mode descendant-on-cancel --contract helper --marker /review/pid1-run/pid1structural/marker --provider mistral --model fixture-only
+79572               79551               79551               /usr/bin/qemu-x86_64 /usr/local/bin/python3 /usr/local/bin/python3 /repo/evaluation/engine07-realworld-runner-v1/fixture_child.py --mode descendant-on-cancel --contract helper --marker /review/pid1-run/pid1structural/marker --provider mistral --model fixture-only

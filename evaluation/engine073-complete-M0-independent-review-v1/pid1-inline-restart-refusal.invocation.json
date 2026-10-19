@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--pull=never",
+    "--platform",
+    "linux/amd64",
+    "--read-only",
+    "--network",
+    "none",
+    "--tmpfs",
+    "/tmp",
+    "--name",
+    "engine073-independent-m0-v1-pid1kill-restart",
+    "-v",
+    "/private/tmp/engine073-complete-M0-independent-review-v1:/review",
+    "sha256:a71348d080761005e09b55c404489a9dfb1ca0c5d1f0e5ef5a4a9f446574eb82",
+    "python3",
+    "-B",
+    "/repo/evaluation/engine07-realworld-runner-v1/runner.py",
+    "--plan",
+    "/review/pid1-plan.json",
+    "--output",
+    "/review/pid1-run"
+  ],
+  "returncode": 1,
+  "no_external_network": true,
+  "credentials_forwarded": false
+}

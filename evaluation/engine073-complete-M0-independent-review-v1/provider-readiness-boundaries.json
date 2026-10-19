@@ -1,0 +1,54 @@
+{
+  "scope": "pure frozen code metadata/constructed arithmetic fixtures only",
+  "checks": {
+    "Groq_deferred_before_other_plan_fields": {
+      "pass": true,
+      "reason": "selected provider deferred before credentials"
+    },
+    "cannot_borrow_other_provider_readiness": {
+      "pass": true,
+      "reason": "selected provider deferred before credentials"
+    },
+    "selected_allowed_provider_still_rejects_wrong_model": {
+      "pass": true,
+      "reason": "model swap"
+    },
+    "draft_cannot_be_used_as_complete_M0": {
+      "pass": true,
+      "reason": "M0_not_complete"
+    },
+    "deferred96_rows_never_TN_or_actual_F1": {
+      "pass": true,
+      "planned_observations": 96,
+      "actual_answer_f1": null,
+      "complete_rows": 0,
+      "semantic_TP_FP_TN_FN": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "semantic_gate_pass": false
+    }
+  },
+  "all_pass": true,
+  "configured_cost_checks": {
+    "mistral": {
+      "configured_worst_local_USD": "0.2184192",
+      "configured_cap_USD": 2.5,
+      "invoice_guarantee": false
+    },
+    "google": {
+      "configured_worst_local_USD": "0.8896512",
+      "configured_cap_USD": 7.5,
+      "invoice_guarantee": false
+    },
+    "groq": {
+      "configured_worst_local_USD": "0.31104",
+      "configured_cap_USD": 1,
+      "invoice_guarantee": false
+    }
+  },
+  "accuracy_questions_or_actual_gold_authored": 0,
+  "Engine_actual_cohort_scorer_provider_model_network_Oracle_calls": 0
+}

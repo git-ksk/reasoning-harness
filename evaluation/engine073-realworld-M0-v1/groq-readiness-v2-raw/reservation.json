@@ -1,0 +1,26 @@
+{
+  "identity": "engine073-groq-actual-adapter-readiness-v2",
+  "previous_failed_first_run": 39204793945,
+  "previous_unknown_usage_not_refunded": true,
+  "owner_reports_no_other_usage": true,
+  "owner_reports_full_allowance": true,
+  "maximum_HTTP_attempts": 1,
+  "maximum_generations": 1,
+  "aggregate_input_tokens": 4096,
+  "aggregate_output_tokens": 384,
+  "currency_self_cap_USD": "0.005",
+  "conservative_price_ceiling_USD_per_million_input": "1",
+  "conservative_price_ceiling_USD_per_million_output": "2",
+  "worst_case_reserved_USD": "0.004864",
+  "runtime": {
+    "artifact_id": 12165193719,
+    "run_id": 39205043793,
+    "archive_sha256": "9c416e90ab4212f9891917c1640c6a3f93c84589f41c69f3a5de3c6a6a83ef12",
+    "image_id": "sha256:afba620512f8b79a741af9f189feb120feaad6c6f3acf0ee56f9e6334ba693e2",
+    "execution_source_commit": "0883b2b6f1262ca9a9e6d527d8e8793198e3522e",
+    "file": "runtime-image.tar.gz"
+  },
+  "not_accuracy_evaluation": true,
+  "not_full_cohort_headroom_proof": true,
+  "budget_scope": "local conservative reservation, not invoice guarantee"
+}

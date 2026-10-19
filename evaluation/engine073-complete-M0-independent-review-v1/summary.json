@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "scope": "Independent software/runtime/protocol M0 implementation review for the fixed 9bdddd2 runtime, with Mistral/Google execution allowed and Groq explicitly deferred. This is not model accuracy, full-three-provider acceptance, CLI distribution or release approval.",
+  "reviewed_runtime_files_sha256": "9be785406c62e80d19c11543717fdc40aec358757e38358dd9af523e9ceb09b7",
+  "new_runtime_archive_sha256": "69c2886e78b7e358bbb0d758bfd48c9a330521dc6ddd1a047f48496208d6229b",
+  "Mistral_allowed": true,
+  "Google_allowed": true,
+  "Groq_allowed": false,
+  "global_acceptance": "NO_GO",
+  "actual_answer_F1": null,
+  "new_accuracy_authored": 0,
+  "external_calls_by_reviewer": 0,
+  "prior_actual_independent_controls": "24 structural +18 loopback +PID1 containment",
+  "new_code_pure_host_tests": 24,
+  "pure_provider_boundaries": 5
+}

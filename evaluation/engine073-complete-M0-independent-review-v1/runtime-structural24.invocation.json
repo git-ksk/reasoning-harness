@@ -1,0 +1,31 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--pull=never",
+    "--platform",
+    "linux/amd64",
+    "--read-only",
+    "--network",
+    "none",
+    "--tmpfs",
+    "/tmp",
+    "--name",
+    "engine073-independent-m0-v1-tests",
+    "sha256:a71348d080761005e09b55c404489a9dfb1ca0c5d1f0e5ef5a4a9f446574eb82",
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "/repo/evaluation/engine073-realworld-evaluator-v1",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "returncode": 0,
+  "network": "none for every run",
+  "credentials_forwarded": false
+}

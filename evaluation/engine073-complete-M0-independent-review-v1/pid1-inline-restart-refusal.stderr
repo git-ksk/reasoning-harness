@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/repo/evaluation/engine07-realworld-runner-v1/runner.py", line 352, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "/repo/evaluation/engine07-realworld-runner-v1/runner.py", line 345, in main
+    runner = OperationalRunner(plan, args.output, lambda provider: {})
+  File "/repo/evaluation/engine07-realworld-runner-v1/runner.py", line 116, in __init__
+    self.output.mkdir(mode=0o700)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/pathlib/_local.py", line 722, in mkdir
+    os.mkdir(self, mode)
+    ~~~~~~~~^^^^^^^^^^^^
+FileExistsError: [Errno 17] File exists: '/review/pid1-run'

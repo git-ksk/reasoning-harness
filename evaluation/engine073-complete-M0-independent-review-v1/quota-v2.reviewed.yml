@@ -1,0 +1,70 @@
+name: engine073-groq-actual-adapter-readiness-v2
+on:
+  push:
+    tags: ['engine073-groq-actual-adapter-readiness-v2']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  quota:
+    if: github.run_attempt == 1
+    concurrency:
+      group: engine07-realworld-groq-live
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Verify unique identity and exact runtime before provider credentials
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api 'repos/${{ github.repository }}/actions/runs?event=push&head_sha=${{ github.sha }}&per_page=100' > /tmp/readiness-runs.json
+          python3 - <<'PY'
+          import json,os
+          runs=json.load(open('/tmp/readiness-runs.json'))['workflow_runs']
+          matching=[r for r in runs if r['path']=='.github/workflows/engine073-groq-actual-adapter-readiness-v2.yml']
+          assert len(matching)==1 and str(matching[0]['id'])==os.environ['GITHUB_RUN_ID'] and os.environ['GITHUB_RUN_ATTEMPT']=='1'
+          PY
+          artifact_id=$(python3 -c "import json; print(json.load(open('evaluation/engine073-groq-readiness-v2/runtime.json'))['artifact_id'])")
+          gh api "repos/${{ github.repository }}/actions/artifacts/$artifact_id/zip" > /tmp/runtime.zip
+          mkdir /tmp/runtime /tmp/readiness
+          unzip -q /tmp/runtime.zip -d /tmp/runtime
+          python3 - <<'PY'
+          import hashlib,json
+          expected=json.load(open('evaluation/engine073-groq-readiness-v2/runtime.json'))
+          actual=hashlib.file_digest(open('/tmp/runtime/runtime-image.tar.gz','rb'),'sha256').hexdigest()
+          assert actual==expected['archive_sha256']
+          PY
+          docker load -i /tmp/runtime/runtime-image.tar.gz
+          docker image inspect engine073-runtime > /tmp/readiness/actual-image-inspect.json
+          python3 - <<'PY'
+          import json,os
+          from decimal import Decimal
+          expected=json.load(open('evaluation/engine073-groq-readiness-v2/runtime.json'))
+          assert json.load(open('/tmp/readiness/actual-image-inspect.json'))[0]['Id']==expected['image_id']
+          worst=(Decimal(4096)*Decimal(1)+Decimal(384)*Decimal(2))/Decimal(1000000)
+          assert worst<=Decimal('0.005')
+          record={'identity':'engine073-groq-actual-adapter-readiness-v2','previous_failed_first_run':39204793945,'previous_unknown_usage_not_refunded':True,'owner_reports_no_other_usage':True,'owner_reports_full_allowance':True,'maximum_HTTP_attempts':1,'maximum_generations':1,'aggregate_input_tokens':4096,'aggregate_output_tokens':384,'currency_self_cap_USD':'0.005','conservative_price_ceiling_USD_per_million_input':'1','conservative_price_ceiling_USD_per_million_output':'2','worst_case_reserved_USD':str(worst),'runtime':expected,'not_accuracy_evaluation':True,'not_full_cohort_headroom_proof':True,'budget_scope':'local conservative reservation, not invoice guarantee'}
+          for name,data in [('reservation.json',record),('input.json',{'question':'Engineering quota observation only. Return false; there are no source facts to compare.','sources':[]})]:
+              with open('/tmp/readiness/'+name,'x') as f:json.dump(data,f,indent=2);f.write('\n');f.flush();os.fsync(f.fileno())
+          fd=os.open('/tmp/readiness',os.O_RDONLY);os.fsync(fd);os.close(fd)
+          PY
+      - name: One actual adapter invocation without retry or model/tier switch
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          set -euo pipefail
+          name=engine073-groq-adapter-readiness-${{ github.run_id }}
+          trap 'docker rm -f "$name" >/dev/null 2>&1 || true' EXIT INT TERM
+          timeout --signal=INT --kill-after=3s 110s docker run --name "$name" --read-only --tmpfs /tmp -v /tmp/readiness:/output -e GROQ_API_KEY -e ENGINE073_MODEL_JOURNAL=/output/model.jsonl -e ENGINE073_GENERATION_CAP=1 -e REASON_GROQ_STRUCTURED_OUTPUT_RETRIES=0 engine073-runtime /eval/bin/adviser-baseline --provider groq --model openai/gpt-oss-120b --seed 0 --input /output/input.json > /tmp/readiness/adviser.stdout 2> /tmp/readiness/adviser.stderr
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: engine073-groq-actual-adapter-readiness-${{ github.run_id }}
+          path: |
+            /tmp/readiness/
+            /tmp/readiness-runs.json
+          retention-days: 30
+          if-no-files-found: error

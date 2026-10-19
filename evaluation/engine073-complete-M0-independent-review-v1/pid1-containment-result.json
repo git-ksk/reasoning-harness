@@ -1,0 +1,17 @@
+{
+  "pass": true,
+  "actual_PID1": "/usr/bin/qemu-x86_64 /usr/local/bin/python3 /usr/local/bin/python3 -B /repo/evaluation/engine07-realworld-runner-v1/runner.py --plan /review/pid1-plan.json --output /review/pid1-run ",
+  "container_exitcode": 137,
+  "container_running": false,
+  "heartbeat_bytes_samples": [
+    1182,
+    1182,
+    1182
+  ],
+  "leader_and_SIGINT_ignoring_descendant_stopped": true,
+  "current_reserve_preserved": 10,
+  "guard_inflight_preserved": true,
+  "summary_missing_not_success": true,
+  "restart_refused": true,
+  "network_provider_model_accuracy_calls": 0
+}

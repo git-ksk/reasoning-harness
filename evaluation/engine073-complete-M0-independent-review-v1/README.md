@@ -1,0 +1,7 @@
+固定9bdddd2のsoftware/runtime/protocol M0実装レビューはPASSです。Mistral/Googleだけ実行許可、Groq延期を前提とします。実回答F1・3社受入・CLI配布・releaseのPASSではありません。新accuracy著作・gold・Engine精度観測・実cohort採点・外部API/Oracle呼出しは0です。
+
+新imageをsandbox内で解析し、archive/config・63 runtime files・8 actual non-test binaries・paired host identityを照合しました。旧/新imageの全5934 file/link/mode比較では、差は宣言された6repoファイルだけで、interpreter/libs/callback/runner/binaryは同一です。旧固定imageで独立24構造試験・18loopbackを実行、実runner PID1をSIGKILLし、子/孫のheartbeat停止、inflight予約保持、欠測を成功扱いしないこと、同output再起動拒否を確認しました。ローカルはColima/QEMU条件です。新whole imageの独立Docker再実行はしておらず、同bytes証明と新image CI18/24を区別して記録しました。新codeのhost純24試験と5 metadata/算術境界もPASSです。
+
+Groq実SDK readinessは外部原記録にbindし、1attempt・usage278・TPM8000を確認。全量予約1456128は記録TPD200000に収まらず、Groqは認証前deferred、96 planned/0 complete/F1 null、全3社GOはNO_GOです。旧edge1010/unknown usageは保持し返金/再試行扱いにしていません。
+
+親は草稿のstate/time/review manifest参照と独立/CI証拠の説明だけを後充填してfinal receiptを固定できます。その他のhash/設定/readinessは固定のままです。新資料著作は、そのfinal receiptの固定と別の明示許可後にのみ開始します。原928参照（prep5含む）と既存reviewを照合し、全first/失敗と自己除外manifestをread-onlyで閉鎖しました。

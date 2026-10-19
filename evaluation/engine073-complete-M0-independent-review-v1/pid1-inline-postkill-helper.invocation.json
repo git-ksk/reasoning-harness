@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--pull=never",
+    "--platform",
+    "linux/amd64",
+    "--read-only",
+    "--network",
+    "none",
+    "--name",
+    "engine073-independent-m0-v1-pid1kill-verify",
+    "-v",
+    "/private/tmp/engine073-complete-M0-independent-review-v1:/review:ro",
+    "sha256:a71348d080761005e09b55c404489a9dfb1ca0c5d1f0e5ef5a4a9f446574eb82",
+    "python3",
+    "-c",
+    "import json,time;from pathlib import Path;p=Path('/review/pid1-run/pid1structural/heartbeat.txt');sizes=[p.stat().st_size];time.sleep(.4);sizes.append(p.stat().st_size);time.sleep(.4);sizes.append(p.stat().st_size);print(json.dumps({'heartbeat_bytes_samples':sizes,'summary_exists':Path('/review/pid1-run/summary.json').exists()}))"
+  ],
+  "returncode": 0,
+  "no_external_network": true,
+  "credentials_forwarded": false
+}
