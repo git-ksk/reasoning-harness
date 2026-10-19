@@ -34,7 +34,10 @@ def checked_receipt(path,provider):
 def consumed_corpus(root):
     root=Path(root).resolve();m=(root/'manifest.json').read_bytes()
     require(sha(m)==INPUT_M1,'consumed_manifest_changed')
-    for name,digest in json.loads(m)['files'].items():
+    inventory=json.loads(m)['files']
+    actual={str(p.relative_to(root)) for p in root.rglob('*') if p.is_file() and p!=root/'manifest.json'}
+    require(set(inventory)==actual and 'manifest.json' not in inventory,'consumed_inventory_changed')
+    for name,digest in inventory.items():
         p=(root/name).resolve();require(p.is_relative_to(root) and sha(p.read_bytes())==digest,'consumed_input_changed')
     data=json.loads((root/'corpus.json').read_bytes())
     require(data['identity']=='engine073-realworld-independent-v1' and len(data['cases'])==24,'not_original_consumed24')

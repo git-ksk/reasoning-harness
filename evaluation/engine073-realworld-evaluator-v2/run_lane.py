@@ -22,38 +22,50 @@ def aggregate_reserve(budget):
     return i+o
 
 def check_plan(plan,protocol):
+    from plan_inputs import inventory
     provider=plan['provider'];settings=protocol['providers'][provider]
+    root=Path(plan['corpus_root'])
+    if not root.is_absolute() or str(root.resolve())!=str(root):raise ValueError('canonical absolute corpus root required')
     if plan.get('purpose')=='CONSUMED_REAL24_ENGINEERING_DIAGNOSTIC_NOT_ACCEPTANCE':
-        from development import checked_receipt
-        checked_receipt(plan['development_receipt_file'],provider)
+        from development import checked_receipt,consumed_corpus,INPUT_M1
+        receipt_path=plan['development_receipt_file'];receipt=checked_receipt(receipt_path,provider)
+        if plan['M1_sha256']!=INPUT_M1 or plan['M1_sha256']!=receipt['consumed_M1_sha256']:raise ValueError('plan consumed M1 mismatch')
+        data=consumed_corpus(root)
     else:
-        m0=json.loads(Path(plan['M0_receipt_file']).read_bytes())
+        from corpus import validate,verify_provenance
+        if plan.get('purpose') is not None:raise ValueError('unknown evaluation purpose')
+        receipt_path=plan['M0_receipt_file'];m0=verify_provenance(root,receipt_path)
         if m0['required_provider_readiness'][provider]['new_live_run_allowed'] is not True:raise ValueError('selected provider deferred before credentials')
+        data,_,_=validate(root,plan['M1_sha256'])
+    recovery=plan.get('groq_recovery_file') if provider=='groq' else None
+    if plan['artifacts']!=inventory(root,receipt_path,recovery):raise ValueError('complete callback input inventory changed')
     if plan['model']!=settings['model']:raise ValueError('model swap')
     if plan.get('callback_contract')!='audited-aggregate-callback-v1':raise ValueError('unrecognized callback bounds')
     if len(plan['jobs'])!=72:raise ValueError('complete48 normal +24 helper plan required')
-    cost=Decimal(0);normal=helper=0;scheduled=set();cases=plan['case_ids']
-    if len(cases)!=24 or len(set(cases))!=24:raise ValueError('unique24 case IDs required')
-    for job in plan['jobs']:
-        args=job['argv'];budget=job['budget'];track='e2e_normal' if job['contract']=='normal' else 'helper_opt_in'
-        if args[0]!=sys.executable or args[1]!=str(HERE/'run_task.py'):raise ValueError('aggregate reserve requires exact audited task wrapper')
-        for flag,value in [('--track',track),('--provider',provider),('--model',settings['model'])]:
-            if args.count(flag)!=1 or args[args.index(flag)+1]!=value:raise ValueError('callback identity changed')
-        for flag in ['--track','--case','--arm','--provider','--model']:
-            if any(arg.startswith(flag+'=') for arg in args) or args.count(flag)!=1:raise ValueError('ambiguous callback identity')
-        cid=args[args.index('--case')+1];arm=args[args.index('--arm')+1]
-        if cid not in cases or arm!=job['arm']:raise ValueError('callback case/arm changed')
-        identity=(cid,track,arm)
-        if identity in scheduled:raise ValueError('duplicate case arm')
-        scheduled.add(identity)
-        expected=(24000,4096,24,1024) if track=='e2e_normal' else (4096,384,1,384)
-        if (budget['aggregate_input_tokens'],budget['aggregate_output_tokens'],budget['max_generations'],budget['max_output_tokens_per_generation'])!=expected:raise ValueError('unproven callback aggregate cap')
-        if budget['max_attempts_per_generation']!=1 or budget['max_input_tokens_per_generation']!=(12512 if track=='e2e_normal' else 4096):raise ValueError('unproven attempt/input bound')
-        normal+=track=='e2e_normal';helper+=track=='helper_opt_in'
+    cases=[c['id'] for c in data['cases']]
+    if len(cases)!=24 or len(set(cases))!=24 or plan['case_ids']!=cases:raise ValueError('frozen24 case order required')
+    order=[]
+    for index,cid in enumerate(cases):
+        order.extend((cid,'e2e_normal',arm) for arm in (['baseline','candidate'] if index%2==0 else ['candidate','baseline']))
+        order.append((cid,'helper_opt_in','helper'))
+    cost=Decimal(0);reserved=0
+    for job,(cid,track,arm) in zip(plan['jobs'],order):
+        normal=track=='e2e_normal'
+        expected_args=[sys.executable,str(HERE/'run_task.py'),'--provider',provider,'--model',settings['model'],
+            '--corpus',str(root/'corpus.json'),'--host-policy',str(root/'host-policy.json'),'--case',cid,
+            '--track',track,'--arm',arm,'--bin-dir','/eval/bin']
+        if job['argv']!=expected_args:raise ValueError('frozen callback paths identity or order changed')
+        if (job['id'],job['contract'],job['arm'])!=(cid+'-'+arm,'normal' if normal else 'helper',arm):raise ValueError('frozen job identity changed')
+        if (job.get('timeout_seconds'),job.get('cancel_grace_seconds'))!=(360 if normal else 100,1):raise ValueError('frozen timeout or grace changed')
+        budget=job['budget']
+        expected={'max_generations':24 if normal else 1,'max_input_tokens_per_generation':12512 if normal else 4096,
+            'max_output_tokens_per_generation':1024 if normal else 384,'max_attempts_per_generation':1,
+            'aggregate_input_tokens':24000 if normal else 4096,'aggregate_output_tokens':4096 if normal else 384}
+        if budget!=expected:raise ValueError('unproven callback aggregate cap')
+        reserved+=aggregate_reserve(budget)
         cost+=(Decimal(budget['aggregate_input_tokens'])*Decimal(str(settings['USD_per_million_input']))+Decimal(budget['aggregate_output_tokens'])*Decimal(str(settings['USD_per_million_output'])))/Decimal(1000000)
-    wanted={(c,'e2e_normal',a) for c in cases for a in ['baseline','candidate']}|{(c,'helper_opt_in','helper') for c in cases}
-    if scheduled!=wanted:raise ValueError('incomplete paired case inventory')
-    if (normal,helper)!=(48,24):raise ValueError('missing track rows')
+    if plan['token_budget']!=reserved:raise ValueError('plan token reservation changed')
+    if plan['currency_self_cap_USD']!=settings['currency_self_cap_USD']:raise ValueError('plan currency self-cap changed')
     if cost>Decimal(str(settings['currency_self_cap_USD'])):raise ValueError('currency reservations exceed frozen self-cap')
     return str(cost)
 

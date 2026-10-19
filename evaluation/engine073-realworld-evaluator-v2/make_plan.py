@@ -2,6 +2,7 @@
 """Create the complete first-only provider lane before credential access."""
 import argparse,hashlib,json,sys
 from pathlib import Path
+from plan_inputs import inventory
 from corpus import validate,verify_provenance
 
 HERE=Path(__file__).resolve().parent;REPO=HERE.parents[1]
@@ -24,11 +25,10 @@ def main():
     # Image digest fixes the Python runtime, standard library, dynamic libraries,
     # binaries and scripts. This concrete list independently rechecks every
     # mutable mounted corpus/static executable input before each spawn.
-    paths=[p for folder in [root,HERE,REPO/'evaluation/engine07-realworld-runner-v1',REPO/'evaluation/engine07-realworld-operations-v1',bins] for p in folder.rglob('*') if p.is_file()]
-    paths.extend([Path(sys.executable),a.M0_receipt.resolve()]);artifacts={str(p):sha(p) for p in sorted(set(paths))}
+    artifacts=inventory(root,a.M0_receipt)
     plan={'schema':'engine07-operational-plan-v1','callback_contract':'audited-aggregate-callback-v1','provider':a.provider,'model':settings['model'],
           'token_budget':sum(j['budget']['aggregate_input_tokens']+j['budget']['aggregate_output_tokens'] for j in jobs),
-          'M0_receipt_file':str(a.M0_receipt.resolve()),'artifacts':artifacts,'jobs':jobs,'case_ids':[c['id'] for c in data['cases']],'M1_sha256':a.M1_sha256,'currency_self_cap_USD':settings['currency_self_cap_USD']}
+          'M0_receipt_file':str(a.M0_receipt.resolve()),'corpus_root':str(root),'artifacts':artifacts,'jobs':jobs,'case_ids':[c['id'] for c in data['cases']],'M1_sha256':a.M1_sha256,'currency_self_cap_USD':settings['currency_self_cap_USD']}
     if a.provider=='groq':
         if a.groq_recovery_file is None:raise ValueError('separate Groq recovery record required')
         plan['groq_recovery_file']=str(a.groq_recovery_file.resolve());plan['artifacts'][plan['groq_recovery_file']]=sha(a.groq_recovery_file)
