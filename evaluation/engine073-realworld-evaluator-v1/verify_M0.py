@@ -23,6 +23,8 @@ def main():
         for name,digest in record['binaries'].items():require(sha(a.bin_dir/(name+'-'+arm))==digest,'binary_changed')
     require(type(m['independent_case_authorship_before_M0']) is int and m['independent_case_authorship_before_M0']==0 and type(m['completed_unix_seconds']) is int,'authorship_order_missing')
     protocol=json.loads((repo/'evaluation/engine073-realworld-evaluator-v1/protocol.json').read_text())
-    require(protocol['providers']['groq']['new_live_run_allowed'] is True and protocol['providers']['groq']['currency_self_cap_USD']>0,'required_Groq_lane_not_ready')
+    require(m['required_provider_readiness']['groq']['new_live_run_allowed'] is True and protocol['providers']['groq']['currency_self_cap_USD']>0,'required_Groq_lane_not_ready')
+    recovery=a.receipt.parent/'groq-recovery.json'
+    require(sha(recovery)==m['required_provider_readiness']['groq']['recovery_sha256'],'Groq_recovery_receipt_changed')
     print(json.dumps({'M0':'VERIFIED','model_provider_calls':0}))
 if __name__=='__main__':main()

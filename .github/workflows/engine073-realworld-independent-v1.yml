@@ -96,13 +96,13 @@ jobs:
           docker load -i /tmp/m0-runtime/runtime-image.tar.gz
           image_id=$(docker image inspect engine073-runtime --format '{{.Id}}')
           cp evaluation/engine073-realworld-M0-v1/receipt.json /tmp/frozen/M0.json
+          cp evaluation/engine073-realworld-M0-v1/groq-recovery.json /tmp/frozen/groq-recovery.json
           cp -R evaluation/engine073-realworld-independent-v1-input /tmp/frozen/corpus
           docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/m0-runtime:/image:ro engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/verify_M0.py --receipt /frozen/M0.json --image-archive /image/runtime-image.tar.gz --actual-image-id "$image_id" --repo /repo
           m1=$(sha256sum /tmp/frozen/corpus/manifest.json | cut -d' ' -f1)
           docker run --rm --read-only --tmpfs /tmp -v /tmp/frozen:/frozen engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/prepare_sources.py --corpus-dir /frozen/corpus --M1-sha256 "$m1"
           recovery=()
           if test '${{ matrix.provider }}' = groq; then
-            cp evaluation/engine073-realworld-M0-v1/groq-recovery.json /tmp/frozen/groq-recovery.json
             recovery=(--groq-recovery-file /frozen/groq-recovery.json)
           fi
           docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen -v /tmp/results:/output engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/make_plan.py --M0-receipt /frozen/M0.json --corpus-dir /frozen/corpus --M1-sha256 "$m1" --provider '${{ matrix.provider }}' --output /output/plan.json "${recovery[@]}"

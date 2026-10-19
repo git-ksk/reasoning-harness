@@ -28,7 +28,11 @@
       "model": "openai/gpt-oss-120b",
       "new_live_run_allowed": false,
       "shared_usage": "owner_reports_no_other_usage_2026-10-19",
-      "currency_self_cap_USD": 0
+      "currency_self_cap_USD": 1,
+      "USD_per_million_input": 0.15,
+      "USD_per_million_output": 0.6,
+      "price_source": "https://console.groq.com/docs/model/openai/gpt-oss-120b",
+      "activation": "Requires separate complete-M0 readiness and hash-bound recovery receipt; false remains safe default."
     }
   },
   "price_checked_utc_date": "2026-10-19",

@@ -1,0 +1,21 @@
+{
+  "identity": "engine073-groq-readiness-20261019-v1",
+  "provider": "groq",
+  "requested_model": "openai/gpt-oss-120b",
+  "purpose": "quota/header observation only; not accuracy case",
+  "owner_reports_no_other_usage": true,
+  "owner_reports_full_allowance": true,
+  "owner_renewed_evaluation_request": true,
+  "historical_depletion_record_unchanged": true,
+  "maximum_HTTP_attempts": 1,
+  "input_token_upper_bound": 512,
+  "output_token_upper_bound": 64,
+  "currency_self_cap_USD": 0.001,
+  "created_unix_seconds": 1792387754,
+  "wire_UTF8_bytes": 179,
+  "framing_allowance": 128,
+  "input_price_ceiling_USD_per_million": "1",
+  "output_price_ceiling_USD_per_million": "2",
+  "worst_case_reserved_USD": "0.00064",
+  "budget_scope": "conservative local reservation, not provider invoice guarantee"
+}
