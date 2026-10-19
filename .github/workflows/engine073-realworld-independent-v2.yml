@@ -1,0 +1,64 @@
+name: engine073-realworld-independent-v2
+on:
+  pull_request:
+    paths:
+      - 'evaluation/engine073-realworld-evaluator-v2/**'
+      - '.github/workflows/engine073-realworld-independent-v2.yml'
+  push:
+    tags:
+      - 'engine073-realworld-v2-m0-build-v*'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  static:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - run: python3 -B -m unittest discover -s evaluation/engine073-realworld-evaluator-v2 -p 'test_*.py' -v
+      - run: python3 -c "import pathlib; [compile(p.read_text(),str(p),'exec') for p in pathlib.Path('evaluation/engine073-realworld-evaluator-v2').glob('*.py')]"
+  m0-runtime:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/engine073-realworld-v2-m0-build-v')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Build exact paired non-test hosts inside one builder
+        run: |
+          set -euo pipefail
+          mkdir /tmp/paired-build /tmp/runtime-context /tmp/m0-artifact
+          docker build -f evaluation/engine073-realworld-evaluator-v2/Dockerfile.build -t engine073-builder-v2 .
+          docker run --rm -v "$GITHUB_WORKSPACE:/repo:ro" -v /tmp/paired-build:/build engine073-builder-v2 python3 /repo/evaluation/engine073-realworld-evaluator-v2/build.py --repo /repo --work-dir /build/paired --fetch-dependencies
+          python3 evaluation/engine073-realworld-evaluator-v2/assemble_image.py --repo . --bin-dir /tmp/paired-build/paired/bin --context /tmp/runtime-context
+          docker build -f evaluation/engine073-realworld-evaluator-v2/Dockerfile.runtime -t engine073-runtime-v2 /tmp/runtime-context
+          docker image inspect engine073-runtime-v2 > /tmp/m0-artifact/image-inspect.json
+          docker image save engine073-runtime-v2 | gzip -1 > /tmp/m0-artifact/runtime-image.tar.gz
+          sha256sum /tmp/m0-artifact/runtime-image.tar.gz > /tmp/m0-artifact/runtime-image.sha256
+          cp /tmp/paired-build/paired/bin/identity.json /tmp/m0-artifact/paired-host-identity.json
+      - name: Verify actual runtime loopback controls without provider credentials
+        run: |
+          set -euo pipefail
+          mkdir /tmp/runtime-controls
+          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/runtime-controls:/output engine073-runtime-v2 python3 -B /repo/evaluation/engine073-realworld-evaluator-v2/preflight.py --bin-dir /eval/bin --output /output/loopback
+          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/runtime-controls:/output engine073-runtime-v2 python3 -B /repo/evaluation/engine073-realworld-evaluator-v2/preflight_cli.py --bin-dir /eval/bin --output /output/actual-cli
+          docker run --rm --read-only --network none --tmpfs /tmp engine073-runtime-v2 python3 -B -m unittest discover -s /repo/evaluation/engine073-realworld-evaluator-v2 -p 'test_*.py' -v > /tmp/runtime-controls/scorer.stdout 2> /tmp/runtime-controls/scorer.stderr
+          sudo mkdir -p /tmp/m0-artifact/runtime-controls
+          sudo cp -R /tmp/runtime-controls/. /tmp/m0-artifact/runtime-controls/
+      - name: Preserve build logs including failures
+        if: always()
+        run: |
+          mkdir -p /tmp/m0-artifact/build-logs
+          if test -d /tmp/runtime-controls; then sudo mkdir -p /tmp/m0-artifact/runtime-controls; sudo cp -R /tmp/runtime-controls/. /tmp/m0-artifact/runtime-controls/; fi
+          sudo chown -R "$(id -u):$(id -g)" /tmp/m0-artifact
+          find /tmp/paired-build -maxdepth 2 -type f \( -name '*stderr' -o -name '*jsonl' \) -exec cp {} /tmp/m0-artifact/build-logs/ \;
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: engine073-realworld-v2-M0-runtime-${{ github.run_id }}
+          path: /tmp/m0-artifact/
+          if-no-files-found: error
+          retention-days: 30
