@@ -2,6 +2,8 @@
 
 > Historical engineering/acceptance ledger below. Current direction: [product roadmap](product-roadmap.md) and [#531 Engine0.7 real-world evaluation](engine-07-realworld-evaluation.md). Published CLI is0.5.5 / Engine0.6.1;0.7.2 adoption evaluation is incomplete. Current successor plan: [Engine0.7.3](engine-0.7.3-roadmap.md).
 
+> 2026-10-19 checkpoint: [completeM0](../evaluation/engine073-realworld-M0-v1/README.md) independently reviewed PASS; freshreal24 authoring follows the freeze. ActualF1 is pending. Mistral/Google first, Groq explicitly deferred/null; full3provider adoption remains NO_GO.
+
 ## Project direction
 
 Reasoning Harness is not trying to become a general-purpose model runner or a second Inspect/lm-eval. Its core differentiator is provider-neutral, authority-aware control of intermediate reasoning: deterministic structure and harness-owned evidence may create hard findings, while model-backed semantic discovery remains soft and observational until independently verified.
