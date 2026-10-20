@@ -1,0 +1,13 @@
+{
+  "identity": "engine073-realworld-v2-consumed-score-public-archive-v1",
+  "files": {
+    "README.md": "1fb8999994d39f0bb5d78e6f6d8cc55dba14485860e593005bb11ff83fe05371",
+    "annotation-artifact-manifest.json": "daf8d604fdb238b0d5ef0af2a9cb0fdf3dd519b1fa91fbcde48ae23f9e594fbd",
+    "combined-observations-manifest.json": "9d69a7192ea824202c2d3ce43ad9ebdd0c3662e4fefe7479454c5b9d125cac43",
+    "first-score-started.json": "d958971157fd84cfa5799075bcd9da19396c3d7f59b8a23e186cfb5b16c70e43",
+    "provenance.json": "db3fca4c7529f0e90e9b996382c96d8a282624bf78987fc3eb42a68fe011011d",
+    "recaptured-manifest.json": "eccc88b5100927dbf39475b2a67bb0dac706ac04cdaf4fcf62ff4f27ac64537f",
+    "report.json": "bfe04912745e2236a8d1995e0166f57aa6cd396e988229fc168aafc2dea37051"
+  },
+  "self_exclusion": "artifact-manifest.json"
+}
