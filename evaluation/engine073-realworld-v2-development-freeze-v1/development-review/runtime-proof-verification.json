@@ -1,0 +1,24 @@
+{
+  "runtime_files_count": 75,
+  "runtime_files_sha256": "20c2e857ae8ff8f9bd3e536595ce170c2c8e9094e6c8f9504bd9b1671ca9b3f6",
+  "all_CI_proof_files_match_local_exact_allowlist": true,
+  "all_CI_proof_files_match_current_checkout": true,
+  "raw_CI_proof_sha256": "919b9dda6f79028a1b65c2856aea613165ff25ca261c099a0cca010a9d8c21b4",
+  "CI_descriptor_sha256": "ec3ed8aabb27ba3439a72648a941a5ef38f8f054403f6b91fecffa509ced936e",
+  "CI_log_sha256": "52033401fa0940d1338a622704daeb8d81cd926f690833e31d82109d6534739b",
+  "runtime_image_archive_sha256": "810e7896db0866d5201cad609eef6480e36f54fbafaba9b3abe3264139df4916",
+  "runtime_image_id": "sha256:4c21d90d09f7d404bde0d85e162ef20a4969834b00859cde982a084d58b0f608",
+  "paired_host_identity_sha256": "463762ba9bcb5a50bee149fc4ae11c8f64133198f5cc7a5a89224ecfc9b91773",
+  "CI_source": {
+    "run_id": 39344591178,
+    "artifact_id": 12229659925,
+    "evidence_origin": "Parent-retrieved GitHub job log/proof/descriptor; independently hash-compared locally, not independent Docker/test rerun."
+  },
+  "CI_control_counts": {
+    "adapter_loopback": 18,
+    "actual_CLI_normal_and_budget": 12,
+    "paired_helper": 3,
+    "actual_acquisition_to_admission_to_binder": 2
+  },
+  "inherited_metric_quality_namespaces": "Hash-only comparison; no metric helper or scorer execution."
+}
