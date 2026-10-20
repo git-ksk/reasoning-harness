@@ -2,6 +2,8 @@
 
 **最新状況（2026-10-20、消費済み24問の開発採点済み）:** Googleは全24問/arm/trackを独立注釈して初回採点。通常case F1は旧版/候補とも0.583333（P1.00/R0.411765）、helperは0.222222→0.400000（候補P1.00/R0.25）。重大違反0件だが、通常引用0/28・有用回答の増加0/+1で基準未達。Mistral/Groqの全24問F1はnull、Mistral残量未確認のため追加保留。既知usage欠落はPR549/main53be613へ別修正済みだが、planner JSON途中切れと再完走は未解決。元v1/raw/gold/初回捕捉は不変、fresh accuracy0、0.7.3公開・CLI採用NO_GO。[固定スコアと次の改善](../evaluation/engine073-realworld-v2-consumed-score-v1/README.md)。
 
+**次の修正順:** [実測FNの原因と最小改善](engine073-consumed-real24-findings.ja.md)。型付き条件/注意と引用の保持→質問/計画coverage→実行・origin注意→helper比較範囲。hostが供給する事実の縮約も含むE2E課題で、Engine単体の成績とは区別する。
+
 以下は2026-10-19の初回結果です。
 **最新状況（2026-10-19、初回実戦評価・独立採点済み）:** M0/M1を固定し、未使用だった公式12文書・6製品の実資料24問でMistral/Googleを実行したが、CLI論理呼び出し上限6と失敗時の使用量欠落で早期停止。通常回答は評価器の2段階終端照合にも不備があり、24問全体のF1は全provider/trackで`null`、**採用NO_GO**。採点可能なGoogle補助API1問/armのみ、baseline/候補ともcase F1=0.00・claim F1=1.00（最終判定conflict、改善なし）。これは全体性能ではない。[初回結果・独立レビュー・修正順序](../evaluation/engine073-realworld-first-v1a-results/README.md)。次は#540の結果回収・終端照合・失敗時診断を修正して実経路を確認し、別途固定した評価へ進む。Groqは認証前延期を維持。元raw/gold/予算/初回FAILは不変、モデル再試行・再採点なし。公開CLI0.5.5/Engine0.6.1、Engine0.7.3未公開。以下の日付付き準備記録は履歴。
 
