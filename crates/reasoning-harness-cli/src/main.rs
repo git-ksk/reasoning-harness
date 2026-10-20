@@ -2,6 +2,7 @@ mod auth;
 mod config_commands;
 mod diagnostic_trace;
 mod doctor;
+mod generation_usage;
 mod human_presentation;
 mod interactive;
 mod lifecycle;
@@ -1136,6 +1137,18 @@ async fn run_structured_json_call<T: DeserializeOwned>(
     requested_model: &str,
     request: ModelRequest,
 ) -> Result<(T, GenerationObservation), GenerationFailure> {
+    let recording = generation_usage::RecordingAdapter::new(adapter);
+    let result =
+        run_structured_json_call_inner(&recording, provider, requested_model, request).await;
+    recording.finish(result)
+}
+
+async fn run_structured_json_call_inner<T: DeserializeOwned>(
+    adapter: &dyn ModelAdapter,
+    provider: &'static str,
+    requested_model: &str,
+    request: ModelRequest,
+) -> Result<(T, GenerationObservation), GenerationFailure> {
     let started = Instant::now();
     let schema = match &request.output_format {
         ModelOutputFormat::JsonSchema { schema, .. } => Some(schema.clone()),
@@ -1470,6 +1483,27 @@ async fn generate_with_adapter<A: ModelAdapter>(
     max_tokens: u32,
     seed: Option<u64>,
 ) -> Result<(ReasoningCandidate, GenerationObservation), GenerationFailure> {
+    let recording = generation_usage::RecordingAdapter::new(adapter);
+    let result = generate_with_adapter_inner(
+        &recording,
+        provider,
+        requested_model,
+        input,
+        max_tokens,
+        seed,
+    )
+    .await;
+    recording.finish(result)
+}
+
+async fn generate_with_adapter_inner<A: ModelAdapter>(
+    adapter: &A,
+    provider: &'static str,
+    requested_model: &str,
+    input: &HarnessInput,
+    max_tokens: u32,
+    seed: Option<u64>,
+) -> Result<(ReasoningCandidate, GenerationObservation), GenerationFailure> {
     let started = Instant::now();
     let request = build_candidate_request(input, Some(max_tokens), seed).map_err(|error| {
         generation_failure(
@@ -1577,6 +1611,15 @@ struct FinalRenderCall<'a> {
 }
 
 async fn render_final_with_adapter<A: ModelAdapter>(
+    adapter: &A,
+    call: FinalRenderCall<'_>,
+) -> Result<(FinalAnswerCandidate, GenerationObservation), GenerationFailure> {
+    let recording = generation_usage::RecordingAdapter::new(adapter);
+    let result = render_final_with_adapter_inner(&recording, call).await;
+    recording.finish(result)
+}
+
+async fn render_final_with_adapter_inner<A: ModelAdapter>(
     adapter: &A,
     call: FinalRenderCall<'_>,
 ) -> Result<(FinalAnswerCandidate, GenerationObservation), GenerationFailure> {
@@ -1693,6 +1736,8 @@ fn parse_final_answer_json(text: &str) -> Result<(FinalAnswerCandidate, bool), s
 
 #[derive(Debug, Clone, Serialize)]
 struct GenerationFailure {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    usage: Option<Box<ModelUsage>>,
     provider: &'static str,
     model: String,
     latency_ms: u128,
@@ -1708,6 +1753,7 @@ fn generation_failure(
     error: ModelError,
 ) -> GenerationFailure {
     GenerationFailure {
+        usage: None,
         provider,
         model: requested_model.to_string(),
         latency_ms: started.elapsed().as_millis(),
@@ -11246,10 +11292,13 @@ mod candidate_json_tests {
             message: &str,
             attempts: u32,
         ) -> Result<reasoning_harness_core::ModelResponse, ModelError> {
-            Err(
-                ModelError::new(ModelErrorKind::UnsupportedCapability, message)
-                    .with_provider_attempts(attempts),
-            )
+            // Keep the fixture's explicit count, including a local refusal.
+            // ModelError::with_provider_attempts deliberately clamps zero to one.
+            Err(ModelError {
+                kind: ModelErrorKind::UnsupportedCapability,
+                message: message.into(),
+                provider_attempts: attempts,
+            })
         }
 
         fn response(
@@ -11464,6 +11513,217 @@ mod candidate_json_tests {
         assert!(matches!(calls[0], ModelOutputFormat::JsonSchema { .. }));
         assert_eq!(calls[1], ModelOutputFormat::JsonObject);
         assert_eq!(calls[2], ModelOutputFormat::Text);
+    }
+
+    #[tokio::test]
+    async fn structured_parse_failure_retains_reported_usage() {
+        let response = |text: &str, input, output| {
+            Ok(reasoning_harness_core::ModelResponse {
+                text: text.into(),
+                model: "test-model".into(),
+                usage: ModelUsage {
+                    input_tokens: Some(input),
+                    output_tokens: Some(output),
+                    total_tokens: Some(input + output),
+                },
+                provider_attempts: 1,
+                finish_reason: Some("length".into()),
+            })
+        };
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            response(r#"{"targets":["#, 304, 256),
+            response(r#"{"targets":[{"id":"unfinished"#, 535, 256),
+        ]);
+        let request =
+            build_investigation_plan_request("investigate", &[], Some(256), Some(2)).unwrap();
+        let failure = run_structured_json_call::<InvestigationPlanProposal>(
+            &adapter,
+            "test",
+            "test-model",
+            request,
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(failure.failure_class, "protocol");
+        let mut tracker = usage_budget::UsageTracker::new(
+            usage_budget::UsageBudget {
+                max_model_calls: Some(12),
+                max_output_tokens: Some(4096),
+                max_total_tokens: Some(28096),
+                ..Default::default()
+            },
+            None,
+        )
+        .unwrap();
+        tracker.record_failure(&failure).unwrap();
+        let totals = tracker.report().run;
+        assert_eq!(totals.input_tokens, Some(839));
+        assert_eq!(totals.output_tokens, Some(512));
+        assert_eq!(totals.total_tokens, Some(1351));
+        assert_eq!(totals.model_calls, 1);
+        assert_eq!(totals.provider_attempts, 2);
+        let mut capped = usage_budget::UsageTracker::new(
+            usage_budget::UsageBudget {
+                max_total_tokens: Some(100),
+                ..Default::default()
+            },
+            None,
+        )
+        .unwrap();
+        assert_eq!(
+            capped.record_failure(&failure).unwrap_err().failure_class,
+            "usage_budget_exceeded"
+        );
+    }
+
+    fn metered_response(
+        text: &str,
+        input: u64,
+        output: u64,
+    ) -> Result<reasoning_harness_core::ModelResponse, ModelError> {
+        Ok(reasoning_harness_core::ModelResponse {
+            text: text.into(),
+            model: "test-model".into(),
+            usage: ModelUsage {
+                input_tokens: Some(input),
+                output_tokens: Some(output),
+                total_tokens: Some(input + output),
+            },
+            provider_attempts: 1,
+            finish_reason: Some("stop".into()),
+        })
+    }
+
+    #[tokio::test]
+    async fn candidate_and_final_parse_failures_preserve_both_attempts_usage() {
+        let adapter = || {
+            StructuredCapabilityFallbackAdapter::with_responses([
+                metered_response("{", 10, 2),
+                metered_response("{", 20, 3),
+            ])
+        };
+        let input = HarnessInput {
+            task: "accounting control".into(),
+            ..Default::default()
+        };
+        let failure = generate_with_adapter(&adapter(), "test", "test-model", &input, 128, None)
+            .await
+            .unwrap_err();
+        assert_eq!(failure.provider_attempts, 2);
+        assert_eq!(failure.usage.unwrap().total_tokens, Some(35));
+        let artifact = ReasoningArtifact::default();
+        let failure = render_final_with_adapter(
+            &adapter(),
+            FinalRenderCall {
+                provider: "test",
+                requested_model: "test-model",
+                task: &input.task,
+                artifact: &artifact,
+                verdict: Verdict::Unknown,
+                max_tokens: 128,
+                seed: None,
+            },
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(failure.provider_attempts, 2);
+        assert_eq!(failure.usage.unwrap().total_tokens, Some(35));
+    }
+
+    #[tokio::test]
+    async fn known_response_then_unreported_http_attempt_stays_unknown() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            metered_response("{", 10, 2),
+            Err(
+                ModelError::new(ModelErrorKind::Transport, "unreported HTTP attempt")
+                    .with_provider_attempts(1),
+            ),
+        ]);
+        let request =
+            build_investigation_plan_request("investigate", &[], Some(128), None).unwrap();
+        let failure = run_structured_json_call::<InvestigationPlanProposal>(
+            &adapter,
+            "test",
+            "test-model",
+            request,
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(failure.provider_attempts, 2);
+        assert!(failure.usage.is_none());
+        let mut tracker = usage_budget::UsageTracker::new(
+            usage_budget::UsageBudget {
+                max_output_tokens: Some(4096),
+                ..Default::default()
+            },
+            None,
+        )
+        .unwrap();
+        assert_eq!(
+            tracker.record_failure(&failure).unwrap_err().failure_class,
+            "usage_budget_unmeasurable"
+        );
+    }
+
+    #[tokio::test]
+    async fn capability_fallback_only_preserves_usage_without_unreported_http_attempts() {
+        for attempts in [0, 1] {
+            let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+                StructuredCapabilityFallbackAdapter::capability_failure(
+                    "schema unavailable",
+                    attempts,
+                ),
+                metered_response(r#"{"targets":[]}"#, 10, 2),
+            ]);
+            let request =
+                build_investigation_plan_request("investigate", &[], Some(128), None).unwrap();
+            let (_, observation) = run_structured_json_call::<InvestigationPlanProposal>(
+                &adapter,
+                "test",
+                "test-model",
+                request,
+            )
+            .await
+            .unwrap();
+            assert_eq!(observation.provider_attempts, attempts + 1);
+            assert_eq!(
+                observation.usage.total_tokens,
+                (attempts == 0).then_some(12)
+            );
+            let mut tracker = usage_budget::UsageTracker::new(
+                usage_budget::UsageBudget {
+                    max_output_tokens: Some(4096),
+                    ..Default::default()
+                },
+                None,
+            )
+            .unwrap();
+            assert_eq!(
+                tracker.record_generation(&observation).is_ok(),
+                attempts == 0
+            );
+        }
+    }
+
+    #[tokio::test]
+    async fn strict_text_parse_failure_keeps_known_usage_after_local_capability_refusals() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::capability_failure("schema unavailable", 0),
+            StructuredCapabilityFallbackAdapter::capability_failure("object unavailable", 0),
+            metered_response("{", 10, 2),
+        ]);
+        let request =
+            build_investigation_plan_request("investigate", &[], Some(128), None).unwrap();
+        let failure = run_structured_json_call::<InvestigationPlanProposal>(
+            &adapter,
+            "test",
+            "test-model",
+            request,
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(failure.provider_attempts, 1);
+        assert_eq!(failure.usage.unwrap().total_tokens, Some(12));
     }
 
     #[tokio::test]
@@ -12104,6 +12364,7 @@ mod candidate_json_tests {
             diagnostics: None,
             generation: None,
             failure: Some(GenerationFailure {
+                usage: None,
                 provider: "nvidia",
                 model: "test-model".into(),
                 latency_ms: 12,
@@ -12359,6 +12620,7 @@ mod candidate_json_tests {
                 diagnostics: None,
                 generation: None,
                 failure: Some(GenerationFailure {
+                    usage: None,
                     provider: "test",
                     model: "test-model".into(),
                     latency_ms: 400,
