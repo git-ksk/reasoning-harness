@@ -246,9 +246,8 @@ impl UsageTracker {
             .provider_attempts
             .saturating_add(u64::from(failure.provider_attempts));
         if failure.provider_attempts > 0 {
-            self.run.input_tokens = None;
-            self.run.output_tokens = None;
-            self.run.total_tokens = None;
+            let unknown = ModelUsage::default();
+            add_model_usage(&mut self.run, failure.usage.as_deref().unwrap_or(&unknown));
         }
         self.check_current_limits()
     }
@@ -523,6 +522,7 @@ mod tests {
             .unwrap();
         tracker
             .record_failure(&GenerationFailure {
+                usage: None,
                 provider: "fixture",
                 model: "fixture".into(),
                 latency_ms: 1,
