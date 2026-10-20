@@ -1,0 +1,13 @@
+{
+  "utc": "2026-10-18T14:16:37.656128+00:00",
+  "pair": "li26-pair-26",
+  "reason": "Make the physical property owner explicit with complete canonical name; do not require resolution of the bare noun booklet. Both positive and negative shared property clauses are clarified. Negative still has an independent direct product-nonexistence assertion.",
+  "author_before_sha256": "48fcd2e4e6022e3c9e011365e5f812ccae55726d8d2bd2b35ff9175433f63952",
+  "author_after_sha256": "33b278314b99e0499faf260a9a62598691e88487b225bac10087e38aadcbed0b",
+  "AST_after": "PASS",
+  "labels_or_polarity_purpose_changed": false,
+  "generated_inputs_or_labels_before_change": 0,
+  "Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "M0_policy_helper_budget_changed": false
+}

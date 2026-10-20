@@ -1,0 +1,52 @@
+{
+  "identity": "engine073-realworld-v2-consumed-development-first-result-v1",
+  "state": "OPERATIONAL_RESULTS_SEMANTIC_REVIEW_PENDING",
+  "run_id": 39345330622,
+  "execution_commit": "51153e93ea942e1e8cdb0b3cd5580888ccdda6c5",
+  "development_receipt_sha256": "986147bab2aa3d93201aefeed95eb4ebc45d16d50820ba0f5f183305b71d28a9",
+  "consumed_M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+  "fresh_accuracy_cases": 0,
+  "accuracy_acceptance": false,
+  "actual_answer_f1": null,
+  "original_v1_first_results_unchanged": true,
+  "providers": {
+    "mistral": {
+      "scheduled_jobs": 72,
+      "executed_jobs": 4,
+      "completed_jobs": 3,
+      "capture_complete": 4,
+      "capture_incomplete": 1,
+      "capture_not_run": 91,
+      "known_guard_tokens": 21846,
+      "known_guard_attempts": 20,
+      "journal_reported_tokens": 24956,
+      "journal_reported_attempts": 24,
+      "original_guard_unknown_usage_rows": 1,
+      "first_stop": "rw-02-candidate known response usage discarded after truncated planner JSON",
+      "next_live_run_allowed": false,
+      "current_quota": "UNVERIFIED_OWNER_REPORTS_POSSIBLE_DEPLETION"
+    },
+    "google": {
+      "scheduled_jobs": 72,
+      "executed_jobs": 72,
+      "completed_jobs": 72,
+      "known_tokens": 259540,
+      "known_attempts": 320,
+      "unknown_usage_rows": 0,
+      "capture_complete": 76,
+      "capture_incomplete": 20,
+      "binding_refusals": {
+        "exact_repeat_evidence": 8,
+        "advertised_secondary_key": 12
+      }
+    },
+    "groq": {
+      "scheduled_observations": 96,
+      "completed_observations": 0,
+      "new_live_run_allowed": false,
+      "reason": "full cohort capacity remains deferred"
+    }
+  },
+  "source_merge_Engine_release_CLI_adoption": "NO_GO",
+  "next": "CLI548 known usage repair; independent-reviewed offline successor capture; freeze annotations then one consumed-development score"
+}

@@ -1,0 +1,7 @@
+# Additional parent maintained-clause development controls
+
+One prospective boundary concern prompted a brief pause before independent v23's first process; no candidate/code/HEAD/library changes. No independent cases/labels/scorer/results used. First exploratory4 inputs accidentally retained a copied older target question while changing the canonical name, so they are diagnostic only and not acceptance. Their bytes/output are preserved unchanged.
+
+Separate corrected-v2 identity has consistent target question/canonical name and5 new development controls, including an actual positive parent. Four unresolved/target non-event variants withhold on bothv17/v30; the adjacent named-foreign maintained non-event positive requests/relevance succeeds. No unsafe variant reproduced, so independent pre-execution waiting was released with the same authored inputs and source. Pronoun semantics are not declared unknown without considering its adjacent antecedent; this check is conservative behavior evidence only, not a new general reference contract.
+
+Each process identity/input/executable/source hash was saved before invocation. The executable is the same source23 pinned actual seen-probe from the main development bundle; no binary changes. Raw stdout/stderr retained. Two development processes/9 inputs total (4 diagnostic-invalid +5 controlled). Scorer/provider/model/network/Oracle0; no first-only rescoring or gold change; not fresh independent/real24 acceptance or ordinary-answer F1. Code and all old independent files unchanged.

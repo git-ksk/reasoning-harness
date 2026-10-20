@@ -1,0 +1,1590 @@
+{
+  "summary": {
+    "identity": "engine073-launch-independent-v7",
+    "candidate_source_sha": "a80391e7daaa59832dee24e5ebed351ed3e02980",
+    "manifest_sha256": "a5caaf9680b6635bf1223d6d0a22517fc5e8a274424babac3b60f2526854fed5",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 41,
+    "failed": 19,
+    "incomplete": 0,
+    "positive_passed": 11,
+    "negative_passed": 30,
+    "negative_v17_requested_relation_violations": 0,
+    "negative_v30_relevant_violations": 0,
+    "positive_v17_withheld": 18,
+    "positive_v30_withheld": 19,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "69608d7b23238e95cb61bfb8a5fcb283a0239f6470a1159bbfb6f3bc8f3f907b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "390b953f810ef880768eb1e7ee7dda622584302062ca38eb3ddfd78012ce1ecb"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "cases": [
+    {
+      "id": "li7-001",
+      "pair_id": "v7-pair-01",
+      "polarity": "positive",
+      "axis": "shared_first_token_full_owner_retraction",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-002",
+      "pair_id": "v7-pair-01",
+      "polarity": "negative",
+      "axis": "shared_first_token_full_owner_retraction",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-003",
+      "pair_id": "v7-pair-02",
+      "polarity": "positive",
+      "axis": "similar_names_title_heading_full_denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "positive_candidate_safe_to_accept"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-004",
+      "pair_id": "v7-pair-02",
+      "polarity": "negative",
+      "axis": "similar_names_title_heading_full_denial",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-005",
+      "pair_id": "v7-pair-03",
+      "polarity": "positive",
+      "axis": "neighbor_name_current_quote_owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-006",
+      "pair_id": "v7-pair-03",
+      "polarity": "negative",
+      "axis": "neighbor_name_current_quote_owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-007",
+      "pair_id": "v7-pair-04",
+      "polarity": "positive",
+      "axis": "similar_names_neighbor_record_object",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-008",
+      "pair_id": "v7-pair-04",
+      "polarity": "negative",
+      "axis": "similar_names_neighbor_record_object",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-009",
+      "pair_id": "v7-pair-05",
+      "polarity": "positive",
+      "axis": "record_title_vs_explicit_denial_owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "positive_candidate_safe_to_accept"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-010",
+      "pair_id": "v7-pair-05",
+      "polarity": "negative",
+      "axis": "record_title_vs_explicit_denial_owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-011",
+      "pair_id": "v7-pair-06",
+      "polarity": "positive",
+      "axis": "similar_possessive_owner_with_property_cue",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-012",
+      "pair_id": "v7-pair-06",
+      "polarity": "negative",
+      "axis": "similar_possessive_owner_with_property_cue",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-013",
+      "pair_id": "v7-pair-07",
+      "polarity": "positive",
+      "axis": "full_named_denial_and_separate_entry",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-014",
+      "pair_id": "v7-pair-07",
+      "polarity": "negative",
+      "axis": "full_named_denial_and_separate_entry",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-015",
+      "pair_id": "v7-pair-08",
+      "polarity": "positive",
+      "axis": "full_scope_owner_and_excluded_neighbor",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-016",
+      "pair_id": "v7-pair-08",
+      "polarity": "negative",
+      "axis": "full_scope_owner_and_excluded_neighbor",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-017",
+      "pair_id": "v7-pair-09",
+      "polarity": "positive",
+      "axis": "shared_token_named_non_event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-018",
+      "pair_id": "v7-pair-09",
+      "polarity": "negative",
+      "axis": "shared_token_named_non_event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-019",
+      "pair_id": "v7-pair-10",
+      "polarity": "positive",
+      "axis": "same_prefix_full_name_no_launch",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-020",
+      "pair_id": "v7-pair-10",
+      "polarity": "negative",
+      "axis": "same_prefix_full_name_no_launch",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-021",
+      "pair_id": "v7-pair-11",
+      "polarity": "positive",
+      "axis": "launch_button_specification_vs_event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "irrelevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "negative_local_target_absence_confirmed",
+        "model_irrelevant"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-022",
+      "pair_id": "v7-pair-11",
+      "polarity": "negative",
+      "axis": "launch_button_specification_vs_event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-023",
+      "pair_id": "v7-pair-12",
+      "polarity": "positive",
+      "axis": "printed_launch_icon_claim",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-024",
+      "pair_id": "v7-pair-12",
+      "polarity": "negative",
+      "axis": "printed_launch_icon_claim",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-025",
+      "pair_id": "v7-pair-13",
+      "polarity": "positive",
+      "axis": "release_lever_alloy_vs_launch",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-026",
+      "pair_id": "v7-pair-13",
+      "polarity": "negative",
+      "axis": "release_lever_alloy_vs_launch",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-027",
+      "pair_id": "v7-pair-14",
+      "polarity": "positive",
+      "axis": "launch_switch_voltage_scope",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-028",
+      "pair_id": "v7-pair-14",
+      "polarity": "negative",
+      "axis": "launch_switch_voltage_scope",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-029",
+      "pair_id": "v7-pair-15",
+      "polarity": "positive",
+      "axis": "release_latch_material_that_clause",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-030",
+      "pair_id": "v7-pair-15",
+      "polarity": "negative",
+      "axis": "release_latch_material_that_clause",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-031",
+      "pair_id": "v7-pair-16",
+      "polarity": "positive",
+      "axis": "launch_key_legend_typography",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-032",
+      "pair_id": "v7-pair-16",
+      "polarity": "negative",
+      "axis": "launch_key_legend_typography",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-033",
+      "pair_id": "v7-pair-17",
+      "polarity": "positive",
+      "axis": "release_button_dimension",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-034",
+      "pair_id": "v7-pair-17",
+      "polarity": "negative",
+      "axis": "release_button_dimension",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-035",
+      "pair_id": "v7-pair-18",
+      "polarity": "positive",
+      "axis": "launcher_housing_finish",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-036",
+      "pair_id": "v7-pair-18",
+      "polarity": "negative",
+      "axis": "launcher_housing_finish",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-037",
+      "pair_id": "v7-pair-19",
+      "polarity": "positive",
+      "axis": "launch_indicator_led_colour",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-038",
+      "pair_id": "v7-pair-19",
+      "polarity": "negative",
+      "axis": "launch_indicator_led_colour",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-039",
+      "pair_id": "v7-pair-20",
+      "polarity": "positive",
+      "axis": "release_coating_manufacturing_spec",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-040",
+      "pair_id": "v7-pair-20",
+      "polarity": "negative",
+      "axis": "release_coating_manufacturing_spec",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-041",
+      "pair_id": "v7-pair-21",
+      "polarity": "positive",
+      "axis": "similar_name_contact_route_vs_claim",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "positive_candidate_safe_to_accept"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-042",
+      "pair_id": "v7-pair-21",
+      "polarity": "negative",
+      "axis": "similar_name_contact_route_vs_claim",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-043",
+      "pair_id": "v7-pair-22",
+      "polarity": "positive",
+      "axis": "other_name_archive_label",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-044",
+      "pair_id": "v7-pair-22",
+      "polarity": "negative",
+      "axis": "other_name_archive_label",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-045",
+      "pair_id": "v7-pair-23",
+      "polarity": "positive",
+      "axis": "launch_bulletin_length_vs_claim",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-046",
+      "pair_id": "v7-pair-23",
+      "polarity": "negative",
+      "axis": "launch_bulletin_length_vs_claim",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-047",
+      "pair_id": "v7-pair-24",
+      "polarity": "positive",
+      "axis": "launch_banner_colour",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-048",
+      "pair_id": "v7-pair-24",
+      "polarity": "negative",
+      "axis": "launch_banner_colour",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-049",
+      "pair_id": "v7-pair-25",
+      "polarity": "positive",
+      "axis": "release_section_pagination",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-050",
+      "pair_id": "v7-pair-25",
+      "polarity": "negative",
+      "axis": "release_section_pagination",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-051",
+      "pair_id": "v7-pair-26",
+      "polarity": "positive",
+      "axis": "component_cue_then_neighbor_or_unknown_launch",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-052",
+      "pair_id": "v7-pair-26",
+      "polarity": "negative",
+      "axis": "component_cue_then_neighbor_or_unknown_launch",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-053",
+      "pair_id": "v7-pair-27",
+      "polarity": "positive",
+      "axis": "shared_short_name_unresolved_full_owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "positive_candidate_safe_to_accept"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-054",
+      "pair_id": "v7-pair-27",
+      "polarity": "negative",
+      "axis": "shared_short_name_unresolved_full_owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-055",
+      "pair_id": "v7-pair-28",
+      "polarity": "positive",
+      "axis": "button_travel_vs_explicit_two_owner_ambiguity",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-056",
+      "pair_id": "v7-pair-28",
+      "polarity": "negative",
+      "axis": "button_travel_vs_explicit_two_owner_ambiguity",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-057",
+      "pair_id": "v7-pair-29",
+      "polarity": "positive",
+      "axis": "two_similar_names_named_or_unassigned_record",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li7-058",
+      "pair_id": "v7-pair-29",
+      "polarity": "negative",
+      "axis": "two_similar_names_named_or_unassigned_record",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-059",
+      "pair_id": "v7-pair-30",
+      "polarity": "positive",
+      "axis": "short_header_with_full_property_or_missing_launch_owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li7-060",
+      "pair_id": "v7-pair-30",
+      "polarity": "negative",
+      "axis": "short_header_with_full_property_or_missing_launch_owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    }
+  ]
+}

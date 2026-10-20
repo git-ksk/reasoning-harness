@@ -1,0 +1,27 @@
+{
+  "identity": "engine073-launch-independent-v26",
+  "utc": "2026-10-18T14:22:54.563301+00:00",
+  "files": {
+    "driver.started.json": "186770bb925864c24df1be50b99e6468735ed326350179e4461f93c2ecf7ff0e",
+    "driver.invocation.json": "80d7b65c2f049391407ea22b0a0ff88b57f3b4bfba4e0b45fd1a0f94be191bd2",
+    "driver.stdout.txt": "126b5c008ce1c2f317374e69ef87bfe6729edeec0d74ff61bf6251a8fe19bb22",
+    "driver.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "execution.started.json": "3cb6ab3240a32fdac7766fb42d1f36d7f3220a6db8a45f44cb837b5b03e75212",
+    "first-run.stdout.txt": "11de30cc668e649b58aedf62e2c1e4294077f43f0015cbc20019a3c95b18185a",
+    "first-run.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first-invocation.started.json": "dcfc8f47862b6ede1b9817bc836c942c9fc5b50845480bd52bcd6519b84cfa69",
+    "first-invocation.json": "07e1d334ba3d6f5087e0ac9970ceb16408269952d0322fcab50d54dd3907a423",
+    "first.stdout.jsonl": "f597a76f9583043721a6b8952328cc24bfa32f4227ec23b704a9862e5aa65c76",
+    "first.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first-score.started.json": "cff3d93e8db2d71dc50b80ccfd85a6f80628c2a7fe22cb520267bdca074b37f5",
+    "first-score.invocation.json": "421533c7831ea60048b1e25c7c73c0327de631259fb7a3b745469f0f2b4172c9",
+    "first-score.stdout.txt": "23f04080d8f1e4d7e365b356e124c4610799ac23ebc22544622faa923d11139e",
+    "first-score.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first-results.json": "c3dd05fbc86868dae14bd47ab1684fb9e68320f6faf839c4383b97d52294017c",
+    "first-summary.json": "23f04080d8f1e4d7e365b356e124c4610799ac23ebc22544622faa923d11139e"
+  },
+  "purpose": "Original canonical first artifacts after one frozen run; no new qualification or scoring.",
+  "Engine_processes": 1,
+  "real_cohort_scorer_processes": 1,
+  "retry_rescore_relabel": 0
+}

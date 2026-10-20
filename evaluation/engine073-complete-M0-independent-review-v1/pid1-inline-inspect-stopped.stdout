@@ -1,0 +1,219 @@
+[
+    {
+        "Id": "2c021bd61d6e2f7a57f9545b51cf38921072900f8fd12893820a50926c6a6d1e",
+        "Created": "2026-10-19T05:45:05.707708261Z",
+        "Path": "python3",
+        "Args": [
+            "-B",
+            "-c",
+            "import hashlib,json,os,sys\nfrom pathlib import Path\nout=Path('/review');runner='/repo/evaluation/engine07-realworld-runner-v1/runner.py';fixture='/repo/evaluation/engine07-realworld-runner-v1/fixture_child.py'\nplan={'schema':'engine07-operational-plan-v1','provider':'mistral','model':'fixture-only','token_budget':20,'artifacts':{p:hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in [sys.executable,fixture]},'jobs':[{'id':'pid1structural','arm':'helper','contract':'helper','argv':[sys.executable,fixture,'--mode','descendant-on-cancel','--contract','helper','--marker','{RUN_DIR}/marker','--provider','mistral','--model','fixture-only'],'budget':{'max_generations':1,'max_input_tokens_per_generation':4,'max_output_tokens_per_generation':6,'max_attempts_per_generation':1},'timeout_seconds':120,'cancel_grace_seconds':0.15}]}\nwith (out/'pid1-plan.json').open('x') as f:json.dump(plan,f);f.flush();os.fsync(f.fileno())\nos.execv(sys.executable,[sys.executable,'-B',runner,'--plan','/review/pid1-plan.json','--output','/review/pid1-run'])\n"
+        ],
+        "State": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 137,
+            "Error": "",
+            "StartedAt": "2026-10-19T05:45:05.747494305Z",
+            "FinishedAt": "2026-10-19T05:45:12.988822414Z"
+        },
+        "Image": "sha256:a71348d080761005e09b55c404489a9dfb1ca0c5d1f0e5ef5a4a9f446574eb82",
+        "ResolvConfPath": "/var/lib/docker/containers/2c021bd61d6e2f7a57f9545b51cf38921072900f8fd12893820a50926c6a6d1e/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/2c021bd61d6e2f7a57f9545b51cf38921072900f8fd12893820a50926c6a6d1e/hostname",
+        "HostsPath": "/var/lib/docker/containers/2c021bd61d6e2f7a57f9545b51cf38921072900f8fd12893820a50926c6a6d1e/hosts",
+        "LogPath": "/var/lib/docker/containers/2c021bd61d6e2f7a57f9545b51cf38921072900f8fd12893820a50926c6a6d1e/2c021bd61d6e2f7a57f9545b51cf38921072900f8fd12893820a50926c6a6d1e-json.log",
+        "Name": "/engine073-independent-m0-v1-pid1kill",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "docker-default",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": [
+                "/private/tmp/engine073-complete-M0-independent-review-v1:/review"
+            ],
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "none",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": null,
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": true,
+            "SecurityOpt": null,
+            "Tmpfs": {
+                "/tmp": ""
+            },
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": [],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "Storage": {
+            "RootFS": {
+                "Snapshot": {
+                    "Name": "overlayfs"
+                }
+            }
+        },
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/private/tmp/engine073-complete-M0-independent-review-v1",
+                "Destination": "/review",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            }
+        ],
+        "Config": {
+            "Hostname": "2c021bd61d6e",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.16",
+                "PYTHON_SHA256=f4b1bfb3c79b5bb11b8d228a12504163b4c0dab4d679828d8f5f26b6cb6ab35d",
+                "PYTHONDONTWRITEBYTECODE=1"
+            ],
+            "Cmd": [
+                "python3",
+                "-B",
+                "-c",
+                "import hashlib,json,os,sys\nfrom pathlib import Path\nout=Path('/review');runner='/repo/evaluation/engine07-realworld-runner-v1/runner.py';fixture='/repo/evaluation/engine07-realworld-runner-v1/fixture_child.py'\nplan={'schema':'engine07-operational-plan-v1','provider':'mistral','model':'fixture-only','token_budget':20,'artifacts':{p:hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in [sys.executable,fixture]},'jobs':[{'id':'pid1structural','arm':'helper','contract':'helper','argv':[sys.executable,fixture,'--mode','descendant-on-cancel','--contract','helper','--marker','{RUN_DIR}/marker','--provider','mistral','--model','fixture-only'],'budget':{'max_generations':1,'max_input_tokens_per_generation':4,'max_output_tokens_per_generation':6,'max_attempts_per_generation':1},'timeout_seconds':120,'cancel_grace_seconds':0.15}]}\nwith (out/'pid1-plan.json').open('x') as f:json.dump(plan,f);f.flush();os.fsync(f.fileno())\nos.execv(sys.executable,[sys.executable,'-B',runner,'--plan','/review/pid1-plan.json','--output','/review/pid1-run'])\n"
+            ],
+            "Image": "sha256:a71348d080761005e09b55c404489a9dfb1ca0c5d1f0e5ef5a4a9f446574eb82",
+            "Volumes": null,
+            "WorkingDir": "/repo",
+            "Entrypoint": null,
+            "Labels": {}
+        },
+        "NetworkSettings": {
+            "SandboxID": "",
+            "SandboxKey": "",
+            "Ports": {},
+            "Networks": {
+                "none": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "00a54ef372e0469207dcb47224b0813190a44d2f9c30d413380101bd2e43ffac",
+                    "EndpointID": "",
+                    "Gateway": "",
+                    "IPAddress": "",
+                    "MacAddress": "",
+                    "IPPrefixLen": 0,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:a71348d080761005e09b55c404489a9dfb1ca0c5d1f0e5ef5a4a9f446574eb82",
+            "size": 1314,
+            "annotations": {
+                "io.containerd.image.name": "docker.io/library/engine073-runtime:latest",
+                "org.opencontainers.image.ref.name": "latest"
+            },
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        }
+    }
+]

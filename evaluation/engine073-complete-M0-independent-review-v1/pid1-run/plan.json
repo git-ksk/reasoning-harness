@@ -1,0 +1,39 @@
+{
+  "artifacts": {
+    "/repo/evaluation/engine07-realworld-runner-v1/fixture_child.py": "b1a7359548f545bd49dc7275166024bf3bbf40e2d0c5e83c55f39fb9512a77a2",
+    "/usr/local/bin/python3": "73b68fc2dac176af16098180a2c98a03ee9f1f1b02db25d42d44d782e79e2330"
+  },
+  "jobs": [
+    {
+      "argv": [
+        "/usr/local/bin/python3",
+        "/repo/evaluation/engine07-realworld-runner-v1/fixture_child.py",
+        "--mode",
+        "descendant-on-cancel",
+        "--contract",
+        "helper",
+        "--marker",
+        "{RUN_DIR}/marker",
+        "--provider",
+        "mistral",
+        "--model",
+        "fixture-only"
+      ],
+      "arm": "helper",
+      "budget": {
+        "max_attempts_per_generation": 1,
+        "max_generations": 1,
+        "max_input_tokens_per_generation": 4,
+        "max_output_tokens_per_generation": 6
+      },
+      "cancel_grace_seconds": 0.15,
+      "contract": "helper",
+      "id": "pid1structural",
+      "timeout_seconds": 120
+    }
+  ],
+  "model": "fixture-only",
+  "provider": "mistral",
+  "schema": "engine07-operational-plan-v1",
+  "token_budget": 20
+}

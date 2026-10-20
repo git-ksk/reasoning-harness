@@ -1,0 +1,47 @@
+{
+  "reviewer": {
+    "role": "agent",
+    "id": "/root/engine07_realworld_independent"
+  },
+  "completed_utc": "2026-10-19T12:33:19.598574+00:00",
+  "capture_manifest_sha256": "8a0f9fbfcf86a9cc04e41fcd1a6f143dab0e814daffc6292b63fec34274b8f70",
+  "M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+  "classification_counts": {
+    "empty_observation_no_semantic_credit": 188,
+    "complete_helper_semantic_review": 2,
+    "binding_unresolved_review_incomplete": 2
+  },
+  "helper_decision": {
+    "rows": [
+      "a9ffc5027416d4be928ad4ea",
+      "d037ebfbb717fd7d51b7b449"
+    ],
+    "full_source_review": "The entire curl retry-all-errors1763-byte source was reread, not only the excerpts. Exact full text SHAa98f6093 and normalized quote/version/URL/locator were verified.",
+    "factual_occurrences_per_display": 3,
+    "semantic_identity": "Frontmatter error-retry phrase and definition first sentence repeat the same bounded behavior proposition; companion-option sentence is separate. Occurrences remain distinct.",
+    "group_delivery": "g1 credited by the first bounded common-rule occurrence read with the parallel definition; other occurrences add no group credit. Accurate source content does not override conflict terminal eligibility.",
+    "citation_edges_per_display": 3,
+    "citation_objects_per_display": 2,
+    "all_edges_supported_and_literals_exact": true,
+    "terminal": "conflict retained; no compatible/qualified or acceptance promotion.",
+    "hard_violations_observed": [],
+    "not_claimed": "No current transfer, universal HTTP-status error, independent publisher corroboration, command execution, or general source truth."
+  },
+  "partial_normal_decision": {
+    "rows": [
+      "d4b14886573fef181275db75",
+      "d4faa722c01125af0da0f744"
+    ],
+    "review_complete": false,
+    "reason": "Strict capture binding failed; no acquired/admitted routes in packet. A plausible factual key/value has unresolved binding, not presumed unsupported or grounded.",
+    "claims_not_credited": true,
+    "expected_first_score_behavior": "semantic_review_incomplete annotation failure; overall result remains unavailable/NO_GO."
+  },
+  "empty_rows": "188 absence annotations only, operation untouched; vacuous facet/disclosure booleans confer no operational/semantic credit.",
+  "context_reuse": "All12 frozen full documents were fully read at authorship; their28 M1 file hashes were rechecked. Only the completed helper page required new factual adjudication and was reread in full.",
+  "blindness": "Opaque packet IDs were used for annotation. Prior operational role exposed provider/arm association of the completed rows and one raw partial payload was read, so this is not fully blinded or human adjudication.",
+  "models_Engine_actual_aggregate_scorer_Oracle_calls": 0,
+  "metric_values_computed": false,
+  "gold_or_input_or_raw_or_frozen_code_changed": false,
+  "annotation_revision_on_scoring_feedback": false
+}

@@ -1,0 +1,6 @@
+
+thread 'main' panicked at /private/tmp/engine073-active-source-host-development-v1/host.rs:25:5:
+assertion `left == right` failed: quote differs from retained full source
+  left: Some("The Buffer class is a subclass of JavaScript's <Uint8Array> class")
+ right: Some("The Buffer class is a subclass of JavaScript's <Uint8Array> class CHANGED")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

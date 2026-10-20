@@ -1,0 +1,75 @@
+{
+  "identity": "engine073-realworld-v2-terminal-chain-independent-review-v1",
+  "reviewer": "/root/engine07_realworld_independent",
+  "reviewed_utc": "2026-10-19T23:29:13.994715+00:00",
+  "result": "CHANGES_REQUIRED_BEFORE_M0",
+  "method": "Static read-only reasoning; no runtime reproducer or test invocation. Findings are statically reachable paths, not claimed dynamically reproduced results.",
+  "reviewed_terminal_chain_sha256": "6fe38e93346e07de4e8930d1d11f24f4780d24d0849ef9a38e9ca42ddad72a40",
+  "positive_findings": [
+    "Actual renderer_candidate→answer_safety stages are accepted by the intended new chain grammar rather than exact event count.",
+    "Duplicate/reordered finalization stages, unknown stage, max2 round bounds, completed marker and model response-before-final checks are present.",
+    "capture.bind_normal separately compares the final stage result with payload finalization and retains model-journal/source/admission binding; those outer checks were considered."
+  ],
+  "remaining_concerns": [
+    {
+      "id": "TC1",
+      "priority": "M0_BLOCKER",
+      "problem": "Safety record omission or nested target/round/phase substitution is accepted by terminal_chain.",
+      "evidence": "safety is allowed empty without checking baseline status/profile/grounded targets; existing safety records only require top-level round==n. Actual CLI852 apply_natural_answer_safety returns zero observations only for baseline profile, noneligible baseline status, or no unique grounded targets. Otherwise it emits one observation per target.",
+      "fix": "Bind pinned profile plus pre-safety status and latest rendered grounded target set. Validate complete safety schema, phase, outer/nested render round and exact unique target coverage. A check(trace,require) interface needs those trusted expectations supplied or verified by capture; do not assume zero records means a legal no-target path.",
+      "minimum_controls": [
+        "actual one-target success",
+        "one-target safety event removed",
+        "nested target/round/phase replaced",
+        "genuine zero-target/noneligible/baseline case"
+      ]
+    },
+    {
+      "id": "TC2",
+      "priority": "M0_BLOCKER",
+      "problem": "Allowed stage names do not prove legal state transitions.",
+      "evidence": "A second round is accepted after grounded_answer without retry-resolution evidence. Optional canonical/recovery stages need only a label-matching renderer event; malformed/unmatched additional renders are not all consumed.",
+      "fix": "Require round2 transition from prior answer_safety requires_verification plus correctly bound retry grounding that actually changes the artifact. Bind each optional render/stage pair and the host-declared canonical preconditions; reject unconsumed final_render records and wrong phase/round schema. Renderer downgrade/reject stages need their own declared conditions, not a generic len>=1 relaxation.",
+      "minimum_controls": [
+        "legal optional recovery",
+        "illegal recovery from already grounded state where host would not call that recovery",
+        "legal round2 after changed retry artifact",
+        "fabricated round2 after grounded answer",
+        "wrong/missing render payload or orphan extra render"
+      ]
+    },
+    {
+      "id": "TC3",
+      "priority": "VALID_WITHHOLD_FALSE_INCOMPLETE",
+      "problem": "Requiring finalization event to be literally the last trace event rejects a legal no-progress retry path.",
+      "evidence": "CLI852 main records finalization_retry_resolution grounding before checking final_artifact==before and breaking. That completed trace ends in unchanged grounding, not answer_safety finalization.",
+      "fix": "Allow only this narrowly typed unchanged-artifact suffix (and bind payload final outcome), or explicitly include it as a declared supported completed path before M0. Continue rejecting model/renderer/admission or changed-artifact suffixes that would change the selected answer without a new terminal.",
+      "minimum_controls": [
+        "unchanged finalization-retry grounding accepted",
+        "changed/misbound grounding after finalization rejected",
+        "arbitrary event/model response after final commit rejected"
+      ]
+    }
+  ],
+  "not_a_finding": "Request/response phase/provider binding is handled by the outer trace_audit path; no additional standalone duplicate requirement is being treated as a new blocker.",
+  "test_coverage_limit": "Current7 terminal tests cover the simple engineering fixture only; no canonical recovery, legitimate2round/no-progress, conditional safety-observation coverage or nested-safety substitution control was present in the snapshot. Test source read only; no test run was performed.",
+  "previous_host_confirmation_reference": {
+    "path": "/private/tmp/engine073-realworld-v2-trace-design-independent-review-v1/artifact-manifest.json",
+    "sha256": "8f23b0f5654117c9b1313081ba863aa411c7a772b21bcd7dc87a9506b465058d"
+  },
+  "raw_input_hashes": {
+    "/private/tmp/engine073-realworld-v1a-google-39250362193/results/lane/rw-01-baseline/trace.json": "342917ac30cb8860a72e703804498c85cb30b2d3534b66f440e8abb5c165a57e",
+    "/private/tmp/engine073-realworld-v1a-google-39250362193/results/lane/rw-01-candidate/trace.json": "9d314db3dfbef2d8ca7aa7f91f0f3cb546b284915245b2c2e50e6899633b7cc3"
+  },
+  "CLI_host_source": {
+    "commit": "8525330ea3cadb897c50d6688228c4895558d3dc",
+    "path": "crates/reasoning-harness-cli/src/main.rs",
+    "sha256": "f98029e0c360dbf8400bec715e4d7a40dbe0abace536060f770946c777f6c1a4"
+  },
+  "scope_limits": [
+    "No Engine relevance implementation or old corpus/test bodies inspected. Read new evaluator transport tests and CLI public state machine only.",
+    "No new accuracy cases, labels, inputs, metrics or tests authored/executed. counterexample-plan contains structural mutations only.",
+    "No original v1/M0/M1/raw/gold/annotation/score changed; no model/provider/Engine/scorer call.",
+    "This is not implementation acceptance or complete M0."
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "identity": "engine073-launch-independent-v9",
+  "saved_utc": "2026-10-15T22:48:47.995017+00:00",
+  "candidate_source_sha": "92293072c686dc4000855816322ed58b3df905c8",
+  "manifest_sha256": "e352f2d93572919befc27a82c5fb1a3ec75b13ed3895e652dd4e32a55d654fec",
+  "pre_invocation_guard_matches_manifest": true,
+  "frozen_files_unchanged": true,
+  "v1_v8_evaluation_files_unchanged": true,
+  "old_external_anchor_sha256": "2187a8668e249c74389db2c1481d875014e70ddb9d9f1e229299b6a5da13b4ea",
+  "anchored_previous_files": 168,
+  "static_stage": {
+    "outcome": "PASS",
+    "Engine_invocations": 0,
+    "semantic_observations": 0
+  },
+  "first_semantic_summary": {
+    "identity": "engine073-launch-independent-v9",
+    "candidate_source_sha": "92293072c686dc4000855816322ed58b3df905c8",
+    "manifest_sha256": "e352f2d93572919befc27a82c5fb1a3ec75b13ed3895e652dd4e32a55d654fec",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 39,
+    "failed": 21,
+    "incomplete": 0,
+    "positive_passed": 14,
+    "negative_passed": 25,
+    "negative_v17_requested_relation_violations": 5,
+    "negative_v30_relevant_violations": 5,
+    "positive_v17_withheld": 15,
+    "positive_v30_withheld": 16,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "49eaa4b0f328800b76155b3ef2e320682afcb79d9a48fdc6002fa7fda219a003",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "b8ff3a9463e293bec3172202e83e05728dfea7ab912b7735a6c27d127e4bbdae"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "first_failed_ids": [
+    "li9-001",
+    "li9-004",
+    "li9-005",
+    "li9-007",
+    "li9-009",
+    "li9-013",
+    "li9-021",
+    "li9-023",
+    "li9-025",
+    "li9-033",
+    "li9-043",
+    "li9-045",
+    "li9-047",
+    "li9-048",
+    "li9-049",
+    "li9-051",
+    "li9-054",
+    "li9-056",
+    "li9-057",
+    "li9-058",
+    "li9-059"
+  ],
+  "negative_safety_violation_ids": [
+    "li9-004",
+    "li9-048",
+    "li9-054",
+    "li9-056",
+    "li9-058"
+  ],
+  "positive_failed_ids": [
+    "li9-001",
+    "li9-005",
+    "li9-007",
+    "li9-009",
+    "li9-013",
+    "li9-021",
+    "li9-023",
+    "li9-025",
+    "li9-033",
+    "li9-043",
+    "li9-045",
+    "li9-047",
+    "li9-049",
+    "li9-051",
+    "li9-057",
+    "li9-059"
+  ],
+  "original_probe_invocations": 1,
+  "original_scorer_applications": 1,
+  "post_observation_scope_or_label_changes": 0,
+  "post_observation_input_or_first_record_edits": 0,
+  "retries": 0,
+  "rescoring": 0,
+  "external_provider_API_calls": 0,
+  "verified_original_first_hashes": {
+    "manifest.json": "e352f2d93572919befc27a82c5fb1a3ec75b13ed3895e652dd4e32a55d654fec",
+    "first.stdout.jsonl": "49eaa4b0f328800b76155b3ef2e320682afcb79d9a48fdc6002fa7fda219a003",
+    "first.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first-results.json": "a050a7cab92417dfbaf40c51b2da5224af815e810283da0ee427de0e152ca9d1",
+    "first-summary.json": "51121dc65d03eaae74cfdef69c5011f377dc02515e15d393696b1d223a44aba1",
+    "first-invocation.json": "b8ff3a9463e293bec3172202e83e05728dfea7ab912b7735a6c27d127e4bbdae",
+    "first-invocation.started.json": "747215a21f691217cb3f41576986cbc6d0444d5864d472ee11b4f5d72e17f5e4"
+  },
+  "checked_artifacts_still_match": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "644627ea637cac355d20b6ecd62131ecfad690e653ffcacdd7f72c1f9fce69c8",
+      "bytes": 610652
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-876be67fd4b1ef90.rlib",
+      "sha256": "eb1a1317fd693e7b65fb3502f190e69defe3500294637f9886b088dbbe17b83d",
+      "bytes": 73137760
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-fdb0c033eb5b5773.rlib",
+      "sha256": "6790acd878f7472babebca4ae5c0e9e4dcaab113f41c3a212935db0380a2bd68",
+      "bytes": 3436712
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v9-probe/probe",
+      "sha256": "2cb4cd72eef3851f8a497ac43ce944efca338fef7ed35b93e70ca7456c514fa0",
+      "bytes": 3021352
+    }
+  },
+  "files": {
+    "README.md": "7014cc76f1eb0319c4ca2889fd7533bda146705e1c9872244c955d741c91eb74",
+    "author_cases.py": "229fc742e8b681cdb0054a5701b5b02f22b8bce83ef36869f7c3962f37b93365",
+    "cases.json": "ec4e3cb2063eb79ed026bebae12334cd28ea6c4c5317119d5d773c4dc3101264",
+    "first-invocation.json": "b8ff3a9463e293bec3172202e83e05728dfea7ab912b7735a6c27d127e4bbdae",
+    "first-invocation.started.json": "747215a21f691217cb3f41576986cbc6d0444d5864d472ee11b4f5d72e17f5e4",
+    "first-results.json": "a050a7cab92417dfbaf40c51b2da5224af815e810283da0ee427de0e152ca9d1",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "first-summary.json": "51121dc65d03eaae74cfdef69c5011f377dc02515e15d393696b1d223a44aba1",
+    "first.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first.stdout.jsonl": "49eaa4b0f328800b76155b3ef2e320682afcb79d9a48fdc6002fa7fda219a003",
+    "immutable-predecessor-check.json": "fa7080394987b1f64758109418121d30c060ab2b501b78c076c09f34620d4afd",
+    "inputs.json": "b5851c915ee65eda6f768fdf3c1cd52d6387d6c21e321ca68da424962532650d",
+    "manifest.json": "e352f2d93572919befc27a82c5fb1a3ec75b13ed3895e652dd4e32a55d654fec",
+    "pre-freeze-scope-review.json": "7c2d4dfed48654b853e10b1ccdf68f3af2bb6c22e3d5ceddb1e320ef34402ee2",
+    "predecessor-artifact-hashes.json": "1470d9a96319976aaf10ab8f50a5102bbe71de8e8495e317516f39f5d83d8b5d",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "protocol.json": "a0d66873ad74675dd46820b88c59bb4d9b40a828f96ded066595f06bfc3e75be",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "static-preflight.json": "a0482480f9458103f561eb0b47f2f90fca4e79bc0c297f57d21b2a18405cca29",
+    "static_preflight.py": "ba6682ae65c7a7bb3bd5791e5ce346a96580159c13458ba30b1edac598d728c0"
+  }
+}

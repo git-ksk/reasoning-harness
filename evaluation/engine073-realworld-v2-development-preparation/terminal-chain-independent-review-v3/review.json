@@ -1,0 +1,53 @@
+{
+  "identity": "engine073-realworld-v2-terminal-chain-independent-review-v3",
+  "result": "PASS_TARGETED_TWO_REPAIRS_ONLY",
+  "scope": [
+    "Live capture requires all pinned safety-runtime identity fields and normal invocation explicitly requests current profile.",
+    "Second rendering round consumes exactly one changed retry grounding; an extra replacing grounding is rejected."
+  ],
+  "findings": [
+    {
+      "id": "R1-fixed-runtime",
+      "result": "FIX_CONFIRMED",
+      "evidence": {
+        "case": "Pinned live verified profile replaced by self-declared baseline, all safety removed",
+        "expected_live_profile": "verified_target_v1",
+        "mutated_profile": "baseline",
+        "accepted": false,
+        "error": "ValueError:unfrozen_safety_runtime"
+      },
+      "positive_control": "Exact pinned runtime matches the preserved actual CLI identity. Existing actual-path fixture passes. Generic baseline remains legal only at lower-level checker."
+    },
+    {
+      "id": "R2-single-grounding",
+      "result": "FIX_CONFIRMED",
+      "negative_control": {
+        "case": "Two rounds with an unconsumed grounding that replaces the verified retry artifact",
+        "accepted": false,
+        "error": "ValueError:retry_without_changed_grounding"
+      },
+      "positive_control": {
+        "case": "Two rounds with only the authoritative changed retry grounding",
+        "accepted": true,
+        "terminal_status": "grounded_answer"
+      }
+    }
+  ],
+  "verification": {
+    "unittest": "17 terminal-chain tests PASS",
+    "independent_controls": "3 pure binder calls: reject/accept/reject",
+    "metrics_or_runtime_execution": "No Engine, model, provider, network, aggregate scorer, quality helper or F1 execution."
+  },
+  "excluded_changes": [
+    "preflight_cli.py",
+    "resolver.py",
+    "run_lane.py"
+  ],
+  "remaining_gates": [
+    "New Linux runtime/build and actual CLI loopback evidence are parent work, not verified by these pure controls.",
+    "Consumed-data calibration, planned-job completion, operational budgets and M0/M1 freeze remain separate.",
+    "No new actual-answer F1, provider readiness, real-world quality, release or CLI adoption acceptance is established."
+  ],
+  "no_complete_M0_declaration": true,
+  "prior_findings_and_artifacts_unchanged": true
+}

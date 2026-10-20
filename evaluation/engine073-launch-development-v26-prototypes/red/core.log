@@ -1,0 +1,422 @@
+   Compiling reasoning-harness-core v0.7.2 (/private/tmp/engine073-source28-prototype/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 11.83s
+     Running unittests src/lib.rs (/private/tmp/engine073-source28-prototype-target/debug/deps/reasoning_harness_core-dcd4f612c7771d71)
+
+running 367 tests
+test answer_safety::tests::v2_identity_rolls_back_to_v1_and_uses_claim_local_policy ... ok
+test answer_safety::tests::successor_identity_has_explicit_baseline_rollback ... ok
+test answer_safety::tests::verified_target_identity_rolls_back_to_v2 ... ok
+test adversarial::tests::soft_finding_never_changes_claim_state ... ok
+test answer_safety::tests::request_builder_uses_only_existing_evidence_ids ... ok
+test answer_safety::tests::baseline_profile_never_calls_model ... ok
+test adversarial::tests::single_opposing_value_is_counterexample ... ok
+test adversarial::tests::conflicting_observed_values_are_contradiction ... ok
+test answer_safety::tests::v2_request_builder_is_claim_local_and_scopes_evidence ... ok
+test answer_safety::tests::verified_target_profile_does_not_short_circuit_mixed_exact_target_state ... ok
+test answer_safety::tests::sufficient_can_only_preserve_baseline ... ok
+test answer_safety::tests::verified_target_profile_falls_back_to_model_when_hard_receipt_is_missing ... ok
+test answer_safety::tests::verified_target_profile_does_not_short_circuit_target_qualification_finding ... ok
+test answer_safety::tests::v2_rollback_still_honors_model_sufficiency_for_same_verified_target ... ok
+test answer_safety::tests::verified_target_profile_preserves_exact_trusted_support_without_model_sufficiency ... ok
+test assumption::tests::repeated_semantic_premise_is_reported_once_with_all_edges ... ok
+test assumption::tests::inferred_premise_with_supported_derivation_is_accepted_as_derived_support ... ok
+test answer_safety::tests::non_sufficient_can_only_force_verification ... ok
+test assumption::tests::inferred_label_without_supported_derivation_is_not_trusted ... ok
+test assumption::tests::supported_premise_is_not_an_assumption_finding ... ok
+test assumption::tests::explicit_input_assumption_is_distinguished_without_a_finding ... ok
+test assumption::tests::typed_untrusted_premise_is_hard_unsupported_process_finding ... ok
+test assumption::tests::unbound_premise_remains_soft ... ok
+test candidate::tests::drops_duplicate_candidate_claim_id_but_preserves_first_claim ... ok
+test candidate::tests::drops_invalid_inference_but_preserves_claim_and_diagnostic ... ok
+test candidate::tests::drops_missing_candidate_evidence_reference_but_keeps_valid_reference ... ok
+test causal::tests::association_only_is_soft_and_unknown ... ok
+test causal::tests::conflicting_records_remain_unknown ... ok
+test causal::tests::endpoint_truth_without_relation_evidence_remains_unknown ... ok
+test causal::tests::exact_harness_owned_support_marks_edge_supported ... ok
+test causal::tests::exact_refutation_is_hard ... ok
+test causal::tests::exact_relation_support_ignores_cause_order ... ok
+test causal::tests::malformed_harness_owned_causal_evidence_is_rejected ... ok
+test causal::tests::missing_binding_is_explicit_and_soft ... ok
+test causal::tests::reverse_support_does_not_refute_forward_relation ... ok
+test corpus::tests::score_compatibility_is_explicit ... ok
+test corpus::tests::superseded_case_requires_an_existing_distinct_target ... ok
+test diagnostic_stability::tests::excludes_incomplete_trials_from_frequency_denominator ... ok
+test diagnostic_stability::tests::per_fixture_count_distribution_includes_zero_finding_trials ... ok
+test corpus::tests::claim_aggregation_groups_category_and_difficulty_without_changing_case_identity ... ok
+test diagnostic_stability::tests::wilson_interval_is_regression_stable ... ok
+test diagnostic_stability::tests::observation_includes_adversarial_candidate_and_causal_reasons ... ok
+test evidence_need::tests::proposal_schema_binds_exact_target_and_disallows_extra_fields ... ok
+test evidence_need::tests::proposal_parser_rejects_unknown_fields ... ok
+test diagnostic_stability::tests::repeated_diagnostic_report_serializes_without_provider_identity ... ok
+test evidence_need::tests::proposal_request_is_target_local_and_hides_internal_materialization_controls ... ok
+test evidence_need::tests::trusted_mode_is_available_when_harness_requires_trusted_verification ... ok
+test evidence_need::tests::trusted_mode_is_hidden_without_harness_owned_trusted_requirement ... ok
+test evidence_qualification::tests::exact_metadata_match_is_qualified ... ok
+test evidence_qualification::tests::missing_required_metadata_remains_unknown_and_soft ... ok
+test evidence_qualification::tests::narrower_evidence_cannot_support_any_scope_requirement ... ok
+test evidence_qualification::tests::overlapping_scope_subset_is_supported ... ok
+test evidence_qualification::tests::qualification_pass_is_observational_even_for_hard_mismatch ... ok
+test evidence_relevance::tests::ascii_short_alias_matching_is_token_boundary_aware ... ok
+test evidence_relevance::tests::binding_schema_has_no_final_disposition_or_authority_fields ... ok
+test evidence_relevance::tests::binding_parser_rejects_model_owned_final_disposition ... ok
+test evidence_relevance::tests::binding_affirmative_difference_materializes_irrelevant ... ok
+test evidence_relevance::tests::binding_materializer_keeps_final_disposition_harness_owned ... ok
+test evidence_relevance::tests::binding_unresolved_materializes_ambiguous ... ok
+test evidence_relevance::tests::harness_alias_anchor_and_model_relevance_can_remain_eligible ... ok
+test evidence_relevance::tests::model_irrelevant_is_typed_without_creating_admission_authority ... ok
+test evidence_relevance::tests::harness_owned_cross_lingual_alias_can_anchor_identity ... ok
+test evidence_relevance::tests::model_request_marks_candidate_text_as_untrusted_data ... ok
+test evidence_relevance::tests::navigation_or_footer_identity_signal_does_not_anchor_target ... ok
+test evidence_relevance::tests::negative_target_confirmation_parser_rejects_extra_authority ... ok
+test evidence_relevance::tests::negative_target_confirmation_schema_has_no_final_relevance_fields ... ok
+test evidence_relevance::tests::non_ascii_identity_matching_preserves_localized_substring_behavior ... ok
+test evidence_relevance::tests::no_model_proposal_is_typed_ambiguous_not_implicit_relevant ... ok
+test evidence_relevance::tests::parser_rejects_authority_laundering_fields ... ok
+test evidence_relevance::tests::proposal_schema_excludes_authority_and_target_fields ... ok
+test evidence_relevance::tests::semantic_equivalent_policy_allows_non_lexical_model_relevance ... ok
+test evidence_relevance::tests::strict_identity_allows_safe_model_rejection_without_anchor ... ok
+test evidence_relevance::tests::strict_identity_blocks_model_relevant_without_harness_anchor ... ok
+test evidence_relevance::tests::strict_identity_requires_harness_owned_entity ... ok
+test evidence_relevance::tests::url_only_identity_signal_does_not_self_authorize_relevance ... ok
+test evidence_relevance::tests::v10_blocker_remains_fail_closed_even_with_positive_confirmation ... ok
+test evidence_relevance::tests::v10_exact_exact_conflicting_negative_confirmation_abstains ... ok
+test evidence_relevance::tests::v10_safety_decision_parsers_are_typed_and_reject_extra_fields ... ok
+test evidence_relevance::tests::v10_positive_confirmation_can_rescue_unresolved_primary_without_relaxing_identity_floor ... ok
+test evidence_relevance::tests::v10_primary_negative_requires_matching_one_sided_confirmation ... ok
+test evidence_relevance::tests::v11_unresolved_primary_positive_cannot_be_rescued ... ok
+test evidence_relevance::tests::v10_safety_decision_requests_use_small_structured_contracts ... ok
+test evidence_relevance::tests::v12_local_qualification_request_uses_concrete_local_risk_semantics ... ok
+test evidence_relevance::tests::v13_binding_request_separates_target_identity_from_relation_kind ... ok
+test evidence_relevance::tests::v13_local_qualification_uses_binary_observable_blocking_cues ... ok
+test evidence_relevance::tests::v14_binding_request_allows_semantic_equivalent_only_when_policy_allows_it ... ok
+test evidence_relevance::tests::v14_compact_guard_schema_has_only_blocker_and_explicit_absence ... ok
+test evidence_relevance::tests::v14_compact_guard_prompt_distinguishes_negative_evidence_from_blockers ... ok
+test evidence_relevance::tests::v16_local_scope_schema_is_orthogonal_and_closed ... ok
+test evidence_relevance::tests::v16_local_scope_prompt_has_no_final_disposition_authority ... ok
+test evidence_relevance::tests::v16_proposal_v5_prompt_preserves_identity_and_relation_boundaries ... ok
+test evidence_relevance::tests::v17_context_only_target_mention_blocks_two_exact_model_outputs ... ok
+test evidence_relevance::tests::v17_context_only_target_mention_with_raw_distinct_is_irrelevant ... ok
+test evidence_relevance::tests::v17_context_only_canonical_does_not_hide_later_substantive_alias_support ... ok
+test evidence_relevance::tests::v17_exact_proposal_raw_distinct_without_target_local_negative_abstains ... ok
+test evidence_relevance::tests::v17_target_owned_clause_before_comparison_remains_relevant ... ok
+test evidence_relevance::tests::v17_substantive_exact_target_positive_remains_relevant ... ok
+test evidence_relevance::tests::v18_generic_relation_phrase_is_not_a_sibling_subject ... ok
+test evidence_relevance::tests::v17_unrelated_comparison_marker_does_not_poison_owned_target_support ... ok
+test evidence_relevance::tests::v18_mapping_uncertainty_blocks_repeated_sibling_rejection ... ok
+test evidence_relevance::tests::v18_repeated_sibling_subject_rejects_unresolved_primary_overbinding ... ok
+test evidence_relevance::tests::v18_single_signal_near_sibling_stays_ambiguous ... ok
+test evidence_relevance::tests::v18_partial_identity_split_across_signals_stays_ambiguous ... ok
+test evidence_relevance::tests::v18_semantic_equivalent_policy_does_not_use_sibling_rejection ... ok
+test evidence_relevance::tests::v18_repeated_sibling_subject_rejects_two_exact_model_outputs ... ok
+test evidence_relevance::tests::v19_comparison_sibling_same_relation_keeps_requested_relation ... ok
+test evidence_relevance::tests::v18_url_only_identity_stays_ambiguous ... ok
+test evidence_relevance::tests::v19_context_only_alias_never_creates_positive_relevance ... ok
+test evidence_relevance::tests::v19_url_only_unnamed_owner_is_context_gap ... ok
+test evidence_relevance::tests::v25_negative_relation_confirmation_request_is_one_sided_text ... ok
+test evidence_relevance::tests::v19_single_signal_near_sibling_abstains_even_when_models_vote_distinct ... ok
+test evidence_relevance::tests::v19_repeated_authorized_alias_recovers_positive_identity_disagreement ... ok
+test evidence_relevance::tests::v19_context_only_repeated_sibling_with_explicit_relation_exclusion_rejects ... ok
+test evidence_relevance::tests::v17_context_only_frames_never_create_positive_identity_authority ... ok
+test evidence_relevance::tests::v25_negative_relation_confirmation_parser_is_enum_only ... ok
+test evidence_relevance::tests::v25_confirmation_cannot_reject_through_context_gap ... ok
+test evidence_relevance::tests::v26_availability_support_with_geography_remains_requested ... ok
+test evidence_relevance::tests::v26_distinct_target_cannot_use_exact_target_negative_relation_path ... ok
+test evidence_relevance::tests::v26_context_gap_remains_ambiguous ... ok
+test evidence_relevance::tests::v25_confirmation_cannot_override_requested_relation_authority ... ok
+test evidence_relevance::tests::v26_target_title_plus_other_entity_body_cannot_supply_negative_relation_authority ... ok
+test evidence_relevance::tests::v26_comparison_only_target_mention_cannot_supply_negative_relation_authority ... ok
+test evidence_relevance::tests::v25_confirmation_cannot_turn_generic_absence_into_different_relation ... ok
+test evidence_relevance::tests::v25_not_confirmed_preserves_baseline_ambiguity ... ok
+test evidence_relevance::tests::v26_availability_feature_support_recovers_irrelevant ... ok
+test evidence_relevance::tests::v28_comparison_only_definition_does_not_create_relation_authority ... ok
+test evidence_relevance::tests::v26_instruction_like_numeric_payload_is_not_relation_authority ... ok
+test evidence_relevance::tests::v26_requested_limit_frame_remains_requested_relation ... ok
+test evidence_relevance::tests::v25_two_key_exact_target_limit_observation_recovers_irrelevant ... ok
+test evidence_relevance::tests::v26_exact_target_limit_observation_recovers_irrelevant_without_model_vote ... ok
+test evidence_relevance::tests::v28_distinct_target_definition_cannot_use_exact_target_negative_relation_path ... ok
+test evidence_relevance::tests::v28_strict_requested_relation_absence_blocks_definition_recovery ... ok
+test evidence_relevance::tests::v28_clean_other_relation_segment_survives_separate_instruction_segment ... ok
+test evidence_relevance::tests::v28_control_schema_instruction_only_model_negative_is_downgraded_to_ambiguous ... ok
+test evidence_relevance::tests::v28_defined_as_is_bounded_other_relation_evidence_for_launch_query ... ok
+test evidence_relevance::tests::v28_instruction_only_model_negative_is_downgraded_to_ambiguous ... ok
+test evidence_relevance::tests::v28_instruction_marker_does_not_erase_harness_requested_relation_authority ... ok
+test evidence_relevance::tests::v28_control_schema_marker_does_not_erase_harness_requested_relation_authority ... ok
+test evidence_relevance::tests::v28_clean_other_relation_segment_survives_separate_control_schema_instruction ... ok
+test evidence_relevance::tests::v30_adjacent_foreign_product_and_claim_references_stay_scoped ... FAILED
+test evidence_relevance::tests::v30_accepts_target_owned_has_made_generally_available_launch_frame ... ok
+test evidence_relevance::tests::issue512_bilingual_lambda_preparation_requires_local_affirmative_source_frame ... ok
+test evidence_relevance::tests::v30_complete_opaque_name_keeps_real_clipping_and_raw_risk_authoritative ... ok
+test evidence_relevance::tests::v30_complete_printed_apposition_retains_event_and_global_denials ... ok
+test evidence_relevance::tests::v30_finite_foreign_claim_and_complete_owner_explanation_agree ... FAILED
+test evidence_relevance::tests::v30_foreign_name_confirmation_requires_adjacent_same_owned_denial ... ok
+test evidence_relevance::tests::v30_does_not_promote_negated_has_not_made_generally_available ... ok
+test evidence_relevance::tests::v30_does_not_accept_question_fiction_or_unverified_rumor_as_launch_fact ... ok
+test evidence_relevance::tests::v30_foreign_role_owner_complements_require_matching_declarations ... FAILED
+test evidence_relevance::tests::v30_complete_clip_name_note_cannot_erase_actual_context_gap ... ok
+test evidence_relevance::tests::v30_complete_foreign_event_quote_does_not_borrow_document_owner ... ok
+test evidence_relevance::tests::v30_launch_authority_never_borrows_sibling_predicate ... ok
+test evidence_relevance::tests::v30_complete_foreign_quoted_event_and_reply_owner_remain_role_scoped ... ok
+test evidence_relevance::tests::v30_has_made_launch_frame_does_not_promote_other_negations_or_unrelated_clauses ... ok
+test evidence_relevance::tests::v30_foreign_role_and_reported_non_event_are_distinct_clauses ... ok
+test evidence_relevance::tests::v30_launch_frames_require_target_and_established_fact ... ok
+test evidence_relevance::tests::v30_copular_role_owners_cannot_be_borrowed_or_conflicted ... ok
+test evidence_relevance::tests::v30_immediate_and_competing_role_replies_keep_same_owner_checks ... ok
+test evidence_relevance::tests::v30_made_available_requires_target_owned_affirmative_predicate ... ok
+test evidence_relevance::tests::v30_gerund_target_denials_cannot_inherit_copular_property_scope ... ok
+test evidence_relevance::tests::v30_prefixed_physical_role_and_material_attributes_bind_locally ... FAILED
+test evidence_relevance::tests::v30_copular_roles_preserve_property_and_target_denial_boundaries ... ok
+test evidence_relevance::tests::v30_complete_claim_wrapper_preserves_only_proven_property_scope ... ok
+test evidence_relevance::tests::v30_copular_passives_and_restatements_keep_existing_role_values ... ok
+test evidence_relevance::tests::v30_printed_layout_attributes_keep_literal_event_words_inert ... FAILED
+test evidence_relevance::tests::v30_possessive_role_properties_require_the_same_proven_property ... ok
+test evidence_relevance::tests::v30_printed_illustration_is_a_property_only_with_its_named_carrier ... ok
+test evidence_relevance::tests::v30_printed_property_cannot_own_collective_event_withdrawal ... ok
+test evidence_relevance::tests::v30_prefixed_existence_denial_and_competing_reply_cannot_borrow_property_scope ... ok
+test evidence_relevance::tests::v30_local_role_appositions_and_denial_targets_need_complete_scope ... ok
+test evidence_relevance::tests::v30_quote_truth_status_is_not_a_printed_format_property ... ok
+test evidence_relevance::tests::v30_possessive_property_conjunction_requires_complete_same_component_scope ... ok
+test evidence_relevance::tests::v30_owned_appearance_predicates_require_component_and_non_event_value ... ok
+test evidence_relevance::tests::v30_property_explanation_and_quoted_owner_need_independent_matching_role ... ok
+test evidence_relevance::tests::v30_printed_attribute_requires_outside_type_owner_and_balanced_literal ... ok
+test evidence_relevance::tests::v3_exact_target_different_relation_is_irrelevant ... ok
+test evidence_relevance::tests::v3_unresolved_target_dominates_relation_different ... ok
+test evidence_relevance::tests::v4_confirmed_distinct_entity_materializes_irrelevant ... ok
+test evidence_relevance::tests::v4_confirmed_target_absent_materializes_irrelevant ... ok
+test evidence_relevance::tests::v4_exact_target_relation_difference_remains_irrelevant_without_confirmation ... ok
+test evidence_relevance::tests::v4_missing_negative_confirmation_fails_closed_to_ambiguous ... ok
+test evidence_relevance::tests::v4_unconfirmed_negative_target_abstains ... ok
+test evidence_relevance::tests::v5_exact_exact_requires_positive_target_local_confirmation ... ok
+test evidence_relevance::tests::v5_exact_target_relation_difference_remains_irrelevant_without_confirmation ... ok
+test evidence_relevance::tests::v5_unresolved_target_not_confirmed_abstains ... ok
+test evidence_relevance::tests::v5_unresolved_target_requires_negative_confirmation_and_can_confirm_local_absence ... ok
+test evidence_relevance::tests::v6_model_cannot_bypass_required_harness_identity_anchor ... ok
+test evidence_relevance::tests::v6_negative_safety_decision_rejects_or_abstains_without_identity_promotion ... ok
+test evidence_relevance::tests::v6_positive_safety_decision_accepts_clear_local_binding_and_abstains_on_uncertainty ... ok
+test evidence_relevance::tests::v7_any_qualification_risk_forces_ambiguous ... ok
+test evidence_relevance::tests::v7_clear_other_target_requires_two_key_negative_agreement ... ok
+test evidence_relevance::tests::v7_explicit_local_absence_can_reject_cautious_unresolved_primary ... ok
+test evidence_relevance::tests::v7_positive_requires_primary_guard_agreement_and_harness_anchor ... ok
+test evidence_relevance::tests::v7_relation_disagreement_cannot_hard_reject_positive_evidence ... ok
+test evidence_relevance::tests::v7_url_only_identity_is_a_harness_owned_hard_floor ... ok
+test evidence_relevance::tests::v8_any_observable_blocking_cue_forces_ambiguous ... ok
+test evidence_relevance::tests::v8_exact_target_other_relation_requires_two_key_relation_rejection ... ok
+test evidence_relevance::tests::v8_explicit_local_absence_is_negative_evidence_not_context_gap ... ok
+test evidence_relevance::tests::v8_missing_qualification_remains_ambiguous ... ok
+test evidence_relevance::tests::v8_sibling_same_relation_requires_two_key_negative_agreement ... ok
+test evidence_relevance::tests::v9_compact_guard_blocker_forces_ambiguous ... ok
+test evidence_relevance::tests::v9_confirmation_parsers_are_enum_only_without_semantic_repair ... ok
+test evidence_relevance::tests::v9_confirmation_requests_use_text_transport ... ok
+test evidence_relevance::tests::v9_different_target_is_irrelevant_without_redundant_support_vote ... ok
+test evidence_relevance::tests::v9_exact_exact_conflicting_with_explicit_absence_fails_closed ... ok
+test evidence_relevance::tests::v9_explicit_local_absence_rejects_unresolved_target_without_context_blocker ... ok
+test evidence_relevance::tests::v9_explicit_requested_relation_absence_can_reject_exact_target_unresolved_relation ... ok
+test evidence_relevance::tests::v9_semantic_equivalent_policy_is_not_blocked_by_incidental_url_only_anchor ... ok
+test evidence_relevance::tests::v9_strict_identity_still_blocks_unanchored_exact_exact ... ok
+test evidence_relevance::tests::zero_assessment_budget_is_rejected ... ok
+test finalization::tests::canonical_verified_target_recovery_deduplicates_exact_targets ... ok
+test finalization::tests::canonical_verified_target_recovery_rejects_key_drift_and_unknown_verdict ... ok
+test finalization::tests::canonical_verified_target_recovery_requires_every_requested_target ... ok
+test finalization::tests::canonical_verified_target_recovery_uses_exact_authorized_targets ... ok
+test finalization::tests::exposed_grounded_text_is_canonicalized_from_verified_claims ... ok
+test finalization::tests::exposed_qualified_text_preserves_uncertainty_mode ... ok
+test finalization::tests::grounded_claim_requires_supported_artifact_proposition ... ok
+test finalization::tests::reject_target_partial_exposes_directly_verified_target_when_blocker_is_structurally_unrelated ... ok
+test finalization::tests::reject_target_partial_fails_closed_on_causal_coupling ... ok
+test finalization::tests::reject_target_partial_fails_closed_on_same_key_blocker ... ok
+test finalization::tests::reject_target_partial_fails_closed_on_shared_dependency ... ok
+test finalization::tests::reject_target_partial_fails_closed_on_target_contradiction ... ok
+test finalization::tests::reject_target_partial_fails_closed_on_target_qualification_failure ... ok
+test finalization::tests::reject_target_partial_fails_closed_when_target_and_blocker_share_evidence ... ok
+test finalization::tests::reject_target_partial_requires_direct_supported_verification ... ok
+test finalization::tests::reject_target_partial_requires_evidence_bound_direct_verification ... ok
+test finalization::tests::reject_target_partial_requires_typed_non_target_blockers ... ok
+test finalization::tests::renderer_cannot_introduce_a_new_grounded_fact ... ok
+test finalization::tests::renderer_downgrade_recovery_grounds_exact_authorized_target_under_unknown ... ok
+test finalization::tests::renderer_downgrade_recovery_never_overrides_reject_or_target_qualification ... ok
+test finalization::tests::renderer_downgrade_recovery_promotes_accept_rendering_only_from_artifact_authority ... ok
+test finalization::tests::renderer_downgrade_recovery_rejects_fuzzy_or_unrequested_renderer_claims ... ok
+test finalization::tests::target_scoped_partial_fails_closed_on_target_qualification_finding ... ok
+test finalization::tests::target_scoped_partial_fails_closed_when_requested_target_itself_is_unresolved ... ok
+test finalization::tests::target_scoped_partial_never_overrides_reject ... ok
+test finalization::tests::target_scoped_partial_preserves_verified_target_without_changing_unknown_verdict ... ok
+test finalization::tests::target_scoped_partial_rejects_mixed_authority_for_the_same_exact_target ... ok
+test finalization::tests::target_scoped_partial_requires_an_actual_non_target_blocker ... ok
+test finalization::tests::unknown_can_render_only_as_qualified_uncertainty ... ok
+test frameworks::five_whys::tests::cleanup_does_not_downgrade_independently_supported_claim ... ok
+test frameworks::five_whys::tests::cleanup_is_local_to_the_offending_edge ... ok
+test frameworks::five_whys::tests::cleanup_preserves_inferred_claim_with_surviving_non_five_whys_edge ... ok
+test frameworks::five_whys::tests::detects_timeout_restatement ... ok
+test frameworks::five_whys::tests::does_not_conflate_distinct_cause ... ok
+test generation::tests::final_answer_request_is_schema_constrained_and_non_authoritative ... ok
+test generation::tests::final_answer_runtime_parser_remains_broad_when_factual_claims_are_omitted ... ok
+test generation::tests::json_fallback_embeds_schema_and_uses_json_object_mode ... ok
+test investigation::tests::action_request_exposes_typed_rejection_feedback_and_shape_rules ... ok
+test investigation::tests::action_request_schema_excludes_attempted_pair_but_keeps_untried_pair_and_stop ... ok
+test investigation::tests::action_request_schema_matches_current_runtime_pair_compatibility ... ok
+test investigation::tests::action_schema_structurally_discriminates_acquire_and_stop ... ok
+test investigation::tests::capability_selection_is_key_bounded ... ok
+test investigation::tests::duplicate_and_no_progress_actions_terminate_safely ... ok
+test investigation::tests::harness_does_not_auto_select_keyless_or_wildcard_pairs ... ok
+test investigation::tests::harness_does_not_override_ambiguous_action_selection ... ok
+test investigation::tests::harness_owned_selection_priority_is_model_invisible ... ok
+test investigation::tests::harness_selects_only_a_unique_compatible_untried_pair ... ok
+test investigation::tests::harness_unique_selection_requires_explicit_fact_key_binding ... ok
+test investigation::tests::invalid_shape_rejections_retain_exact_proposal_and_round ... ok
+test investigation::tests::no_result_can_reduce_selection_to_one_safe_follow_up ... ok
+test investigation::tests::no_result_continuation_reuses_trigger_round_without_new_planner_round ... ok
+test investigation::tests::no_result_followup_does_not_promote_keyless_or_wildcard_capabilities ... ok
+test investigation::tests::no_result_followup_does_not_trigger_for_other_typed_outcomes ... ok
+test investigation::tests::no_result_followup_executes_validated_action_without_extra_planner_call ... ok
+test investigation::tests::no_result_followup_is_available_at_round_boundary_before_new_round_terminalizes ... ok
+test investigation::tests::no_result_followup_requires_exactly_one_remaining_explicit_capability ... ok
+test investigation::tests::no_result_followup_respects_terminal_budgets ... ok
+test investigation::tests::no_result_followup_stays_on_exact_target_despite_same_key_sibling ... ok
+test investigation::tests::non_shared_fact_families_keep_optional_plan_schema ... ok
+test investigation::tests::plan_admission_keeps_canonical_missing_and_empty_expected_fact_keys_unchanged ... ok
+test investigation::tests::plan_admission_preserves_noncanonical_expected_fact_key_without_exact_selection ... ok
+test investigation::tests::plan_and_action_requests_keep_authority_outside_model_contract ... ok
+test investigation::tests::plan_schema_is_closed_and_targets_remain_untrusted ... ok
+test investigation::tests::planner_cannot_select_unknown_or_write_capability ... ok
+test investigation::tests::precedence_excludes_keyless_wildcard_non_read_only_and_attempted_pairs ... ok
+test investigation::tests::precedence_falls_back_on_tie_or_missing_priority ... ok
+test investigation::tests::precedence_never_merges_same_key_sibling_targets ... ok
+test investigation::tests::precedence_respects_terminal_and_action_budget_states ... ok
+test investigation::tests::precedence_selects_unique_highest_priority_for_one_exact_target ... ok
+test investigation::tests::precedence_skip_diagnostic_reports_same_key_sibling_without_changing_selection ... ok
+test investigation::tests::precedence_then_no_result_uses_existing_exact_target_followup ... ok
+test investigation::tests::runtime_plan_parser_still_accepts_missing_expected_fact_key ... ok
+test investigation::tests::selection_priority_does_not_change_strict_plan_contract_or_request ... ok
+test investigation::tests::shared_exact_read_only_family_uses_required_exact_key_schema ... ok
+test investigation::tests::strict_plan_request_requires_and_names_exact_shared_key ... ok
+test investigation::tests::strict_plan_schema_generation_does_not_change_action_schema ... ok
+test investigation::tests::unconstrained_missing_capability_output_is_retained_then_rejected_fail_closed ... ok
+test model::tests::json_object_fallback_is_only_available_for_json_schema_requests ... ok
+test model::tests::json_object_fallback_preserves_request_semantics_and_budgets ... ok
+test model::tests::strict_json_text_fallback_is_only_available_for_json_schema_requests ... ok
+test model::tests::strict_json_text_fallback_preserves_schema_semantics_without_provider_json_mode ... ok
+test reasoning_policy::tests::direct_policy_input_fails_closed_on_invalid_identity_authority_and_scope ... ok
+test reasoning_policy::tests::invalidation_propagates_through_inference_dependencies ... ok
+test reasoning_policy::tests::policy_composition_is_restrictive_for_authority_scope_capabilities_and_resolvers ... ok
+test reasoning_policy::tests::resolution_policy_is_only_tightened ... ok
+test reasoning_policy::tests::soft_finding_can_trigger_work_but_never_authority ... ok
+test reasoning_policy::tests::stricter_authority_invalidates_receipt_claim_and_grounded_finalization_without_mutating_old_snapshot ... ok
+test reasoning_policy::tests::supported_state_without_reconstructable_receipt_is_invalidated_on_policy_transition ... ok
+test reasoning_policy::tests::temporal_and_scope_policy_changes_requalify_existing_evidence ... ok
+test resolution::tests::acquired_evidence_is_untrusted_by_default ... ok
+test resolution::tests::admission_policy_may_add_metadata_but_cannot_rewrite_acquired_facts ... ok
+test resolution::tests::admitted_evidence_is_reverified_before_resolution_succeeds ... ok
+test resolution::tests::already_supported_harness_target_is_not_requested_again ... ok
+test resolution::tests::budget_exhaustion_is_not_evidence ... ok
+test resolution::tests::final_renderer_new_fact_is_routed_back_through_verification ... ok
+test resolution::tests::harness_owned_requirement_target_closes_even_when_candidate_omits_it ... ok
+test resolution::tests::harness_owned_target_precedes_unrelated_candidate_resolution ... ok
+test resolution::tests::human_review_is_an_explicit_terminal_state ... ok
+test resolution::tests::legacy_malformed_error_remains_exhaustible_for_frozen_resolution_fixtures ... ok
+test resolution::tests::missing_allowed_resolver_terminates_unavailable_without_fabricating_support ... ok
+test resolution::tests::per_request_attempt_budget_is_reported_separately ... ok
+test resolution::tests::revised_candidate_reenters_the_full_untrusted_pipeline ... ok
+test resolution::tests::trusted_verifier_uses_a_separate_authority_boundary ... ok
+test resolution::tests::typed_external_failures_are_operational_terminals_not_semantic_unknown_classes ... ok
+test semantic_judge::tests::abstention_is_preserved_and_positive_abstention_reduces_recall ... ok
+test semantic_judge::tests::agreement_excludes_abstentions_without_erasing_them ... ok
+test semantic_judge::tests::ambiguous_abstention_rate_is_absent_when_corpus_has_no_ambiguous_cases ... ok
+test semantic_judge::tests::ambiguous_labels_do_not_enter_precision_or_recall ... ok
+test semantic_judge::tests::finding_contract_has_no_hard_authority_field ... ok
+test semantic_judge::tests::finish_reason_diagnostic_uses_bounded_classes ... ok
+test semantic_judge::tests::nominal_alpha_is_one_for_perfect_agreement_across_both_categories ... ok
+test semantic_judge::tests::output_shape_diagnostic_is_content_free_and_distinguishes_common_wrappers ... ok
+test source_attribution::tests::assessment_parser_injects_exact_proposal_identity ... ok
+test source_attribution::tests::assessment_parser_rejects_binding_attribution_cardinality_mismatch ... ok
+test source_attribution::tests::attributed_materialization_never_mutates_external_world_claims ... ok
+test source_attribution::tests::attribution_cannot_repair_missing_hard_verification ... ok
+test source_attribution::tests::bound_span_is_metamorphically_invariant_to_unbound_surrounding_text ... ok
+test source_attribution::tests::compatible_sources_retain_all_citations_in_one_qualified_sentence ... ok
+test source_attribution::tests::conflicting_sources_are_not_collapsed_into_one_assertion ... ok
+test source_attribution::tests::current_causal_and_universal_scope_additions_are_blocked ... ok
+test source_attribution::tests::english_to_japanese_translation_modality_is_a_semantic_hard_gate ... ok
+test source_attribution::tests::english_to_japanese_translation_remains_source_local_and_uses_japanese_attribution ... ok
+test source_attribution::tests::every_cited_binding_requires_independent_attribution_and_replay_revalidates_it ... ok
+test source_attribution::tests::exact_quote_is_harness_constructed ... ok
+test source_attribution::tests::exact_quote_parser_discards_model_authored_text ... ok
+test source_attribution::tests::hard_target_stays_on_existing_verification_path ... ok
+test source_attribution::tests::invented_exact_quote_is_rejected ... ok
+test source_attribution::tests::missing_or_tampered_binding_fails_closed_before_exposure ... ok
+test source_attribution::tests::no_attributed_state_means_no_attributed_exposure ... ok
+test source_attribution::tests::only_mechanically_provable_strengthening_is_blocked_deterministically ... ok
+test source_attribution::tests::paraphrase_requires_exact_preserved_assessment ... ok
+test source_attribution::tests::parser_injects_harness_owned_target_bindings_and_translation_output_language ... ok
+test source_attribution::tests::parser_rejects_authority_injection ... ok
+test source_attribution::tests::sibling_target_binding_is_rejected ... ok
+test source_attribution::tests::source_id_and_span_tampering_fail_artifact_validation ... ok
+test source_attribution::tests::source_prompt_injection_is_inert_data_and_cannot_change_owned_schema ... ok
+test source_attribution::tests::transform_assessment_must_match_exact_target_bindings_and_statement ... ok
+test source_attribution::tests::transformed_claim_requires_full_atomic_source_support ... ok
+test source_attribution::tests::transformed_claim_requires_source_assertion_not_mention_or_instruction ... ok
+test source_attribution::tests::translated_availability_is_not_itself_a_current_state_marker ... ok
+test verification::tests::qualified_verifier_supports_only_qualified_evidence ... ok
+test verification::tests::qualified_verifier_withholds_conflicting_qualified_evidence ... ok
+test verification::tests::qualified_verifier_withholds_insufficient_authority ... ok
+test verification::tests::qualified_verifier_withholds_stale_evidence ... ok
+test verification::tests::same_key_opposite_value_cannot_bypass_qualification_requirement ... ok
+test verification::tests::structured_fact_verifier_contradicts_different_fact ... ok
+test verification::tests::structured_fact_verifier_supports_equal_fact ... ok
+test verification::tests::structured_verification_replaces_provider_prose_with_canonical_fact ... ok
+test evidence_relevance::tests::v30_role_property_summaries_require_an_existing_complete_value ... ok
+test evidence_relevance::tests::v30_separate_maintained_non_event_and_parenthesis_keep_each_scope ... ok
+test evidence_relevance::tests::v30_quoted_event_owner_never_inherits_document_owner ... ok
+test evidence_relevance::tests::v30_printed_title_literals_keep_outside_property_scope ... ok
+test evidence_relevance::tests::v30_quoted_owner_words_in_headings_do_not_hide_real_owner_gaps ... ok
+test evidence_relevance::tests::v30_owned_document_predicates_and_carriers_keep_event_scope_separate ... ok
+test evidence_relevance::tests::v30_quoted_unowned_event_cannot_borrow_or_conflict_owners ... ok
+test evidence_relevance::tests::v30_unowned_reference_determiners_require_unique_same_role_owner ... ok
+test evidence_relevance::tests::v30_printed_component_proofs_keep_literal_roles_and_denials_inert ... ok
+
+failures:
+
+---- evidence_relevance::tests::v30_adjacent_foreign_product_and_claim_references_stay_scoped stdout ----
+
+thread 'evidence_relevance::tests::v30_adjacent_foreign_product_and_claim_references_stay_scoped' panicked at crates/reasoning-harness-core/src/evidence_relevance.rs:15396:9:
+assertion `left == right` failed: v17: No launch took place for Violet Bell. We deny that product's launch claim. We also retract the Object, the silver print on the Silver Lens booklet spine.
+  left: false
+ right: true
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- evidence_relevance::tests::v30_finite_foreign_claim_and_complete_owner_explanation_agree stdout ----
+
+thread 'evidence_relevance::tests::v30_finite_foreign_claim_and_complete_owner_explanation_agree' panicked at crates/reasoning-harness-core/src/evidence_relevance.rs:15396:9:
+assertion `left == right` failed: v17: Object: claim that Violet Bell was launched. We withdraw the assertion represented by this Object. The complete named owner of the Object is Violet Bell.
+  left: false
+ right: true
+
+---- evidence_relevance::tests::v30_foreign_role_owner_complements_require_matching_declarations stdout ----
+
+thread 'evidence_relevance::tests::v30_foreign_role_owner_complements_require_matching_declarations' panicked at crates/reasoning-harness-core/src/evidence_relevance.rs:15396:9:
+assertion `left == right` failed: v17: Item owner: Violet Bell. The Item is a launch claim. The Subject is the brushed finish on the Silver Lens mounting plate. We retract the Item owned by Violet Bell and deny the assertion about that Subject.
+  left: false
+ right: true
+
+---- evidence_relevance::tests::v30_prefixed_physical_role_and_material_attributes_bind_locally stdout ----
+
+thread 'evidence_relevance::tests::v30_prefixed_physical_role_and_material_attributes_bind_locally' panicked at crates/reasoning-harness-core/src/evidence_relevance.rs:15396:9:
+assertion `left == right` failed: v17: Workshop correction: The Object is the stated physical weight of the woven strap supplied with Silver Lens. I retract the assertion about this Object. My correction concerns the strap's weight.
+  left: false
+ right: true
+
+---- evidence_relevance::tests::v30_printed_layout_attributes_keep_literal_event_words_inert stdout ----
+
+thread 'evidence_relevance::tests::v30_printed_layout_attributes_keep_literal_event_words_inert' panicked at crates/reasoning-harness-core/src/evidence_relevance.rs:15396:9:
+assertion `left == right` failed: v17: The Object is the physical letter spacing in the printed sentence 'Silver Lens was launched.' on a poster. I deny the assertion about this Object. This correction concerns letter spacing alone, not the event asserted by the printed words.
+  left: false
+ right: true
+
+
+failures:
+    evidence_relevance::tests::v30_adjacent_foreign_product_and_claim_references_stay_scoped
+    evidence_relevance::tests::v30_finite_foreign_claim_and_complete_owner_explanation_agree
+    evidence_relevance::tests::v30_foreign_role_owner_complements_require_matching_declarations
+    evidence_relevance::tests::v30_prefixed_physical_role_and_material_attributes_bind_locally
+    evidence_relevance::tests::v30_printed_layout_attributes_keep_literal_event_words_inert
+
+test result: FAILED. 362 passed; 5 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.78s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --lib`

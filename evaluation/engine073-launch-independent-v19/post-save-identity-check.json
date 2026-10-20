@@ -1,0 +1,38 @@
+{
+  "identity": "engine073-launch-independent-v19",
+  "verified_utc": "2026-10-16T17:25:34.827231+00:00",
+  "HEAD": "f3d9ad15ae2e4fc81dadaed87c4e55fa8bce1c7d",
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "2c2a9cfce355a07dd8387f060e8dac2366d47400124f1425d7f03fa6b5dc4985",
+      "unchanged": true
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "ef0a045a5bc10d97a4652ae281ebf481745a3b034ba9d8e85c3735529ec706e3",
+      "unchanged": true
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "unchanged": true
+    },
+    "opaque_parent_freeze": {
+      "path": "/private/tmp/engine073-source18-freeze.json",
+      "sha256": "d3bc5d7ba76170bbe261ad53ef2ee10ab4b6e7f29e587f9bed813898d21f3793",
+      "unchanged": true
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v19-probe/probe",
+      "sha256": "42374f725ec3d1c84b690ed01bad754efb55b2b5d484751a1afaca25d2730513",
+      "unchanged": true
+    }
+  },
+  "source_and_opaque_parent_freeze_contents_read": false,
+  "all_complete_frozen_files_including_initial_history_unchanged": true,
+  "old_v1_v18_files": 402,
+  "old_inventory_and_hashes_unchanged": true,
+  "v11_v17_NOT_EVALUATED_unchanged": true,
+  "old_anchor": "d9189d1c6cbee5ca4e8e6af90cdf72af7a1d18e27a9e4b62af409d4ac31341fc"
+}

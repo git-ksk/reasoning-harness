@@ -1,0 +1,111 @@
+{
+  "identity": "engine073-launch-independent-v14",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "purpose": "Finite synthetic #520 source-qualification API check only; not #531 real-primary-source24/normal CLI/provider/human evaluation acceptance.",
+  "candidate": {
+    "source_sha": "5edd26f25cfb55f9acee49c6f2b78308a1ed48b7",
+    "source_sha256": "2549d2d50d9d235f5ed6775478df4d7c0ddb621b9dc2f8da3ac9ab4c93fee8ba",
+    "package_version": "0.7.2",
+    "identity": "Fixed unreleased source SHA, not unchanged package number."
+  },
+  "prior_exposure": {
+    "known": "All prior v1-v13 records known; historical first failures unchanged. V11 remains unexecuted NOT_EVALUATED; v1 operational failure had semantic0. V13 firstFAIL40/60 is now seen development.",
+    "parent_reported": "Fixed core/serde build, related63 tests/strict Clippy PASS, historical597/original14 public probe compile/run successful. Full workspace validation still in progress in separate target; none of these independently read/rerun/rebuilt here.",
+    "unread": "Production implementation, parent/root tests, historical/other corpora/fixtures.",
+    "fresh": "New hand-authored30 semantic contrasts after this fixed candidate; not prior block name/template replacement or v11 author reuse. Contrasts include negation/unspecified value inside a complete property, printed text attribute versus contained event claim, contradictory self-scope descriptions, role-specific ownership and missing context. Iterative development informed by earlier failures acknowledged."
+  },
+  "design": {
+    "cases": 60,
+    "positive": 30,
+    "negative": 30,
+    "pairs": 30,
+    "canonical_targets": 30,
+    "real_documents": 0,
+    "affirmative": "Exactly one separate unadorned TARGET was launched. excerpt in each full input. No new affirmative predicate.",
+    "positive_rule": "Uncontradicted direct target launch plus every correction fully scoped to a non-launch physical/printed/document property or unique fully named foreign event. Property-value truth is not approved or computed.",
+    "negative_rule": "Actual target launch/existence/whole-source denial, unresolved referent/owner, mixed owner, or incompatible target/foreign explanations require no requested_relation AND non-Relevant. An exemption self-description does not overwrite actual target/unknown scope.",
+    "semantic_boundaries": [
+      "A colour/material/font/dimension claim may itself contain negation or an unspecified value; that does not negate target launch when property object/owner are complete.",
+      "Printed title/heading typography and literal printed word Launch are attributes; a product event statement carried by a title remains a product event.",
+      "Complete local property apposition/denial-object explanation scopes its own correction. A general foreign-only label or narrowing note cannot erase explicit target or whole-source denial.",
+      "A same-role complete owner sentence/next-line name fills only an expressly unowned launch frame. It cannot replace an existing target owner, fill a different role or borrow ownership from a property quote.",
+      "Separate safe properties/foreign events do not manufacture a referent for an unidentified launch withdrawal. Source title/heading/body statements each retain their explicit scope."
+    ],
+    "finite_scope": "Explicit finite Object/Subject/Item, local same-role/reference/complete apposition/quotation/denial description and complete owner supplements. No arbitrary graph/number AST/alias hierarchy/new launch predicate/chronology inference. Passive current first-person denial by us is a fully stated adverse event scope, not a new affirmative predicate.",
+    "unknown_or_mixed_scope_ids": [
+      "li14-006",
+      "li14-010",
+      "li14-018",
+      "li14-020",
+      "li14-028",
+      "li14-038",
+      "li14-040",
+      "li14-044",
+      "li14-050"
+    ],
+    "existing_target_owner_conflict_ids": [
+      "li14-012",
+      "li14-026",
+      "li14-034",
+      "li14-060"
+    ],
+    "whole_source_ids": [
+      "li14-008",
+      "li14-030"
+    ],
+    "canonical_clip_positive_ids": [
+      "li14-009",
+      "li14-031",
+      "li14-053"
+    ],
+    "canonical_clip": "Three full canonical Clip names in policy schema and source context, aliases empty; limited proper-name notes neutral. Actual omitted launch-owner context separately stated and supplied with raw context_gap.",
+    "explicit_context_gap_ids": [
+      "li14-010",
+      "li14-028",
+      "li14-044"
+    ],
+    "risk_axis": "No pure raw-risk case is joint-negative. Each context_gap input independently has denied/withdrawn unknown launch scope and actual missing context. Public identity/relation/risk orthogonal; saved raw/effective risk diagnosis is outside score. Combined enum does not prove component preservation.",
+    "scope_precommit": "All60 labels/rationales and scope review fixed before semantics, ambiguous positive avoided, no output-dependent reinterpretation.",
+    "binding": "Optimistic exact/exact proposal and exact_target/requested_relation raw in all60, scope_risk none except3 actual-gap negatives. No model extraction/equivalence.",
+    "budget": {
+      "max_model_attempts": 2,
+      "max_tokens": 192,
+      "max_elapsed_ms": 90000
+    },
+    "labels": "Offline evaluator-controlled scope expectations excluded from Engine inputs, not universally established/human-approved product truth."
+  },
+  "scoring": {
+    "byte_identical_inherited": true,
+    "sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "positive": "effective_v17.relation_scope == requested_relation AND v30.disposition == relevant",
+    "negative": "effective_v17.relation_scope != requested_relation AND v30.disposition != relevant",
+    "v29": "Diagnostic only.",
+    "PASS": "All60 fixed joint expectations,60 unique valid rows, exit0/empty stderr. No incomplete/malformed/operational absence counts safety success.",
+    "immutable": "No retry/relabel/input edit/scope easing/rescoring/raw overwrite. Negative requested_relation with Ambiguous still fails v17."
+  },
+  "stages": {
+    "static": "Schema/count/nonzero budget/label exclusion/direct supported fact/inherited code/old hashes only; Engine/semantic0.",
+    "freeze": "Full corpus/labels/inputs/scorer/probe/protocol/recorder/static proof and actual HEAD/source/core/serde/executable hashes before API.",
+    "semantic": "One first60 deterministic v17/v29/v30 process, no sentinel/provider.",
+    "score": "One byte-identical scorer application on first raw.",
+    "save": "Exclusive raw/firstscore/receipt, README and all-version self-excluding final hashes retaining firstFAIL."
+  },
+  "execution": {
+    "external_provider_API_calls": 0,
+    "Oracle": false,
+    "additional_agents": false,
+    "cargo": false,
+    "Git_mutations": 0,
+    "identity_guard": "Check actual HEAD/source/core/serde/probe and all frozen hashes immediately before API. Source only hashed, not content-viewed.",
+    "build_provenance": "Parent stable core/serde provided; evaluator hash-verifies/links rustc probe without independent core rebuild or production implementation reading."
+  },
+  "limits": [
+    "Finite synthetic source API only, not #531 real acquisition/final answers, normal CLI/provider/quota/cost/human/release adoption.",
+    "Candidate only, no actual baseline delta/cross-set rate comparison/statistical independence of60 cases.",
+    "30 pairs/30 fictional targets/0 primary documents, not exhaustive language/coreference coverage.",
+    "No arbitrary graph/AST/alias/hierarchy/new affirmative predicate/chronology/preparation/property-truth capability.",
+    "Risk diagnosis separate; no pure-risk ablation or component-preservation proof from combined enum.",
+    "Serialized model reason/path labels do not mean provider/model calls.",
+    "V14 consumed after first observation; later reuse seen development."
+  ]
+}

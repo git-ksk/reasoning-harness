@@ -1,0 +1,109 @@
+{
+  "identity": "engine073-launch-independent-v6",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "frozen_utc": "2026-10-15T13:31:24.080902+00:00",
+  "candidate": {
+    "source_sha": "06d6c0b8ce28adec71f688a44dfef7624df2ab3b",
+    "package_version": "0.7.2",
+    "source_file": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+    "source_sha256": "d6811361889b8815c4a1234fbdb60309e9e122c88cc6dcd5cc0aa3eec947d39c",
+    "identity_note": "Immutable source SHA identifies candidate before package release metadata update."
+  },
+  "frozen_files": {
+    "author_cases.py": "e01409367f4fc898bec823a761f9b1a136882fb10138cef441be195281c5d915",
+    "cases.json": "f7caffaeee0b94d6d3af767aeaf9a4d15cedcbf94e770acf816c50aaefd740b7",
+    "inputs.json": "ee078f4c861d1f8bb13801f4497a392b9c22bb08e4a52b55396f709d72063c67",
+    "protocol.json": "1649dc3b7f4f219e14d2861a6f4e470e78a73ba6ee73490cea3e39d653d84a9e",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "static_preflight.py": "a1c1180d8054f6bd956f69eaaa0f1b24e573d63e37d9ef0a52125adf3d49ecb7",
+    "static-preflight.json": "3b3569bbc57f3a0a3886e23e4a5ef72e23bae813edb2f9e4d2b10dfcb7a78a50",
+    "pre-freeze-scope-review.json": "855fa2c07a9f97d8cee69171598d56f998ff728285940b3cd83f4515f8155bfa",
+    "predecessor-artifact-hashes.json": "da49aaaed6d391c101bb73bcd9c90ac442a49d228824d52c0b159078161f2f18"
+  },
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "d6811361889b8815c4a1234fbdb60309e9e122c88cc6dcd5cc0aa3eec947d39c",
+      "bytes": 586717
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-876be67fd4b1ef90.rlib",
+      "sha256": "fd2581ee99d760741a5e4a8d338e93f0b8f0e666c0ca14273266ea2896f696b3",
+      "bytes": 72660112
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-fdb0c033eb5b5773.rlib",
+      "sha256": "6790acd878f7472babebca4ae5c0e9e4dcaab113f41c3a212935db0380a2bd68",
+      "bytes": 3436712
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v6-probe/probe",
+      "sha256": "4e611b8960c83534166110516f751aec28a2b2f27d1b7f3351daa20496edad28",
+      "bytes": 2851144
+    }
+  },
+  "corpus": {
+    "file": "cases.json",
+    "complete_engine_input": "inputs.json",
+    "count": 60,
+    "positive": 30,
+    "negative": 30,
+    "matched_pairs": 30,
+    "fictional_targets": 30,
+    "real_documents": 0,
+    "new_multi_cue_records_after_candidate_fixed": true,
+    "prior_sets_seen_development": true,
+    "boundary": "Every positive cue explicitly outside target launch; every negative contains target launch or unresolved launch cue despite coexisting harmless cues. No prefix/AST/new affirmative predicate."
+  },
+  "probe": {
+    "source": "probe.rs",
+    "sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "inherited_unchanged": true,
+    "rustc": "rustc 1.88.0 (6b00bc388 2025-06-23)",
+    "parent_supplied_fixed_core": true,
+    "independent_rebuild": false,
+    "shared_target_changes": 0
+  },
+  "scoring": {
+    "file": "score.py",
+    "sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "byte_identical_inherited": true,
+    "protocol": "protocol.json",
+    "precommitted_before_first_API": true,
+    "positive": "requested_relation AND Relevant",
+    "negative": "not requested_relation AND not Relevant",
+    "joint_v17_v30_required": true,
+    "permissive_scoring_change": false,
+    "post_result_labels_changed": 0,
+    "retries": 0
+  },
+  "stages": {
+    "static": "STATIC_ONLY PASS; complete 60 inputs, positive budget; Engine/semantic observations0.",
+    "semantic": "Not yet run at freeze; one planned first deterministic 60-case v17/v29/v30 process.",
+    "semantic_sentinel": "None; static operational stage separate."
+  },
+  "preserved_predecessors": {
+    "hashes": "predecessor-artifact-hashes.json",
+    "v1_v5_unchanged_at_static_preflight": true,
+    "manifest_hashes": {
+      "v1": "71f9d1008f4e0d74703306b38a07f7593b8da0ac83006b9a4fd51a7a43f0392c",
+      "v2": "e9a3bbbb1d23936539704e27ce6b73b6fa6b09ba0796c595129391f1e2ec77df",
+      "v3": "59ace2e27e444274644d56b1585b242e220b954aa75b37a6268facd906fc876c",
+      "v4": "7ffcdff0c10874a166406e0542191cf5e7f3524563d75e8a72fb987cc89c5552",
+      "v5": "36aea95c26a491b762915d3e0acc27376aa9acecbbd15a40d7957923cdb9c3ba"
+    }
+  },
+  "isolation": {
+    "production_implementation_read": false,
+    "parent_root_tests_historical_corpora_fixtures_read": false,
+    "previous_sets_known_seen": true,
+    "oracle": false,
+    "additional_agents": false,
+    "provider_API_calls": 0,
+    "Git_mutations": 0,
+    "cargo_invocations": 0
+  },
+  "first_result_contract": "Create-exclusive raw/started/finished invocation; one unchanged scorer application; preserve initial FAIL/results without retry or relabeling and save final receipt."
+}

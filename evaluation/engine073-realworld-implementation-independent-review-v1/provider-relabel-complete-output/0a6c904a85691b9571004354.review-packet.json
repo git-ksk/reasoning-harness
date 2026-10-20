@@ -1,0 +1,64 @@
+{
+  "row_id": "0a6c904a85691b9571004354",
+  "observation_sha256": "36e045da76a6432dfa39c64ce6e1949db555b35d5411bd9b28d8701f682c40af",
+  "gold": {
+    "id": "structural-normal/e2e_normal",
+    "sha256": "5e2224affdea5726aaa369ae91ef668ac84b9b97b61ee077afa6b26ec018f323"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": "expected.key = yes"
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [
+    "s"
+  ],
+  "acquired_source_ids": [
+    "s"
+  ],
+  "terminal_status": "grounded_answer",
+  "operation": "complete",
+  "admission_routes": {
+    "e": {
+      "source_id": "s",
+      "admission_sequence": 2,
+      "metadata": {
+        "scope": {
+          "product": {
+            "kind": "values",
+            "values": [
+              "unit"
+            ]
+          }
+        },
+        "provenance_class": "primary",
+        "temporal": {
+          "effective_from_unix_seconds": 100,
+          "effective_until_unix_seconds": 200
+        }
+      }
+    }
+  },
+  "full_sources": {
+    "s": {
+      "quote": "Inert bytes.",
+      "context_summary": "structural only",
+      "document_id": "d",
+      "url": "https://fixture.invalid/",
+      "locator": "unit",
+      "source_version": "v",
+      "origin_group": "o",
+      "scope": {
+        "product": "unit"
+      },
+      "synthetic_mutation": false,
+      "reference_facts": {
+        "expected.key": "yes"
+      },
+      "retrieved_at_unix_seconds": 100
+    }
+  }
+}

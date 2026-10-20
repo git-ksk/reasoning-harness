@@ -1,0 +1,11 @@
+--- parent-snapshot.pending
++++ parent-snapshot.completed-reported
+@@ -20,7 +20,7 @@
+     "v26_v29_original_first_whole_output_equal": true
+   },
+   "pending_prerequisites": {
+-    "full_workspace_provider_validation": "Pending. Parent strict workspace/all-targets Clippy/fmt PASS. First sandbox workspace attempt PermissionDenied at5 existing localhost OAuth mock binds; original logs retained. Same-source final2 with localhost mock permission running;5 mocks passed but remainder not complete. Predicted1599 is not accepted as success.",
++    "full_workspace_provider_validation": "Completed parent-reported: workspace+offline providers1599PASS/0FAIL/8existingignore, strict workspace/all-target Clippy/fmt/fixtures/archive/quality10/source-policy10;8 commands exit0. Initial sandbox loopback5 PermissionDenied logs retained; same-source permitted final2 succeeded. Not independently rerun.",
+     "new_authorship": "Forbidden until full completion, parent M0 review and a separate explicit next notice.",
+     "M1_first": "Not started.",
+     "real24_normalCLI_answerF1_human_release": "Unproven separate gates.",

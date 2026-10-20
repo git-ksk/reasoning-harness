@@ -1,0 +1,1590 @@
+{
+  "summary": {
+    "identity": "engine073-launch-independent-v5",
+    "candidate_source_sha": "7e107f1c2c71cf55cd395d2b3aecb889e4f166a1",
+    "manifest_sha256": "36aea95c26a491b762915d3e0acc27376aa9acecbbd15a40d7957923cdb9c3ba",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 43,
+    "failed": 17,
+    "incomplete": 0,
+    "positive_passed": 15,
+    "negative_passed": 28,
+    "negative_v17_requested_relation_violations": 2,
+    "negative_v30_relevant_violations": 2,
+    "positive_v17_withheld": 15,
+    "positive_v30_withheld": 15,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "879cb76b349a35f1e033271d21779048927004fca4956f2104fe6e02823d285f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "53d95aab33af4091e5986a8bab94cfd0945bb064219080291bd1b3fe9f1a4e60"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "cases": [
+    {
+      "id": "li5-001",
+      "pair_id": "v5-pair-01",
+      "polarity": "positive",
+      "axis": "interview_explicit_retraction_answer",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-002",
+      "pair_id": "v5-pair-01",
+      "polarity": "negative",
+      "axis": "interview_explicit_retraction_answer",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-003",
+      "pair_id": "v5-pair-02",
+      "polarity": "positive",
+      "axis": "current_reply_repeated_object",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-004",
+      "pair_id": "v5-pair-02",
+      "polarity": "negative",
+      "axis": "current_reply_repeated_object",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-005",
+      "pair_id": "v5-pair-03",
+      "polarity": "positive",
+      "axis": "author_letter_intervening_relative_phrase",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-006",
+      "pair_id": "v5-pair-03",
+      "polarity": "negative",
+      "axis": "author_letter_intervening_relative_phrase",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-007",
+      "pair_id": "v5-pair-04",
+      "polarity": "positive",
+      "axis": "attributed_present_quoted_denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-008",
+      "pair_id": "v5-pair-04",
+      "polarity": "negative",
+      "axis": "attributed_present_quoted_denial",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-009",
+      "pair_id": "v5-pair-05",
+      "polarity": "positive",
+      "axis": "parenthesized_current_author_annotation",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-010",
+      "pair_id": "v5-pair-05",
+      "polarity": "negative",
+      "axis": "parenthesized_current_author_annotation",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-011",
+      "pair_id": "v5-pair-06",
+      "polarity": "positive",
+      "axis": "illustration_alt_text_withdrawn_object",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-012",
+      "pair_id": "v5-pair-06",
+      "polarity": "negative",
+      "axis": "illustration_alt_text_withdrawn_object",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-013",
+      "pair_id": "v5-pair-07",
+      "polarity": "positive",
+      "axis": "service_discussion_current_reply",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-014",
+      "pair_id": "v5-pair-07",
+      "polarity": "negative",
+      "axis": "service_discussion_current_reply",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-015",
+      "pair_id": "v5-pair-08",
+      "polarity": "positive",
+      "axis": "editor_author_exchange_corroborated_topic",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-016",
+      "pair_id": "v5-pair-08",
+      "polarity": "negative",
+      "axis": "editor_author_exchange_corroborated_topic",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-017",
+      "pair_id": "v5-pair-09",
+      "polarity": "positive",
+      "axis": "topic_then_repeated_full_denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-018",
+      "pair_id": "v5-pair-09",
+      "polarity": "negative",
+      "axis": "topic_then_repeated_full_denial",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-019",
+      "pair_id": "v5-pair-10",
+      "polarity": "positive",
+      "axis": "intervening_attribution_withdraw_that_clause",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-020",
+      "pair_id": "v5-pair-10",
+      "polarity": "negative",
+      "axis": "intervening_attribution_withdraw_that_clause",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-021",
+      "pair_id": "v5-pair-11",
+      "polarity": "positive",
+      "axis": "possessive_hereby_retracted_subject",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-022",
+      "pair_id": "v5-pair-11",
+      "polarity": "negative",
+      "axis": "possessive_hereby_retracted_subject",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-023",
+      "pair_id": "v5-pair-12",
+      "polarity": "positive",
+      "axis": "contracted_was_not_same_or_other_predicate",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-024",
+      "pair_id": "v5-pair-12",
+      "polarity": "negative",
+      "axis": "contracted_was_not_same_or_other_predicate",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-025",
+      "pair_id": "v5-pair-13",
+      "polarity": "positive",
+      "axis": "activity_log_did_not_happen",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-026",
+      "pair_id": "v5-pair-13",
+      "polarity": "negative",
+      "axis": "activity_log_did_not_happen",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-027",
+      "pair_id": "v5-pair-14",
+      "polarity": "positive",
+      "axis": "existential_no_event_statement",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-028",
+      "pair_id": "v5-pair-14",
+      "polarity": "negative",
+      "axis": "existential_no_event_statement",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-029",
+      "pair_id": "v5-pair-15",
+      "polarity": "positive",
+      "axis": "contact_route_vs_propositional_content",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-030",
+      "pair_id": "v5-pair-15",
+      "polarity": "negative",
+      "axis": "contact_route_vs_propositional_content",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-031",
+      "pair_id": "v5-pair-16",
+      "polarity": "positive",
+      "axis": "diagram_link_vs_launch_statement",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-032",
+      "pair_id": "v5-pair-16",
+      "polarity": "negative",
+      "axis": "diagram_link_vs_launch_statement",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-033",
+      "pair_id": "v5-pair-17",
+      "polarity": "positive",
+      "axis": "contents_reindexing_vs_author_retraction",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-034",
+      "pair_id": "v5-pair-17",
+      "polarity": "negative",
+      "axis": "contents_reindexing_vs_author_retraction",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-035",
+      "pair_id": "v5-pair-18",
+      "polarity": "positive",
+      "axis": "navigation_artifact_vs_history_assertion",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-036",
+      "pair_id": "v5-pair-18",
+      "polarity": "negative",
+      "axis": "navigation_artifact_vs_history_assertion",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-037",
+      "pair_id": "v5-pair-19",
+      "polarity": "positive",
+      "axis": "named_publisher_current_quote_owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-038",
+      "pair_id": "v5-pair-19",
+      "polarity": "negative",
+      "axis": "named_publisher_current_quote_owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-039",
+      "pair_id": "v5-pair-20",
+      "polarity": "positive",
+      "axis": "possessive_owner_with_neighbor_reference",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-040",
+      "pair_id": "v5-pair-20",
+      "polarity": "negative",
+      "axis": "possessive_owner_with_neighbor_reference",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-041",
+      "pair_id": "v5-pair-21",
+      "polarity": "positive",
+      "axis": "topic_and_final_owner_in_author_reply",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-042",
+      "pair_id": "v5-pair-21",
+      "polarity": "negative",
+      "axis": "topic_and_final_owner_in_author_reply",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-043",
+      "pair_id": "v5-pair-22",
+      "polarity": "positive",
+      "axis": "multi_product_reply_object_or_owner_missing",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-044",
+      "pair_id": "v5-pair-22",
+      "polarity": "negative",
+      "axis": "multi_product_reply_object_or_owner_missing",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-045",
+      "pair_id": "v5-pair-23",
+      "polarity": "positive",
+      "axis": "personal_claim_and_explicit_exclusion",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-046",
+      "pair_id": "v5-pair-23",
+      "polarity": "negative",
+      "axis": "personal_claim_and_explicit_exclusion",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-047",
+      "pair_id": "v5-pair-24",
+      "polarity": "positive",
+      "axis": "correspondence_denial_owner_absent",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-048",
+      "pair_id": "v5-pair-24",
+      "polarity": "negative",
+      "axis": "correspondence_denial_owner_absent",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-049",
+      "pair_id": "v5-pair-25",
+      "polarity": "positive",
+      "axis": "enclosure_list_vs_unowned_withdrawal",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-050",
+      "pair_id": "v5-pair-25",
+      "polarity": "negative",
+      "axis": "enclosure_list_vs_unowned_withdrawal",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-051",
+      "pair_id": "v5-pair-26",
+      "polarity": "positive",
+      "axis": "transcript_explicit_property_or_lost_referent",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li5-052",
+      "pair_id": "v5-pair-26",
+      "polarity": "negative",
+      "axis": "transcript_explicit_property_or_lost_referent",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-053",
+      "pair_id": "v5-pair-27",
+      "polarity": "positive",
+      "axis": "detached_signature_page_scope",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-054",
+      "pair_id": "v5-pair-27",
+      "polarity": "negative",
+      "axis": "detached_signature_page_scope",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-055",
+      "pair_id": "v5-pair-28",
+      "polarity": "positive",
+      "axis": "joint_response_named_property_or_unknown_launch",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "positive_candidate_safe_to_accept"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-056",
+      "pair_id": "v5-pair-28",
+      "polarity": "negative",
+      "axis": "joint_response_named_property_or_unknown_launch",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-057",
+      "pair_id": "v5-pair-29",
+      "polarity": "positive",
+      "axis": "attachment_contrast_vs_unidentified_launch",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-058",
+      "pair_id": "v5-pair-29",
+      "polarity": "negative",
+      "axis": "attachment_contrast_vs_unidentified_launch",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-059",
+      "pair_id": "v5-pair-30",
+      "polarity": "positive",
+      "axis": "indexer_footnote_vs_orphan_retraction",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li5-060",
+      "pair_id": "v5-pair-30",
+      "polarity": "negative",
+      "axis": "indexer_footnote_vs_orphan_retraction",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    }
+  ]
+}

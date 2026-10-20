@@ -1,0 +1,6 @@
+{
+  "stage": "static hash-only preflight, no accuracy observations",
+  "reason": "Layer tar digests were not equal across rebuilds; assertion stopped before conclusions. Subsequent full5934 regular-file/link/mode comparison proves every base/interpreter/library byte unchanged and only six declared repo code files differ.",
+  "original_script_preserved": true,
+  "old_and_new_accuracy_calls": 0
+}

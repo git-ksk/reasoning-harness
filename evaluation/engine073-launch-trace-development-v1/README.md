@@ -1,0 +1,9 @@
+# Consumed v19 launch trace — development only
+
+The parent used temporary cfg(test) hooks before the seven existing blocking returns at the qualification path. Predicates and their order were preserved. The only selected inputs were the11 already failed positives from immutable independentv19. This is an instrumented development execution, not the released binary, a fresh acceptance trial or a replacement score. One filtered unit test printed branch events and private helper state; its PASS checks the selected input count, not semantic quality. Provider calls0. No scorer was executed.
+
+Base evidence_relevance.rs SHA2562c2a9cfce355a07dd8387f060e8dac2366d47400124f1425d7f03fa6b5dc4985 corresponds to sourcef3d9ad1. The instrumented source hash, exact patch/setup and first log/results are saved. A unique original substring is recorded as a UTF-8 byte span; reconstructed/repeated text gets no guessed span. Repeated records are separate helper invocations, not extra corpus cases. After this diagnostic, the parent verified and restored the exact base source; the temporary module is not committed into runtime/test source.
+
+All11 block at the governing-context check: typed-reference-not-excluded5, target-adverse-clause3, unresolved-adverse-scope3. Actual trace details distinguish a property-type recognition failure, explicit foreign ownership being intercepted by a generic typed reference, a compound correction split inside its coordinated roles, and unresolved specific property references. Each branch fact applies only to its recorded input. Structural repair hypotheses must still be tested with negative/boundary cases and a new source freeze/fresh independent acceptance.
+
+Independentv19 remainsFAIL49/60; all444 frozen files/labels/first observations remain unchanged. This record is not #531 real24, normal CLI/provider utility or release acceptance. The archive-only diagnostic and research-informed roadmap remain separate.

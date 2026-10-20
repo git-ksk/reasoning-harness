@@ -1,0 +1,12 @@
+{
+  "files": {
+    "/private/tmp/engine073-independent-v26-runtime/cargo-build.jsonl": "b2b1baf13b7ad43d9884684df2036a8c526cccc092f2d3891dabcfd6f4716f2f",
+    "/private/tmp/engine073-independent-v26-runtime/identity.json": "d8426d4fc9e83c3db65e4128c63ac8b93f1a1ede38f3f08c72c8ca4f1e7ebb93",
+    "/private/tmp/engine073-independent-v26-runtime/probe": "6818b375e06549e01f5c203cfd8e881f180d285e3ca86c20d1f8895485377bd7",
+    "/private/tmp/engine073-independent-v26-runtime/probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d"
+  },
+  "read_mode": "Binary/compiler metadata/runtime identity hash-only. Supplied parent receipt file inventory metadata only.",
+  "parent_build_report": "Parent actual Cargo build at source908 copied this runtime; no evaluator Cargo/rebuild/compile/Engine invocation.",
+  "runtime_files": 4,
+  "readonly_observed": false
+}

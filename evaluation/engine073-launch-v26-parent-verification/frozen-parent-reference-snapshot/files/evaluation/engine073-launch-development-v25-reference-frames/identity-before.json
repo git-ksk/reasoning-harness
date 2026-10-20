@@ -1,0 +1,13 @@
+{
+  "source_sha": "9082365ffecfafaa9ba0ac65ce56368ac77d4228",
+  "source_file_sha256": "4f82b2e41614394f1bd528f01c817f0e962f1c546d7212f75f15c2f9c5787999",
+  "core": {
+    "path": "/private/tmp/engine073-source27-actual-target/debug/libreasoning_harness_core.rlib",
+    "sha256": "dacce86cdb825201718597ff00c91b4e6fa47cf1ff905c2ca2b01f777441a57f"
+  },
+  "serde": {
+    "path": "/private/tmp/engine073-source27-actual-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+    "sha256": "c0613372b948cb88254ea9e2cea116fb48180070de5db6bd3155e73a614b72ce"
+  },
+  "cargo_metadata_sha256": "b2b1baf13b7ad43d9884684df2036a8c526cccc092f2d3891dabcfd6f4716f2f"
+}

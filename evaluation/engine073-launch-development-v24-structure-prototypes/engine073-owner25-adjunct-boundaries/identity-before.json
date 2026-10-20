@@ -1,0 +1,6 @@
+{
+  "probe_sha256": "b2039531fbb3b34d50de7f6eb3eb69c13362f30adf28948945f1a9fb4dc23e0e",
+  "inputs_sha256": "57f0dd786e12a6e14053f0497f5dd93bbd8961e01232dfb4189c754619a1b895",
+  "expected": "all4 semantic negative; development only",
+  "provider_scorer_calls": 0
+}

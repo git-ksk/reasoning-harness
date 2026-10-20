@@ -1,0 +1,11 @@
+--- freeze_corpus.py.v26
++++ freeze_corpus.py.v27
+@@ -10,7 +10,7 @@
+  if subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()!=SOURCE:raise ValueError('dedicated_candidate_HEAD_changed')
+  frozen={str(q.relative_to(ROOT)):sha(q) for q in sorted(ROOT.rglob('*')) if q.is_file()}
+  if any(frozen.get(n)!=h for n,h in m0['frozen_files'].items()):raise ValueError('pre_author_evaluator_changed')
+- manifest={'identity':'engine073-launch-independent-v26','frozen_utc':utc(),'candidate':m0['candidate'],'frozen_files':frozen,'checked_artifacts':m0['checked_artifacts'],'authoring':{'evaluator_freeze_sha256':sha(ROOT/'evaluator-freeze.json'),'authoring_start_sha256':sha(ROOT/'authoring-start.json'),'parent_authorization_reference':author['authorization_reference']},'scoring':{'policy_sha256':POLICY_SHA,'helper_sha256':HELPER_SHA,'score_sha256':sha(ROOT/'score.py'),'mode':'single scorer process invokes helper once with explicit snapshot config; joint exactness diagnostic only'},'cohort':{'planned':60,'positive':30,'negative':30,'labels_outside_Engine_input':True},'first_only':{'Engine_processes':1,'scorer_processes':1,'retry_rescore_relabel':0,'raw_readonly_before_scorer':True}}
++ manifest={'identity':'engine073-launch-independent-v27','frozen_utc':utc(),'candidate':m0['candidate'],'frozen_files':frozen,'checked_artifacts':m0['checked_artifacts'],'authoring':{'evaluator_freeze_sha256':sha(ROOT/'evaluator-freeze.json'),'authoring_start_sha256':sha(ROOT/'authoring-start.json'),'parent_authorization_reference':author['authorization_reference']},'scoring':{'policy_sha256':POLICY_SHA,'helper_sha256':HELPER_SHA,'score_sha256':sha(ROOT/'score.py'),'mode':'single scorer process invokes helper once with explicit snapshot config; joint exactness diagnostic only'},'cohort':{'planned':60,'positive':30,'negative':30,'labels_outside_Engine_input':True},'first_only':{'Engine_processes':1,'scorer_processes':1,'retry_rescore_relabel':0,'raw_readonly_before_scorer':True}}
+  if not dt(m0['frozen_utc'])<=dt(author['utc'])<=dt(cases['authored_utc'])<=dt(scope['reviewed_utc'])<=dt(result['utc'])<=dt(manifest['frozen_utc']):raise ValueError('M0_author_M1_time_order')
+  write_new(ROOT/'manifest.json',manifest)
+  for n in frozen:os.chmod(ROOT/n,0o444)

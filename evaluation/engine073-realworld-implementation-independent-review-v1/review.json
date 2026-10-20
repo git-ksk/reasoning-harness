@@ -1,0 +1,201 @@
+{
+  "identity": "engine073-realworld-implementation-independent-review-v1",
+  "closed_utc": "2026-10-19T04:25:54.901913+00:00",
+  "result": "FAIL_BLOCKERS_BEFORE_COMPLETE_M0",
+  "input_snapshot": "/private/tmp/engine073-realworld-evaluator-review-snapshot-v1",
+  "input_manifest_sha256": "df60b2df43ae40f5f494f79b271f7ab41c23ad374a0bc4ce4640a5d654299ac9",
+  "input_files": {
+    "build.py": "89a0348a75720ba6dcf52f1603540cc357ebcb1761ea6d64d62c0659cf4f6d23",
+    "collect.py": "be6d46791cf9dfbe39070102140b6a788fb612eae1cec8540ccc2b5634d86d03",
+    "run_lane.py": "ec6a00a4488698347a6f662f305cb62aa4427d4900ada40d7ac3dcfa027cce6c",
+    "prepare_sources.py": "5a998ab660bd6f3143a2265bd9ba1bc6737f6403b6ec6cbb7181946b2cf33b2a",
+    "source_host.rs": "b1f7a441827fe3aa49f90fece55a735bf810a0a8e47f3ba0857a6a9710d8345f",
+    "audit_probe.rs": "3c3176575dbcd4927210fa0d9893af0612fead217b6c962d89aeb0ab3a7496b3",
+    "audit.rs": "20fac0d979e1de4b9c863d66871c32faf87145b04f408af4572f1cfee571c87d",
+    "Dockerfile.runtime": "da2f09c9e295db0676f9b51e2a409d1287f0e36c0027614b2a1d4d8453dbe4a4",
+    "make_plan.py": "6b53fc6c4ed18e42846d5ef9a233dc1caf598977b0e6b42701b8affc3a5fd7ed",
+    "test_scorer.py": "b072c57f9eb29a3c27df5f5085121fc93b8fc554cbb5a3f4744bc01156fe97bc",
+    "capture.py": "c7b4f75ba139f90cd7678db121bf5253e5f343d841b51f91573a070c17f687d0",
+    "resolver.py": "31bf96227a424f583f34276ad7f1c89ede7436d230390130002980d21790be6a",
+    "protocol.json": "f23f94853b175ddc85167b748a56504c40231ad0a3e7b25e2dcd468e12427be3",
+    "run_task.py": "f7c9ab710fa97bb4d6de987895e7f6d55d9840d1b242b9fed49c969dd7c2623c",
+    "verify_M0.py": "c088d9878aaa627c67daab41f0175f2415c82829486ee82b788276de0cd18950",
+    "adviser.rs": "055b1384751d329aef7a885219fb19218f3b329902784a7270f750c487724df0",
+    "corpus.py": "dcb0705a7508123b674d5126b7362323e317e1bf538e9c3eea82d2142c10a395",
+    "score_first.py": "cdbd6bb672024dcec37f30169f1eca158c7c1ebee826dc62db52fa567177fa75",
+    "preflight.py": "77465f920bf4afff75b91117ad4ff2806ad31c6ccdff2b5e9d403231dcb9118b",
+    "scorer.py": "b5f131a9a18f86ee6fd5bc80a3be3a360a6f3ec298d204331796d4415afd880c",
+    "Dockerfile.build": "7badf230a1ec1c909e0d51d31be105943e2ac8fd16e95fca43d195ad43be6843"
+  },
+  "tests": {
+    "existing_structural_tests": 12,
+    "passed": 12,
+    "reproduction_scripts": [
+      "reproduce.py",
+      "isolate_capture.py"
+    ],
+    "actual_loopback_HTTP_controls": "NOT_RUN: binaries/image not supplied in read-only snapshot; parent reports approval-capacity block, not a test failure",
+    "accuracy_cases_observed": 0
+  },
+  "findings": [
+    {
+      "id": "I1",
+      "priority": "P1",
+      "title": "Captured citations disappear or earn credit without admission",
+      "where": [
+        "scorer.py:122-145"
+      ],
+      "repro": [
+        "R1.input.json",
+        "R1.output.json",
+        "R2.input.json",
+        "R2.output.json"
+      ],
+      "actual": [
+        "2 captured citations become1 counted edge when one points to absent artifact; row remains useful with0 hard violations.",
+        "A fetched but non-admitted source receives correct citation credit while a different admitted source grounds the claim."
+      ],
+      "required_fix": "Validate every captured citation artifact/span/identity and account for every captured citation, including unmatched/nonfact attachments. Correct citation sources must satisfy the actual admission/authority chain and the bound occurrence/support source mapping; external correct=true cannot override failed mechanical binding."
+    },
+    {
+      "id": "I2",
+      "priority": "P1",
+      "title": "Incomplete helper baseline can pass paired completeness",
+      "where": [
+        "scorer.py:218-226",
+        "score_first.py:32-45"
+      ],
+      "repro": [
+        "R4.output.json",
+        "reproduce.py"
+      ],
+      "actual": "All72 helper baseline rows are incomplete in a constructed full provider/track table, yet semantic_gate_pass=true. Runtime completeness checks only normal pairs, so it supplies no missing helper-baseline rejection.",
+      "required_fix": "Require complete reviewed baseline AND candidate rows for every planned provider/track/case pair before useful gains or overall acceptance. Preserve every missing/incomplete row as NO_GO; baseline failures cannot count as automatic gains."
+    },
+    {
+      "id": "I3",
+      "priority": "P1",
+      "title": "M1 manifest need not cover corpus/gold/source files",
+      "where": [
+        "corpus.py:52-55"
+      ],
+      "repro": [
+        "manifest-coverage-fixture/manifest.json",
+        "manifest-coverage-fixture/gold.before.json",
+        "manifest-coverage-fixture/gold.json",
+        "observations.json"
+      ],
+      "actual": "files={} is accepted. Two structural metadata labels are swapped while preserving class counts and the same M1 anchor; both validate calls succeed. No real gold or accuracy case was changed.",
+      "required_fix": "Validate a complete typed M1 schema and mandatory recursive inventory including corpus.json, gold.json, host-policy.json and all retained source/normalization files; reject omissions/extra executable inputs and bind the approved M0/authoring provenance. Hashing only entries the caller happens to list does not freeze gold."
+    },
+    {
+      "id": "I4",
+      "priority": "P1",
+      "title": "Capture does not bind task/target/receipt/provider/model traces end to end",
+      "where": [
+        "capture.py:8-60",
+        "collect.py:15-35"
+      ],
+      "repro": [
+        "R5.input.json",
+        "R5.output.json",
+        "R6-valid-control.input.json",
+        "R6-valid-control.output.json",
+        "R6-empty-receipt-only.input.json",
+        "R6-empty-receipt-only.output.json",
+        "R6-wrong-target-only.input.json",
+        "R6-wrong-target-only.output.json",
+        "isolated-confirmations.json",
+        "provider-relabel-complete-output"
+      ],
+      "actual": [
+        "Normal trace with0 request/response events is accepted alongside an audit journal reporting1 generation.",
+        "A supported receipt with empty evidence_ids passes vacuous all(); the combined repro also accepts a nonstructured verifier and a fact not in its evidence.",
+        "Changing only journal request.target.target_id is accepted despite a valid same-target control.",
+        "A complete Mistral lane is collected with --provider google and labeled complete Google without rejection."
+      ],
+      "required_fix": "Bind collector provider/model/case/arm/M1 to the frozen plan and actual argv/task. Match audit records to actual CLI model events/identities/content/usage and terminal ordering. Require receipt evidence to be nonempty, supported by approved verifier, linked to the same claim/evidence/proposition; check journal target/fact-key/question against the planned case before admission credit."
+    },
+    {
+      "id": "I5",
+      "priority": "P2",
+      "title": "Helper capture artifact kind is incompatible with display validator",
+      "where": [
+        "capture.py:102",
+        "scorer.py:104"
+      ],
+      "repro": [
+        "R3.input.json",
+        "observations.json"
+      ],
+      "actual": "capture emits kind source_local_answer; inherited display validator accepts final_answer/claim_card/citation_caption only. A corresponding helper row always raises unknown_artifact_kind.",
+      "required_fix": "Define a compatible, explicitly frozen display-kind mapping or successor schema before semantic review; keep the track/helper authority fields separate from the physical display kind."
+    },
+    {
+      "id": "I6",
+      "priority": "P2",
+      "title": "Partial helper display is replaced with empty normal-style answer",
+      "where": [
+        "collect.py:31-36"
+      ],
+      "repro": [
+        "partial-helper-lane/helper-job/stdout.json",
+        "collect-output",
+        "collect-first.stdout",
+        "observations.json"
+      ],
+      "actual": "On helper failure after baseline output, original stdout retains visible source-local text, but both observation arms receive empty display_artifacts. Incomplete remains NO_GO, yet the partial-output safety audit loses observed text/citations.",
+      "required_fix": "Capture all actually exposed normal/helper partial surfaces and citations without upgrading them to success; retain raw parse failures and explicit unknown/unavailable display audit states. Parent reports this is already being repaired in the working namespace; this original snapshot remains unchanged."
+    }
+  ],
+  "remaining_scope_and_budget_notes": [
+    {
+      "id": "L1",
+      "status": "PROSPECTIVE_CROSSWALK_PENDING_NEW_SNAPSHOT",
+      "where": [
+        "capture.py:63-69",
+        "scorer.py:146-174"
+      ],
+      "observation": "Normal capture always emits display_citations=[], while the current useful-to-case-decision formula requires every factual occurrence cited; that current formula cannot produce positive normal case TP for factual answers.",
+      "resolution": "Parent proposes prospective separation of grounded-required-content/eligible-terminal case quality from citation/disclosure-complete usefulness. This can be coherent if frozen before M0/authoring, preserving citation gate and gain2 as mandatory final NO_GO conditions. This review does not demand every case F1 be0 merely because citations are absent, and does not approve unreviewed replacement bytes."
+    },
+    {
+      "id": "L2",
+      "status": "STATIC_PRE_HTTP_PROOF_GAP_NOT_LIVE_EXCESS_REPRO",
+      "where": [
+        "audit.rs:53-63",
+        "build.py:59-66",
+        "run_lane.py:18-41"
+      ],
+      "observation": "Aggregate reservation uses the audited request bound and one attempt, but wire() records actual provider payloads and HTTP attempts without refusing duplicate/unreserved/oversized wire attempts. after() can reject accounting only after requests have happened. Retry constants are patched, but the supplied18 loopback design covers ok/oversize/missing-usage, not duplicate HTTP inside one generation or actual wire-bound proof.",
+      "resolution": "Before live M0, enforce or prove exact pre-HTTP serialization/token/attempt bounds in the pinned host and test fail-closed unexpected extra wire attempts. Do not claim a paid overshoot was reproduced here: no binaries/providers were executed."
+    },
+    {
+      "id": "L3",
+      "status": "EXPECTED_FINAL_M0_WORK_NOT_TESTED_HERE",
+      "observation": "Actual Linux OCI digest/build closure, actual provider loopback binaries, complete workflow/authorship provenance, live settings/price/tier/headroom and Groq recovery are outside this code snapshot review.",
+      "resolution": "Keep them as explicit pending final M0 gates. Do not author accuracy cases or run providers based on the12 pure tests or this review."
+    }
+  ],
+  "prior_three_boundaries": "Reused occurrence ID, response-after-terminal, empty response and None==None quote guard now have successor guards; supplied12 tests confirm those local fixes. This does not establish complete stack safety.",
+  "build_identity_hash_only": {
+    "host_core_tree": "fa32450addcbe9dfa3ad74f6ef8e94fbc7eda119",
+    "baseline_core_tree": "fa32450addcbe9dfa3ad74f6ef8e94fbc7eda119",
+    "candidate_core_tree": "535d2f1ad21457905fa43722c74510de59015695",
+    "baseline_current_pins_match": true,
+    "actual_build_or_source_execution_by_reviewer": false
+  },
+  "parent_working_repair_not_reviewed": [
+    "partial helper output/raw",
+    "full sources in packets",
+    "72job identity completeness",
+    "M0 authorship provenance",
+    "efficiency crosswalk",
+    "subsequent citation/baseline/receipt/target/provider fixes"
+  ],
+  "input_or_existing_artifact_mutations": 0,
+  "all928_and_old_components_unchanged": true,
+  "accuracy_case_gold_authorship_Engine_accuracy_actual_cohort_scorer_provider_model_network_Oracle_Groq_calls": 0,
+  "fixture_boundary": "Any case/gold-named files here contain constructed schema metadata solely for validator counterexamples. They are not independent accuracy cases, source truth or evaluated answers. Their intentional mutation is a freeze-coverage test, not relabeling any real or preserved cohort.",
+  "next": "Stop after closing original review. Require a new fixed snapshot for the repairs and final actual OCI/M0; no fresh authorship authorized."
+}

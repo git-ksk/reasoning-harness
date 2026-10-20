@@ -1,0 +1,347 @@
+[
+  {
+    "schema_version": "reason-cli-output-v1",
+    "command": "ask",
+    "result": {
+      "output_contract": "reason-natural-output-v4",
+      "configuration": {
+        "provider": "fixture-provider",
+        "model": "fixture-model"
+      },
+      "task": "structural adapter test",
+      "finalization": {
+        "status": "grounded_answer",
+        "text": "fixture.flag = enabled",
+        "factual_claims": 1,
+        "covered_claims": 1,
+        "factual_claim_coverage": 1.0,
+        "uncovered_propositions": []
+      },
+      "final_outcome": {
+        "verdict": "accept",
+        "artifact": {
+          "evidence": [
+            {
+              "id": "e1",
+              "source": "fixture-source",
+              "observation": "{\"document_id\": \"fixture-doc\", \"url\": \"https://fixture.invalid/doc\", \"locator\": \"fixture-section\", \"source_version\": \"fixture-version\", \"origin_group\": \"fixture-origin\", \"scope\": {\"product\": \"component-fixture\"}, \"quote\": \"Fixture flag: enabled.\", \"context_summary\": \"Structural adapter fixture only.\", \"synthetic_mutation\": false}",
+              "facts": {
+                "fixture.flag": "enabled"
+              },
+              "acquisition_metadata": {
+                "observed_at_unix_seconds": 100,
+                "retrieved_at_unix_seconds": 100,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "component-fixture"
+                    ]
+                  }
+                }
+              },
+              "metadata": {
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "component-fixture"
+                    ]
+                  }
+                },
+                "provenance_class": "primary",
+                "temporal": {
+                  "effective_from_unix_seconds": 100,
+                  "effective_until_unix_seconds": 200
+                }
+              }
+            }
+          ],
+          "claims": [
+            {
+              "id": "claim1",
+              "state": "known",
+              "proposition": {
+                "key": "fixture.flag",
+                "value": "enabled"
+              },
+              "evidence_ids": [
+                "e1"
+              ]
+            }
+          ],
+          "verification_receipts": [
+            {
+              "id": "r1",
+              "claim_id": "claim1",
+              "proposition": {
+                "key": "fixture.flag",
+                "value": "enabled"
+              },
+              "conclusion": "supported",
+              "verifier": "structured_fact_equality",
+              "evidence_ids": [
+                "e1"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "contract": "reason-natural-diagnostic-trace-v1",
+    "provider": "fixture-provider",
+    "model": "fixture-model",
+    "events": [
+      {
+        "kind": "model_request",
+        "provider": "fixture-provider",
+        "model": "fixture-model",
+        "attempt": 1,
+        "correlation_id": "call1",
+        "phase": "fixture",
+        "round": 0,
+        "request": {
+          "task": "fixture task",
+          "max_tokens": 16
+        },
+        "sequence": 0
+      },
+      {
+        "kind": "model_response",
+        "provider": "fixture-provider",
+        "model": "fixture-model",
+        "attempt": 1,
+        "correlation_id": "call1",
+        "phase": "fixture",
+        "round": 0,
+        "response": {
+          "text": "fixture response"
+        },
+        "sequence": 1
+      },
+      {
+        "kind": "evidence_admission",
+        "target_id": "t1",
+        "capability_id": "cap1",
+        "admitted_evidence_ids": [
+          "e1"
+        ],
+        "fact_keys": [
+          "fixture.flag"
+        ],
+        "sequence": 2
+      },
+      {
+        "kind": "grounding_state",
+        "outcome": {
+          "verdict": "accept",
+          "artifact": {
+            "evidence": [
+              {
+                "id": "e1",
+                "source": "fixture-source",
+                "observation": "{\"document_id\": \"fixture-doc\", \"url\": \"https://fixture.invalid/doc\", \"locator\": \"fixture-section\", \"source_version\": \"fixture-version\", \"origin_group\": \"fixture-origin\", \"scope\": {\"product\": \"component-fixture\"}, \"quote\": \"Fixture flag: enabled.\", \"context_summary\": \"Structural adapter fixture only.\", \"synthetic_mutation\": false}",
+                "facts": {
+                  "fixture.flag": "enabled"
+                },
+                "acquisition_metadata": {
+                  "observed_at_unix_seconds": 100,
+                  "retrieved_at_unix_seconds": 100,
+                  "scope": {
+                    "product": {
+                      "kind": "values",
+                      "values": [
+                        "component-fixture"
+                      ]
+                    }
+                  }
+                },
+                "metadata": {
+                  "scope": {
+                    "product": {
+                      "kind": "values",
+                      "values": [
+                        "component-fixture"
+                      ]
+                    }
+                  },
+                  "provenance_class": "primary",
+                  "temporal": {
+                    "effective_from_unix_seconds": 100,
+                    "effective_until_unix_seconds": 200
+                  }
+                }
+              }
+            ],
+            "claims": [
+              {
+                "id": "claim1",
+                "state": "known",
+                "proposition": {
+                  "key": "fixture.flag",
+                  "value": "enabled"
+                },
+                "evidence_ids": [
+                  "e1"
+                ]
+              }
+            ],
+            "verification_receipts": [
+              {
+                "id": "r1",
+                "claim_id": "claim1",
+                "proposition": {
+                  "key": "fixture.flag",
+                  "value": "enabled"
+                },
+                "conclusion": "supported",
+                "verifier": "structured_fact_equality",
+                "evidence_ids": [
+                  "e1"
+                ]
+              }
+            ]
+          }
+        },
+        "sequence": 3
+      },
+      {
+        "kind": "finalization_state",
+        "result": {
+          "status": "grounded_answer",
+          "text": "fixture.flag = enabled",
+          "factual_claims": 1,
+          "covered_claims": 1,
+          "factual_claim_coverage": 1.0,
+          "uncovered_propositions": []
+        },
+        "sequence": 4
+      }
+    ]
+  },
+  [
+    {
+      "case": "component-row",
+      "corpus_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "request": {
+        "schema_version": "reason-investigation-external-resolver-request-v1",
+        "request": {
+          "id": "investigation:t1:cap1",
+          "target": {
+            "target_id": "t1",
+            "expected_fact_key": "fixture.flag"
+          }
+        }
+      },
+      "response": {
+        "schema_version": "reason-external-resolver-response-v1",
+        "contribution": {
+          "kind": "acquired_evidence",
+          "evidence": [
+            {
+              "id": "e1",
+              "source": "fixture-source",
+              "observation": "{\"document_id\": \"fixture-doc\", \"url\": \"https://fixture.invalid/doc\", \"locator\": \"fixture-section\", \"source_version\": \"fixture-version\", \"origin_group\": \"fixture-origin\", \"scope\": {\"product\": \"component-fixture\"}, \"quote\": \"Fixture flag: enabled.\", \"context_summary\": \"Structural adapter fixture only.\", \"synthetic_mutation\": false}",
+              "facts": {
+                "fixture.flag": "enabled"
+              },
+              "acquisition_metadata": {
+                "observed_at_unix_seconds": 100,
+                "retrieved_at_unix_seconds": 100,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "component-fixture"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  {
+    "returncode": 0
+  },
+  {
+    "resolution": {
+      "investigation": {
+        "capabilities": [
+          {
+            "id": "cap1",
+            "admission": {
+              "required_scope": {
+                "product": {
+                  "kind": "values",
+                  "values": [
+                    "component-fixture"
+                  ]
+                }
+              },
+              "sources": {
+                "fixture-source": {
+                  "authority_class": "primary",
+                  "scope": {
+                    "product": {
+                      "kind": "values",
+                      "values": [
+                        "component-fixture"
+                      ]
+                    }
+                  },
+                  "max_age_seconds": 100
+                }
+              },
+              "authority_ranks": {
+                "primary": 2
+              },
+              "minimum_authority_class": "primary",
+              "evaluation_time_unix_seconds": 150
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "cases": [
+      {
+        "id": "component-row",
+        "question": "structural adapter test",
+        "required_scope": {
+          "product": "component-fixture"
+        },
+        "lookup_key": "fixture.flag",
+        "source_ids": [
+          "fixture-source"
+        ]
+      }
+    ],
+    "sources": {
+      "fixture-source": {
+        "document_id": "fixture-doc",
+        "url": "https://fixture.invalid/doc",
+        "locator": "fixture-section",
+        "source_version": "fixture-version",
+        "origin_group": "fixture-origin",
+        "scope": {
+          "product": "component-fixture"
+        },
+        "quote": "Fixture flag: enabled.",
+        "context_summary": "Structural adapter fixture only.",
+        "synthetic_mutation": false,
+        "reference_facts": {
+          "fixture.flag": "enabled"
+        },
+        "retrieved_at_unix_seconds": 100,
+        "quote_sha256": "19746f70e2849eefb9c4019c02c2f59daa9cd42cd81237c18d4065e718905f00"
+      }
+    }
+  },
+  "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+]

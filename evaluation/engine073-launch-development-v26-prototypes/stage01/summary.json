@@ -1,0 +1,46 @@
+{
+  "source_sha256": "2be99a5d6b2acb7312bd904395e82c74116d2bc0f0828103d37a2e37ade192b8",
+  "axes": {
+    "v17_requested_relation": {
+      "tp": 26,
+      "fp": 0,
+      "tn": 30,
+      "fn": 4,
+      "precision": 1.0,
+      "recall": 0.8666666666666667,
+      "f1": 0.9285714285714286
+    },
+    "v30_relevant": {
+      "tp": 26,
+      "fp": 0,
+      "tn": 30,
+      "fn": 4,
+      "precision": 1.0,
+      "recall": 0.8666666666666667,
+      "f1": 0.9285714285714286
+    }
+  },
+  "misses": {
+    "v17_requested_relation": [
+      "li26-027",
+      "li26-041",
+      "li26-047",
+      "li26-057"
+    ],
+    "v30_relevant": [
+      "li26-027",
+      "li26-041",
+      "li26-047",
+      "li26-057"
+    ]
+  },
+  "joint_passed": 56,
+  "planned": 60,
+  "original_first_stays": "FAIL/NO_GO TP22/FP0/TN30/FN8,F1.846154",
+  "historical_v29_all60_equal": true,
+  "normal_Engine_processes": 1,
+  "input_count": 60,
+  "canonical_scorer_calls": 0,
+  "provider_model_Oracle_calls": 0,
+  "decision": "CONSUMED_DEVELOPMENT_ONLY_NOT_FRESH_ACCEPTANCE"
+}

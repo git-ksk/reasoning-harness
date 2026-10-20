@@ -1,0 +1,13 @@
+{
+  "status": 429,
+  "headers": {
+    "x-ratelimit-remaining-tokens": "0",
+    "retry-after": "60"
+  },
+  "usage": null,
+  "response_body_sha256": "8d5cf344c91182a90ebdafdd1880c5a633053b27aef5028aa22e2983874980e7",
+  "HTTP_attempts": 1,
+  "no_retry": true,
+  "full_cohort_daily_headroom_proven": false,
+  "actual_answer_F1": null
+}

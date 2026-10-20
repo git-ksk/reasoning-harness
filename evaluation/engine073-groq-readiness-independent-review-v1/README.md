@@ -1,0 +1,3 @@
+Groq one-shot quota観測コードの限定レビューを閉じました。修正版の認証前予約、入力・出力・ローカル費用の事前チェック、1回送信、redirect/retryなし、35秒/45秒上限、失敗/usage不明の非成功化を確認しました。外部通信なしのHTTP429対照は予約先行・模擬send1回・usage null・exit1でした。初回オフライン対照は親の修正によるhash差を検出し、スクリプト実行前に停止した記録も保存しています。
+
+このscopeで残る明確なコードblockerは確認していません。0.000640 USDは設定価格ceilingと固定入力boundに基づくローカル予約であり請求保証ではありません。実価格/tier/残枠/header/Actions実行を確認しておらず、本評価全体のdaily headroomやM0完了を示しません。新精度著作・Engine精度観測・API/model/provider/network/Oracle呼出しは0です。

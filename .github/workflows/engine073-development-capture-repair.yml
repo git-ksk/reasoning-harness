@@ -1,0 +1,15 @@
+name: engine073-development-capture-repair
+on:
+  pull_request:
+    paths:
+      - 'evaluation/engine073-realworld-development-capture-repair-v1/**'
+      - '.github/workflows/engine073-development-capture-repair.yml'
+permissions:
+  contents: read
+jobs:
+  capture-controls:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - run: python3 -B -m unittest discover -s evaluation/engine073-realworld-development-capture-repair-v1 -p 'test_*.py' -v

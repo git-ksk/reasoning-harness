@@ -1,0 +1,48 @@
+{
+  "stage": "name06",
+  "v30": {
+    "confusion": {
+      "tp": 30,
+      "fp": 0,
+      "tn": 30,
+      "fn": 0
+    },
+    "n": 60,
+    "positive_support": 30,
+    "negative_support": 30,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_positive": 1.0,
+    "specificity": 1.0,
+    "accuracy": 1.0,
+    "balanced_accuracy": 1.0,
+    "predicted_positive_rate": 0.5,
+    "false_accept_rate": 0.0,
+    "false_withhold_rate": 0.0,
+    "mcc": 1.0
+  },
+  "v17": {
+    "confusion": {
+      "tp": 30,
+      "fp": 0,
+      "tn": 30,
+      "fn": 0
+    },
+    "n": 60,
+    "positive_support": 30,
+    "negative_support": 30,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_positive": 1.0,
+    "specificity": 1.0,
+    "accuracy": 1.0,
+    "balanced_accuracy": 1.0,
+    "predicted_positive_rate": 0.5,
+    "false_accept_rate": 0.0,
+    "false_withhold_rate": 0.0,
+    "mcc": 1.0
+  },
+  "joint_passed": 60,
+  "mismatches": [],
+  "unsafe": []
+}

@@ -1,0 +1,1590 @@
+{
+  "summary": {
+    "identity": "engine073-launch-independent-v24",
+    "candidate_source_sha": "3ccda6b4263eb5210477660b11f6926ec0186f4e",
+    "manifest_sha256": "2b6bb47ef9a1f716707e731bd16f4397c292faad05f07cee5363e9abdd6da371",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 47,
+    "failed": 13,
+    "incomplete": 0,
+    "positive_passed": 17,
+    "negative_passed": 30,
+    "negative_v17_requested_relation_violations": 0,
+    "negative_v30_relevant_violations": 0,
+    "positive_v17_withheld": 13,
+    "positive_v30_withheld": 13,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "f6f1fce18ac4aeb18f4899aaa5a1d4cf7d3ffd1ddfbf8c42286c56a1dadaaca0",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "e2787e73e462c75e2477cf28d3aef48b1f08ce889771bf70e48452e3bfd664bb"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "cases": [
+    {
+      "id": "li24-001",
+      "pair_id": "li24-p01",
+      "polarity": "positive",
+      "axis": "two safe corrections cannot absorb a separate title denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li24-002",
+      "pair_id": "li24-p01",
+      "polarity": "negative",
+      "axis": "two safe corrections cannot absorb a separate title denial",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-003",
+      "pair_id": "li24-p02",
+      "polarity": "positive",
+      "axis": "physical foil property plus uniquely foreign versus mixed-owner event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li24-004",
+      "pair_id": "li24-p02",
+      "polarity": "negative",
+      "axis": "physical foil property plus uniquely foreign versus mixed-owner event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-005",
+      "pair_id": "li24-p03",
+      "polarity": "positive",
+      "axis": "literal withdrawal sentence in a layout property versus ownerless additional event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li24-006",
+      "pair_id": "li24-p03",
+      "polarity": "negative",
+      "axis": "literal withdrawal sentence in a layout property versus ownerless additional event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-007",
+      "pair_id": "li24-p04",
+      "polarity": "positive",
+      "axis": "local physical apposition and explicit foreign report versus independent target report",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-008",
+      "pair_id": "li24-p04",
+      "polarity": "negative",
+      "axis": "local physical apposition and explicit foreign report versus independent target report",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-009",
+      "pair_id": "li24-p05",
+      "polarity": "positive",
+      "axis": "adjacent full same-role reply identifies foreign versus target owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li24-010",
+      "pair_id": "li24-p05",
+      "polarity": "negative",
+      "axis": "adjacent full same-role reply identifies foreign versus target owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-011",
+      "pair_id": "li24-p06",
+      "polarity": "positive",
+      "axis": "explicit event-owner header versus actual missing header data",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li24-012",
+      "pair_id": "li24-p06",
+      "polarity": "negative",
+      "axis": "explicit event-owner header versus actual missing header data",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-013",
+      "pair_id": "li24-p07",
+      "polarity": "positive",
+      "axis": "three explicit safe roles versus global retraction that includes anchor",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-014",
+      "pair_id": "li24-p07",
+      "polarity": "negative",
+      "axis": "three explicit safe roles versus global retraction that includes anchor",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-015",
+      "pair_id": "li24-p08",
+      "polarity": "positive",
+      "axis": "quote event owner independent of a different document owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li24-016",
+      "pair_id": "li24-p08",
+      "polarity": "negative",
+      "axis": "quote event owner independent of a different document owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-017",
+      "pair_id": "li24-p09",
+      "polarity": "positive",
+      "axis": "uncertainty phrase as a font property versus real uncertainty in a denied event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li24-018",
+      "pair_id": "li24-p09",
+      "polarity": "negative",
+      "axis": "uncertainty phrase as a font property versus real uncertainty in a denied event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-019",
+      "pair_id": "li24-p10",
+      "polarity": "positive",
+      "axis": "two foreign events across linked corrections versus a target-owned second event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-020",
+      "pair_id": "li24-p10",
+      "polarity": "negative",
+      "axis": "two foreign events across linked corrections versus a target-owned second event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-021",
+      "pair_id": "li24-p11",
+      "polarity": "positive",
+      "axis": "compound physical and printed property versus reason-clause target denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li24-022",
+      "pair_id": "li24-p11",
+      "polarity": "negative",
+      "axis": "compound physical and printed property versus reason-clause target denial",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-023",
+      "pair_id": "li24-p12",
+      "polarity": "positive",
+      "axis": "owner annotation for event role versus wrong-role annotation",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-024",
+      "pair_id": "li24-p12",
+      "polarity": "negative",
+      "axis": "owner annotation for event role versus wrong-role annotation",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-025",
+      "pair_id": "li24-p13",
+      "polarity": "positive",
+      "axis": "complete event declaration in title and target printed property versus target title event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "positive_candidate_safe_to_accept"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-026",
+      "pair_id": "li24-p13",
+      "polarity": "negative",
+      "axis": "complete event declaration in title and target printed property versus target title event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-027",
+      "pair_id": "li24-p14",
+      "polarity": "positive",
+      "axis": "property apposition and foreign role versus unowned separate claim",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-028",
+      "pair_id": "li24-p14",
+      "polarity": "negative",
+      "axis": "property apposition and foreign role versus unowned separate claim",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-029",
+      "pair_id": "li24-p15",
+      "polarity": "positive",
+      "axis": "foreign annotation agrees with declared owner versus conflicting attempt to replace target owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-030",
+      "pair_id": "li24-p15",
+      "polarity": "negative",
+      "axis": "foreign annotation agrees with declared owner versus conflicting attempt to replace target owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-031",
+      "pair_id": "li24-p16",
+      "polarity": "positive",
+      "axis": "non-event wording as printed heading property versus actual non-event declaration",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li24-032",
+      "pair_id": "li24-p16",
+      "polarity": "negative",
+      "axis": "non-event wording as printed heading property versus actual non-event declaration",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-033",
+      "pair_id": "li24-p17",
+      "polarity": "positive",
+      "axis": "target nonexistence quoted as print color versus asserted existence denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li24-034",
+      "pair_id": "li24-p17",
+      "polarity": "negative",
+      "axis": "target nonexistence quoted as print color versus asserted existence denial",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-035",
+      "pair_id": "li24-p18",
+      "polarity": "positive",
+      "axis": "canonical full name with title property and foreign event versus direct target event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-036",
+      "pair_id": "li24-p18",
+      "polarity": "negative",
+      "axis": "canonical full name with title property and foreign event versus direct target event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-037",
+      "pair_id": "li24-p19",
+      "polarity": "positive",
+      "axis": "single same-role owner header versus competing full owners",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-038",
+      "pair_id": "li24-p19",
+      "polarity": "negative",
+      "axis": "single same-role owner header versus competing full owners",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-039",
+      "pair_id": "li24-p20",
+      "polarity": "positive",
+      "axis": "role-looking literal text as a border property versus a real typed target event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li24-040",
+      "pair_id": "li24-p20",
+      "polarity": "negative",
+      "axis": "role-looking literal text as a border property versus a real typed target event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-041",
+      "pair_id": "li24-p21",
+      "polarity": "positive",
+      "axis": "complete casing property plus foreign clause versus target nonexistence clause",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-042",
+      "pair_id": "li24-p21",
+      "polarity": "negative",
+      "axis": "complete casing property plus foreign clause versus target nonexistence clause",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-043",
+      "pair_id": "li24-p22",
+      "polarity": "positive",
+      "axis": "newline event-owner reply versus property-owner-only reply",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-044",
+      "pair_id": "li24-p22",
+      "polarity": "negative",
+      "axis": "newline event-owner reply versus property-owner-only reply",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-045",
+      "pair_id": "li24-p23",
+      "polarity": "positive",
+      "axis": "finite same-role reference to complete property versus independently target-owned event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li24-046",
+      "pair_id": "li24-p23",
+      "polarity": "negative",
+      "axis": "finite same-role reference to complete property versus independently target-owned event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-047",
+      "pair_id": "li24-p24",
+      "polarity": "positive",
+      "axis": "direct foreign denial plus target physical property versus direct target denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-048",
+      "pair_id": "li24-p24",
+      "polarity": "negative",
+      "axis": "direct foreign denial plus target physical property versus direct target denial",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-049",
+      "pair_id": "li24-p25",
+      "polarity": "positive",
+      "axis": "fully foreign event in target-owned document versus whole-source title denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "positive_candidate_safe_to_accept"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-050",
+      "pair_id": "li24-p25",
+      "polarity": "negative",
+      "axis": "fully foreign event in target-owned document versus whole-source title denial",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-051",
+      "pair_id": "li24-p26",
+      "polarity": "positive",
+      "axis": "complete owner reply versus truly omitted continuation owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-052",
+      "pair_id": "li24-p26",
+      "polarity": "negative",
+      "axis": "complete owner reply versus truly omitted continuation owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-053",
+      "pair_id": "li24-p27",
+      "polarity": "positive",
+      "axis": "multiple named owners of non-launch properties versus mixed event owners",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-054",
+      "pair_id": "li24-p27",
+      "polarity": "negative",
+      "axis": "multiple named owners of non-launch properties versus mixed event owners",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-055",
+      "pair_id": "li24-p28",
+      "polarity": "positive",
+      "axis": "full correction scopes across fields versus overriding whole-source withdrawal",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-056",
+      "pair_id": "li24-p28",
+      "polarity": "negative",
+      "axis": "full correction scopes across fields versus overriding whole-source withdrawal",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-057",
+      "pair_id": "li24-p29",
+      "polarity": "positive",
+      "axis": "literal owner-name text as alignment property versus actual target event owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li24-058",
+      "pair_id": "li24-p29",
+      "polarity": "negative",
+      "axis": "literal owner-name text as alignment property versus actual target event owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-059",
+      "pair_id": "li24-p30",
+      "polarity": "positive",
+      "axis": "three roles with independent full owners versus an explicitly unresolved event role",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "positive_candidate_safe_to_accept"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li24-060",
+      "pair_id": "li24-p30",
+      "polarity": "negative",
+      "axis": "three roles with independent full owners versus an explicitly unresolved event role",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    }
+  ]
+}

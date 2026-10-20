@@ -1,0 +1,2 @@
+CLI files 62 symbol matches 11 non-evaluation matches 0
+core files 42 outside relevance/exports 0

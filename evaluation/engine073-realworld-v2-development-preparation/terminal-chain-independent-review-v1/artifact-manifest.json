@@ -1,0 +1,35 @@
+{
+  "identity": "engine073-realworld-v2-terminal-chain-independent-review-v1",
+  "result": "CHANGES_REQUIRED_BEFORE_M0",
+  "files": {
+    "test_terminal_chain.py": "8c826fe8a3dfaeecc4159025cc7fcc2fb30cafd1da79d84dfa679bfa9fd47ea2",
+    "counterexample-plan.json": "c28771d49972c72f07aadd00f1f139c386a9424931f389ff3eb65c15377c7a84",
+    "README.md": "1433ea256023d39020e5994e47157ee70277d40236aa6ce4f6ce9777086a097c",
+    "capture.py": "ab1e4c77c435050b84c063c6b9346cdaac2e8da539aede1e0a2eb0e0fdea1531",
+    "terminal_chain.py": "6fe38e93346e07de4e8930d1d11f24f4780d24d0849ef9a38e9ca42ddad72a40",
+    "CLI-state-machine-evidence.txt": "8abf9f50d6869a26351aa55ff834c9c549d7dc526bb71498151add9d374a13ab",
+    "review.json": "f4d066bcff8659790f32797e37c9487c9a46868e4f003b9c6408a66ab05532a9",
+    "test_review_boundaries.py": "12a6b94a0c943d873e8b2e2b6560cdda5355ed4bea4c1c44eb72e2c2ee1b14bf",
+    "scorer.py": "98bffa32806054637243eb685d2ae58f4701e212838223712cd47b4cc6fbbfc3"
+  },
+  "review_snapshot_hashes": {
+    "terminal_chain.py": "6fe38e93346e07de4e8930d1d11f24f4780d24d0849ef9a38e9ca42ddad72a40",
+    "capture.py": "ab1e4c77c435050b84c063c6b9346cdaac2e8da539aede1e0a2eb0e0fdea1531",
+    "scorer.py": "98bffa32806054637243eb685d2ae58f4701e212838223712cd47b4cc6fbbfc3",
+    "test_terminal_chain.py": "8c826fe8a3dfaeecc4159025cc7fcc2fb30cafd1da79d84dfa679bfa9fd47ea2",
+    "test_review_boundaries.py": "12a6b94a0c943d873e8b2e2b6560cdda5355ed4bea4c1c44eb72e2c2ee1b14bf"
+  },
+  "current_worktree_hashes_at_close": {
+    "terminal_chain.py": "6fe38e93346e07de4e8930d1d11f24f4780d24d0849ef9a38e9ca42ddad72a40",
+    "capture.py": "ab1e4c77c435050b84c063c6b9346cdaac2e8da539aede1e0a2eb0e0fdea1531",
+    "scorer.py": "98bffa32806054637243eb685d2ae58f4701e212838223712cd47b4cc6fbbfc3",
+    "test_terminal_chain.py": "8c826fe8a3dfaeecc4159025cc7fcc2fb30cafd1da79d84dfa679bfa9fd47ea2",
+    "test_review_boundaries.py": "12a6b94a0c943d873e8b2e2b6560cdda5355ed4bea4c1c44eb72e2c2ee1b14bf"
+  },
+  "raw_input_hashes": {
+    "/private/tmp/engine073-realworld-v1a-google-39250362193/results/lane/rw-01-baseline/trace.json": "342917ac30cb8860a72e703804498c85cb30b2d3534b66f440e8abb5c165a57e",
+    "/private/tmp/engine073-realworld-v1a-google-39250362193/results/lane/rw-01-candidate/trace.json": "9d314db3dfbef2d8ca7aa7f91f0f3cb546b284915245b2c2e50e6899633b7cc3"
+  },
+  "self_exclusion": "artifact-manifest.json excluded; external SHA256 anchors this readonly review.",
+  "new_model_Engine_scorer_test_calls": 0
+}

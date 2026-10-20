@@ -1,8 +1,17 @@
 # Engine 0.7 real-world evaluation and CLI adoption
 
+**Current checkpoint (2026-10-20, consumed24 first development score):** Google independently annotated/scored all24 questions per arm/track: ordinary case F1 0.583333→0.583333 (candidate P1/R0.411765), helper0.222222→0.400000 (P1/R0.25). Observed hard violations0; ordinary displayed citations0/28 and useful-answer gains0/+1 miss the gates. Full24 Mistral/Groq F1 stays null; further Mistral calls are held for unverified quota. PR549/main53be613 fixes known-usage loss, not planner truncation or proven completion. Original v1/raw/gold/first captures unchanged; fresh accuracy0; Engine release/CLI adoption NO_GO. [Frozen score and next work](../evaluation/engine073-realworld-v2-consumed-score-v1/README.md).
+
+The2026-10-19 first-result checkpoint below remains historical.
+**Current checkpoint (2026-10-19, first live evaluation independently scored):** M0/M1 froze24 fresh tasks from12 official documents/six products before Mistral/Google execution. Both lanes stopped early at the CLI logical6-call limit with missing failure usage. The normal binder also rejects valid two-stage finalization. All full24 provider/track actual F1 values remain`null`; **adoption NO_GO**. Only one Google helper question per arm is eligible: baseline/candidate case F1=0.00 and claim F1=1.00, with actual conflict terminals and no paired gain. This is not overall performance. [First results, independent review and repair order](../evaluation/engine073-realworld-first-v1a-results/README.md). Repair #540 collection/binding/failure diagnostics and verify actual control paths before a separately frozen future evaluation. Groq stays deferred before credentials; original raw/gold/budgets/first failures are immutable, with no model retry or rescore. Published CLI0.5.5/Engine0.6.1 remains; Engine0.7.3 is unreleased. Dated preparation entries below are historical.
+
 [日本語](engine-07-realworld-evaluation.ja.md) | English
 
 Status: **in progress / adoption NO-GO**, 2026-10-15 JST. [Issue #531](https://github.com/git-ksk/reasoning-harness/issues/531), [milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12). The published product is Reason CLI0.5.5 / Engine0.6.1. Engine0.7.2 is an independent source release, not an adopted CLI Engine.
+
+## Planned successor — Engine0.7.3
+
+Follow [the0.7.3 ordered roadmap](engine-0.7.3-roadmap.md) / [#538](https://github.com/git-ksk/reasoning-harness/issues/538).0.6.1 remains the product baseline;0.7.2 results remain immutable historical development evidence. Repair #520 first, complete safe runner/wiring, then freeze and freshly evaluate the pinned successor. #535 is merged and the #537 bridge passes26 offline tests; these do not complete live runner or acceptance gates.0.7.3 is not published or selected for CLI adoption.
 
 ## First development comparisons completed; acceptance remains incomplete
 

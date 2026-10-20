@@ -1,0 +1,122 @@
+{
+  "identity": "engine073-launch-independent-v27",
+  "closed_utc": "2026-10-18T15:22:55.464828+00:00",
+  "outcome": "FAIL",
+  "decision": "NO_GO",
+  "candidate": {
+    "source_sha": "26c98adbec19f9e8ea0d46f260f080d4319a8e60",
+    "source_content_sha256": "4daf64b918532a9004dea9807b8001ec743244b20b5cd1892c7f3a7ce316d1ef",
+    "package_version": "0.7.2",
+    "runtime_probe_path": "/private/tmp/engine073-independent-v27-runtime/probe",
+    "runtime_probe_sha256": "b1c482ab5d20cf370868b27d0a3f62a67f1eb210f46731db7258016f56d31821",
+    "parent_source_receipt_sha256": "01e6f3a2dc478d62d23518b9226b85924882fabc7e75ba79aed0007693296756",
+    "source_to_runtime_provenance": "Parent actual normal Cargo/copy; independent evaluator hash-only, no compile/execution."
+  },
+  "M0_sha256": "aaa4b0d2494c3a89d87b3c0714847ee8d468f84295e1f868e7518398e41635bb",
+  "M1_sha256": "fb8a350de68ee6dfc61e4d440411a96eb217b54a4fdec7bfe5a6ebf02709d82c",
+  "policy_sha256": "3a6d37e3fbf134f4a49677fdcd7de8b1b625739988a40e1c1e78b94978099767",
+  "helper_sha256": "00f6971900864ee9e89e4db6029d8196fabd0a4b6ab28e343f19506417735c6f",
+  "scorer_sha256": "3994f3981b4748b0686fdb4df075b4dc83eac11b49c852be2b57123641b0a095",
+  "axes_copied_from_first_summary": {
+    "v17_requested_relation": {
+      "tp": 24,
+      "fp": 0,
+      "tn": 30,
+      "fn": 6,
+      "precision": 1.0,
+      "recall": 0.8,
+      "f1": 0.8888888888888888,
+      "f0_5_diagnostic": 0.9523809523809523
+    },
+    "v30_relevant": {
+      "tp": 24,
+      "fp": 0,
+      "tn": 30,
+      "fn": 6,
+      "precision": 1.0,
+      "recall": 0.8,
+      "f1": 0.8888888888888888,
+      "f0_5_diagnostic": 0.9523809523809523
+    }
+  },
+  "joint_diagnostic": {
+    "passed": 54,
+    "failed": 6
+  },
+  "unsafe_false_positives_by_axis": {
+    "v17_requested_relation": 0,
+    "v30_relevant": 0
+  },
+  "operational_failures": 0,
+  "incomplete": 0,
+  "Engine_processes": 1,
+  "Engine_input_count": 60,
+  "real_scorer_processes": 1,
+  "helper_calls": 1,
+  "helper_calls_evidence": "one successful real scorer invocation and verified frozen single helper-call path; not an independent runtime counter",
+  "returncodes": {
+    "Engine": 0,
+    "recorder": 0,
+    "scorer": 0,
+    "driver": 1
+  },
+  "driver_nonzero_reason": "Frozen semantic gate FAIL, not operational failure",
+  "stderr_bytes": {
+    "driver.stderr.txt": 0,
+    "first-run.stderr.txt": 0,
+    "first.stderr.txt": 0,
+    "first-score.stderr.txt": 0
+  },
+  "provenance_checks": {
+    "candidate_identity": true,
+    "same_checked_artifacts": true,
+    "M0_evaluator_hashes": true,
+    "M1_all_frozen_hashes": true,
+    "gold_and_input_pinned": true,
+    "authorship_after_M0": true,
+    "author_start_bound": true,
+    "first_pre_invocation_manifest": true,
+    "first_pre_invocation_artifacts": true,
+    "first_command_and_markers": true,
+    "first_raw_hashes": true,
+    "first_order": true,
+    "first_score_marker": true
+  },
+  "first_preserved_files": {
+    "driver.started.json": "cd89ab3f4e308560bed733fabaf732ae2a6a02507b5774175ca2aaa70cb1abf7",
+    "driver.stdout.txt": "bb295c2d5be741720f75ba21874e2cacad3650018edbbdcef7441a9f6d72d3d3",
+    "driver.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "driver.invocation.json": "cfcafe0647579bde6588d4dff8e769dba9152453e05188a9f2ded43b0979af27",
+    "execution.started.json": "e4143b979ed0507e61b09341f1a53773f986b2898769e0eacf7b9da942baa192",
+    "first-run.stdout.txt": "e42670ed512673dfddae4674e001c0389bac58099717703f97416184cfa78a75",
+    "first-run.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first-invocation.started.json": "7e7d6f942a2774a845d57bd308fe40c2355b2263c4bf5c1881e85c6c7ec7cb7a",
+    "first-invocation.json": "7e5a4ff53beccfe9020dddd7070b8182a56b2f842a9b23fd2bafbd62622e0549",
+    "first.stdout.jsonl": "5aae42baa25b9c38178136df4df57c1078189ab05b9749ef3262f02f004c0a89",
+    "first.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first-score.started.json": "9216958165b8db0b5770bfd51f7e7b84f29da7298d2623ec7dac1a3e6c6d7eda",
+    "first-score.stdout.txt": "38bb2b05b3cadf2ed3bd034655d9d4d91796dc7ba96553575538a6e3f954d765",
+    "first-score.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first-score.invocation.json": "b0fec36f79b55d373032f277bc4fddb94cf8f0f6febc63742b14b1112696419b",
+    "first-results.json": "2099de4335798878b9201aa8b9cc9325657dcbe75627ee206f766635835213a3",
+    "first-summary.json": "38bb2b05b3cadf2ed3bd034655d9d4d91796dc7ba96553575538a6e3f954d765"
+  },
+  "old_anchor": "8214db3607e32d707da797fb90bb4af77b1101db976b6f0d0a60f96d49cdb921",
+  "old_source_files": 824,
+  "separate_preparation_files": 5,
+  "parent_reference_files": 30,
+  "runtime_files": 4,
+  "checked_artifacts": 41,
+  "pre_M1_scope_corrections": [],
+  "retry": 0,
+  "rescore": 0,
+  "relabel": 0,
+  "provider_model_network_Oracle_calls": 0,
+  "Groq": "stopped",
+  "compile_Cargo_sharedtarget_Git_source_root_prep_mutations_extra_agents_real24_authorship": 0,
+  "closure_operation_source_sha256": "b053404c8792ea7cd425e8537f59727c969592d72548e91d79580fa8c7e48e7e",
+  "closure_preparation_error_sha256": "8a9234e699ae38d495b4a93e72b753761f8b30f0bf04c7e90fb45d2cd5e1bac2",
+  "candidate_freeze": "HELD: parent final copy/hash/commit/safety acknowledgment required before release",
+  "next_identity": "not authorized and not started",
+  "acceptance_boundary": "Finite #520 synthetic source APIs only; no real24/normalCLI/provider/human/release acceptance."
+}

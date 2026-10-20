@@ -1,0 +1,23 @@
+{
+  "identity": "engine073-launch-independent-v9",
+  "stage": "STATIC_ONLY",
+  "outcome": "PASS",
+  "planned_cases": 60,
+  "positive": 30,
+  "negative": 30,
+  "matched_pairs": 30,
+  "distinct_canonical_targets": 30,
+  "required_fields_valid": true,
+  "budget": {
+    "max_model_attempts": 2,
+    "max_tokens": 192,
+    "max_elapsed_ms": 90000
+  },
+  "one_unadorned_target_subject_affirmative_per_case": true,
+  "labels_excluded_from_engine_inputs": true,
+  "scorer_and_probe_inherited_unchanged": true,
+  "v1_v8_all_artifacts_unchanged": true,
+  "semantic_observations": 0,
+  "engine_invocations": 0,
+  "provider_calls": 0
+}

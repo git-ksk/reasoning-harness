@@ -1,0 +1,67 @@
+{
+  "identity": "engine073-launch-independent-v4",
+  "purpose": "Independent synthetic bounded #520 source-fix check. Not #531 real-primary-source 24 questions, release/CLI acceptance, document acquisition, provider or final-answer E2E.",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "candidate": {
+    "source_sha": "4e36fa5184e76601643b6d12575f5d26c8fc1eec",
+    "evidence_relevance_rs_sha256": "2757449cd606bb62c875c8078a3596f6faeba159049a88daeb1ced9cb75a64d3",
+    "package_version": "0.7.2",
+    "identity": "Source SHA, not unchanged pre-release package version."
+  },
+  "prior_exposure": {
+    "v1": "Known operational InvalidAssessmentBudget FAIL, semantic rows 0.",
+    "v2": "Known semantic FAIL, evaluator-authored/seen; now development/regression only.",
+    "v3": "Known semantic FAIL, evaluator-authored/seen; now development/regression only.",
+    "parent_report": "Parent reports replay v2/v3 60/60 and historical 38 test PASS on this candidate; evaluator did not rerun or inspect those implementation/tests.",
+    "prohibited_material_unread": "Engine implementation, root tests, historical fixtures/corpora and other independent sets.",
+    "fresh_authoring": "New publication-notice/control constructions. No prior case text was copied or superficially renamed. New role/notice styles include signed erratum, corrigendum, press/customer response, table/specification-limited retraction, manual/gallery/translation errata, article metadata/permission notices, syndicated notices and detached owner-missing publication notes."
+  },
+  "design": {
+    "cases": 60,
+    "positive": "Unambiguous neutral context or a denial/retraction/withdrawal/non-event explicitly attached to another product or a non-launch property/activity must retain requested_relation and Relevant. This does not approve the unrelated property as a product fact.",
+    "negative": "Same-target/claim present/first-person/current publisher retraction, denial, withdrawal or explicit launch non-event must remove requested_relation and prevent Relevant. A launch withdrawal with unspecified owner/reference is withhold.",
+    "matched_pairs": 30,
+    "fictional_targets": 30,
+    "real_documents": 0,
+    "supported_affirmative": "Separate exact canonical-target-subject Excerpt: X was launched in May 2022. No new affirmative launch predicate, Entry/Statement-prefix grammar, trusted numeric/AST mechanism or preparation semantics required.",
+    "ambiguous_expected_labels": "Seven owner/claim-missing cases li4-048/050/052/054/056/058/060 are negative before observation. No forced ambiguous positive. Scope rationale in pre-freeze-scope-review.json.",
+    "optimistic_inputs": "All proposal exact/exact and raw exact_target/requested_relation/none; core must override unsafe launch binding. Not model extraction accuracy.",
+    "budget": {
+      "max_model_attempts": 2,
+      "max_tokens": 192,
+      "max_elapsed_ms": 90000
+    },
+    "expected_labels": "Offline controlled evaluator labels, excluded from probe inputs; no external universal/human-approved truth claim."
+  },
+  "scoring": {
+    "scorer": "Same byte-identical score.py as v2/v3, SHA256 9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3. No permissive rule change.",
+    "positive": "effective_v17.relation_scope == requested_relation AND v30.disposition == relevant",
+    "negative": "effective_v17.relation_scope != requested_relation AND v30.disposition != relevant",
+    "v29": "Diagnostic only.",
+    "PASS": "All 60 expected outputs; zero unsafe negative requested_relation/Relevant; zero withheld positive; no missing, duplicate, foreign, malformed or unexpected rows; exit0 and empty stderr.",
+    "failure_handling": "Incomplete observations are operational failures. Initial FAIL and full raw preserved. No retry, rescore, post-observation labels/input/scorer changes."
+  },
+  "stages": {
+    "static": "Static preflight only: count/schema/nonzero budget, labels separate, direct supported launch signal, syntax/inherited probe/scorer, predecessor hashes; Engine/semantic observations0.",
+    "freeze": "Record candidate/source/core rlib/serde/probe hashes plus complete authored inputs/labels/scorer/protocol before first Engine invocation.",
+    "semantic": "One process, first 60-case deterministic v17/v29/v30 probe, no semantic sentinel and no provider/model.",
+    "score": "One application of fixed scorer to original raw.",
+    "receipt": "Verify unchanged frozen/prior files and save final all-version artifact hashes."
+  },
+  "execution": {
+    "provider_API_calls": 0,
+    "oracle": false,
+    "additional_agents": false,
+    "cargo": false,
+    "source_check": "Actual HEAD and hash-only source/library/executable identity verified immediately before invocation. No production implementation text inspection.",
+    "build_provenance": "Parent supplied completed core build; actual rlib independently hash-checked and linked with rustc. No independent rebuild/source verification."
+  },
+  "limits": [
+    "Synthetic bounded English launch-context API check only, not independent real-document E2E/CLI adoption, release, cost/quota/headroom or provider recovery.",
+    "Candidate only; no observed baseline delta or comparison of v2/v3/v4 percentages as improvement measurement.",
+    "60 scenarios are 30 matched pairs, not independent documents or exhaustive language coverage.",
+    "Does not measure truth of newly named material/specification properties or support arbitrary predicates, aliases, preparation or general reference ASTs.",
+    "Core serialized model_relevant/model_ambiguous reasons do not imply model calls here.",
+    "After first semantic observation the v4 set is consumed and future use is development/regression."
+  ]
+}

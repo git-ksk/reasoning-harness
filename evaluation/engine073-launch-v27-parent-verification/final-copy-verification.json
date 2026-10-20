@@ -1,0 +1,78 @@
+{
+  "verified_utc": "2026-10-18T15:26:28.278358+00:00",
+  "outcome": "FIRST_ARTIFACTS_VERIFIED",
+  "semantic_first_outcome": "FAIL/NO_GO",
+  "anchor": "abaae2385e6c17783cc7093c10e15424b6e4ce01080e8fcdea5eab3a9e5bb439",
+  "new_files": 99,
+  "old_preserved_references": 829,
+  "all_corpus_references": 928,
+  "M0_sha256": "aaa4b0d2494c3a89d87b3c0714847ee8d468f84295e1f868e7518398e41635bb",
+  "M1_sha256": "fb8a350de68ee6dfc61e4d440411a96eb217b54a4fdec7bfe5a6ebf02709d82c",
+  "parent_M0_review_sha256": "0d4a2017c06df6d3c046bf52832995f84b15f80dd29e46ffab2cee260e11f0f6",
+  "source_candidate": "26c98adbec19f9e8ea0d46f260f080d4319a8e60",
+  "source_sha256": "4daf64b918532a9004dea9807b8001ec743244b20b5cd1892c7f3a7ce316d1ef",
+  "runtime_sha256": "b1c482ab5d20cf370868b27d0a3f62a67f1eb210f46731db7258016f56d31821",
+  "arithmetic": {
+    "status": "MEASURED",
+    "source_sha": "26c98adbec19f9e8ea0d46f260f080d4319a8e60",
+    "joint_first_passed": 54,
+    "joint_first_failed": 6,
+    "first_summary_sha256": "38bb2b05b3cadf2ed3bd034655d9d4d91796dc7ba96553575538a6e3f954d765",
+    "first_results_sha256": "2099de4335798878b9201aa8b9cc9325657dcbe75627ee206f766635835213a3",
+    "cases_sha256": "2d164ab42b1d2f0c558f3b50b340be42e91bc50654bc77ee1bc5bdac18086ab7",
+    "axes": {
+      "v17_requested_relation": {
+        "confusion": {
+          "tp": 24,
+          "fp": 0,
+          "tn": 30,
+          "fn": 6
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 0.8,
+        "f1_positive": 0.8888888888888888,
+        "specificity": 1.0,
+        "accuracy": 0.9,
+        "balanced_accuracy": 0.9,
+        "predicted_positive_rate": 0.4,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.2,
+        "mcc": 0.816496580927726
+      },
+      "v30_relevant": {
+        "confusion": {
+          "tp": 24,
+          "fp": 0,
+          "tn": 30,
+          "fn": 6
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 0.8,
+        "f1_positive": 0.8888888888888888,
+        "specificity": 1.0,
+        "accuracy": 0.9,
+        "balanced_accuracy": 0.9,
+        "predicted_positive_rate": 0.4,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.2,
+        "mcc": 0.816496580927726
+      }
+    }
+  },
+  "provenance13_checks": "PASS",
+  "canonical_engine_processes": 1,
+  "canonical_scorer_processes": 1,
+  "canonical_helper_calls": 1,
+  "parent_additional_Engine_scorer_helper_calls": 0,
+  "parent_readonly_verification": true,
+  "copy_bytes_all_exact": true,
+  "retry_rescore_relabel": 0,
+  "scope": "Synthetic source gate only. Real24/actual answer F1/CLI/release gates remain separate.",
+  "candidate_freeze_release": "Not released by this capture; root commit/push/agent notice follows."
+}

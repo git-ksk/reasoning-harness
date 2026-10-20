@@ -1,0 +1,108 @@
+{
+  "identity": "engine073-launch-independent-v5",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "frozen_utc": "2026-10-15T12:59:50.123939+00:00",
+  "candidate": {
+    "source_sha": "7e107f1c2c71cf55cd395d2b3aecb889e4f166a1",
+    "package_version": "0.7.2",
+    "source_file": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+    "source_sha256": "939f9b788666a61da59b558cbc03f7741dd5e96e698951823f736bbedf6d4d1c",
+    "identity_note": "Fixed source SHA, not unchanged pre-release package version, identifies this candidate."
+  },
+  "frozen_files": {
+    "author_cases.py": "2b8c86e95d0fe956f54f869acbd691501d15e9d5a47b224938395a36f0d36691",
+    "cases.json": "9cad5a2fca13d5869e72e26c817fea616eb708d2fff772aedea37e3df25c5f4f",
+    "inputs.json": "fbae5fc6b5c888fadd531a803efdde24d22efa36f02024569fc42d278e738bcf",
+    "protocol.json": "1fe186c7310d2f21e09f5f95448acadaf95ec7e2f4958747dc88e98ca587b671",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "static_preflight.py": "f35c8f52da08494d129528709c4365b749b0f9357ee3a22a76d3006650bd1a9f",
+    "static-preflight.json": "865bc2c41d80861ba81f9567d8cd7d6a476c4e2c3dc05935d47f98e41caada6a",
+    "pre-freeze-scope-review.json": "c7d174f10ecbc76468856fd2dee35d663dfdcad7547570680f087410b70cc847",
+    "predecessor-artifact-hashes.json": "3f50f13a03e7e4c9bd212618a9407ff7d90a8ed5c92b1134cb2329d94eacb4a4"
+  },
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "939f9b788666a61da59b558cbc03f7741dd5e96e698951823f736bbedf6d4d1c",
+      "bytes": 576340
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-876be67fd4b1ef90.rlib",
+      "sha256": "69a325c0ff64264161c09f2dfe67e410fa4bfd3c9a8dd3681a32dbafd35ff2a1",
+      "bytes": 72399320
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-fdb0c033eb5b5773.rlib",
+      "sha256": "6790acd878f7472babebca4ae5c0e9e4dcaab113f41c3a212935db0380a2bd68",
+      "bytes": 3436712
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v5-probe/probe",
+      "sha256": "d542e695e8f8057cbbc96336654158ac97eaa7bd76358fe38b289a9bea6b1b04",
+      "bytes": 2792456
+    }
+  },
+  "corpus": {
+    "file": "cases.json",
+    "complete_engine_input": "inputs.json",
+    "count": 60,
+    "positive": 30,
+    "negative": 30,
+    "matched_pairs": 30,
+    "fictional_targets": 30,
+    "real_documents": 0,
+    "newly_composed_after_fixed_candidate": true,
+    "prior_v2_v3_v4_seen_development": true,
+    "scope": "Direct TARGET was launched fact plus explicit claim/owner scopes or unresolved references; dialogue and publication artifacts do not require new affirmative predicates or numeric AST."
+  },
+  "probe": {
+    "source": "probe.rs",
+    "sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "inherited_unchanged": true,
+    "rustc": "rustc 1.88.0 (6b00bc388 2025-06-23)",
+    "parent_supplied_fixed_build": true,
+    "independent_rebuild": false,
+    "shared_target_changes": 0
+  },
+  "scoring": {
+    "file": "score.py",
+    "sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "inherited_byte_identical": true,
+    "protocol": "protocol.json",
+    "precommitted_before_first_API": true,
+    "positive": "requested_relation AND Relevant",
+    "negative": "not requested_relation AND not Relevant",
+    "v17_and_v30_both_required": true,
+    "permissive_change": false,
+    "post_observation_label_changes": 0,
+    "retries": 0
+  },
+  "stages": {
+    "static_preflight": "STATIC_ONLY PASS; complete 60 inputs, positive budget, no Engine/semantic observations.",
+    "semantic": "Not yet observed at freeze; exactly one planned first 60-case core probe.",
+    "semantic_sentinel": "None. Static operational preflight separate from semantic observation."
+  },
+  "preserved_predecessors": {
+    "all_file_hashes": "predecessor-artifact-hashes.json",
+    "v1_v4_all_unchanged_at_static_preflight": true,
+    "manifest_hashes": {
+      "v1": "71f9d1008f4e0d74703306b38a07f7593b8da0ac83006b9a4fd51a7a43f0392c",
+      "v2": "e9a3bbbb1d23936539704e27ce6b73b6fa6b09ba0796c595129391f1e2ec77df",
+      "v3": "59ace2e27e444274644d56b1585b242e220b954aa75b37a6268facd906fc876c",
+      "v4": "7ffcdff0c10874a166406e0542191cf5e7f3524563d75e8a72fb987cc89c5552"
+    }
+  },
+  "isolation": {
+    "production_implementation_inspected": false,
+    "parent_root_tests_historical_fixtures_corpora_inspected": false,
+    "prior_v2_v3_v4_known_seen": true,
+    "oracle": false,
+    "additional_agents": false,
+    "provider_API_calls": 0,
+    "Git_mutations": 0,
+    "cargo_invocations": 0
+  },
+  "record_contract": "Create-exclusive first invocation and raw, one application of immutable scorer; preserve initial failure/results/labels and save final hash receipt."
+}

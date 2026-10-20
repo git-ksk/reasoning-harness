@@ -1,0 +1,18 @@
+{
+  "identity": "engine073-launch-independent-v26",
+  "utc": "2026-10-18T02:38:50.015749+00:00",
+  "evaluator_freeze_sha256": "ad980eba8479eec16e78f5ef2c2d108ac949ed1cf4b6fe2277df4dc0e3742510",
+  "authorization_reference": "Parent /root NEW_TASK: M0 review PASS; explicitly permits new independent v26 30pairs60cases, scope/static/M1 and first-only observation, then closure.",
+  "parent_review_sha256": "9ca7b97928078e682275035e3da3d6a0519f62196ef353dd43f131ae98e35e47",
+  "parent_review_path": "/private/tmp/engine073-source27-v26-parent-M0-review/review.json",
+  "operator": "sole authorized independent evaluator /root/engine07_realworld_independent",
+  "M0_modified": false,
+  "Engine_invocations_before_authoring": 0,
+  "real_cohort_scorer_processes_before_authoring": 0,
+  "old_source_files_verified": 725,
+  "separate_preparation_files_verified": 5,
+  "parent_reference_files_verified": 36,
+  "runtime_executable_sha256": "6818b375e06549e01f5c203cfd8e881f180d285e3ca86c20d1f8895485377bd7",
+  "provider_model_network_Oracle_calls": 0,
+  "freeze_release_boundary": "Parent copy verification/closure permission required; evaluator does not release candidate after first alone."
+}

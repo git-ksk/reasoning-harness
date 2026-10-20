@@ -1,0 +1,1 @@
+Read-only first-run operational postmortem; no answer semantics or F1 measured. See postmortem.json. Original raw remains untouched. Frozen collector may be first-run only into a separately named output, with all planned missing rows preserved. The two-stage normal trace fails the frozen binder, so four raw displays are not four capture-complete answers.

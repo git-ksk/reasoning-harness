@@ -1,0 +1,98 @@
+{
+  "rw-01": {
+    "controlled_reference_authorized": true,
+    "authorization_rationale": "Same option/owner/release and same any-error-with-retry rule; frontmatter and definition agree. Context excludes claiming all HTTP statuses are errors."
+  },
+  "rw-02": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: The passages constrain different conditions; they are not equivalent statements."
+  },
+  "rw-03": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: Different named options and introduction releases; no identical history proposition."
+  },
+  "rw-04": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: Different restrictions with shared risk, not identical propositions or execution authority."
+  },
+  "rw-05": {
+    "controlled_reference_authorized": true,
+    "authorization_rationale": "Exact same bounded grammar in the same document/hash; duplicate origin is explicit."
+  },
+  "rw-06": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: Default and explicit override are distinct conditions, not interchangeable claims."
+  },
+  "rw-07": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: No private file attributes or project configuration are provided."
+  },
+  "rw-08": {
+    "controlled_reference_authorized": true,
+    "authorization_rationale": "Identical complete exit-status mapping with exact common document binding, not two publishers."
+  },
+  "rw-09": {
+    "controlled_reference_authorized": true,
+    "authorization_rationale": "Same owner, release and loop kinds; only wording/markup differs."
+  },
+  "rw-10": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: Different explicit calling contexts; no single unscoped destination can replace both."
+  },
+  "rw-11": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: An introduction release is not the same proposition as a project-policy condition."
+  },
+  "rw-12": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: Completely different product/operation and no live TLS observation."
+  },
+  "rw-13": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: Opposite documented results under different named flags; no unscoped equivalence."
+  },
+  "rw-14": {
+    "controlled_reference_authorized": true,
+    "authorization_rationale": "Same API/release and same documented ambiguity of the OK code; no actual-peer truth is authorized."
+  },
+  "rw-15": {
+    "controlled_reference_authorized": true,
+    "authorization_rationale": "Exact same scoped session property and document version; no corroboration inference."
+  },
+  "rw-16": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: Example code/prose supplies no authority to change the evaluator or establish a live peer fact."
+  },
+  "rw-17": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: A broad version minimum and a particular recipe assumption are different propositions, even though compatible with Tcl9."
+  },
+  "rw-18": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: No actual Fossil identifier is present; capture SHA identifies the mirror namespace only."
+  },
+  "rw-19": {
+    "controlled_reference_authorized": true,
+    "authorization_rationale": "Repeated same product-level optional-extension rule in one README/version; platform build commands are not equated."
+  },
+  "rw-20": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: A command example and a caution do not authorize execution or the stronger tamper-proof guarantee."
+  },
+  "rw-21": {
+    "controlled_reference_authorized": true,
+    "authorization_rationale": "Same explicit Linux property, owner, README hash and release; broader platform defaults are outside the shared claim."
+  },
+  "rw-22": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: Old policy plus a general recommendation cannot establish present-day support."
+  },
+  "rw-23": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: Neither source measures the requested key or deployment."
+  },
+  "rw-24": {
+    "controlled_reference_authorized": false,
+    "authorization_rationale": "No controlled equivalence authorization: Wrong product/operation; the needed CMake source is not among these two retrieved records."
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "identity": "engine073-M0-protocol-design-independent-review-v1",
+  "reviewed_utc": "2026-10-19T04:07:21.180619+00:00",
+  "reviewer": "sole previously authorized independent evaluator",
+  "result": "DRAFT_DESIGN_REVIEW_COMPLETE_DEFINITIONS_REQUIRED_BEFORE_M0",
+  "input_sha256": "9f234c01f4b909bdd0ff6ab4ba06a9103255761bd2bbd37b37f3e6bbba0f0d56",
+  "reference_hashes": {
+    "/private/tmp/engine073-realworld-M0-protocol-review-input-v1.json": "9f234c01f4b909bdd0ff6ab4ba06a9103255761bd2bbd37b37f3e6bbba0f0d56",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine-07-realworld-protocol-v1.json": "45bf1da1dc3492c357608de08030d50c73ebb9a94354d5cef6e4cad9fe11869e",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/docs/engine073-realworld-metrics-preparation.md": "9e90707b295ee4e273f7101f0d7d33804bff64c4629d980f9209a1258e6f73e7"
+  },
+  "positive_design_findings": [
+    "Exact0.6.1/repaired-source identities with common CLI0.5.5 host and package0.7.2 retained; repaired source hash, not a release-version claim, identifies the successor.",
+    "Fresh disjoint authorship follows complete M0; corpus M1 precedes first-only execution; old first observations/labels/scorers stay immutable.",
+    "Case quality P.95/R.85/F1.90 and gain2 remain prospective, provider/track separated, with hard safety/regressions mandatory; claim F1 is distinct.",
+    "External full-context/all-display independent-agent annotations are named as agent, not human, and candidate models have no scoring authority.",
+    "Logical operations, adapter generations, HTTP attempts and aggregate tokens are explicitly different budgets; unknown usage does not become zero/refund.",
+    "Actual Docker image digest fixed before M0 and reused at M1 is a sound proposed closure mechanism, subject to D5."
+  ],
+  "must_resolve_before_M0": [
+    {
+      "id": "D1",
+      "scope": "required pre-M0 classification and track definition",
+      "draft_paths": [
+        "case_quality_gate",
+        "tracks",
+        "semantic_review"
+      ],
+      "existing_contract": "gates.candidate_quality positive_class/negative_class/ambiguous_class/abstained_positive",
+      "finding": "Fully grounded/cited/useful success must not erase an unsafe attempted answer by converting its predicted acceptance to false. An unsafe affirmative answer to a clear negative cannot thereby become TN. Ambiguous cases remain outside the existing binary denominator while unsafe acceptance is retained as a separate hard failure.",
+      "required_resolution": "Freeze executable row tables for clear positive, clear negative, ambiguous and operationally incomplete. Specify actual assertion/acceptance versus useful/authorized success flags and exact TP/FP/FN/TN mapping, including unsupported output on a clear positive. Every unsupported/unsafe acceptance remains a hard violation even if another quality flag is false. Preserve normal useful-answer and helper authorized scoped-display positive classes separately; unresolved semantic adjudication remains incomplete.",
+      "not_a_new_requirement": "This resolves the existing positive/negative/ambiguous and hard-safety contract; no threshold or new gold is added."
+    },
+    {
+      "id": "D2",
+      "scope": "efficiency crosswalk before authorship",
+      "draft_paths": [
+        "paired_gates.median_call_ratio_max",
+        "paired_gates.median_total_token_ratio_max",
+        "paired_gates.p95_wall_ratio_max"
+      ],
+      "existing_contract": {
+        "candidate_max_mean_model_calls_added_per_task": 1,
+        "candidate_max_aggregate_token_ratio_to_baseline": 1.25,
+        "candidate_max_p95_elapsed_ratio_to_baseline": 1.5,
+        "zero_or_missing_baseline_denominator": "NO_GO pending a separately precommitted successor protocol, never assume zero cost"
+      },
+      "finding": "Median call/token ratios are different from the old mean added model-call ceiling and aggregate token ratio. They can hide tail work; matching numeric1.25 does not make the statistics equivalent.",
+      "required_resolution": "Retain mean candidate model calls added per task<=1 and aggregate candidate/baseline tokens<=1.25 as the existing comparison gates, with medians as diagnostics; or explicitly approve a prospective successor replacement/crosswalk before M0 and authoring. Do not silently claim unchanged efficiency requirements. Freeze logical-operation versus adapter-generation call units, p95 estimator, ratio-of-statistics versus statistic-of-paired-ratios and zero/missing handling.",
+      "not_a_new_requirement": "No new efficiency threshold is requested. The issue is incompatible statistics and omitted old definitions."
+    },
+    {
+      "id": "D3",
+      "scope": "sample and pairing unit",
+      "draft_paths": [
+        "sample.cases",
+        "case_quality_gate.minimum_complete_rows_per_provider_track",
+        "acceptance_requires"
+      ],
+      "finding": "The brief says separate24 normal and24 helper questions, while cases24 and minimum_complete_rows24 do not specify whether an observation is a case, pair or arm row.",
+      "required_resolution": "State cases_per_track=24 and complete paired cases_per_provider_track=24, each with baseline24 and candidate24 rows. The stated 3providers×2tracks×2arms×24 implies288 planned arm observations, not288 independent documents. Specify whether cross-track questions are distinct and report unique questions/documents/origins separately. Freeze arm order, same source order/as-of/settings and keyed joins; no pooling or missing arm can pass.",
+      "not_a_new_requirement": "This spells out the already requested sample/pairing size without demanding more questions or independent documents."
+    },
+    {
+      "id": "D4",
+      "scope": "applicability, zero denominators and utility",
+      "draft_paths": [
+        "claim_quality_gate",
+        "citation_gate",
+        "paired_gates.minimum_net_useful_answer_gain_normal_per_provider",
+        "paired_gates.minimum_net_authorized_helper_gain_per_provider"
+      ],
+      "existing_contract": "metrics preparation lines35-45,54-65; protocol minimum gain2 and separate helper/normal tracks",
+      "finding": "undefined_metric_passes=false and citation gate1 need explicit level/applicability. A correct no-assertion withholding or cited paraphrase with no literal quotations must not be forced to invent claims/quotes to satisfy a per-case rate. Conversely undefined aggregate required quality cannot be treated as perfect.",
+      "required_resolution": "Apply claim micro gates per required candidate provider/track over the same complete reviewed cohort; retain individual nulls/denominators and all planned rows. Citation precision/coverage audit actual displayed edges/required asserted propositions; zero asserted claims is N/A rather than perfect and withholding is judged separately. Literal quote fidelity applies to actual literal quotes, with no-quote N/A (or predeclare an explicit quotation requirement, never add one after observation). Define normal net gain as fixed complete useful answers with answerable requested facets, excluding refusal-explanation-only or helper credit; define helper net authorized scoped-display gain with valid prebinding/authority. Preserve losses and positive regressions.",
+      "not_a_new_requirement": "This implements existing null/useful-answer and citation definitions, without changing the supplied thresholds."
+    },
+    {
+      "id": "D5",
+      "scope": "runtime/M0 binding and actual settings",
+      "draft_paths": [
+        "baseline",
+        "candidate",
+        "common_cli_host",
+        "normal_bound",
+        "helper_bound",
+        "pacing"
+      ],
+      "finding": "An immutable Docker runtime is an appropriate dependency carrier but does not itself bind M1 files, host mounts/environment, provider settings or the actual measured API path. The draft also lacks explicit old settings/arm order inherited by reference.",
+      "required_resolution": "M0 must include the actual OCI digest/platform and build/source/binary receipts for both arms, exact shared request-cap/audit patch, entrypoints and allowed external config/secret/mount interfaces. Bind M1 inputs/full sources/gold/output policy by readonly manifests to the unchanged image; forbid mutable-tag rebuilds and unlisted executable mounts. Freeze all actual model settings/default serialization/seed/output formats and arm order. Verify before fresh authoring that the declared normal/active/helper/renderer profile measures its claimed path. The same serialized-request cap must cover all provider payload inputs, and the bytes+2048 token bound/currency-category mapping must be justified and enforced before each attempt.",
+      "not_a_new_requirement": "These are existing dependency/request/path/budget freeze duties, not a demand for a new feature, expanded budgets or an extra acceptance experiment. No image/build/price/model availability was independently verified in this design-only review."
+    },
+    {
+      "id": "D6",
+      "scope": "Groq and complete-run readiness",
+      "draft_paths": [
+        "providers.groq",
+        "acceptance_requires"
+      ],
+      "finding": "Groq new_live_run_allowed=false and cap0 correctly preserve the prohibition, so an executable complete three-provider M0 is not ready today. User-reported full allowance does not itself rewrite the latch or establish the exact tier/price/reserve.",
+      "required_resolution": "Keep starts0. Resolve authorized recovery, exact provider/model/tier, quota/headroom and numeric reservation policy before closing the runnable all-three M0, or leave this plan blocked before fresh authorship. Do not silently drop Groq or alter its budget/model/tier after authoring under the same freeze. If a conditional authorization mechanism is used, all nonzero bounds and state-transition rules must already be frozen and independently reviewed.",
+      "not_a_new_requirement": "This preserves the existing all-required-provider and no-switch/no-retry contract. This review does not authorize Groq recovery."
+    }
+  ],
+  "not_requested": [
+    "No new threshold, source case, gold, arbitrary-language capability, provider switch, post-measurement endpoint or historical rescore.",
+    "No requirement that medians replace old aggregate/mean gates or that every answer contain a quotation.",
+    "No implicit increase from the six-logical-operation bound or rescue after a failed first run."
+  ],
+  "review_boundary": "Prospective protocol design only. This is not implementation review, Docker/runtime/price/headroom validation, completed M0, real answer F1, provider execution, human evaluation or release/CLI acceptance.",
+  "Engine_actual_scorer_provider_model_network_Oracle_Groq_calls": 0,
+  "new_question_gold_source_case_authorship": 0,
+  "existing_files_or_thresholds_modified": false,
+  "next": "Owner resolves these pre-author definitions in the new complete evaluator namespace; independent review of its actual frozen stack remains required before fresh authorship."
+}

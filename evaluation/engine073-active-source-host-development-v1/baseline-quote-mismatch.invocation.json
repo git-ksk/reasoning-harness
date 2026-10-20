@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "/private/tmp/engine073-active-source-host-development-v1/host-baseline",
+    "/private/tmp/engine073-active-source-host-development-v1/baseline-mismatch-input.json"
+  ],
+  "cwd": "/private/tmp/engine073-active-source-host-development-v1",
+  "exit_code": 101,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "6b91bf9d13a3a94d2e93dd11feee109472e91d9373d9015fc9bd800dfdfd412f"
+}

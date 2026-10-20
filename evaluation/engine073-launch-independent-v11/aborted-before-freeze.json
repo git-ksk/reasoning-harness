@@ -1,0 +1,62 @@
+{
+  "identity": "engine073-launch-independent-v11",
+  "state": "ABORTED_BY_PARENT_BEFORE_DATA_GENERATION_FREEZE_AND_SEMANTIC",
+  "saved_utc": "2026-10-15T23:42:42.096555+00:00",
+  "outcome": "NOT_EVALUATED",
+  "reason": "Parent reported a known safety leak in the fixed candidate and instructed stopping before first semantic invocation. This evaluator did not reproduce or inspect the implementation.",
+  "parent_reported_finding": "A typed Object property retraction followed by a direct target-launch denial joined with because/although can remain v17 requested_relation and v30 Relevant; parent says candidate is not mergeable.",
+  "candidate_source_sha": "26c3baa9f5dfae7b901cf67aac9da0602e079a3e",
+  "candidate_source_sha256": "78e21dcade42b959c11548ee743002b98064c06d6d3a5c9888f12578536dddae",
+  "candidate_core_rlib": {
+    "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-4bf69bf8180549da.rlib",
+    "sha256": "04b4e117ef441e330ec0b2842b5e87327b0d4f233502758d4ece55a7969c086b"
+  },
+  "authoring_state": "Draft author script contains intended30 positive/30 negative paired constructions and offline expectations, but has never been executed; complete inputs/cases not generated or statically validated. No evaluation freeze occurred.",
+  "planned_cases": 60,
+  "generated_cases": 0,
+  "observed_cases": 0,
+  "semantic_observations": 0,
+  "Engine_invocations": 0,
+  "scorer_applications": 0,
+  "static_preflight_runs": 0,
+  "rustc_builds": 0,
+  "provider_calls": 0,
+  "current_evaluation_manifest": {
+    "path": "manifest.json",
+    "exists": false,
+    "sha256": null,
+    "reason": "Stopped before corpus generation/static preflight/full-input/scoring freeze. Final artifact manifest is an archival hash snapshot only."
+  },
+  "absent_unperformed_artifacts": [
+    "cases.json",
+    "inputs.json",
+    "protocol.json",
+    "pre-freeze-scope-review.json",
+    "static_preflight.py",
+    "static-preflight.json",
+    "manifest.json",
+    "first-invocation.started.json",
+    "first-invocation.json",
+    "first.stdout.jsonl",
+    "first.stderr.txt",
+    "first-results.json",
+    "first-summary.json"
+  ],
+  "dedicated_probe_binary_created": false,
+  "existing_draft_hashes": {
+    "author_cases.py": "f0af450ce26bc43487648874f8b00c58ac94fbd3e8b33eaddce8cc5cdec09afb",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "predecessor-artifact-hashes.json": "4280b10d39d51506a4c28244a105ef8c2d81706c1aef3762c58dbf7fb8bba4b3",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3"
+  },
+  "existing_draft_bytes_unchanged": true,
+  "v1_v10_files_unchanged": true,
+  "old_files_verified": 212,
+  "old_anchor_sha256": "c629df03035af3350271c9f0f133d6faf29289f6566b659274863c723d4acacc",
+  "post_observation_label_changes": 0,
+  "retries": 0,
+  "rescoring": 0,
+  "independence_limit": "Root finding was disclosed before freeze. V11 is an unexecuted archived draft, not a fresh completed acceptance result; do not present it as PASS/FAIL or60 observed cases.",
+  "scope": "Finite synthetic #520 API work only; not #531 real-primary-source24/provider/CLI acceptance."
+}

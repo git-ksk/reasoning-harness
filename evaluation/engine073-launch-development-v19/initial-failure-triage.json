@@ -1,0 +1,70 @@
+{
+  "identity": "engine073-launch-development-v19-initial-failure-triage",
+  "source_sha": "f3d9ad15ae2e4fc81dadaed87c4e55fa8bce1c7d",
+  "first_summary_sha256": "e4d1bc2e1d3e5bfda98e2e6add0911c972b588242b0329d843ed24fc1a431979",
+  "first_results_sha256": "a7a9b9050f64bc95103d34435fcbe37952d057a08651152028aba199ffbd9d62",
+  "first_outcome": {
+    "identity": "engine073-launch-independent-v19",
+    "candidate_source_sha": "f3d9ad15ae2e4fc81dadaed87c4e55fa8bce1c7d",
+    "manifest_sha256": "fe9eac3ac54374bae987d9480b299c9bcfbd836237eebdfc634a80a7dbb73509",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 49,
+    "failed": 11,
+    "incomplete": 0,
+    "positive_passed": 19,
+    "negative_passed": 30,
+    "negative_v17_requested_relation_violations": 0,
+    "negative_v30_relevant_violations": 0,
+    "positive_v17_withheld": 11,
+    "positive_v30_withheld": 11,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "1de010f228d7b4368d89479ffe442173526621ed760be917a454b70508b487cd",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "ae5c785a2616fbc9a71958df9e648587f86069758f555ca94ad822739d2e78fe"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "classification_kind": "post-observation input-surface composition only; not implementation root cause or independent acceptance",
+  "categories": [
+    {
+      "composition": "literal printed words vs event/source content",
+      "case_ids": [
+        "li19-003",
+        "li19-009"
+      ]
+    },
+    {
+      "composition": "complete property assertion and its later reference",
+      "case_ids": [
+        "li19-011",
+        "li19-035",
+        "li19-039",
+        "li19-049"
+      ]
+    },
+    {
+      "composition": "foreign event ownership, quote or owner apposition",
+      "case_ids": [
+        "li19-027",
+        "li19-029",
+        "li19-057",
+        "li19-059"
+      ]
+    },
+    {
+      "composition": "several typed roles corrected by separate verbs",
+      "case_ids": [
+        "li19-033"
+      ]
+    }
+  ],
+  "new_engine_executions": 0,
+  "new_provider_calls": 0,
+  "labels_or_first_results_changed": false,
+  "source_changed": false
+}

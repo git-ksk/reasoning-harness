@@ -6,6 +6,8 @@
 
 [PR #523](https://github.com/git-ksk/reasoning-harness/pull/523) repairs **two confirmed 0.7.1 relevance regressions** in successor source. Published `engine-v0.7.0` and `engine-v0.7.1` remain immutable. Published Reason CLI 0.5.4 continues to distribute Engine 0.6.1; #506's separate CLI candidate and any Engine 0.7 CLI adoption have their own acceptance.
 
+Current successor work: [Engine0.7.3 roadmap](engine-0.7.3-roadmap.md) / [#538](https://github.com/git-ksk/reasoning-harness/issues/538). The published0.7.2 history below remains unchanged.
+
 ## Post-publication follow-up — 2026-10-15 JST
 
 The0.7.2 publication and historical acceptance below remain preserved. Additional audit reproduced present-tense retraction/non-event residuals; #520 is reopened under [#531 real-world evaluation/adoption](engine-07-realworld-evaluation.md). Published0.7.2 CLI adoption is NO-GO. Repairs require a pinned successor; original tags and first observations remain unchanged.

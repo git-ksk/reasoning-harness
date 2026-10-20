@@ -1,0 +1,76 @@
+{
+  "identity": "engine073-launch-independent-v7",
+  "purpose": "Independent synthetic bounded #520 source-fix check, separate from #531 real-source24/provider/final-answer/CLI/release acceptance.",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "candidate": {
+    "source_sha": "a80391e7daaa59832dee24e5ebed351ed3e02980",
+    "evidence_relevance_rs_sha256": "3aaad220f7990d96ec18f54ef3d8f35d230bb0614159d87e2da9a94b869857ac",
+    "package_version": "0.7.2",
+    "identity": "Immutable source SHA before release metadata changes."
+  },
+  "prior_exposure": {
+    "seen": "V2-v6 cases and first results known to evaluator; now development controls. V1 had no semantic result. All initial files remain unchanged.",
+    "parent_reported": "Related44 tests/full/development replays PASS are parent evidence, not independently read/rerun here.",
+    "unread": "Production implementation, parent/root tests, historical/other corpora/fixtures.",
+    "fresh": "New whole ownership/property-context combinations after fixed candidate; not renamed prior blocks. Adaptive iterative successor testing acknowledged."
+  },
+  "design": {
+    "cases": 60,
+    "positive": "Factual target launch retains requested_relation and Relevant when corrective scope is explicitly a full different-product owner or a non-launch property/artifact/neutral context. No forced ambiguous positive.",
+    "negative": "Same-target/claim present retraction/withdrawal/denial/non-event or unresolved launch owner/reference must lose requested_relation and avoid Relevant.",
+    "matched_pairs": 30,
+    "canonical_targets": 30,
+    "real_documents": 0,
+    "affirmative": "Every candidate has one separate exact canonical TARGET was launched Excerpt; no other affirmative launch predicate, numeric prefix, alias/hierarchy rule or preparation behavior required.",
+    "name_scope": "paired-name-scope.json fixes 30 different fictional target/other full-name pairs with shared first token. Complete operative owner names are explicit. Shared token is not an alias, parent/child assertion or trusted structure.",
+    "property_scope": "Physical launch-button/icon/switch/key/indicator/launcher-housing/release-lever/latch/coating claims and launch-bulletin/banner/pagination claims are clearly non-event objects. Their truth is not approved by retaining launch.",
+    "unknown_ids": [
+      "li7-052",
+      "li7-054",
+      "li7-056",
+      "li7-058",
+      "li7-060"
+    ],
+    "scope_precommit": "pre-freeze-scope-review.json fixed before semantics; shortened/shared-token/collection references with missing owner are negative, no AST resolution demanded.",
+    "optimistic_binding": "Exact/exact proposal and exact_target/requested_relation/none raw for all cases; unsafe qualification must be corrected, not model extraction measured.",
+    "budget": {
+      "max_model_attempts": 2,
+      "max_tokens": 192,
+      "max_elapsed_ms": 90000
+    },
+    "labels": "Evaluator-controlled offline expectations excluded from Engine inputs, not external human-approved universal truth."
+  },
+  "scoring": {
+    "code_sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "inherited_byte_identical": true,
+    "positive": "effective_v17.relation_scope == requested_relation AND v30.disposition == relevant",
+    "negative": "effective_v17.relation_scope != requested_relation AND v30.disposition != relevant",
+    "v29": "Diagnostic only.",
+    "PASS": "60/60 fixed expected outcomes, no unsafe requested_relation/Relevant or withheld positive; no missing/duplicate/foreign/malformed/unexpected row; exit0 and empty stderr.",
+    "joint_gate": "Negative v30 Ambiguous with requested_relation still fails v17; keep the distinction explicit.",
+    "immutability": "No permissive scoring change/retry/rescore/post-result input-label-scorer edit or raw overwrite. Operational errors never count as safety success."
+  },
+  "stages": {
+    "static": "Complete input-schema/count/nonzero budget/direct supported fact/label exclusion/inherited code/prior hash checks; Engine/semantic0.",
+    "freeze": "Full labels/inputs/protocol/scoring/probe/recorder plus actual source/core/serde/executable hashes before first API.",
+    "semantic": "One first60 deterministic public v17/v29/v30 process, no semantic sentinel/model/provider.",
+    "score": "One fixed scoring application on original raw.",
+    "receipt": "Verify unchanged frozen/prior files, save final all-version artifact hashes."
+  },
+  "execution": {
+    "provider_API_calls": 0,
+    "Oracle": false,
+    "additional_agents": false,
+    "cargo": false,
+    "identity": "Actual HEAD and hash-only source/core/serde/probe/complete frozen file identities checked immediately before execution.",
+    "build_limit": "Parent-supplied completed build, hash-checked and linked with rustc; no independent rebuild/source inspection."
+  },
+  "limits": [
+    "Narrow controlled synthetic English API source-fix check, not #531 real-source acquisition/final answers, provider/quota/cost/headroom/CLI/release acceptance.",
+    "Candidate only; no baseline delta or comparable prior-set percentage improvement claim.",
+    "60 scenarios are30 matched pairs, not60 documents or exhaustive grammar/coreference/identity proof.",
+    "No truth of unrelated properties or general aliases/hierarchies/numeric AST/new affirmative predicates/temporal/preparation capability measured.",
+    "Serialized model reason names do not imply model calls.",
+    "After observation v7 is consumed and future use is seen development/regression."
+  ]
+}

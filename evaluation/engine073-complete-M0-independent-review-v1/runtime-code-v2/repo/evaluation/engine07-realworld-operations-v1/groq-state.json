@@ -1,0 +1,13 @@
+{
+  "status": "known_daily_quota_exhausted",
+  "provider": "groq",
+  "model": "openai/gpt-oss-120b",
+  "latest_observation_run": 38659305389,
+  "latest_observation_job": 116177364482,
+  "observed_tpd_limit": 200000,
+  "normal_typed_quota_failures": 47,
+  "helper_typed_quota_failures": 13,
+  "recovery_observed": false,
+  "organization_shared_usage": "unknown; never assume zero",
+  "new_live_run_allowed": false
+}

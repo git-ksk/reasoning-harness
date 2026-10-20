@@ -1,0 +1,5 @@
+# Rejected source20 development build binding
+
+No independent observation used these outputs. Default-profile cargo build emitted ecb398, while the manually pinned af992 library remained old sourcefd091b1 hash719c02. Parent detected the unchanged library hash before dispatching fresh evaluation. The verification script expected new source but consumed old library, reproduced old v20 failures and failed its assertion. This bundle is rejected and excluded from successor20 validation. First outputs/failure/freeze are retained, not overwritten or rescored. The exploratory literal-owner observation also used oldfd library, not intermediate successor20 code.
+
+Correction: explicitly set CARGO_INCREMENTAL=0 and DEV/TEST DEBUG=0, select actual rlib from cargo compiler-artifact JSON, confirm exact equality with the corresponding deps rlib and new hash/source20, and use a new source freeze/output/binary identity. Source/labels/scorer and independent478 archived files were unchanged. No model/provider/Oracle calls.

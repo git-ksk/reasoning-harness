@@ -1,0 +1,19 @@
+--- reviewed-v2
++++ v3
+@@ -9,7 +9,7 @@
+   "M0_receipt_sha256": "4023eb552ee964e0e99550a61a9f4c2d2800d2d994b7e42c439cf3cf7669d4d2",
+   "M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+   "runtime_image_archive_sha256": "69c2886e78b7e358bbb0d758bfd48c9a330521dc6ddd1a047f48496208d6229b",
+-  "workflow_sha256": "6b0414f06b13a1540e5a73ce907c42222daffd4fd19f2e7171c9c805a7bd9b9b",
++  "workflow_sha256": "6d244e022351a57e12bf942199b006c0407e97d0ff81f9aad0f91cd8e789501b",
+   "semantic_or_profile_changes": false,
+   "gold_or_questions_changed": false,
+   "operational_change": "Use sudo only for chmod -R a-w /tmp/frozen because immutable public source files created by the container are root-owned; validate full M1 again after chmod. Retain read-only live mount.",
+@@ -20,5 +20,6 @@
+     "manifest_sha256": null
+   },
+   "groq": "DEFERRED_BEFORE_CREDENTIALS;96 planned/0complete/nullF1;all-three NO_GO",
+-  "first_annotation_and_scoring": "Not performed; only first actual outputs from this separately declared operational identity may be annotated once."
++  "first_annotation_and_scoring": "Not performed; only first actual outputs from this separately declared operational identity may be annotated once.",
++  "artifact_collection_fix": "After collect and exact-container cleanup, always transfer ownership only of literal /tmp/results to the host uploader UID/GID; preserve file modes0600 and bytes. Chown failure is not ignored."
+ }

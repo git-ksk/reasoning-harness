@@ -1,0 +1,10 @@
+{
+  "provider": "groq",
+  "state": "DEFERRED_BEFORE_CREDENTIALS",
+  "reason": "Observed TPM8000 and Free TPD200000 below unchanged full cohort reservation1456128; separate future identity and verified recovery required.",
+  "planned_observations": 96,
+  "complete_observations": 0,
+  "actual_answer_f1": null,
+  "provider_attempts": 0,
+  "full_three_provider_acceptance": "NO_GO"
+}

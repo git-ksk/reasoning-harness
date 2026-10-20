@@ -1,0 +1,49 @@
+{
+  "identity": "engine073-realworld-v2-terminal-chain-independent-review-v2",
+  "reviewer": "/root/engine07_realworld_independent",
+  "closed_utc": "2026-10-19T23:38:05.056743+00:00",
+  "result": "CHANGES_REQUIRED_AT_REVIEWED_SNAPSHOT",
+  "terminal_chain_sha256": "2b6170f8ab51e12ad5cf5b2cd8a6a787587246e374e2b22920fba877137e44a7",
+  "snapshot_files": 30,
+  "tests": {
+    "scope": "Selected test_terminal_chain only; no other unittest class or aggregate quality helper invoked.",
+    "tests": 17,
+    "pass": 17,
+    "exit": 0,
+    "log": "terminal-tests.stderr",
+    "metrics_computed": false
+  },
+  "repair_verification": "Earlier TC1 omission/target/round tests, simple TC2 phantom-round/recovery tests, and TC3 no-progress acceptance control now pass in snapshot. New direct tests independently expose remaining binding gaps.",
+  "findings": [
+    {
+      "id": "R1",
+      "classification": "FIXED_LIVE_RUNTIME_BINDING_GAP",
+      "reproduced": "Replace result.safety_runtime verified_target_v1 with baseline and remove trace+payload safety observations: capture.bind_normal returns grounded_answer.",
+      "reason": "Consistency with a self-declared payload runtime is not equality to the M0/argv-declared fixed live runtime. Generic baseline profile control is legal only when baseline is actually selected. CLI852 defaultcurrent maps VerifiedTargetV1.",
+      "minimum_fix": "Bind exact expected per-arm runtime identity from frozen protocol/argv; explicitly pass --safety-profile current or equally prove the host default. Keep generic baseline controls at a lower-level API, not inside fixed-live capture."
+    },
+    {
+      "id": "R2",
+      "classification": "RETRY_GROUNDING_SUBSTITUTION",
+      "reproduced": "Legal two-round changed-grounding control passes; inserting an additional grounding with the original artifact after the verified changed retry also passes.",
+      "reason": "retries[0] is checked for changed artifact while artifact=grounding[-1] can select another event. The authoritative retry transition is not the actual selected frame.",
+      "minimum_fix": "For round2 require the grounding inventory to be the sole correctly phased previous-round retry record and select exactly that artifact; reject unconsumed/extra/replaced grounding."
+    }
+  ],
+  "broader_v2_static_review": {
+    "host_identity": "build.py pins common8525330 and baseline4abee/candidateab3c, confirms unchanged CLI main and equal provider patch hashes; records actual CLI package0.5.4. No binary was built or executed independently here.",
+    "pre_HTTP_bounds": "Audited24 generations/1wire each, aggregate24000input4096output, serializer/wire bounds and unknown-usage stop remain explicit and identical in both arms. No concrete cap bypass found in this bounded reading.",
+    "privacy": "Image assembly copies explicit evaluator/dependency/bin namespaces, no home/.git/credential store. Journals record ModelRequest/Response and JSON wire body plus allowlisted rate headers; no credential-header/API-key logging path found in reviewed code. Full model/source journal remains sensitive raw research data and is not blanket-cleared for publication.",
+    "collection": "collect_checked opens the lane plan inside the root container and fails on inaccessible/missing plan; inherited host test-f silent skip removed from that component.",
+    "not_complete": "The workflow currently builds/tests images only; no final live/calibration wrapper or completeM0/runtime receipt reviewed. Its eventual wall allowance must accommodate48x360+24x100=328min callback maxima plus setup/collection/grace. Known failure still suppresses the provider under inherited scheduler policy.",
+    "calibration": "Consumed24-data budget completion must use a declared development identity/provenance, not pretend old authorship occurred after newM0. No fresh accuracy/gold before actual runtime/M0 closure."
+  },
+  "parent_followup": "Parent reports R1/R2 already fixed in newer uncommitted files. This report preserves the original reproduced snapshot and results; later targeted confirmation belongs to a separate readonly review.",
+  "prohibitions_maintained": [
+    "No actual accuracy cases/gold authored",
+    "No Engine binary/provider/model/network run",
+    "No aggregate scorer, quality helper or F1 calculation",
+    "No source or existing artifact edits",
+    "No M0 acceptance issued"
+  ]
+}

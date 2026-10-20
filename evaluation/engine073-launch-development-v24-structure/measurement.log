@@ -1,0 +1,102 @@
+{
+  "historical": 597,
+  "original": 14,
+  "old_seen": 1200,
+  "v24": {
+    "inputs_sha256": "74569d5027c1db3faa8aa0db930220b356970daa8646ad3198f6ece7414c80bf",
+    "cases_sha256": "873b4f02e7f45791f05cd1edc13d4aea0fe7bebfbd0c5f36f010a69a2b964948",
+    "baseline_first_source_sha": "3ccda6b4263eb5210477660b11f6926ec0186f4e",
+    "before_first_axes": {
+      "v17_requested_relation": {
+        "confusion": {
+          "tp": 17,
+          "fp": 0,
+          "tn": 30,
+          "fn": 13
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 0.5666666666666667,
+        "f1_positive": 0.723404255319149,
+        "specificity": 1.0,
+        "accuracy": 0.7833333333333333,
+        "balanced_accuracy": 0.7833333333333333,
+        "predicted_positive_rate": 0.2833333333333333,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.43333333333333335,
+        "mcc": 0.6287677132370127
+      },
+      "v30_relevant": {
+        "confusion": {
+          "tp": 17,
+          "fp": 0,
+          "tn": 30,
+          "fn": 13
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 0.5666666666666667,
+        "f1_positive": 0.723404255319149,
+        "specificity": 1.0,
+        "accuracy": 0.7833333333333333,
+        "balanced_accuracy": 0.7833333333333333,
+        "predicted_positive_rate": 0.2833333333333333,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.43333333333333335,
+        "mcc": 0.6287677132370127
+      }
+    },
+    "after_development_axes": {
+      "v17_requested_relation": {
+        "confusion": {
+          "tp": 30,
+          "fp": 0,
+          "tn": 30,
+          "fn": 0
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_positive": 1.0,
+        "specificity": 1.0,
+        "accuracy": 1.0,
+        "balanced_accuracy": 1.0,
+        "predicted_positive_rate": 0.5,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.0,
+        "mcc": 1.0
+      },
+      "v30_relevant": {
+        "confusion": {
+          "tp": 30,
+          "fp": 0,
+          "tn": 30,
+          "fn": 0
+        },
+        "n": 60,
+        "positive_support": 30,
+        "negative_support": 30,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_positive": 1.0,
+        "specificity": 1.0,
+        "accuracy": 1.0,
+        "balanced_accuracy": 1.0,
+        "predicted_positive_rate": 0.5,
+        "false_accept_rate": 0.0,
+        "false_withhold_rate": 0.0,
+        "mcc": 1.0
+      }
+    },
+    "passed": 60,
+    "mismatches": [],
+    "scope": "same frozen consumed input/labels, new pinned source on same consumed input/labels; first FAIL unchanged; not fresh acceptance",
+    "historical_v29_all60_equal": true
+  }
+}

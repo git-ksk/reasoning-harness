@@ -1,0 +1,108 @@
+{
+  "identity": "engine073-launch-independent-v15",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "purpose": "Finite synthetic #520 source-qualification only; not #531 real-primary-source24, ordinary CLI/provider/human evaluation or release adoption.",
+  "candidate": {
+    "source_sha": "9a40b9277b59ba7a2606eedad77819e833496659",
+    "source_sha256": "12d42896ef75492f2cd7229125a1a731ae4eb44215756d851b99d5370d33ce26",
+    "package_version": "0.7.2"
+  },
+  "prior_exposure": {
+    "known": "v1-v14 are consumed development examples; v11 remains NOT_EVALUATED. First failures unchanged. No old author/cases/inputs copied for v15. Prior finite-scope rubrics and own results are known.",
+    "fresh": "Thirty newly authored semantic contrasts after this source freeze. New publication/specification situations combine complete printed-date/page-count/typeface/physical-property correction objects, explicitly scoped replies and title owners, cause/contrast/reporting clauses, conflicting exemption descriptions, and unresolved event references. Ordinary repeated API grammar is intentional; no old case text, target-name substitution or unexecuted draft template reused.",
+    "unread": "Engine implementation, root tests, historical/other corpora/fixtures.",
+    "parent_reported_not_independently_verified": "1530 workspace PASS,66 related PASS, strictClippy/fmt/fixtures/archive/historical597/original14/known720/compound4 PASS. Parent provided stable core and matching serde; evaluator hashes and links only."
+  },
+  "design": {
+    "cases": 60,
+    "positive": 30,
+    "negative": 30,
+    "pairs": 30,
+    "canonical_targets": 30,
+    "real_documents": 0,
+    "affirmative": "Exactly one separate unadorned TARGET was launched. signal in each input, placed before or after context. No new positive launch predicate.",
+    "positive_rule": "Uncontradicted direct target launch; all adverse corrections completely identify a non-launch physical/document property or one fully named foreign event. Values are not fact-checked or approved.",
+    "negative_rule": "Semantic target launch/existence/whole-source denial, unresolved launch referent/owner, mixed owner, or conflicting target/foreign ownership. Both no requested_relation and non-Relevant required.",
+    "finite_scope": [
+      "Explicit finite Object/Subject/Item and this/that/the same-role reference; quoted/denial-object complete property apposition or adjacent author reply.",
+      "Single full owner supplement fills expressly unowned same-role launch frame; direct next-line name, explicit title/heading designation supported. Existing target owner cannot be overwritten.",
+      "Cause/contrast/reporting/parenthesized clauses keep their own semantic target. Safe property corrections do not consume target denial or unknown event in a separate clause.",
+      "Actual quoted event claim remains an event when printed on packaging; literal typography remains a property. Unspecified property value is not unknown launch scope.",
+      "Canonical full Clip names are explicit in policy and context; neutral name notes do not cure actual omission."
+    ],
+    "not_required": "General alias/coreference graph, number AST, hierarchy, chronology/truth inference, new affirmative predicates or arbitrary vocabulary/syntax.",
+    "scope_ambiguity_precommitted": {
+      "unknown_or_missing_launch_owner": [
+        "li15-016",
+        "li15-024",
+        "li15-026",
+        "li15-032",
+        "li15-038",
+        "li15-042",
+        "li15-046",
+        "li15-050"
+      ],
+      "mixed_owner": [
+        "li15-018",
+        "li15-052"
+      ],
+      "target_owner_conflict": [
+        "li15-012",
+        "li15-020",
+        "li15-056"
+      ],
+      "whole_source_denial": [
+        "li15-040"
+      ],
+      "canonical_clip_positive": [
+        "li15-041",
+        "li15-043"
+      ],
+      "actual_context_gap": [
+        "li15-026",
+        "li15-042"
+      ]
+    },
+    "raw_risk_axis": "Raw context_gap only in the two actual missing-owner negatives, each also independently semantic-unknown. No pure raw-risk joint negative. Identity/relation/risk are orthogonal; raw/effective risk recorded diagnostically outside inherited score. A combined enum is not component-preservation proof.",
+    "binding": "Optimistic exact target/relation proposal and raw exact_target/requested_relation, no model extraction/equivalence/authority validation.",
+    "labels": "Offline author scope judgments, excluded from Engine inputs; not universal truth or independent human approval.",
+    "budget": {
+      "max_model_attempts": 2,
+      "max_tokens": 192,
+      "max_elapsed_ms": 90000
+    }
+  },
+  "scoring": {
+    "file": "score.py",
+    "sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "inherited_byte_identical": true,
+    "positive": "v17 requested_relation AND v30 relevant",
+    "negative": "v17 not requested_relation AND v30 not relevant",
+    "PASS": "All60 joint expectations, unique valid60 rows, exit0 and empty stderr. Incomplete/ops absence never safety PASS.",
+    "v29": "Diagnostic only",
+    "immutable": "One process, one scorer. No retry, relabel, rescore, input edit or output-dependent scope easing."
+  },
+  "stages": {
+    "static": "STATIC_ONLY required fields/count/nonzero budget/code identity/old hashes, Engine0 semantic0.",
+    "freeze": "Complete labels/inputs/protocol/scorer/probe/recorder/static results and actual source/HEAD/core/serde/executable identities fixed before API.",
+    "semantic": "One first60 process, no sentinel or provider.",
+    "save": "Exclusive first raw/results/summary/receipt, README, before/after identities, all-version self-excluding final hashes; read-only at completion."
+  },
+  "execution": {
+    "source_content_read": false,
+    "Oracle": false,
+    "additional_agents": false,
+    "provider_API_calls": 0,
+    "cargo_invocations": 0,
+    "Git_mutations": 0,
+    "identity_guard": "Actual HEAD/source/core/serde/probe and frozen files rehashed immediately before first process."
+  },
+  "limits": [
+    "Narrow candidate-only synthetic source gate, no baseline delta or cross-set rate inference.",
+    "30 matched contrasts/fictional targets, zero real documents; not statistically independent60 language trials or exhaustive reference/syntax coverage.",
+    "Prior failures informed iterative development; v15 consumed on observation.",
+    "No ordinary CLI acquisition/final answers/provider quota/cost/human/adoption/release gate measured.",
+    "Raw-risk diagnostics outside inherited score, no pure-risk ablation/component proof.",
+    "Serialized model-path reasons do not imply any provider/model call."
+  ]
+}

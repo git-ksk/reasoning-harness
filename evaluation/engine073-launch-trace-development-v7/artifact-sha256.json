@@ -1,0 +1,9 @@
+{
+  "README.md": "6005bc766016a505d843a31752cc875e8ccf430513950fd573c938537e8798da",
+  "identity-before.json": "4ff4e62f2fc685b90daa95b80544ee97521e58a1a0d3b7036d1701c20cd5bf1f",
+  "instrument.py": "edc9ef183da8003c0d55bd612c55f5bf449791b9d81f6a9140240e0a018329aa",
+  "instrumentation.patch": "662b5e6efca77b26deb537ddd0f3d10f710559f968aca447c630b6900ae94431",
+  "summary.json": "eaccf892eb8fcf3ea432d3c382defe1b722b04b5f7d94858f8e71b570a7c56d5",
+  "test-pass.log": "737de73614d6eab5905e7bcf2d8d6a4ba08815f56c8353ce1dfceab38c1f7983",
+  "trace.json": "4d65ebcb116a359b47c77d5bf5d55cddef542133c3785822300b5bae85fea972"
+}

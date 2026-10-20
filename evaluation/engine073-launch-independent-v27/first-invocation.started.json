@@ -1,0 +1,252 @@
+{
+  "state": "started",
+  "utc": "2026-10-18T15:19:36.132478+00:00",
+  "command": [
+    "/private/tmp/engine073-independent-v27-runtime/probe",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-independent-v27/inputs.json"
+  ],
+  "pre_invocation_identity": {
+    "verified_utc": "2026-10-18T15:19:36.132033+00:00",
+    "head": "26c98adbec19f9e8ea0d46f260f080d4319a8e60",
+    "artifacts": {
+      "candidate_source": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "sha256": "4daf64b918532a9004dea9807b8001ec743244b20b5cd1892c7f3a7ce316d1ef"
+      },
+      "probe_executable": {
+        "path": "/private/tmp/engine073-independent-v27-runtime/probe",
+        "sha256": "b1c482ab5d20cf370868b27d0a3f62a67f1eb210f46731db7258016f56d31821"
+      },
+      "runtime_probe_source": {
+        "path": "/private/tmp/engine073-independent-v27-runtime/probe.rs",
+        "sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d"
+      },
+      "runtime_cargo_metadata": {
+        "path": "/private/tmp/engine073-independent-v27-runtime/cargo-build.jsonl",
+        "sha256": "583b29c9ead57ea05edfdd762d5161910f9b1a9b2fff428b01dc79460c6605dc"
+      },
+      "runtime_identity": {
+        "path": "/private/tmp/engine073-independent-v27-runtime/identity.json",
+        "sha256": "01e6f3a2dc478d62d23518b9226b85924882fabc7e75ba79aed0007693296756"
+      },
+      "opaque_parent_controls": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-independent-v27-parent-controls/receipt.json",
+        "sha256": "01e6f3a2dc478d62d23518b9226b85924882fabc7e75ba79aed0007693296756"
+      },
+      "parent_reference_00": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/historical-after.jsonl",
+        "sha256": "9f378662ae651f7c7a2394d7c00c918c9eec7701628ccd339c6d2d181fba47f5"
+      },
+      "parent_reference_01": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/identity-before.json",
+        "sha256": "9931d1a6b6bd6259d83fadbba3211fb959aa73b0b0911684bcf1768845dd8ba2"
+      },
+      "parent_reference_02": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/invocations.json",
+        "sha256": "16c410cc16abdd56d82632ad2b8819e6a913926b837b1d84e3c3e483d2036e95"
+      },
+      "parent_reference_03": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/original-audit-after.jsonl",
+        "sha256": "5c32b97127644a0be7094ba23cf629349bed75aa91e995897ec61870bd98d83b"
+      },
+      "parent_reference_04": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/owner-adjunct-after.jsonl",
+        "sha256": "80ffe4d9e5b92fc2add8c80b26b2b8ebb0e20d0742d694bf72ccefffe1d687be"
+      },
+      "parent_reference_05": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v10-after.jsonl",
+        "sha256": "bfa86a686abdec2896394f63d5309df8c32bd1ee29bdeb3cfeb7df4d97e2d41f"
+      },
+      "parent_reference_06": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v12-after.jsonl",
+        "sha256": "898d1d0e828cdeb76a2fef857e68efd51a0fab0692bc68c474ce3dfde8c96155"
+      },
+      "parent_reference_07": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v13-after.jsonl",
+        "sha256": "a83ee704e95a4b772e1f0a6274d08f426e277584e847a54cc847a10ddb4deab2"
+      },
+      "parent_reference_08": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v14-after.jsonl",
+        "sha256": "68e2b408f08e368922ff372d064b7d18b2cf9bdd4a3dee4b73ed2ddbd0de0f29"
+      },
+      "parent_reference_09": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v15-after.jsonl",
+        "sha256": "b6b7a1c86a49c50aee79faef7da105686b7313c86a9fae0080f61b4c7878b559"
+      },
+      "parent_reference_10": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v16-after.jsonl",
+        "sha256": "9142282f21b9b1c40ff4834ceeb4d42dd7ea8ea078f4f53b28b82148312f3d97"
+      },
+      "parent_reference_11": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v18-after.jsonl",
+        "sha256": "1d9361a27b24827779822e8d8771f1eed343a8872e9415fc347930cda6590721"
+      },
+      "parent_reference_12": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v19-after.jsonl",
+        "sha256": "d9d7479b92de668cb365d0164899b85113475b9df595fe9341bcbef9c69bfda3"
+      },
+      "parent_reference_13": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v2-after.jsonl",
+        "sha256": "acc897a23e50d0575b3fec4025d6cee1b8cf45bb770327a4275e0792f15e7f56"
+      },
+      "parent_reference_14": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v20-after.jsonl",
+        "sha256": "f08c2c0abfb33114318f5f1239f6009dc2045e1104374019257eff656df28863"
+      },
+      "parent_reference_15": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v21-after.jsonl",
+        "sha256": "797a074cadd325a890376d4e858bb6d764f24f7ced96bf2585c58fa3f3d4d231"
+      },
+      "parent_reference_16": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v22-after.jsonl",
+        "sha256": "bd567c9d37f11ea22ecd7e798598afcc1852e412b338e71c6601f65c66211349"
+      },
+      "parent_reference_17": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v23-after.jsonl",
+        "sha256": "8f260f2ca713b1c903d1c45a1dd4360bee2cce06123e7c29816cc73350185f7b"
+      },
+      "parent_reference_18": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v24-after.jsonl",
+        "sha256": "cbd379e2f20b09a74ab7af34ebfb8647473ae2d7ea0981d7a40fcb1978acc983"
+      },
+      "parent_reference_19": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v25-after.jsonl",
+        "sha256": "d1c9fc03eb543df29fa6897406899d173cee275270d3572581757eaf29cce522"
+      },
+      "parent_reference_20": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v26-after.jsonl",
+        "sha256": "e9b1dce31f8c59257f217e8b7a8dbcfc716d0e08eca4ce77512beda42f409d70"
+      },
+      "parent_reference_21": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v3-after.jsonl",
+        "sha256": "f7211277b5a04466ee10ad50ee715a497a7e3112baa3fde6f644042736d48129"
+      },
+      "parent_reference_22": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v4-after.jsonl",
+        "sha256": "99ea2a1b07461ebc522591a7a2ddf5af6ef49d30aba463c028a9660d89fc34dd"
+      },
+      "parent_reference_23": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v5-after.jsonl",
+        "sha256": "24cffa7ec083b9eb08fe11326db5c91885522f6f0f6fb8f8ec33e2cbaca5a1e1"
+      },
+      "parent_reference_24": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v6-after.jsonl",
+        "sha256": "968d51a79db3783c03b118a38ec7a12cb570ffde79502bfe5bff2de308729da9"
+      },
+      "parent_reference_25": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v7-after.jsonl",
+        "sha256": "215852736588714dc5d438d7d18d3f3b68acbd6888fa5e1c846fe4222d9a4fa4"
+      },
+      "parent_reference_26": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v8-after.jsonl",
+        "sha256": "dfb203dcd475aa651cb0020590f19525bed11c2ca6dbc5f9ddd6089da875794f"
+      },
+      "parent_reference_27": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v9-after.jsonl",
+        "sha256": "c64ad8c0756edf9a8098674efcf5eb0293aa38a9d5dadd37942b9faf05818957"
+      },
+      "parent_reference_28": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/summary.json",
+        "sha256": "570338048b30b73e3d42aafb97f8f82154f90d4a59397f6641b57c7e0423c6a5"
+      },
+      "parent_reference_29": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/supplemental-literals-after.jsonl",
+        "sha256": "f5a36a6354ecee867a754c069e6b1f0aa967e989b1e11930837367c6b607dea0"
+      },
+      "preserved_preparation_0": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/docs/engine073-realworld-metrics-preparation.ja.md",
+        "sha256": "30a4f73c4f0cd4a6aa2a284f3243d997dbc1f769751defcb7617659f6605df08"
+      },
+      "preserved_preparation_1": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/docs/engine073-realworld-metrics-preparation.md",
+        "sha256": "9e90707b295ee4e273f7101f0d7d33804bff64c4629d980f9209a1258e6f73e7"
+      },
+      "preserved_preparation_2": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/artifact-sha256.json",
+        "sha256": "6b83e2b6b090f46da65580bf27486ada831d53e9827d77c0081119fa5c969e22"
+      },
+      "preserved_preparation_3": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/review.json",
+        "sha256": "787da5422330047f4ca23f1020df867bc66eb6794f45fd40c01f72314d7189fc"
+      },
+      "preserved_preparation_4": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/reviewed-input-sha256.json",
+        "sha256": "76b41a7c06dc1893106695253dc303164e2905881cdeffabe26ca0251f7e36c0"
+      }
+    },
+    "frozen_files": {
+      "README.md": "bcbf469029f62025ed80026ade236f505863b4e942653fb3c7d7def968643d1b",
+      "author-generation.json": "3889e5b82c2727cdae3f44f44ebbc51c7a459de520227bbff9bea98d415d6029",
+      "author-generation.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "author-generation.stdout.txt": "c3ab6ce2b97d810d1f2b3c8294a1a37d0c116cc5e68d5643b6d8798c4cf11de8",
+      "author_cases.py": "4bb92c08bc9a7415166c296974743056e0c2291d2c50a06645ca04b740849e60",
+      "authoring-start.json": "2b30ef6a54dac4cd4fe296970e9ca11282c50893f4174b707a66dbcded2c9538",
+      "cases.json": "2d164ab42b1d2f0c558f3b50b340be42e91bc50654bc77ee1bc5bdac18086ab7",
+      "commands.md": "483f6b5b79759e6d0823634d63b08a4fdee94444fa3a091ce658bc5e448606ce",
+      "evaluator-freeze.json": "aaa4b0d2494c3a89d87b3c0714847ee8d468f84295e1f868e7518398e41635bb",
+      "evaluator_contract.py": "003383e055d9f385356b0df7c4d6f69bbdba922062b7384d67fe3a646f8e160e",
+      "execute_first.py": "5fb253c0751965e25c988082f2c6a387eec3149ffab756b803ac7198d145a8d2",
+      "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+      "fixed-artifacts.json": "642ca8d4aef5e9febe4dedd3a775fa84d24c7309cbc8f98cd46b2d20a4ba5bba",
+      "freeze_corpus.py": "ee351deee68bd757149d35ea3b9471843c99481f49157ba00656db383bd343a8",
+      "inheritance-equivalence.json": "c069437e730c460d017e180d44657a29045c3baa308d99b09405344701246515",
+      "inherited-evaluator-hashes.json": "6797b17c757cbcafaf97430765e46c07f71376bf6b1afc264c010f868786771f",
+      "inputs.json": "3aa14b15997652ce09564b3c10b7dc99ab4ac91becd13ce8ac6b8b5b2e4e7baf",
+      "legacy_parse_reference.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+      "metrics-spec.json": "4120bdb90284780d73070e2267dc43c6b9ff6a028c3fecb8101ab86d92773653",
+      "parent-M0-review.opaque.json": "0d4a2017c06df6d3c046bf52832995f84b15f80dd29e46ffab2cee260e11f0f6",
+      "parent-controls-snapshot.json": "a1e57bd0de943041136c8fbcf3f285df929053a76c1f2d42d8f38eb4bfaf738e",
+      "parent-controls.opaque.json": "01e6f3a2dc478d62d23518b9226b85924882fabc7e75ba79aed0007693296756",
+      "parent-receipt-file-hashes.json": "09661e1c78e17f3816c40dd27b5b787cd5155484d15d89b4e3f8b82cce264cf5",
+      "pre-author-hash-verification.json": "476c3e0f5586d2cc5cc514366c71ad1445631843df3db7508daea5e8d1fe5d82",
+      "pre-author-receipt.json": "64cefb4e0b155c3d11cada365c58ee85c65936d04afd4573c577316613ea62d0",
+      "pre-author-review.json": "c85186a8c1f17e2cab8570c6f9da35d87ee5b05cd26c076943fc84dc5d3f94e2",
+      "pre-freeze-history/evaluator_contract.py.identity-count-adaptation.diff": "4ed43c48dd98a4f26abe01b3ad3a14631a68d4c07ec77d5b5a452d1a3a83b7b6",
+      "pre-freeze-history/evaluator_contract.py.inherited-v26.txt": "ee226b3eeb0f570c7846e8e1f2d236a5dce63b97b2b16e6a5ca22e51d4376897",
+      "pre-freeze-history/execute_first.py.identity-count-adaptation.diff": "be28aaa31aebf3d055f924be7aa33927813f15660893d9172aa02e0c63aea2e1",
+      "pre-freeze-history/execute_first.py.inherited-v26.txt": "47880cf22c7efcc4a87b506e88be855ab1f7b68415dbc3da308911b487d78772",
+      "pre-freeze-history/freeze_corpus.py.identity-count-adaptation.diff": "1e30f2f781ced025d8d39a2619952ebc13a9046c0f14719134fef1350eeaa8db",
+      "pre-freeze-history/freeze_corpus.py.inherited-v26.txt": "9827ef2153b804c91ea13c4aad672a7acd2abceb9779859eba2e2bbd3e3fc13b",
+      "pre-freeze-history/parent-controls-snapshot.before-full-completion.txt": "c1a26a4218bb7be0999ce94f95e4c16c389442bc07702ace6a9ba538592c3d63",
+      "pre-freeze-history/parent-full-completion.diff": "6b2e429d947d55efb6df334d5ffc16b23bdb29a49880138570dd53ecbbb8094c",
+      "pre-freeze-history/parent-full-completion.json": "cdef2794dcbe697754c2b3c2f6d88f073c5186b386d124f711b13b42a904b3b5",
+      "pre-freeze-history/score.py.identity-count-adaptation.diff": "90d41fb99347d7bfff343728f197daee4dfbef1896623d75a893460d9a43695a",
+      "pre-freeze-history/score.py.inherited-v26.txt": "62d95b1fbbdb1e9a4c204979d2b6502653af1ed9e78c07e4edc779448cf337e6",
+      "pre-freeze-history/selftest.py.identity-count-adaptation.diff": "ba4caeee4239c9d42888762a9c04dfb867d43de81b2987dbd4c12d7332ed8508",
+      "pre-freeze-history/selftest.py.inherited-v26.txt": "703738f130465076586b6b82254b21a0c21ff44b4abb52886c72c7ce7f7a64ca",
+      "pre-freeze-history/static_preflight.py.identity-count-adaptation.diff": "a88851ef608972c6a66b544fff327a496e01d88ef6175ba827925c8a9750d63c",
+      "pre-freeze-history/static_preflight.py.inherited-v26.txt": "e8660fc1a28d1065203c7060b777492fa62dc7e3c51bc64324a61b0cef23e54e",
+      "pre-freeze-history/test_evaluator.py.identity-count-adaptation.diff": "60107c98b1f85c09db992f069ecf8e4d9a0df4b27f55d40b8ddff68ca1564585",
+      "pre-freeze-history/test_evaluator.py.inherited-v26.txt": "d3428441809f8035b9e3721570fbe92584bcc2cd0c1f6aab43fa015ff87e2dd8",
+      "pre-freeze-history/verify_preparation.py.identity-count-adaptation.diff": "f5dafcefdd62d8b320d49087476d88cc72d10d1ec8dc1fe5a1c92884d628fd8e",
+      "pre-freeze-history/verify_preparation.py.inherited-v26.txt": "eb9ce6ec72b80d1b14b920e8dbf2beb8998e4b5c1f2128fee0ed7453e374b525",
+      "pre-freeze-verify.invocation.json": "9a7f9d0d66c45897fe333ec564f5833a823fb1d8256da8e24421d937a988ca60",
+      "pre-freeze-verify.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pre-freeze-verify.stdout.txt": "1b88bb3e67d7c7a5b5678f5b48f6321822e5cb6da0f5fbd785cc4efc6d7cff9c",
+      "predecessor-artifact-hashes.json": "3e85e89fed2ba833beaa0646c521a1e47f2d4aa470ebd99b15817ee2c293f752",
+      "preparation-scope.json": "e0cd626b4a8a595d1939a4af60cf4ed765b000e950cd63d29073568974ffb6bf",
+      "preserved-preparation-hashes.json": "11171ab98fd8cc53606cf179395cf81c2adccdad32834e9178e0c938bb020750",
+      "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+      "protocol.json": "79bb012b728ce2226a20db5719aab7010ca32bfb9df333994132b748df140b54",
+      "runtime-artifact-hashes.json": "9e395d3c60503577c625b0eea66297b4dc3fb99bab3f937c54929542888569bc",
+      "scope-review.json": "5e160cd9d519115188283f74e5e2824fd7a183b3d99dfde4f2f9efaaa33febb2",
+      "score.py": "3994f3981b4748b0686fdb4df075b4dc83eac11b49c852be2b57123641b0a095",
+      "selftest.json": "7a581973bb652f4a17732f2d88cd0650f1e9ba43682b1e2a6cb56f5dda4f39a8",
+      "selftest.py": "9af0ebfd07ba88d24fd3b874f728056985cab47998e014fc81e04f78489f6489",
+      "selftest.stderr.txt": "361d6d242e1bde1a4e5bdebd89f5bc39a7d471e476a4171f5b358e7c411f749d",
+      "selftest.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_gate_helper.py": "00f6971900864ee9e89e4db6029d8196fabd0a4b6ab28e343f19506417735c6f",
+      "source_gate_policy.json": "3a6d37e3fbf134f4a49677fdcd7de8b1b625739988a40e1c1e78b94978099767",
+      "static-preflight.invocation.json": "4071232cdf2c51f1f1f3e77a254e0a00dec3e5e1fa860f75563605d0db1301ec",
+      "static-preflight.json": "46863fd90fc608882efe6fb069eed593b31d3a6ed7cbec32b39dcd87a0a4d855",
+      "static-preflight.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "static-preflight.stdout.txt": "46863fd90fc608882efe6fb069eed593b31d3a6ed7cbec32b39dcd87a0a4d855",
+      "static_preflight.py": "f1265b0d60de5fcca8df939c0a09556ca01a22e2457e7b19f5130d0cb0540326",
+      "test_evaluator.py": "bf9f45496d2af78ad194ce7dbc4455c77fcf5e243c32c700cf09c4a756d89839",
+      "verify_preparation.py": "fff80892d041f1e03739297043296447215dc5daa1e18037780833f11be08b5c"
+    },
+    "manifest_sha256": "fb8a350de68ee6dfc61e4d440411a96eb217b54a4fdec7bfe5a6ebf02709d82c"
+  },
+  "provider_calls": 0,
+  "retry": 0
+}

@@ -1,0 +1,81 @@
+clippy 0
+fmt 0
+workspace 101
+ests::oauth_discovery_rejects_resource_issuer_and_insecure_metadata_mismatch ... ok
+test mcp_oauth::tests::oauth_requires_https_except_loopback ... ok
+test mcp_oauth::tests::refresh_preserves_explicit_step_up_scope_when_server_omits_scope ... FAILED
+test lifecycle::package_manager_tests::detects_winget_through_links_symlink ... ok
+test mcp_oauth::tests::stored_token_is_issuer_and_client_bound ... ok
+test model_catalog::tests::catalog_has_one_recommended_general_use_model_for_primary_providers ... ok
+test model_catalog::tests::lifecycle_policy_never_silently_substitutes_non_current_models ... ok
+test model_catalog::tests::nvidia_negative_control_is_visible_but_not_general_use ... ok
+test progress::tests::ctrl_c_during_arming_is_preserved_after_token_reset ... ok
+test progress::tests::plain_mode_preserves_ctrl_c_cancellation_state_machine ... ok
+test progress::tests::progress_is_human_full_tty_and_non_plain_only ... ok
+test progress::tests::provider_wait_wrapper_preserves_result_when_progress_is_disabled ... ok
+test secure_credentials::tests::absent_environment_uses_os_store ... ok
+test secure_credentials::tests::empty_environment_fails_without_store_fallback ... ok
+test secure_credentials::tests::environment_credential_wins_without_reading_store ... ok
+test secure_credentials::tests::missing_and_unavailable_store_are_distinct_and_secret_free ... ok
+test secure_credentials::tests::memory_store_replacement_and_delete_are_scoped ... ok
+test secure_credentials::tests::native_os_store_round_trip ... ignored, mutates the native OS credential store; run only in isolated CI
+test secure_credentials::tests::provider_identity_is_versioned_and_google_gemma_share_one_secret ... ok
+test terminal_presentation::tests::explicit_plain_no_color_and_dumb_terminal_select_plain_mode ... ok
+test run_diagnostics::tests::initial_provider_failure_retains_attempts_without_a_candidate_or_false_zero_tokens ... ok
+test terminal_presentation::tests::json_and_redirected_streams_are_plain_and_decoration_free ... ok
+test terminal_presentation::tests::ordinary_human_full_tty_keeps_static_progress_available ... ok
+test usage_budget::tests::cumulative_guard_rejects_untracked_pre_usage_session_history ... ok
+test usage_budget::tests::failed_provider_attempt_makes_token_totals_unreported ... ok
+test usage_budget::tests::model_call_budget_is_checked_before_next_call ... ok
+test usage_budget::tests::output_budget_caps_next_request ... ok
+test usage_budget::tests::pricing_is_estimated_only_with_explicit_provenance ... ok
+test usage_budget::tests::strict_token_budget_fails_closed_when_provider_usage_is_missing ... ok
+test usage_budget::tests::usage_report_json_has_stable_provider_neutral_fields ... ok
+test run_diagnostics::tests::completed_trace_flushes_once_with_the_same_event_contract ... ok
+test run_diagnostics::tests::trace_write_failure_does_not_replace_the_original_budget_error ... ok
+test run_diagnostics::tests::missing_provider_usage_remains_unmeasurable_and_is_not_filled_with_zero ... ok
+test run_diagnostics::tests::budget_stop_preserves_the_actual_response_usage_and_partial_trace ... ok
+test candidate_json_tests::supported_shell_completions_generate_to_memory ... ok
+test run_diagnostics::tests::cancelling_inflight_generation_flushes_trace_and_marks_usage_as_a_lower_bound ... ok
+test lifecycle::tests::verified_downloaded_release_replaces_destination_after_integrity_and_version_checks ... ok
+
+failures:
+
+---- mcp_oauth::tests::authorization_code_exchange_uses_pkce_resource_and_never_requires_client_secret stdout ----
+
+thread 'mcp_oauth::tests::authorization_code_exchange_uses_pkce_resource_and_never_requires_client_secret' panicked at crates/reasoning-harness-cli/src/mcp_oauth.rs:1596:57:
+called `Result::unwrap()` on an `Err` value: Os { code: 1, kind: PermissionDenied, message: "Operation not permitted" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- mcp_oauth::tests::callback_requires_exact_state_and_rfc9207_issuer stdout ----
+
+thread 'mcp_oauth::tests::callback_requires_exact_state_and_rfc9207_issuer' panicked at crates/reasoning-harness-cli/src/mcp_oauth.rs:1550:57:
+called `Result::unwrap()` on an `Err` value: Os { code: 1, kind: PermissionDenied, message: "Operation not permitted" }
+
+---- mcp_oauth::tests::oauth_discovery_falls_back_to_root_prm_and_oidc_path_insertion stdout ----
+
+thread 'mcp_oauth::tests::oauth_discovery_falls_back_to_root_prm_and_oidc_path_insertion' panicked at crates/reasoning-harness-cli/src/mcp_oauth.rs:1385:57:
+called `Result::unwrap()` on an `Err` value: Os { code: 1, kind: PermissionDenied, message: "Operation not permitted" }
+
+---- mcp_oauth::tests::oauth_discovery_rejects_redirect_and_malformed_metadata stdout ----
+
+thread 'mcp_oauth::tests::oauth_discovery_rejects_redirect_and_malformed_metadata' panicked at crates/reasoning-harness-cli/src/mcp_oauth.rs:1463:61:
+called `Result::unwrap()` on an `Err` value: Os { code: 1, kind: PermissionDenied, message: "Operation not permitted" }
+
+---- mcp_oauth::tests::refresh_preserves_explicit_step_up_scope_when_server_omits_scope stdout ----
+
+thread 'mcp_oauth::tests::refresh_preserves_explicit_step_up_scope_when_server_omits_scope' panicked at crates/reasoning-harness-cli/src/mcp_oauth.rs:1662:57:
+called `Result::unwrap()` on an `Err` value: Os { code: 1, kind: PermissionDenied, message: "Operation not permitted" }
+
+
+failures:
+    mcp_oauth::tests::authorization_code_exchange_uses_pkce_resource_and_never_requires_client_secret
+    mcp_oauth::tests::callback_requires_exact_state_and_rfc9207_issuer
+    mcp_oauth::tests::oauth_discovery_falls_back_to_root_prm_and_oidc_path_insertion
+    mcp_oauth::tests::oauth_discovery_rejects_redirect_and_malformed_metadata
+    mcp_oauth::tests::refresh_preserves_explicit_step_up_scope_when_server_omits_scope
+
+test result: FAILED. 209 passed; 5 failed; 3 ignored; 0 measured; 0 filtered out; finished in 1.90s
+
+error: test failed, to rerun pass `-p reasoning-harness-cli --bin reason`
+

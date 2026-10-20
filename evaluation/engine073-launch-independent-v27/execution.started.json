@@ -1,0 +1,8 @@
+{
+  "identity": "engine073-launch-independent-v27",
+  "utc": "2026-10-18T15:19:36.056390+00:00",
+  "manifest_sha256": "fb8a350de68ee6dfc61e4d440411a96eb217b54a4fdec7bfe5a6ebf02709d82c",
+  "Engine_processes_planned": 1,
+  "scorer_processes_planned": 1,
+  "retry": 0
+}

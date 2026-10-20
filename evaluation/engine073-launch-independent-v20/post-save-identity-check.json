@@ -1,0 +1,38 @@
+{
+  "identity": "engine073-launch-independent-v20",
+  "verified_utc": "2026-10-16T22:58:07.973753+00:00",
+  "HEAD": "fd091b182999d874b802dcf92483f71ce359627c",
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "77727cdc14de86ad4821b1698a43799afb5b42e86d53ef566971623f1d9663f7",
+      "unchanged": true
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "719c02aa9bad5340d63300c615ff37eee7e6662f34c6db08eb6ce00728607ded",
+      "unchanged": true
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "unchanged": true
+    },
+    "opaque_parent_freeze": {
+      "path": "/private/tmp/engine073-source19-freeze.json",
+      "sha256": "b6cdaa01a48ae3646c5510bb39b37196cceb6da198a738c8350c578edac3e0f6",
+      "unchanged": true
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v20-probe/probe",
+      "sha256": "ccfbfd08e3a0c23132c29da89059a1c1a16682fb9bd1d54f64d8dcb798850244",
+      "unchanged": true
+    }
+  },
+  "source_and_opaque_parent_freeze_contents_read": false,
+  "all_frozen_inputs_labels_scope_code_manifest_unchanged": true,
+  "old_v1_v19_recursive_files": 444,
+  "old_inventory_hashes_unchanged": true,
+  "v11_v17_NOT_EVALUATED_and_v19_initial_history_unchanged": true,
+  "old_anchor": "4f8fd8921fdf754de2088e3afe9ab23a86dbfbc25e89c3e3335c4ffcd02c930a"
+}

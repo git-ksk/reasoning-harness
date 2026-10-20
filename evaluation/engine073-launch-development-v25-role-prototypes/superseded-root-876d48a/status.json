@@ -1,0 +1,6 @@
+{
+  "source_sha": "876d48a5f199bc915b608de0058b42ed78afc53c",
+  "outcome": "REJECTED_REGRESSION_NOT_ACCEPTANCE",
+  "reason": "passive and bounded property restatements registered as new role declarations",
+  "original_first_changed": false
+}

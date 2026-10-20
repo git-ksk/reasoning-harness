@@ -1,0 +1,18 @@
+{
+  "scope": "consumed source diagnostics, not independent rerun or score",
+  "base_code": "26c98adbec19f9e8ea0d46f260f080d4319a8e60",
+  "base_source_sha256": "4daf64b918532a9004dea9807b8001ec743244b20b5cd1892c7f3a7ce316d1ef",
+  "trace_cases": 6,
+  "all_effective_tuples_equal_original_first": true,
+  "first_rules": {
+    "li27-005": "typed_reference_not_excluded",
+    "li27-025": "unresolved_adverse_scope",
+    "li27-029": "typed_reference_not_excluded",
+    "li27-045": "typed_reference_not_excluded",
+    "li27-049": "typed_reference_not_excluded",
+    "li27-053": "typed_reference_not_excluded"
+  },
+  "trace_hooks_restored": true,
+  "semantic_production_changes": 0,
+  "provider_model_network_calls": 0
+}

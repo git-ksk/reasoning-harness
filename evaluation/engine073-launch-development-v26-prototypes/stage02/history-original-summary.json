@@ -1,0 +1,23 @@
+{
+  "invocations": [
+    {
+      "name": "history",
+      "source_sha256": "4daf64b918532a9004dea9807b8001ec743244b20b5cd1892c7f3a7ce316d1ef",
+      "probe_source_sha256": "a76c0d51473ce72c89b12ffbb04a551c335284186efcbe7c67c8340ba6e458e4",
+      "inputs_sha256": "49e7b409f9a5edcbc9f4bfb0a3bfd2cdafc964c551fda0fd0f7b6626d3a4fc71",
+      "executable_sha256": "c0bb4ed8ee26668cce7e97467627c49abaa70307976cbc52efa78ac5528a0793",
+      "stdout_sha256": "9f378662ae651f7c7a2394d7c00c918c9eec7701628ccd339c6d2d181fba47f5",
+      "passed": 597
+    },
+    {
+      "name": "original-audit",
+      "source_sha256": "4daf64b918532a9004dea9807b8001ec743244b20b5cd1892c7f3a7ce316d1ef",
+      "probe_source_sha256": "09ab480e86d0b71227e61c7d88c65e2ee1f262f2aae334750f76d50ab4b59cf6",
+      "inputs_sha256": "3fedf054223797615186c7004a1e4bb6af64825484fb86b072d784d2b006a4cc",
+      "executable_sha256": "59910135607d9a1f26631d0508388f56a5aa1282a3d2b404fc91d060abf57ec3",
+      "stdout_sha256": "5c32b97127644a0be7094ba23cf629349bed75aa91e995897ec61870bd98d83b",
+      "passed": 14
+    }
+  ],
+  "canonical_scorer_provider_model_Oracle_calls": 0
+}

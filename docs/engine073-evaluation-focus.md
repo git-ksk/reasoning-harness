@@ -1,0 +1,11 @@
+# Refocus evaluation on frozen F1 and practical answers
+
+2026-10-19. Known-case growth and development perfection are not completion measures. Automatically turning every new holdout abstention into another mandatory perfect corpus encouraged an endless synthetic repair loop.
+
+Fresh synthetic source acceptance still requires each API F1>=.90,precision>=.95,recall>=.85 and zero unsafe admissions,complete first observations,pre-authorship freeze,historical compatibility and no known critical defects. It does not require every fresh positive to pass. Preserve the original14 audit,safety boundaries and concrete repaired-behavior regressions. For future M0,freeze the mandatory regression set and rationale before authorship;do not automatically make every new safe FN a mandatory repair or remove inconvenient cases after observation. Use consumed corpora as a fixed diagnostic development benchmark,reporting F1,false admissions and positive regressions rather than treating count/perfection as product readiness. Safety defects and repaired-behavior regressions cannot be averaged away.
+
+All frozen policies/scorers/labels/first results remain unchanged. Originalv27 P1/R.8/F1.888889 remainsFAIL;development replayF1=1 is not fresh acceptance. Different corpus scores are not a measured improvement trend. This note is not a new complete M0.
+
+Finish and preserve the current six shared repairs,verify regression boundaries,then stop the repeated fresh-synthetic60 author/repair loop for now. Prioritize an ordinary CLI path with the feature active,acquisition/admission/evidence/claim/citation/display traces,complete semantic segmentation/support/citation adjudication,and actual callback/dependency/containment/numeric-budget preparation. The32-test component implements arithmetic and declared display binding only. Freeze the actual host/Engine pair,scorer,thresholds,benchmark and budgets BEFORE authoring the next unused independent holdout;one first observation decides. Diagnose impact/failure classes rather than memorizing every paraphrase.
+
+Real-answer case F1 under#542 differs from claim grounding F1 and synthetic API F1. Measure provider/track strata and paired0.6.1 utility/safety/efficiency. Real M0/M1 incomplete,real24=0/24,actual-answer F1 unmeasured,Groq stopped,provider/model/Oracle calls0,release/CLI adoptionNO_GO.

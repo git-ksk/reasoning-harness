@@ -1,0 +1,5 @@
+# Consumed v27 repair development
+
+Original first v27 at26c remainsF1.888889/NO_GO. Six new public-behavior groups first fail (367PASS/6FAIL). One shared semantic stage repairs complete physical/printed types,optional heading article,same-role quoted owner,finite coordinated role references and bounded property coverage;foreign apposition owners must match. Stage01 source2e9207177d9f1e91b8c031322dbbf83c2b374d8847e123e135dcca727b0214de:core373PASS,strict core/all-targetsClippyPASS,normal consumedv27 eachTP30/FP0/TN30/FN0,F1=1.0. Prior normal1400 controls pass with this identical source. Original labels/scorer/raw are untouched. Setup edits failed in memory before any source write,then were scoped to exact function/test anchors;no semantic first rerun.
+
+No further new synthetic holdout authored. Development perfection/count is not the acceptance criterion. Future independent F1/P/R and safety remain separate;next focus is actual-document/ordinaryCLI traces and complete semantic scoring. No Engine release or CLI adoption. Binaries/caches are omitted;compiler/library/executable digests remain provenance only.

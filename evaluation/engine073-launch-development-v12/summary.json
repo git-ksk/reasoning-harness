@@ -1,0 +1,73 @@
+{
+  "source_sha": "2b75f040caf3ed65c9774f7777498729433afba2",
+  "source_file_sha256": "8df2a315f559d0e48e53b4122ffb78d3230410d7fc11dc5d7dfbb6176f8cd7d5",
+  "historical_complete_equality": 597,
+  "original_audit": 14,
+  "known_seen_regression": {
+    "v2": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v3": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v4": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v5": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v6": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v7": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v8": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v9": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v10": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v12": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    }
+  },
+  "provider_calls": 0,
+  "fresh_independent_acceptance": false,
+  "core_rlib_sha256": "99cc7938905a8e909ea4575631a5b15669d3a53da8259c3496ed0b3f3f3ac760",
+  "focused_tests": 60,
+  "workspace": {
+    "passed": 1524,
+    "failed": 0,
+    "ignored": 8
+  },
+  "clippy": "PASS",
+  "fmt": "PASS",
+  "fixtures_cases": 20,
+  "original_archive_files": 13,
+  "cli_adoption": "NO_GO",
+  "full_real_source_acceptance_complete": false
+}

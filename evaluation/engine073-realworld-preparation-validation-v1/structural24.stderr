@@ -1,0 +1,29 @@
+test_F1_and_missing_citation_gain_are_separate (test_review_boundaries.ReviewBoundaries.test_F1_and_missing_citation_gain_are_separate) ... ok
+test_changed_gold_with_same_M1_rejected (test_review_boundaries.ReviewBoundaries.test_changed_gold_with_same_M1_rejected) ... ok
+test_empty_M1_inventory_rejected (test_review_boundaries.ReviewBoundaries.test_empty_M1_inventory_rejected) ... ok
+test_empty_supported_receipt_rejected (test_review_boundaries.ReviewBoundaries.test_empty_supported_receipt_rejected) ... ok
+test_helper_baseline_incomplete_blocks_all_provider_tracks (test_review_boundaries.ReviewBoundaries.test_helper_baseline_incomplete_blocks_all_provider_tracks) ... ok
+test_helper_uses_supported_artifact_schema (test_review_boundaries.ReviewBoundaries.test_helper_uses_supported_artifact_schema) ... ok
+test_missing_actual_trace_generation_rejected (test_review_boundaries.ReviewBoundaries.test_missing_actual_trace_generation_rejected) ... ok
+test_nonstructured_receipt_rejected (test_review_boundaries.ReviewBoundaries.test_nonstructured_receipt_rejected) ... ok
+test_orphan_citation_cannot_disappear (test_review_boundaries.ReviewBoundaries.test_orphan_citation_cannot_disappear) ... ok
+test_unadmitted_citation_cannot_earn_credit (test_review_boundaries.ReviewBoundaries.test_unadmitted_citation_cannot_earn_credit) ... ok
+test_valid_capture_transport (test_review_boundaries.ReviewBoundaries.test_valid_capture_transport) ... ok
+test_wrong_target_rejected (test_review_boundaries.ReviewBoundaries.test_wrong_target_rejected) ... ok
+test_changed_observation_cannot_reuse_review (test_scorer.Boundaries.test_changed_observation_cannot_reuse_review) ... ok
+test_complete_constructed_cohort_counts_missing_provider (test_scorer.Boundaries.test_complete_constructed_cohort_counts_missing_provider) ... ok
+test_complete_structural_control (test_scorer.Boundaries.test_complete_structural_control) ... ok
+test_empty_response_rejected (test_scorer.Boundaries.test_empty_response_rejected) ... ok
+test_missing_citation_review_rejected (test_scorer.Boundaries.test_missing_citation_review_rejected) ... ok
+test_missing_quote_invalid_span_never_none_equals_none (test_scorer.Boundaries.test_missing_quote_invalid_span_never_none_equals_none) ... ok
+test_negative_unsafe_accept_is_not_tn (test_scorer.Boundaries.test_negative_unsafe_accept_is_not_tn) ... ok
+test_occurrence_cannot_cover_answer_and_card (test_scorer.Boundaries.test_occurrence_cannot_cover_answer_and_card) ... ok
+test_partial_operation_never_gets_semantic_f1 (test_scorer.Boundaries.test_partial_operation_never_gets_semantic_f1) ... ok
+test_response_after_finalization_rejected (test_scorer.Boundaries.test_response_after_finalization_rejected) ... ok
+test_unacquired_support_rejected (test_scorer.Boundaries.test_unacquired_support_rejected) ... ok
+test_unsupported_cannot_earn_recall_or_hide_safety (test_scorer.Boundaries.test_unsupported_cannot_earn_recall_or_hide_safety) ... ok
+
+----------------------------------------------------------------------
+Ran 24 tests in 0.029s
+
+OK

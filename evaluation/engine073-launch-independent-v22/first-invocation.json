@@ -1,0 +1,60 @@
+{
+  "state": "finished",
+  "utc": "2026-10-17T00:49:22.305662+00:00",
+  "command": [
+    "/private/tmp/engine073-launch-independent-v22-probe/probe",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v22/inputs.json"
+  ],
+  "pre_invocation_identity": {
+    "verified_utc": "2026-10-17T00:49:18.089581+00:00",
+    "head": "7431333d212938147a5d9ab32a0b8bdb44ee16b8",
+    "artifacts": {
+      "evidence_relevance_source": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "sha256": "b7fec3e0f7c6b76dfbff1b801dd085a22661df9b22457431653eb2073a4e08f0"
+      },
+      "core_rlib": {
+        "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+        "sha256": "ab615574b7b5487592e04cc07fcb6cd748c129cd7ea148bd599329d1bbb83ad1"
+      },
+      "serde_json_rlib": {
+        "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+        "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+      },
+      "opaque_parent_freeze": {
+        "path": "/private/tmp/engine073-source21-freeze.json",
+        "sha256": "72d19b55ec8a8594268ab486b1840e335fa0951fdb17937b7d7b575f015f512b"
+      },
+      "probe_executable": {
+        "path": "/private/tmp/engine073-launch-independent-v22-probe/probe",
+        "sha256": "7415f47eae7d682171633c8eb3361beb009bc3e75bc416e02c1bcc99b1d4b491"
+      }
+    },
+    "frozen_files": {
+      "author_cases.py": "2305f6aae15ba359ee8425fade0938e25985ec4c17c456257c83eace88122cb6",
+      "build-preflight.json": "1bc835d65dff2331e09bfff706d9f9f37a2c851363269544e90e5521ce51bf79",
+      "build.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "build.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cases.json": "132ba8207c5fcc825beefab4cdd3725e6002f01048c6b380201fdca42351b83f",
+      "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+      "immutable-predecessor-check.json": "7efdd0f1e1d26bd7b07322db717088f7a3a135a62a0cc62432b37edc8e340e20",
+      "inputs.json": "c971217116917ba70cb69fb739fe17d7f38b0652748b645ac63ba511d9dd7b37",
+      "pre-freeze-scope-review.json": "78d7e78fb193441060efc6a77fb89b6fefc404f6dba1ea78e56de1dc4e817319",
+      "predecessor-artifact-hashes.json": "5ef451fe82bd91c0e3022d1418578705b3ba938b426482d4ab84ecc66b032b68",
+      "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+      "protocol.json": "ff4ebc05fda7835ebd1ad1ec949024a31ff405a00727cc811bea565dcded89e6",
+      "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+      "static-preflight.json": "60c13d380866e49f670ee6b78782d7a8683d6fd149a565caa8f03974b5e0175a",
+      "static-stage-invocation.json": "0c10b11a8491ecfee556c0409a207c6b7a0eee37213624fbafdd2d92bc35cd92",
+      "static_preflight.py": "6d82309857b66dcdc8eeceb47517eb3d56ff7e8900548707861c49cc4e0d7b50"
+    },
+    "manifest_sha256": "21a8b511a426f5239a7f238fff88e1fc95f8f61dfc2e69b420659058dfd28727"
+  },
+  "returncode": 0,
+  "execution_error": null,
+  "elapsed_seconds": 4.215700292028487,
+  "provider_calls": 0,
+  "retries": 0,
+  "stdout_sha256": "3b3a6405c6b8fd09e17969ed85c0978c16aa2aa7dee998adb2fbbae38ff0932c",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

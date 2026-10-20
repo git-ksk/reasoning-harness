@@ -1,0 +1,8 @@
+{
+  "files": {
+    "author_cases.py": "bdd7cca8dc4d52099f24ea39120ebe508b9c0d560258a60cc93bbd7e9ef4107e",
+    "static-author-stage-check.json": "98d4b97236e61c98945819c1226ac48a33ce61ba0176a6fe666696cef9c462b6"
+  },
+  "Engine_scorer0": true,
+  "no_full_inputs_or_STATIC_ONLY_input_run_existed": true
+}

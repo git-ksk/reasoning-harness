@@ -1,0 +1,11 @@
+--- score.py.before-trace-review
++++ score.py
+@@ -87,7 +87,7 @@
+   except (ValueError,TypeError,KeyError) as exc:errors.append({'line':line_number,'error':str(exc)})
+  missing=sorted(set(byid)-set(rows))
+  if missing:errors.append({'missing_ids':missing})
+- invocation_ok=invocation.get('state')=='finished' and invocation.get('returncode')==0 and invocation.get('execution_error') is None
++ invocation_ok=isinstance(invocation,dict) and all(k in invocation for k in ['state','returncode','execution_error']) and invocation['state']=='finished' and type(invocation['returncode']) is int and invocation['returncode']==0 and invocation['execution_error'] is None
+  if not invocation_ok:errors.append({'invocation_state':invocation.get('state'),'returncode':invocation.get('returncode'),'execution_error':invocation.get('execution_error')})
+  if stderr_bytes:errors.append({'stderr_bytes':stderr_bytes})
+  if not proof.get('checks') or not all(x is True for x in proof['checks'].values()):errors.append({'runtime_provenance_failed':proof.get('checks')})

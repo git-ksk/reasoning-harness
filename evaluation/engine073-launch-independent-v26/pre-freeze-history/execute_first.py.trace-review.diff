@@ -1,0 +1,11 @@
+--- execute_first.py.before-trace-review
++++ execute_first.py
+@@ -3,7 +3,7 @@
+ import sys,time
+ from evaluator_contract import *
+ def execution_passed(summary,recorder_returncode,scorer_returncode,scorer_stderr_bytes):
+- return summary.get('decision')=='GO' and recorder_returncode==0 and scorer_returncode==0 and scorer_stderr_bytes==0
++ return summary.get('decision')=='GO' and type(recorder_returncode) is int and type(scorer_returncode) is int and type(scorer_stderr_bytes) is int and recorder_returncode==0 and scorer_returncode==0 and scorer_stderr_bytes==0
+ 
+ def main():
+  evaluator_integrity();manifest=load(ROOT/'manifest.json')

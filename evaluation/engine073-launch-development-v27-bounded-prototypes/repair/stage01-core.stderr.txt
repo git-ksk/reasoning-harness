@@ -1,0 +1,3 @@
+   Compiling reasoning-harness-core v0.7.2 (/private/tmp/engine073-source29-prototype/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 11.54s
+     Running unittests src/lib.rs (/private/tmp/engine073-source29-trace-target/debug/deps/reasoning_harness_core-dcd4f612c7771d71)

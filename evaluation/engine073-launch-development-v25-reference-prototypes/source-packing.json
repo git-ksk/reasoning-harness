@@ -1,0 +1,46 @@
+{
+  "red-source.rs.gz": {
+    "packed_sha256": "a9d1bad1c9e90346ca7fea622f4ed352f6ff58d679e9e8160a6e1854bd3f46cd",
+    "unpacked_source_sha256": "b211d8b01332f909f34ae1e0795b21fbd7474a650da01495f721a1da8d06e281"
+  },
+  "stage01-source.rs.gz": {
+    "packed_sha256": "17c99756ed9c85a15daf43ee651e4c17747e69fdd9b061a1ebca4467f0a1ae8c",
+    "unpacked_source_sha256": "44124cd9fecb2d4691d3b2680b7a70bcdaec104e3bd535837d1694b2f3486f32"
+  },
+  "stage02-diagnostic/base-source.rs.gz": {
+    "packed_sha256": "8b47bb7802aa090d10c44eb332943b67c4eea0e35ffa1ca443cc50fb242a5971",
+    "unpacked_source_sha256": "a216bc54741c2cb27c9d7558e846f6527c81ed5d394016c3dc743791361b9921"
+  },
+  "stage02-source.rs.gz": {
+    "packed_sha256": "8b47bb7802aa090d10c44eb332943b67c4eea0e35ffa1ca443cc50fb242a5971",
+    "unpacked_source_sha256": "a216bc54741c2cb27c9d7558e846f6527c81ed5d394016c3dc743791361b9921"
+  },
+  "stage03-source.rs.gz": {
+    "packed_sha256": "df5210cc3c4e7574bd34983d4fd033cd7e469fc90c8ab54be1dd019bce07b762",
+    "unpacked_source_sha256": "6de139c5cd2e4553f4dc5f2e26066d808bde033a9dcaa83ce156ef1301465f1b"
+  },
+  "stage04/source.rs.gz": {
+    "packed_sha256": "6f823898aaedffce0309e67016d14fc27adbc1aae63b018ce13102abe3e72088",
+    "unpacked_source_sha256": "53d8f05501aa273d5d40a35a1de136075b628ecd8797008541d2e883ded6f3fd"
+  },
+  "stage05/source.rs.gz": {
+    "packed_sha256": "f29aeeae83c391ddad7b202766733bbca1e267c78a91e27a993ffccf2a9dcbc2",
+    "unpacked_source_sha256": "b485664f26ba5102166cf545aee78046529101b3b217d59864d9a4228c861dec"
+  },
+  "stage06/source.rs.gz": {
+    "packed_sha256": "aa52ad64f077e82aeeb1da60f18d3e463626ee49a5037cbbda5e71e6fbeeb624",
+    "unpacked_source_sha256": "ee7dacecfbeda485e3d172a78872d35e3906ffdf2f5766d04678c69ef84da565"
+  },
+  "stage07/source.rs.gz": {
+    "packed_sha256": "6219f7bd23c107349bd8be95c329d382c230dba8c71f3380876b22cfee72a4ff",
+    "unpacked_source_sha256": "d049483a8935f960bd8cb265064617f104aae2c45f37ba9925ca39dc2c9f24f0"
+  },
+  "stage08/source.rs.gz": {
+    "packed_sha256": "1377ff7ddcd3850d7824bef1f37cbf9de58ae60e009c6fb0a19b131e1076487f",
+    "unpacked_source_sha256": "92d50492b679ae842249fc67f396ae62ebb5142b27de65b0c27f1e6181d7ea7b"
+  },
+  "stage09/source.rs.gz": {
+    "packed_sha256": "3212f9133f40527accab05489bc01d1acda958fd5316baf6d4f6bec9feccb835",
+    "unpacked_source_sha256": "4f82b2e41614394f1bd528f01c817f0e962f1c546d7212f75f15c2f9c5787999"
+  }
+}

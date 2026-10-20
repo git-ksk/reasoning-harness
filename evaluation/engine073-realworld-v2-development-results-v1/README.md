@@ -1,0 +1,11 @@
+# Consumed real24 development: first operational results
+
+Later checkpoint: [separate recapture, independent annotations and first development score](../engine073-realworld-v2-consumed-score-v1/README.md). The first operational snapshot below remains unchanged.
+
+[Run39345330622](https://github.com/git-ksk/reasoning-harness/actions/runs/39345330622) uses the separate development receipt51153e9, baseline0.6.1/candidateab3c632 and common main8525330 CLI package0.5.4. This is seen24 development, not fresh independent accuracy acceptance. Original v1 results, inputs/gold/budgets and first score remain immutable.
+
+Google executed all72 jobs with320 attempts/259540 reported tokens and no unknown usage. Its frozen first capture contains76 complete/20 incomplete observations. Eight refusals concern exact full-record reacquisition under different targets, and twelve concern secondary keys explicitly advertised by their selected capability. Independent static review confirms these joins; it does not change the original incomplete observations or claim a semantic score. A separate offline capture successor is under review.
+
+Mistral completed the first normal pair and helper, then stopped on the next candidate. Both first normal runs use7 logical operations; original logical6 failure remains unchanged. The new failed planner received two truncated256-token responses. All four responses in that job reported3110 tokens, but GenerationFailure discarded usage and the strict guard correctly stopped on unavailable totals. #548/PR549 repair this known-usage loss separately. Original guard21846tokens/20attempts and unknown1 remain; journal24956/24 is a separate diagnostic sum. No quota error was observed at this stop. Current remaining Mistral quota is unverified after the owner's possible-depletion report; further calls are held.
+
+**F1 remains null pending valid complete capture and independent semantic annotation.** Operational completion, terminal status counts and test passes are not answer accuracy. Groq remains deferred. Source merge/Engine0.7.3 release/CLI adoption remain NO_GO. Public postmortem notes and manifests are selected subsets of full private closures; raw answers/full source text are private. No model retry or post-hoc relabeling occurs.

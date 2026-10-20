@@ -1,0 +1,35 @@
+{
+  "HEAD": "f3f1362c33bb4483de97607c4f7854162bfa148f",
+  "checked_utc": "2026-10-16T16:21:01.529343+00:00",
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "bd2afb064d28a258a6de57de7594c1186e470de77bcd52eefeab0d3b1579255b",
+      "bytes": 688191,
+      "unchanged": true
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "f7dcc1b2db4453e139cafadc0895a1c0553d8eeff08ee9c21d4b0cd3cd6573f8",
+      "bytes": 31121504,
+      "unchanged": true
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "bytes": 2110472,
+      "unchanged": true
+    },
+    "opaque_parent_freeze": {
+      "path": "/private/tmp/engine073-source16-freeze.json",
+      "sha256": "c1bf85333692d99925a1c23c33664833f86388ab4e6af0b13af283cabac53fcf",
+      "bytes": 571,
+      "unchanged": true
+    }
+  },
+  "source_and_parent_freeze_contents_read": false,
+  "old357_inventory_and_hashes_unchanged": true,
+  "old_external_anchor": "673a90decda33bb3bc6b0bff16d67c2239ce2aac1af3d862136cd9960d7492fc",
+  "v11_NOT_EVALUATED_unchanged": true,
+  "probe_executable": "Not built."
+}

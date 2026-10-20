@@ -1,0 +1,8 @@
+{
+  "source_sha": "01dc78b6952ed77cd20001323f6ab032eeec361e",
+  "source_file_sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13",
+  "executable_sha256": "384c57dd9ec7409d001fcb85005fc6c5fc76dde111e683abab1e7e434d7c1653",
+  "inputs_sha256": "0e8066071124a9d71dd375fa26861158d603343dc53f0f00de6e325ec2777d65",
+  "scope": "new parent development boundary only; no independent cases/labels/scorer used",
+  "provider_model_Oracle_calls": 0
+}

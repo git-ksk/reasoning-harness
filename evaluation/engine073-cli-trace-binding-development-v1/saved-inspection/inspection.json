@@ -1,0 +1,297 @@
+{
+  "identity": "engine073-cli-trace-binding-development-v1",
+  "capture_scope": "saved controlled offline ordinary-CLI pair only",
+  "fresh_case_authorship": 0,
+  "Engine_provider_model_Oracle_calls": 0,
+  "old_scorer_executions": 0,
+  "real24_completed": 0,
+  "actual_answer_f1": null,
+  "acceptance": "NOT_EVALUATED",
+  "arms": {
+    "baseline": {
+      "schema": "ordinary-cli-capture-binding-development-v1",
+      "binding_status": "STRUCTURAL_MATCH",
+      "capture_mode": "host_curated_facts",
+      "provider": "mistral",
+      "model": "ministral-8b-2512",
+      "model_calls_in_saved_trace": 5,
+      "display_artifacts": [
+        {
+          "id": "answer",
+          "kind": "final_answer",
+          "text": "node.buffer.uint8array = true"
+        }
+      ],
+      "display_claims": [
+        {
+          "id": "display-1",
+          "proposition": {
+            "key": "node.buffer.uint8array",
+            "value": "true"
+          },
+          "start_byte": 0,
+          "end_byte": 29,
+          "text": "node.buffer.uint8array = true",
+          "internal_bindings": [
+            {
+              "claim_id": "node-buffer",
+              "receipt_ids": [
+                "structured_fact_equality:node-buffer"
+              ],
+              "evidence_ids": [
+                "snapshot:rw03-node-positive:1"
+              ]
+            },
+            {
+              "claim_id": "harness_investigation_admitted_fact_1",
+              "receipt_ids": [
+                "structured_fact_equality:harness_investigation_admitted_fact_1"
+              ],
+              "evidence_ids": [
+                "snapshot:rw03-node-positive:1"
+              ]
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "evidence_id": "snapshot:rw03-node-positive:1",
+          "source_id": "node-subclass",
+          "document_id": "node-buffer",
+          "url": "https://nodejs.org/api/buffer.html",
+          "locator": "Buffer / Introduction",
+          "normalized_byte_start": 10163,
+          "normalized_byte_end": 10228,
+          "quote": "The Buffer class is a subclass of JavaScript's <Uint8Array> class",
+          "quote_sha256": "e31f12294be68d368accc3ebffc215ce2b25ab27b2536cf37d611da25314f9c9",
+          "source_version": "sha256:23f92fc924708065b4998712ee080dda049e9fd2b4e16558b396d68694d6fa47",
+          "retrieved_at_unix_seconds": 1792019640,
+          "origin_group": "nodejs-project",
+          "context_summary": "Captured current Node.js Buffer documentation describes its relationship to Uint8Array.",
+          "scope": {
+            "product": "node",
+            "release": "captured-current"
+          },
+          "reference_facts": {
+            "node.buffer.uint8array": "true"
+          },
+          "synthetic_mutation": false
+        }
+      ],
+      "displayed_citations": {
+        "status": "NOT_PRESENT_IN_SUPPORTED_CANONICAL_SURFACE",
+        "count": 0
+      },
+      "semantic_support_review": "EXTERNAL_REVIEW_REQUIRED",
+      "actual_answer_f1": null,
+      "acceptance": "NOT_EVALUATED",
+      "source_full_snapshot_integrity": "EXACT_CAPTURED_BYTES",
+      "input_hashes": {
+        "stdout.json": "db2a1589883b804b4907c5f3464b6b47b2e986f273f84647becfc6e9298e9b8b",
+        "trace.json": "fec9c6b2f8da5b04129d22c6f86985496fe9cdf955aa565c64e7bbec4e96f4e8",
+        "resolver.jsonl": "07d48c5ac624f97ab309c839f0ebbd8851bc248ca6e9c932bda1a24f6c5a7b45",
+        "exit.json": "df4d721d233a2334088d2d2e0110346ae9e509ff46bf0b379fbcfa85c715af4d",
+        "config.json": "410dde84753ed5d9b3a96f6522c73a4692744fbd82e5cc49fba4519efc9ae544",
+        "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "invocation.json": "d6dfc48cb1e8ed179bb9508a53066db0f4e19dcc107cc270b9e86f62f250a782"
+      },
+      "capture_index_sha256": "b876e06c7c36b31a8e98c657301c0a6f50df5178a7c87eafa07e1c9249a13e16",
+      "corpus_sha256": "59bd5996ff9dde9d40bc3755cc2c4c4829ebe80ff378e210e52b8dd4e323cb3c",
+      "saved_build_identity": {
+        "host_commit": "ec6e55ff95b8364f9a5d09b8bbfe0ecc0c9d19d7",
+        "engine_commit": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+        "binary_sha256": "354dac9457ab93d147b089c8d028a6998049efa64873b573a79eac4f1a1a9ae6",
+        "binary_reexecuted": false,
+        "original_engine_acceptance": false
+      },
+      "feature_path": {
+        "reported_normal_api_calls": 0,
+        "reported_positive_control_api_calls": 365,
+        "positive_control_v17_v30_seen": true,
+        "provenance": "Hash-bound prior controlled instrumentation report, not a new current-candidate run.",
+        "current_candidate_effect": "UNMEASURED"
+      },
+      "declared_display_binding": {
+        "captured_bundle_sha256": "5613662acf84413fd89b14f59ec3ec4a585e57149b1089e3d9dd7385ecbe5add",
+        "artifacts": 1,
+        "segments": 1,
+        "claim_occurrences": 1,
+        "declared_byte_coverage": "COMPLETE",
+        "semantic_segmentation": "EXTERNAL_REVIEW_REQUIRED",
+        "trace_and_support": "NOT_VERIFIED"
+      },
+      "display_segments": [
+        {
+          "id": "span-display-1",
+          "artifact_id": "answer",
+          "start_byte": 0,
+          "end_byte": 29,
+          "text": "node.buffer.uint8array = true",
+          "kind": "fact",
+          "claim_id": "display-1",
+          "proposition_id": "{\"key\":\"node.buffer.uint8array\",\"value\":\"true\"}"
+        }
+      ]
+    },
+    "candidate": {
+      "schema": "ordinary-cli-capture-binding-development-v1",
+      "binding_status": "STRUCTURAL_MATCH",
+      "capture_mode": "host_curated_facts",
+      "provider": "mistral",
+      "model": "ministral-8b-2512",
+      "model_calls_in_saved_trace": 5,
+      "display_artifacts": [
+        {
+          "id": "answer",
+          "kind": "final_answer",
+          "text": "node.buffer.uint8array = true"
+        }
+      ],
+      "display_claims": [
+        {
+          "id": "display-1",
+          "proposition": {
+            "key": "node.buffer.uint8array",
+            "value": "true"
+          },
+          "start_byte": 0,
+          "end_byte": 29,
+          "text": "node.buffer.uint8array = true",
+          "internal_bindings": [
+            {
+              "claim_id": "node-buffer",
+              "receipt_ids": [
+                "structured_fact_equality:node-buffer"
+              ],
+              "evidence_ids": [
+                "snapshot:rw03-node-positive:1"
+              ]
+            },
+            {
+              "claim_id": "harness_investigation_admitted_fact_1",
+              "receipt_ids": [
+                "structured_fact_equality:harness_investigation_admitted_fact_1"
+              ],
+              "evidence_ids": [
+                "snapshot:rw03-node-positive:1"
+              ]
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "evidence_id": "snapshot:rw03-node-positive:1",
+          "source_id": "node-subclass",
+          "document_id": "node-buffer",
+          "url": "https://nodejs.org/api/buffer.html",
+          "locator": "Buffer / Introduction",
+          "normalized_byte_start": 10163,
+          "normalized_byte_end": 10228,
+          "quote": "The Buffer class is a subclass of JavaScript's <Uint8Array> class",
+          "quote_sha256": "e31f12294be68d368accc3ebffc215ce2b25ab27b2536cf37d611da25314f9c9",
+          "source_version": "sha256:23f92fc924708065b4998712ee080dda049e9fd2b4e16558b396d68694d6fa47",
+          "retrieved_at_unix_seconds": 1792019640,
+          "origin_group": "nodejs-project",
+          "context_summary": "Captured current Node.js Buffer documentation describes its relationship to Uint8Array.",
+          "scope": {
+            "product": "node",
+            "release": "captured-current"
+          },
+          "reference_facts": {
+            "node.buffer.uint8array": "true"
+          },
+          "synthetic_mutation": false
+        }
+      ],
+      "displayed_citations": {
+        "status": "NOT_PRESENT_IN_SUPPORTED_CANONICAL_SURFACE",
+        "count": 0
+      },
+      "semantic_support_review": "EXTERNAL_REVIEW_REQUIRED",
+      "actual_answer_f1": null,
+      "acceptance": "NOT_EVALUATED",
+      "source_full_snapshot_integrity": "EXACT_CAPTURED_BYTES",
+      "input_hashes": {
+        "stdout.json": "89c209f537f1fe66af577f4c060011a38ef2d6d94f6e4b88c75b7b8a6c41b449",
+        "trace.json": "cf9530efe14a0c40e3c7db82131d60c3ab108c7ad3b1a7303abf9e4986f07e0f",
+        "resolver.jsonl": "6e455e586e6e7d62c994e7a346a9e5a6c3f45c3077e116f5fb397dd90b80ae3b",
+        "exit.json": "df4d721d233a2334088d2d2e0110346ae9e509ff46bf0b379fbcfa85c715af4d",
+        "config.json": "581e756450f095b94c68e01b4d90f110b90bbe45ba0ab3d0265bf38c7e2ee973",
+        "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "invocation.json": "aee09e6e2645d00c9422655392fe8c8f34fda45316eff6414f3beb43b55e6763"
+      },
+      "capture_index_sha256": "b876e06c7c36b31a8e98c657301c0a6f50df5178a7c87eafa07e1c9249a13e16",
+      "corpus_sha256": "59bd5996ff9dde9d40bc3755cc2c4c4829ebe80ff378e210e52b8dd4e323cb3c",
+      "saved_build_identity": {
+        "host_commit": "ec6e55ff95b8364f9a5d09b8bbfe0ecc0c9d19d7",
+        "engine_commit": "01dc78b6952ed77cd20001323f6ab032eeec361e",
+        "binary_sha256": "93d1d3471d199bb73ab0ae20522521b4a9339e0f536ab91282397e2a704a6ada",
+        "binary_reexecuted": false,
+        "original_engine_acceptance": false
+      },
+      "feature_path": {
+        "reported_normal_api_calls": 0,
+        "reported_positive_control_api_calls": 446,
+        "positive_control_v17_v30_seen": true,
+        "provenance": "Hash-bound prior controlled instrumentation report, not a new current-candidate run.",
+        "current_candidate_effect": "UNMEASURED"
+      },
+      "declared_display_binding": {
+        "captured_bundle_sha256": "5613662acf84413fd89b14f59ec3ec4a585e57149b1089e3d9dd7385ecbe5add",
+        "artifacts": 1,
+        "segments": 1,
+        "claim_occurrences": 1,
+        "declared_byte_coverage": "COMPLETE",
+        "semantic_segmentation": "EXTERNAL_REVIEW_REQUIRED",
+        "trace_and_support": "NOT_VERIFIED"
+      },
+      "display_segments": [
+        {
+          "id": "span-display-1",
+          "artifact_id": "answer",
+          "start_byte": 0,
+          "end_byte": 29,
+          "text": "node.buffer.uint8array = true",
+          "kind": "fact",
+          "claim_id": "display-1",
+          "proposition_id": "{\"key\":\"node.buffer.uint8array\",\"value\":\"true\"}"
+        }
+      ]
+    }
+  },
+  "full_source_snapshot_checks": {
+    "node-subclass": {
+      "status": "EXACT_CAPTURED_BYTES",
+      "raw_sha256": "23f92fc924708065b4998712ee080dda049e9fd2b4e16558b396d68694d6fa47",
+      "normalized_sha256": "8252ff58d1701eed6b80a20a183eef855dfde7b1b3b11bd9ffb2ec2c5125a4dc",
+      "quote_sha256": "e31f12294be68d368accc3ebffc215ce2b25ab27b2536cf37d611da25314f9c9",
+      "normalized_byte_span": [
+        10163,
+        10228
+      ],
+      "semantic_entailment": "EXTERNAL_REVIEW_REQUIRED",
+      "publisher_authenticity": "NOT_ATTESTED"
+    }
+  },
+  "current_source_sha256": "2e9207177d9f1e91b8c031322dbbf83c2b374d8847e123e135dcca727b0214de",
+  "inspection_code_sha256": "dd487c6a8ee0a2e53a7fead1642a123c5d3aecf9242d0896d41e1535b6516c23",
+  "trace_adapter_code_sha256": "d4c44e434de36565e31be52a78703e3a2d73f20e875aaeeb3d5430df878f9a72",
+  "display_texts_equal": true,
+  "readiness_blockers": [
+    "semantic_claim_and_citation_adjudication_not_frozen",
+    "displayed_citations_absent_in_this_canonical_surface",
+    "current_candidate_active_path_and_complete_real_M0_pending",
+    "targeted_relevance_APIs_inactive_in_saved_normal_path",
+    "saved_capture_is_not_a_current_candidate_runtime_measurement"
+  ],
+  "snapshot_input_hashes": {
+    "/private/tmp/engine07-realworld-snapshots-v2/node-buffer.html": "23f92fc924708065b4998712ee080dda049e9fd2b4e16558b396d68694d6fa47",
+    "/private/tmp/engine07-realworld-snapshots-v2/node-buffer.txt": "8252ff58d1701eed6b80a20a183eef855dfde7b1b3b11bd9ffb2ec2c5125a4dc"
+  },
+  "corpus_sha256": "59bd5996ff9dde9d40bc3755cc2c4c4829ebe80ff378e210e52b8dd4e323cb3c",
+  "capture_index_sha256": "b876e06c7c36b31a8e98c657301c0a6f50df5178a7c87eafa07e1c9249a13e16",
+  "shared_display_module_sha256": "c8ac4f596b0a348b7e46627e60a11523550d55e6b5ccde91c5a6be862d22db1f",
+  "private_full_sources_republished": false
+}

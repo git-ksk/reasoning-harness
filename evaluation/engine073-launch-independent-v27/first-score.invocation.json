@@ -1,0 +1,14 @@
+{
+  "identity": "engine073-launch-independent-v27",
+  "utc": "2026-10-18T15:19:42.298408+00:00",
+  "returncode": 0,
+  "elapsed_seconds": 0.10488387569785118,
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-independent-v27/score.py"
+  ],
+  "scorer_invocations": 1,
+  "Engine_additional_invocations": 0,
+  "stdout_sha256": "38bb2b05b3cadf2ed3bd034655d9d4d91796dc7ba96553575538a6e3f954d765",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

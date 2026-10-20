@@ -1,0 +1,45 @@
+{
+  "utc": "2026-10-18T23:52:18.410985+00:00",
+  "input_hashes": {
+    "/private/tmp/engine073-active-source-host-development-v1/input.json": "5807bfa29c56752f567fe78e915a575c539dca1517e66e3e4aa4fced1efc69eb",
+    "/private/tmp/engine07-realworld-snapshots-v2/node-buffer.txt": "8252ff58d1701eed6b80a20a183eef855dfde7b1b3b11bd9ffb2ec2c5125a4dc",
+    "/private/tmp/engine07-realworld-snapshots-v2/node-buffer.html": "23f92fc924708065b4998712ee080dda049e9fd2b4e16558b396d68694d6fa47",
+    "/private/tmp/engine073-active-source-host-development-v1/host.rs": "e0bf50ad19ffdb15c7bcdad04ca916c545e6c9881f07da4151a5be1b546750d7",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs": "2e9207177d9f1e91b8c031322dbbf83c2b374d8847e123e135dcca727b0214de"
+  },
+  "libraries": {
+    "baseline": {
+      "core": "/private/tmp/engine073-active-source-host-baseline/target/debug/libreasoning_harness_core.rlib",
+      "serde": "/private/tmp/engine073-active-source-host-baseline/target/debug/deps/libserde_json-fdb0c033eb5b5773.rlib",
+      "commit": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+      "source_sha256": "7a9a8e77e90e07dbc1648f1984d25f3fc7d17ff3f90d505431c58dac442ce613",
+      "core_sha256": "3584f1d6581509c3b5b457b739abfa5c10e308708352908b3a3febc1fa0ca87b",
+      "serde_sha256": "c4735ebda03ab2fc0e99b98f92d1f46d1d7f9b8858d68a605b7c3c181ace9c7e"
+    },
+    "candidate": {
+      "core": "/private/tmp/engine073-source29-actual-target/debug/libreasoning_harness_core.rlib",
+      "serde": "/private/tmp/engine073-source29-actual-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "commit": "ab3c6322921c8c738ec35bd018345917b5afa538",
+      "source_sha256": "2e9207177d9f1e91b8c031322dbbf83c2b374d8847e123e135dcca727b0214de",
+      "core_sha256": "f125cfbfa038341a596a69afe2d9e01b5950eb7ed4474b4396ab132efc8dd479",
+      "serde_sha256": "69527ed24fcd187181c596636f83f6e78064a578ca6b0636c0468ae281172bff"
+    }
+  },
+  "baseline_build": {
+    "argv": [
+      "cargo",
+      "build",
+      "--locked",
+      "--offline",
+      "-p",
+      "reasoning-harness-core",
+      "--lib",
+      "--message-format=json-render-diagnostics"
+    ],
+    "cwd": "/private/tmp/engine073-active-source-host-baseline",
+    "exit_code": 0,
+    "stdout_sha256": "9d58f9f82f6e581f2bb4e2f4639d6e79ac02a8f9995a3baed4ae6aeb7a968bb0",
+    "stderr_sha256": "6f0cc926cd5cf26ac037d79feaca236e8b6b2680355ed3986e991f4b29ea52ec"
+  },
+  "rustc_version": "rustc 1.88.0 (6b00bc388 2025-06-23)\nbinary: rustc\ncommit-hash: 6b00bc3880198600130e1cf62b8f8a93494488cc\ncommit-date: 2025-06-23\nhost: aarch64-apple-darwin\nrelease: 1.88.0\nLLVM version: 20.1.5\n"
+}

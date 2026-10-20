@@ -1,0 +1,80 @@
+{
+  "identity": "engine073-launch-independent-v6",
+  "recorded_utc": "2026-10-15T13:34:41.871417+00:00",
+  "candidate_source_sha": "06d6c0b8ce28adec71f688a44dfef7624df2ab3b",
+  "manifest_sha256": "bfd7e3a033e2b15e0178afddfbd555199fc6e7d87936e1b32d55f92c2fbc5496",
+  "pre_invocation_guard_matches_manifest": true,
+  "frozen_files_unchanged": true,
+  "v1_v5_all_artifacts_unchanged": true,
+  "static_stage": {
+    "outcome": "PASS",
+    "Engine_invocations": 0,
+    "semantic_observations": 0
+  },
+  "first_semantic_result": {
+    "identity": "engine073-launch-independent-v6",
+    "candidate_source_sha": "06d6c0b8ce28adec71f688a44dfef7624df2ab3b",
+    "manifest_sha256": "bfd7e3a033e2b15e0178afddfbd555199fc6e7d87936e1b32d55f92c2fbc5496",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 55,
+    "failed": 5,
+    "incomplete": 0,
+    "positive_passed": 26,
+    "negative_passed": 29,
+    "negative_v17_requested_relation_violations": 1,
+    "negative_v30_relevant_violations": 1,
+    "positive_v17_withheld": 4,
+    "positive_v30_withheld": 4,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "ca4f8a2e4e9182fa969e95494356228087da24d0d28b5935819bbb313245fbad",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "77c2512dce3faaa86b79a59f23492e0c3cb495099cdb7f909d4d42a3223cc978"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "negative_v17_requested_relation_violation_ids": [
+    "li6-044"
+  ],
+  "negative_v30_relevant_violation_ids": [
+    "li6-044"
+  ],
+  "positive_withheld_ids": [
+    "li6-003",
+    "li6-015",
+    "li6-041",
+    "li6-047"
+  ],
+  "causal_ablation_performed": false,
+  "first_probe_invocations": 1,
+  "scorer_applications": 1,
+  "retries": 0,
+  "rescoring": 0,
+  "post_observation_label_changes": 0,
+  "provider_API_calls": 0,
+  "files": {
+    "README.md": "7ed1eb2369972841a968b69103106e79a364d223b1949922ce4487778da2139e",
+    "author_cases.py": "e01409367f4fc898bec823a761f9b1a136882fb10138cef441be195281c5d915",
+    "cases.json": "f7caffaeee0b94d6d3af767aeaf9a4d15cedcbf94e770acf816c50aaefd740b7",
+    "first-invocation.json": "77c2512dce3faaa86b79a59f23492e0c3cb495099cdb7f909d4d42a3223cc978",
+    "first-invocation.started.json": "e50f8eb7ca0d851af0b992f13560dbe06d746c5128010831c0e137a51196cff1",
+    "first-results.json": "71842dde8baddaa4c0972d42b7badd34196e7ed9c9cb009f48ec64157fbfa186",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "first-summary.json": "b55fe271776595b1718cebfd21e6fd9c55073d7b6d1562bc93fc5675426d1542",
+    "first.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first.stdout.jsonl": "ca4f8a2e4e9182fa969e95494356228087da24d0d28b5935819bbb313245fbad",
+    "inputs.json": "ee078f4c861d1f8bb13801f4497a392b9c22bb08e4a52b55396f709d72063c67",
+    "manifest.json": "bfd7e3a033e2b15e0178afddfbd555199fc6e7d87936e1b32d55f92c2fbc5496",
+    "pre-freeze-scope-review.json": "855fa2c07a9f97d8cee69171598d56f998ff728285940b3cd83f4515f8155bfa",
+    "predecessor-artifact-hashes.json": "da49aaaed6d391c101bb73bcd9c90ac442a49d228824d52c0b159078161f2f18",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "protocol.json": "1649dc3b7f4f219e14d2861a6f4e470e78a73ba6ee73490cea3e39d653d84a9e",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "static-preflight.json": "3b3569bbc57f3a0a3886e23e4a5ef72e23bae813edb2f9e4d2b10dfcb7a78a50",
+    "static_preflight.py": "a1c1180d8054f6bd956f69eaaa0f1b24e573d63e37d9ef0a52125adf3d49ecb7"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-17T08:22:12.482097+00:00",
+  "removed_own_extracted_trees_and_build_cache": [
+    {
+      "path": "/private/tmp/engine073-cli-path-source23-targets",
+      "bytes": 794616138
+    },
+    {
+      "path": "/private/tmp/engine073-cli-path-source23-preparation/source-baseline",
+      "bytes": 19851305
+    },
+    {
+      "path": "/private/tmp/engine073-cli-path-source23-preparation/source-candidate",
+      "bytes": 20518506
+    }
+  ],
+  "removed_bytes": 834985949,
+  "retained": "archived all raw paired evidence/source/fixture/hash metadata; tmp final CLI/direct-control binaries; independent normal target/source/HEAD and all first files unchanged",
+  "limits": "Linked CLI intermediate libraries/build trees removed after closed offline proof; README described storage at archive closure. Hashes retain provenance, not binary archival. No old independent or developer-owned worktree removed."
+}

@@ -1,0 +1,151 @@
+{
+  "identity": "engine073-launch-independent-v24",
+  "author": "same sole authorized independent evaluator; source-blind",
+  "frozen_utc": "2026-10-17T09:41:08.383358+00:00",
+  "candidate": {
+    "source_sha": "3ccda6b4263eb5210477660b11f6926ec0186f4e",
+    "package_version": "0.7.2",
+    "source_identity": "unreleased source24 candidate identified by exact commit/hash; no release adoption claim",
+    "engine_source_contents_read": false
+  },
+  "frozen_files": {
+    "author_cases.py": "041527756c38955c651b952a639b69a32732742807b5d273a0813b59bd624df8",
+    "axis-metrics-spec.json": "fe5871ad8aa82852e7a978c47d138c8a17f1c647979fd7dc06a7605368b87da6",
+    "axis_metrics.py": "7a59e505a407f00d796655222cbad4274c865fb9e3ffa7d301a8360074bb97b7",
+    "build-preflight.json": "e3a08a9c479d8830591e852d9a238c4cddb6beb74182a763d6dc5222536993be",
+    "build.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cases.json": "873b4f02e7f45791f05cd1edc13d4aea0fe7bebfbd0c5f36f010a69a2b964948",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "immutable-predecessor-check.json": "36bd5fa5c6c3443a154bdef70cb3e4a9ef7d4ef8a17dc44bc90416ac53216060",
+    "inputs.json": "74569d5027c1db3faa8aa0db930220b356970daa8646ad3198f6ece7414c80bf",
+    "pre-freeze-scope-review.json": "b251d0e60b5b1180b3c36060c3f41dc90458c6a5bfeba51855ca36cbef2ffa89",
+    "predecessor-artifact-hashes.json": "03e7ab183cc1bdeedbb416241d17bbeb85778dbd11bb8110666fbffa6ea413ba",
+    "preserved-preparation-hashes.json": "4ce3f90bbb870cda0f9771bfe31e57c3729b531034225f820f15a4489a0729ea",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "protocol.json": "c7239b0c09a45906a6fd1bc43d84e49496c9f80fd758ccdc126669ec7e713d7b",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "static-preflight.json": "187f611477865de4084a39d6f3abd5ffb3a8b12c2f069fe999ba16ffd47324f3",
+    "static-stage-invocation.json": "b2b884c3cac449674f958e1f9f2465bca6a45ffade0fb5491befb478aab33a22",
+    "static_preflight.py": "af8b99d3d4b23f40fd2ed3d8612b6def5e12f970151a69022c2f0188b6827d5a"
+  },
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "85a64b506f8c47828a4a3296c5d07c13e921c59b528ea27e10ec4993c5f636e2",
+      "bytes": 789778
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "88e29a4efd212517bce73045c9a33e7a346c344f99892131554ac25233d61368",
+      "bytes": 31553296
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "bytes": 2110472
+    },
+    "opaque_parent_freeze": {
+      "path": "/private/tmp/engine073-source24-freeze.json",
+      "sha256": "34555ab86037995f90a53f9d7d9fce64c7a7ae084f7d3b5f5d415b75446646d7",
+      "bytes": 571
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v24-probe/probe",
+      "sha256": "defe50fb13beb0b88ddc7f376da5efca70eeb1434fc8085d93995ace4628f5af",
+      "bytes": 3197864
+    },
+    "preserved_metrics_preparation_1": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/docs/engine073-realworld-metrics-preparation.md",
+      "sha256": "9e90707b295ee4e273f7101f0d7d33804bff64c4629d980f9209a1258e6f73e7",
+      "bytes": 25560
+    },
+    "preserved_metrics_preparation_2": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/docs/engine073-realworld-metrics-preparation.ja.md",
+      "sha256": "30a4f73c4f0cd4a6aa2a284f3243d997dbc1f769751defcb7617659f6605df08",
+      "bytes": 23762
+    },
+    "preserved_metrics_preparation_3": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/review.json",
+      "sha256": "787da5422330047f4ca23f1020df867bc66eb6794f45fd40c01f72314d7189fc",
+      "bytes": 2526
+    },
+    "preserved_metrics_preparation_4": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/reviewed-input-sha256.json",
+      "sha256": "76b41a7c06dc1893106695253dc303164e2905881cdeffabe26ca0251f7e36c0",
+      "bytes": 1898
+    },
+    "preserved_metrics_preparation_5": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/artifact-sha256.json",
+      "sha256": "6b83e2b6b090f46da65580bf27486ada831d53e9827d77c0081119fa5c969e22",
+      "bytes": 673
+    }
+  },
+  "corpus": {
+    "cases": 60,
+    "pairs": 30,
+    "positive": 30,
+    "semantic_negative": 30,
+    "author_revisions": 0,
+    "new_after_candidate_freeze": true,
+    "labels_rationales_excluded_from_Engine_input": true,
+    "raw_context_gap": [
+      "li24-012",
+      "li24-052"
+    ],
+    "pure_raw_risk_joint_negatives": 0
+  },
+  "probe": {
+    "sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "public_API": "derive_effective_evidence_local_qualification_v17/materialize_evidence_relevance_v29/materialize_evidence_relevance_v30",
+    "semantic_invocations_before_freeze": 0
+  },
+  "scoring": {
+    "inherited_scorer_sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "positive": "v17 requested_relation AND v30 Relevant",
+    "negative": "v17 not requested_relation AND v30 not Relevant",
+    "full_joint_gate": "60/60 and complete, unchanged",
+    "v29": "diagnostic only",
+    "axis_diagnostic_spec_sha256": "fe5871ad8aa82852e7a978c47d138c8a17f1c647979fd7dc06a7605368b87da6",
+    "axis_diagnostic_aggregator_sha256": "7a59e505a407f00d796655222cbad4274c865fb9e3ffa7d301a8360074bb97b7",
+    "axis_diagnostic": "Aggregate saved inherited scorer booleans only; precommitted TP/FP/TN/FN and exact P/R/F1, never recategorizes/replaces first score",
+    "scorer_invocations_before_freeze": 0
+  },
+  "stages": {
+    "author_runs": 1,
+    "full_input_static_runs": 1,
+    "compile_only_runs": 1,
+    "semantic_processes": 0,
+    "inherited_scorer_processes": 0,
+    "axis_diagnostic_aggregations": 0
+  },
+  "predecessors": {
+    "source_files": 591,
+    "separate_metrics_preparation_files": 5,
+    "prior_final_anchor": "2d9fcc74cb6671f8eff56855d45a5e4d48e1e14dedcc29b7c3dbd466edb10d9c",
+    "all_inventories_and_hashes_verified": true,
+    "known_development": "v1-v23 including NOT_EVALUATED drafts; old author/cases/inputs unread for v24"
+  },
+  "parent_reported_only": "pinned3ccda6b strict all-targetClippy/fmt,workspace1578PASS/0FAIL/8existingignore,fixtures20/archive13,quality-counter10,known1200/original14/historical597 whole-output equality and all60v23v29 baseline equal. No parent logs/implementation/tests/metrics read.",
+  "isolation": {
+    "provider_model_API_calls": 0,
+    "network_calls": 0,
+    "Oracle": 0,
+    "additional_agents": 0,
+    "cargo_shared_target_mutation": 0,
+    "Git_mutation": 0,
+    "source_content_read": false
+  },
+  "first_result_contract": {
+    "Engine_one_process_cases": 60,
+    "inherited_scorer_once": true,
+    "axis_diagnostic_once_after_saved_first_score": true,
+    "exclusive_raw_create": true,
+    "no_retry": true,
+    "no_rescore": true,
+    "no_relabel": true,
+    "failure_preserved": true,
+    "release_after_final_readonly_hash_verification_only": true,
+    "scope": "finite synthetic source gate; not real24/normal CLI/provider/human/release/answer accuracy or arbitrary-language guarantee"
+  }
+}

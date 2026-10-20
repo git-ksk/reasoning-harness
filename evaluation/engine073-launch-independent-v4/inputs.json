@@ -1,0 +1,2774 @@
+[
+  {
+    "id": "li4-001",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-01",
+      "target_question": "Was Avenrock Dial launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-01",
+        "canonical_name": "Avenrock Dial",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-001-evidence",
+      "source_id": "li4-001-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Signed erratum from the publisher"
+        },
+        {
+          "kind": "heading",
+          "text": "Correction scope: surface-finish description"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Avenrock Dial was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "As the author, I retract the glazed-surface statement about Avenrock Dial. Signed: the publisher."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-002",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-01",
+      "target_question": "Was Avenrock Dial launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-01",
+        "canonical_name": "Avenrock Dial",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-002-evidence",
+      "source_id": "li4-002-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Signed erratum from the publisher"
+        },
+        {
+          "kind": "heading",
+          "text": "Correction scope: launch assertion"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Avenrock Dial was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "As the author, I retract the launch statement about Avenrock Dial. Signed: the publisher."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-003",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-02",
+      "target_question": "Was Brislen Meter launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-02",
+        "canonical_name": "Brislen Meter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-003-evidence",
+      "source_id": "li4-003-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Corrigendum concerning the optical coating of Brislen Meter"
+        },
+        {
+          "kind": "heading",
+          "text": "Current publisher correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Brislen Meter was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the optical-coating claim for Brislen Meter; the correction is limited to optical coating."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-004",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-02",
+      "target_question": "Was Brislen Meter launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-02",
+        "canonical_name": "Brislen Meter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-004-evidence",
+      "source_id": "li4-004-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Corrigendum concerning the launch of Brislen Meter"
+        },
+        {
+          "kind": "heading",
+          "text": "Current publisher correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Brislen Meter was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the launch claim for Brislen Meter; the correction is limited to that launch claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-005",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-03",
+      "target_question": "Was Cairnleaf Panel launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-03",
+        "canonical_name": "Cairnleaf Panel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-005-evidence",
+      "source_id": "li4-005-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Publisher response to a press enquiry: We deny only the statement that Cairnleaf Panel has a porcelain shell. This response concerns the shell composition."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Cairnleaf Panel was launched in May 2022."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-006",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-03",
+      "target_question": "Was Cairnleaf Panel launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-03",
+        "canonical_name": "Cairnleaf Panel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-006-evidence",
+      "source_id": "li4-006-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Publisher response to a press enquiry: We deny the statement that Cairnleaf Panel was launched. This response concerns the launch assertion."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Cairnleaf Panel was launched in May 2022."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-007",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-04",
+      "target_question": "Was Dolmere Gauge launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-04",
+        "canonical_name": "Dolmere Gauge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-007-evidence",
+      "source_id": "li4-007-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Retraction for the composition table"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Dolmere Gauge was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The stainless-steel claim for Dolmere Gauge is withdrawn. This retraction concerns the composition table alone."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-008",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-04",
+      "target_question": "Was Dolmere Gauge launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-04",
+        "canonical_name": "Dolmere Gauge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-008-evidence",
+      "source_id": "li4-008-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Retraction for the release-history table"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Dolmere Gauge was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The launch claim for Dolmere Gauge is withdrawn. This retraction concerns the release-history statement alone."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-009",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-05",
+      "target_question": "Was Eshbrook Receiver launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-05",
+        "canonical_name": "Eshbrook Receiver",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-009-evidence",
+      "source_id": "li4-009-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Eshbrook Receiver was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Electrical-specification notice. The voltage-rating claim about Eshbrook Receiver is retracted by the publisher. This notice is limited to voltage ratings."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-010",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-05",
+      "target_question": "Was Eshbrook Receiver launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-05",
+        "canonical_name": "Eshbrook Receiver",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-010-evidence",
+      "source_id": "li4-010-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Eshbrook Receiver was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Release-history notice. The launch claim about Eshbrook Receiver is retracted by the publisher. This notice is limited to the launch claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-011",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-06",
+      "target_question": "Was Falkspur Reader launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-06",
+        "canonical_name": "Falkspur Reader",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-011-evidence",
+      "source_id": "li4-011-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Dimension correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Falkspur Reader was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the text describing Falkspur Reader as eight millimetres thick. Our correction concerns thickness only."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-012",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-06",
+      "target_question": "Was Falkspur Reader launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-06",
+        "canonical_name": "Falkspur Reader",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-012-evidence",
+      "source_id": "li4-012-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Launch correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Falkspur Reader was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the text stating that Falkspur Reader was launched. Our correction concerns the launch statement."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-013",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-07",
+      "target_question": "Was Greyhaven Sensor launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-07",
+        "canonical_name": "Greyhaven Sensor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-013-evidence",
+      "source_id": "li4-013-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Greyhaven Sensor was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Customer-question response, issued by the publisher: I deny the waterproof-rating claim for Greyhaven Sensor. This response addresses the rating, not another specification."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-014",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-07",
+      "target_question": "Was Greyhaven Sensor launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-07",
+        "canonical_name": "Greyhaven Sensor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-014-evidence",
+      "source_id": "li4-014-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Greyhaven Sensor was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Customer-question response, issued by the publisher: I deny the launch claim for Greyhaven Sensor. This response addresses the launch claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-015",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-08",
+      "target_question": "Was Hollinridge Module launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-08",
+        "canonical_name": "Hollinridge Module",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-015-evidence",
+      "source_id": "li4-015-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Manual errata sheet"
+        },
+        {
+          "kind": "heading",
+          "text": "Author-requested deletion"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Hollinridge Module was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The sentence \"Hollinridge Module is sealed against dust\" is withdrawn at the author's request. The deletion concerns dust sealing."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-016",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-08",
+      "target_question": "Was Hollinridge Module launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-08",
+        "canonical_name": "Hollinridge Module",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-016-evidence",
+      "source_id": "li4-016-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Manual errata sheet"
+        },
+        {
+          "kind": "heading",
+          "text": "Author-requested deletion"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Hollinridge Module was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The sentence \"Hollinridge Module was launched in May 2022\" is withdrawn at the author's request. The deletion concerns launch."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-017",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-09",
+      "target_question": "Was Islewood Printer launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-09",
+        "canonical_name": "Islewood Printer",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-017-evidence",
+      "source_id": "li4-017-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Lab-method annotation"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Islewood Printer was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The publisher adds this correction: No bench measurement of Islewood Printer occurred. The correction concerns measurement activity."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-018",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-09",
+      "target_question": "Was Islewood Printer launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-09",
+        "canonical_name": "Islewood Printer",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-018-evidence",
+      "source_id": "li4-018-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Release-history annotation"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Islewood Printer was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The publisher adds this correction: No launch of Islewood Printer ever occurred. The correction concerns the claimed launch."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-019",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-10",
+      "target_question": "Was Kelmor Speaker launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-10",
+        "canonical_name": "Kelmor Speaker",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-019-evidence",
+      "source_id": "li4-019-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Kelmor Speaker was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Catalogue export notice: The mass line for Kelmor Speaker has been withdrawn. The scope of our withdrawal is the mass specification alone."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-020",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-10",
+      "target_question": "Was Kelmor Speaker launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-10",
+        "canonical_name": "Kelmor Speaker",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-020-evidence",
+      "source_id": "li4-020-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Kelmor Speaker was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Catalogue export notice: The launch line for Kelmor Speaker has been withdrawn. The scope of our withdrawal is the launch assertion alone."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-021",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-11",
+      "target_question": "Was Luneth Frame launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-11",
+        "canonical_name": "Luneth Frame",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-021-evidence",
+      "source_id": "li4-021-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Limited retraction in the article abstract"
+        },
+        {
+          "kind": "heading",
+          "text": "Luneth Frame: infrared-transmission specification"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Luneth Frame was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the infrared-transmission specification for Luneth Frame. The notice applies only to that physical specification."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-022",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-11",
+      "target_question": "Was Luneth Frame launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-11",
+        "canonical_name": "Luneth Frame",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-022-evidence",
+      "source_id": "li4-022-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Limited retraction in the article abstract"
+        },
+        {
+          "kind": "heading",
+          "text": "Luneth Frame: launch assertion"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Luneth Frame was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the launch assertion for Luneth Frame. The notice applies to that launch assertion."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-023",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-12",
+      "target_question": "Was Mirethorn Console launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-12",
+        "canonical_name": "Mirethorn Console",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-023-evidence",
+      "source_id": "li4-023-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Revised-page deletion notice"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Mirethorn Console was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The author withdraws only this sentence: \"Mirethorn Console has a ceramic coating.\" The deletion concerns coating material."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-024",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-12",
+      "target_question": "Was Mirethorn Console launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-12",
+        "canonical_name": "Mirethorn Console",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-024-evidence",
+      "source_id": "li4-024-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Revised-page deletion notice"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Mirethorn Console was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The author withdraws this sentence: \"Mirethorn Console was launched in May 2022.\" The deletion concerns launch."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-025",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-13",
+      "target_question": "Was Norvale Scanner launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-13",
+        "canonical_name": "Norvale Scanner",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-025-evidence",
+      "source_id": "li4-025-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Editor correction box"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Norvale Scanner was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Affected product: Marshglass Basin. Affected claim: its launch. We retract the launch claim for Marshglass Basin."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-026",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-13",
+      "target_question": "Was Norvale Scanner launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-13",
+        "canonical_name": "Norvale Scanner",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-026-evidence",
+      "source_id": "li4-026-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Editor correction box"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Norvale Scanner was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Affected product: Norvale Scanner. Affected claim: its launch. We retract the launch claim for Norvale Scanner."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-027",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-14",
+      "target_question": "Was Osmere Tracker launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-14",
+        "canonical_name": "Osmere Tracker",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-027-evidence",
+      "source_id": "li4-027-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Syndicated correction about Marshglass Basin"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Osmere Tracker was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "This notice applies only to Marshglass Basin. The assertion that Marshglass Basin was launched is retracted by its publisher."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-028",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-14",
+      "target_question": "Was Osmere Tracker launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-14",
+        "canonical_name": "Osmere Tracker",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-028-evidence",
+      "source_id": "li4-028-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Syndicated correction about Osmere Tracker"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Osmere Tracker was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "This notice applies only to Osmere Tracker. The assertion that Osmere Tracker was launched is retracted by its publisher."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-029",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-15",
+      "target_question": "Was Prairieglass Switch launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-15",
+        "canonical_name": "Prairieglass Switch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-029-evidence",
+      "source_id": "li4-029-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Prairieglass Switch was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "This bulletin discusses Prairieglass Switch, Marshglass Basin, and Copperwillow Case. Only the publisher statement about Marshglass Basin is corrected here: We deny that Marshglass Basin was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-030",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-15",
+      "target_question": "Was Prairieglass Switch launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-15",
+        "canonical_name": "Prairieglass Switch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-030-evidence",
+      "source_id": "li4-030-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Prairieglass Switch was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "This bulletin discusses Prairieglass Switch, Marshglass Basin, and Copperwillow Case. Only the publisher statement about Prairieglass Switch is corrected here: We deny that Prairieglass Switch was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-031",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-16",
+      "target_question": "Was Quarryfern Adapter launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-16",
+        "canonical_name": "Quarryfern Adapter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-031-evidence",
+      "source_id": "li4-031-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "This correction concerns the capillary-channel design of Quarryfern Adapter. I withdraw the capillary-channel design claim. The correction has that design as its entire scope."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Quarryfern Adapter was launched in May 2022."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-032",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-16",
+      "target_question": "Was Quarryfern Adapter launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-16",
+        "canonical_name": "Quarryfern Adapter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-032-evidence",
+      "source_id": "li4-032-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "This correction concerns the launch of Quarryfern Adapter. I withdraw the launch claim. The correction has that launch as its entire scope."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Quarryfern Adapter was launched in May 2022."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-033",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-17",
+      "target_question": "Was Ruskfield Monitor launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-17",
+        "canonical_name": "Ruskfield Monitor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-033-evidence",
+      "source_id": "li4-033-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Publication metadata correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "The article dateline was corrected from 9 June to 10 June. This notice concerns the publication timestamp alone."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Ruskfield Monitor was launched in May 2022."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-034",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-17",
+      "target_question": "Was Ruskfield Monitor launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-17",
+        "canonical_name": "Ruskfield Monitor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-034-evidence",
+      "source_id": "li4-034-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Publication correction to the launch claim"
+        },
+        {
+          "kind": "excerpt",
+          "text": "The article statement that Ruskfield Monitor was launched is retracted by the author. This notice concerns that launch statement."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Ruskfield Monitor was launched in May 2022."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-035",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-18",
+      "target_question": "Was Solmere Recorder launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-18",
+        "canonical_name": "Solmere Recorder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-035-evidence",
+      "source_id": "li4-035-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Solmere Recorder was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The reuse permission for this article is withdrawn. The product launch statement is unchanged; the notice concerns the permission to reuse the article."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-036",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-18",
+      "target_question": "Was Solmere Recorder launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-18",
+        "canonical_name": "Solmere Recorder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-036-evidence",
+      "source_id": "li4-036-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Solmere Recorder was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The product launch statement in this article is withdrawn. The reuse permission is unchanged; the notice concerns the launch statement."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-037",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-19",
+      "target_question": "Was Ternwood Dock launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-19",
+        "canonical_name": "Ternwood Dock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-037-evidence",
+      "source_id": "li4-037-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Gallery caption amendment"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Ternwood Dock was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The caption claim \"Ternwood Dock has a red indicator label\" is retracted by the editor. The amendment concerns indicator colour."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-038",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-19",
+      "target_question": "Was Ternwood Dock launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-19",
+        "canonical_name": "Ternwood Dock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-038-evidence",
+      "source_id": "li4-038-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Gallery caption amendment"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Ternwood Dock was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The caption claim \"Ternwood Dock was launched in May 2022\" is retracted by the editor. The amendment concerns launch."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-039",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-20",
+      "target_question": "Was Uplandthorn Camera launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-20",
+        "canonical_name": "Uplandthorn Camera",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-039-evidence",
+      "source_id": "li4-039-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Translation erratum"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Uplandthorn Camera was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The publisher denies the statement that Uplandthorn Camera uses an upward-facing connector. The erratum concerns connector orientation."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-040",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-20",
+      "target_question": "Was Uplandthorn Camera launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-20",
+        "canonical_name": "Uplandthorn Camera",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-040-evidence",
+      "source_id": "li4-040-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Translation erratum"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Uplandthorn Camera was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The publisher denies the statement that Uplandthorn Camera was launched. The erratum concerns the launch assertion."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-041",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-21",
+      "target_question": "Was Valewick Tablet launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-21",
+        "canonical_name": "Valewick Tablet",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-041-evidence",
+      "source_id": "li4-041-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Proof appendix: activity correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Valewick Tablet was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "An author notice records that no embossing trial for Valewick Tablet took place. This is a correction of the embossing-trial account."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-042",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-21",
+      "target_question": "Was Valewick Tablet launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-21",
+        "canonical_name": "Valewick Tablet",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-042-evidence",
+      "source_id": "li4-042-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Proof appendix: activity correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Valewick Tablet was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "An author notice records that no launch of Valewick Tablet happened. This is a correction of the launch account."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-043",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-22",
+      "target_question": "Was Westhaven Pointer launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-22",
+        "canonical_name": "Westhaven Pointer",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-043-evidence",
+      "source_id": "li4-043-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Westhaven Pointer was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "NOTICE\nPublisher statement: The shock-resistance claim for Westhaven Pointer is withdrawn.\nReason given: specification transcription error."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-044",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-22",
+      "target_question": "Was Westhaven Pointer launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-22",
+        "canonical_name": "Westhaven Pointer",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-044-evidence",
+      "source_id": "li4-044-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Westhaven Pointer was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "NOTICE\nPublisher statement: The launch claim for Westhaven Pointer is withdrawn.\nReason given: launch announcement error."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-045",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-23",
+      "target_question": "Was Yonderfen Counter launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-23",
+        "canonical_name": "Yonderfen Counter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-045-evidence",
+      "source_id": "li4-045-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Yonderfen Counter was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "This correction is addressed to the paragraph about Marshglass Basin, another product. We withdraw the assertion that Marshglass Basin was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-046",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-23",
+      "target_question": "Was Yonderfen Counter launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-23",
+        "canonical_name": "Yonderfen Counter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-046-evidence",
+      "source_id": "li4-046-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Yonderfen Counter was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "This correction is addressed to the paragraph about Yonderfen Counter, the product named in the launch fact. We withdraw the assertion that Yonderfen Counter was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-047",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-24",
+      "target_question": "Was Zelbrook Projector launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-24",
+        "canonical_name": "Zelbrook Projector",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-047-evidence",
+      "source_id": "li4-047-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Publisher archival note"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Zelbrook Projector was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The archive now stores this page in a different folder. This notice records the storage location of the page."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-048",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-24",
+      "target_question": "Was Zelbrook Projector launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-24",
+        "canonical_name": "Zelbrook Projector",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-048-evidence",
+      "source_id": "li4-048-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Publisher withdrawal: product identity omitted"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Zelbrook Projector was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "A launch claim has been withdrawn. The withdrawal notice does not name the product."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-049",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-25",
+      "target_question": "Was Ardenleaf Relay launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-25",
+        "canonical_name": "Ardenleaf Relay",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-049-evidence",
+      "source_id": "li4-049-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ardenleaf Relay was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The editor publishes two corrections in this notice. One concerns typography; the other concerns the units in a dimension table. Both corrections are limited to those topics."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-050",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-25",
+      "target_question": "Was Ardenleaf Relay launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-25",
+        "canonical_name": "Ardenleaf Relay",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-050-evidence",
+      "source_id": "li4-050-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ardenleaf Relay was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The editor publishes two corrections in this notice. One is a retracted launch claim without a named product; the other is typography. The owner of the launch claim is not identified."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-051",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-26",
+      "target_question": "Was Bramshore Terminal launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-26",
+        "canonical_name": "Bramshore Terminal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-051-evidence",
+      "source_id": "li4-051-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Bramshore Terminal was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Report amendment: We retract the assertion about the anode specification of Bramshore Terminal. The amended assertion has that anode specification as its subject."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-052",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-26",
+      "target_question": "Was Bramshore Terminal launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-26",
+        "canonical_name": "Bramshore Terminal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-052-evidence",
+      "source_id": "li4-052-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Bramshore Terminal was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Report amendment: We retract an assertion in our release-history report. The withdrawn launch statement is not identified, and its product name is omitted."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-053",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-27",
+      "target_question": "Was Corvenhill Clock launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-27",
+        "canonical_name": "Corvenhill Clock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-053-evidence",
+      "source_id": "li4-053-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Joint publisher notice: Corvenhill Clock and Marshglass Basin"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Corvenhill Clock was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract one product's strap-length claim. Every withdrawal in this notice concerns strap length only."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-054",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-27",
+      "target_question": "Was Corvenhill Clock launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-27",
+        "canonical_name": "Corvenhill Clock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-054-evidence",
+      "source_id": "li4-054-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Joint publisher notice: Corvenhill Clock and Marshglass Basin"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Corvenhill Clock was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract one product's launch claim. The product names were omitted from the withdrawal notice."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-055",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-28",
+      "target_question": "Was Damarfen Badge launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-28",
+        "canonical_name": "Damarfen Badge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-055-evidence",
+      "source_id": "li4-055-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Publisher update"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Damarfen Badge was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The catalogue file was reformatted. Its sections were reordered, and its page margins were widened."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-056",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-28",
+      "target_question": "Was Damarfen Badge launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-28",
+        "canonical_name": "Damarfen Badge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-056-evidence",
+      "source_id": "li4-056-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Publisher update"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Damarfen Badge was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw a launch statement. The owner of the withdrawn launch statement is unknown in this notice."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-057",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-29",
+      "target_question": "Was Elderquay Decoder launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-29",
+        "canonical_name": "Elderquay Decoder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-057-evidence",
+      "source_id": "li4-057-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Archive filing note"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Elderquay Decoder was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "This record is indexed under Elderquay Decoder. Its topic category is product history."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-058",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-29",
+      "target_question": "Was Elderquay Decoder launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-29",
+        "canonical_name": "Elderquay Decoder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-058-evidence",
+      "source_id": "li4-058-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Current author withdrawal"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Elderquay Decoder was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "I withdraw the launch account associated with this record. The target name is omitted from this withdrawal account."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-059",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-30",
+      "target_question": "Was Fernbrook Filter launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-30",
+        "canonical_name": "Fernbrook Filter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-059-evidence",
+      "source_id": "li4-059-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Proofreading note for a joint release bulletin"
+        },
+        {
+          "kind": "heading",
+          "text": "Changes limited to spacing and font size"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Fernbrook Filter was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "All changes described in this notice concern document formatting."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li4-060",
+    "policy": {
+      "policy_id": "independent-v4-launch-policy",
+      "target_id": "v4-fictional-target-30",
+      "target_question": "Was Fernbrook Filter launched in May 2022?",
+      "entity": {
+        "canonical_id": "v4-fictional-target-30",
+        "canonical_name": "Fernbrook Filter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li4-060-evidence",
+      "source_id": "li4-060-synthetic-publication-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Withdrawal from a joint release bulletin"
+        },
+        {
+          "kind": "heading",
+          "text": "Owner of the withdrawn claim not provided"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Fernbrook Filter was launched in May 2022."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the launch claim. This notice lacks the product name for the retracted claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  }
+]

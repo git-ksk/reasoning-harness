@@ -1,0 +1,41 @@
+[
+  {
+    "id": "api-contract-sentinel-v2",
+    "policy": {
+      "policy_id": "api-contract-policy-v2",
+      "target_id": "fictional-sentinel",
+      "target_question": "Was Olivebay Chime launched in August 2024?",
+      "entity": {
+        "canonical_id": "fictional-sentinel",
+        "canonical_name": "Olivebay Chime",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "sentinel-evidence",
+      "source_id": "sentinel-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Olivebay Chime was launched in August 2024."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  }
+]

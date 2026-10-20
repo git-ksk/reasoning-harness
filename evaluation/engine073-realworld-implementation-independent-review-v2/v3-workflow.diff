@@ -1,0 +1,12 @@
+--- /private/tmp/engine073-realworld-evaluator-review-snapshot-v2/engine073-realworld-independent-v1.yml
++++ /private/tmp/engine073-realworld-workflow-delta-v3/engine073-realworld-independent-v1.yml
+@@ -98,8 +98,8 @@
+           cp evaluation/engine073-realworld-M0-v1/receipt.json /tmp/frozen/M0.json
+           cp -R evaluation/engine073-realworld-independent-v1-input /tmp/frozen/corpus
+           docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/m0-runtime:/image:ro engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/verify_M0.py --receipt /frozen/M0.json --image-archive /image/runtime-image.tar.gz --actual-image-id "$image_id" --repo /repo
+-          docker run --rm --read-only --tmpfs /tmp -v /tmp/frozen:/frozen engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/prepare_sources.py --corpus-dir /frozen/corpus
+           m1=$(sha256sum /tmp/frozen/corpus/manifest.json | cut -d' ' -f1)
++          docker run --rm --read-only --tmpfs /tmp -v /tmp/frozen:/frozen engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/prepare_sources.py --corpus-dir /frozen/corpus --M1-sha256 "$m1"
+           recovery=()
+           if test '${{ matrix.provider }}' = groq; then
+             cp evaluation/engine073-realworld-M0-v1/groq-recovery.json /tmp/frozen/groq-recovery.json

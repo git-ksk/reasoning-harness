@@ -1,0 +1,207 @@
+{
+  "candidate_source": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+    "sha256": "4daf64b918532a9004dea9807b8001ec743244b20b5cd1892c7f3a7ce316d1ef",
+    "bytes": 872196
+  },
+  "probe_executable": {
+    "path": "/private/tmp/engine073-independent-v27-runtime/probe",
+    "sha256": "b1c482ab5d20cf370868b27d0a3f62a67f1eb210f46731db7258016f56d31821",
+    "bytes": 3364616
+  },
+  "runtime_probe_source": {
+    "path": "/private/tmp/engine073-independent-v27-runtime/probe.rs",
+    "sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "bytes": 1764
+  },
+  "runtime_cargo_metadata": {
+    "path": "/private/tmp/engine073-independent-v27-runtime/cargo-build.jsonl",
+    "sha256": "583b29c9ead57ea05edfdd762d5161910f9b1a9b2fff428b01dc79460c6605dc",
+    "bytes": 25193
+  },
+  "runtime_identity": {
+    "path": "/private/tmp/engine073-independent-v27-runtime/identity.json",
+    "sha256": "01e6f3a2dc478d62d23518b9226b85924882fabc7e75ba79aed0007693296756",
+    "bytes": 6880
+  },
+  "opaque_parent_controls": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-independent-v27-parent-controls/receipt.json",
+    "sha256": "01e6f3a2dc478d62d23518b9226b85924882fabc7e75ba79aed0007693296756",
+    "bytes": 6880
+  },
+  "parent_reference_00": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/historical-after.jsonl",
+    "sha256": "9f378662ae651f7c7a2394d7c00c918c9eec7701628ccd339c6d2d181fba47f5",
+    "bytes": 334716
+  },
+  "parent_reference_01": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/identity-before.json",
+    "sha256": "9931d1a6b6bd6259d83fadbba3211fb959aa73b0b0911684bcf1768845dd8ba2",
+    "bytes": 653
+  },
+  "parent_reference_02": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/invocations.json",
+    "sha256": "16c410cc16abdd56d82632ad2b8819e6a913926b837b1d84e3c3e483d2036e95",
+    "bytes": 21880
+  },
+  "parent_reference_03": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/original-audit-after.jsonl",
+    "sha256": "5c32b97127644a0be7094ba23cf629349bed75aa91e995897ec61870bd98d83b",
+    "bytes": 5580
+  },
+  "parent_reference_04": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/owner-adjunct-after.jsonl",
+    "sha256": "80ffe4d9e5b92fc2add8c80b26b2b8ebb0e20d0742d694bf72ccefffe1d687be",
+    "bytes": 4212
+  },
+  "parent_reference_05": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v10-after.jsonl",
+    "sha256": "bfa86a686abdec2896394f63d5309df8c32bd1ee29bdeb3cfeb7df4d97e2d41f",
+    "bytes": 64862
+  },
+  "parent_reference_06": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v12-after.jsonl",
+    "sha256": "898d1d0e828cdeb76a2fef857e68efd51a0fab0692bc68c474ce3dfde8c96155",
+    "bytes": 64658
+  },
+  "parent_reference_07": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v13-after.jsonl",
+    "sha256": "a83ee704e95a4b772e1f0a6274d08f426e277584e847a54cc847a10ddb4deab2",
+    "bytes": 64602
+  },
+  "parent_reference_08": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v14-after.jsonl",
+    "sha256": "68e2b408f08e368922ff372d064b7d18b2cf9bdd4a3dee4b73ed2ddbd0de0f29",
+    "bytes": 64678
+  },
+  "parent_reference_09": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v15-after.jsonl",
+    "sha256": "b6b7a1c86a49c50aee79faef7da105686b7313c86a9fae0080f61b4c7878b559",
+    "bytes": 61673
+  },
+  "parent_reference_10": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v16-after.jsonl",
+    "sha256": "9142282f21b9b1c40ff4834ceeb4d42dd7ea8ea078f4f53b28b82148312f3d97",
+    "bytes": 61630
+  },
+  "parent_reference_11": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v18-after.jsonl",
+    "sha256": "1d9361a27b24827779822e8d8771f1eed343a8872e9415fc347930cda6590721",
+    "bytes": 61662
+  },
+  "parent_reference_12": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v19-after.jsonl",
+    "sha256": "d9d7479b92de668cb365d0164899b85113475b9df595fe9341bcbef9c69bfda3",
+    "bytes": 61749
+  },
+  "parent_reference_13": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v2-after.jsonl",
+    "sha256": "acc897a23e50d0575b3fec4025d6cee1b8cf45bb770327a4275e0792f15e7f56",
+    "bytes": 63190
+  },
+  "parent_reference_14": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v20-after.jsonl",
+    "sha256": "f08c2c0abfb33114318f5f1239f6009dc2045e1104374019257eff656df28863",
+    "bytes": 61795
+  },
+  "parent_reference_15": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v21-after.jsonl",
+    "sha256": "797a074cadd325a890376d4e858bb6d764f24f7ced96bf2585c58fa3f3d4d231",
+    "bytes": 61546
+  },
+  "parent_reference_16": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v22-after.jsonl",
+    "sha256": "bd567c9d37f11ea22ecd7e798598afcc1852e412b338e71c6601f65c66211349",
+    "bytes": 61601
+  },
+  "parent_reference_17": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v23-after.jsonl",
+    "sha256": "8f260f2ca713b1c903d1c45a1dd4360bee2cce06123e7c29816cc73350185f7b",
+    "bytes": 61676
+  },
+  "parent_reference_18": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v24-after.jsonl",
+    "sha256": "cbd379e2f20b09a74ab7af34ebfb8647473ae2d7ea0981d7a40fcb1978acc983",
+    "bytes": 61813
+  },
+  "parent_reference_19": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v25-after.jsonl",
+    "sha256": "d1c9fc03eb543df29fa6897406899d173cee275270d3572581757eaf29cce522",
+    "bytes": 60551
+  },
+  "parent_reference_20": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v26-after.jsonl",
+    "sha256": "e9b1dce31f8c59257f217e8b7a8dbcfc716d0e08eca4ce77512beda42f409d70",
+    "bytes": 60770
+  },
+  "parent_reference_21": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v3-after.jsonl",
+    "sha256": "f7211277b5a04466ee10ad50ee715a497a7e3112baa3fde6f644042736d48129",
+    "bytes": 64065
+  },
+  "parent_reference_22": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v4-after.jsonl",
+    "sha256": "99ea2a1b07461ebc522591a7a2ddf5af6ef49d30aba463c028a9660d89fc34dd",
+    "bytes": 65493
+  },
+  "parent_reference_23": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v5-after.jsonl",
+    "sha256": "24cffa7ec083b9eb08fe11326db5c91885522f6f0f6fb8f8ec33e2cbaca5a1e1",
+    "bytes": 64010
+  },
+  "parent_reference_24": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v6-after.jsonl",
+    "sha256": "968d51a79db3783c03b118a38ec7a12cb570ffde79502bfe5bff2de308729da9",
+    "bytes": 64158
+  },
+  "parent_reference_25": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v7-after.jsonl",
+    "sha256": "215852736588714dc5d438d7d18d3f3b68acbd6888fa5e1c846fe4222d9a4fa4",
+    "bytes": 64304
+  },
+  "parent_reference_26": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v8-after.jsonl",
+    "sha256": "dfb203dcd475aa651cb0020590f19525bed11c2ca6dbc5f9ddd6089da875794f",
+    "bytes": 63922
+  },
+  "parent_reference_27": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/seen-v9-after.jsonl",
+    "sha256": "c64ad8c0756edf9a8098674efcf5eb0293aa38a9d5dadd37942b9faf05818957",
+    "bytes": 64224
+  },
+  "parent_reference_28": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/summary.json",
+    "sha256": "570338048b30b73e3d42aafb97f8f82154f90d4a59397f6641b57c7e0423c6a5",
+    "bytes": 6091
+  },
+  "parent_reference_29": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-launch-development-v26-local-references/supplemental-literals-after.jsonl",
+    "sha256": "f5a36a6354ecee867a754c069e6b1f0aa967e989b1e11930837367c6b607dea0",
+    "bytes": 16480
+  },
+  "preserved_preparation_0": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/docs/engine073-realworld-metrics-preparation.ja.md",
+    "sha256": "30a4f73c4f0cd4a6aa2a284f3243d997dbc1f769751defcb7617659f6605df08",
+    "bytes": 23762
+  },
+  "preserved_preparation_1": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/docs/engine073-realworld-metrics-preparation.md",
+    "sha256": "9e90707b295ee4e273f7101f0d7d33804bff64c4629d980f9209a1258e6f73e7",
+    "bytes": 25560
+  },
+  "preserved_preparation_2": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/artifact-sha256.json",
+    "sha256": "6b83e2b6b090f46da65580bf27486ada831d53e9827d77c0081119fa5c969e22",
+    "bytes": 673
+  },
+  "preserved_preparation_3": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/review.json",
+    "sha256": "787da5422330047f4ca23f1020df867bc66eb6794f45fd40c01f72314d7189fc",
+    "bytes": 2526
+  },
+  "preserved_preparation_4": {
+    "path": "/Users/sawadakousuke/.codex/worktrees/engine073-source27-freeze/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/reviewed-input-sha256.json",
+    "sha256": "76b41a7c06dc1893106695253dc303164e2905881cdeffabe26ca0251f7e36c0",
+    "bytes": 1898
+  }
+}

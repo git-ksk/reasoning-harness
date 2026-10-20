@@ -1,0 +1,34 @@
+[
+  {
+    "original_logical_path": "attributes01/source.rs",
+    "original_sha256": "36e9272065e50c9c784cfbb792341d975f9e9d1af6b1b14d42dd1dc8237c00d3",
+    "original_bytes": 770409,
+    "packed_path": "attributes01/source.rs.gz",
+    "packed_sha256": "6a45e642703e7852fa6db946ae3059e676942b0b41c8ea893a72a3abb1efa186",
+    "packed_bytes": 96794
+  },
+  {
+    "original_logical_path": "guards02/source.rs",
+    "original_sha256": "753dc7429a2d6be9eeebe85f190e6907b82fe254f14fde5b8ebbe6e0ccab1694",
+    "original_bytes": 774554,
+    "packed_path": "guards02/source.rs.gz",
+    "packed_sha256": "5cf2907300af74967e551bc0c781ad60e00ef2620656317016da283cb79eadeb",
+    "packed_bytes": 97360
+  },
+  {
+    "original_logical_path": "structure03/source.rs",
+    "original_sha256": "9b401882cf78eaf07ed815bfceb8642723bdaa0f227304ffe220de2f45fe26f7",
+    "original_bytes": 788592,
+    "packed_path": "structure03/source.rs.gz",
+    "packed_sha256": "61231f3dd6202a51885927e7de906701a7890abb557634b8e9e594b19183fca9",
+    "packed_bytes": 98720
+  },
+  {
+    "original_logical_path": "after-no-anchor-controls-source.rs",
+    "original_sha256": "89ea3b709df45bfc617c79ec712dfb75d669ac7afb915b36a20e01f100cf867a",
+    "original_bytes": 789856,
+    "packed_path": "after-no-anchor-controls-source.rs.gz",
+    "packed_sha256": "2833ee38c7f28b1281e7bb29c6517d5fb4323ffd510f4fb2910a9db351fc077f",
+    "packed_bytes": 98774
+  }
+]

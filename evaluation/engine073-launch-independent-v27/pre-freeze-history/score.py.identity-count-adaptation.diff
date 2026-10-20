@@ -1,0 +1,51 @@
+--- score.py.v26
++++ score.py.v27
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""v26 ONE real scorer process. Strict observation parsing + pinned policy helper.
++"""v27 ONE real scorer process. Strict observation parsing + pinned policy helper.
+ 
+ Pure fixture functions may be unit-tested before authorship. Never run main on
+ historical cohorts. Joint exactness remains diagnostic; new policy decides gate.
+@@ -10,7 +10,7 @@
+ def config_and_helper():
+  if sha(ROOT/'source_gate_policy.json')!=POLICY_SHA or sha(ROOT/'source_gate_helper.py')!=HELPER_SHA:raise ValueError('pinned_policy_or_helper_changed')
+  config=load(ROOT/'source_gate_policy.json')
+- spec=importlib.util.spec_from_file_location('v26_frozen_helper',ROOT/'source_gate_helper.py');helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
++ spec=importlib.util.spec_from_file_location('v27_frozen_helper',ROOT/'source_gate_helper.py');helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
+  return config,helper
+ 
+ def provenance(bundle):
+@@ -32,7 +32,7 @@
+    'first_command_and_markers':before['state']=='started' and after['state']=='finished' and before['command']==after['command']==expected,
+    'first_raw_hashes':after['stdout_sha256']==bundle['raw_sha256'] and after['stderr_sha256']==bundle['stderr_sha256'] and bundle['raw_readonly'] is True,
+    'first_order':dt(m['frozen_utc'])<=dt(before['utc'])<=dt(after['utc'])<=dt(start['utc']),
+-   'first_score_marker':start['state']=='started' and start['identity']=='engine073-launch-independent-v26' and start['scorer_sha256']==bundle['scorer_sha256'] and start['manifest_sha256']==bundle['manifest_sha256'],
++   'first_score_marker':start['state']=='started' and start['identity']=='engine073-launch-independent-v27' and start['scorer_sha256']==bundle['scorer_sha256'] and start['manifest_sha256']==bundle['manifest_sha256'],
+   }
+  except (KeyError,TypeError,ValueError):
+   checks={'malformed_runtime_provenance':False}
+@@ -102,12 +102,12 @@
+  controls=dict(base,operational_failures=len(errors),**{k:proof.get(k) is True for k in ['labels_frozen_before_observation','candidate_frozen_before_observation','first_observation_immutable']})
+  gate=helper.score(helper_rows,controls,config=config)
+  accepted=gate['gate_pass'] and not errors
+- summary={'identity':'engine073-launch-independent-v26','candidate_source_sha':SOURCE,'engine_version':VERSION,'outcome':'PASS' if accepted else 'FAIL','decision':'GO' if accepted else 'NO_GO','gate':gate,'axes':gate['axes'],'planned_cases':60,'observed_cases':len(rows),'passed':sum(x['status']=='pass' for x in scored),'failed':sum(x['status']=='fail' for x in scored),'incomplete':sum(not x['complete'] for x in scored),'joint_exactness_is_diagnostic':True,'strict_joint_outcome':'PASS' if not errors and all(x['status']=='pass' for x in scored) else 'FAIL','positive_passed':sum(x['status']=='pass' for x in scored if x['polarity']=='positive'),'negative_passed':sum(x['status']=='pass' for x in scored if x['polarity']=='negative'),'operational_errors':errors,'controls':controls,'parent_regressions':'parent-reported pinned source qualification only; future provenance separately verified','runtime_provenance':proof,'policy_sha256':POLICY_SHA,'helper_sha256':HELPER_SHA,'provider_calls':0,'retries':0,'rescores':0,'scope':'Future #520 synthetic source gate only; no historical rescore/real24/CLI/release approval'}
++ summary={'identity':'engine073-launch-independent-v27','candidate_source_sha':SOURCE,'engine_version':VERSION,'outcome':'PASS' if accepted else 'FAIL','decision':'GO' if accepted else 'NO_GO','gate':gate,'axes':gate['axes'],'planned_cases':60,'observed_cases':len(rows),'passed':sum(x['status']=='pass' for x in scored),'failed':sum(x['status']=='fail' for x in scored),'incomplete':sum(not x['complete'] for x in scored),'joint_exactness_is_diagnostic':True,'strict_joint_outcome':'PASS' if not errors and all(x['status']=='pass' for x in scored) else 'FAIL','positive_passed':sum(x['status']=='pass' for x in scored if x['polarity']=='positive'),'negative_passed':sum(x['status']=='pass' for x in scored if x['polarity']=='negative'),'operational_errors':errors,'controls':controls,'parent_regressions':'parent-reported pinned source qualification only; future provenance separately verified','runtime_provenance':proof,'policy_sha256':POLICY_SHA,'helper_sha256':HELPER_SHA,'provider_calls':0,'retries':0,'rescores':0,'scope':'Future #520 synthetic source gate only; no historical rescore/real24/CLI/release approval'}
+  return {'summary':summary,'cases':scored,'helper_rows':helper_rows}
+ 
+ def main():
+  if any((ROOT/n).exists() for n in ['first-results.json','first-summary.json','first-score.started.json']):raise RuntimeError('first_only_scorer_restart_refused')
+- start={'identity':'engine073-launch-independent-v26','state':'started','utc':utc(),'scorer_sha256':sha(ROOT/'score.py'),'manifest_sha256':sha(ROOT/'manifest.json')}
++ start={'identity':'engine073-launch-independent-v27','state':'started','utc':utc(),'scorer_sha256':sha(ROOT/'score.py'),'manifest_sha256':sha(ROOT/'manifest.json')}
+  write_new(ROOT/'first-score.started.json',start)
+  try:
+   evaluator_integrity();manifest=load(ROOT/'manifest.json');config,helper=config_and_helper();proof=provenance(runtime_bundle(manifest,start));parent=load(ROOT/'parent-controls-snapshot.json')
+@@ -116,7 +116,7 @@
+   scored=assess(cases,(ROOT/'first.stdout.jsonl').read_bytes().decode('utf-8'),invocation,(ROOT/'first.stderr.txt').stat().st_size,parent['reported_controls'],proof,config,helper)
+   scored['summary'].update(manifest_sha256=sha(ROOT/'manifest.json'),evaluator_freeze_sha256=sha(ROOT/'evaluator-freeze.json'),raw={'stdout_sha256':sha(ROOT/'first.stdout.jsonl'),'stderr_sha256':sha(ROOT/'first.stderr.txt'),'invocation_sha256':sha(ROOT/'first-invocation.json')})
+  except Exception as exc:
+-  scored={'summary':{'identity':'engine073-launch-independent-v26','outcome':'FAIL','decision':'NO_GO','gate':{'gate_pass':False,'blockers':['evaluator_or_runtime_integrity_error']},'planned_cases':60,'observed_cases':None,'passed':None,'failed':None,'incomplete':60,'operational_errors':[{'type':type(exc).__name__,'error':str(exc)}],'provider_calls':0,'retries':0,'rescores':0},'cases':[]}
++  scored={'summary':{'identity':'engine073-launch-independent-v27','outcome':'FAIL','decision':'NO_GO','gate':{'gate_pass':False,'blockers':['evaluator_or_runtime_integrity_error']},'planned_cases':60,'observed_cases':None,'passed':None,'failed':None,'incomplete':60,'operational_errors':[{'type':type(exc).__name__,'error':str(exc)}],'provider_calls':0,'retries':0,'rescores':0},'cases':[]}
+  write_new(ROOT/'first-results.json',scored);write_new(ROOT/'first-summary.json',scored['summary']);print(json.dumps(scored['summary'],indent=2))
+  return 0
+ if __name__=='__main__':raise SystemExit(main())

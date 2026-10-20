@@ -1,0 +1,36 @@
+{
+  "identity": "engine073-launch-independent-v25-pre-author",
+  "stage": "PURE_CONSTRUCTED_OUTPUT_METADATA_UNIT_TESTS",
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/evaluation/engine073-launch-independent-v25",
+    "-p",
+    "test_evaluator.py",
+    "-v"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 0.21869887504726648,
+  "utc": "2026-10-17T13:51:50.878617+00:00",
+  "code_sha256": {
+    "execute_first.py": "a0bd0b87b22f1ab6f0ac403fb0b2271f7a1bb0916ff1259ade2318392a39be9e",
+    "freeze_corpus.py": "054b56480844427fa22e9e59fd78f0518f869183dcfa98671a5420fe6c5b0de6",
+    "static_preflight.py": "405995fa45de6fab26363a2615b87c0ceddd1416ec45d41541c0236f9f1b95d4",
+    "test_evaluator.py": "406ea4e55b3c10eda84bfa9ae6528d8e59a9a3d00b0a66b9d04543ba8667d586",
+    "source_gate_helper.py": "00f6971900864ee9e89e4db6029d8196fabd0a4b6ab28e343f19506417735c6f",
+    "legacy_parse_reference.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "score.py": "ea198222c182ab87a664c9090ff0f3d2a86ab1475ab0655253398e60054975a3",
+    "evaluator_contract.py": "89f1004fff9e7b20b26da012312ed0f2de6cf39ae4cd8a4e3c4c38ab6574bb16"
+  },
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "6b329f59992f9bbd792dfc648a66d22b08456343c33b44c751bb5f4a6aaa15bc",
+  "actual_candidate_Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "independent_cases_authored": 0,
+  "provider_network_Oracle_calls": 0,
+  "note": "Functions evaluated on newly constructed unit-output rows only; no Engine, main scorer, independent cases or historic archives executed."
+}

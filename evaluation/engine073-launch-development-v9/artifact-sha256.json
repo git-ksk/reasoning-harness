@@ -1,0 +1,29 @@
+{
+  "source_sha": "e06c4ec5505644250669df97860ebbe9ccc5cde8",
+  "source_file_sha256": "e5e0bd4af579c1fffedb1000a0d1d90263fee2c38cbb693db5a95cefad9a472d",
+  "files": {
+    "README.md": "57ef8adcb0d33d38443e5485c12b8968c049d01d2bc1423dab62791e158bc008",
+    "archive.log": "e7f28b11075e6743aa71e5e393a2bf64528e6244197d2e6e53b13a18a2b683da",
+    "clippy.log": "d9926f725922e7023ff5d8b1656d68f0e2dcb4252924fc98c10a9cd7c0f429b2",
+    "fixtures.json": "808579a083c50b2fb107df3e87e19332825af73367981cc629e5d162fce4ffdf",
+    "fmt.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused-after.log": "1be6450c79f908191362a9dcad8e288a3b94ebe470862fc2452aab2a0a926af6",
+    "historical-current.jsonl": "9f378662ae651f7c7a2394d7c00c918c9eec7701628ccd339c6d2d181fba47f5",
+    "local-owner-red.log": "7e4c8e274efa56402cc02121f7f95880d3e1c5aafe155ff1cf4fb7318e8229a2",
+    "original-audit-after.jsonl": "5c32b97127644a0be7094ba23cf629349bed75aa91e995897ec61870bd98d83b",
+    "probe-summary.json": "a9ae6240f2f91374dec9d2b4f60b850ef85db4ccc69b1cdf14744ff340727005",
+    "providers.log": "7d48cb4f93b3290982e1fac1c115df17467fff4dfed705c41a33cdd777293c1a",
+    "seen-independent-v2-after.jsonl": "acc897a23e50d0575b3fec4025d6cee1b8cf45bb770327a4275e0792f15e7f56",
+    "seen-independent-v3-after.jsonl": "f7211277b5a04466ee10ad50ee715a497a7e3112baa3fde6f644042736d48129",
+    "seen-independent-v4-after.jsonl": "99ea2a1b07461ebc522591a7a2ddf5af6ef49d30aba463c028a9660d89fc34dd",
+    "seen-independent-v5-after.jsonl": "24cffa7ec083b9eb08fe11326db5c91885522f6f0f6fb8f8ec33e2cbaca5a1e1",
+    "seen-independent-v6-after.jsonl": "968d51a79db3783c03b118a38ec7a12cb570ffde79502bfe5bff2de308729da9",
+    "seen-independent-v7-after.jsonl": "215852736588714dc5d438d7d18d3f3b68acbd6888fa5e1c846fe4222d9a4fa4",
+    "seen-independent-v8-after.jsonl": "dfb203dcd475aa651cb0020590f19525bed11c2ca6dbc5f9ddd6089da875794f",
+    "seen-independent-v9-after.jsonl": "c64ad8c0756edf9a8098674efcf5eb0293aa38a9d5dadd37942b9faf05818957",
+    "summary.json": "8c0782b715cb2023aece0e543b1af1ad597b7fc4d47e3e0c35af2c113212cd5c",
+    "typed-locality-red.log": "bc0f9808cad123a888f84270bba3f2f9e1a38dbf090a18daf56d89ed03fe1aa3",
+    "typed-object-red.log": "79d8a9b3f82e77d307005174233993c2be2f6451e9939a08134a57217fe4a4c1",
+    "workspace.log": "78811ef68c7357a8e9a01f36c63292a8b1da86539be01cafbac7e145039e9e8e"
+  }
+}

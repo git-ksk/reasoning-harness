@@ -1,0 +1,6 @@
+import hashlib,json,os,sys
+from pathlib import Path
+out=Path('/review');runner='/repo/evaluation/engine07-realworld-runner-v1/runner.py';fixture='/repo/evaluation/engine07-realworld-runner-v1/fixture_child.py'
+plan={'schema':'engine07-operational-plan-v1','provider':'mistral','model':'fixture-only','token_budget':20,'artifacts':{p:hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in [sys.executable,fixture]},'jobs':[{'id':'pid1structural','arm':'helper','contract':'helper','argv':[sys.executable,fixture,'--mode','descendant-on-cancel','--contract','helper','--marker','{RUN_DIR}/marker','--provider','mistral','--model','fixture-only'],'budget':{'max_generations':1,'max_input_tokens_per_generation':4,'max_output_tokens_per_generation':6,'max_attempts_per_generation':1},'timeout_seconds':120,'cancel_grace_seconds':0.15}]}
+with (out/'pid1-plan.json').open('x') as f:json.dump(plan,f);f.flush();os.fsync(f.fileno())
+os.execv(sys.executable,[sys.executable,'-B',runner,'--plan','/review/pid1-plan.json','--output','/review/pid1-run'])

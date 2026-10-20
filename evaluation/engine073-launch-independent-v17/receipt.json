@@ -1,0 +1,54 @@
+{
+  "identity": "engine073-launch-independent-v17",
+  "outcome": "NOT_EVALUATED",
+  "saved_utc": "2026-10-16T16:21:01.530327+00:00",
+  "candidate_source_sha": "f3f1362c33bb4483de97607c4f7854162bfa148f",
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "bd2afb064d28a258a6de57de7594c1186e470de77bcd52eefeab0d3b1579255b",
+      "bytes": 688191,
+      "unchanged": true
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "f7dcc1b2db4453e139cafadc0895a1c0553d8eeff08ee9c21d4b0cd3cd6573f8",
+      "bytes": 31121504,
+      "unchanged": true
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "bytes": 2110472,
+      "unchanged": true
+    },
+    "opaque_parent_freeze": {
+      "path": "/private/tmp/engine073-source16-freeze.json",
+      "sha256": "c1bf85333692d99925a1c23c33664833f86388ab4e6af0b13af283cabac53fcf",
+      "bytes": 571,
+      "unchanged": true
+    }
+  },
+  "draft_files_sha256": {
+    "author_cases.py": "699f3471184bdfb1b3827e9410e38c5461ed4ae6496f403089757eff08849a29",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635"
+  },
+  "stop_record_sha256": "33c5081d01ce03f3d0dd206173738cfb2825225672ed3ccb04d2b1f213a4f4b3",
+  "static_draft_sha256": "c58ad2786530988ed5f32515ca22321dfb9d00dcb3b52a9d8f60e05e163bc079",
+  "README_sha256": "2c4a20c7e072e64d0ea99b4ea4ddd8a648f3566658b203f938dfa0099d83ffdb",
+  "old357_unchanged": true,
+  "author_script_executions": 0,
+  "full_inputs_generated": 0,
+  "complete_manifest_freeze": false,
+  "probe_builds": 0,
+  "Engine_semantic_observations": 0,
+  "scorer_applications": 0,
+  "provider_network_calls": 0,
+  "retry_rescore_relabel": 0,
+  "future_fresh_reuse_allowed": false,
+  "source_contents_read": false,
+  "final_manifest": "All versions including this aborted draft, excluding final manifest itself; SHA256 reported externally.",
+  "fixed_state_releasable_after_final_verify": true
+}

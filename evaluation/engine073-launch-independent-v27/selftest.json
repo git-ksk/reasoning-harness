@@ -1,0 +1,29 @@
+{
+  "identity": "engine073-launch-independent-v27-pre-author",
+  "kind": "Pure constructed output/provenance/refusal/hash/process-envelope tests; not case authorship or candidate observations.",
+  "started_utc": "2026-10-18T15:01:09.324650+00:00",
+  "finished_utc": "2026-10-18T15:01:09.582871+00:00",
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "-m",
+    "unittest",
+    "test_evaluator"
+  ],
+  "returncode": 0,
+  "tests": 59,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "361d6d242e1bde1a4e5bdebd89f5bc39a7d471e476a4171f5b358e7c411f749d",
+  "tested_files": {
+    "score.py": "3994f3981b4748b0686fdb4df075b4dc83eac11b49c852be2b57123641b0a095",
+    "execute_first.py": "5fb253c0751965e25c988082f2c6a387eec3149ffab756b803ac7198d145a8d2",
+    "test_evaluator.py": "bf9f45496d2af78ad194ce7dbc4455c77fcf5e243c32c700cf09c4a756d89839",
+    "evaluator_contract.py": "003383e055d9f385356b0df7c4d6f69bbdba922062b7384d67fe3a646f8e160e",
+    "source_gate_helper.py": "00f6971900864ee9e89e4db6029d8196fabd0a4b6ab28e343f19506417735c6f",
+    "source_gate_policy.json": "3a6d37e3fbf134f4a49677fdcd7de8b1b625739988a40e1c1e78b94978099767"
+  },
+  "actual_Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "authored_cases": 0,
+  "provider_model_network_Oracle_calls": 0
+}

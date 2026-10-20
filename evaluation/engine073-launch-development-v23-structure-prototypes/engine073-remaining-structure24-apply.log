@@ -1,0 +1,31 @@
+let Some(end) = quoted.find(closing) else {
+        return None;
+    };
+    let body = &quoted[..end];
+    let tail = quoted[end + closing.len_utf8()..].trim();
+    if body.contains(['"', '“', '”', '‘', '’', ',', ';'])
+        || tail.contains(['"', '“', '”', '‘', '’', ',', ';'])
+    {
+        return None;
+    }
+    let owner = [
+        " was launched",
+        " was released",
+        " was not launched",
+        " was not released",
+    ]
+    .iter()
+    .find_map(|suffix| body.strip_suffix(suffix));
+    if owner.is_some_and(|owner| {
+        launch_named_subject_v17(owner)
+            && !target_identity_phrases(policy)
+                .iter()
+                .any(|target| normalized_phrase_matches(owner, target))
+    }) && (tail.is_empty()
+        || tail
+            .strip_prefix("quoted in ")
+            .is_some_and(|owner| launch_owned_appearance_subject_v17(policy, owner)))
+}
+
+
+quote owner expected end not found; no source written

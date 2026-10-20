@@ -1,0 +1,27 @@
+{
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "acquired_source_ids": [],
+  "admitted_source_ids": [],
+  "terminal_status": "unavailable",
+  "usage": null,
+  "row_id": "9908e85e27a38e4e1a115529",
+  "case_id": "structural-only",
+  "provider": "google",
+  "track": "helper_opt_in",
+  "arm": "baseline",
+  "operation": "incomplete",
+  "unavailable_reason": "fixture-stop",
+  "raw_file_sha256": {
+    "spawn.json": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "stdout.json": "918e05acfdccef6babba6f00f0026271430960ef0076fb0882a632e89ddd5a02"
+  },
+  "wall_ms": null,
+  "failure_partial_display_audit_required": true
+}

@@ -1,0 +1,74 @@
+{
+  "identity": "engine073-launch-independent-v27-metrics-v1",
+  "fixed_before_independent_authorship": true,
+  "policy_snapshot": "source_gate_policy.json",
+  "policy_sha256": "3a6d37e3fbf134f4a49677fdcd7de8b1b625739988a40e1c1e78b94978099767",
+  "helper_snapshot": "source_gate_helper.py",
+  "helper_sha256": "00f6971900864ee9e89e4db6029d8196fabd0a4b6ab28e343f19506417735c6f",
+  "gold": {
+    "positive": 30,
+    "negative": 30,
+    "planned_total": 60,
+    "pairs": 30,
+    "strict_boolean_axes": true,
+    "outside_Engine_input": true
+  },
+  "axes": {
+    "v17_requested_relation": "effective_v17.relation_scope == requested_relation",
+    "v30_relevant": "v30.disposition == relevant"
+  },
+  "counts": {
+    "tp": "complete positive with true observation",
+    "fn": "complete positive with false observation",
+    "fp": "complete negative with true observation",
+    "tn": "complete negative with false observation",
+    "incomplete": "Missing/invalid observation, failed or unfinished invocation, or nonempty probe stderr: excluded from TP/FP/TN/FN, never promoted to safe negative or joint success."
+  },
+  "formulae": {
+    "precision": "TP/(TP+FP); null if denominator zero, cannot pass",
+    "recall": "TP/(TP+FN); null if denominator zero, cannot pass",
+    "f1": "2*TP/(2*TP+FP+FN); 0 if denominator zero",
+    "f0_5_diagnostic": "1.25*TP/(1.25*TP+FP+0.25*FN); 0 if denominator zero"
+  },
+  "gate_each_axis": {
+    "minimum_f1": 0.9,
+    "minimum_precision": 0.95,
+    "minimum_recall": 0.85,
+    "maximum_false_positive": 0
+  },
+  "gate_cumulative": [
+    "Complete 60 first observations; no parsing/schema/duplicate/foreign/missing/version/binding/invocation/stderr/provenance failures.",
+    "Both axes pass independently.",
+    "Pinned parent-reported known source controls1400/1400, original14/14, historical597 whole-output byte equality and known unfixed critical source defects[]. No independent replay; fresh generalization/project/CLI/live gates remain separate.",
+    "Actual M0/M1/candidate/input/label/first-marker/hash/time/readonly proof, independently derived at real scoring time. No future flags trusted from parent snapshot."
+  ],
+  "joint_diagnostic": {
+    "comparison": "Both observed booleans equal precommitted expected booleans for a complete case.",
+    "counts": [
+      "passed",
+      "failed",
+      "incomplete",
+      "positive_passed",
+      "negative_passed"
+    ],
+    "all60_required_for_v27_gate": false,
+    "historical_v1_v26_outcomes": "Unchanged; no retrospective rescoring under this policy."
+  },
+  "boundary_fixtures": {
+    "TP26_FP0_TN30_FN4_each_axis": "GO if all operational/regression/provenance gates pass",
+    "TP25_FP0_TN30_FN5": "NO_GO",
+    "FP1_either_axis": "NO_GO",
+    "one_axis_below_floor": "NO_GO",
+    "zero_positive_prediction": "NO_GO with undefined precision"
+  },
+  "risk_diagnostics": "Same scorer process stores exact raw_provided_tuple from input and effective_v17_tuple/v29/v30 from the raw row. Missing output remains null. No inference of internal risk components/retention/loss from enum values. No semantic rescore.",
+  "failure_accounting": "Global invocation failure or probe stderr marks every planned case incomplete and joint success counts0. Duplicate/foreign/parse errors independently force NO_GO even if other valid rows remain complete. Failed recorder/scorer process or scorer stderr prevents driver PASS.",
+  "scope": "Finite synthetic #520 source qualification only; not real-answer claim-grounding F1, #531 real24, #540 live runner, normal CLI, provider/human evaluation, release, or adoption.",
+  "pre_author_fixture_validation": {
+    "constructed_output_tests": 59,
+    "real_candidate_or_case_tests": 0,
+    "inherited_from_v26_tests": 59,
+    "new_v27_fixture_behaviors": 0,
+    "strict_guards": "All v26 strict parse/bool gold/complete-first/type/marker/hash/driver/provenance behaviors retained; only new identity/candidate/count binding."
+  }
+}

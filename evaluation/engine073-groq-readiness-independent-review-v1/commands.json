@@ -1,0 +1,10 @@
+{
+  "offline_control": [
+    "PYTHONDONTWRITEBYTECODE=1",
+    "python3",
+    "-B",
+    "/private/tmp/engine073-groq-readiness-independent-review-v1/offline-repaired-control.py"
+  ],
+  "returncode": 0,
+  "first_failed_control": "Original-input SHA guard stopped before any execution; not retried against changed shared bytes. New repaired snapshot has separate control identity."
+}

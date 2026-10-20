@@ -1,0 +1,111 @@
+{
+  "identity": "engine073-launch-independent-v7",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "frozen_utc": "2026-10-15T13:57:19.742411+00:00",
+  "candidate": {
+    "source_sha": "a80391e7daaa59832dee24e5ebed351ed3e02980",
+    "package_version": "0.7.2",
+    "source_file": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+    "source_sha256": "3aaad220f7990d96ec18f54ef3d8f35d230bb0614159d87e2da9a94b869857ac",
+    "identity_note": "Source SHA identifies unreleased fixed candidate, not unchanged package version."
+  },
+  "frozen_files": {
+    "author_cases.py": "1eb9a19ca2a7e4277904c3c16cce03bdf696f26a8ced035496d31d999fe96f27",
+    "cases.json": "6783f7a43614b92d6d0bfc049543a4dcb8e32d42602a40af27f27e4e5ac7a10a",
+    "inputs.json": "809269919365ff2f437aff574ba31fd7952ae45bebf5c8d7b37b93473857c6ed",
+    "protocol.json": "a2172776b30688d82d9d65e6dc3de1c0875709ca3cb40205254c324825ee4fa4",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "static_preflight.py": "e1ac2f3d11a1295e3bcef1a18a789066f206d937ab7177ee7c3052ca477ad994",
+    "static-preflight.json": "b4c0f362eebf5878f2a9e16ae6a9e1510b8685c18d37ac9fcf47b2c33c0ddc81",
+    "pre-freeze-scope-review.json": "bbedeafd4821691a9fb596b11a6eb0d670351f914516f995031d2b0381027962",
+    "paired-name-scope.json": "6ac9e355d23ae11f1f39210b15383510abbe787ace32c35878d0ca45c5e5f364",
+    "predecessor-artifact-hashes.json": "1fc7928eff45034c26e3a15f33e7add56d0a1afd767064b15fc0d23f80cfb93f"
+  },
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "3aaad220f7990d96ec18f54ef3d8f35d230bb0614159d87e2da9a94b869857ac",
+      "bytes": 590867
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-876be67fd4b1ef90.rlib",
+      "sha256": "3b738b367929ab1f01befc9ba4921b5a471f848c9aadb60cf645843ac59d4df3",
+      "bytes": 72712296
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-fdb0c033eb5b5773.rlib",
+      "sha256": "6790acd878f7472babebca4ae5c0e9e4dcaab113f41c3a212935db0380a2bd68",
+      "bytes": 3436712
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v7-probe/probe",
+      "sha256": "63265b399145aeb3572f11315db7026f08ad3f8d78b6dfab8d8f918c8690554d",
+      "bytes": 2874280
+    }
+  },
+  "corpus": {
+    "file": "cases.json",
+    "complete_engine_input": "inputs.json",
+    "count": 60,
+    "positive": 30,
+    "negative": 30,
+    "matched_pairs": 30,
+    "canonical_targets": 30,
+    "real_documents": 0,
+    "new_compositions_after_candidate_fixed": true,
+    "previous_sets_seen_development": true,
+    "new_boundaries": "Explicit complete ownership with shared first token; event words inside physically/administratively scoped objects; unresolved short-name/reference launch corrections."
+  },
+  "probe": {
+    "source": "probe.rs",
+    "sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "inherited_unchanged": true,
+    "rustc": "rustc 1.88.0 (6b00bc388 2025-06-23)",
+    "parent_supplied_fixed_build": true,
+    "independent_rebuild": false,
+    "shared_target_changes": 0
+  },
+  "scoring": {
+    "file": "score.py",
+    "sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "byte_identical_inherited": true,
+    "protocol": "protocol.json",
+    "precommitted_before_first_API": true,
+    "positive": "requested_relation AND Relevant",
+    "negative": "not requested_relation AND not Relevant",
+    "joint_v17_v30_required": true,
+    "permissive_change": false,
+    "post_result_label_changes": 0,
+    "retries": 0
+  },
+  "stages": {
+    "static": "STATIC_ONLY PASS;60 complete inputs/nonzero budget;Engine/semantic0.",
+    "semantic": "Not yet run at freeze;one planned first60 v17/v29/v30 process.",
+    "semantic_sentinel": "None; static/semantic separated."
+  },
+  "preserved_predecessors": {
+    "hashes": "predecessor-artifact-hashes.json",
+    "v1_v6_unchanged_at_static_preflight": true,
+    "manifest_hashes": {
+      "v1": "71f9d1008f4e0d74703306b38a07f7593b8da0ac83006b9a4fd51a7a43f0392c",
+      "v2": "e9a3bbbb1d23936539704e27ce6b73b6fa6b09ba0796c595129391f1e2ec77df",
+      "v3": "59ace2e27e444274644d56b1585b242e220b954aa75b37a6268facd906fc876c",
+      "v4": "7ffcdff0c10874a166406e0542191cf5e7f3524563d75e8a72fb987cc89c5552",
+      "v5": "36aea95c26a491b762915d3e0acc27376aa9acecbbd15a40d7957923cdb9c3ba",
+      "v6": "bfd7e3a033e2b15e0178afddfbd555199fc6e7d87936e1b32d55f92c2fbc5496"
+    }
+  },
+  "isolation": {
+    "production_implementation_read": false,
+    "parent_root_tests_historical_corpora_fixtures_read": false,
+    "old_sets_known_seen": true,
+    "Oracle": false,
+    "additional_agents": false,
+    "provider_API_calls": 0,
+    "Git_mutations": 0,
+    "cargo_invocations": 0
+  },
+  "record_contract": "Exclusive first raw/started/finished invocation, one inherited scoring application;retain first results/FAIL/labels and final artifact receipt without retry or rescore."
+}

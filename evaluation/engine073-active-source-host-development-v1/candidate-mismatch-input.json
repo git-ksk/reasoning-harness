@@ -1,0 +1,65 @@
+{
+  "contract": "active-source-host-development-v1",
+  "run_id": "engine073-active-source-host-node-control-v1-quote-mismatch",
+  "parent_capture_sha256": "b876e06c7c36b31a8e98c657301c0a6f50df5178a7c87eafa07e1c9249a13e16",
+  "policy": {
+    "policy_id": "active-source-host-definition-control-v1",
+    "target_id": "buffer-definition",
+    "target_question": "Are Buffer instances Uint8Array instances in the captured Node.js documentation?",
+    "entity": {
+      "canonical_id": "buffer",
+      "canonical_name": "Buffer",
+      "aliases": []
+    },
+    "relation": "definition",
+    "identity_requirement": "require_harness_anchor",
+    "assessment_budget": {
+      "max_model_attempts": 1,
+      "max_tokens": 192,
+      "max_elapsed_ms": 90000
+    }
+  },
+  "proposal": {
+    "target_binding": "exact",
+    "relation_binding": "exact"
+  },
+  "controlled_raw": {
+    "identity_scope": "exact_target",
+    "relation_scope": "requested_relation",
+    "scope_risk": "none"
+  },
+  "source": {
+    "evidence_id": "captured-full-source:node-buffer",
+    "parent_evidence_id": "snapshot:rw03-node-positive:1",
+    "source_id": "node-subclass",
+    "normalized_path": "/private/tmp/engine07-realworld-snapshots-v2/node-buffer.txt",
+    "start_byte": 10163,
+    "end_byte": 10228,
+    "quote": "The Buffer class is a subclass of JavaScript's <Uint8Array> class CHANGED",
+    "url": "https://nodejs.org/api/buffer.html",
+    "locator": "Buffer / Introduction",
+    "source_version": "sha256:23f92fc924708065b4998712ee080dda049e9fd2b4e16558b396d68694d6fa47",
+    "retrieved_at_unix_seconds": 1792019640,
+    "metadata": {
+      "temporal": {
+        "effective_from_unix_seconds": 1792019640,
+        "effective_until_unix_seconds": 1792106040
+      },
+      "scope": {
+        "product": {
+          "kind": "values",
+          "values": [
+            "node"
+          ]
+        },
+        "release": {
+          "kind": "values",
+          "values": [
+            "captured-current"
+          ]
+        }
+      },
+      "provenance_class": "primary"
+    }
+  }
+}

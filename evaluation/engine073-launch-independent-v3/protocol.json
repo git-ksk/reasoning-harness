@@ -1,0 +1,69 @@
+{
+  "identity": "engine073-launch-independent-v3",
+  "purpose": "New independent synthetic bounded launch-context API check for #520; separate from #531 primary-source evaluation, release/CLI adoption, and any provider/model E2E.",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "candidate": {
+    "source_sha": "d8c777656688339f915a0f80a0b8af422c50ee7d",
+    "evidence_relevance_rs_sha256": "ef8a6539d79f73cfb6b3b5b9ff89b8b5d75cb0e43f5bf0f692f8f0de21830c22",
+    "package_version": "0.7.2",
+    "identity": "Candidate is the source SHA; package version is pre-release metadata only."
+  },
+  "prior_exposure": {
+    "v1": "Known operational FAIL with zero semantic observations; preserved.",
+    "v2": "Known semantic FAIL; the evaluator authored and observed these 60 cases. They are seen development data and are not v3 holdout. Parent reports new candidate 60/60 on that regression, which this evaluator has not rerun.",
+    "production_implementation": "Not inspected.",
+    "old_root_tests_fixtures_v10_other_corpora": "Not inspected.",
+    "new_authoring": "30 new matched discourse/control constructions; not a name substitution of v2. New current-note, joint title/heading, lettered/ordinal/branch reference contexts and explicitly unresolved references. The immutable candidate was fixed before v3 authoring."
+  },
+  "design": {
+    "cases": 60,
+    "positive": 30,
+    "negative": 30,
+    "matched_pairs": 30,
+    "real_documents": 0,
+    "scope": "Each candidate contains a separate unadorned Excerpt whose canonical target is the direct subject of was launched on 14 March 2023. No new affirmative launch predicate or Entry/Statement-prefix grammar is required.",
+    "context": "Typed titles/headings and additional excerpts are untrusted plain text; entry numbering is not a structured reference AST.",
+    "positive_rule": "Factual direct-target launch must remain requested_relation/Relevant under neutral context or denial/retraction/withdrawal explicitly scoped to another product or another non-launch property. No truth or approval of that property itself is being measured.",
+    "negative_rule": "A present/first-person/publisher retraction, denial, withdrawal or explicit non-event of this target launch must prevent requested_relation and Relevant. An unresolved launch-retraction referent also requires withholding.",
+    "ambiguous_labels": "Five explicit unresolved-reference cases li3-036/038/040/042/044 are negative. No positive relies only on an entry number or an unspecified reference being resolved. This choice was recorded before freeze and observation.",
+    "raw_and_binding": "Optimistic proposal exact/exact and raw exact_target/requested_relation/none in every case, deliberately testing whether core corrects the unsafe qualification. Not model extraction accuracy.",
+    "assessment_budget": {
+      "max_model_attempts": 2,
+      "max_tokens": 192,
+      "max_elapsed_ms": 90000
+    },
+    "expected_labels": "Offline evaluator-authored controlled expectations, excluded from probe inputs; not human-approved universal truth."
+  },
+  "precommitted_scoring": {
+    "code": "Byte-identical score.py from v2, SHA256 9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3.",
+    "positive": "effective_v17.relation_scope == requested_relation AND v30.disposition == relevant",
+    "negative": "effective_v17.relation_scope != requested_relation AND v30.disposition != relevant",
+    "v29": "Saved diagnostic only; no scoring rule.",
+    "PASS": "All 60 expected outcomes, no negative requested_relation/Relevant, no withheld positive, no missing/duplicate/foreign/malformed output, exit0 and empty stderr.",
+    "unknown": "An incomplete API/error row is operational failure, never a safety success.",
+    "immutability": "No semantic retry, rescoring, post-observation expectation change or result overwrite."
+  },
+  "stages": {
+    "1_static_preflight": "Validate count, complete public-schema fields, exact positive/nonzero budget, label exclusion, direct target-subject launch signal, code syntax, unchanged inherited scorer/probe, and predecessor file hashes. No Engine invocation or semantic observation.",
+    "2_freeze": "Hash complete corpus/inputs/probe/scorer/recorder/protocol/preflight and actual candidate source/core rlib/probe executable before first Engine invocation.",
+    "3_first_semantic_observation": "One 60-case probe process invoking deterministic public core v17/v29/v30 per case; no separate semantic sentinel, no providers, no models.",
+    "4_first_scoring": "One application of the fixed scorer to original stdout/stderr. FAIL and raw output retained.",
+    "5_receipt": "Verify frozen/predecessor hashes and record final artifact manifest."
+  },
+  "execution": {
+    "provider_api_calls": 0,
+    "oracle": false,
+    "additional_agents": false,
+    "cargo": false,
+    "source_guard": "Hash source bytes without inspecting implementation; verify actual HEAD and all artifact hashes immediately before invocation.",
+    "build_provenance_limit": "Existing completed core rlib supplied by parent for this candidate; independently hash-checked and linked by rustc, no independent build/source review."
+  },
+  "limits": [
+    "Synthetic narrow English launch-context public-core check; not acquired-document or final-answer E2E, real-world primary-source acceptance, quota/provider recovery or CLI adoption.",
+    "Candidate only; no measured baseline delta.",
+    "60 scenarios are 30 matched pairs, not 60 independent documents; only fictional canonical names with no aliases.",
+    "Not a general grammar, arbitrary coreference/AST, non-launch relation, preparation/future-release or temporal reasoning evaluation.",
+    "Serialized model_relevant/model_ambiguous reason names do not represent model calls here.",
+    "After its first semantic observation this set is consumed; later runs are regression/development, not fresh holdout."
+  ]
+}

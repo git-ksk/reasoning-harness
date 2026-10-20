@@ -1,0 +1,46 @@
+{
+  "identity": "engine073-realworld-v2-consumed-first-score-v1",
+  "state": "SCORED_DEVELOPMENT_NOT_ACCEPTANCE",
+  "accuracy_acceptance": false,
+  "fresh_accuracy_cases": 0,
+  "run_id": 39345330622,
+  "baseline_core": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+  "candidate_core": "ab3c6322921c8c738ec35bd018345917b5afa538",
+  "common_host": "8525330ea3cadb897c50d6688228c4895558d3dc",
+  "actual_common_CLI_package": "0.5.4",
+  "execution_receipt_sha256": "986147bab2aa3d93201aefeed95eb4ebc45d16d50820ba0f5f183305b71d28a9",
+  "M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+  "analysis_freeze_sha256": "07bfbb7481184b5ee79c16312d07e6e6a384df3ec626accfb81f9ba25cebace4",
+  "analysis_closure_manifest_sha256": "6eb5afb5af0748bf862a21ab815aa44fdd7270aab82365bc1eb6fbd96e371cd2",
+  "dispatch_sha256": "e417d25ab28c8507c26b23cc122729732cef781b8a1ae18f72253b061190d4e9",
+  "independent_admission_manifest_sha256": "492dc2a50dc1aaa173fbb9cf119e1ae580b9dc8070eefc5a4b6fb5934d9dd4e6",
+  "independent_annotation_manifest_sha256": "daf8d604fdb238b0d5ef0af2a9cb0fdf3dd519b1fa91fbcde48ae23f9e594fbd",
+  "annotation_notes_manifest_sha256": "f75b1687b01aeaa281045cba8285888b57373bd58b2f1315fe924376796e6007",
+  "driver_sha256": "559b50fea748f718c6a382173559216ba961776f0da3908b4dfb1f7ff8fd772a",
+  "original_declared_adapter_sha256": "1d4c98cfac963c0f4406cf75af14f2c25bb3b849652b87f0a434b23474eb6bdb",
+  "execution_record_sha256": "7a03dfc1e2e61e1973a85ac682de70ebf6840cfb738ed2f9dc48b05d505c0646",
+  "rows_private_sha256": "f517f9d1572455dfcb4a524be2bde51ae8b3c187676ab4470e00db89d74728cf",
+  "annotation_failures": 0,
+  "score_invocations": 1,
+  "score_retries": 0,
+  "provider_or_Engine_calls_for_recapture_and_scoring": 0,
+  "original_v1_and_first_capture_unchanged": true,
+  "repaired_capture": {
+    "google": {
+      "complete": 96,
+      "incomplete": 0,
+      "not_run": 0
+    },
+    "mistral": {
+      "complete": 4,
+      "incomplete": 1,
+      "not_run": 91
+    }
+  },
+  "missing_provider_F1": "Full24 actual_answer_f1 is null for Mistral and Groq. Partial descriptive f1 or planned pair counts never establish a complete cohort.",
+  "analysis_runtime": "Local macOS Python3.14.8, -B, optimization0, complete credential-free environment replacement; consumed diagnostic only, not frozen-M0 runtime acceptance.",
+  "independent_authority": "Independent agent, not human attestation; provider/arm concealed where feasible, not fully blind after operational postmortem.",
+  "source_merge_Engine_release_CLI_adoption": "NO_GO",
+  "Mistral_remaining_quota": "UNVERIFIED; owner reports possible depletion; authenticated console unavailable; new calls held",
+  "Mistral_remaining_protocol_failure": "Known-usage loss fixed in merged PR549/main53be613; truncated planner JSON remains a separate unverified completion problem. No live rerun."
+}

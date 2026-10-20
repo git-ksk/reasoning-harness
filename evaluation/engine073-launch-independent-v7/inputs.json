@@ -1,0 +1,2694 @@
+[
+  {
+    "id": "li7-001",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-01",
+      "target_question": "Was Alderhelm Lens launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-01",
+        "canonical_name": "Alderhelm Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-001-evidence",
+      "source_id": "li7-001-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Alderhelm Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Alderhelm Lens and Alderhelm Rail are different products. Their shared first word is not an alias declaration. We retract the launch claim for Alderhelm Rail. The retraction concerns Alderhelm Rail alone."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-002",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-01",
+      "target_question": "Was Alderhelm Lens launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-01",
+        "canonical_name": "Alderhelm Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-002-evidence",
+      "source_id": "li7-002-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Alderhelm Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Alderhelm Lens and Alderhelm Rail are different products. Their shared first word is not an alias declaration. We retract the launch claim for Alderhelm Lens. The retraction concerns Alderhelm Lens alone."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-003",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-02",
+      "target_question": "Was Birchhaven Valve launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-02",
+        "canonical_name": "Birchhaven Valve",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-003-evidence",
+      "source_id": "li7-003-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Launch denial for Birchhaven Coupler"
+        },
+        {
+          "kind": "heading",
+          "text": "Birchhaven Valve and Birchhaven Coupler are different products. Their shared first word is not an alias declaration."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Birchhaven Valve was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny that Birchhaven Coupler was launched. This denial names the full product Birchhaven Coupler."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-004",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-02",
+      "target_question": "Was Birchhaven Valve launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-02",
+        "canonical_name": "Birchhaven Valve",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-004-evidence",
+      "source_id": "li7-004-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Launch denial for Birchhaven Valve"
+        },
+        {
+          "kind": "heading",
+          "text": "Birchhaven Valve and Birchhaven Coupler are different products. Their shared first word is not an alias declaration."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Birchhaven Valve was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny that Birchhaven Valve was launched. This denial names the full product Birchhaven Valve."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-005",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-03",
+      "target_question": "Was Citrusmoor Plate launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-03",
+        "canonical_name": "Citrusmoor Plate",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-005-evidence",
+      "source_id": "li7-005-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Current publisher words"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Citrusmoor Plate was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Citrusmoor Plate and Citrusmoor Shim are different products. Their shared first word is not an alias declaration. Publisher of Citrusmoor Shim: \"We withdraw the launch claim for Citrusmoor Shim.\""
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-006",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-03",
+      "target_question": "Was Citrusmoor Plate launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-03",
+        "canonical_name": "Citrusmoor Plate",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-006-evidence",
+      "source_id": "li7-006-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Current publisher words"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Citrusmoor Plate was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Citrusmoor Plate and Citrusmoor Shim are different products. Their shared first word is not an alias declaration. Publisher of Citrusmoor Plate: \"We withdraw the launch claim for Citrusmoor Plate.\""
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-007",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-04",
+      "target_question": "Was Dovewick Relay launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-04",
+        "canonical_name": "Dovewick Relay",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-007-evidence",
+      "source_id": "li7-007-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Dovewick Relay was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Dovewick Relay and Dovewick Sensor are different products. Their shared first word is not an alias declaration. We retract the launch statement about Dovewick Sensor, which was printed beside the record for Dovewick Relay. The withdrawn statement is about Dovewick Sensor."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-008",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-04",
+      "target_question": "Was Dovewick Relay launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-04",
+        "canonical_name": "Dovewick Relay",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-008-evidence",
+      "source_id": "li7-008-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Dovewick Relay was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Dovewick Relay and Dovewick Sensor are different products. Their shared first word is not an alias declaration. We retract the launch statement about Dovewick Relay, which was printed beside the record for Dovewick Sensor. The withdrawn statement is about Dovewick Relay."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-009",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-05",
+      "target_question": "Was Elderfield Hub launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-05",
+        "canonical_name": "Elderfield Hub",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-009-evidence",
+      "source_id": "li7-009-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Current correction accompanying the Elderfield Hub record"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Elderfield Hub was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Elderfield Hub and Elderfield Knob are different products. Their shared first word is not an alias declaration. This launch denial belongs to Elderfield Knob: we deny the launch assertion for Elderfield Knob."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-010",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-05",
+      "target_question": "Was Elderfield Hub launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-05",
+        "canonical_name": "Elderfield Hub",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-010-evidence",
+      "source_id": "li7-010-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Current correction accompanying the Elderfield Hub record"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Elderfield Hub was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Elderfield Hub and Elderfield Knob are different products. Their shared first word is not an alias declaration. This launch denial belongs to Elderfield Hub: we deny the launch assertion for Elderfield Hub."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-011",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-06",
+      "target_question": "Was Flintmarsh Dial launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-06",
+        "canonical_name": "Flintmarsh Dial",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-011-evidence",
+      "source_id": "li7-011-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Flintmarsh Dial was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Flintmarsh Dial and Flintmarsh Nozzle are different products. Their shared first word is not an alias declaration. Flintmarsh Nozzle's launch assertion is withdrawn. Separately, the shaft-diameter claim for Flintmarsh Dial is withdrawn."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-012",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-06",
+      "target_question": "Was Flintmarsh Dial launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-06",
+        "canonical_name": "Flintmarsh Dial",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-012-evidence",
+      "source_id": "li7-012-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Flintmarsh Dial was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Flintmarsh Dial and Flintmarsh Nozzle are different products. Their shared first word is not an alias declaration. Flintmarsh Dial's launch assertion is withdrawn. Separately, the shaft-diameter claim for Flintmarsh Dial is withdrawn."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-013",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-07",
+      "target_question": "Was Goldhaven Loom launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-07",
+        "canonical_name": "Goldhaven Loom",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-013-evidence",
+      "source_id": "li7-013-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Goldhaven Loom was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Goldhaven Loom and Goldhaven Capsule are different products. Their shared first word is not an alias declaration. We deny that Goldhaven Capsule was launched. Goldhaven Loom is the separate product described by the intact launch entry."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-014",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-07",
+      "target_question": "Was Goldhaven Loom launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-07",
+        "canonical_name": "Goldhaven Loom",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-014-evidence",
+      "source_id": "li7-014-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Goldhaven Loom was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Goldhaven Loom and Goldhaven Capsule are different products. Their shared first word is not an alias declaration. We deny that Goldhaven Loom was launched. Goldhaven Capsule is the separate product described by another launch entry."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-015",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-08",
+      "target_question": "Was Heatherquay Ring launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-08",
+        "canonical_name": "Heatherquay Ring",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-015-evidence",
+      "source_id": "li7-015-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Heatherquay Ring was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Heatherquay Ring and Heatherquay Lever are different products. Their shared first word is not an alias declaration. Scope of correction: Heatherquay Lever only. I retract the launch claim for Heatherquay Lever. This correction does not name Heatherquay Ring as its object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-016",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-08",
+      "target_question": "Was Heatherquay Ring launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-08",
+        "canonical_name": "Heatherquay Ring",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-016-evidence",
+      "source_id": "li7-016-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Heatherquay Ring was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Heatherquay Ring and Heatherquay Lever are different products. Their shared first word is not an alias declaration. Scope of correction: Heatherquay Ring only. I retract the launch claim for Heatherquay Ring. This correction does not name Heatherquay Lever as its object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-017",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-09",
+      "target_question": "Was Ivyshore Gauge launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-09",
+        "canonical_name": "Ivyshore Gauge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-017-evidence",
+      "source_id": "li7-017-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ivyshore Gauge and Ivyshore Coffer are different products. Their shared first word is not an alias declaration. The launch of Ivyshore Coffer did not happen. The publisher issues this as a correction of the Ivyshore Coffer launch claim."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Ivyshore Gauge was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-018",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-09",
+      "target_question": "Was Ivyshore Gauge launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-09",
+        "canonical_name": "Ivyshore Gauge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-018-evidence",
+      "source_id": "li7-018-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ivyshore Gauge and Ivyshore Coffer are different products. Their shared first word is not an alias declaration. The launch of Ivyshore Gauge did not happen. The publisher issues this as a correction of the Ivyshore Gauge launch claim."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Ivyshore Gauge was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-019",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-10",
+      "target_question": "Was Jadewood Crown launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-10",
+        "canonical_name": "Jadewood Crown",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-019-evidence",
+      "source_id": "li7-019-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Complete-name event correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Jadewood Crown was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Jadewood Crown and Jadewood Cradle are different products. Their shared first word is not an alias declaration. No launch of Jadewood Cradle occurred. The omitted event is the launch of Jadewood Cradle."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-020",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-10",
+      "target_question": "Was Jadewood Crown launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-10",
+        "canonical_name": "Jadewood Crown",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-020-evidence",
+      "source_id": "li7-020-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Complete-name event correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Jadewood Crown was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Jadewood Crown and Jadewood Cradle are different products. Their shared first word is not an alias declaration. No launch of Jadewood Crown occurred. The omitted event is the launch of Jadewood Crown."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-021",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-11",
+      "target_question": "Was Kestrelbrook Panel launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-11",
+        "canonical_name": "Kestrelbrook Panel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-021-evidence",
+      "source_id": "li7-021-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Kestrelbrook Panel was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the physical launch-button specification for Kestrelbrook Panel. This denial concerns the hardware button, not the product-history event."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-022",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-11",
+      "target_question": "Was Kestrelbrook Panel launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-11",
+        "canonical_name": "Kestrelbrook Panel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-022-evidence",
+      "source_id": "li7-022-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Kestrelbrook Panel was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the launch claim for Kestrelbrook Panel. This denial concerns the product-history event, not a hardware button."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-023",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-12",
+      "target_question": "Was Lindenbay Spindle launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-12",
+        "canonical_name": "Lindenbay Spindle",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-023-evidence",
+      "source_id": "li7-023-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Front-panel correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Lindenbay Spindle was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the claim that Lindenbay Spindle has a launch icon printed on its front panel. The retracted object is the printed icon claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-024",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-12",
+      "target_question": "Was Lindenbay Spindle launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-12",
+        "canonical_name": "Lindenbay Spindle",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-024-evidence",
+      "source_id": "li7-024-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Product-history correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Lindenbay Spindle was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the claim that Lindenbay Spindle was launched. The retracted object is the product launch claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-025",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-13",
+      "target_question": "Was Meadowrift Frame launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-13",
+        "canonical_name": "Meadowrift Frame",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-025-evidence",
+      "source_id": "li7-025-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Meadowrift Frame was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The release-lever alloy claim for Meadowrift Frame is withdrawn. This withdrawal concerns the alloy in a mechanical lever."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-026",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-13",
+      "target_question": "Was Meadowrift Frame launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-13",
+        "canonical_name": "Meadowrift Frame",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-026-evidence",
+      "source_id": "li7-026-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Meadowrift Frame was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The launch claim for Meadowrift Frame is withdrawn. This withdrawal concerns the product launch event."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-027",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-14",
+      "target_question": "Was Nutmegwood Console launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-14",
+        "canonical_name": "Nutmegwood Console",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-027-evidence",
+      "source_id": "li7-027-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Nutmegwood Console was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the launch-switch voltage claim for Nutmegwood Console. The claim concerns an electrical rating of the physical switch."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-028",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-14",
+      "target_question": "Was Nutmegwood Console launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-14",
+        "canonical_name": "Nutmegwood Console",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-028-evidence",
+      "source_id": "li7-028-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Nutmegwood Console was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the launch statement for Nutmegwood Console. The statement concerns the product launch event."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-029",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-15",
+      "target_question": "Was Oakenford Dock launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-15",
+        "canonical_name": "Oakenford Dock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-029-evidence",
+      "source_id": "li7-029-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "I deny that Oakenford Dock's release latch is brass. This is a denial about the material of a mechanical latch."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Oakenford Dock was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-030",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-15",
+      "target_question": "Was Oakenford Dock launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-15",
+        "canonical_name": "Oakenford Dock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-030-evidence",
+      "source_id": "li7-030-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "I deny that Oakenford Dock was launched. This is a denial about the historical launch event."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Oakenford Dock was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-031",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-16",
+      "target_question": "Was Ploverhaven Switch launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-16",
+        "canonical_name": "Ploverhaven Switch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-031-evidence",
+      "source_id": "li7-031-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Correction to the launch-key legend"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Ploverhaven Switch was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the font-size claim for the launch-key legend on Ploverhaven Switch. The claim concerns printed typography on a physical key."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-032",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-16",
+      "target_question": "Was Ploverhaven Switch launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-16",
+        "canonical_name": "Ploverhaven Switch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-032-evidence",
+      "source_id": "li7-032-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Correction to the product launch claim"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Ploverhaven Switch was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the launch claim for Ploverhaven Switch. The claim concerns product history."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-033",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-17",
+      "target_question": "Was Quillmeadow Terminal launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-17",
+        "canonical_name": "Quillmeadow Terminal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-033-evidence",
+      "source_id": "li7-033-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Quillmeadow Terminal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Current publisher decision: I withdraw the release-button diameter claim for Quillmeadow Terminal. My withdrawal concerns a button dimension."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-034",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-17",
+      "target_question": "Was Quillmeadow Terminal launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-17",
+        "canonical_name": "Quillmeadow Terminal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-034-evidence",
+      "source_id": "li7-034-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Quillmeadow Terminal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Current publisher decision: I withdraw the launch claim for Quillmeadow Terminal. My withdrawal concerns the launch event."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-035",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-18",
+      "target_question": "Was Reedhaven Board launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-18",
+        "canonical_name": "Reedhaven Board",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-035-evidence",
+      "source_id": "li7-035-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Reedhaven Board was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The launcher-housing finish specification for Reedhaven Board is retracted. The specification describes the surface finish of a housing component."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-036",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-18",
+      "target_question": "Was Reedhaven Board launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-18",
+        "canonical_name": "Reedhaven Board",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-036-evidence",
+      "source_id": "li7-036-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Reedhaven Board was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The launch statement for Reedhaven Board is retracted. The statement describes the product launch event."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-037",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-19",
+      "target_question": "Was Sedgewharf Reader launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-19",
+        "canonical_name": "Sedgewharf Reader",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-037-evidence",
+      "source_id": "li7-037-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Indicator correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Sedgewharf Reader was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the launch-indicator LED colour claim for Sedgewharf Reader. The denied claim concerns an indicator's light colour."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-038",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-19",
+      "target_question": "Was Sedgewharf Reader launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-19",
+        "canonical_name": "Sedgewharf Reader",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-038-evidence",
+      "source_id": "li7-038-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Historical-event correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Sedgewharf Reader was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the launch claim for Sedgewharf Reader. The denied claim concerns the historical event."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-039",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-20",
+      "target_question": "Was Tawnybrook Recorder launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-20",
+        "canonical_name": "Tawnybrook Recorder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-039-evidence",
+      "source_id": "li7-039-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the release-coating specification for Tawnybrook Recorder. The withdrawn specification concerns a manufacturing surface coating."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Tawnybrook Recorder was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-040",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-20",
+      "target_question": "Was Tawnybrook Recorder launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-20",
+        "canonical_name": "Tawnybrook Recorder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-040-evidence",
+      "source_id": "li7-040-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the launch claim for Tawnybrook Recorder. The withdrawn claim concerns the launch event."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Tawnybrook Recorder was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-041",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-21",
+      "target_question": "Was Umberquay Seal launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-21",
+        "canonical_name": "Umberquay Seal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-041-evidence",
+      "source_id": "li7-041-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Notice accompanying the Umberquay Seal record"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Umberquay Seal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Umberquay Seal and Umberquay Handle are different products. Their shared first word is not an alias declaration. The old contact route for Umberquay Handle is withdrawn. This is an administrative contact-route change for Umberquay Handle."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-042",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-21",
+      "target_question": "Was Umberquay Seal launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-21",
+        "canonical_name": "Umberquay Seal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-042-evidence",
+      "source_id": "li7-042-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Notice accompanying the Umberquay Seal record"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Umberquay Seal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Umberquay Seal and Umberquay Handle are different products. Their shared first word is not an alias declaration. The launch statement for Umberquay Seal is withdrawn. This is a product-history correction for Umberquay Seal."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-043",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-22",
+      "target_question": "Was Violetmere Rotor launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-22",
+        "canonical_name": "Violetmere Rotor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-043-evidence",
+      "source_id": "li7-043-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Violetmere Rotor was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Violetmere Rotor and Violetmere Valve are different products. Their shared first word is not an alias declaration. We retract the archive-filename label claim for Violetmere Valve. The corrected object is the label attached to an archive file."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-044",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-22",
+      "target_question": "Was Violetmere Rotor launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-22",
+        "canonical_name": "Violetmere Rotor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-044-evidence",
+      "source_id": "li7-044-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Violetmere Rotor was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Violetmere Rotor and Violetmere Valve are different products. Their shared first word is not an alias declaration. We retract the launch claim for Violetmere Rotor. The corrected object is the target launch statement."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-045",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-23",
+      "target_question": "Was Windgrove Chassis launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-23",
+        "canonical_name": "Windgrove Chassis",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-045-evidence",
+      "source_id": "li7-045-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Windgrove Chassis launch bulletin correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Windgrove Chassis was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the page-count claim for the Windgrove Chassis launch bulletin. The correction concerns document length only."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-046",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-23",
+      "target_question": "Was Windgrove Chassis launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-23",
+        "canonical_name": "Windgrove Chassis",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-046-evidence",
+      "source_id": "li7-046-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Windgrove Chassis launch bulletin correction"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Windgrove Chassis was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the launch claim for Windgrove Chassis. The correction concerns the launch statement in the bulletin."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-047",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-24",
+      "target_question": "Was Xanthicfield Bearing launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-24",
+        "canonical_name": "Xanthicfield Bearing",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-047-evidence",
+      "source_id": "li7-047-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Xanthicfield Bearing was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the launch-banner colour claim for Xanthicfield Bearing. This notice concerns the printed banner's colour."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-048",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-24",
+      "target_question": "Was Xanthicfield Bearing launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-24",
+        "canonical_name": "Xanthicfield Bearing",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-048-evidence",
+      "source_id": "li7-048-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Xanthicfield Bearing was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the launch claim for Xanthicfield Bearing. This notice concerns the product launch event."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-049",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-25",
+      "target_question": "Was Yewhaven Clip launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-25",
+        "canonical_name": "Yewhaven Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-049-evidence",
+      "source_id": "li7-049-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Yewhaven Clip was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the release-section pagination claim for Yewhaven Clip. The corrected claim concerns page numbering in the catalogue."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-050",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-25",
+      "target_question": "Was Yewhaven Clip launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-25",
+        "canonical_name": "Yewhaven Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-050-evidence",
+      "source_id": "li7-050-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Yewhaven Clip was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the launch claim for Yewhaven Clip. The corrected claim concerns product history."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-051",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-26",
+      "target_question": "Was Zinniaquay Sprocket launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-26",
+        "canonical_name": "Zinniaquay Sprocket",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-051-evidence",
+      "source_id": "li7-051-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Joint record of Zinniaquay Sprocket and Zinniaquay Harness"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Zinniaquay Sprocket was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Zinniaquay Sprocket and Zinniaquay Harness are different products. Their shared first word is not an alias declaration. We withdraw the launch-button width claim for Zinniaquay Sprocket. That claim concerns a physical button."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the launch claim for Zinniaquay Harness. The withdrawn launch owner is explicitly Zinniaquay Harness."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-052",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-26",
+      "target_question": "Was Zinniaquay Sprocket launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-26",
+        "canonical_name": "Zinniaquay Sprocket",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-052-evidence",
+      "source_id": "li7-052-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Joint record of Zinniaquay Sprocket and Zinniaquay Harness"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Zinniaquay Sprocket was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Zinniaquay Sprocket and Zinniaquay Harness are different products. Their shared first word is not an alias declaration. We withdraw the launch-button width claim for Zinniaquay Sprocket. That claim concerns a physical button."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw another launch claim in this joint record. The product owning that withdrawn launch claim is not named."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-053",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-27",
+      "target_question": "Was Amberlake Flange launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-27",
+        "canonical_name": "Amberlake Flange",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-053-evidence",
+      "source_id": "li7-053-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Amberlake Flange was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Amberlake Flange and Amberlake Socket are different products. Their shared first word is not an alias declaration. I retract the spring-stiffness claim for Amberlake Flange. This correction concerns the spring specification."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-054",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-27",
+      "target_question": "Was Amberlake Flange launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-27",
+        "canonical_name": "Amberlake Flange",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-054-evidence",
+      "source_id": "li7-054-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Amberlake Flange was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Amberlake Flange and Amberlake Socket are different products. Their shared first word is not an alias declaration. I retract a launch claim for one product sharing the word Amberlake. The complete product name was omitted."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-055",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-28",
+      "target_question": "Was Brookhaven Ferrule launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-28",
+        "canonical_name": "Brookhaven Ferrule",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-055-evidence",
+      "source_id": "li7-055-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Brookhaven Ferrule was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Brookhaven Ferrule and Brookhaven Spool are different products. Their shared first word is not an alias declaration. We retract the launch-button travel claim for Brookhaven Ferrule. The assertion concerns physical button movement."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-056",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-28",
+      "target_question": "Was Brookhaven Ferrule launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-28",
+        "canonical_name": "Brookhaven Ferrule",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-056-evidence",
+      "source_id": "li7-056-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Brookhaven Ferrule was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Brookhaven Ferrule and Brookhaven Spool are different products. Their shared first word is not an alias declaration. We retract a launch assertion. The notice does not say whether its product is Brookhaven Ferrule or Brookhaven Spool."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-057",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-29",
+      "target_question": "Was Copperford Pedal launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-29",
+        "canonical_name": "Copperford Pedal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-057-evidence",
+      "source_id": "li7-057-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Publisher current reply"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Copperford Pedal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Copperford Pedal and Copperford Rail are different products. Their shared first word is not an alias declaration. I withdraw the launch claim for Copperford Rail. I identify the withdrawn owner as Copperford Rail."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-058",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-29",
+      "target_question": "Was Copperford Pedal launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-29",
+        "canonical_name": "Copperford Pedal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-058-evidence",
+      "source_id": "li7-058-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Publisher current reply"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Copperford Pedal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Copperford Pedal and Copperford Rail are different products. Their shared first word is not an alias declaration. I withdraw one product's launch record. This reply does not specify which of these different products owns it."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-059",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-30",
+      "target_question": "Was Dawnmeadow Actuator launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-30",
+        "canonical_name": "Dawnmeadow Actuator",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-059-evidence",
+      "source_id": "li7-059-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Release-note correction for Dawnmeadow"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Dawnmeadow Actuator was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the pulse-width specification for Dawnmeadow Actuator. The correction is limited to that electrical specification."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li7-060",
+    "policy": {
+      "policy_id": "independent-v7-launch-policy",
+      "target_id": "v7-fictional-target-30",
+      "target_question": "Was Dawnmeadow Actuator launched?",
+      "entity": {
+        "canonical_id": "v7-fictional-target-30",
+        "canonical_name": "Dawnmeadow Actuator",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li7-060-evidence",
+      "source_id": "li7-060-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Release-note correction for Dawnmeadow"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Dawnmeadow Actuator was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the launch assertion described by this release note. The full product name is not provided, so the launch assertion owner is not identified."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  }
+]

@@ -1,0 +1,434 @@
+--- initial/corpus.json
++++ final/corpus.json
+@@ -221,7 +221,7 @@
+       "quote": "Help: Retry all errors (with --retry)",
+       "quote_sha256": "b61349f23c34374d7903c43945d1559c53d240e251a44781cce4714bca71e62c",
+       "locator": "docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[116,153)",
+-      "context_summary": "Option frontmatter; help line for retry-all-errors.",
++      "context_summary": "curl8.10.1 --retry-all-errors manual: companion option, redirected-IO cautions and HTTP-status versus transfer-error distinction.",
+       "origin_group": "upstream:curl/curl",
+       "scope": {
+         "product": "curl",
+@@ -246,7 +246,7 @@
+       "quote": "Retry on any error. This option is used together with --retry.",
+       "quote_sha256": "a08b0e9a9a5cb858ef1231ecc0f0cbfce96004b5bfe9cad08708e2a61f1c18f0",
+       "locator": "docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[288,350)",
+-      "context_summary": "Opening definition; not a promise that every HTTP status is an error.",
++      "context_summary": "curl8.10.1 --retry-all-errors manual: companion option, redirected-IO cautions and HTTP-status versus transfer-error distinction.",
+       "origin_group": "upstream:curl/curl",
+       "scope": {
+         "product": "curl",
+@@ -271,7 +271,7 @@
+       "quote": "Transient error means either: a timeout, an FTP 4xx response code or an HTTP 408, 429, 500, 502, 503 or 504 response code.",
+       "quote_sha256": "3ed787ca4b58c35d81cb546b62aa2891483102bbc0c8349820ae4eb1098b2620",
+       "locator": "docs/cmdline-opts/retry.md normalized_UTF8_bytes[471,593)",
+-      "context_summary": "Default retry error definition; --retry must be enabled.",
++      "context_summary": "curl8.10.1 --retry manual: transient errors, zero default retries, backoff and Retry-After history.",
+       "origin_group": "upstream:curl/curl",
+       "scope": {
+         "product": "curl",
+@@ -296,7 +296,7 @@
+       "quote": "By default curl does not return error for transfers with an HTTP response code that indicates an HTTP error, if the transfer was successful. For example, if a server replies 404 Not Found and the reply is fully received then that is not an error. When --retry is used then curl retries on some HTTP response codes that indicate transient HTTP errors, but that does not include most 4xx response codes such as 404. If you want to retry on all response codes that indicate HTTP errors (4xx and 5xx) then combine with --fail.",
+       "quote_sha256": "0f5d2d625064d32159494ade41fa12fea39c28a5c8af6085ef19779afcae7bd9",
+       "locator": "docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[1231,1753)",
+-      "context_summary": "Full HTTP-status/error distinction; not an inconsistency between option documents.",
++      "context_summary": "curl8.10.1 --retry-all-errors manual: companion option, redirected-IO cautions and HTTP-status versus transfer-error distinction.",
+       "origin_group": "upstream:curl/curl",
+       "scope": {
+         "product": "curl",
+@@ -321,7 +321,7 @@
+       "quote": "Long: retry Arg: <num> Added: 7.12.3",
+       "quote_sha256": "6a245d18da169808dacc39cd15261647f599ae9a97d93226f8760fcf201f6b42",
+       "locator": "docs/cmdline-opts/retry.md normalized_UTF8_bytes[93,129)",
+-      "context_summary": "Frontmatter for --retry, not --retry-all-errors.",
++      "context_summary": "curl8.10.1 --retry manual: transient errors, zero default retries, backoff and Retry-After history.",
+       "origin_group": "upstream:curl/curl",
+       "scope": {
+         "product": "curl",
+@@ -346,7 +346,7 @@
+       "quote": "Long: retry-all-errors Help: Retry all errors (with --retry) Added: 7.71.0",
+       "quote_sha256": "e4ea8a7aad0f6b72cf3e10ba427112446b5f2cd598f8c24b6cb2aaa03e4cb880",
+       "locator": "docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[93,167)",
+-      "context_summary": "Different option history annotation.",
++      "context_summary": "curl8.10.1 --retry-all-errors manual: companion option, redirected-IO cautions and HTTP-status versus transfer-error distinction.",
+       "origin_group": "upstream:curl/curl",
+       "scope": {
+         "product": "curl",
+@@ -371,7 +371,7 @@
+       "quote": "This option is the \"sledgehammer\" of retrying. Do not use this option by default (for example in your **curlrc**), there may be unintended consequences such as sending or receiving duplicate data. Do not use with redirected input or output.",
+       "quote_sha256": "19f4971ed8182a94921e5ae81d7eab4a91fa494658ced16c8bd5eb88f42a1600",
+       "locator": "docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[351,591)",
+-      "context_summary": "Published cautions, not evaluator instructions.",
++      "context_summary": "curl8.10.1 --retry-all-errors manual: companion option, redirected-IO cautions and HTTP-status versus transfer-error distinction.",
+       "origin_group": "upstream:curl/curl",
+       "scope": {
+         "product": "curl",
+@@ -396,7 +396,7 @@
+       "quote": "However this is not true of data redirected to a | pipe or \\> file, which are not reset. We strongly suggest you do not parse or record output via redirect in combination with this option, since you may receive duplicate data.",
+       "quote_sha256": "7be9f2cb0134b741b5b521b26e65774112d4213fa5cd8424d54ac459aa1ef588",
+       "locator": "docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[1004,1230)",
+-      "context_summary": "The previous sentences describe resetting an output file; this caveat concerns redirected data.",
++      "context_summary": "curl8.10.1 --retry-all-errors manual: companion option, redirected-IO cautions and HTTP-status versus transfer-error distinction.",
+       "origin_group": "upstream:curl/curl",
+       "scope": {
+         "product": "curl",
+@@ -421,7 +421,7 @@
+       "quote": "The output is of the form: <path> COLON SP <attribute> COLON SP <info> LF unless `-z` is in effect, in which case NUL is used as delimiter: <path> NUL <attribute> NUL <info> NUL",
+       "quote_sha256": "0753113daaeff4a6ab90601ac36e917669a6affbc47bcbf4f12d30718fc7d499",
+       "locator": "Documentation/git-check-attr.txt normalized_UTF8_bytes[1392,1569)",
+-      "context_summary": "OUTPUT grammar, same captured paragraph.",
++      "context_summary": "Git2.47.0 check-attr manual: per-path attribute states, text/NUL output and illustrative .gitattributes examples.",
+       "origin_group": "upstream:git/git",
+       "scope": {
+         "product": "git",
+@@ -446,7 +446,7 @@
+       "quote": "The output is of the form: <path> COLON SP <attribute> COLON SP <info> LF unless `-z` is in effect, in which case NUL is used as delimiter: <path> NUL <attribute> NUL <info> NUL",
+       "quote_sha256": "0753113daaeff4a6ab90601ac36e917669a6affbc47bcbf4f12d30718fc7d499",
+       "locator": "Documentation/git-check-attr.txt normalized_UTF8_bytes[1392,1569)",
+-      "context_summary": "Second record of the identical upstream paragraph.",
++      "context_summary": "Git2.47.0 check-attr manual: per-path attribute states, text/NUL output and illustrative .gitattributes examples.",
+       "origin_group": "upstream:git/git",
+       "scope": {
+         "product": "git",
+@@ -471,7 +471,7 @@
+       "quote": "By default, tracked files are not shown at all since they are not subject to exclude rules; but see `--no-index'.",
+       "quote_sha256": "1e7ea5c05052a1beb5be2993c520eb58de7c111937470de3a6fda2c4e1d5f812",
+       "locator": "Documentation/git-check-ignore.txt normalized_UTF8_bytes[446,559)",
+-      "context_summary": "DESCRIPTION default behavior.",
++      "context_summary": "Git2.47.0 check-ignore manual: default/index options, ignore output and exit statuses.",
+       "origin_group": "upstream:git/git",
+       "scope": {
+         "product": "git",
+@@ -496,7 +496,7 @@
+       "quote": "--no-index:: Don't look in the index when undertaking the checks. This can be used to debug why a path became tracked by e.g. `git add .` and was not ignored by the rules as expected by the user or when developing patterns including negation to match a path previously added with `git add -f`.",
+       "quote_sha256": "a22529e31e85dfed67495c43fdbf5cb47617de92e8008aa3c388a245ce6f85c1",
+       "locator": "Documentation/git-check-ignore.txt normalized_UTF8_bytes[1611,1904)",
+-      "context_summary": "Explicit option override; no index modification is performed.",
++      "context_summary": "Git2.47.0 check-ignore manual: default/index options, ignore output and exit statuses.",
+       "origin_group": "upstream:git/git",
+       "scope": {
+         "product": "git",
+@@ -521,7 +521,7 @@
+       "quote": "For every pathname, this command will list if each attribute is 'unspecified', 'set', or 'unset' as a gitattribute on that pathname.",
+       "quote_sha256": "ac565fa20846438312466e105a7624d50062c8cec95a4306ec281c341d5479cc",
+       "locator": "Documentation/git-check-attr.txt normalized_UTF8_bytes[307,439)",
+-      "context_summary": "Generic tool definition, not a user-repository observation.",
++      "context_summary": "Git2.47.0 check-attr manual: per-path attribute states, text/NUL output and illustrative .gitattributes examples.",
+       "origin_group": "upstream:git/git",
+       "scope": {
+         "product": "git",
+@@ -546,7 +546,7 @@
+       "quote": "check whether the file is excluded by .gitignore (or other input files to the exclude mechanism) and output the path if it is excluded.",
+       "quote_sha256": "c60d6038675e7b7857c325f38a894595e7343a86c0f52c0c962136c23d823cc8",
+       "locator": "Documentation/git-check-ignore.txt normalized_UTF8_bytes[310,445)",
+-      "context_summary": "Different diagnostic definition; contains no payroll.csv observation.",
++      "context_summary": "Git2.47.0 check-ignore manual: default/index options, ignore output and exit statuses.",
+       "origin_group": "upstream:git/git",
+       "scope": {
+         "product": "git",
+@@ -571,7 +571,7 @@
+       "quote": "0:: One or more of the provided paths is ignored. 1:: None of the provided paths are ignored. 128:: A fatal error was encountered.",
+       "quote_sha256": "1ee625f56736fcaa02e586a7fd387813b3404ba75417f43dd07889217e660bba",
+       "locator": "Documentation/git-check-ignore.txt normalized_UTF8_bytes[3837,3967)",
+-      "context_summary": "EXIT STATUS, first captured record.",
++      "context_summary": "Git2.47.0 check-ignore manual: default/index options, ignore output and exit statuses.",
+       "origin_group": "upstream:git/git",
+       "scope": {
+         "product": "git",
+@@ -596,7 +596,7 @@
+       "quote": "0:: One or more of the provided paths is ignored. 1:: None of the provided paths are ignored. 128:: A fatal error was encountered.",
+       "quote_sha256": "1ee625f56736fcaa02e586a7fd387813b3404ba75417f43dd07889217e660bba",
+       "locator": "Documentation/git-check-ignore.txt normalized_UTF8_bytes[3837,3967)",
+-      "context_summary": "Duplicate of the same version and passage.",
++      "context_summary": "Git2.47.0 check-ignore manual: default/index options, ignore output and exit statuses.",
+       "origin_group": "upstream:git/git",
+       "scope": {
+         "product": "git",
+@@ -621,7 +621,7 @@
+       "quote": "Break from an enclosing foreach or while loop.",
+       "quote_sha256": "0beddaaa1397b770f3939509a3d3e6c3dd5168833e8eb7daf7d3cc9e4e9b7d8b",
+       "locator": "Help/command/break.rst normalized_UTF8_bytes[12,58)",
+-      "context_summary": "Command summary.",
++      "context_summary": "CMake3.31.0 break command: foreach/while syntax and reference to continue.",
+       "origin_group": "upstream:Kitware/CMake",
+       "scope": {
+         "product": "cmake",
+@@ -646,7 +646,7 @@
+       "quote": "Breaks from an enclosing :command:`foreach` or :command:`while` loop.",
+       "quote_sha256": "33f3a5f0eca6b0c5796f4571db58d2d1eb10f40f2496f9ed164372bb2c8a4860",
+       "locator": "Help/command/break.rst normalized_UTF8_bytes[89,158)",
+-      "context_summary": "Same command description with documentation markup.",
++      "context_summary": "CMake3.31.0 break command: foreach/while syntax and reference to continue.",
+       "origin_group": "upstream:Kitware/CMake",
+       "scope": {
+         "product": "cmake",
+@@ -671,7 +671,7 @@
+       "quote": "If ``return()`` is called in a function, control is returned to the caller of that function.",
+       "quote_sha256": "3d2323f7fd8a203a392ff23c2e883d4d147ec82e0f52f86dd75363df53560e8c",
+       "locator": "Help/command/return.rst normalized_UTF8_bytes[550,642)",
+-      "context_summary": "Function context only.",
++      "context_summary": "CMake3.31.0 return manual: function/file/directory contexts, CMP0140, PROPAGATE history and block examples.",
+       "origin_group": "upstream:Kitware/CMake",
+       "scope": {
+         "product": "cmake",
+@@ -696,7 +696,7 @@
+       "quote": "When this command is encountered in an included file (via :command:`include` or :command:`find_package`), it causes processing of the current file to stop and control is returned to the including file.",
+       "quote_sha256": "2510898b5eeaa3090f1629a22ae9420d7f77a96a32793d68a999d4663eaaae04",
+       "locator": "Help/command/return.rst normalized_UTF8_bytes[113,314)",
+-      "context_summary": "Included-file context, not top-level CMakeLists or a macro.",
++      "context_summary": "CMake3.31.0 return manual: function/file/directory contexts, CMP0140, PROPAGATE history and block examples.",
+       "origin_group": "upstream:Kitware/CMake",
+       "scope": {
+         "product": "cmake",
+@@ -721,7 +721,7 @@
+       "quote": "``PROPAGATE`` .. versionadded:: 3.25 This option sets or unsets the specified variables in the parent directory or function caller scope.",
+       "quote_sha256": "727257af1fe644ecc4662d6dc95721f697e640917026ebc19db8715dff1d743f",
+       "locator": "Help/command/return.rst normalized_UTF8_bytes[917,1054)",
+-      "context_summary": "Historical introduction and described effect.",
++      "context_summary": "CMake3.31.0 return manual: function/file/directory contexts, CMP0140, PROPAGATE history and block examples.",
+       "origin_group": "upstream:Kitware/CMake",
+       "scope": {
+         "product": "cmake",
+@@ -747,7 +747,7 @@
+       "quote": "Policy :policy:`CMP0140` controls the behavior regarding the arguments of the command. All arguments are ignored unless that policy is set to ``NEW``.",
+       "quote_sha256": "4a4d7d73911b1e6058e2d3bdb59985adfbc3b79c99627885054740fcab9e076f",
+       "locator": "Help/command/return.rst normalized_UTF8_bytes[766,916)",
+-      "context_summary": "Activation condition; actual project policy is not provided.",
++      "context_summary": "CMake3.31.0 return manual: function/file/directory contexts, CMP0140, PROPAGATE history and block examples.",
+       "origin_group": "upstream:Kitware/CMake",
+       "scope": {
+         "product": "cmake",
+@@ -772,7 +772,7 @@
+       "quote": "Break from an enclosing foreach or while loop.",
+       "quote_sha256": "0beddaaa1397b770f3939509a3d3e6c3dd5168833e8eb7daf7d3cc9e4e9b7d8b",
+       "locator": "Help/command/break.rst normalized_UTF8_bytes[12,58)",
+-      "context_summary": "CMake control-flow documentation, not TLS evidence.",
++      "context_summary": "CMake3.31.0 break command: foreach/while syntax and reference to continue.",
+       "origin_group": "upstream:Kitware/CMake",
+       "scope": {
+         "product": "cmake",
+@@ -797,7 +797,7 @@
+       "quote": "Return from a file, directory or function.",
+       "quote_sha256": "1103610dc8e69b683f914280c629fb7f0c6c4754ad8f4524a06dc588590d18cd",
+       "locator": "Help/command/return.rst normalized_UTF8_bytes[14,56)",
+-      "context_summary": "CMake command summary, not a connection observation.",
++      "context_summary": "CMake3.31.0 return manual: function/file/directory contexts, CMP0140, PROPAGATE history and block examples.",
+       "origin_group": "upstream:Kitware/CMake",
+       "scope": {
+         "product": "cmake",
+@@ -822,7 +822,7 @@
+       "quote": "B<Client mode:> if not using an anonymous cipher (by default disabled), the server will send a certificate which will be checked. The result of the certificate verification process can be checked after the TLS/SSL handshake using the L<SSL_get_verify_result(3)> function. The handshake will be continued regardless of the verification result.",
+       "quote_sha256": "dc5b01f3a69de8ef489ef0b94b36bad9ade89c148ae1730a33990b6851c2791c",
+       "locator": "doc/man3/SSL_CTX_set_verify.pod normalized_UTF8_bytes[3797,4139)",
+-      "context_summary": "Client clause under SSL_VERIFY_NONE; not its server clause.",
++      "context_summary": "OpenSSL3.0.15 verification flags and callbacks: preserve client/server and built-in/custom verification contexts.",
+       "origin_group": "upstream:openssl/openssl",
+       "scope": {
+         "product": "openssl",
+@@ -847,7 +847,7 @@
+       "quote": "B<Client mode:> the server certificate is verified. If the verification process fails, the TLS/SSL handshake is immediately terminated with an alert message containing the reason for the verification failure. If no server certificate is sent, because an anonymous cipher is used, SSL_VERIFY_PEER is ignored.",
+       "quote_sha256": "5616128453947b5a3f180fe1b16a31aa9ce32f2aa8a7b283b640bebb1d751c5e",
+       "locator": "doc/man3/SSL_CTX_set_verify.pod normalized_UTF8_bytes[4585,4892)",
+-      "context_summary": "Client clause under SSL_VERIFY_PEER; built-in/default-callback context from full page.",
++      "context_summary": "OpenSSL3.0.15 verification flags and callbacks: preserve client/server and built-in/custom verification contexts.",
+       "origin_group": "upstream:openssl/openssl",
+       "scope": {
+         "product": "openssl",
+@@ -872,7 +872,7 @@
+       "quote": "If no peer certificate was presented, the returned result code is X509_V_OK. This is because no verification error occurred, it does however not indicate success.",
+       "quote_sha256": "59fdcd6cd798f378601107af76e8030046b4edc115bc83f326e26561153ecb0b",
+       "locator": "doc/man3/SSL_get_verify_result.pod normalized_UTF8_bytes[1059,1221)",
+-      "context_summary": "BUGS caveat, not proof that a particular peer was absent.",
++      "context_summary": "OpenSSL3.0.15 SSL_get_verify_result: last verification error, session reuse and absent-peer-certificate caveat.",
+       "origin_group": "upstream:openssl/openssl",
+       "scope": {
+         "product": "openssl",
+@@ -897,7 +897,7 @@
+       "quote": "The verification succeeded or no peer certificate was presented.",
+       "quote_sha256": "2361027ec32815ddb914fff33a8832e4be87955e3087e5d34f7994d45b6c2efe",
+       "locator": "doc/man3/SSL_get_verify_result.pod normalized_UTF8_bytes[1406,1470)",
+-      "context_summary": "RETURN VALUES alternative explanations for X509_V_OK.",
++      "context_summary": "OpenSSL3.0.15 SSL_get_verify_result: last verification error, session reuse and absent-peer-certificate caveat.",
+       "origin_group": "upstream:openssl/openssl",
+       "scope": {
+         "product": "openssl",
+@@ -922,7 +922,7 @@
+       "quote": "The verification result is part of the established session and is restored when a session is reused.",
+       "quote_sha256": "fb1435f001695f67d7365bf2666288892c10c46713a843d2084331e9b8f96e23",
+       "locator": "doc/man3/SSL_get_verify_result.pod normalized_UTF8_bytes[946,1046)",
+-      "context_summary": "NOTES, first record.",
++      "context_summary": "OpenSSL3.0.15 SSL_get_verify_result: last verification error, session reuse and absent-peer-certificate caveat.",
+       "origin_group": "upstream:openssl/openssl",
+       "scope": {
+         "product": "openssl",
+@@ -947,7 +947,7 @@
+       "quote": "The verification result is part of the established session and is restored when a session is reused.",
+       "quote_sha256": "fb1435f001695f67d7365bf2666288892c10c46713a843d2084331e9b8f96e23",
+       "locator": "doc/man3/SSL_get_verify_result.pod normalized_UTF8_bytes[946,1046)",
+-      "context_summary": "Same sentence captured a second time.",
++      "context_summary": "OpenSSL3.0.15 SSL_get_verify_result: last verification error, session reuse and absent-peer-certificate caveat.",
+       "origin_group": "upstream:openssl/openssl",
+       "scope": {
+         "product": "openssl",
+@@ -972,7 +972,7 @@
+       "quote": "If B<verify_callback> always returns 1, the TLS/SSL handshake will not be terminated with respect to verification failures and the connection will be established.",
+       "quote_sha256": "7c89d9ffcda2c1c0a84ff91d8122965611f52c07ff243d57c25d81e17fdc3ad5",
+       "locator": "doc/man3/SSL_CTX_set_verify.pod normalized_UTF8_bytes[8789,8951)",
+-      "context_summary": "Callback semantics; this is not the default callback or proof of trust.",
++      "context_summary": "OpenSSL3.0.15 verification flags and callbacks: preserve client/server and built-in/custom verification contexts.",
+       "origin_group": "upstream:openssl/openssl",
+       "scope": {
+         "product": "openssl",
+@@ -997,7 +997,7 @@
+       "quote": "if (mydata->always_continue) return 1; else return preverify_ok;",
+       "quote_sha256": "c5e664ff14adc99ac96eb66a11d2a6404c5d58fc3b1639757ff72c70ca641124",
+       "locator": "doc/man3/SSL_CTX_set_verify.pod normalized_UTF8_bytes[13073,13137)",
+-      "context_summary": "Code branch inside the full illustrative callback, not evaluator control.",
++      "context_summary": "OpenSSL3.0.15 verification flags and callbacks: preserve client/server and built-in/custom verification contexts.",
+       "origin_group": "upstream:openssl/openssl",
+       "scope": {
+         "product": "openssl",
+@@ -1022,7 +1022,7 @@
+       "quote": "Almost all makefile targets require a \"tclsh\" TCL interpreter version 8.6 or later.",
+       "quote_sha256": "34ad99a21839d02b61d8b14c04be7ae0ec26d75e5ae0a185b1c21e4fed1b379b",
+       "locator": "README.md normalized_UTF8_bytes[5519,5602)",
+-      "context_summary": "README general statement, with separate extension/test development-library requirements.",
++      "context_summary": "SQLite3.47.2 source README: mirror/Fossil names, Unix/Windows builds, source layout and integrity-check caveats.",
+       "origin_group": "upstream:sqlite/sqlite",
+       "scope": {
+         "product": "sqlite",
+@@ -1047,7 +1047,7 @@
+       "quote": "This document assumes you are working with <b>TCL version 9.0</b>.",
+       "quote_sha256": "421db89dd36f48a58c5b8daefddcc24a75c8389491c0ffbe4948151cad29d217",
+       "locator": "doc/compile-for-unix.md normalized_UTF8_bytes[606,672)",
+-      "context_summary": "Recipe assumption, not a universal necessity assertion.",
++      "context_summary": "SQLite3.47.2 Unix-build recipe: tested2024-10-11, assuming Tcl9.0, configure/targets and debug instructions.",
+       "origin_group": "upstream:sqlite/sqlite",
+       "scope": {
+         "product": "sqlite",
+@@ -1072,7 +1072,7 @@
+       "quote": "If you are reading this on GitHub or some other Git repository or service, then you are looking at a mirror. The names of check-ins and other artifacts in a Git mirror are different from the official names for those objects. The official names for check-ins are found in a footer on the check-in comment for authorized mirrors. The official check-in name can also be seen in the `manifest.uuid` file in the root of the tree. Always use the official name, not the Git-name, when communicating about an SQLite check-in.",
+       "quote_sha256": "4e199351963fca2779a1052acf834b47dde0f18aea5684a3d6cc16ddb768ecbb",
+       "locator": "README.md normalized_UTF8_bytes[784,1301)",
+-      "context_summary": "Version-control namespace warning, not the manifest.uuid value.",
++      "context_summary": "SQLite3.47.2 source README: mirror/Fossil names, Unix/Windows builds, source layout and integrity-check caveats.",
+       "origin_group": "upstream:sqlite/sqlite",
+       "scope": {
+         "product": "sqlite",
+@@ -1097,7 +1097,7 @@
+       "quote": "Download the SQLite source tree and unpack it. CD into the toplevel directory of the source tree.",
+       "quote_sha256": "995cbd3a13559fa7c0b2e5663adee5b3f4bbebc0d99a138e79f8a5af9c403b3f",
+       "locator": "doc/compile-for-unix.md normalized_UTF8_bytes[1013,1110)",
+-      "context_summary": "Build step only; no identifier mapping is included.",
++      "context_summary": "SQLite3.47.2 Unix-build recipe: tested2024-10-11, assuming Tcl9.0, configure/targets and debug instructions.",
+       "origin_group": "upstream:sqlite/sqlite",
+       "scope": {
+         "product": "sqlite",
+@@ -1122,7 +1122,7 @@
+       "quote": "It is helpful, but is not required, to install the SQLite TCL extension (the \"tclextension-install\" target) prior to running tests.",
+       "quote_sha256": "e004238c2405ca8bbd35c1df66ccac5c18f0f587dab048a2665793bd8d4bd4e2",
+       "locator": "README.md normalized_UTF8_bytes[5738,5869)",
+-      "context_summary": "Unix build paragraph; does not waive Tcl interpreter or libraries.",
++      "context_summary": "SQLite3.47.2 source README: mirror/Fossil names, Unix/Windows builds, source layout and integrity-check caveats.",
+       "origin_group": "upstream:sqlite/sqlite",
+       "scope": {
+         "product": "sqlite",
+@@ -1147,7 +1147,7 @@
+       "quote": "It is helpful, but is not required, to install the SQLite TCL extension (the \"tclextension-install\" target) prior to running tests.",
+       "quote_sha256": "e004238c2405ca8bbd35c1df66ccac5c18f0f587dab048a2665793bd8d4bd4e2",
+       "locator": "README.md normalized_UTF8_bytes[7326,7457)",
+-      "context_summary": "Windows build paragraph repeats this limited optional-extension rule.",
++      "context_summary": "SQLite3.47.2 source README: mirror/Fossil names, Unix/Windows builds, source layout and integrity-check caveats.",
+       "origin_group": "upstream:sqlite/sqlite",
+       "scope": {
+         "product": "sqlite",
+@@ -1172,7 +1172,7 @@
+       "quote": "make verify-source",
+       "quote_sha256": "50fdbeffdc6ac2de07ddff559a5e504f3b1d306698fc12d9e41592f8396c48e0",
+       "locator": "README.md normalized_UTF8_bytes[19788,19806)",
+-      "context_summary": "Command example only; not executed or a success receipt.",
++      "context_summary": "SQLite3.47.2 source README: mirror/Fossil names, Unix/Windows builds, source layout and integrity-check caveats.",
+       "origin_group": "upstream:sqlite/sqlite",
+       "scope": {
+         "product": "sqlite",
+@@ -1197,7 +1197,7 @@
+       "quote": "Using the makefile to verify source integrity is good for detecting accidental changes to the source tree, but malicious changes could be hidden by also modifying the makefiles.",
+       "quote_sha256": "eede92c0ee9b37ccf2ffc6a554c838dde921c7d387b0f5c16a96e66ad0cf9030",
+       "locator": "README.md normalized_UTF8_bytes[19860,20037)",
+-      "context_summary": "Explicit limitation on makefile-mediated checking.",
++      "context_summary": "SQLite3.47.2 source README: mirror/Fossil names, Unix/Windows builds, source layout and integrity-check caveats.",
+       "origin_group": "upstream:sqlite/sqlite",
+       "scope": {
+         "product": "sqlite",
+@@ -1222,7 +1222,7 @@
+       "quote": "Redis is compiled and linked against libc malloc by default, with the exception of jemalloc being the default on Linux systems. This default was picked because jemalloc has proven to have fewer fragmentation problems than libc malloc. To force compiling against libc malloc, use: % make MALLOC=libc",
+       "quote_sha256": "d71042a5d997bc23288155e0ee0374f0bb022a0234cbe518037bc08e5cadfcad",
+       "locator": "README.md normalized_UTF8_bytes[4214,4512)",
+-      "context_summary": "Allocator section; Linux is the explicit exception to libc default.",
++      "context_summary": "Redis7.2.5 quick-start/build README: allocator/platform options, command examples and descriptive internals.",
+       "origin_group": "upstream:redis/redis",
+       "scope": {
+         "product": "redis",
+@@ -1248,7 +1248,7 @@
+       "quote": "Notably `deps` contains a copy of `jemalloc`, which is the default allocator of Redis under Linux.",
+       "quote_sha256": "516c361701018260c785110ec915d4c2fce59471a3bb9a24cbd53a056cf0f571",
+       "locator": "README.md normalized_UTF8_bytes[9430,9528)",
+-      "context_summary": "deps description independently repeats the same Linux-specific default in one document.",
++      "context_summary": "Redis7.2.5 quick-start/build README: allocator/platform options, command examples and descriptive internals.",
+       "origin_group": "upstream:redis/redis",
+       "scope": {
+         "product": "redis",
+@@ -1273,7 +1273,7 @@
+       "quote": "| Version | Supported | | ------- | ------------------ | | 7.0.x | :white_check_mark: | | 6.2.x | :white_check_mark: | | 6.0.x | :white_check_mark: | | < 6.0 | :x: |",
+       "quote_sha256": "ddfafe6e6dfcbd6746d03e6ec7ac6bd7cd007ca7b6e3022f113d8f1843bf1117",
+       "locator": "SECURITY.md normalized_UTF8_bytes[352,517)",
+-      "context_summary": "Historical captured table; contains no2026 effective-date assurance.",
++      "context_summary": "Redis7.2.5 repository security-policy snapshot: version table, backport/disclosure and reporting procedures.",
+       "origin_group": "upstream:redis/redis",
+       "scope": {
+         "product": "redis",
+@@ -1298,7 +1298,7 @@
+       "quote": "Redis is generally backwards compatible with very few exceptions, so we recommend users to always use the latest version to experience stability, performance and security.",
+       "quote_sha256": "d55c5678bd9272a081e98f9eeb6bbcf52f4977ee7d0376c087501572d60b68a9",
+       "locator": "SECURITY.md normalized_UTF8_bytes[40,211)",
+-      "context_summary": "General recommendation, not an up-to-date support enumeration.",
++      "context_summary": "Redis7.2.5 repository security-policy snapshot: version table, backport/disclosure and reporting procedures.",
+       "origin_group": "upstream:redis/redis",
+       "scope": {
+         "product": "redis",
+@@ -1323,7 +1323,7 @@
+       "quote": "redis> set foo bar OK redis> get foo \"bar\"",
+       "quote_sha256": "77494620b8c1b7231d021ed0575802f149c0fe37063fb223f0d537e44bce10a6",
+       "locator": "README.md normalized_UTF8_bytes[6131,6173)",
+-      "context_summary": "Illustrative quick-start transcript, not the user deployment or requested key.",
++      "context_summary": "Redis7.2.5 quick-start/build README: allocator/platform options, command examples and descriptive internals.",
+       "origin_group": "upstream:redis/redis",
+       "scope": {
+         "product": "redis",
+@@ -1348,7 +1348,7 @@
+       "quote": "We generally backport security issues to a single previous major version, unless this is not possible or feasible with a reasonable effort.",
+       "quote_sha256": "d94777d1c35c0d09b5405a1b5670540e8a79086d36eb63009fc118e5dde0e032",
+       "locator": "SECURITY.md normalized_UTF8_bytes[212,351)",
+-      "context_summary": "Security policy, unrelated to actual key contents.",
++      "context_summary": "Redis7.2.5 repository security-policy snapshot: version table, backport/disclosure and reporting procedures.",
+       "origin_group": "upstream:redis/redis",
+       "scope": {
+         "product": "redis",
+@@ -1373,7 +1373,7 @@
+       "quote": "% make BUILD_TLS=yes",
+       "quote_sha256": "beaa95395d7f69019732e3f51f2f8874f2bd4586d497879691ada5c834518bcf",
+       "locator": "README.md normalized_UTF8_bytes[2218,2238)",
+-      "context_summary": "Redis build command, not a CMake return policy.",
++      "context_summary": "Redis7.2.5 quick-start/build README: allocator/platform options, command examples and descriptive internals.",
+       "origin_group": "upstream:redis/redis",
+       "scope": {
+         "product": "redis",
+@@ -1398,7 +1398,7 @@
+       "quote": "We generally backport security issues to a single previous major version, unless this is not possible or feasible with a reasonable effort.",
+       "quote_sha256": "d94777d1c35c0d09b5405a1b5670540e8a79086d36eb63009fc118e5dde0e032",
+       "locator": "SECURITY.md normalized_UTF8_bytes[212,351)",
+-      "context_summary": "Redis security policy, no CMake policy identifier.",
++      "context_summary": "Redis7.2.5 repository security-policy snapshot: version table, backport/disclosure and reporting procedures.",
+       "origin_group": "upstream:redis/redis",
+       "scope": {
+         "product": "redis",

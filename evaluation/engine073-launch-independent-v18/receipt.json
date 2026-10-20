@@ -1,0 +1,113 @@
+{
+  "identity": "engine073-launch-independent-v18",
+  "saved_utc": "2026-10-16T16:41:04.457278+00:00",
+  "first_outcome": "FAIL",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "candidate_source_sha": "258667bc55b82e23f3b00aaf6de9313e6109f450",
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "e689ae9087fdc67cf8693525a425e3de8831382cfa32e88053d1000c97fcc95e",
+      "unchanged": true
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "ad655430069094ecded4483060ccf7c4fade4bf92f1f7297540676100bdf060d",
+      "unchanged": true
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "unchanged": true
+    },
+    "opaque_parent_freeze": {
+      "path": "/private/tmp/engine073-source17-freeze.json",
+      "sha256": "be3f9cbd8520d5d43e92c4f9e92f5c8f85dd6822aa1d9de06490b3a23a230df6",
+      "unchanged": true
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v18-probe/probe",
+      "sha256": "0445b725f2ac83c90d014ce93545f3aafc1bcc429681ca61594b3b4ce2604ec1",
+      "unchanged": true
+    }
+  },
+  "manifest_sha256": "808c25e510903130277646e35930401a22b00a0fd8d627a2b9f09735956c687c",
+  "cases_sha256": "ded25aa488d01ba785cc09e85c4751210b9088f9960e6936b92b9f7a289d36c4",
+  "inputs_sha256": "11f1aa8b973e41c3d849c85b2d86eac4cffb6bcdb6de3d6e66d94775619d5ee5",
+  "probe_source_sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+  "scorer_sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+  "recorder_sha256": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+  "first_stdout_sha256": "d4a13611a570de80d88852553db83ec6875651c13fc2816eff108aed89089f8a",
+  "first_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "first_results_sha256": "5c21ce2e2320c8f54896ce54d42b99a8d0f040abc19225e48503d5a441d9df5c",
+  "first_summary_sha256": "c448273162a5cfc3dd706a27b06a5fec4823deaf563fc243dc604dfc41f8a65b",
+  "first_invocation_sha256": "ddad9d5918989701ede1e84b9dec015c92f905b39f5f0f55849ec619e92a3dd7",
+  "review_sha256": "f09aa015facad77988c62ca257358922712b81dfb745228b4a608582eb2c3451",
+  "README_sha256": "2c4f4d773f6adfb620315909869daf6a405e17ad44fa2144b8f8a5c2527130f3",
+  "first_summary": {
+    "identity": "engine073-launch-independent-v18",
+    "candidate_source_sha": "258667bc55b82e23f3b00aaf6de9313e6109f450",
+    "manifest_sha256": "808c25e510903130277646e35930401a22b00a0fd8d627a2b9f09735956c687c",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 45,
+    "failed": 15,
+    "incomplete": 0,
+    "positive_passed": 16,
+    "negative_passed": 29,
+    "negative_v17_requested_relation_violations": 1,
+    "negative_v30_relevant_violations": 1,
+    "positive_v17_withheld": 14,
+    "positive_v30_withheld": 14,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "d4a13611a570de80d88852553db83ec6875651c13fc2816eff108aed89089f8a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "ddad9d5918989701ede1e84b9dec015c92f905b39f5f0f55849ec619e92a3dd7"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "failed_positive_ids": [
+    "li18-001",
+    "li18-005",
+    "li18-007",
+    "li18-011",
+    "li18-013",
+    "li18-015",
+    "li18-017",
+    "li18-029",
+    "li18-031",
+    "li18-033",
+    "li18-045",
+    "li18-053",
+    "li18-057",
+    "li18-059"
+  ],
+  "unsafe_negative_ids": [
+    "li18-038"
+  ],
+  "STATIC_ONLY_semantic_observations": 0,
+  "semantic_processes": 1,
+  "observed_cases": 60,
+  "scorer_applications": 1,
+  "retry_rescore_relabel": 0,
+  "all_frozen_scope_inputs_labels_unchanged": true,
+  "old_v1_v17_files_unchanged": 368,
+  "v11_v17_unused_drafts_not_reused": true,
+  "isolation": {
+    "Engine_implementation_read": false,
+    "root_tests_historical_other_corpora_or_root_audits_read": false,
+    "opaque_parent_freeze_contents_read": false,
+    "provider_network_calls": 0,
+    "Oracle": false,
+    "additional_agents": 0,
+    "cargo_invocations": 0,
+    "shared_target_mutations": 0,
+    "Git_mutations": 0
+  },
+  "limits": "Finite synthetic source candidate gate, not real24/ordinaryCLI/provider/human/release; no cross-corpus improvement or arbitrary-language guarantee.",
+  "final_manifest": "All versions except final manifest itself; external SHA256 is final anchor."
+}

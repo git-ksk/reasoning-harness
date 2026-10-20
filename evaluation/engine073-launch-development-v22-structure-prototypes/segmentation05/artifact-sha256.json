@@ -1,0 +1,10 @@
+{
+  "cargo-artifacts.jsonl": "e9ecedd339e2e9c53cd1247aeb484573e3b5c5cbc658e3ca9ee37a333af8adeb",
+  "identity-before.json": "3274811fb714fe0ea11a576c4c64584c67f55eaa35a3077c8cb4476757927ee0",
+  "invocation.json": "f1e6b5a0a354c376225d8896030fdc3c73f374e347d9c53259d0f4a50fafe134",
+  "probe": "bad3209c00a6b77e257fe830fe68a9d84813e7265afbfedd3a51c8621f8c0bb7",
+  "source.rs": "0b710b1cbb7bb24a8d940c45ed00255a9328da6497e81e21b2822956171a46c1",
+  "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout.jsonl": "d25c586cea75d9748a84acab5a969d3141e00def81d08abcdfd65ac79b00dd08",
+  "summary.json": "f2d52d1941b6c6cb40ffbed9167c46aa224c3cf40918c19804cc54f78e4c2fc5"
+}

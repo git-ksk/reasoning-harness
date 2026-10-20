@@ -1,0 +1,20 @@
+# Consumed real24: first development score
+
+2026-10-20 JST. [Saved run39345330622](https://github.com/git-ksk/reasoning-harness/actions/runs/39345330622), baseline Engine0.6.1 versus unpublished repair source ab3c632 (package still0.7.2). This measures the proposed0.7.3 repair, **not the published0.7.2 release**. Both arms use common host8525330/CLI package0.5.4.
+
+**NO_GO.** Google completed all24 questions per arm/track. The separate repaired capture binds96/96 observations; independent source/display annotations were closed before a single offline score. There are zero annotation failures. This is an already consumed24-question development cohort, not fresh independent accuracy acceptance; fresh accuracy cases=0. Original v1 first results and original Google76complete/20incomplete capture remain unchanged.
+
+| Google track (24 questions/arm) | Case P | Case R | Case F1: baseline → candidate | Claim micro F1: baseline → candidate |
+| --- | --- | --- | --- | --- |
+| Ordinary CLI | 1.000 | 0.412 | 0.583333 → 0.583333 | 0.862745 → 0.862745 |
+| Opt-in helper | 1.000 | 0.250 | 0.222222 → 0.400000 | 0.857143 → 0.857143 |
+
+P/R columns describe the candidate. Ordinary case counts are TP7/FP0/FN10/TN7, identical in both arms. Helper candidate TP2/FP0/FN6/TN16 versus baseline TP1/FP0/FN7/TN16. These correlated24 tasks from12 official documents/six products do not establish population accuracy. Both tracks miss predeclared F1≥0.90 and recall≥0.85; claim recall is0.758621/0.75 and misses the separate claim gate. Claim precision1.0 describes grounded displayed assertions, not sufficient answers to all requested information.
+
+Independent annotations record zero observed hard safety violations. Ordinary CLI has **0/28** factual occurrences with displayed citations; internal source/receipt IDs do not count as citations. Helper has97/97 correct citation edges,89/89 cited occurrences and97/97 faithful literal quotes, in each arm. Complete useful-answer net gain is0 ordinary/+1 helper, below the predeclared+2 per-track target. Google paired efficiency passes: added mean logical calls0, aggregate token ratio1.0, p95 wall ratio1.01634. Efficiency and safety alone do not pass answer quality or utility.
+
+Mistral full24 F1 is **null**, with4complete/1incomplete/91not_run observations. Partial helper claim F1=1.0 at n=1/arm is not full accuracy. Groq remains deferred and its full F1 is also **null**. The scorer preserves partial descriptive values and planned24-pair inventories: neither is a complete paired-provider success, nor does an unexecuted row become TN or zero cost. Mistral's known-usage loss is fixed separately by merged PR549; this does not repair the truncated planner JSON or prove a successful rerun. Possible quota depletion is unverified; further Mistral calls are held.
+
+The report is copied byte-for-byte from the sole first-score output. Full private annotations, original raw, gold, dispatch/environment and output rows are hash-closed. Public manifests/provenance bind them without publishing answer/full-document text. The successor driver559b50 retains frozen arithmetic, binds the independent annotation manifest plus every observation/review file and the75-file runtime inventory, and forces `NOT_ELIGIBLE_CONSUMED_DEVELOPMENT_DIAGNOSTIC`. Exact Python -B/optimization0/credential-free environment replacement and argv were closed before execution and independently admitted. The first-score marker precedes M1/corpus validation; its boundary was not changed. No model/Engine run, relabel, rescore or retry occurred during capture repair/scoring.
+
+Next: use saved FN traces to isolate the smallest answer-completeness fix, add ordinary displayed source citations, and address Mistral planner truncation without silently relaxing aggregate budgets. Keep the old24 as development diagnostics and freeze complete functional/runtime/provider readiness before any new independent acceptance authorship. Source merge, Engine0.7.3 release, CLI adoption and distribution remain separate unapproved gates. #531/#538/#540 stay open; PR539 stays Draft.

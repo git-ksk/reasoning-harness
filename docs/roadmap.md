@@ -1,6 +1,10 @@
 # Roadmap
 
-> Historical engineering/acceptance ledger below. Current direction: [product roadmap](product-roadmap.md) and [#531 Engine0.7 real-world evaluation](engine-07-realworld-evaluation.md). Published CLI is0.5.5 / Engine0.6.1;0.7.2 adoption evaluation is incomplete.
+> Historical engineering/acceptance ledger below. Current direction: [product roadmap](product-roadmap.md) and [#531 Engine0.7 real-world evaluation](engine-07-realworld-evaluation.md). Published CLI is0.5.5 / Engine0.6.1;0.7.2 adoption evaluation is incomplete. Current successor plan: [Engine0.7.3](engine-0.7.3-roadmap.md).
+
+> 2026-10-20 scored checkpoint: [consumed24 independent annotations and first development score](../evaluation/engine073-realworld-v2-consumed-score-v1/README.md): Google ordinary case F1 .583333 unchanged; helper .222222→.400000. Safety0 observed, ordinary citation0/28, utility gains0/+1, below quality gates. Mistral/Groq full F1 null; further Mistral calls held for unverified quota. PR549 usage repair merged. Original results unchanged; fresh accuracy0, release/adoption NO_GO.
+> 2026-10-20 earlier preparation: [v2 execution repair](../evaluation/engine073-realworld-v2-development-preparation/README.md): paired Linux binaries and17 actual normal/error/helper/acquisition controls passed, zero external calls. Precredential M1/deadline guards passed independent recheck; seen24 diagnostics were pending at this earlier checkpoint.
+> 2026-10-19 checkpoint: M0/M1 complete; [first live results and independent score](../evaluation/engine073-realworld-first-v1a-results/README.md) are NO_GO. Both active providers stopped early; full24 actual F1 remains null. Only Google helper n=1/arm: case F1=0.00, claim F1=1.00. Repair #540 collection/binding/failure diagnostics before the next separately frozen evaluation; Groq remains deferred. Dated entries below are retained history.
 
 ## Project direction
 

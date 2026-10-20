@@ -1,0 +1,19 @@
+{
+  "identity": "engine073-realworld-independent-v1",
+  "author_id": "/root/engine07_realworld_independent",
+  "author_role": "independent_agent",
+  "authorship_started_unix_seconds": 1792409789,
+  "started_utc": "2026-10-19T11:36:29.329393+00:00",
+  "M0_receipt_sha256": "4023eb552ee964e0e99550a61a9f4c2d2800d2d994b7e42c439cf3cf7669d4d2",
+  "M0_completed_unix_seconds": 1792409580,
+  "authorization_reference": "Parent explicitly authorized fresh real24 only after final receipt4023eb55, at this turn.",
+  "accuracy_cases_authored_before_M0": 0,
+  "Engine_actual_cohort_scorer_provider_model_Oracle_calls": 0,
+  "notes_outside_corpus": true,
+  "final_receipt_allowed_changed_top_level_fields": [
+    "completed_unix_seconds",
+    "independent_implementation_review",
+    "runtime_controls",
+    "state"
+  ]
+}

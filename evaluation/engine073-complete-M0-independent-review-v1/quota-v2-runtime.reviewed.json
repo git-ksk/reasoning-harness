@@ -1,0 +1,8 @@
+{
+  "artifact_id": 12165193719,
+  "run_id": 39205043793,
+  "archive_sha256": "9c416e90ab4212f9891917c1640c6a3f93c84589f41c69f3a5de3c6a6a83ef12",
+  "image_id": "sha256:afba620512f8b79a741af9f189feb120feaad6c6f3acf0ee56f9e6334ba693e2",
+  "execution_source_commit": "0883b2b6f1262ca9a9e6d527d8e8793198e3522e",
+  "file": "runtime-image.tar.gz"
+}

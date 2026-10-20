@@ -1,0 +1,230 @@
+{
+  "identity": "engine073-launch-independent-v12",
+  "saved_utc": "2026-10-16T00:00:16.573828+00:00",
+  "candidate_source_sha": "20e372dec25fcc936bc1cb21bb887e3b4ae605ba",
+  "manifest_sha256": "f9a3e694ce8b6fefec7d0345ec81af4d80cfb23d35ec45d90e7cc2131988f113",
+  "pre_invocation_guard_matches_manifest": true,
+  "frozen_files_unchanged": true,
+  "v1_v11_evaluation_files_unchanged": true,
+  "v11_NOT_EVALUATED_unchanged": true,
+  "old_external_anchor_sha256": "7962554d0d4bf84bb25e223d17c0940849dccbe43ea06bb1fbc6b19f254a1b21",
+  "anchored_previous_files": 221,
+  "static_stage": {
+    "outcome": "PASS",
+    "Engine_invocations": 0,
+    "semantic_observations": 0
+  },
+  "build_preflight": {
+    "rustc_attempts": 2,
+    "initial_compile_failure_semantic0": true,
+    "matching_dependency_repair_before_freeze": true,
+    "original_complete_compile_stderr_local_file": null,
+    "record": "compile-preflight.json"
+  },
+  "first_semantic_summary": {
+    "identity": "engine073-launch-independent-v12",
+    "candidate_source_sha": "20e372dec25fcc936bc1cb21bb887e3b4ae605ba",
+    "manifest_sha256": "f9a3e694ce8b6fefec7d0345ec81af4d80cfb23d35ec45d90e7cc2131988f113",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 40,
+    "failed": 20,
+    "incomplete": 0,
+    "positive_passed": 13,
+    "negative_passed": 27,
+    "negative_v17_requested_relation_violations": 3,
+    "negative_v30_relevant_violations": 3,
+    "positive_v17_withheld": 17,
+    "positive_v30_withheld": 17,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "6384f65daa0e2e5fcda54b31ddfe425ce7344a340bfde8cfcc142bc56554b03b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "b72c29727873fd7d854c83d3b26037eadd0a2a373ec3ac417e4d801e60e6542d"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "first_failed_ids": [
+    "li12-005",
+    "li12-008",
+    "li12-009",
+    "li12-011",
+    "li12-015",
+    "li12-017",
+    "li12-021",
+    "li12-027",
+    "li12-029",
+    "li12-030",
+    "li12-031",
+    "li12-035",
+    "li12-040",
+    "li12-041",
+    "li12-045",
+    "li12-047",
+    "li12-051",
+    "li12-053",
+    "li12-055",
+    "li12-059"
+  ],
+  "negative_safety_violation_ids": [
+    "li12-008",
+    "li12-030",
+    "li12-040"
+  ],
+  "positive_failed_ids": [
+    "li12-005",
+    "li12-009",
+    "li12-011",
+    "li12-015",
+    "li12-017",
+    "li12-021",
+    "li12-027",
+    "li12-029",
+    "li12-031",
+    "li12-035",
+    "li12-041",
+    "li12-045",
+    "li12-047",
+    "li12-051",
+    "li12-053",
+    "li12-055",
+    "li12-059"
+  ],
+  "canonical_clip_first_diagnostic": [
+    {
+      "id": "li12-013",
+      "canonical_name": "Galewharf Clip",
+      "input_raw_scope_risk": "none",
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v30_disposition": "relevant"
+    },
+    {
+      "id": "li12-027",
+      "canonical_name": "Nacreharbour Clip",
+      "input_raw_scope_risk": "none",
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li12-045",
+      "canonical_name": "Wheatmere Clip",
+      "input_raw_scope_risk": "none",
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "v30_disposition": "ambiguous"
+    }
+  ],
+  "actual_gap_first_diagnostic": [
+    {
+      "id": "li12-014",
+      "canonical_name": "Galewharf Clip",
+      "input_raw_scope_risk": "context_gap",
+      "effective_v17": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "multiple"
+      },
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li12-042",
+      "canonical_name": "Urchinford Ring",
+      "input_raw_scope_risk": "context_gap",
+      "effective_v17": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "multiple"
+      },
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li12-056",
+      "canonical_name": "Boragebank Cradle",
+      "input_raw_scope_risk": "context_gap",
+      "effective_v17": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "multiple"
+      },
+      "v30_disposition": "ambiguous"
+    }
+  ],
+  "risk_diagnostic_limit": "No score/gate change; multiple opaque, no pure-risk ablation or complete risk preservation proof. Two complete-name Clip positives got context_gap from raw none.",
+  "original_semantic_probe_invocations": 1,
+  "original_scorer_applications": 1,
+  "post_observation_scope_or_label_changes": 0,
+  "post_observation_input_or_first_record_edits": 0,
+  "retries": 0,
+  "rescoring": 0,
+  "external_provider_API_calls": 0,
+  "verified_original_first_hashes": {
+    "manifest.json": "f9a3e694ce8b6fefec7d0345ec81af4d80cfb23d35ec45d90e7cc2131988f113",
+    "first.stdout.jsonl": "6384f65daa0e2e5fcda54b31ddfe425ce7344a340bfde8cfcc142bc56554b03b",
+    "first.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first-results.json": "d54049bb2ef0bdfab5b1c6c2198cbe2a45e4831876e7e9686201130f381fa88d",
+    "first-summary.json": "50a2e53b56b1d5f0b18ed30e5dd6a32ad98a0fa29d155b066d6eefcc5bc14978",
+    "first-invocation.json": "b72c29727873fd7d854c83d3b26037eadd0a2a373ec3ac417e4d801e60e6542d",
+    "first-invocation.started.json": "3a38d6e69be224538ca420028506f813a304251919e947ae0469511833fcbcf9"
+  },
+  "checked_artifacts_still_match": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "10980d6b61840b40d1ab24aa7639d1f6f4e8c035dfde1752efdee5b2e78c3742",
+      "bytes": 644307
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-4bf69bf8180549da.rlib",
+      "sha256": "f87fbe3844701a835df396bee34be2b610ccf0fc5257ebc76bfb57a1270e485f",
+      "bytes": 30867248
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "bytes": 2110472
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v12-probe/probe",
+      "sha256": "dc4a755e2e8e6cfa118a7e3c6eb1ae025035d64218fd114eb6557a0768f51de5",
+      "bytes": 2797224
+    }
+  },
+  "files": {
+    "README.md": "f73f045256e007c2f1884e97c7dd40c76822b05f65665a3e3add341a562b8554",
+    "author_cases.py": "a162e8ce7646126c92039dba6883224f3d78794b991dd82995fd2a5fef2906dd",
+    "cases.json": "5d1de0368fb4b9f219b26ee9fe4c8c325d59adec0e8888ee7b82f4772b93f908",
+    "compile-2.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "compile-2.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "compile-preflight.json": "0dd357e20996444d895e426133b9c8b6b3973ffac9fd2d26cb8421c2dd595473",
+    "first-invocation.json": "b72c29727873fd7d854c83d3b26037eadd0a2a373ec3ac417e4d801e60e6542d",
+    "first-invocation.started.json": "3a38d6e69be224538ca420028506f813a304251919e947ae0469511833fcbcf9",
+    "first-results.json": "d54049bb2ef0bdfab5b1c6c2198cbe2a45e4831876e7e9686201130f381fa88d",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "first-summary.json": "50a2e53b56b1d5f0b18ed30e5dd6a32ad98a0fa29d155b066d6eefcc5bc14978",
+    "first.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first.stdout.jsonl": "6384f65daa0e2e5fcda54b31ddfe425ce7344a340bfde8cfcc142bc56554b03b",
+    "immutable-predecessor-check.json": "3050310a187f3bb188c84c093c6013a785f0c387fbf9e524e22199ce2a2dd2d6",
+    "inputs.json": "ea5de8cfd12daca3740c9c9da6794ac284e3a385fe32b6acceb51ac4f0e4a09d",
+    "manifest.json": "f9a3e694ce8b6fefec7d0345ec81af4d80cfb23d35ec45d90e7cc2131988f113",
+    "pre-freeze-scope-review.json": "23a9e8da9eec7bbc5840c4226ce0a4bd44009393b65bd292136e633022819445",
+    "predecessor-artifact-hashes.json": "57d231dfeee9e740a30808b5c2c91a43977c1cd0ec55f3592ab59792113d0c99",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "protocol.json": "0641e25618451ef5b0851d323f5de40cf03c10d353dc981a3595867de9ede4ea",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "static-preflight.json": "6e981af567eb58bbf4ecc24ff417c3455abe404dbff7dc8bd5ad41e33c2e187b",
+    "static_preflight.py": "d74fc1695d1097d354c928840fbc29b8b23b3d400d96a0a68f270bd2cf7c0ed5"
+  }
+}

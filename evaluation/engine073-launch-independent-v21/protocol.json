@@ -1,0 +1,123 @@
+{
+  "identity": "engine073-launch-independent-v21",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "purpose": "Finite synthetic #520 source gate only, not #531 real24/ordinaryCLI/provider/human/adoption/release.",
+  "candidate": {
+    "source_sha": "d647ca44d38958858a9ff4582f48ba6240d75241",
+    "source_sha256": "1abbec8d424d372a5713d57be7068af2dd231f1415ad6ad232f2b497e16baea6",
+    "package_version": "0.7.2",
+    "opaque_parent_freeze_file": "/private/tmp/engine073-source20-freeze-v2.json",
+    "opaque_parent_freeze_sha256": "5c1d24ce66b10facaaa3ed9c52f3aa71c71262f271c65768f8a727031130335f",
+    "opaque_parent_freeze_contents_read": false
+  },
+  "prior_exposure": {
+    "known": "All v1-v20 consumed/archived development, v11/v17 unused drafts and v19 initial design history preserved. V20 firstFAIL51/60 unsafe3/miss6 known.",
+    "fresh": "New30 hand-authored contrasts after this freeze, focusing on foreign-property ownership versus event ownership, foreign-document quotations whose event owner differs from document owner, multiple independently scoped property owners, publisher metadata, literal text values and maintained statements across source fields. No prior input/draft copied, renamed or lightly transformed. Common finite API vocabulary/schema intentional.",
+    "unread": "Engine source/root diagnosis/audits/tests/new development folders/historical other corpora.",
+    "parent_reported_only": "Correctcandidate workspace1555PASS,known1020,historical597 identity,sourceCI19/19 and focused65/strictClippy PASS; not independently read/rerun, only supplied source/build hashes verified."
+  },
+  "design": {
+    "cases": 60,
+    "positive": 30,
+    "semantic_negative": 30,
+    "pairs": 30,
+    "targets": 30,
+    "real_documents": 0,
+    "anchor": "Exactly one separate unadorned TARGET was launched. excerpt; no new affirmative target syntax.",
+    "positive_rule": "Target launch uncontradicted; every adverse object completely owns a physical/printed/document property or separately fully named foreign event. Property ownership and event ownership are distinct roles; printed event words are mentioned only when a complete property object is explicitly corrected. No property value truth inferred/approved.",
+    "negative_rule": "Actual target/global/existence denial or unknown/mixed/conflicting event owner. Foreign document/property/publisher names do not fill independent missing event owners and cannot replace explicit target-event quotations. No requested_relation AND non-Relevant.",
+    "finite_scope": [
+      "Finite Object/Subject/Item with explicit this/that/the same-role reference, complete quotation/apposition/denial object and immediate author reply.",
+      "One complete same-role owner supplements only unowned event; explicitly designated source title/heading or directly adjacent next-line full name supported. Existing target/mixed owner not overwritten.",
+      "Complete foreign physical/document properties may name a foreign product without asserting a foreign launch; their names cannot automatically identify a separate event.",
+      "Document/publisher ownership does not replace the product owner explicitly stated inside event content quotations. Complete typography claims about those words do not assert event retraction.",
+      "Maintained Subject non-event/nonexistence is an asserted statement, not denial of that nonexistence proposition. Surrounding property corrections do not excuse target nonexistence.",
+      "Multiple fields/roles/clauses keep explicit scope; no arbitrary graph/alias/hierarchy/number AST/new affirmative predicate/chronology or general pronoun-resolution requirement."
+    ],
+    "unknown_owner_ids": [
+      "li21-002",
+      "li21-008",
+      "li21-014",
+      "li21-018",
+      "li21-022",
+      "li21-028",
+      "li21-030",
+      "li21-036",
+      "li21-048",
+      "li21-050",
+      "li21-056"
+    ],
+    "target_owner_conflict_ids": [
+      "li21-034"
+    ],
+    "mixed_owner_ids": [
+      "li21-006",
+      "li21-042"
+    ],
+    "whole_source_ids": [
+      "li21-040",
+      "li21-060"
+    ],
+    "actual_gap_ids": [
+      "li21-030",
+      "li21-050"
+    ],
+    "literal_property_scope": {
+      "li21-003": "font of target-event sentence in foreign-owned guide; only font denied.",
+      "li21-019": "ink colour of literal target-nonexistence words in foreign booklet, not independently asserted nonexistence.",
+      "li21-035": "font of literal owner-absence words, with a separate fully owned event; no actual gap."
+    },
+    "canonical_full_clip_positive": "li21-047",
+    "raw_risk": "030/050 only raw context_gap, each independently unknown event due actual omission. No pure-risk joint negative. Orthogonal axes copied outside score; no enum-only component retention/loss assertion.",
+    "binding": "Optimistic exact/exact proposal, raw exact_target/requested_relation, no model extraction/equivalence/authority.",
+    "budget": {
+      "max_model_attempts": 2,
+      "max_tokens": 192,
+      "max_elapsed_ms": 90000
+    },
+    "labels": "Independent-author controlled scope labels/rationales outside Engine input, not universally true or independently human-approved product facts.",
+    "precommit": "All final scope/labels/rationales fixed before output. Author-stage determiner clarification preserved initial author/AST/diff, same meaning/polarity and Engine/scorer0."
+  },
+  "pre_freeze_design_revision": {
+    "file": "pre-freeze-design-revision.json",
+    "history": "draft-history/initial-author-v1",
+    "reason": "Replace bare/coordinated role references with explicit the + same type, so no extra bare-role grammar is requested.",
+    "prior_author_script_runs": 0,
+    "prior_full_input_static_runs": 0,
+    "Engine_scorer0": true,
+    "expected_polarity_purpose_and_rationales_unchanged": true,
+    "parent_authorized": true
+  },
+  "scoring": {
+    "sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "inherited_byte_identical": true,
+    "positive": "v17 requested_relation AND v30 relevant",
+    "negative": "v17 not requested_relation AND v30 not relevant",
+    "v29": "Diagnostic only",
+    "PASS": "All60 joint expectations;60 valid unique rows,exit0/empty stderr,no missing/ops absence counts success.",
+    "immutable": "One first60 process,one scorer,no post-freeze retry/rescore/relabel/input/scope change."
+  },
+  "stages": {
+    "static": "Author AST-only history plus final full-input STATIC_ONLY; semantic0.",
+    "freeze": "Complete inputs/labels/protocol/scope/static/history/code/source/core/serde/opaque-freeze/executable hashes.",
+    "semantic": "One exclusive first60 local public API process, no sentinel/provider.",
+    "save": "First raw/results/summary/review/README/receipt/before-after identities; recursive self-excluding all-version final hashes/read-only seal."
+  },
+  "execution": {
+    "source_content_read": false,
+    "Oracle": false,
+    "additional_agents": 0,
+    "provider_network_calls": 0,
+    "cargo_invocations": 0,
+    "Git_mutations": 0,
+    "build_provenance": "Parent stable core/serde hash-verified, evaluator links rustc only; no independent core build."
+  },
+  "limits": [
+    "Finite synthetic candidate-only check, no baseline delta/cross-corpus improvement/statistically independent60 language samples.",
+    "Iterative development informed by prior failures, consumed on observation.",
+    "Not real24/acquisition/final-answer/ordinaryCLI/provider/model/human/quota/billing/headroom/adoption/release.",
+    "No arbitrary grammar/owner graph/alias/AST/chronology/property-truth guarantee.",
+    "Risk diagnostic outside inherited score; no pure-risk ablation or enum-only component inference.",
+    "Serialized model-labelled reasons do not imply provider execution."
+  ]
+}

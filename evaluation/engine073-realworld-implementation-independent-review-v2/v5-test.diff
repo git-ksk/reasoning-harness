@@ -1,0 +1,11 @@
+--- /private/tmp/engine073-realworld-evaluator-review-snapshot-v2/test_scorer.py
++++ /private/tmp/engine073-realworld-case-decision-delta-v5/test_scorer.py
+@@ -47,7 +47,7 @@
+         with self.assertRaisesRegex(ValueError,'citation_review_inventory'):scorer.validate_review(g,o,r,s,self.deps)
+     def test_unsupported_cannot_earn_recall_or_hide_safety(self):
+         g,o,r,s=pair();r['claims'][0].update(grounding='unsupported',satisfied_groups=[]);r['citation_edges'][0]['correct']=False
+-        row=scorer.validate_review(g,o,r,s,self.deps);self.assertEqual(row['claim_metrics']['recall'],0);self.assertIn('unsupported_truth_or_display_promotion',row['hard_violations']);self.assertFalse(row['complete_useful_answer'])
++        row=scorer.validate_review(g,o,r,s,self.deps);self.assertEqual(row['claim_metrics']['recall'],0);self.assertIn('unsupported_truth_or_display_promotion',row['hard_violations']);self.assertFalse(row['complete_useful_answer']);self.assertNotEqual(row['decision'],'accept')
+     def test_unacquired_support_rejected(self):
+         g,o,r,s=pair();o['acquired_source_ids']=[];r['observation_sha256']=scorer.sha(json.dumps(o,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode())
+         with self.assertRaisesRegex(ValueError,'support_not_acquired'):scorer.validate_review(g,o,r,s,self.deps)

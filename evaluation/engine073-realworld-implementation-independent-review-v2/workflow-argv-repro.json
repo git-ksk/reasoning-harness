@@ -1,0 +1,14 @@
+{
+  "workflow_line": 101,
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "/private/tmp/engine073-realworld-evaluator-review-snapshot-v2/prepare_sources.py",
+    "--corpus-dir",
+    "/private/tmp/engine073-realworld-implementation-independent-review-v2/not-an-accuracy-corpus"
+  ],
+  "returncode": 2,
+  "stage": "argparse before file/source/provider access",
+  "required_flag_omitted": "--M1-sha256",
+  "Engine_accuracy_provider_network_calls": 0
+}

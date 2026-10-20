@@ -1,0 +1,22 @@
+# Independent launch source qualification v24
+
+**First result: FAIL47/60.** Positive17/30, semantic negative30/30; unsafe v17/v30 negatives0; positive misses13; ops/incomplete0. The inherited all60/60 joint source gate remains required and fails. No future real24/#542 threshold weakens this first result.
+
+| Source axis | TP | FP | TN | FN | Precision | Recall | F1 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| v17 requested_relation | 17 | 0 | 30 | 13 | 17/17 = 1 | 17/30 = 0.5666667 | 34/47 = 0.7234043 |
+| v30 Relevant | 17 | 0 | 30 | 13 | 17/17 = 1 | 17/30 = 0.5666667 | 34/47 = 0.7234043 |
+
+These are source-binary diagnostic metrics, not final-answer grounding precision/recall/F1, normal CLI accuracy or a population error rate. `axis-metrics-spec.json` and `axis_metrics.py` were frozen before any output. The aggregator counts saved first-scorer booleans once, with exact numerators/denominators and null rules. It never changes the inherited score, creates new semantic judgments or invokes Engine/scorer again. Failed/missing rows would be unavailable rather than TN; all60 were valid here.
+
+Candidate source24: `3ccda6b4263eb5210477660b11f6926ec0186f4e`. Public ENGINE_VERSION remains0.7.2, verified in every actual row by the inherited scorer. All actual source/core/serde/opaque freeze/probe executable hashes are in `manifest.json`, checked immediately before the first process and after saving. Engine implementation, current tests and parent diagnostics/case texts/metrics were not read. Probe/scorer/recorder bytes and budget2/192/90000 remain inherited.
+
+Thirty fresh semantic pairs were authored after this source freeze without reading/reusing/transforming prior author/cases/inputs or unused drafts. New combinations distinguish literal role/owner/event words inside complete printed properties from actual adverse event declarations, individual clauses, complete and conflicting role-owner supplements, compound non-launch properties, source fields and global/unknown-target denials. Each case has a separate unadorned full `TARGET was launched.` anchor, no aliases, exact/exact proposal; labels/rationale/polarity are outside Engine input. Prior failed sets and finite grammar are known development history, not statistical independence or cross-corpus improvement.
+
+`pre-freeze-scope-review.json` retains original30-positive/30-semantic-negative rationale before generation. Author edits0. One generation, one full STATIC_ONLY and one compile-only link preceded complete freeze `2b6bb47ef9a1f716707e731bd16f4397c292faad05f07cee5363e9abdd6da371`. Engine ran once for60 cases, inherited scorer once, and saved-boolean metric aggregation once. No semantic retry, rescore, relabel or post-freeze input/criterion edit occurred. First raw/stdout/stderr, invocation markers, wrapper/scorer logs, results, summary and diagnostic invocation stdout/stderr are preserved.
+
+All13 failed positives observed unresolved/Ambiguous and remain failed under their original rationale. Exact public tuples and per-case values are in `risk-diagnostics.json`; `review.json` contains failed IDs, original rationale and observations, with no internal-cause diagnosis. Raw qualifications are synthetic optimistic fixture inputs, not model observations. Actual gaps012/052: rawcontext_gap, effective unresolved/unresolved/ownership_scope/Ambiguous. Canonical Rivulet Clip035: rawnone, exact_target/requested_relation/none/Relevant;036: rawnone, exact_target/unresolved/context_gap/Ambiguous. These enum values do not prove hidden component-risk retention/loss.
+
+Old591 source files and separate5 metrics-preparation files remain unchanged. `post-save-identity-check.json`, `receipt.json` and `final-artifact-manifest.json` close the record. Manifest `versions` counts source files separately from5 preserved preparation references; only the current final manifest excludes itself. Every new artifact is fsynced/read-only; final manifest SHA256 is externally reported. Full actual hashes and original complete-freeze/first/score/metrics bytes are independently checked after closure.
+
+Provider/model/network/Oracle calls, cargo/shared target/Git mutations, additional agents and real24 authorship0. Parent validation is parent-reported only and adds no points here. Real-source24, ordinary CLI, final-answer accuracy, human or release/adoption acceptance are untested. Source/HEAD/normal-target release follows final read-only verification. v25 is not started; no additional execution follows this closed identity.

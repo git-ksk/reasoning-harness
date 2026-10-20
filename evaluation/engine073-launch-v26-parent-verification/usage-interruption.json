@@ -1,0 +1,14 @@
+{
+  "recorded_utc": "2026-10-18T14:13:14Z",
+  "reason": "Automatic approval reviewer and independent agent hit usage limit; reviewer said reset15:01 JST. Resume user instruction received after reset time.",
+  "stage_at_resume": "M0 complete and parent reviewed; existing authoring-start only; no author program/cases/inputs/M1/first markers.",
+  "candidate_Engine_invocations_before_resume": 0,
+  "real_cohort_scorer_processes_before_resume": 0,
+  "same_v26_continued": true,
+  "M0_or_authoring_start_recreated": false,
+  "fixed_source_runtime_M0_all_hashes_verified": true,
+  "old_files": 730,
+  "parent_reference_files": 36,
+  "source_gate_retries": 0,
+  "CI_read_after_reset": "19/19 SUCCESS at exact1d7019a"
+}

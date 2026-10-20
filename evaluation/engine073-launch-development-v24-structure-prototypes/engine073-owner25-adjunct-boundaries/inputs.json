@@ -1,0 +1,206 @@
+[
+  {
+    "id": "owner-adjunct-0",
+    "policy": {
+      "policy_id": "li24-001-policy",
+      "target_id": "v24-target-01",
+      "target_question": "Was Cerulean Bridge launched?",
+      "entity": {
+        "canonical_id": "v24-target-01",
+        "canonical_name": "Cerulean Bridge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li24-001-evidence",
+      "source_id": "li24-001-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Object: the claim that the Cerulean Bridge table header has a blue background"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the launch of Sable Station. We deny the Object and withdraw the Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Cerulean Bridge was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The event owner is missing."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "owner-adjunct-1",
+    "policy": {
+      "policy_id": "li24-001-policy",
+      "target_id": "v24-target-01",
+      "target_question": "Was Cerulean Bridge launched?",
+      "entity": {
+        "canonical_id": "v24-target-01",
+        "canonical_name": "Cerulean Bridge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li24-001-evidence",
+      "source_id": "li24-001-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Object: the claim that the Cerulean Bridge table header has a blue background"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the launch of Sable Station. We deny the Object and withdraw the Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Cerulean Bridge was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Separately, the event owner is missing."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "owner-adjunct-2",
+    "policy": {
+      "policy_id": "li24-001-policy",
+      "target_id": "v24-target-01",
+      "target_question": "Was Cerulean Bridge launched?",
+      "entity": {
+        "canonical_id": "v24-target-01",
+        "canonical_name": "Cerulean Bridge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li24-001-evidence",
+      "source_id": "li24-001-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Object: the claim that the Cerulean Bridge table header has a blue background"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the launch of Sable Station. We deny the Object and withdraw the Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Cerulean Bridge was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The release owner remains unknown."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "owner-adjunct-3",
+    "policy": {
+      "policy_id": "li24-001-policy",
+      "target_id": "v24-target-01",
+      "target_question": "Was Cerulean Bridge launched?",
+      "entity": {
+        "canonical_id": "v24-target-01",
+        "canonical_name": "Cerulean Bridge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li24-001-evidence",
+      "source_id": "li24-001-synthetic-source",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Object: the claim that the Cerulean Bridge table header has a blue background"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the launch of Sable Station. We deny the Object and withdraw the Item."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Cerulean Bridge was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The event owner is not specified."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  }
+]

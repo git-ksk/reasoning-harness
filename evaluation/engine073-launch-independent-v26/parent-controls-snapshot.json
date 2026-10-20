@@ -1,0 +1,24 @@
+{
+  "schema": "v26-parent-reported-source-controls-v1",
+  "source_sha": "9082365ffecfafaa9ba0ac65ce56368ac77d4228",
+  "scope": "Tested #520 source scope only, not new generalization or whole project acceptance.",
+  "basis": "Parent task and explicit followup confirm1340/1340, original14/14, history597 whole byte equality and known critical defects[]. Receipt metadata read for file inventory;36 output/input bodies hash-only.",
+  "opaque_reference_sha256": "d8426d4fc9e83c3db65e4128c63ac8b93f1a1ede38f3f08c72c8ca4f1e7ebb93",
+  "independently_rerun": false,
+  "reported_controls": {
+    "known_regressions_total": 1340,
+    "known_regressions_passed": 1340,
+    "original_audit_total": 14,
+    "original_audit_passed": 14,
+    "historical_byte_equivalent": true,
+    "known_unfixed_critical_defects": []
+  },
+  "pending_prerequisites": {
+    "full_workspace_provider_validation": "Completed parent-reported:8 commands exit0, workspace1594PASS/0FAIL/8existingignore. Evidence commit1d7019a55d2efd5a1ac3e6b6a49eced71755468a. Not independently rerun; authoring still awaits M0 review and explicit go.",
+    "new_authorship": "not authorized until M0 review and explicit next notice",
+    "M1_first_observation": "not started",
+    "real24_CLI_release": "unproven separate gates",
+    "Groq": "STOPPED; no live calls"
+  },
+  "future_provenance_flags": "Not pre-asserted. Derive from actual future M0/M1/author/first hashes/markers only."
+}

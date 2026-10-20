@@ -1,0 +1,24 @@
+{
+  "identity": "engine073-launch-independent-v18",
+  "stage": "PRE_FREEZE_SCOPE_REVIEW",
+  "outcome": "PASS",
+  "reviewed_utc": "2026-10-16T16:38:31.721925+00:00",
+  "reviewer": "same independent author; no second human/model review",
+  "semantic_observations": 0,
+  "all60_scope_labels_rationales_reviewed_before_output": true,
+  "positive_scope": "Every adverse object fully identifies a physical/document property or a unique foreign event, including literal words nested in an expressly font-only Object, separate quotation/reply signals and finite role combinations.",
+  "negative_scope": "Every negative independently owns target/global/existence denial or leaves launch owner absent/mixed/conflicting; known property/foreign scope cannot fill an unrelated event.",
+  "literal_word_decision": "li18-001 is positive: the mentioned literal denial words are the object of a complete font-property assertion, which alone is denied. li18-002 actually denies the target event. This decision is fixed before any output.",
+  "actual_context_gap": [
+    "li18-030",
+    "li18-054"
+  ],
+  "canonical_full_clip_positive": "li18-047",
+  "pure_raw_risk_joint_negative": false,
+  "no_general_graph_or_truth_inference": true,
+  "new_cases_after_candidate_freeze": true,
+  "old_inputs_or_v17_draft_reused": false,
+  "prior_sets_known_seen": true,
+  "author_case_sha256": "ded25aa488d01ba785cc09e85c4751210b9088f9960e6936b92b9f7a289d36c4",
+  "post_observation_scope_relabel": false
+}

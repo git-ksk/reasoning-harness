@@ -1,0 +1,17 @@
+{
+  "M0_receipt_sha256": "4023eb552ee964e0e99550a61a9f4c2d2800d2d994b7e42c439cf3cf7669d4d2",
+  "author_id": "/root/engine07_realworld_independent",
+  "author_role": "independent_agent",
+  "accuracy_cases_authored_before_M0": 0,
+  "authorship_started_unix_seconds": 1792409789,
+  "documents_fully_reviewed": 12,
+  "authored_questions": 24,
+  "gold_track_records": 48,
+  "model_or_Engine_accuracy_observations_before_freeze": 0,
+  "provider_model_Oracle_calls": 0,
+  "previous_cohort_or_parent_case_bodies_read_for_this_authorship": false,
+  "normalization": "utf8-plain-whitespace-v1",
+  "limits": "12 documents/6 publisher repository origins reused across24 questions, not24 independent documents. Quotes/commands are genuine unmodified source data. Conditional and temporal qualifiers preserved. Curated facts are controlled extractions, not raw model extraction or human truth.",
+  "source_context_review_completed_unix_seconds": 1792410824,
+  "pre_freeze_scope_cleanup": "Neutral per-document context replaces target-specific absence/equivalence hints; group witness mapping clarified; an unasked extra prerequisite requirement removed while preserving all24 questions, labels, answerability and families. All original bytes/static checks retained outside corpus; Engine/model/actual scorer0."
+}

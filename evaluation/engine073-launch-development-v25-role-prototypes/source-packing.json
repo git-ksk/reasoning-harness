@@ -1,0 +1,56 @@
+{
+  "diagnostic-current27/base-source.rs.gz": {
+    "packed_sha256": "cd8a870cffbd204787d519c42987bb60d673c5e170b91541d0080d401e9aeaf9",
+    "unpacked_source_sha256": "578449eec70207828e629e27af032e27cf618ee9ea5dfddc0e4dde9ee2c1d4bc",
+    "unpacked_bytes": 823079,
+    "lossless_gzip": true
+  },
+  "diagnostic-current28/base-source.rs.gz": {
+    "packed_sha256": "0aef4f8089726ac0039160e18a551e26fdfaac0a20a1c632619b2e887773a471",
+    "unpacked_source_sha256": "5264d210fb25f1c6f6c3c2eec3e50ff42379947f99bd64242ae761e019bd4711",
+    "unpacked_bytes": 827960,
+    "lossless_gzip": true
+  },
+  "guard-syntax-not-built/source.rs.gz": {
+    "packed_sha256": "f9f2b74dc53a0f89024d3f04bec1234866f16b9af39f1d975a90e858f06f3d79",
+    "unpacked_source_sha256": "c1af88cb7914d5e177c94a9d7aeb788caf5c1ed40e7e5c6409c6a46fccd1cae0",
+    "unpacked_bytes": 814989,
+    "lossless_gzip": true
+  },
+  "roles01/source.rs.gz": {
+    "packed_sha256": "643f175884b1f939a85056d9b0335322cf1aad1417004f681b5ffc1a10f3753f",
+    "unpacked_source_sha256": "28b6e9b692f0d9a2767c5fdfb314010447b09003dc362536deddc93c9d76c748",
+    "unpacked_bytes": 814965,
+    "lossless_gzip": true
+  },
+  "roles02/source.rs.gz": {
+    "packed_sha256": "5e742ebb79865c56ef979effe85234b5cedffbd06aa6b75eaf5faf7017b74542",
+    "unpacked_source_sha256": "4c4b47abdddd035d070d375ad086fb1b482737528151148c778525120c40ff67",
+    "unpacked_bytes": 814984,
+    "lossless_gzip": true
+  },
+  "roles03/source.rs.gz": {
+    "packed_sha256": "d4971f54161d0c15f4e9bd84f27872dbf122347c5feffa898e99c2c496d09dca",
+    "unpacked_source_sha256": "6a76616d852f2419a61cd3969c3d2d61e7514c99cba7b359ba317f84967b5ae9",
+    "unpacked_bytes": 816655,
+    "lossless_gzip": true
+  },
+  "roles04/source.rs.gz": {
+    "packed_sha256": "cea2e5321eb008e26cb6faa02ad20eb6d91200660c5b987b265afd9f3c7236a0",
+    "unpacked_source_sha256": "ee9f1877566bb94efcf45c858b1300b7fff58fd74f2b3b10d67b710ce1f95320",
+    "unpacked_bytes": 821495,
+    "lossless_gzip": true
+  },
+  "superseded-root-28cd088/source.rs.gz": {
+    "packed_sha256": "0aef4f8089726ac0039160e18a551e26fdfaac0a20a1c632619b2e887773a471",
+    "unpacked_source_sha256": "5264d210fb25f1c6f6c3c2eec3e50ff42379947f99bd64242ae761e019bd4711",
+    "unpacked_bytes": 827960,
+    "lossless_gzip": true
+  },
+  "superseded-root-876d48a/source.rs.gz": {
+    "packed_sha256": "cd8a870cffbd204787d519c42987bb60d673c5e170b91541d0080d401e9aeaf9",
+    "unpacked_source_sha256": "578449eec70207828e629e27af032e27cf618ee9ea5dfddc0e4dde9ee2c1d4bc",
+    "unpacked_bytes": 823079,
+    "lossless_gzip": true
+  }
+}

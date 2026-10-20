@@ -1,0 +1,13 @@
+{
+  "stage": "AST_ONLY_BEFORE_INPUT_GENERATION",
+  "utc": "2026-10-17T08:09:32.682249+00:00",
+  "original_static_sha256": "462a760378899e7126ac436516af7c2f900ed62eb29483663d7e72212d22584d",
+  "author_sha256": "929ff7cc018480fa27ad4aee3efab64930d149dc1b8e965a7a72092a402c8ab4",
+  "AST_valid": true,
+  "issue": "Inherited author-style assertion required capitalized Canonical product name, although the new explicit heading says Complete canonical product name. Public canonical entity schema/full name is identical; this is a static formatting overconstraint.",
+  "full_input_static_runs": 0,
+  "Engine_invocations": 0,
+  "scorer_invocations": 0,
+  "inputs_generated": false,
+  "author_or_polarity_changes": 0
+}

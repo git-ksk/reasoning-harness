@@ -1,0 +1,14 @@
+{
+  "files": {
+    "README.md": "dd38a2efaaf126b31b9409ea91a482212c899f7529dde3169a75b136f8044a75",
+    "base-source.rs.gz": "3212f9133f40527accab05489bc01d1acda958fd5316baf6d4f6bec9feccb835",
+    "identity.json": "0dd27375f072b2741ea77996fe4ade68ea3ea65ad90ce5e5cb1063fdae1a9ac3",
+    "instrument.py": "aa7b58e0b97a0815b1c1c5cdb5c69f69c66e3081751666d579e35dd8e03bc7f0",
+    "instrumentation.patch": "414503cab83ce9878d771b7416d341154079035bbbbe7858dfdf06978e048332",
+    "instrumented-source.rs.gz": "407c4dfb9e717b82fafcb0854a5438982a14894df6fe26e53313355a070d4acc",
+    "setup-not-applied/attempt01-not-applied.json": "8c8d967b2f91adfc240e497619db0b5293b27e865ca957111dc9c19681cb6a0b",
+    "setup-not-applied/attempt01.py": "493857643035b66c0b6ee1397cd550dd0df28dbf441a703745853854ca488c78",
+    "test.log": "6ee386718bed094b50c64a78af5a24bfa0f029707836e3bf3f978eaa3d1bcd8f",
+    "trace.json": "70ddb1980e33b738ed586a082be6a30d44352d92cc65177d69d6eaa44a8046a5"
+  }
+}

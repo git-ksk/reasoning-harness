@@ -1,0 +1,15 @@
+{
+  "source_sha": "c20c5136d59cb3a0bfdac4fb8ca9dade2d93e076",
+  "source_file_sha256": "6b5aa28035bf23e6ad5eded264b323109786963354f3769a74fffd41ebe54a31",
+  "cases": 21,
+  "first_blockers": {
+    "typed_reference_not_excluded": 17,
+    "target_adverse_clause": 2,
+    "unresolved_adverse_scope": 1
+  },
+  "effective_risk_only": {
+    "li22-045": "context_gap with requested_relation; no governing return"
+  },
+  "scope": "separate source copy/count-only test on consumed cases; not fresh independent evaluation",
+  "provider_model_scorer_calls": 0
+}

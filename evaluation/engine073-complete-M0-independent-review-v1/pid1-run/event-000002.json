@@ -1,0 +1,33 @@
+{
+  "event": "reserved_inflight",
+  "state": {
+    "charged_reservations": 10,
+    "current_reserve": 10,
+    "groq_state_sha256": null,
+    "guard": {
+      "events": [
+        {
+          "decision": {
+            "allowed": true,
+            "reason": null
+          },
+          "event": "admission",
+          "started_invocations": 1
+        }
+      ],
+      "inflight": true,
+      "latch": null,
+      "observed_tokens": 0,
+      "started_invocations": 1,
+      "token_budget": 20
+    },
+    "known_provider_attempts": 0,
+    "known_total_tokens": 0,
+    "model": "fixture-only",
+    "provider": "mistral",
+    "rows": [],
+    "schema": "engine07-durable-arm-v1",
+    "sequence": 2,
+    "unknown_usage_rows": 0
+  }
+}

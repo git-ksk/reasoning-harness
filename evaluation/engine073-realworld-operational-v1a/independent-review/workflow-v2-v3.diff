@@ -1,0 +1,16 @@
+--- reviewed-v2
++++ v3
+@@ -104,6 +104,13 @@
+       - name: Stop any remaining contained processes
+         if: always()
+         run: docker rm -f engine073-v1a-first-${{ matrix.provider }}-${{ github.run_id }} >/dev/null 2>&1 || true
++      - name: Preserve private captured bytes for the host artifact uploader
++        if: always()
++        run: |
++          set -euo pipefail
++          if test -d /tmp/results; then
++            sudo chown -R "$(id -u):$(id -g)" /tmp/results
++          fi
+       - uses: actions/upload-artifact@v7
+         if: always()
+         with:

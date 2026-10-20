@@ -1,0 +1,10 @@
+{
+  "identity": "engine073-launch-independent-v27",
+  "recorded_utc": "2026-10-18T15:22:55.457650+00:00",
+  "phase": "post-first closure script creation only",
+  "failed_shell_exitcode": 1,
+  "stderr_excerpt": "File \"<stdin>\", line 77\nSyntaxError: leading zeros in decimal integer literals are not permitted; use an 0o prefix for octal integers",
+  "cause": "An outer raw triple-single-quoted script string was terminated by an inner README triple-single-quoted string; the wrapper failed to parse before writing any file.",
+  "effects": "No closure file, Engine call, scorer call or helper call was made by the failed preparation command; original first bytes remain intact.",
+  "repair": "Created closure-save.py with a single literal shell heredoc under noclobber; closure persistence only, not semantic retry."
+}

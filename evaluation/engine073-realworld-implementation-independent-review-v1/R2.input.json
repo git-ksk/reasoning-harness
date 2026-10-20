@@ -1,0 +1,120 @@
+{
+  "gold": {
+    "case_id": "engineering-only",
+    "sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "family": "structural-only",
+    "answerability": "full",
+    "label": "positive",
+    "groups": [
+      {
+        "id": "value"
+      }
+    ],
+    "unresolved_facets": [],
+    "required_disclosures": []
+  },
+  "observation": {
+    "row_id": "opaque-row",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "operation": "complete",
+    "display_artifacts": [
+      {
+        "id": "answer",
+        "kind": "final_answer",
+        "text": "Value is four."
+      }
+    ],
+    "acquired_source_ids": [
+      "s",
+      "rejected"
+    ],
+    "admitted_source_ids": [
+      "s"
+    ],
+    "terminal_status": "grounded_answer",
+    "display_citations": [
+      {
+        "id": "c",
+        "artifact_id": "answer",
+        "start_byte": 0,
+        "end_byte": 14,
+        "source_id": "rejected",
+        "source_version": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "url": "https://example.invalid/rejected",
+        "literal_quote": "Value is four."
+      }
+    ]
+  },
+  "review": {
+    "row_id": "opaque-row",
+    "gold_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "reviewer": {
+      "id": "engineering-reviewer",
+      "role": "agent"
+    },
+    "complete": true,
+    "full_source_context_reviewed": true,
+    "claims": [
+      {
+        "id": "occurrence-1",
+        "proposition_id": "value-four",
+        "grounding": "grounded",
+        "satisfied_groups": [
+          "value"
+        ],
+        "rationale": "Constructed annotation only.",
+        "source_anchors": [
+          {
+            "source_id": "s",
+            "source_version": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "support_explanation": "Structural fixture only."
+          }
+        ]
+      }
+    ],
+    "segments": [
+      {
+        "id": "span-1",
+        "artifact_id": "answer",
+        "start_byte": 0,
+        "end_byte": 14,
+        "text": "Value is four.",
+        "kind": "fact",
+        "claim_id": "occurrence-1",
+        "proposition_id": "value-four"
+      }
+    ],
+    "citation_edges": [
+      {
+        "id": "occurrence-1@c",
+        "correct": true,
+        "literal_exact": true,
+        "rationale": "Exact fixture bytes."
+      }
+    ],
+    "all_unresolved_facets_handled": true,
+    "handled_unresolved_facets": [],
+    "all_required_disclosures_present": true,
+    "present_disclosures": [],
+    "safety_audit_complete": true,
+    "hard_violations": [],
+    "readable_and_actionable": true,
+    "attempted_accept": true,
+    "explicit_withhold": false,
+    "observation_sha256": "787779173f9c2d8a172ced96995f7815e363797ec6d087d908ce307c06bf7cfb"
+  },
+  "sources": {
+    "s": {
+      "source_version": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "url": "https://example.invalid/engineering-only",
+      "quote": "Value is four."
+    },
+    "rejected": {
+      "source_version": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "url": "https://example.invalid/rejected",
+      "quote": "Value is four."
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-18T15:04:07.053313+00:00",
+  "stage": "CODE_AND_BINDING_ONLY",
+  "reverse_identity_source_count_adaptation_equals_v26_bytes": {
+    "evaluator_contract.py": true,
+    "score.py": true,
+    "test_evaluator.py": true,
+    "static_preflight.py": true,
+    "freeze_corpus.py": true,
+    "execute_first.py": true,
+    "selftest.py": true,
+    "verify_preparation.py": true
+  },
+  "behavior_changes": 0,
+  "pure_fixture_tests": 59,
+  "actual_Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "authored_cases": 0,
+  "authoring_start_created": false
+}

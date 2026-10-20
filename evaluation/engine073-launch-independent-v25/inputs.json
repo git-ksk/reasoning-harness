@@ -1,0 +1,2622 @@
+[
+  {
+    "id": "li25-001",
+    "policy": {
+      "policy_id": "li25-001-policy",
+      "target_id": "li25-target-01",
+      "target_question": "Was Vesper Harbor Relay launched?",
+      "entity": {
+        "canonical_id": "li25-target-01",
+        "canonical_name": "Vesper Harbor Relay",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-001-evidence",
+      "source_id": "li25-001-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Vesper Harbor Relay was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the green color of the tamper seal on Vesper Harbor Relay. We deny the claim about this Object; the disputed matter is the seal's color."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-002",
+    "policy": {
+      "policy_id": "li25-002-policy",
+      "target_id": "li25-target-01",
+      "target_question": "Was Vesper Harbor Relay launched?",
+      "entity": {
+        "canonical_id": "li25-target-01",
+        "canonical_name": "Vesper Harbor Relay",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-002-evidence",
+      "source_id": "li25-002-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Vesper Harbor Relay was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the green color of the tamper seal on Vesper Harbor Relay. We deny the claim about this Object, and we also deny that Vesper Harbor Relay was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-003",
+    "policy": {
+      "policy_id": "li25-003-policy",
+      "target_id": "li25-target-02",
+      "target_question": "Was Juniper Map Terminal launched?",
+      "entity": {
+        "canonical_id": "li25-target-02",
+        "canonical_name": "Juniper Map Terminal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-003-evidence",
+      "source_id": "li25-003-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Juniper Map Terminal was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "Erratum: booklet binding"
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Subject is the spiral binding of the Juniper Map Terminal booklet. We withdraw the statement about that Subject. This erratum concerns the booklet binding."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-004",
+    "policy": {
+      "policy_id": "li25-004-policy",
+      "target_id": "li25-target-02",
+      "target_question": "Was Juniper Map Terminal launched?",
+      "entity": {
+        "canonical_id": "li25-target-02",
+        "canonical_name": "Juniper Map Terminal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-004-evidence",
+      "source_id": "li25-004-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Juniper Map Terminal was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "Entire notice withdrawn"
+        },
+        {
+          "kind": "excerpt",
+          "text": "The binding statement in the Juniper Map Terminal booklet is withdrawn. We retract this entire source, including its statement that Juniper Map Terminal was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-005",
+    "policy": {
+      "policy_id": "li25-005-policy",
+      "target_id": "li25-target-03",
+      "target_question": "Was Kestrel Shelf Hub launched?",
+      "entity": {
+        "canonical_id": "li25-target-03",
+        "canonical_name": "Kestrel Shelf Hub",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-005-evidence",
+      "source_id": "li25-005-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Kestrel Shelf Hub was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Item is the claim that Alder Dock Sensor was launched. We retract that Item. The named event owner is Alder Dock Sensor."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-006",
+    "policy": {
+      "policy_id": "li25-006-policy",
+      "target_id": "li25-target-03",
+      "target_question": "Was Kestrel Shelf Hub launched?",
+      "entity": {
+        "canonical_id": "li25-target-03",
+        "canonical_name": "Kestrel Shelf Hub",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-006-evidence",
+      "source_id": "li25-006-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Kestrel Shelf Hub was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Item is the claim that Alder Dock Sensor was launched. We retract that Item. We also withdraw another launch claim; that additional claim has no identified product owner."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-007",
+    "policy": {
+      "policy_id": "li25-007-policy",
+      "target_id": "li25-target-04",
+      "target_question": "Was Morrow Tide Reader launched?",
+      "entity": {
+        "canonical_id": "li25-target-04",
+        "canonical_name": "Morrow Tide Reader",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-007-evidence",
+      "source_id": "li25-007-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Morrow Tide Reader was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the copper finish on the Morrow Tide Reader latch. The Subject is the number of printed pages in its booklet. We deny this Object and withdraw that Subject; both corrections concern those stated properties."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-008",
+    "policy": {
+      "policy_id": "li25-008-policy",
+      "target_id": "li25-target-04",
+      "target_question": "Was Morrow Tide Reader launched?",
+      "entity": {
+        "canonical_id": "li25-target-04",
+        "canonical_name": "Morrow Tide Reader",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-008-evidence",
+      "source_id": "li25-008-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Morrow Tide Reader was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the copper finish on the Morrow Tide Reader latch. The Subject is the number of printed pages in its booklet. We deny this Object and withdraw that Subject. Morrow Tide Reader does not exist; the product itself is fictional."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-009",
+    "policy": {
+      "policy_id": "li25-009-policy",
+      "target_id": "li25-target-05",
+      "target_question": "Was Peregrine Window Kit launched?",
+      "entity": {
+        "canonical_id": "li25-target-05",
+        "canonical_name": "Peregrine Window Kit",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-009-evidence",
+      "source_id": "li25-009-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Peregrine Window Kit was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Quoted statement: 'Cobalt Moor Beacon was launched.' We deny that quoted statement. Its explicit subject is Cobalt Moor Beacon."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-010",
+    "policy": {
+      "policy_id": "li25-010-policy",
+      "target_id": "li25-target-05",
+      "target_question": "Was Peregrine Window Kit launched?",
+      "entity": {
+        "canonical_id": "li25-target-05",
+        "canonical_name": "Peregrine Window Kit",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-010-evidence",
+      "source_id": "li25-010-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Peregrine Window Kit was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Quoted statement: 'Peregrine Window Kit was launched.' We deny that quoted statement. Its explicit subject is Peregrine Window Kit."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-011",
+    "policy": {
+      "policy_id": "li25-011-policy",
+      "target_id": "li25-target-06",
+      "target_question": "Was Saffron Grove Station launched?",
+      "entity": {
+        "canonical_id": "li25-target-06",
+        "canonical_name": "Saffron Grove Station",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-011-evidence",
+      "source_id": "li25-011-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Saffron Grove Station was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is a launch claim. Object owner: Silver Delta Meter. We withdraw the claim represented by this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-012",
+    "policy": {
+      "policy_id": "li25-012-policy",
+      "target_id": "li25-target-06",
+      "target_question": "Was Saffron Grove Station launched?",
+      "entity": {
+        "canonical_id": "li25-target-06",
+        "canonical_name": "Saffron Grove Station",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-012-evidence",
+      "source_id": "li25-012-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Saffron Grove Station was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the claim that Saffron Grove Station was launched. Object owner: Silver Delta Meter. We withdraw the claim represented by this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-013",
+    "policy": {
+      "policy_id": "li25-013-policy",
+      "target_id": "li25-target-07",
+      "target_question": "Was Tamarind Field Console launched?",
+      "entity": {
+        "canonical_id": "li25-target-07",
+        "canonical_name": "Tamarind Field Console",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-013-evidence",
+      "source_id": "li25-013-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Tamarind Field Console was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "Subject: width of the printed border on the Tamarind Field Console setup card"
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract the statement about this Subject. The correction is to the printed border width."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-014",
+    "policy": {
+      "policy_id": "li25-014-policy",
+      "target_id": "li25-target-07",
+      "target_question": "Was Tamarind Field Console launched?",
+      "entity": {
+        "canonical_id": "li25-target-07",
+        "canonical_name": "Tamarind Field Console",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-014-evidence",
+      "source_id": "li25-014-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Tamarind Field Console was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "Subject: all claims in this source"
+        },
+        {
+          "kind": "excerpt",
+          "text": "We retract every claim in this source. The statement that Tamarind Field Console was launched is included."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-015",
+    "policy": {
+      "policy_id": "li25-015-policy",
+      "target_id": "li25-target-08",
+      "target_question": "Was Umber Crest Gateway launched?",
+      "entity": {
+        "canonical_id": "li25-target-08",
+        "canonical_name": "Umber Crest Gateway",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-015-evidence",
+      "source_id": "li25-015-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Umber Crest Gateway was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Item: launch of Birch Quay Display"
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the event claim represented by this Item. The product named in the Item is Birch Quay Display."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-016",
+    "policy": {
+      "policy_id": "li25-016-policy",
+      "target_id": "li25-target-08",
+      "target_question": "Was Umber Crest Gateway launched?",
+      "entity": {
+        "canonical_id": "li25-target-08",
+        "canonical_name": "Umber Crest Gateway",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-016-evidence",
+      "source_id": "li25-016-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Umber Crest Gateway was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Item: launch of Umber Crest Gateway"
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the event claim represented by this Item. The product named in the Item is Umber Crest Gateway."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-017",
+    "policy": {
+      "policy_id": "li25-017-policy",
+      "target_id": "li25-target-09",
+      "target_question": "Was Willow Vale Monitor launched?",
+      "entity": {
+        "canonical_id": "li25-target-09",
+        "canonical_name": "Willow Vale Monitor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-017-evidence",
+      "source_id": "li25-017-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Willow Vale Monitor was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the claim that Flint Orchard Switch was launched. The Item is the claim that Ivory Ridge Receiver was launched. We withdraw this Object and deny that Item."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-018",
+    "policy": {
+      "policy_id": "li25-018-policy",
+      "target_id": "li25-target-09",
+      "target_question": "Was Willow Vale Monitor launched?",
+      "entity": {
+        "canonical_id": "li25-target-09",
+        "canonical_name": "Willow Vale Monitor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-018-evidence",
+      "source_id": "li25-018-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Willow Vale Monitor was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the claim that Flint Orchard Switch was launched. The Item is the claim that Willow Vale Monitor was launched. We withdraw this Object and deny that Item."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-019",
+    "policy": {
+      "policy_id": "li25-019-policy",
+      "target_id": "li25-target-10",
+      "target_question": "Was Zephyr Marsh Bridge launched?",
+      "entity": {
+        "canonical_id": "li25-target-10",
+        "canonical_name": "Zephyr Marsh Bridge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-019-evidence",
+      "source_id": "li25-019-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Zephyr Marsh Bridge was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Subject is the frosted finish of the Zephyr Marsh Bridge handle. We retract that Subject (the handle-finish assertion is the correction's full scope)."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-020",
+    "policy": {
+      "policy_id": "li25-020-policy",
+      "target_id": "li25-target-10",
+      "target_question": "Was Zephyr Marsh Bridge launched?",
+      "entity": {
+        "canonical_id": "li25-target-10",
+        "canonical_name": "Zephyr Marsh Bridge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-020-evidence",
+      "source_id": "li25-020-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Zephyr Marsh Bridge was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Subject is the frosted finish of the Zephyr Marsh Bridge handle. We retract that Subject (and we deny that Zephyr Marsh Bridge was launched)."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-021",
+    "policy": {
+      "policy_id": "li25-021-policy",
+      "target_id": "li25-target-11",
+      "target_question": "Was Apricot Bay Module launched?",
+      "entity": {
+        "canonical_id": "li25-target-11",
+        "canonical_name": "Apricot Bay Module",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-021-evidence",
+      "source_id": "li25-021-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Apricot Bay Module was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the circular perforation pattern of the Apricot Bay Module insert. We deny this Object because the disputed assertion describes the insert's perforation pattern."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-022",
+    "policy": {
+      "policy_id": "li25-022-policy",
+      "target_id": "li25-target-11",
+      "target_question": "Was Apricot Bay Module launched?",
+      "entity": {
+        "canonical_id": "li25-target-11",
+        "canonical_name": "Apricot Bay Module",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-022-evidence",
+      "source_id": "li25-022-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Apricot Bay Module was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the circular perforation pattern of the Apricot Bay Module insert. We deny this Object because Apricot Bay Module was not launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-023",
+    "policy": {
+      "policy_id": "li25-023-policy",
+      "target_id": "li25-target-12",
+      "target_question": "Was Bracken Port Controller launched?",
+      "entity": {
+        "canonical_id": "li25-target-12",
+        "canonical_name": "Bracken Port Controller",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-023-evidence",
+      "source_id": "li25-023-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Bracken Port Controller was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Subject is the matte texture of the Bracken Port Controller envelope. We withdraw that Subject, although we also deny the separate claim that Coral Lantern Panel was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-024",
+    "policy": {
+      "policy_id": "li25-024-policy",
+      "target_id": "li25-target-12",
+      "target_question": "Was Bracken Port Controller launched?",
+      "entity": {
+        "canonical_id": "li25-target-12",
+        "canonical_name": "Bracken Port Controller",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-024-evidence",
+      "source_id": "li25-024-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Bracken Port Controller was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Subject is the matte texture of the Bracken Port Controller envelope. We withdraw that Subject, although we also deny a separate launch claim whose owner is unspecified."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-025",
+    "policy": {
+      "policy_id": "li25-025-policy",
+      "target_id": "li25-target-13",
+      "target_question": "Was Cedar Basin Relay launched?",
+      "entity": {
+        "canonical_id": "li25-target-13",
+        "canonical_name": "Cedar Basin Relay",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-025-evidence",
+      "source_id": "li25-025-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Cedar Basin Relay was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Item is the blue ink used on the Cedar Basin Relay card. We retract that Item while correcting the card's ink description."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-026",
+    "policy": {
+      "policy_id": "li25-026-policy",
+      "target_id": "li25-target-13",
+      "target_question": "Was Cedar Basin Relay launched?",
+      "entity": {
+        "canonical_id": "li25-target-13",
+        "canonical_name": "Cedar Basin Relay",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-026-evidence",
+      "source_id": "li25-026-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Cedar Basin Relay was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Item is the blue ink used on the Cedar Basin Relay card. We retract that Item while denying that Cedar Basin Relay was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-027",
+    "policy": {
+      "policy_id": "li25-027-policy",
+      "target_id": "li25-target-14",
+      "target_question": "Was Dahlia Stone Node launched?",
+      "entity": {
+        "canonical_id": "li25-target-14",
+        "canonical_name": "Dahlia Stone Node",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-027-evidence",
+      "source_id": "li25-027-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Dahlia Stone Node was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the thickness of the Dahlia Stone Node sleeve. We retract this Object before denying the separate claim that Ember Coast Adapter was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-028",
+    "policy": {
+      "policy_id": "li25-028-policy",
+      "target_id": "li25-target-14",
+      "target_question": "Was Dahlia Stone Node launched?",
+      "entity": {
+        "canonical_id": "li25-target-14",
+        "canonical_name": "Dahlia Stone Node",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-028-evidence",
+      "source_id": "li25-028-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Dahlia Stone Node was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the thickness of the Dahlia Stone Node sleeve. We retract this Object before denying the claim that Dahlia Stone Node was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-029",
+    "policy": {
+      "policy_id": "li25-029-policy",
+      "target_id": "li25-target-15",
+      "target_question": "Was Elm Pasture Receiver launched?",
+      "entity": {
+        "canonical_id": "li25-target-15",
+        "canonical_name": "Elm Pasture Receiver",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-029-evidence",
+      "source_id": "li25-029-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Elm Pasture Receiver was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Author statement: The Subject is the embossed triangle on the Elm Pasture Receiver case. Author reply: We withdraw the assertion about this Subject; it concerns the embossed triangle."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-030",
+    "policy": {
+      "policy_id": "li25-030-policy",
+      "target_id": "li25-target-15",
+      "target_question": "Was Elm Pasture Receiver launched?",
+      "entity": {
+        "canonical_id": "li25-target-15",
+        "canonical_name": "Elm Pasture Receiver",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-030-evidence",
+      "source_id": "li25-030-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Elm Pasture Receiver was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Author statement: The Subject is the embossed triangle on the Elm Pasture Receiver case. Author reply: We withdraw a launch claim mentioned in another reply. The product for that launch claim is not identified here."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-031",
+    "policy": {
+      "policy_id": "li25-031-policy",
+      "target_id": "li25-target-16",
+      "target_question": "Was Fir Water Terminal launched?",
+      "entity": {
+        "canonical_id": "li25-target-16",
+        "canonical_name": "Fir Water Terminal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-031-evidence",
+      "source_id": "li25-031-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Fir Water Terminal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the printed cover title 'Launch notice' on the Fir Water Terminal booklet. We deny this Object: the disputed assertion concerns what title was printed, not an event."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-032",
+    "policy": {
+      "policy_id": "li25-032-policy",
+      "target_id": "li25-target-16",
+      "target_question": "Was Fir Water Terminal launched?",
+      "entity": {
+        "canonical_id": "li25-target-16",
+        "canonical_name": "Fir Water Terminal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-032-evidence",
+      "source_id": "li25-032-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Fir Water Terminal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The printed cover title of the Fir Water Terminal booklet is disputed. We deny the truth of this whole source, including its separate factual launch sentence."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-033",
+    "policy": {
+      "policy_id": "li25-033-policy",
+      "target_id": "li25-target-17",
+      "target_question": "Was Garnet Cove Hub launched?",
+      "entity": {
+        "canonical_id": "li25-target-17",
+        "canonical_name": "Garnet Cove Hub",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-033-evidence",
+      "source_id": "li25-033-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Garnet Cove Hub was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Item is a launch claim.\nItem owner: Helix Meadow Clock.\nWe deny that Item."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-034",
+    "policy": {
+      "policy_id": "li25-034-policy",
+      "target_id": "li25-target-17",
+      "target_question": "Was Garnet Cove Hub launched?",
+      "entity": {
+        "canonical_id": "li25-target-17",
+        "canonical_name": "Garnet Cove Hub",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-034-evidence",
+      "source_id": "li25-034-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Garnet Cove Hub was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Item is a launch claim.\nItem owner: not provided.\nWe deny that Item."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-035",
+    "policy": {
+      "policy_id": "li25-035-policy",
+      "target_id": "li25-target-18",
+      "target_question": "Was Hazel Inlet Monitor launched?",
+      "entity": {
+        "canonical_id": "li25-target-18",
+        "canonical_name": "Hazel Inlet Monitor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-035-evidence",
+      "source_id": "li25-035-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Hazel Inlet Monitor was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the paper weight of the Hazel Inlet Monitor quick guide. We retract this Object. We also deny the claim about that Object's paper weight."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-036",
+    "policy": {
+      "policy_id": "li25-036-policy",
+      "target_id": "li25-target-18",
+      "target_question": "Was Hazel Inlet Monitor launched?",
+      "entity": {
+        "canonical_id": "li25-target-18",
+        "canonical_name": "Hazel Inlet Monitor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-036-evidence",
+      "source_id": "li25-036-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Hazel Inlet Monitor was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the paper weight of the Hazel Inlet Monitor quick guide. We retract this Object. We also deny that other launch claim; there is no declaration of its product owner in this source."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-037",
+    "policy": {
+      "policy_id": "li25-037-policy",
+      "target_id": "li25-target-19",
+      "target_question": "Was Indigo Crossing Sensor launched?",
+      "entity": {
+        "canonical_id": "li25-target-19",
+        "canonical_name": "Indigo Crossing Sensor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-037-evidence",
+      "source_id": "li25-037-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Indigo Crossing Sensor was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the Subject, the dotted line printed around the Indigo Crossing Sensor diagram, and withdraw the separate claim that Jasper Reach Beacon was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-038",
+    "policy": {
+      "policy_id": "li25-038-policy",
+      "target_id": "li25-target-19",
+      "target_question": "Was Indigo Crossing Sensor launched?",
+      "entity": {
+        "canonical_id": "li25-target-19",
+        "canonical_name": "Indigo Crossing Sensor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-038-evidence",
+      "source_id": "li25-038-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Indigo Crossing Sensor was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the Subject, the dotted line printed around the Indigo Crossing Sensor diagram, and withdraw the separate claim that Indigo Crossing Sensor was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-039",
+    "policy": {
+      "policy_id": "li25-039-policy",
+      "target_id": "li25-target-20",
+      "target_question": "Was Jade Hollow Dock launched?",
+      "entity": {
+        "canonical_id": "li25-target-20",
+        "canonical_name": "Jade Hollow Dock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-039-evidence",
+      "source_id": "li25-039-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Jade Hollow Dock was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "Object: page numbering of the Jade Hollow Dock installation booklet"
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the statement about this Object; the page-numbering claim is disputed."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-040",
+    "policy": {
+      "policy_id": "li25-040-policy",
+      "target_id": "li25-target-20",
+      "target_question": "Was Jade Hollow Dock launched?",
+      "entity": {
+        "canonical_id": "li25-target-20",
+        "canonical_name": "Jade Hollow Dock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-040-evidence",
+      "source_id": "li25-040-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Jade Hollow Dock was launched."
+        },
+        {
+          "kind": "heading",
+          "text": "Object: launch claim in an omitted notice"
+        },
+        {
+          "kind": "excerpt",
+          "text": "We withdraw the statement about this Object. The omitted notice and its named product are unavailable; this source supplies no launch owner for the Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-041",
+    "policy": {
+      "policy_id": "li25-041-policy",
+      "target_id": "li25-target-21",
+      "target_question": "Was Larch Harbor Switch launched?",
+      "entity": {
+        "canonical_id": "li25-target-21",
+        "canonical_name": "Larch Harbor Switch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-041-evidence",
+      "source_id": "li25-041-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Larch Harbor Switch was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Item is the knurled surface of the Larch Harbor Switch activation collar. We deny the claim about that Item. The correction is limited to the collar's surface texture."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-042",
+    "policy": {
+      "policy_id": "li25-042-policy",
+      "target_id": "li25-target-21",
+      "target_question": "Was Larch Harbor Switch launched?",
+      "entity": {
+        "canonical_id": "li25-target-21",
+        "canonical_name": "Larch Harbor Switch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-042-evidence",
+      "source_id": "li25-042-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Larch Harbor Switch was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Item is the knurled surface of the Larch Harbor Switch activation collar. We deny the claim about that Item. We also retract the claim that Larch Harbor Switch was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-043",
+    "policy": {
+      "policy_id": "li25-043-policy",
+      "target_id": "li25-target-22",
+      "target_question": "Was Magnolia Quay Reader launched?",
+      "entity": {
+        "canonical_id": "li25-target-22",
+        "canonical_name": "Magnolia Quay Reader",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-043-evidence",
+      "source_id": "li25-043-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Magnolia Quay Reader was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Subject is the opening-pattern illustration printed on the Magnolia Quay Reader package. We retract that Subject. It is the package's printed illustration that is being corrected."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-044",
+    "policy": {
+      "policy_id": "li25-044-policy",
+      "target_id": "li25-target-22",
+      "target_question": "Was Magnolia Quay Reader launched?",
+      "entity": {
+        "canonical_id": "li25-target-22",
+        "canonical_name": "Magnolia Quay Reader",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-044-evidence",
+      "source_id": "li25-044-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Magnolia Quay Reader was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Subject is the opening-pattern illustration printed on the Magnolia Quay Reader package. We retract that Subject. Magnolia Quay Reader itself is an invented product and has never existed."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-045",
+    "policy": {
+      "policy_id": "li25-045-policy",
+      "target_id": "li25-target-23",
+      "target_question": "Was Nettle Reef Panel launched?",
+      "entity": {
+        "canonical_id": "li25-target-23",
+        "canonical_name": "Nettle Reef Panel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-045-evidence",
+      "source_id": "li25-045-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Nettle Reef Panel was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the quoted launch claim: 'The product was launched.' Immediate author reply: Object owner is Opal Ferry Receiver. We retract this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-046",
+    "policy": {
+      "policy_id": "li25-046-policy",
+      "target_id": "li25-target-23",
+      "target_question": "Was Nettle Reef Panel launched?",
+      "entity": {
+        "canonical_id": "li25-target-23",
+        "canonical_name": "Nettle Reef Panel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-046-evidence",
+      "source_id": "li25-046-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Nettle Reef Panel was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the quoted claim: 'Nettle Reef Panel was launched.' Immediate author reply: Object owner is Opal Ferry Receiver. We retract this Object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-047",
+    "policy": {
+      "policy_id": "li25-047-policy",
+      "target_id": "li25-target-24",
+      "target_question": "Was Ochre Ridge Console launched?",
+      "entity": {
+        "canonical_id": "li25-target-24",
+        "canonical_name": "Ochre Ridge Console",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-047-evidence",
+      "source_id": "li25-047-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ochre Ridge Console was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the claim that Pearl Grove Router was launched. No actual launch occurred for Pearl Grove Router. This correction's product owner is Pearl Grove Router."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-048",
+    "policy": {
+      "policy_id": "li25-048-policy",
+      "target_id": "li25-target-24",
+      "target_question": "Was Ochre Ridge Console launched?",
+      "entity": {
+        "canonical_id": "li25-target-24",
+        "canonical_name": "Ochre Ridge Console",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-048-evidence",
+      "source_id": "li25-048-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ochre Ridge Console was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the claim that Ochre Ridge Console was launched. No actual launch occurred for Ochre Ridge Console. This correction's product owner is Ochre Ridge Console."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-049",
+    "policy": {
+      "policy_id": "li25-049-policy",
+      "target_id": "li25-target-25",
+      "target_question": "Was Pine Lantern Gateway launched?",
+      "entity": {
+        "canonical_id": "li25-target-25",
+        "canonical_name": "Pine Lantern Gateway",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-049-evidence",
+      "source_id": "li25-049-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Pine Lantern Gateway was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the stitched edge of the Pine Lantern Gateway pouch. The Item is the claim that Quartz Field Reader was launched. We withdraw this Object and deny that Item; the Object correction concerns the stitched edge, and the Item owner is Quartz Field Reader."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-050",
+    "policy": {
+      "policy_id": "li25-050-policy",
+      "target_id": "li25-target-25",
+      "target_question": "Was Pine Lantern Gateway launched?",
+      "entity": {
+        "canonical_id": "li25-target-25",
+        "canonical_name": "Pine Lantern Gateway",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-050-evidence",
+      "source_id": "li25-050-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Pine Lantern Gateway was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Object is the stitched edge of the Pine Lantern Gateway pouch. The Item is the claim that Quartz Field Reader was launched. We withdraw this Object and deny that Item. We further withdraw every assertion in this source, including the Pine Lantern Gateway launch assertion."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-051",
+    "policy": {
+      "policy_id": "li25-051-policy",
+      "target_id": "li25-target-26",
+      "target_question": "Was Quince Brook Meter launched?",
+      "entity": {
+        "canonical_id": "li25-target-26",
+        "canonical_name": "Quince Brook Meter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-051-evidence",
+      "source_id": "li25-051-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Quince Brook Meter was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the Object. Denial target: the raised lettering on the Quince Brook Meter backplate. The dispute is about that physical lettering."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-052",
+    "policy": {
+      "policy_id": "li25-052-policy",
+      "target_id": "li25-target-26",
+      "target_question": "Was Quince Brook Meter launched?",
+      "entity": {
+        "canonical_id": "li25-target-26",
+        "canonical_name": "Quince Brook Meter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-052-evidence",
+      "source_id": "li25-052-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Quince Brook Meter was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "We deny the Object. Denial target: the claim that Quince Brook Meter was launched. The dispute is about the launch of Quince Brook Meter."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-053",
+    "policy": {
+      "policy_id": "li25-053-policy",
+      "target_id": "li25-target-27",
+      "target_question": "Was Rowan Estuary Clip launched?",
+      "entity": {
+        "canonical_id": "li25-target-27",
+        "canonical_name": "Rowan Estuary Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-053-evidence",
+      "source_id": "li25-053-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Rowan Estuary Clip was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The full canonical product name here is Rowan Estuary Clip. The Subject is the diagonal grain on the Rowan Estuary Clip wooden insert. We withdraw the statement about this Subject; the property is the insert's grain."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-054",
+    "policy": {
+      "policy_id": "li25-054-policy",
+      "target_id": "li25-target-27",
+      "target_question": "Was Rowan Estuary Clip launched?",
+      "entity": {
+        "canonical_id": "li25-target-27",
+        "canonical_name": "Rowan Estuary Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-054-evidence",
+      "source_id": "li25-054-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Rowan Estuary Clip was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The full canonical product name here is Rowan Estuary Clip. We withdraw the launch claim on the missing continuation page. That page and the claim's product-owner text are unavailable, so this source does not identify whose launch was withdrawn."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-055",
+    "policy": {
+      "policy_id": "li25-055-policy",
+      "target_id": "li25-target-28",
+      "target_question": "Was Sorrel Valley Bridge launched?",
+      "entity": {
+        "canonical_id": "li25-target-28",
+        "canonical_name": "Sorrel Valley Bridge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-055-evidence",
+      "source_id": "li25-055-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Sorrel Valley Bridge was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Correction concerning the launch of Topaz Basin Sensor"
+        },
+        {
+          "kind": "excerpt",
+          "text": "No actual launch took place for Topaz Basin Sensor. We withdraw the statement about that product's launch."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-056",
+    "policy": {
+      "policy_id": "li25-056-policy",
+      "target_id": "li25-target-28",
+      "target_question": "Was Sorrel Valley Bridge launched?",
+      "entity": {
+        "canonical_id": "li25-target-28",
+        "canonical_name": "Sorrel Valley Bridge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-056-evidence",
+      "source_id": "li25-056-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Sorrel Valley Bridge was launched."
+        },
+        {
+          "kind": "source_title",
+          "text": "Correction concerning the launch of Sorrel Valley Bridge"
+        },
+        {
+          "kind": "excerpt",
+          "text": "No actual launch took place for Sorrel Valley Bridge. We withdraw the statement about that product's launch."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-057",
+    "policy": {
+      "policy_id": "li25-057-policy",
+      "target_id": "li25-target-29",
+      "target_question": "Was Thistle Pier Hub launched?",
+      "entity": {
+        "canonical_id": "li25-target-29",
+        "canonical_name": "Thistle Pier Hub",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-057-evidence",
+      "source_id": "li25-057-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Thistle Pier Hub was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Item is the cream paper stock of the Thistle Pier Hub warranty leaflet. We retract the assertion about that Item because the leaflet's paper stock is the disputed property."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-058",
+    "policy": {
+      "policy_id": "li25-058-policy",
+      "target_id": "li25-target-29",
+      "target_question": "Was Thistle Pier Hub launched?",
+      "entity": {
+        "canonical_id": "li25-target-29",
+        "canonical_name": "Thistle Pier Hub",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-058-evidence",
+      "source_id": "li25-058-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Thistle Pier Hub was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Item is a launch assertion discussed in the warranty leaflet for Thistle Pier Hub. We retract that Item. The leaflet does not identify the product whose launch the Item asserts."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-059",
+    "policy": {
+      "policy_id": "li25-059-policy",
+      "target_id": "li25-target-30",
+      "target_question": "Was Verbena Coast Station launched?",
+      "entity": {
+        "canonical_id": "li25-target-30",
+        "canonical_name": "Verbena Coast Station",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-059-evidence",
+      "source_id": "li25-059-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Verbena Coast Station was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Subject is the claim that Wren Orchard Dock was launched. We withdraw that Subject. The complete product owner of the Subject is Wren Orchard Dock."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li25-060",
+    "policy": {
+      "policy_id": "li25-060-policy",
+      "target_id": "li25-target-30",
+      "target_question": "Was Verbena Coast Station launched?",
+      "entity": {
+        "canonical_id": "li25-target-30",
+        "canonical_name": "Verbena Coast Station",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li25-060-evidence",
+      "source_id": "li25-060-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Verbena Coast Station was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The Subject is a launch claim whose product owner is unknown. We withdraw that Subject. A commentator says it is probably about Wren Orchard Dock, but no product owner is established for the Subject."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  }
+]

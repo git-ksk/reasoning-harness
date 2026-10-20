@@ -1,0 +1,82 @@
+{
+  "snapshot_manifest_sha256": "df60b2df43ae40f5f494f79b271f7ab41c23ad374a0bc4ce4640a5d654299ac9",
+  "existing_tests": 12,
+  "existing_tests_pass": true,
+  "findings": [
+    {
+      "id": "R1-orphan-citation-dropped",
+      "captured_citations": 2,
+      "counted_edges": 1,
+      "complete_useful_answer": true,
+      "hard_violations": []
+    },
+    {
+      "id": "R2-unadmitted-citation-credit",
+      "admitted_source_ids": [
+        "s"
+      ],
+      "correct_citation_source": "rejected",
+      "complete_useful_answer": true,
+      "hard_violations": []
+    },
+    {
+      "id": "R3-helper-artifact-kind-incompatible",
+      "capture_kind": "source_local_answer",
+      "error": "unknown_artifact_kind"
+    },
+    {
+      "id": "R4-incomplete-helper-baseline-passes",
+      "helper_baseline_incomplete_rows": 72,
+      "semantic_gate_pass": true,
+      "blockers": [],
+      "note": "score_first runtime gate checks only normal pairs; helper baseline completeness is not independently rejected there."
+    },
+    {
+      "id": "R5-unbound-model-trace",
+      "actual_CLI_trace_model_events": 0,
+      "counted_audit_generations": 1,
+      "accepted": true
+    },
+    {
+      "id": "R6-empty-receipt-and-wrong-target",
+      "accepted": true,
+      "receipt_evidence_ids": [],
+      "receipt_verifier": "non-structured-fixture",
+      "request_target": "different-target",
+      "admission_target": "target"
+    },
+    {
+      "id": "R7-M1-empty-inventory-does-not-bind-gold",
+      "same_M1_anchor": "72977a5bca3b6477ebcbf9abf97bb444c5d27d874e0109bf6d10a810519f3c24",
+      "old_gold_hash": "2b772d02e5990a845db3d6fe5f5e14dd636f8bf25038676c286f9c70fff0b897",
+      "changed_gold_hash": "283b676a3b0621bd920aae0dcc5bd67328a2a3d26aa6e486b340ad7152816cdd",
+      "both_validations_accepted": true,
+      "fixture_scope": "schema metadata only, never source truth/accuracy or real independent questions"
+    },
+    {
+      "id": "R8-partial-helper-display-lost",
+      "partial_baseline_text": "visible partial source-local output",
+      "collected_display_texts": [
+        "",
+        ""
+      ],
+      "operation": [
+        "incomplete",
+        "incomplete"
+      ],
+      "note": "Incomplete remains NO_GO, but full partial-output safety audit lacks the observed baseline display."
+    },
+    {
+      "id": "R9-collector-provider-relabel",
+      "lane_provider": "mistral",
+      "collector_argument": "google",
+      "accepted_provider_labels": [
+        "google",
+        "google"
+      ],
+      "command_returncode": 0
+    }
+  ],
+  "Engine_accuracy_actual_cohort_scorer_provider_model_network_Oracle_calls": 0,
+  "pure_component_and_metadata_fixtures_only": true
+}

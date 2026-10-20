@@ -1,0 +1,17 @@
+{
+  "identity": "engine073-realworld-v2-development-preparation",
+  "files": {
+    "README.md": "d863d0e840406fbd336abc5d57366ca8f6cd67f479e327bc7affe898c4c8aade",
+    "terminal-chain-independent-review-v1/artifact-manifest.json": "04a716c519e010f58ff312b867772fc2ca03719f0d4a8a412120e8dad5f3f5b1",
+    "terminal-chain-independent-review-v1/counterexample-plan.json": "c28771d49972c72f07aadd00f1f139c386a9424931f389ff3eb65c15377c7a84",
+    "terminal-chain-independent-review-v1/review.json": "f4d066bcff8659790f32797e37c9487c9a46868e4f003b9c6408a66ab05532a9",
+    "terminal-chain-independent-review-v2/artifact-manifest.json": "081abb0dc3fbad6085d818ae3c91368fab60e56b46cd255e0493dcf1ee84b306",
+    "terminal-chain-independent-review-v2/review.json": "0952eeca16053f7a8470e9272f66f692c07ed3064bd4c8d36865a12cf292da9a",
+    "terminal-chain-independent-review-v3/artifact-manifest.json": "e239650046e8d5fe5eaf809971e2e6b903c0db7f0a2729f0f2cb2c0e724c7a25",
+    "terminal-chain-independent-review-v3/review.json": "a463d06179998f6b5aa387e8e503b1478fdf4ef23cf1dd81bc8cd0c434b8a8f7",
+    "trace-design-independent-review-v1/artifact-manifest.json": "8f23b0f5654117c9b1313081ba863aa411c7a772b21bcd7dc87a9506b465058d",
+    "trace-design-independent-review-v1/host-comparison.json": "80214091e5c1a2e2ea2a3acd8f67f4790dca1b9a2a2cbe371ec50802397911e4",
+    "trace-design-independent-review-v1/review.json": "8b49299067dcdf447a7db18b45277cb8f32b17a20ff2483199f25569cb3e4231"
+  },
+  "scope": "selected public notes only; full reviewer inventories remain separately hash-bound"
+}

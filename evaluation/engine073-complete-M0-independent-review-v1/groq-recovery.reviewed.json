@@ -1,0 +1,42 @@
+{
+  "identity": "engine073-realworld-groq-deferred-v1",
+  "new_live_run_allowed": false,
+  "reason": "Verified Free-equivalent TPM 8000 and documented TPD 200000 cannot admit the unchanged full-cohort conservative reserve. No tier/model/budget switch; no model question from real24 has run.",
+  "owner_statement": "2026-10-19: no other account/organization usage; full free allowance after prior paid use",
+  "other_organization_usage_stopped": true,
+  "observed_TPM": 8000,
+  "observed_RPD": 1000,
+  "documented_TPD": 200000,
+  "daily_reserve_capacity_verified": false,
+  "full_provider_cohort_reserved_tokens": 1456128,
+  "maximum_normal_single_generation_reserved_input": 12512,
+  "maximum_normal_single_generation_requested_output": 1024,
+  "old_stop_record_sha256": "762eb8035ea16e50e619a448658a72fbff01b25d89b39003a8c51e08cc16f46d",
+  "actual_adapter_readiness_run": 39205645436,
+  "actual_adapter_readiness_artifact": 12165059908,
+  "actual_adapter_attempts": 1,
+  "actual_adapter_usage": {
+    "input_tokens": 246,
+    "output_tokens": 32,
+    "total_tokens": 278
+  },
+  "first_urllib_readiness_run": 39204793945,
+  "first_urllib_readiness_usage": "unknown; edge1010, not zero, no retry",
+  "raw_files": {
+    "groq-readiness-v2-raw/actual-image-inspect.json": "08dc2ba39b0a036796cc8398ed992778805f7ac8b31365d7d892f83363230146",
+    "groq-readiness-v2-raw/adviser.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "groq-readiness-v2-raw/adviser.stdout": "6246d0777342603c447cb55378df3baef6232ba2453a3ff45fe1c3761a8e2eef",
+    "groq-readiness-v2-raw/input.json": "5316f877208308c7ea64456eb914df9e758c14535ecfd20f281a9174c2a45bbb",
+    "groq-readiness-v2-raw/model.jsonl": "05d533a1ce00fddbb81826dfb6a41ec80edc6d17e3bbb74c58b85aed80f68fd8",
+    "groq-readiness-v2-raw/reservation.json": "8e7e17d7d3ead09f8522367c785c9d45e19534c6bf0c7411fe785a766053ef2c"
+  },
+  "planned_observations": 96,
+  "completed_observations": 0,
+  "actual_answer_f1": null,
+  "full_three_provider_acceptance": "NO_GO",
+  "subsequent_groq_execution": "Requires a separate explicit first-run identity, adequate observed headroom, and hash-bound recovery; never auto-resume this cohort.",
+  "sources": [
+    "https://console.groq.com/docs/rate-limits",
+    "https://console.groq.com/docs/model/openai/gpt-oss-120b"
+  ]
+}

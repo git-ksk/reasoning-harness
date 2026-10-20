@@ -1,0 +1,264 @@
+   Compiling reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+   Compiling reasoning-harness-providers v0.4.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-providers)
+   Compiling reasoning-harness-cli v0.5.4 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-cli)
+    Finished `test` profile [unoptimized] target(s) in 1m 41s
+     Running unittests src/main.rs (/private/tmp/engine073-validation-target/debug/deps/reason-07e6bf223dacba77)
+
+running 217 tests
+test auth::tests::provider_picker_accepts_numbers_names_and_google_aliases ... ok
+test auth::tests::stdin_secret_accepts_one_line_and_strips_only_line_ending ... ok
+test auth::tests::stdin_secret_rejects_multiline_empty_invalid_utf8_and_oversize ... ok
+test candidate_json_tests::examples_surface_prefers_natural_language_and_documents_separate_mcp_binary ... ok
+test candidate_json_tests::config_merge_is_fieldwise_and_higher_precedence_wins ... ok
+test candidate_json_tests::config_schema_accepts_usage_budget_fields_without_secret_surface ... ok
+test candidate_json_tests::config_schema_rejects_secret_like_unknown_fields ... ok
+test candidate_json_tests::config_schema_rejects_secret_like_external_resolver_fields ... ok
+test candidate_json_tests::explicit_local_fact_admission_rejects_other_resolvers ... ok
+test candidate_json_tests::accepts_one_complete_candidate_with_non_json_trailing_text ... ok
+test candidate_json_tests::cancellation_is_typed_operational_failure ... ok
+test candidate_json_tests::correction_seed_removes_only_prior_user_fact_and_preserves_external_evidence ... ok
+test candidate_json_tests::external_admission_config_rejects_unranked_authority_and_secret_fields ... ok
+test candidate_json_tests::external_admission_config_resolves_harness_owned_source_policy ... ok
+test candidate_json_tests::investigation_acquisition_wrapper_blocks_candidate_revision ... ok
+test candidate_json_tests::invalidated_session_never_reexposes_previous_turn_finalization ... ok
+test candidate_json_tests::bounded_local_resolution_reverifies_before_accepting ... ok
+test candidate_json_tests::investigation_exact_fact_claim_is_assumed_until_existing_verification_supports_it ... ok
+test candidate_json_tests::external_admission_constraints_are_rechecked_by_ordinary_qualification ... ok
+test candidate_json_tests::investigation_exact_fact_materialization_accepts_keyless_selected_target ... ok
+test candidate_json_tests::investigation_exact_fact_materialization_accepts_matching_explicit_target_key ... ok
+test candidate_json_tests::investigation_exact_fact_materialization_adds_observable_claim_alongside_matching_model_claim ... ok
+test candidate_json_tests::investigation_config_rejects_write_capability_and_authority_drift ... ok
+test candidate_json_tests::investigation_exact_fact_materialization_fails_closed_on_wrong_target_key ... ok
+test candidate_json_tests::investigation_exact_fact_materialization_fails_closed_on_write_or_multi_key_capability ... ok
+test candidate_json_tests::investigation_exact_fact_materialization_preserves_conflicting_model_claim ... ok
+test candidate_json_tests::investigation_exact_fact_materialization_ignores_unadmitted_and_conflicting_values ... ok
+test candidate_json_tests::investigation_config_accepts_two_read_only_capabilities ... ok
+test candidate_json_tests::investigation_finalization_bridge_accepts_harness_materialized_key_for_keyless_target ... ok
+test candidate_json_tests::investigation_finalization_bridge_fails_closed_on_conflicting_values ... ok
+test candidate_json_tests::investigation_finalization_bridge_ignores_unadmitted_fact ... ok
+test candidate_json_tests::investigation_finalization_bridge_requires_every_planned_target ... ok
+test candidate_json_tests::groq_generic_roles_share_provider_neutral_generation_contracts ... ok
+test candidate_json_tests::external_resolver_zero_operational_limits_fail_closed ... ok
+test candidate_json_tests::investigation_finalization_bridge_requires_exact_admitted_fact ... ok
+test candidate_json_tests::existing_subcommand_takes_precedence_over_natural_task ... ok
+test candidate_json_tests::live_corpus_identity_serializes_without_pooled_stratification ... ok
+test candidate_json_tests::live_provider_requires_explicit_or_configured_model ... ok
+test candidate_json_tests::live_soft_judge_operational_summary_reports_fallback_rate ... ok
+test candidate_json_tests::local_and_remote_mcp_transports_are_mutually_exclusive ... ok
+test candidate_json_tests::local_fact_resolver_returns_observed_value_for_reverification ... ok
+test candidate_json_tests::maps_operational_failure_classes_stably ... ok
+test candidate_json_tests::mcp_input_required_error_is_typed_actionable_and_secret_free ... ok
+test candidate_json_tests::mcp_admission_uses_mcp_resolver_identity ... ok
+test candidate_json_tests::live_soft_judge_family_summary_excludes_incomplete_trials ... ok
+test candidate_json_tests::mcp_readonly_config_fails_closed_on_write_intent_unlisted_tool_or_secret_field ... ok
+test candidate_json_tests::mcp_fixed_arguments_keep_benign_nested_structures_compatible ... ok
+test candidate_json_tests::mcp_readonly_config_requires_explicit_read_only_allowlist_and_class ... ok
+test candidate_json_tests::mcp_remote_admission_uses_remote_resolver_identity ... ok
+test candidate_json_tests::mcp_readonly_v3_protocol_policy_is_harness_bounded ... ok
+test candidate_json_tests::operational_summary_preserves_failed_generation_class ... ok
+test candidate_json_tests::external_resolver_operational_limits_are_cli_and_config_compatible ... ok
+test candidate_json_tests::mcp_fixed_arguments_reject_nested_credentials_without_echoing_values ... ok
+test candidate_json_tests::hidden_research_and_low_level_natural_surfaces_remain_parseable ... ok
+test candidate_json_tests::mcp_remote_config_fails_closed_on_write_unlisted_insecure_or_legacy_protocol ... ok
+test candidate_json_tests::mcp_remote_config_is_2026_read_only_and_secret_closed ... ok
+test candidate_json_tests::natural_output_contract_is_versioned ... ok
+test candidate_json_tests::groq_live_generator_variant_preserves_generic_provider_identity ... ok
+test candidate_json_tests::parses_config_schema_product_command ... ok
+test candidate_json_tests::parses_current_safety_profile ... ok
+test candidate_json_tests::parses_external_resolver_command_without_shell_reinterpretation ... ok
+test candidate_json_tests::parses_direct_natural_language_task_and_flags ... ok
+test candidate_json_tests::parses_live_concurrency ... ok
+test candidate_json_tests::parses_live_soft_judge_concurrency ... ok
+test candidate_json_tests::parses_nvidia_single_model_selection ... ok
+test candidate_json_tests::parses_managed_session_list_surface ... ok
+test candidate_json_tests::parses_natural_language_baseline_safety_rollback ... ok
+test candidate_json_tests::parses_legacy_v1_safety_profile_and_alias ... ok
+test candidate_json_tests::parses_opt_in_natural_diagnostic_trace_without_changing_output_format ... ok
+test candidate_json_tests::parses_provider_neutral_usage_budget_and_pricing_flags ... ok
+test candidate_json_tests::parses_schema_product_command ... ok
+test candidate_json_tests::live_soft_judge_stability_excludes_incomplete_trials ... ok
+test candidate_json_tests::parses_semantic_check_explicit_rollback ... ok
+test candidate_json_tests::parses_semantic_check_product_command_with_current_default ... ok
+test candidate_json_tests::parses_managed_session_continue_resume_and_picker_flags ... ok
+test candidate_json_tests::product_failure_envelope_is_machine_readable ... ok
+test candidate_json_tests::product_json_envelope_has_stable_contract_ids ... ok
+test candidate_json_tests::persisted_session_contract_contains_no_hidden_reasoning_surface ... ok
+test candidate_json_tests::parses_semantic_check_legacy_v3_alias ... ok
+test candidate_json_tests::parses_semantic_check_explicit_current_and_legacy_d3_alias ... ok
+test candidate_json_tests::provider_override_requires_model_when_config_provider_changes ... ok
+test candidate_json_tests::recorded_candidate_ignores_configured_live_provider ... ok
+test candidate_json_tests::rejects_incomplete_candidate_json ... ok
+test candidate_json_tests::rejects_multiple_json_candidate_values ... ok
+test candidate_json_tests::remediation_catalog_covers_phase4_required_failure_families ... ok
+test candidate_json_tests::scalar_distribution_uses_population_standard_deviation ... ok
+test candidate_json_tests::parses_groq_generic_natural_language_provider ... ok
+test candidate_json_tests::session_correction_materialization_refuses_conflicting_explicit_facts ... ok
+test candidate_json_tests::parses_verbose_natural_progress_flag ... ok
+test candidate_json_tests::session_correction_materialization_replaces_matching_model_claim_with_harness_owned_claim ... ok
+test candidate_json_tests::session_correction_target_accepts_unique_persisted_explicit_fact_without_model_claim ... ok
+test candidate_json_tests::session_correction_target_fails_closed_on_conflicting_grounded_prior_values ... ok
+test candidate_json_tests::session_correction_target_fails_closed_on_explicit_fact_conflict ... ok
+test candidate_json_tests::session_correction_target_fails_closed_on_grounded_and_explicit_conflict ... ok
+test candidate_json_tests::session_correction_materialization_is_assumed_until_normal_verification ... ok
+test candidate_json_tests::session_correction_target_fails_closed_without_grounded_prior_key ... ok
+test candidate_json_tests::session_correction_target_requires_one_unique_grounded_prior_proposition ... ok
+test candidate_json_tests::parses_rollback_safety_profile_and_legacy_aliases ... ok
+test candidate_json_tests::stdin_source_is_limited_to_one_per_command ... ok
+test candidate_json_tests::stability_excludes_incomplete_trials_from_correctness_distribution ... ok
+test candidate_json_tests::session_fork_is_non_destructive_and_uses_independent_lineage ... ok
+test candidate_json_tests::structured_action_missing_discriminant_remains_protocol_failure ... ok
+test candidate_json_tests::strict_text_fallback_rejects_unknown_investigation_fields ... ok
+test candidate_json_tests::structured_call_accepts_complete_json_object_fallback_with_non_json_suffix ... ok
+test candidate_json_tests::strict_text_fallback_rejects_trailing_prose ... ok
+test candidate_json_tests::structured_call_accepts_complete_primary_typed_json_with_non_json_suffix_without_fallback ... ok
+test candidate_json_tests::session_cli_surface_is_explicit_and_machine_parseable ... ok
+test candidate_json_tests::structured_call_rejects_second_primary_json_value_and_preserves_fallback ... ok
+test candidate_json_tests::structured_call_degrades_json_object_capability_failure_to_strict_text ... ok
+test candidate_json_tests::structured_call_uses_json_object_fallback_after_typed_schema_capability_failure ... ok
+test candidate_json_tests::structured_parse_failure_distinguishes_complete_schema_data_error ... ok
+test candidate_json_tests::structured_parse_failure_preserves_incomplete_finish_metadata ... ok
+test candidate_json_tests::plain_flag_is_parseable_without_changing_json_selection ... ok
+test candidate_json_tests::semantic_check_input_schema_is_closed ... ok
+test candidate_json_tests::terminal_status_diagnostic_keeps_incomplete_distinct_from_token_limit ... ok
+test candidate_json_tests::trusted_command_config_requires_explicit_trust_and_is_secret_closed ... ok
+test candidate_json_tests::typed_json_decoder_accepts_one_complete_action_with_non_json_suffix ... ok
+test candidate_json_tests::top_level_help_prioritizes_common_workflows_and_keeps_research_discoverable ... ok
+test candidate_json_tests::typed_json_decoder_accepts_strict_action_without_normalization ... ok
+test candidate_json_tests::typed_json_decoder_does_not_fill_missing_acquire_identifier ... ok
+test candidate_json_tests::typed_json_decoder_rejects_json_like_trailing_fragment ... ok
+test candidate_json_tests::typed_json_decoder_rejects_second_json_value ... ok
+test candidate_json_tests::typed_json_decoder_rejects_truncated_or_missing_action ... ok
+test candidate_json_tests::usage_budget_config_is_fieldwise_and_requires_pricing_provenance ... ok
+test candidate_json_tests::session_correction_persists_typed_invalidation_before_re_evaluation ... ok
+test config_commands::tests::surface_rejects_secrets_and_authority ... ok
+test config_commands::tests::typed_values_validate ... ok
+test diagnostic_trace::tests::invalid_unstructured_response_content_is_not_persisted ... ok
+test diagnostic_trace::tests::diagnostic_wrapper_preserves_failure_classification_and_attempt_count ... ok
+test diagnostic_trace::tests::admitted_evidence_then_claim_drop_is_reconstructable_from_trace ... ok
+test diagnostic_trace::tests::diagnostic_wrapper_forwards_request_without_semantic_mutation ... ok
+test diagnostic_trace::tests::request_and_structured_response_are_sanitized_without_raw_hidden_text ... ok
+test doctor::installation_method_tests::recognizes_managed_package_paths_and_direct_install ... ok
+test diagnostic_trace::tests::model_request_diagnostic_records_each_structured_mode ... ok
+test human_presentation::tests::abstain_and_acquisition_rejection_are_explained_without_trace ... ok
+test human_presentation::tests::unicode_content_is_preserved_without_width_or_byte_truncation ... ok
+test candidate_json_tests::session_replay_preserves_materialized_investigation_attempt_without_external_reexecution ... ok
+test human_presentation::tests::unresolved_and_qualification_reasons_are_typed_and_visible ... ok
+test human_presentation::tests::unresolved_answer_reports_unknown_without_renderer_text ... ok
+test human_presentation::tests::verified_facts_use_canonical_propositions_and_do_not_render_raw_prose ... ok
+test interactive::tests::bare_human_tty_enters_interactive_mode ... ok
+test interactive::tests::ephemeral_mode_never_persists_managed_state_even_after_turns_exist ... ok
+test interactive::tests::conversation_memory_is_untrusted_context_without_fact_authority ... ok
+test interactive::tests::explicit_plain_keeps_static_interactive_prompt_path_available ... ok
+test interactive::tests::parses_interactive_commands_without_shell_interpretation ... ok
+test interactive::tests::persisted_session_identity_never_silently_switches_provider_or_model ... ok
+test interactive::tests::task_pipe_and_json_never_auto_enter_interactive_mode ... ok
+test lifecycle::package_manager_tests::detects_homebrew_cellar_paths ... ok
+test lifecycle::package_manager_tests::detects_winget_custom_portable_root ... ok
+test lifecycle::package_manager_tests::detects_winget_portable_paths ... ok
+test lifecycle::tests::automatic_release_selection_excludes_semver_prereleases_and_drafts ... ok
+test lifecycle::tests::engine_061_adoption_and_engine_050_rollback_require_separate_explicit_consent ... ok
+test lifecycle::tests::engine_change_policy_requires_explicit_consent_in_both_directions ... ok
+test lifecycle::tests::managed_data_scope_never_discovers_arbitrary_session_files ... ok
+test lifecycle::tests::split_version_boundary_and_direction_are_explicit ... ok
+test lifecycle::tests::unchanged_engine_does_not_require_engine_change_consent ... ok
+test lifecycle::package_manager_tests::leaves_direct_installs_unmanaged ... ok
+test candidate_json_tests::session_file_round_trip_resume_preserves_checkpoint_state_without_external_replay ... ok
+test doctor::installation_method_tests::resolves_winget_link_to_package_root ... ok
+test managed_session::tests::generated_managed_session_ids_do_not_collide_in_one_process ... ok
+test managed_session::tests::managed_identity_is_stable_inside_record_and_title_is_bounded ... ok
+test local_privacy::tests::fresh_private_directory_and_file_are_user_only ... ok
+test managed_session::tests::managed_session_v1_wire_remains_usage_sidecar_free ... ok
+test managed_session::tests::managed_usage_sidecar_has_its_own_versioned_contract ... ok
+test managed_session::tests::managed_validation_rejects_memory_boundary_past_turns ... ok
+test managed_session::tests::source_digest_is_not_part_of_v1_wire_format ... ok
+test managed_session::tests::advisory_store_lock_excludes_second_writer ... ok
+test mcp_oauth::tests::authorization_code_exchange_uses_pkce_resource_and_never_requires_client_secret ... FAILED
+test lifecycle::tests::unix_replacement_is_atomic_at_destination_path ... ok
+test mcp_oauth::tests::authorization_url_uses_pkce_state_resource_and_scope_without_secret ... ok
+test lifecycle::tests::manifest_identity_and_checksum_listing_fail_closed ... ok
+test mcp_oauth::tests::bearer_challenge_parser_extracts_resource_metadata_and_scope_without_secrets ... ok
+test managed_session::tests::atomic_replace_overwrites_existing_destination_without_remove_gap ... ok
+test mcp_oauth::tests::native_os_store_round_trip ... ignored, mutates the native OS credential store; run only in isolated CI
+test lifecycle::package_manager_tests::detects_homebrew_through_executable_symlink ... ok
+test mcp_oauth::tests::native_os_store_scoped_delete_does_not_cross_accounts ... ignored, mutates the native OS credential store; run only in isolated CI
+test mcp_oauth::tests::callback_requires_exact_state_and_rfc9207_issuer ... FAILED
+test mcp_oauth::tests::oauth_discovery_falls_back_to_root_prm_and_oidc_path_insertion ... FAILED
+test mcp_oauth::tests::oauth_discovery_rejects_redirect_and_malformed_metadata ... FAILED
+test managed_session::tests::optimistic_source_check_rejects_stale_overwrite ... ok
+test mcp_oauth::tests::oauth_discovery_rejects_resource_issuer_and_insecure_metadata_mismatch ... ok
+test mcp_oauth::tests::oauth_requires_https_except_loopback ... ok
+test mcp_oauth::tests::refresh_preserves_explicit_step_up_scope_when_server_omits_scope ... FAILED
+test lifecycle::package_manager_tests::detects_winget_through_links_symlink ... ok
+test mcp_oauth::tests::stored_token_is_issuer_and_client_bound ... ok
+test model_catalog::tests::catalog_has_one_recommended_general_use_model_for_primary_providers ... ok
+test model_catalog::tests::lifecycle_policy_never_silently_substitutes_non_current_models ... ok
+test model_catalog::tests::nvidia_negative_control_is_visible_but_not_general_use ... ok
+test progress::tests::ctrl_c_during_arming_is_preserved_after_token_reset ... ok
+test progress::tests::plain_mode_preserves_ctrl_c_cancellation_state_machine ... ok
+test progress::tests::progress_is_human_full_tty_and_non_plain_only ... ok
+test progress::tests::provider_wait_wrapper_preserves_result_when_progress_is_disabled ... ok
+test secure_credentials::tests::absent_environment_uses_os_store ... ok
+test secure_credentials::tests::empty_environment_fails_without_store_fallback ... ok
+test secure_credentials::tests::environment_credential_wins_without_reading_store ... ok
+test secure_credentials::tests::missing_and_unavailable_store_are_distinct_and_secret_free ... ok
+test secure_credentials::tests::memory_store_replacement_and_delete_are_scoped ... ok
+test secure_credentials::tests::native_os_store_round_trip ... ignored, mutates the native OS credential store; run only in isolated CI
+test secure_credentials::tests::provider_identity_is_versioned_and_google_gemma_share_one_secret ... ok
+test terminal_presentation::tests::explicit_plain_no_color_and_dumb_terminal_select_plain_mode ... ok
+test run_diagnostics::tests::initial_provider_failure_retains_attempts_without_a_candidate_or_false_zero_tokens ... ok
+test terminal_presentation::tests::json_and_redirected_streams_are_plain_and_decoration_free ... ok
+test terminal_presentation::tests::ordinary_human_full_tty_keeps_static_progress_available ... ok
+test usage_budget::tests::cumulative_guard_rejects_untracked_pre_usage_session_history ... ok
+test usage_budget::tests::failed_provider_attempt_makes_token_totals_unreported ... ok
+test usage_budget::tests::model_call_budget_is_checked_before_next_call ... ok
+test usage_budget::tests::output_budget_caps_next_request ... ok
+test usage_budget::tests::pricing_is_estimated_only_with_explicit_provenance ... ok
+test usage_budget::tests::strict_token_budget_fails_closed_when_provider_usage_is_missing ... ok
+test usage_budget::tests::usage_report_json_has_stable_provider_neutral_fields ... ok
+test run_diagnostics::tests::completed_trace_flushes_once_with_the_same_event_contract ... ok
+test run_diagnostics::tests::trace_write_failure_does_not_replace_the_original_budget_error ... ok
+test run_diagnostics::tests::missing_provider_usage_remains_unmeasurable_and_is_not_filled_with_zero ... ok
+test run_diagnostics::tests::budget_stop_preserves_the_actual_response_usage_and_partial_trace ... ok
+test candidate_json_tests::supported_shell_completions_generate_to_memory ... ok
+test run_diagnostics::tests::cancelling_inflight_generation_flushes_trace_and_marks_usage_as_a_lower_bound ... ok
+test lifecycle::tests::verified_downloaded_release_replaces_destination_after_integrity_and_version_checks ... ok
+
+failures:
+
+---- mcp_oauth::tests::authorization_code_exchange_uses_pkce_resource_and_never_requires_client_secret stdout ----
+
+thread 'mcp_oauth::tests::authorization_code_exchange_uses_pkce_resource_and_never_requires_client_secret' panicked at crates/reasoning-harness-cli/src/mcp_oauth.rs:1596:57:
+called `Result::unwrap()` on an `Err` value: Os { code: 1, kind: PermissionDenied, message: "Operation not permitted" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- mcp_oauth::tests::callback_requires_exact_state_and_rfc9207_issuer stdout ----
+
+thread 'mcp_oauth::tests::callback_requires_exact_state_and_rfc9207_issuer' panicked at crates/reasoning-harness-cli/src/mcp_oauth.rs:1550:57:
+called `Result::unwrap()` on an `Err` value: Os { code: 1, kind: PermissionDenied, message: "Operation not permitted" }
+
+---- mcp_oauth::tests::oauth_discovery_falls_back_to_root_prm_and_oidc_path_insertion stdout ----
+
+thread 'mcp_oauth::tests::oauth_discovery_falls_back_to_root_prm_and_oidc_path_insertion' panicked at crates/reasoning-harness-cli/src/mcp_oauth.rs:1385:57:
+called `Result::unwrap()` on an `Err` value: Os { code: 1, kind: PermissionDenied, message: "Operation not permitted" }
+
+---- mcp_oauth::tests::oauth_discovery_rejects_redirect_and_malformed_metadata stdout ----
+
+thread 'mcp_oauth::tests::oauth_discovery_rejects_redirect_and_malformed_metadata' panicked at crates/reasoning-harness-cli/src/mcp_oauth.rs:1463:61:
+called `Result::unwrap()` on an `Err` value: Os { code: 1, kind: PermissionDenied, message: "Operation not permitted" }
+
+---- mcp_oauth::tests::refresh_preserves_explicit_step_up_scope_when_server_omits_scope stdout ----
+
+thread 'mcp_oauth::tests::refresh_preserves_explicit_step_up_scope_when_server_omits_scope' panicked at crates/reasoning-harness-cli/src/mcp_oauth.rs:1662:57:
+called `Result::unwrap()` on an `Err` value: Os { code: 1, kind: PermissionDenied, message: "Operation not permitted" }
+
+
+failures:
+    mcp_oauth::tests::authorization_code_exchange_uses_pkce_resource_and_never_requires_client_secret
+    mcp_oauth::tests::callback_requires_exact_state_and_rfc9207_issuer
+    mcp_oauth::tests::oauth_discovery_falls_back_to_root_prm_and_oidc_path_insertion
+    mcp_oauth::tests::oauth_discovery_rejects_redirect_and_malformed_metadata
+    mcp_oauth::tests::refresh_preserves_explicit_step_up_scope_when_server_omits_scope
+
+test result: FAILED. 209 passed; 5 failed; 3 ignored; 0 measured; 0 filtered out; finished in 1.90s
+
+error: test failed, to rerun pass `-p reasoning-harness-cli --bin reason`

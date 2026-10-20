@@ -1,0 +1,47 @@
+{
+  "implementation_candidate": "7e107f1c2c71cf55cd395d2b3aecb889e4f166a1",
+  "candidate_source_sha256": "939f9b788666a61da59b558cbc03f7741dd5e96e698951823f736bbedf6d4d1c",
+  "package_metadata": "0.7.2; unpromoted 0.7.3 successor",
+  "root_authored_seen_development": true,
+  "provider_api_calls": 0,
+  "original_audit": {
+    "positive_relevant": 1,
+    "negative_withheld": 13,
+    "cases": 14
+  },
+  "seen_independent_replay": {
+    "v2": {
+      "cases": 60,
+      "passed": 60,
+      "original_first": "FAIL50/60 on b6c1598"
+    },
+    "v3": {
+      "cases": 60,
+      "passed": 60,
+      "original_first": "FAIL39/60 on d8c7776"
+    },
+    "v4": {
+      "cases": 60,
+      "passed": 60,
+      "original_first": "FAIL46/60 on 4e36fa5"
+    },
+    "fresh_independent_acceptance": false
+  },
+  "historical_compatibility": {
+    "cases": 597,
+    "complete_v16_v29_byte_equality": true,
+    "reference": "evaluation/launch-520-521-final-validation/historical-base.jsonl"
+  },
+  "focused_tests": 40,
+  "workspace": {
+    "passed": 1504,
+    "failed": 0,
+    "ignored": 8
+  },
+  "clippy": "PASS",
+  "fmt": "PASS",
+  "fixtures_cases": 20,
+  "original_archive_files": 13,
+  "full_real_source_acceptance_complete": false,
+  "cli_adoption": "NO_GO"
+}

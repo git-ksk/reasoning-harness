@@ -1,0 +1,25 @@
+{
+  "identity": "engine073-launch-independent-v27",
+  "recorded_utc": "2026-10-18T15:22:55.458339+00:00",
+  "first_saved_files": {
+    "driver.started.json": "cd89ab3f4e308560bed733fabaf732ae2a6a02507b5774175ca2aaa70cb1abf7",
+    "driver.stdout.txt": "bb295c2d5be741720f75ba21874e2cacad3650018edbbdcef7441a9f6d72d3d3",
+    "driver.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "driver.invocation.json": "cfcafe0647579bde6588d4dff8e769dba9152453e05188a9f2ded43b0979af27",
+    "execution.started.json": "e4143b979ed0507e61b09341f1a53773f986b2898769e0eacf7b9da942baa192",
+    "first-run.stdout.txt": "e42670ed512673dfddae4674e001c0389bac58099717703f97416184cfa78a75",
+    "first-run.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first-invocation.started.json": "7e7d6f942a2774a845d57bd308fe40c2355b2263c4bf5c1881e85c6c7ec7cb7a",
+    "first-invocation.json": "7e5a4ff53beccfe9020dddd7070b8182a56b2f842a9b23fd2bafbd62622e0549",
+    "first.stdout.jsonl": "5aae42baa25b9c38178136df4df57c1078189ab05b9749ef3262f02f004c0a89",
+    "first.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first-score.started.json": "9216958165b8db0b5770bfd51f7e7b84f29da7298d2623ec7dac1a3e6c6d7eda",
+    "first-score.stdout.txt": "38bb2b05b3cadf2ed3bd034655d9d4d91796dc7ba96553575538a6e3f954d765",
+    "first-score.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first-score.invocation.json": "b0fec36f79b55d373032f277bc4fddb94cf8f0f6febc63742b14b1112696419b",
+    "first-results.json": "2099de4335798878b9201aa8b9cc9325657dcbe75627ee206f766635835213a3",
+    "first-summary.json": "38bb2b05b3cadf2ed3bd034655d9d4d91796dc7ba96553575538a6e3f954d765"
+  },
+  "count": 17,
+  "scope": "Original first bytes only; no rerun, rescore or label change."
+}

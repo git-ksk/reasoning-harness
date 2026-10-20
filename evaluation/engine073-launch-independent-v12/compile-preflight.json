@@ -1,0 +1,57 @@
+{
+  "identity": "engine073-launch-independent-v12",
+  "stage": "PRE_FREEZE_OPERATIONAL_BUILD_ONLY",
+  "saved_utc": "2026-10-15T23:56:51.158476+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "outcome": "COMPILE_FAILURE",
+      "returncode": 1,
+      "core_rlib_sha256": "f87fbe3844701a835df396bee34be2b610ccf0fc5257ebc76bfb57a1270e485f",
+      "serde_json_path": "/private/tmp/engine073-target/debug/deps/libserde_json-fdb0c033eb5b5773.rlib",
+      "serde_json_sha256": "6790acd878f7472babebca4ae5c0e9e4dcaab113f41c3a212935db0380a2bd68",
+      "diagnostic": "E0277: multiple different serde_core crate identities; EvidenceRelevanceTargetPolicy DeserializeOwned and other core public types cannot use the selected old serde_json dependency.",
+      "original_stdout_empty": true,
+      "original_complete_stderr_artifact": null,
+      "original_stderr_limit": "Original diagnostic is in execution tool output chunk46aa7a; full stderr was not saved as a local artifact. This record preserves the observed failure summary, not a fabricated full log.",
+      "Engine_invocations": 0,
+      "semantic_observations": 0
+    },
+    {
+      "number": 2,
+      "command": [
+        "rustc",
+        "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v12/probe.rs",
+        "--crate-name",
+        "engine073_launch_independent_v12",
+        "--edition=2021",
+        "-L",
+        "dependency=/private/tmp/engine073-target/debug/deps",
+        "--extern",
+        "reasoning_harness_core=/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-4bf69bf8180549da.rlib",
+        "--extern",
+        "serde_json=/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+        "-o",
+        "/private/tmp/engine073-launch-independent-v12-probe/probe"
+      ],
+      "returncode": 0,
+      "outcome": "BUILD_PASS",
+      "serde_json_path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "serde_json_sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "parent_confirmed_matching_dependency": true,
+      "stdout_file": "compile-2.stdout.txt",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_file": "compile-2.stderr.txt",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "probe_sha256": "dc4a755e2e8e6cfa118a7e3c6eb1ae025035d64218fd114eb6557a0768f51de5",
+      "Engine_invocations": 0,
+      "semantic_observations": 0
+    }
+  ],
+  "input_label_probe_scorer_changes_for_repair": 0,
+  "rustc_build_attempts": 2,
+  "cargo_invocations": 0,
+  "provider_calls": 0,
+  "retries_of_semantic_probe": 0,
+  "independence": "Compiler diagnostic only showed public type/derive locations; production implementation file was not opened/read."
+}

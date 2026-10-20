@@ -1,0 +1,8 @@
+{
+  "state": "input-hash-guard-stopped-before-execution",
+  "expected_input_sha256": "4310aaae80764d8e2f968813652deda46a3f1e2c6e3df599037a976134ba6778",
+  "reason": "Parent repaired the shared input before offline control began; explicit later instruction permits static confirmation of repaired bytes.",
+  "raw_error": "AssertionError at SOURCE SHA256 assertion",
+  "mock_HTTP_attempts": 0,
+  "network_provider_model_calls": 0
+}

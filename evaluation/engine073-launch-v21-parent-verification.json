@@ -1,0 +1,52 @@
+{
+  "identity": "engine073-launch-v21-parent-verification",
+  "verified_utc": "2026-10-16T23:32:35.054060+00:00",
+  "source": {
+    "source_sha": "d647ca44d38958858a9ff4582f48ba6240d75241",
+    "source_file_sha256": "1abbec8d424d372a5713d57be7068af2dd231f1415ad6ad232f2b497e16baea6",
+    "reasoning_harness_core": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "1c1df020a80f6c2bedec5ed3e5daec21a5886484d593af56d3d27a54ad6f86c4"
+    },
+    "serde_json": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+    }
+  },
+  "final_anchor": "9db10bc88ef24b76cd6dd360bd0b23b90b32a19dac74cbbcb7c6f6dd851ee913",
+  "files_including_manifest": 516,
+  "old478_unchanged": true,
+  "source_core_serde_head_unchanged": true,
+  "first_summary": {
+    "identity": "engine073-launch-independent-v21",
+    "candidate_source_sha": "d647ca44d38958858a9ff4582f48ba6240d75241",
+    "manifest_sha256": "2eec1fc5a0c593aec8cde9005d0a907288e4f05ad52df01acc3a273c18bf4037",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 48,
+    "failed": 12,
+    "incomplete": 0,
+    "positive_passed": 18,
+    "negative_passed": 30,
+    "negative_v17_requested_relation_violations": 0,
+    "negative_v30_relevant_violations": 0,
+    "positive_v17_withheld": 12,
+    "positive_v30_withheld": 12,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "cab1b85895c6f2099da79e8e419015581434f88650bc2cbdb50c8b0f68b58832",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "1240036a6f28f4279de613f2017359afaffec83ed7e7d2dc0478ea957c0104dc"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "first_results_sha256": "d34a913ed98b4ce2aee3ebe447e63a8e063fecb2b97c90056b0e9c3421973ef2",
+  "first_summary_sha256": "70e22c764cb06dc6ce7e71f9f84e869e08b8dfbce50cc33bfeff9e2372acd390",
+  "receipt_sha256": "c0101c9d6d05adb630cc7ef9ed2c4de6c9ee065b53b803df8ddc2aac2955b706",
+  "real_source_acceptance": false,
+  "provider_calls": 0,
+  "scope": "parent artifact/hash/identity review only; no Engine/scorer re-execution"
+}

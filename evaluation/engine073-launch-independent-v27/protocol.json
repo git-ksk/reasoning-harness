@@ -1,0 +1,119 @@
+{
+  "identity": "engine073-launch-independent-v27",
+  "revision": "pre-author-evaluator-contract-v1",
+  "state": "PRE_AUTHOR_ONLY_WAIT_PARENT_REVIEW_AND_SEPARATE_GO",
+  "candidate": {
+    "source_sha": "26c98adbec19f9e8ea0d46f260f080d4319a8e60",
+    "source_content_sha256": "4daf64b918532a9004dea9807b8001ec743244b20b5cd1892c7f3a7ce316d1ef",
+    "package_version": "0.7.2",
+    "runtime_executable": "/private/tmp/engine073-independent-v27-runtime/probe",
+    "runtime_sha256": "b1c482ab5d20cf370868b27d0a3f62a67f1eb210f46731db7258016f56d31821"
+  },
+  "current_stage": {
+    "authored_cases": 0,
+    "labels_created": 0,
+    "inputs_created": 0,
+    "authoring_start_created": false,
+    "actual_Engine_invocations": 0,
+    "real_cohort_scorer_processes": 0,
+    "compile_calls": 0,
+    "runtime": "Supplied readonly runtime4 hash checked only; parent actual normal Cargo build/copy.",
+    "next": "M0 closure and parent review, then separate explicit instruction. No inferred authoring permission."
+  },
+  "scope": "Inherited finite #520 source gate only: separate canonical TARGET was launched anchor, exact/exact binding, explicit bounded target/claim retraction/denial/non-event and completely scoped local non-launch properties or foreign events/owners. No arbitrary graph/alias hierarchy/new affirmative predicate/chronology/general-language guarantee.",
+  "policy_sha256": "3a6d37e3fbf134f4a49677fdcd7de8b1b625739988a40e1c1e78b94978099767",
+  "helper_sha256": "00f6971900864ee9e89e4db6029d8196fabd0a4b6ab28e343f19506417735c6f",
+  "helper_config": "Explicit frozen source_gate_policy.json, never mutable default or threshold override.",
+  "gate": "Both axes independently F1>=.90/P>=.95/R>=.85 and safety FP0; complete original first/provenance, known1400/1400, original14/14, history597 compatibility, no known critical defect within tested source scope. Joint exact60 diagnostic only.",
+  "budget": {
+    "max_model_attempts": 2,
+    "max_tokens": 192,
+    "max_elapsed_ms": 90000
+  },
+  "first_only": {
+    "Engine_processes": 1,
+    "cases_in_process": 60,
+    "real_cohort_scorer_processes": 1,
+    "helper_calls_in_process": 1,
+    "probe_timeout_seconds": 60,
+    "retry_rescore_relabel": 0,
+    "restart_after_marker": "Refuse and preserve original partial/failed/incomplete; never treat missing/error/refusal as TN."
+  },
+  "future_stages": [
+    "Only after separate explicit parent notice, exclusive authoring-start receipt binds M0 hash and authorization.",
+    "Genuinely new30 semantic pairs60cases/30positive30negative; no old body/draft/template transformations. Separate canonical anchor, no aliases, exact proposal, nonzero budget; labels/rationale outside input.",
+    "Before observation, independent scope/rationale review and frozen STATIC_ONLY schema checker; any pre-M1 correction preserves original bytes/static/error/diff/reason/polarity purpose.",
+    "Frozen freeze_corpus.py checks unchanged M0 and complete authorship/input/gold/scope/static/hash/time bindings and writes readonly M1.",
+    "Frozen execute_first.py invokes byte-identical first-run.py exactly once, one supplied runtime process60; preserve exclusive first raw/started/finished/stderr/errors.",
+    "Frozen score.py one real process, exclusive start marker, strict schema/version/binding/completeness/provenance then one helper call with explicit frozen config. No legacy scorer.",
+    "Literal raw/effective tuples retained; no component-risk inference or post-observation reinterpretation.",
+    "Close first review/receipt/new result README/old+new recursive self-excluding finalmanifest/fsync/readonly, verify source/runtime/old829/parent30, notify anchor and stop. Parent copy/hash/closure verification governs freeze release."
+  ],
+  "future_authoring_schema": {
+    "authoring-start.json": [
+      "utc",
+      "evaluator_freeze_sha256",
+      "authorization_reference"
+    ],
+    "cases.json_header": [
+      "identity",
+      "authored_utc",
+      "evaluator_freeze_sha256",
+      "authoring_start_sha256",
+      "cases"
+    ],
+    "case": [
+      "id",
+      "pair_id",
+      "polarity",
+      "axis",
+      "semantic_basis",
+      "rationale",
+      "expected",
+      "input"
+    ],
+    "expected": [
+      "v17_requested_relation strict bool",
+      "v30_relevant strict bool"
+    ],
+    "scope-review.json": [
+      "reviewed_utc",
+      "cases_sha256",
+      "inputs_sha256",
+      "reviewed_cases60",
+      "Engine_invocations0",
+      "scorer_invocations0",
+      "labels_changed_after_observation=false"
+    ]
+  },
+  "observation_contract": "Inherited v26 strict duplicate/nonfinite JSON, row ID/missing/foreign/duplicate/schema/version/enum/binding/contract validation; typed invocation int returncode and required execution_error; nonzero exit/stderr/incomplete/provenance failure => NO_GO. Incomplete never joint success or TP/FP/TN/FN.",
+  "provenance": "Actual M0 before authoring, M1 before first; unchanged M0 subset, actual checked hashes/head/command/guards/time/raw readonly/scorer marker. Future controls derived from actual files, not parent assertions.",
+  "source_only_controls": {
+    "receipt_sha256": "01e6f3a2dc478d62d23518b9226b85924882fabc7e75ba79aed0007693296756",
+    "receipt_copies": 30,
+    "receipt_immutable_capture": "Captured before full packaging; original pending text is historical and never updated.",
+    "parent_reported_source": "1400/1400, original14/14, history597 whole byte equality, v26v29 all60 original first equality, source-scoped critical[]. Normal27process/2011inputs; not evaluator replay.",
+    "parent_full_report": "Completed1599PASS/0FAIL/8existingignore/8 commands exit0. First sandbox loopback5 denied; preserved logs and same-source permitted final2 success. Not independently rerun.",
+    "separate_authorization": "Full success is necessary and does not authorize authorship before M0 review and new notice."
+  },
+  "preservation": {
+    "old_source_files": 824,
+    "separate_preparation_files": 5,
+    "old_reference_files_including_anchor": 829,
+    "old_anchor": "8214db3607e32d707da797fb90bb4af77b1101db976b6f0d0a60f96d49cdb921",
+    "old_v26_first": "FAIL/F1.846154 immutable; no retrospective scoring/label/raw/protocol change."
+  },
+  "risk_axes": "Rawrisk alone cannot make semantic-negative gold. Exact raw/effective tuples are observations only; enum alone proves no hidden component retention/loss. Returned model_ambiguous does not imply a live model call.",
+  "limits": [
+    "Parent source-to-runtime Cargo provenance is pinned reported evidence; evaluator does not compile/execute or decode implementation/compiler metadata.",
+    "Cooperative filesystem/hash/receipt ordering, no hostile-writer atomic check-exec guarantee or semantic proof of fresh authorship.",
+    "Source gate is not real24/normal CLI/answer grounding F1/live provider/human/release/adoption. Groq remains STOPPED."
+  ],
+  "forbidden_current": {
+    "new_case_gold_input_authoring_start": 0,
+    "Engine_real_cohort_scorer": 0,
+    "provider_model_network_Oracle": 0,
+    "Cargo_sharedtarget_Git_runtime_root_source_prep_mutations": 0,
+    "extra_agents_real24_authorship": 0
+  }
+}

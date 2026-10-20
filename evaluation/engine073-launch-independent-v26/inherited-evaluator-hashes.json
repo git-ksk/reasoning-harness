@@ -1,0 +1,22 @@
+{
+  "basis": "Only inherited public evaluator/scaffolding and pure output fixtures read; old author/case/input/results bodies not opened. No archived worktree restored.",
+  "files": {
+    "evaluator_contract.py": "89f1004fff9e7b20b26da012312ed0f2de6cf39ae4cd8a4e3c4c38ab6574bb16",
+    "score.py": "e786f7c0e3af45c17769552818c0e3be1d9ec5fa26d0f5472a3cff013d1f543b",
+    "test_evaluator.py": "0150df7d5d8c2ada90a6ff95924846426cbc8a6a6c111fe9832c16a28855e0bc",
+    "static_preflight.py": "405995fa45de6fab26363a2615b87c0ceddd1416ec45d41541c0236f9f1b95d4",
+    "freeze_corpus.py": "054b56480844427fa22e9e59fd78f0518f869183dcfa98671a5420fe6c5b0de6",
+    "execute_first.py": "f49c6350e438078a399386e1fb908a57aa2b298e08d2d8cb670fe76addb5709f",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "legacy_parse_reference.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3"
+  },
+  "byte_identical": [
+    "probe.rs",
+    "first-run.py",
+    "legacy_parse_reference.py",
+    "source_gate_policy.json",
+    "source_gate_helper.py"
+  ],
+  "adaptation": "New v26 identity/li26/candidate source908; preserved old source count725; pure parent-count fixtures1340. Behavioral changes, if any, separately recorded before M0."
+}

@@ -1,0 +1,81 @@
+{
+  "stage": "roles03",
+  "identity": {
+    "private_development_source_sha256": "6a76616d852f2419a61cd3969c3d2d61e7514c99cba7b359ba317f84967b5ae9",
+    "base_source_commit": "95053007bba54c728eee428837b22eb9d52a4f61",
+    "core": {
+      "path": "/private/tmp/engine073-source26-prototype-target/debug/libreasoning_harness_core.rlib",
+      "sha256": "21773a3403b396b8a7ced04c8ebb8a33a120c9873ae2f6b71f53189a48b60b3a"
+    },
+    "serde": {
+      "path": "/private/tmp/engine073-source26-prototype-target/debug/deps/libserde_json-fdb0c033eb5b5773.rlib",
+      "sha256": "23eeba39a0048e6b47f5a478b5aae813c69e7858d40085c643ce1dbed61611d3"
+    },
+    "compiler_metadata_sha256": "67b742d958325c8830fc42fd28d04205e30cea6a432fbf85fe8d81db257a10a2",
+    "executable_sha256": "20697ae310300fc0bd25e909e6d2a39b85dbf62f2a856af71eea99d50f91f451",
+    "inputs_sha256": "95be6aa3f505d87e8d3804ecc5f47ee26419f37fb15cb5122fac2a0a5fdfd462",
+    "cases_sha256": "10213396b11cc6d0860d809c7a9e9b3a19c25ded98ae1617f41fc8d65e25a5fc"
+  },
+  "axes": {
+    "v17_requested_relation": {
+      "confusion": {
+        "tp": 21,
+        "fp": 0,
+        "tn": 30,
+        "fn": 9
+      },
+      "n": 60,
+      "positive_support": 30,
+      "negative_support": 30,
+      "precision": 1.0,
+      "recall": 0.7,
+      "f1_positive": 0.8235294117647058,
+      "specificity": 1.0,
+      "accuracy": 0.85,
+      "balanced_accuracy": 0.85,
+      "predicted_positive_rate": 0.35,
+      "false_accept_rate": 0.0,
+      "false_withhold_rate": 0.3,
+      "mcc": 0.7337993857053428
+    },
+    "v30_relevant": {
+      "confusion": {
+        "tp": 20,
+        "fp": 0,
+        "tn": 30,
+        "fn": 10
+      },
+      "n": 60,
+      "positive_support": 30,
+      "negative_support": 30,
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1_positive": 0.8,
+      "specificity": 1.0,
+      "accuracy": 0.8333333333333334,
+      "balanced_accuracy": 0.8333333333333333,
+      "predicted_positive_rate": 0.3333333333333333,
+      "false_accept_rate": 0.0,
+      "false_withhold_rate": 0.3333333333333333,
+      "mcc": 0.7071067811865475
+    }
+  },
+  "joint_passed": 50,
+  "failed_ids": [
+    "li25-015",
+    "li25-023",
+    "li25-027",
+    "li25-031",
+    "li25-035",
+    "li25-037",
+    "li25-043",
+    "li25-045",
+    "li25-051",
+    "li25-053"
+  ],
+  "unsafe_ids": [],
+  "scope": "same consumed v25 development only; original first FAIL unchanged; no fresh gate",
+  "Engine_development_processes": 1,
+  "inputs": 60,
+  "canonical_scorer_provider_model_Oracle_calls": 0
+}

@@ -1,0 +1,126 @@
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	﻿2026-10-19T12:01:52.2347913Z ##[group]Run set -euo pipefail
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2349307Z ^[[36;1mset -euo pipefail^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2350503Z ^[[36;1mtest "$GITHUB_RUN_ATTEMPT" = 1^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2353659Z ^[[36;1mgh api 'repos/git-ksk/reasoning-harness/actions/runs?event=push&head_sha=877388b3f168ff5430febe9f6a6fd5baecb85d04&per_page=100' > /tmp/run-reservation.json^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2357087Z ^[[36;1mpython3 - <<'PYGUARD'^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2358263Z ^[[36;1mimport json,os^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2359816Z ^[[36;1mruns=json.load(open('/tmp/run-reservation.json'))['workflow_runs']^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2362481Z ^[[36;1mmatching=[r for r in runs if r['path']=='.github/workflows/engine073-realworld-independent-v1.yml']^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2365508Z ^[[36;1massert len(matching)==1 and str(matching[0]['id'])==os.environ['GITHUB_RUN_ID']^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2367376Z ^[[36;1mPYGUARD^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2369892Z ^[[36;1martifact_id=$(python3 -c "import json; print(json.load(open('evaluation/engine073-realworld-M0-v1/receipt.json'))['runtime_artifact_id'])")^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2373630Z ^[[36;1mgh api "repos/git-ksk/reasoning-harness/actions/artifacts/$artifact_id/zip" > /tmp/runtime.zip^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2376265Z ^[[36;1mmkdir -p /tmp/m0-runtime /tmp/frozen /tmp/results^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2377941Z ^[[36;1munzip -q /tmp/runtime.zip -d /tmp/m0-runtime^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2379643Z ^[[36;1mdocker load -i /tmp/m0-runtime/runtime-image.tar.gz^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2381673Z ^[[36;1mimage_id=$(docker image inspect engine073-runtime --format '{{.Id}}')^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2384469Z ^[[36;1mcp evaluation/engine073-realworld-M0-v1/receipt.json /tmp/frozen/M0.json^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2387239Z ^[[36;1mcp evaluation/engine073-realworld-M0-v1/groq-recovery.json /tmp/frozen/groq-recovery.json^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2390064Z ^[[36;1mcp -R evaluation/engine073-realworld-independent-v1-input /tmp/frozen/corpus^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2396506Z ^[[36;1mdocker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/m0-runtime:/image:ro engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/verify_M0.py --provider 'mistral' --receipt /frozen/M0.json --image-archive /image/runtime-image.tar.gz --actual-image-id "$image_id" --repo /repo^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2402402Z ^[[36;1mm1=$(sha256sum /tmp/frozen/corpus/manifest.json | cut -d' ' -f1)^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2406867Z ^[[36;1mdocker run --rm --read-only --tmpfs /tmp -v /tmp/frozen:/frozen engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/prepare_sources.py --corpus-dir /frozen/corpus --M1-sha256 "$m1"^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2410645Z ^[[36;1mrecovery=()^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2411727Z ^[[36;1mif test 'mistral' = groq; then^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2413376Z ^[[36;1m  recovery=(--groq-recovery-file /frozen/groq-recovery.json)^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2415189Z ^[[36;1mfi^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2420231Z ^[[36;1mdocker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen -v /tmp/results:/output engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/make_plan.py --M0-receipt /frozen/M0.json --corpus-dir /frozen/corpus --M1-sha256 "$m1" --provider 'mistral' --output /output/plan.json "${recovery[@]}"^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2425918Z ^[[36;1mchmod -R a-w /tmp/frozen^[[0m
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2489251Z shell: /usr/bin/bash -e {0}
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2490364Z env:
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2501156Z   GH_TOKEN: ***
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:01:52.2502150Z ##[endgroup]
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:01.7254526Z Loaded image: engine073-runtime:latest
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:02.3100128Z {"M0": "VERIFIED", "model_provider_calls": 0}
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:03.9852875Z {"full_sources_verified": 12, "model_provider_calls": 0}
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.4725005Z {"planned_jobs": 72, "token_reservation": 1456128, "auth_or_model_calls": 0}
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5183243Z chmod: changing permissions of '/tmp/frozen/corpus/raw': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5184650Z chmod: changing permissions of '/tmp/frozen/corpus/raw/git-2.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5186129Z chmod: changing permissions of '/tmp/frozen/corpus/raw/cmake-2.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5187031Z chmod: changing permissions of '/tmp/frozen/corpus/raw/curl-1.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5187691Z chmod: changing permissions of '/tmp/frozen/corpus/raw/openssl-2.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5188331Z chmod: changing permissions of '/tmp/frozen/corpus/raw/cmake-1.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5189394Z chmod: changing permissions of '/tmp/frozen/corpus/raw/sqlite-2.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5190529Z chmod: changing permissions of '/tmp/frozen/corpus/raw/openssl-1.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5191267Z chmod: changing permissions of '/tmp/frozen/corpus/raw/redis-1.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5191951Z chmod: changing permissions of '/tmp/frozen/corpus/raw/sqlite-1.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5192572Z chmod: changing permissions of '/tmp/frozen/corpus/raw/curl-2.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5193163Z chmod: changing permissions of '/tmp/frozen/corpus/raw/git-1.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5193753Z chmod: changing permissions of '/tmp/frozen/corpus/raw/redis-2.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5194819Z chmod: changing permissions of '/tmp/frozen/corpus/normalized': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5195453Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/git-2.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5196336Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/cmake-2.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5196993Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/curl-1.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5197654Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/openssl-2.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5198310Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/cmake-1.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5198977Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/sqlite-2.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5199635Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/openssl-1.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5200295Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/redis-1.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5200942Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/sqlite-1.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5201593Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/curl-2.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5202226Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/git-1.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5202862Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/redis-2.txt': Operation not permitted
+first-mistral	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:04.5214781Z ##[error]Process completed with exit code 1.
+first-google	Verify unique first identity and download the reviewed M0 runtime	﻿2026-10-19T12:02:05.7593929Z ##[group]Run set -euo pipefail
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7594317Z ^[[36;1mset -euo pipefail^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7594586Z ^[[36;1mtest "$GITHUB_RUN_ATTEMPT" = 1^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7595331Z ^[[36;1mgh api 'repos/git-ksk/reasoning-harness/actions/runs?event=push&head_sha=877388b3f168ff5430febe9f6a6fd5baecb85d04&per_page=100' > /tmp/run-reservation.json^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7596079Z ^[[36;1mpython3 - <<'PYGUARD'^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7596337Z ^[[36;1mimport json,os^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7596698Z ^[[36;1mruns=json.load(open('/tmp/run-reservation.json'))['workflow_runs']^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7597333Z ^[[36;1mmatching=[r for r in runs if r['path']=='.github/workflows/engine073-realworld-independent-v1.yml']^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7597969Z ^[[36;1massert len(matching)==1 and str(matching[0]['id'])==os.environ['GITHUB_RUN_ID']^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7598389Z ^[[36;1mPYGUARD^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7598969Z ^[[36;1martifact_id=$(python3 -c "import json; print(json.load(open('evaluation/engine073-realworld-M0-v1/receipt.json'))['runtime_artifact_id'])")^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7599864Z ^[[36;1mgh api "repos/git-ksk/reasoning-harness/actions/artifacts/$artifact_id/zip" > /tmp/runtime.zip^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7600609Z ^[[36;1mmkdir -p /tmp/m0-runtime /tmp/frozen /tmp/results^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7600997Z ^[[36;1munzip -q /tmp/runtime.zip -d /tmp/m0-runtime^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7601382Z ^[[36;1mdocker load -i /tmp/m0-runtime/runtime-image.tar.gz^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7601837Z ^[[36;1mimage_id=$(docker image inspect engine073-runtime --format '{{.Id}}')^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7602623Z ^[[36;1mcp evaluation/engine073-realworld-M0-v1/receipt.json /tmp/frozen/M0.json^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7603250Z ^[[36;1mcp evaluation/engine073-realworld-M0-v1/groq-recovery.json /tmp/frozen/groq-recovery.json^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7603889Z ^[[36;1mcp -R evaluation/engine073-realworld-independent-v1-input /tmp/frozen/corpus^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7605426Z ^[[36;1mdocker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/m0-runtime:/image:ro engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/verify_M0.py --provider 'google' --receipt /frozen/M0.json --image-archive /image/runtime-image.tar.gz --actual-image-id "$image_id" --repo /repo^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7606838Z ^[[36;1mm1=$(sha256sum /tmp/frozen/corpus/manifest.json | cut -d' ' -f1)^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7607816Z ^[[36;1mdocker run --rm --read-only --tmpfs /tmp -v /tmp/frozen:/frozen engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/prepare_sources.py --corpus-dir /frozen/corpus --M1-sha256 "$m1"^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7608704Z ^[[36;1mrecovery=()^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7608947Z ^[[36;1mif test 'google' = groq; then^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7609320Z ^[[36;1m  recovery=(--groq-recovery-file /frozen/groq-recovery.json)^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7609681Z ^[[36;1mfi^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7611057Z ^[[36;1mdocker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen -v /tmp/results:/output engine073-runtime python3 -B /repo/evaluation/engine073-realworld-evaluator-v1/make_plan.py --M0-receipt /frozen/M0.json --corpus-dir /frozen/corpus --M1-sha256 "$m1" --provider 'google' --output /output/plan.json "${recovery[@]}"^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7612408Z ^[[36;1mchmod -R a-w /tmp/frozen^[[0m
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7680739Z shell: /usr/bin/bash -e {0}
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7681048Z env:
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7684192Z   GH_TOKEN: ***
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:05.7684422Z ##[endgroup]
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:16.0041590Z Loaded image: engine073-runtime:latest
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:16.6353987Z {"M0": "VERIFIED", "model_provider_calls": 0}
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:18.5791823Z {"full_sources_verified": 12, "model_provider_calls": 0}
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.0981930Z {"planned_jobs": 72, "token_reservation": 1456128, "auth_or_model_calls": 0}
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1421510Z chmod: changing permissions of '/tmp/frozen/corpus/raw': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1422582Z chmod: changing permissions of '/tmp/frozen/corpus/raw/git-2.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1424016Z chmod: changing permissions of '/tmp/frozen/corpus/raw/cmake-2.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1425188Z chmod: changing permissions of '/tmp/frozen/corpus/raw/curl-1.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1426832Z chmod: changing permissions of '/tmp/frozen/corpus/raw/openssl-2.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1428028Z chmod: changing permissions of '/tmp/frozen/corpus/raw/cmake-1.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1429159Z chmod: changing permissions of '/tmp/frozen/corpus/raw/sqlite-2.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1430505Z chmod: changing permissions of '/tmp/frozen/corpus/raw/openssl-1.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1431694Z chmod: changing permissions of '/tmp/frozen/corpus/raw/redis-1.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1432851Z chmod: changing permissions of '/tmp/frozen/corpus/raw/sqlite-1.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1433984Z chmod: changing permissions of '/tmp/frozen/corpus/raw/curl-2.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1435099Z chmod: changing permissions of '/tmp/frozen/corpus/raw/git-1.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1436226Z chmod: changing permissions of '/tmp/frozen/corpus/raw/redis-2.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1437315Z chmod: changing permissions of '/tmp/frozen/corpus/normalized': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1438462Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/git-2.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1440001Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/cmake-2.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1441671Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/curl-1.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1442925Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/openssl-2.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1444145Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/cmake-1.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1445408Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/sqlite-2.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1446671Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/openssl-1.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1447901Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/redis-1.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1449152Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/sqlite-1.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1450909Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/curl-2.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1452177Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/git-1.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1453408Z chmod: changing permissions of '/tmp/frozen/corpus/normalized/redis-2.txt': Operation not permitted
+first-google	Verify unique first identity and download the reviewed M0 runtime	2026-10-19T12:02:19.1465494Z ##[error]Process completed with exit code 1.

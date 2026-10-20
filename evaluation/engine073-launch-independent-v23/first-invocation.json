@@ -1,0 +1,85 @@
+{
+  "state": "finished",
+  "utc": "2026-10-17T08:32:22.857824+00:00",
+  "command": [
+    "/private/tmp/engine073-launch-independent-v23-probe/probe",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v23/inputs.json"
+  ],
+  "pre_invocation_identity": {
+    "verified_utc": "2026-10-17T08:32:17.084592+00:00",
+    "head": "01dc78b6952ed77cd20001323f6ab032eeec361e",
+    "artifacts": {
+      "evidence_relevance_source": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "sha256": "1eaab74e579683ad14118cc4fed6a5da17ddad53423209dfa2cae3ea4a2a4a13"
+      },
+      "core_rlib": {
+        "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+        "sha256": "9b8c90538c2c0fae34c523f27f151df127fd48fadc13c7a378df4813f74634ae"
+      },
+      "serde_json_rlib": {
+        "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+        "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb"
+      },
+      "opaque_parent_freeze": {
+        "path": "/private/tmp/engine073-source23-freeze.json",
+        "sha256": "64abd33aba21de9a0ae3e3a4b14cc5376acb774abd9b94dd3910982cf9a80f7a"
+      },
+      "probe_executable": {
+        "path": "/private/tmp/engine073-launch-independent-v23-probe/probe",
+        "sha256": "33926e4c5cf6fe66e0d36b5c39e62f7e4a8c09e48f39b350a38394189b3e27c8"
+      },
+      "preserved_metrics_preparation_1": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/docs/engine073-realworld-metrics-preparation.md",
+        "sha256": "9e90707b295ee4e273f7101f0d7d33804bff64c4629d980f9209a1258e6f73e7"
+      },
+      "preserved_metrics_preparation_2": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/docs/engine073-realworld-metrics-preparation.ja.md",
+        "sha256": "30a4f73c4f0cd4a6aa2a284f3243d997dbc1f769751defcb7617659f6605df08"
+      },
+      "preserved_metrics_preparation_3": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/review.json",
+        "sha256": "787da5422330047f4ca23f1020df867bc66eb6794f45fd40c01f72314d7189fc"
+      },
+      "preserved_metrics_preparation_4": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/reviewed-input-sha256.json",
+        "sha256": "76b41a7c06dc1893106695253dc303164e2905881cdeffabe26ca0251f7e36c0"
+      },
+      "preserved_metrics_preparation_5": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-metrics-preparation-v1/artifact-sha256.json",
+        "sha256": "6b83e2b6b090f46da65580bf27486ada831d53e9827d77c0081119fa5c969e22"
+      }
+    },
+    "frozen_files": {
+      "author_cases.py": "929ff7cc018480fa27ad4aee3efab64930d149dc1b8e965a7a72092a402c8ab4",
+      "build-preflight.json": "0ecadcdc059659dd8cb9f4eee9a1b90daa228874bff5224661807d3782a63766",
+      "build.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "build.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cases.json": "ad9ca3a38ac8971d5b7bab0b908f8b7f09bc6cc80b111c9487f791b0334b0dd9",
+      "continuation-preflight.json": "5d54d429f27c65cc751eaf6ded5d2ffe1b78e89e9ab07b382472b11e7f860a7d",
+      "draft-history/initial-static-v1/static-check.json": "37dd858422c590bfaef3cdb01a2124bbdb15191532edae7a6c70c7a782192125",
+      "draft-history/initial-static-v1/static_preflight.py": "462a760378899e7126ac436516af7c2f900ed62eb29483663d7e72212d22584d",
+      "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+      "immutable-predecessor-check.json": "ea4f7e39881fda57045c7b8b676e3b65abd1b5e3b9e1ab65d12b4b994991cb47",
+      "inputs.json": "4f53750a2e1a9689f1c2eab327238016b1fd8bc10dbf47b63f0e0702b3976b88",
+      "pre-freeze-scope-review.json": "8cf5e904d9871e45801a7222d14132add3da4b7263f65accab2f9e8c4ec22243",
+      "pre-freeze-static-revision.json": "280ec8958af5cb50400eab4a690f7bbbf02c0e866ce9de327b2b0688b4c9b2e6",
+      "predecessor-artifact-hashes.json": "583ebd6041a10fa5374d3a452d96fe4aec1d3432c265f5404ec336564e51f3cb",
+      "preserved-preparation-hashes.json": "4ce3f90bbb870cda0f9771bfe31e57c3729b531034225f820f15a4489a0729ea",
+      "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+      "protocol.json": "3a7a4e3a5e0671e079a6e7326e511c0cfa6c10f2d53be35bfcf65fe246316b6f",
+      "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+      "static-preflight.json": "db3b041b588a21f24712c1190953379470ac1870b97a5ddcd8476058c597623d",
+      "static-stage-invocation.json": "b1f59fdfe116dfca47dd24c5d97cf5917b30712040a0983460d77e78b384289e",
+      "static_preflight.py": "7ca24cb29d0126f51593909e7c54514a4207af6b026bda327ff04966c15f89a5"
+    },
+    "manifest_sha256": "edd0ac22a9b756e4ce2b8102b31dd5f7be31a7a341ae7c88cedcad4c8b6e0799"
+  },
+  "returncode": 0,
+  "execution_error": null,
+  "elapsed_seconds": 5.772767624817789,
+  "provider_calls": 0,
+  "retries": 0,
+  "stdout_sha256": "2fe3426acf2ca3889921c1e4da7209b33ce8ad38e3ce6b379b4dbfa0f203c7d8",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

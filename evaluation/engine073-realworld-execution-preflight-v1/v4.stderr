@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/private/tmp/engine073-realworld-evaluator-v1/preflight.py", line 43, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/private/tmp/engine073-realworld-evaluator-v1/preflight.py", line 36, in main
+    assert value['first_ok']==(mode=='ok'),value
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'first_error': 'Protocol', 'first_ok': False, 'loopback_only': True, 'second_error': None, 'second_ok': None}

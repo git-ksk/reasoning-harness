@@ -1,0 +1,22 @@
+{
+  "row_id": "0840fed6617c8dd60e678aa9",
+  "observation_sha256": "472719f3cbfa454a433e9ee64e8e5ee6cb5c37aa8cf9827e2b6f172121c16c0a",
+  "gold": {
+    "id": "structural-only/helper_opt_in",
+    "sha256": "d6c70a03211b140542299e13a0b7bed66813bb796043b4782aefba147d07ccec"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "incomplete",
+  "admission_routes": {},
+  "full_sources": {}
+}

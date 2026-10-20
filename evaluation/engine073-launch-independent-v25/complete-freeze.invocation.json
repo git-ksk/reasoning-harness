@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-17T17:45:39.523312+00:00",
+  "stage": "COMPLETE_M1_FREEZE",
+  "returncode": 0,
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-source25-freeze/reasoning-harness/evaluation/engine073-launch-independent-v25/freeze_corpus.py"
+  ],
+  "stdout_sha256": "103752ba944412ec6591aafd4c7156e77823038d15a4b8bdbd0b3f10b568a0ab",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0
+}

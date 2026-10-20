@@ -1,0 +1,15 @@
+[
+  {
+    "model": "fixture-model",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Engineering guard control."
+      }
+    ],
+    "max_completion_tokens": 32,
+    "seed": 1,
+    "temperature": 0.0,
+    "stream": false
+  }
+]

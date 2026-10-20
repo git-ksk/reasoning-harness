@@ -1,0 +1,9 @@
+{
+  "returncode": 0,
+  "stdout_sha256": "63411bdaa3a42ecbb38871570b27e99de4acfcc8e78a96aa8d92c5a55346e02c",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "provider_model_Oracle_calls": 0,
+  "scorer_invocations": 0,
+  "development_probe_processes": 1,
+  "development_inputs": 60
+}

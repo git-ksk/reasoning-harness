@@ -1,0 +1,38 @@
+{
+  "source_sha": "fd091b182999d874b802dcf92483f71ce359627c",
+  "source_file_sha256": "77727cdc14de86ad4821b1698a43799afb5b42e86d53ef566971623f1d9663f7",
+  "consumed_v20": 9,
+  "blocking_rules": {
+    "li20-009": [
+      "typed_reference_not_excluded"
+    ],
+    "li20-011": [
+      "typed_reference_not_excluded"
+    ],
+    "li20-023": [
+      "target_adverse_clause"
+    ],
+    "li20-024": [],
+    "li20-028": [],
+    "li20-029": [
+      "typed_reference_not_excluded"
+    ],
+    "li20-038": [],
+    "li20-045": [
+      "typed_reference_not_excluded"
+    ],
+    "li20-051": [
+      "target_adverse_clause"
+    ]
+  },
+  "unsafe_without_governing_block": [
+    "li20-024",
+    "li20-028",
+    "li20-038"
+  ],
+  "scope": "temporary instrumented development test only; original independent first results unchanged",
+  "test_pass_meaning": "all9 consumed inputs were traced; not semantic acceptance",
+  "temporary_hooks_removed_before_source_repair": true,
+  "provider_calls": 0,
+  "scorer_calls": 0
+}

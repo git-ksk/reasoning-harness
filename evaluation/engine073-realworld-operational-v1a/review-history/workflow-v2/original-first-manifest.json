@@ -1,0 +1,16 @@
+{
+  "identity": "engine073-realworld-v1-original-operational-FAIL",
+  "run_id": 39248903567,
+  "model_provider_calls": 0,
+  "accuracy_observations": 0,
+  "actual_answer_f1": null,
+  "files": {
+    "run.json": "0a8019c408c0a55554ff3371d5b1a4e658564bd7020fa01c8dc75e6e99aef00f",
+    "failed.log": "eace3c6682873309675e300216f8e15b248c5c69cdd9bdacdb7a4fa692464ba0",
+    "raw/engine073-realworld-first-mistral-39248903567/run-reservation.json": "e476c5183fa7e8d8b0c0c36ef0211432f4ca143bf7c149e4a9f99776c03c7a69",
+    "raw/engine073-realworld-first-google-39248903567/run-reservation.json": "7d07049cf12c305cc3c4b27b9b297a8c81d1d2de228c44ce1be87dcf656d9897",
+    "raw/engine073-realworld-first-groq-39248903567/results/provider-deferred.json": "85b154982c2be3eb44aedfd0e058e7fdb95a7a8eb054785574c5af7cf94f4eef",
+    "raw/engine073-realworld-first-google-39248903567/results/plan.json": "00bf297fb6ba724f18658290efbe59864bff8618d83fc2f04e81ea69f4e45067",
+    "raw/engine073-realworld-first-mistral-39248903567/results/plan.json": "dd516fa5937061f62cd35f97b166533044763a543077af426dbde212a47cabab"
+  }
+}

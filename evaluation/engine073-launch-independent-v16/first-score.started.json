@@ -1,0 +1,12 @@
+{
+  "ordinal": 1,
+  "utc": "2026-10-16T16:00:42.893013+00:00",
+  "command": [
+    "python3",
+    "-B",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v16/score.py"
+  ],
+  "scorer_sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+  "stdout_sha256": "707a25fcd28000888b061b42ea417d8e0076e8d4cf6cf2e9044d0517e43ac334",
+  "rescore": false
+}

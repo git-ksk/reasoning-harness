@@ -1,0 +1,22 @@
+--- execute_first.py.before-diagnostic-review
++++ execute_first.py
+@@ -2,6 +2,9 @@
+ """Future first-only driver. Not invoked during pre-author evaluator preparation."""
+ import sys,time
+ from evaluator_contract import *
++def execution_passed(summary,recorder_returncode,scorer_returncode,scorer_stderr_bytes):
++ return summary.get('decision')=='GO' and recorder_returncode==0 and scorer_returncode==0 and scorer_stderr_bytes==0
++
+ def main():
+  evaluator_integrity();manifest=load(ROOT/'manifest.json')
+  if any((ROOT/n).exists() for n in ['execution.started.json','first-invocation.started.json','first-score.started.json','first-results.json','first-summary.json']):raise ValueError('canonical_restart_refused')
+@@ -22,6 +25,7 @@
+  for n in ['first-results.json','first-summary.json','first-score.started.json','first-score.invocation.json','first-score.stdout.txt','first-score.stderr.txt']:
+   if (ROOT/n).exists():os.chmod(ROOT/n,0o444)
+  summary=load(ROOT/'first-summary.json') if (ROOT/'first-summary.json').exists() else {'outcome':'FAIL','decision':'NO_GO','blockers':['scorer_failed_no_retry']}
+- print(json.dumps({'first_recorder_returncode':first.returncode,'scorer_returncode':score.returncode,'summary':summary},indent=2))
+- return 0 if summary.get('decision')=='GO' else 1
++ passed=execution_passed(summary,first.returncode,score.returncode,(ROOT/'first-score.stderr.txt').stat().st_size)
++ print(json.dumps({'execution_outcome':'PASS' if passed else 'FAIL','first_recorder_returncode':first.returncode,'scorer_returncode':score.returncode,'summary':summary},indent=2))
++ return 0 if passed else 1
+ if __name__=='__main__':raise SystemExit(main())

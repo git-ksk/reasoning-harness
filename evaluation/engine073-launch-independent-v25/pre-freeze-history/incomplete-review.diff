@@ -1,0 +1,11 @@
+--- score.py.before-incomplete-review
++++ score.py
+@@ -92,7 +92,7 @@
+   row=rows.get(c['id']);complete=row is not None and invocation_ok and stderr_bytes==0
+   observed={'v17_requested_relation':row['effective_v17']['relation_scope']=='requested_relation','v30_relevant':row['v30']['disposition']=='relevant'} if row else None
+   helper_rows.append({'id':c['id'],'gold':c['polarity'],'complete':complete,**(observed or {'v17_requested_relation':False,'v30_relevant':False})})
+-  saved={'id':c['id'],'pair_id':c['pair_id'],'polarity':c['polarity'],'axis':c['axis'],'expected':c['expected'],'complete':complete,'status':'incomplete' if row is None else 'pass' if observed==c['expected'] else 'fail','observed':observed,'raw_observation':row}
++  saved={'id':c['id'],'pair_id':c['pair_id'],'polarity':c['polarity'],'axis':c['axis'],'expected':c['expected'],'complete':complete,'status':'incomplete' if not complete else 'pass' if observed==c['expected'] else 'fail','observed':observed,'raw_observation':row}
+   if row:saved.update(effective_relation_scope=row['effective_v17']['relation_scope'],v30_disposition=row['v30']['disposition'],v30_reasons=row['v30']['reasons'],checks={k:observed[k]==v for k,v in c['expected'].items()})
+   scored.append(saved)
+  controls=dict(base,operational_failures=len(errors),**{k:proof.get(k) is True for k in ['labels_frozen_before_observation','candidate_frozen_before_observation','first_observation_immutable']})

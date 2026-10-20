@@ -1,0 +1,11 @@
+{
+  "identity": "engine073-launch-independent-v26",
+  "utc": "2026-10-18T14:15:35.138726+00:00",
+  "stage": "AUTHOR_SAVE_ONLY",
+  "basis": "Explicit parent/user resume after prior usage-limit approval-review failure. Prior author save was rejected and never executed. Existing authoring receipt/M0 retained.",
+  "authoring_start_sha256": "462de5d3a960cd884b36917ce04207421227ad3f668c4c284ef9e9bf5bccf285",
+  "author_program_sha256": "48fcd2e4e6022e3c9e011365e5f812ccae55726d8d2bd2b35ff9175433f63952",
+  "Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "schema_or_gold_changes_after_observation": 0
+}

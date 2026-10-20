@@ -1,0 +1,1328 @@
+{
+  "identity": "engine073-launch-independent-v27",
+  "recorded_utc": "2026-10-18T15:22:55.458624+00:00",
+  "source_first_results_sha256": "2099de4335798878b9201aa8b9cc9325657dcbe75627ee206f766635835213a3",
+  "rows": [
+    {
+      "id": "li27-001",
+      "pair_id": "li27-pair-01",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-002",
+      "pair_id": "li27-pair-01",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-003",
+      "pair_id": "li27-pair-02",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-004",
+      "pair_id": "li27-pair-02",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-005",
+      "pair_id": "li27-pair-03",
+      "polarity": "positive",
+      "complete": true,
+      "status": "fail",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-006",
+      "pair_id": "li27-pair-03",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-007",
+      "pair_id": "li27-pair-04",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-008",
+      "pair_id": "li27-pair-04",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-009",
+      "pair_id": "li27-pair-05",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-010",
+      "pair_id": "li27-pair-05",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-011",
+      "pair_id": "li27-pair-06",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-012",
+      "pair_id": "li27-pair-06",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-013",
+      "pair_id": "li27-pair-07",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-014",
+      "pair_id": "li27-pair-07",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-015",
+      "pair_id": "li27-pair-08",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-016",
+      "pair_id": "li27-pair-08",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-017",
+      "pair_id": "li27-pair-09",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-018",
+      "pair_id": "li27-pair-09",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-019",
+      "pair_id": "li27-pair-10",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-020",
+      "pair_id": "li27-pair-10",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-021",
+      "pair_id": "li27-pair-11",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-022",
+      "pair_id": "li27-pair-11",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-023",
+      "pair_id": "li27-pair-12",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-024",
+      "pair_id": "li27-pair-12",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-025",
+      "pair_id": "li27-pair-13",
+      "polarity": "positive",
+      "complete": true,
+      "status": "fail",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-026",
+      "pair_id": "li27-pair-13",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-027",
+      "pair_id": "li27-pair-14",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-028",
+      "pair_id": "li27-pair-14",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-029",
+      "pair_id": "li27-pair-15",
+      "polarity": "positive",
+      "complete": true,
+      "status": "fail",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-030",
+      "pair_id": "li27-pair-15",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-031",
+      "pair_id": "li27-pair-16",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-032",
+      "pair_id": "li27-pair-16",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-033",
+      "pair_id": "li27-pair-17",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-034",
+      "pair_id": "li27-pair-17",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-035",
+      "pair_id": "li27-pair-18",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-036",
+      "pair_id": "li27-pair-18",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-037",
+      "pair_id": "li27-pair-19",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-038",
+      "pair_id": "li27-pair-19",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-039",
+      "pair_id": "li27-pair-20",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-040",
+      "pair_id": "li27-pair-20",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-041",
+      "pair_id": "li27-pair-21",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-042",
+      "pair_id": "li27-pair-21",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-043",
+      "pair_id": "li27-pair-22",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-044",
+      "pair_id": "li27-pair-22",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-045",
+      "pair_id": "li27-pair-23",
+      "polarity": "positive",
+      "complete": true,
+      "status": "fail",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-046",
+      "pair_id": "li27-pair-23",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-047",
+      "pair_id": "li27-pair-24",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-048",
+      "pair_id": "li27-pair-24",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "unresolved",
+          "relation_scope": "unresolved",
+          "scope_risk": "multiple"
+        },
+        "v29_disposition": "ambiguous",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-049",
+      "pair_id": "li27-pair-25",
+      "polarity": "positive",
+      "complete": true,
+      "status": "fail",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-050",
+      "pair_id": "li27-pair-25",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-051",
+      "pair_id": "li27-pair-26",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-052",
+      "pair_id": "li27-pair-26",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-053",
+      "pair_id": "li27-pair-27",
+      "polarity": "positive",
+      "complete": true,
+      "status": "fail",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-054",
+      "pair_id": "li27-pair-27",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-055",
+      "pair_id": "li27-pair-28",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-056",
+      "pair_id": "li27-pair-28",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-057",
+      "pair_id": "li27-pair-29",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-058",
+      "pair_id": "li27-pair-29",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-059",
+      "pair_id": "li27-pair-30",
+      "polarity": "positive",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    },
+    {
+      "id": "li27-060",
+      "pair_id": "li27-pair-30",
+      "polarity": "negative",
+      "complete": true,
+      "status": "pass",
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      }
+    }
+  ],
+  "interpretation": "Literal tuples copied from original first scorer output. Supplied raw and effective qualification are separate axes. Enum names alone do not establish internal risk retention/loss or algorithmic causes."
+}

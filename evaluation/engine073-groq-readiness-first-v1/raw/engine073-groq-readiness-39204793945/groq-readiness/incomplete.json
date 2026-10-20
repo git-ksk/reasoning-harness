@@ -1,0 +1,5 @@
+{
+  "failure_type": "JSONDecodeError",
+  "usage": "unknown_not_zero",
+  "no_retry": true
+}

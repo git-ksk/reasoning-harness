@@ -1,0 +1,109 @@
+{
+  "identity": "engine073-realworld-operational-amendment-independent-review-v2",
+  "reviewer": "/root/engine07_realworld_independent",
+  "reviewed_utc": "2026-10-19T12:08:52.044881+00:00",
+  "result": "PASS",
+  "scope": "Bounded static review of permission-only successor wrapper; not live execution or acceptance of actual accuracy.",
+  "input_hashes": {
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/.github/workflows/engine073-realworld-independent-v1.yml": "70ae24f709a4ea77731d7f07cb9e34baa8184635b38b9e19607d28495e23ed8c",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/.github/workflows/engine073-realworld-independent-v1a.yml": "6b0414f06b13a1540e5a73ce907c42222daffd4fd19f2e7171c9c805a7bd9b9b",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-operational-v1a/receipt.json": "6e09027ced2fea50e24748b08978e10c9a40142067935311a9e71f4ac5d574f8",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-first-v1-operational-fail/manifest.json": "4061670a15ab061d592be9ad1770e41aa6e1703bd625d1dc2690a86d8b794884",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-first-v1-operational-fail/run.json": "0a8019c408c0a55554ff3371d5b1a4e658564bd7020fa01c8dc75e6e99aef00f",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-first-v1-operational-fail/failed.log": "eace3c6682873309675e300216f8e15b248c5c69cdd9bdacdb7a4fa692464ba0"
+  },
+  "M0_sha256": "4023eb552ee964e0e99550a61a9f4c2d2800d2d994b7e42c439cf3cf7669d4d2",
+  "M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+  "successor_workflow_sha256": "6b0414f06b13a1540e5a73ce907c42222daffd4fd19f2e7171c9c805a7bd9b9b",
+  "draft_amendment_receipt_sha256": "6e09027ced2fea50e24748b08978e10c9a40142067935311a9e71f4ac5d574f8",
+  "original_first_manifest_sha256": "4061670a15ab061d592be9ad1770e41aa6e1703bd625d1dc2690a86d8b794884",
+  "original_first": {
+    "run_id": 39248903567,
+    "verified_original_manifest_files": 7,
+    "model_step_conclusions": {
+      "first-mistral": "skipped",
+      "first-groq": "skipped",
+      "first-google": "skipped"
+    },
+    "model_provider_calls": 0,
+    "accuracy_observations": 0,
+    "actual_answer_f1": null,
+    "retained_outcome": "OPERATIONAL_FAIL_NOT_OBSERVED",
+    "evidence": "Both active lanes stopped after M0/source/72job plan validation at root-owned chmod EPERM. run.json proves all live steps skipped; no saved model/audit/lane observations."
+  },
+  "static_checks": {
+    "live_job_exact_diff_allowlist": "PASS",
+    "bash_syntax_commands": [
+      {
+        "command": [
+          "bash",
+          "-n",
+          "/private/tmp/engine073-realworld-operational-amendment-independent-review-v2/shell-0.sh"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "bash",
+          "-n",
+          "/private/tmp/engine073-realworld-operational-amendment-independent-review-v2/shell-1.sh"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "bash",
+          "-n",
+          "/private/tmp/engine073-realworld-operational-amendment-independent-review-v2/shell-2.sh"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "bash",
+          "-n",
+          "/private/tmp/engine073-realworld-operational-amendment-independent-review-v2/shell-3.sh"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "embedded_python_compile_only": 2,
+    "same_models_budgets_prompt_Engine_runner_args": true,
+    "provider_concurrency_groups_unchanged": true,
+    "unique_new_path_tag_attempt1_guard": true,
+    "repair_literal_same_path_only": true,
+    "post_chmod_network_none_M1_provenance_before_credentials": true,
+    "live_frozen_mount_read_only": true,
+    "Groq_deferred_and_full3_no_GO": true,
+    "no_original_workflow_image_M0_M1_source_mutation": true
+  },
+  "amendment_binding": "Before credential env/first lane, asserts operational identity, original run/zero observations, unchanged semantics/gold, independent PASS+manifest digest, new workflow digest, original first manifest digest, same M0/M1 digest. Runtime image verification and run_lane artifact binding are inherited unchanged.",
+  "final_receipt_completion_allowed": {
+    "state": "May complete draft state after this PASS",
+    "independent_review.result": "PASS",
+    "independent_review.manifest_sha256": "This review artifact-manifest.json external SHA256",
+    "all_other_fields": "Keep exact reviewed draft values and workflow bytes. Finalization is metadata only; no new M0/M1, no corpus/model/threshold/source change."
+  },
+  "non_blocking_notes": [
+    "Workflow gates independent_review PASS and manifest hash; receipt state is documentary and must be finalized before trigger.",
+    "The first-only guard is inherited cooperative frozen-tag/path/SHA control, not a defense against an operator moving the tag or authorizing another identity.",
+    "Full review-directory preservation/embedded-report semantics rely on the reviewed immutable Git commit and operator freeze, not an adversarial self-editing repository model."
+  ],
+  "limits": [
+    "sudo ownership repair was reviewed statically, not executed by the reviewer on GitHub.",
+    "No new provider/Engine/scorer accuracy observation exists.",
+    "A later model/operational failure must remain first failure and cannot be retried or rescored under this approval.",
+    "No fresh independent corpus is claimed; this reuses the untouched, previously semantically unobserved M1 after a separately declared operational amendment."
+  ],
+  "reviewer_Engine_actual_scorer_model_provider_Oracle_calls": 0,
+  "authorship_required_again": false,
+  "decision": "No remaining code blocker found within the declared operation-only repair. Parent may bind this review and finalize only permitted receipt fields, then use the separately declared first v1a identity."
+}

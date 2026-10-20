@@ -1,5 +1,13 @@
 # プロジェクト状況
 
+**最新状況（2026-10-20、消費済み24問の開発測定）:** Googleは72ジョブ完走・320attempt/259540tokens。初回捕捉76complete/20incompleteで、再取得・複数項目照合の誤拒否を独立確認した。Mistralは初問の通常両arm/helper完了後、2問目の既知usage欠落で停止（#548/PR549で別修正）。新規API追加はMistral残量確認まで保留。後継オフライン捕捉と独立注釈・F1採点は未完了。元v1/初回は不変、0.7.3公開・CLI採用NO_GO。[測定結果と範囲](../evaluation/engine073-realworld-v2-development-results-v1/README.md)。
+
+**最新状況（2026-10-19、初回実戦評価・独立採点済み）:** M0/M1を固定し、未使用だった公式12文書・6製品の実資料24問でMistral/Googleを実行したが、CLI論理呼び出し上限6と失敗時の使用量欠落で早期停止。通常回答は評価器の2段階終端照合にも不備があり、24問全体のF1は全provider/trackで`null`、**採用NO_GO**。採点可能なGoogle補助API1問/armのみ、baseline/候補ともcase F1=0.00・claim F1=1.00（最終判定conflict、改善なし）。これは全体性能ではない。[初回結果・独立レビュー・修正順序](../evaluation/engine073-realworld-first-v1a-results/README.md)。次は#540の結果回収・終端照合・失敗時診断を修正して実経路を確認し、別途固定した評価へ進む。Groqは認証前延期を維持。元raw/gold/予算/初回FAILは不変、モデル再試行・再採点なし。公開CLI0.5.5/Engine0.6.1、Engine0.7.3未公開。以下の日付付き準備記録は履歴。
+
+**実資料評価の接続準備（2026-10-19）:** 通常CLI保存記録と全文資料・引用位置の照合に加え、既存Node開発入力で対象APIを呼ぶ実験hostを保存した。0.6.1/現在候補とも関連性は保留・引用0。別の手動binding対照では出典付き原文表示を確認し、関連性成功へ混ぜない。新規独立問題0・実回答F1未測定。次は意味/引用裁定・欠測会計・数値予算を完全M0へ結ぶ。[実験host](engine073-active-source-host-development.ja.md)、[通常CLI記録の照合](engine073-cli-trace-binding-development.ja.md)。
+
+**評価運用の見直し（2026-10-19）:** 合否は事前固定した独立F1/P/Rと安全性で判断する。既知対照の件数・満点は完成度にしない。着手済み6件の修正後は合成60件の追加・修正ループを止め、実資料・通常CLIの経路/traceと完全採点器へ重点を戻す。既知回帰は再発防止対象を著作前に定義し、新holdoutの全FNを自動で100%必須へ追加しない。凍結初回は不変。[詳細](engine073-evaluation-focus.ja.md)。
+
 日本語 | [English](project-status.md)
 
 これは**現在地だけを短く読むためのstatus**です。ユーザーやcontributorが、長いresearch chronologyを読まなくても「今何がreleaseされ、何を進めているか」を把握できるようにしています。
@@ -19,11 +27,13 @@
 
 中心となるtrust boundaryは変わりません。model outputはuntrusted candidate / rendererであり、evidence admission、qualification、verification、bounded resolution、最終的に表示するfactual claimのauthorityはHarness側が持ちます。最終freeze済みEngine 0.4.2 natural-language release evaluationは、Mistral、Groq、Gemini 3.5 Flash-Lite、Gemma 4 31Bを独立にPASSしています。詳細は[v36 release acceptance](natural-language-e2e-v36-result.ja.md)を参照してください。
 
-## 次の開発 — 実戦評価を先行
+## 次の開発 — Engine0.7.3の修正と再評価
 
-[#531](https://github.com/git-ksk/reasoning-harness/issues/531)／[Milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12)で、**実資料の0.6.1/0.7.2比較 → 必要な修正 → 新規再評価 → CLI採用 → 正式配布**の順に進めます。公開済み0.7.2に現在形の撤回・非実在の判定漏れが再現したため、#520を再オープンし、CLI採用はNO-GOです。#488/#489/#491は測定で必要性が確認できた場合だけ実装します。
+[0.7.3ロードマップ](engine-0.7.3-roadmap.ja.md)／[計画 #538](https://github.com/git-ksk/reasoning-harness/issues/538)／[評価 #531](https://github.com/git-ksk/reasoning-harness/issues/531)で、**#520修正 → 安全なrunner・通常経路の接続確認 → 小規模開発確認 → 新規独立の実資料受入 → ソース公開 → 専用CLI採用・配布**の順に進めます。0.7.3は未公開の計画です。0.7.2の公開物・比較結果は保持し、残存不具合があるため採用不可です。#488/#489/#491は実測で必要な場合だけ実装します。
 
-通常の質問から最終回答までのE2Eと、任意の資料照合helper評価を分けます。両タグの実ビルドによる実資料5件・11入力の予備比較は完了しましたが、3社の本評価と新しい独立受入は未実施です。採用チェックは0/6。[計画・合格条件・予備結果](engine-07-realworld-evaluation.ja.md)を参照。CLI0.5.5 / Engine0.6.1の公開と#506の配布受入は別工程です。
+[初回v2/v3の結果](engine07-realworld-development-results.ja.md)は不合格・不完全のままです。#535の診断保持・#537の停止制御・#541の共有runnerはmerge済みですが、live受入は未完了。Groqは記録済みの日次枯渇により追加起動を止めています。通常回答の改善と新規独立受入は未確認、採用1/6は開発比較・限界・NO-GO記録のみです。公開CLI0.5.5 / Engine0.6.1と#506の配布受入は別工程です。
+
+修正候補 `ab3c632` は、同じ観測済みv27の開発評価で両API TP30/FP0/TN30/FN0、P/R/F1=1.000。元の独立v27初回F1 .888889/Recall .8/NO_GOは変更しない。完全な印字属性・同roleのowner/複数参照・括弧内の属性限定を共通処理で修正した。修正した不具合と安全性境界の退行を確認し、全体1605PASS/0FAIL/既存ignore8・strict Clippy/fmt、元14・歴史597byte互換を保存。過去1400は同じsourceの通常成果物で一度確認し、rootでは必要な60/14/597照合に絞った。件数・開発満点を完成度にせず、次の合成60件は作らない。次は実資料・通常CLIのfeature-active経路/traceと完全採点器・数値予算へ重点を戻す。主張算術/表示binding部品32検証は準備のみ、独立部品レビューは利用上限で未完了。全928原参照は不変。実24問0/24・実回答F1未測定・Groq停止、sourceマージ/Engine公開/CLI採用NO_GO。[方針](engine073-evaluation-focus.ja.md)、[保存済み修正](../evaluation/engine073-launch-development-v27-bounded-properties/README.md)、[原独立判定](engine073-v27-decision.ja.md)。
 
 ## 今できること
 

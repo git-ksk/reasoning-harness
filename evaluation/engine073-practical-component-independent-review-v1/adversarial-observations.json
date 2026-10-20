@@ -1,0 +1,252 @@
+{
+  "scope": "new constructed component fixtures only; not semantic gold, fresh evaluation cases or rescoring of old first output",
+  "existing_metrics_tests": {
+    "name": "existing-metrics-pure32",
+    "tests_run": 32,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "successful": true,
+    "elapsed_seconds": 0.0030038757249712944,
+    "Engine_provider_model_network_Oracle_real_cohort_scorer_calls": 0
+  },
+  "existing_trace_pure_tests": {
+    "name": "existing-trace-inmemory4",
+    "tests_run": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "successful": true,
+    "elapsed_seconds": 0.0010293330997228622,
+    "Engine_provider_model_network_Oracle_real_cohort_scorer_calls": 0
+  },
+  "observations": [
+    {
+      "id": "display-occurrence-reused",
+      "expected": "reject one occurrence ID mapped to two distinct displayed occurrences, or explicitly model/count all covered occurrences",
+      "actual": "accepted",
+      "artifact_fact_spans": 2,
+      "reported_claim_occurrences": 1,
+      "reported_arithmetic_occurrences": 1,
+      "semantic_f1_from_constructed_annotation": 1.0,
+      "result": {
+        "display_binding": {
+          "captured_bundle_sha256": "be42093d2a0ddb2ff3bc4413d1d7807ca5661d622ddc7e8c227e1473633965d7",
+          "artifacts": 2,
+          "segments": 2,
+          "claim_occurrences": 1,
+          "declared_byte_coverage": "COMPLETE",
+          "semantic_segmentation": "EXTERNAL_REVIEW_REQUIRED",
+          "trace_and_support": "NOT_VERIFIED"
+        },
+        "claim_metrics": {
+          "id": "fixture-run",
+          "provider": "fixture",
+          "track": "e2e_normal",
+          "arm": "candidate",
+          "family": "structural",
+          "answerability": "full",
+          "observation_sha256": "be42093d2a0ddb2ff3bc4413d1d7807ca5661d622ddc7e8c227e1473633965d7",
+          "operation": "complete",
+          "review_complete": true,
+          "reviewer": {
+            "id": "fixture",
+            "role": "host"
+          },
+          "semantic_metrics_available": true,
+          "blockers": [],
+          "counts": {
+            "displayed_unique_claims_A": 1,
+            "grounded_claims_S": 1,
+            "required_groups_G": 1,
+            "satisfied_groups_H": 1,
+            "displayed_claim_occurrences": 1
+          },
+          "matched_groups": [
+            "required"
+          ],
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "f1_null_or_zero_reason": null,
+          "known_hard_violations": {},
+          "full_display_safety_audit_complete": true
+        },
+        "acceptance": "NOT_EVALUATED"
+      }
+    },
+    {
+      "id": "display-distinct-occurrence-control",
+      "actual": "accepted_with_two_occurrences_one_proposition",
+      "result": {
+        "display_binding": {
+          "captured_bundle_sha256": "be42093d2a0ddb2ff3bc4413d1d7807ca5661d622ddc7e8c227e1473633965d7",
+          "artifacts": 2,
+          "segments": 2,
+          "claim_occurrences": 2,
+          "declared_byte_coverage": "COMPLETE",
+          "semantic_segmentation": "EXTERNAL_REVIEW_REQUIRED",
+          "trace_and_support": "NOT_VERIFIED"
+        },
+        "claim_metrics": {
+          "id": "fixture-run",
+          "provider": "fixture",
+          "track": "e2e_normal",
+          "arm": "candidate",
+          "family": "structural",
+          "answerability": "full",
+          "observation_sha256": "be42093d2a0ddb2ff3bc4413d1d7807ca5661d622ddc7e8c227e1473633965d7",
+          "operation": "complete",
+          "review_complete": true,
+          "reviewer": {
+            "id": "fixture",
+            "role": "host"
+          },
+          "semantic_metrics_available": true,
+          "blockers": [],
+          "counts": {
+            "displayed_unique_claims_A": 1,
+            "grounded_claims_S": 1,
+            "required_groups_G": 1,
+            "satisfied_groups_H": 1,
+            "displayed_claim_occurrences": 2
+          },
+          "matched_groups": [
+            "required"
+          ],
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "f1_null_or_zero_reason": null,
+          "known_hard_violations": {},
+          "full_display_safety_audit_complete": true
+        },
+        "acceptance": "NOT_EVALUATED"
+      }
+    },
+    {
+      "id": "model-response-after-terminal",
+      "expected": "reject response completing an outstanding model request after final terminal display",
+      "actual": "STRUCTURAL_MATCH",
+      "ordered_events": [
+        {
+          "sequence": 0,
+          "kind": "model_request"
+        },
+        {
+          "sequence": 1,
+          "kind": "evidence_admission"
+        },
+        {
+          "sequence": 2,
+          "kind": "grounding_state"
+        },
+        {
+          "sequence": 3,
+          "kind": "finalization_state"
+        },
+        {
+          "sequence": 4,
+          "kind": "model_response"
+        }
+      ],
+      "result": {
+        "schema": "ordinary-cli-capture-binding-development-v1",
+        "binding_status": "STRUCTURAL_MATCH",
+        "capture_mode": "host_curated_facts",
+        "provider": "fixture-provider",
+        "model": "fixture-model",
+        "model_calls_in_saved_trace": 1,
+        "display_artifacts": [
+          {
+            "id": "answer",
+            "kind": "final_answer",
+            "text": "fixture.flag = enabled"
+          }
+        ],
+        "display_claims": [
+          {
+            "id": "display-1",
+            "proposition": {
+              "key": "fixture.flag",
+              "value": "enabled"
+            },
+            "start_byte": 0,
+            "end_byte": 22,
+            "text": "fixture.flag = enabled",
+            "internal_bindings": [
+              {
+                "claim_id": "claim1",
+                "receipt_ids": [
+                  "r1"
+                ],
+                "evidence_ids": [
+                  "e1"
+                ]
+              }
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "evidence_id": "e1",
+            "source_id": "fixture-source",
+            "document_id": "fixture-doc",
+            "url": "https://fixture.invalid/doc",
+            "locator": "fixture-section",
+            "source_version": "fixture-version",
+            "origin_group": "fixture-origin",
+            "scope": {
+              "product": "component-fixture"
+            },
+            "quote": "Fixture flag: enabled.",
+            "context_summary": "Structural adapter fixture only.",
+            "synthetic_mutation": false,
+            "reference_facts": {
+              "fixture.flag": "enabled"
+            },
+            "retrieved_at_unix_seconds": 100,
+            "quote_sha256": "19746f70e2849eefb9c4019c02c2f59daa9cd42cd81237c18d4065e718905f00"
+          }
+        ],
+        "displayed_citations": {
+          "status": "NOT_PRESENT_IN_SUPPORTED_CANONICAL_SURFACE",
+          "count": 0
+        },
+        "semantic_support_review": "EXTERNAL_REVIEW_REQUIRED",
+        "actual_answer_f1": null,
+        "acceptance": "NOT_EVALUATED",
+        "source_full_snapshot_integrity": "NOT_CHECKED_BY_TRACE_JOIN"
+      }
+    },
+    {
+      "id": "empty-model-response",
+      "expected_full_M0": "require actual response schema/finish/usage validation before complete operational accounting",
+      "actual": "STRUCTURAL_MATCH",
+      "model_calls_counted": 1,
+      "classification": "integration prerequisite: current component verifies identities, not full response/usage schema"
+    },
+    {
+      "id": "wrong-acquisition-target",
+      "expected": "reject",
+      "actual": "rejected",
+      "reason": "acquisition_wrong_target"
+    },
+    {
+      "id": "wrong-model-correlation",
+      "expected": "reject",
+      "actual": "rejected",
+      "reason": "model_response_before_request"
+    },
+    {
+      "id": "renderer-null-option-guard",
+      "expected": "reject invalid byte span and missing/non-string quote before calling source APIs",
+      "actual": "guard accepted None == None",
+      "compile_returncode": 0,
+      "returncode": 0,
+      "stdout": "guard_accepted_invalid_span_and_absent_quote\n",
+      "scope": "Exact expression isolated from renderer_host.rs19, no Engine linked or executed. No successful finalization/citation exploit claimed."
+    }
+  ],
+  "Engine_actual_cohort_scorer_provider_model_network_Oracle_calls": 0
+}

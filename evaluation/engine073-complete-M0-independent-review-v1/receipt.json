@@ -1,0 +1,17 @@
+{
+  "identity": "engine073-complete-M0-independent-review-v1",
+  "result": "PASS",
+  "closed_utc": "2026-10-19T11:32:37.734784+00:00",
+  "reviewed_M0_draft_sha256": "199898c1d54b70d4d77605849ed5cc7e0abd95b668c00c113f7a7f0f61cd70b3",
+  "reviewed_runtime_files_sha256": "9be785406c62e80d19c11543717fdc40aec358757e38358dd9af523e9ceb09b7",
+  "new_runtime_archive_sha256": "69c2886e78b7e358bbb0d758bfd48c9a330521dc6ddd1a047f48496208d6229b",
+  "provider_execution_scope": {
+    "mistral": true,
+    "google": true,
+    "groq": false
+  },
+  "full_three_provider_acceptance": "NO_GO",
+  "actual_answer_F1": null,
+  "new_accuracy_authored": 0,
+  "state": "REVIEW_CLOSED_AWAIT_FINAL_PARENT_RECEIPT_AND_EXPLICIT_AUTHORING_AUTHORIZATION"
+}

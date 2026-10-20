@@ -1,0 +1,12 @@
+{
+  "archive_verified": true,
+  "files_with_exact_sha256": 13,
+  "frozen_score_recomputed": true,
+  "independent_synthetic_gate_pass": true,
+  "providers": {
+    "google": 6,
+    "groq": 6,
+    "mistral": 3
+  },
+  "run_id": 38013006323
+}

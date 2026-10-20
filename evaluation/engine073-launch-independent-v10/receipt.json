@@ -1,0 +1,216 @@
+{
+  "identity": "engine073-launch-independent-v10",
+  "saved_utc": "2026-10-15T23:28:16.471960+00:00",
+  "candidate_source_sha": "e06c4ec5505644250669df97860ebbe9ccc5cde8",
+  "manifest_sha256": "7f88fb2a6d409d637814fed28c3a159f9bba3ce9b0f8e85e18e25bf79345ea4e",
+  "pre_invocation_guard_matches_manifest": true,
+  "frozen_files_unchanged": true,
+  "v1_v9_evaluation_files_unchanged": true,
+  "old_external_anchor_sha256": "5d4b8b7446d0866144f5aab4fc59187785cdb8f3f745840a0e22ace896262428",
+  "anchored_previous_files": 190,
+  "static_stage": {
+    "outcome": "PASS",
+    "Engine_invocations": 0,
+    "semantic_observations": 0
+  },
+  "first_semantic_summary": {
+    "identity": "engine073-launch-independent-v10",
+    "candidate_source_sha": "e06c4ec5505644250669df97860ebbe9ccc5cde8",
+    "manifest_sha256": "7f88fb2a6d409d637814fed28c3a159f9bba3ce9b0f8e85e18e25bf79345ea4e",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 43,
+    "failed": 17,
+    "incomplete": 0,
+    "positive_passed": 13,
+    "negative_passed": 30,
+    "negative_v17_requested_relation_violations": 0,
+    "negative_v30_relevant_violations": 0,
+    "positive_v17_withheld": 17,
+    "positive_v30_withheld": 17,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "dce3530c9a1f79dd5550739e00528540e66dd638896ae6d13e779e30c08c8b5d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "ddb0b32fb39a70123193206f69bb8dc2faa51c865e0d7398eabadc17b3536c3a"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "first_failed_ids": [
+    "li10-001",
+    "li10-003",
+    "li10-007",
+    "li10-011",
+    "li10-013",
+    "li10-015",
+    "li10-017",
+    "li10-021",
+    "li10-023",
+    "li10-033",
+    "li10-039",
+    "li10-041",
+    "li10-047",
+    "li10-049",
+    "li10-051",
+    "li10-057",
+    "li10-059"
+  ],
+  "negative_safety_violation_ids": [],
+  "positive_failed_ids": [
+    "li10-001",
+    "li10-003",
+    "li10-007",
+    "li10-011",
+    "li10-013",
+    "li10-015",
+    "li10-017",
+    "li10-021",
+    "li10-023",
+    "li10-033",
+    "li10-039",
+    "li10-041",
+    "li10-047",
+    "li10-049",
+    "li10-051",
+    "li10-057",
+    "li10-059"
+  ],
+  "canonical_clip_first_diagnostic": [
+    {
+      "id": "li10-009",
+      "canonical_name": "Elmharbour Clip",
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v30_disposition": "relevant"
+    },
+    {
+      "id": "li10-019",
+      "canonical_name": "Juniperbank Clip",
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v30_disposition": "relevant"
+    },
+    {
+      "id": "li10-027",
+      "canonical_name": "Nettleharbour Clip",
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v30_disposition": "relevant"
+    },
+    {
+      "id": "li10-053",
+      "canonical_name": "Acornfield Clip",
+      "effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "v30_disposition": "relevant"
+    }
+  ],
+  "actual_gap_first_diagnostic": [
+    {
+      "id": "li10-020",
+      "input_raw_scope_risk": "context_gap",
+      "effective_v17": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "multiple"
+      },
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li10-036",
+      "input_raw_scope_risk": "context_gap",
+      "effective_v17": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "ownership_scope"
+      },
+      "v30_disposition": "ambiguous"
+    },
+    {
+      "id": "li10-054",
+      "input_raw_scope_risk": "context_gap",
+      "effective_v17": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "multiple"
+      },
+      "v30_disposition": "ambiguous"
+    }
+  ],
+  "risk_diagnostic_limit": "Not a new score/gate: raw context_gap becomes multiple/ownership_scope/multiple. Does not prove complete component preservation; no pure-risk-only ablation performed.",
+  "original_probe_invocations": 1,
+  "original_scorer_applications": 1,
+  "post_observation_scope_or_label_changes": 0,
+  "post_observation_input_or_first_record_edits": 0,
+  "retries": 0,
+  "rescoring": 0,
+  "external_provider_API_calls": 0,
+  "verified_original_first_hashes": {
+    "manifest.json": "7f88fb2a6d409d637814fed28c3a159f9bba3ce9b0f8e85e18e25bf79345ea4e",
+    "first.stdout.jsonl": "dce3530c9a1f79dd5550739e00528540e66dd638896ae6d13e779e30c08c8b5d",
+    "first.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first-results.json": "7b06c61543f9194e67890d68f6fe425366d155a9807a5a4634e344adc351aabf",
+    "first-summary.json": "82f5fb8b1a94a55874a337e08d063f8f23423db336fd6708ae02a6c49de1d3b4",
+    "first-invocation.json": "ddb0b32fb39a70123193206f69bb8dc2faa51c865e0d7398eabadc17b3536c3a",
+    "first-invocation.started.json": "c3d5c5c6718e91f087507d05ba8bd7b11e26577408e82bd8c288adac35302bc1"
+  },
+  "checked_artifacts_still_match": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "e5e0bd4af579c1fffedb1000a0d1d90263fee2c38cbb693db5a95cefad9a472d",
+      "bytes": 628062
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-876be67fd4b1ef90.rlib",
+      "sha256": "32af053da2787594a5e1c3e16df2071eb16ccafa47526e0191a086ec57ac59db",
+      "bytes": 73825696
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-fdb0c033eb5b5773.rlib",
+      "sha256": "6790acd878f7472babebca4ae5c0e9e4dcaab113f41c3a212935db0380a2bd68",
+      "bytes": 3436712
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v10-probe/probe",
+      "sha256": "e767b31fe02d154e191e98630e5edb574d6daf78048af890d45e5059ec44dd8c",
+      "bytes": 3167880
+    }
+  },
+  "files": {
+    "README.md": "3ccfef2dc4505435e5d1348dfc909a67365d1b832a1400fce672057317d23dd6",
+    "author_cases.py": "0153ea1d045bf20251e9b2bdd660105c2dc3f5a032cd59e36af0ee66a35571b5",
+    "cases.json": "6e96450366223f14eeab4e33eff6168e9613e39ab5dfb04a3648cb0cd14f4e7d",
+    "first-invocation.json": "ddb0b32fb39a70123193206f69bb8dc2faa51c865e0d7398eabadc17b3536c3a",
+    "first-invocation.started.json": "c3d5c5c6718e91f087507d05ba8bd7b11e26577408e82bd8c288adac35302bc1",
+    "first-results.json": "7b06c61543f9194e67890d68f6fe425366d155a9807a5a4634e344adc351aabf",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "first-summary.json": "82f5fb8b1a94a55874a337e08d063f8f23423db336fd6708ae02a6c49de1d3b4",
+    "first.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first.stdout.jsonl": "dce3530c9a1f79dd5550739e00528540e66dd638896ae6d13e779e30c08c8b5d",
+    "immutable-predecessor-check.json": "2434f07f029921d4b7269f517fedfd7844c415f8b476908071ac87c65995b805",
+    "inputs.json": "5c37025ae4e52496d2e1ba1bb251dfd72a1261037b929422b8d86006ddf53a34",
+    "manifest.json": "7f88fb2a6d409d637814fed28c3a159f9bba3ce9b0f8e85e18e25bf79345ea4e",
+    "pre-freeze-scope-review.json": "a947c38decc5971109ff0c233ed0e2a9c12b7bb7ec8ed74731336d7b236ce70d",
+    "predecessor-artifact-hashes.json": "4624b50133db268f13997a43776a4b163bd701ea07b38fca67712e38f55b5561",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "protocol.json": "15555ab095b336e534fe7c277b3a30fe93803545f772d1151aaff49efe3e53dd",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "static-preflight.json": "3920fefb3ed8d09da829389c7bb1587e61535c82599ec22ba3dcda603d672da7",
+    "static_preflight.py": "adc8ff7604db43bad1c2e60432985c726d7abe1967b1b5ba9637577b798579d7"
+  }
+}

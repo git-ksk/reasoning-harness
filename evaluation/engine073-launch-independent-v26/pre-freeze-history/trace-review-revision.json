@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-18T02:31:43.832728+00:00",
+  "reason": "Before M0, strict observed invocation returncode int and required execution_error presence; driver rejects bool-as-zero. Exact Python False==0 and absent-field RED3 preserved. No change to valid actual subprocess envelopes, source gold, policy, helper, thresholds or budget.",
+  "Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "authored_cases": 0
+}

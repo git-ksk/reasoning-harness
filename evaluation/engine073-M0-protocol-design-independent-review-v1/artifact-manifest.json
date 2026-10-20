@@ -1,0 +1,19 @@
+{
+  "identity": "engine073-M0-protocol-design-independent-review-v1",
+  "closed_utc": "2026-10-19T04:07:21.183340+00:00",
+  "self_excluding": true,
+  "files": {
+    "draft-input.opaque.json": "9f234c01f4b909bdd0ff6ab4ba06a9103255761bd2bbd37b37f3e6bbba0f0d56",
+    "README.md": "158dc4f852f7b398376b0c5a1bbe0bef7847261089f524ec0d18dab5ced51776",
+    "review.json": "1d8faa4dee8d419891b92b73be3e1976a37880beb7ad84dd160546d6cdf27db8"
+  },
+  "reference_hashes": {
+    "/private/tmp/engine073-realworld-M0-protocol-review-input-v1.json": "9f234c01f4b909bdd0ff6ab4ba06a9103255761bd2bbd37b37f3e6bbba0f0d56",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine-07-realworld-protocol-v1.json": "45bf1da1dc3492c357608de08030d50c73ebb9a94354d5cef6e4cad9fe11869e",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/docs/engine073-realworld-metrics-preparation.md": "9e90707b295ee4e273f7101f0d7d33804bff64c4629d980f9209a1258e6f73e7"
+  },
+  "input_sha256": "9f234c01f4b909bdd0ff6ab4ba06a9103255761bd2bbd37b37f3e6bbba0f0d56",
+  "result": "DRAFT_DESIGN_REVIEW_COMPLETE_DEFINITIONS_REQUIRED_BEFORE_M0",
+  "existing_references_unchanged": true,
+  "new_authorship_and_all_executions": 0
+}

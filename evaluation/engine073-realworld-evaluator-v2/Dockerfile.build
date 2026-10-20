@@ -1,0 +1,5 @@
+FROM rust:1.88.0-bookworm
+RUN apt-get update && apt-get install -y --no-install-recommends python3 ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN git config --global --add safe.directory /repo
+ENV PYTHONDONTWRITEBYTECODE=1
+WORKDIR /repo

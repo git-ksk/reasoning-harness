@@ -1,0 +1,46 @@
+{
+  "id": "engine073-source-qualification-gates-v1",
+  "issue": 520,
+  "status": "policy_adopted_not_a_new_independent_acceptance",
+  "scope": "future independent synthetic source qualification v17 requested_relation and v30 Relevant; NOT real-answer/CLI or #531 case quality",
+  "supersedes": "synthetic independent source gate requires 60/60 exactness irrespective of safe false abstentions",
+  "cohort": {
+    "minimum_total": 60,
+    "minimum_positive": 30,
+    "minimum_negative": 30,
+    "labels_frozen_before_first_observation": true,
+    "single_candidate_source_frozen": true,
+    "each_axis_scored_separately": true,
+    "fresh_corpus_is_separate_from_development": true
+  },
+  "thresholds": {
+    "minimum_f1": 0.9,
+    "minimum_precision": 0.95,
+    "minimum_recall": 0.85,
+    "maximum_false_relevant_negatives": 0,
+    "maximum_false_requested_relation_negatives": 0,
+    "f0_5_stretch_not_gate": 0.95
+  },
+  "regressions": {
+    "known_cases_all_pass": true,
+    "original_14_case_audit_all_pass": true,
+    "historical_public_api_byte_equivalence": true,
+    "no_known_unfixed_critical_defect": true
+  },
+  "operational": {
+    "complete_first_observation_required": true,
+    "incomplete_or_duplicate_no_go": true,
+    "no_positive_prediction_no_go": true,
+    "no_canonical_retries_relabels_or_rescoring": true
+  },
+  "independence": {
+    "no_reinterpretation_of_frozen_v1_v24": true,
+    "future_evaluator_and_policy_frozen_before_new_case_authoring": true,
+    "held_out_evidence_must_remain_unmodified": true
+  },
+  "other_gates": {
+    "issue_531_real_answers": "unchanged separate case F1/precision/recall and safety utility provider track gates",
+    "issue_540_runner_safety": "unchanged",
+    "source_release_and_cli_adoption": "NO_GO until separately proven"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "v27-parent-reported-source-controls-v1",
+  "source_sha": "26c98adbec19f9e8ea0d46f260f080d4319a8e60",
+  "scope": "Tested #520 source qualification only, not new independent generalization/project acceptance.",
+  "basis": "Parent task and immutable source-only receipt metadata. All30 referenced body files remain hash-only.",
+  "opaque_reference_sha256": "01e6f3a2dc478d62d23518b9226b85924882fabc7e75ba79aed0007693296756",
+  "independently_rerun": false,
+  "reported_controls": {
+    "known_regressions_total": 1400,
+    "known_regressions_passed": 1400,
+    "original_audit_total": 14,
+    "original_audit_passed": 14,
+    "historical_byte_equivalent": true,
+    "known_unfixed_critical_defects": []
+  },
+  "parent_source_controls": {
+    "normal_Engine_processes": 27,
+    "normal_inputs": 2011,
+    "historical_whole_outputs": 597,
+    "v26_v29_original_first_whole_output_equal": true
+  },
+  "pending_prerequisites": {
+    "full_workspace_provider_validation": "Pending. Parent strict workspace/all-targets Clippy/fmt PASS. First sandbox workspace attempt PermissionDenied at5 existing localhost OAuth mock binds; original logs retained. Same-source final2 with localhost mock permission running;5 mocks passed but remainder not complete. Predicted1599 is not accepted as success.",
+    "new_authorship": "Forbidden until full completion, parent M0 review and a separate explicit next notice.",
+    "M1_first": "Not started.",
+    "real24_normalCLI_answerF1_human_release": "Unproven separate gates.",
+    "Groq": "STOPPED; no live provider/model calls."
+  },
+  "future_provenance_flags": "Not pre-asserted; actual future M0/M1/author/first hashes/markers/time/readonly must establish them."
+}

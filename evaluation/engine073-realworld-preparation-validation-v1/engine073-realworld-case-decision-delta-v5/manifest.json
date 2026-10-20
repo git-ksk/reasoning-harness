@@ -1,0 +1,8 @@
+{
+  "files": {
+    "structural24.stderr": "d7263f709bf942fdd93db3af968a41b058af2277b624d3499d75e5672cc3ff9a",
+    "test_scorer.py": "3e0762202d2318af564f33700818532f568c5e258ff4783f623c91cbf90852ca",
+    "scorer.py": "4bf873229a4cb8b93a28bf5583b4f33237c5172fae1fc37d51ef7ba7eaf113fe"
+  },
+  "delta": "Unsupported positive is FN/hard failure; unsafe negative/ambiguous stays accept/FP or hard. No final gate change."
+}

@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-18T15:02:44.740571+00:00",
+  "basis": "Explicit parent completion message before M0 closed. Same candidate26c/source4daf; source-only receipt01e6 and30 references immutable.",
+  "parent_report": "1599PASS/0FAIL/8existingignore;8 commands exit0. Prior sandbox5 refusal retained, same-source final2 success.",
+  "independent_reexecution": false,
+  "authoring_permission_inferred": false,
+  "Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "authored_cases": 0
+}

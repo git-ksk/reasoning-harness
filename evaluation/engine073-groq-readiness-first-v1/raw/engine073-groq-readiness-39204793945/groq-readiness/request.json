@@ -1,0 +1,13 @@
+{
+  "model": "openai/gpt-oss-120b",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Reply OK."
+    }
+  ],
+  "temperature": 0,
+  "max_completion_tokens": 64,
+  "reasoning_effort": "low",
+  "stream": false
+}

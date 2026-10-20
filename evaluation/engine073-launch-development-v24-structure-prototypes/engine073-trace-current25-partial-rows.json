@@ -1,0 +1,312 @@
+[
+  {
+    "effective": {
+      "identity_scope": "unresolved",
+      "relation_scope": "requested_relation",
+      "scope_risk": "ownership_scope"
+    },
+    "governing_blocks": false,
+    "id": "li24-017",
+    "rule_trace": [],
+    "scope": "consumed diagnostic, not fresh score",
+    "segments": [
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Paprika Dial was launched",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Object: the claim that the phrase \"event owner unknown\" in the Fern Jet index uses a serif font",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 1,
+        "typed_reference": null,
+        "unknown_owner": true
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We withdraw the Object",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 2,
+        "typed_reference": true,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Item: the launch of Fern Jet",
+        "resolved_foreign": false,
+        "segment_index": 1,
+        "signal_index": 2,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We deny the Item",
+        "resolved_foreign": false,
+        "segment_index": 2,
+        "signal_index": 2,
+        "typed_reference": true,
+        "unknown_owner": false
+      }
+    ],
+    "target_fact": true,
+    "typed_objects": [
+      {
+        "declared_value": "the claim that the phrase \"event owner unknown\" in the Fern Jet index uses a serif font",
+        "foreign_event": false,
+        "label": "object",
+        "scope": "excluded"
+      },
+      {
+        "declared_value": "the launch of Fern Jet",
+        "foreign_event": true,
+        "label": "item",
+        "scope": "excluded"
+      }
+    ]
+  },
+  {
+    "effective": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "governing_blocks": true,
+    "id": "li24-057",
+    "rule_trace": [
+      {
+        "exact_original_utf8_byte_span": [
+          167,
+          244
+        ],
+        "rule": "unknown_owner_note",
+        "segment_index": 4,
+        "segment_raw": "The line describes printed plate text, not an owner supplement for the Object",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          167,
+          244
+        ],
+        "rule": "unknown_owner_note",
+        "segment_index": 4,
+        "segment_raw": "The line describes printed plate text, not an owner supplement for the Object",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          167,
+          244
+        ],
+        "rule": "unknown_owner_note",
+        "segment_index": 4,
+        "segment_raw": "The line describes printed plate text, not an owner supplement for the Object",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          167,
+          244
+        ],
+        "rule": "unknown_owner_note",
+        "segment_index": 4,
+        "segment_raw": "The line describes printed plate text, not an owner supplement for the Object",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      },
+      {
+        "exact_original_utf8_byte_span": [
+          167,
+          244
+        ],
+        "rule": "unknown_owner_note",
+        "segment_index": 4,
+        "segment_raw": "The line describes printed plate text, not an owner supplement for the Object",
+        "signal_index": 0,
+        "span_limit": "none means reconstructed or repeated segment; no guessed source offset"
+      }
+    ],
+    "scope": "consumed diagnostic, not fresh score",
+    "segments": [
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Item: the claim that the line \"Owner: Olive Keystone\" on the Ruby Basin plate is centered",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We deny the Item",
+        "resolved_foreign": false,
+        "segment_index": 1,
+        "signal_index": 0,
+        "typed_reference": true,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Object: the launch of Ruby Basin",
+        "resolved_foreign": false,
+        "segment_index": 2,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "We withdraw the Object",
+        "resolved_foreign": false,
+        "segment_index": 3,
+        "signal_index": 0,
+        "typed_reference": true,
+        "unknown_owner": false
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "The line describes printed plate text, not an owner supplement for the Object",
+        "resolved_foreign": false,
+        "segment_index": 4,
+        "signal_index": 0,
+        "typed_reference": null,
+        "unknown_owner": true
+      },
+      {
+        "apposition": false,
+        "bound_property": false,
+        "complete_foreign_report": false,
+        "correction_frame": false,
+        "declared_foreign": false,
+        "denied": false,
+        "foreign_object": false,
+        "nominal_property": false,
+        "nonlaunch": false,
+        "property_context": false,
+        "raw": "Olive Keystone was launched",
+        "resolved_foreign": false,
+        "segment_index": 0,
+        "signal_index": 1,
+        "typed_reference": null,
+        "unknown_owner": false
+      }
+    ],
+    "target_fact": false,
+    "typed_objects": [
+      {
+        "declared_value": "the claim that the line \"Owner: Olive Keystone\" on the Ruby Basin plate is centered",
+        "foreign_event": false,
+        "label": "item",
+        "scope": "excluded"
+      },
+      {
+        "declared_value": "the launch of Ruby Basin",
+        "foreign_event": true,
+        "label": "object",
+        "scope": "excluded"
+      }
+    ]
+  }
+]

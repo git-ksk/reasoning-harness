@@ -1,0 +1,8 @@
+{
+  "utc": "2026-10-18T02:35:47.096404+00:00",
+  "basis": "Explicit parent message permits metadata update before unclosed M0. Parent reported source remains908/source4f82/runtime6818. Full8 commands exit0/workspace1594/0/8.",
+  "changes": "Only parent-report preparation state/metadata; no source, gold, scorer, policy, helper or threshold modification.",
+  "Engine_invocations": 0,
+  "real_cohort_scorer_processes": 0,
+  "authored_cases": 0
+}

@@ -1,0 +1,105 @@
+{
+  "source_sha": "95053007bba54c728eee428837b22eb9d52a4f61",
+  "endpoint": "repos/git-ksk/reasoning-harness/commits/95053007bba54c728eee428837b22eb9d52a4f61/check-runs",
+  "read_only": true,
+  "result": {
+    "checks": [
+      {
+        "conclusion": "success",
+        "name": "no-Rust consumer (windows-x86_64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "no-Rust consumer (macos-x86_64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "no-Rust consumer (macos-aarch64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "no-Rust consumer (linux-x86_64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "reason (linux-x86_64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "reason (windows-x86_64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "reason (macos-x86_64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "reason (macos-aarch64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "Frozen v12 deterministic equivalence",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "lifecycle (macos-x86_64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "lifecycle (macos-aarch64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "lifecycle (windows-x86_64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "package candidate (macos-aarch64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "package candidate (linux-x86_64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "installer/provenance fail-closed contract",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "rust",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "lifecycle (linux-x86_64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "package candidate (windows-x86_64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "name": "package candidate (macos-x86_64)",
+        "status": "completed"
+      }
+    ],
+    "total_count": 19
+  }
+}

@@ -1,0 +1,43 @@
+name: engine073-groq-budget-readiness-v1
+on:
+  push:
+    tags: ['engine073-groq-readiness-20261019-v1']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  quota:
+    if: github.run_attempt == 1
+    concurrency:
+      group: engine07-realworld-groq-live
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Verify unique one-shot identity before credentials
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api 'repos/${{ github.repository }}/actions/runs?event=push&head_sha=${{ github.sha }}&per_page=100' > /tmp/readiness-runs.json
+          python3 - <<'PY'
+          import json,os
+          runs=json.load(open('/tmp/readiness-runs.json'))['workflow_runs']
+          runs=[r for r in runs if r['path']=='.github/workflows/engine073-groq-readiness-v1.yml']
+          assert len(runs)==1 and str(runs[0]['id'])==os.environ['GITHUB_RUN_ID'] and os.environ['GITHUB_RUN_ATTEMPT']=='1'
+          PY
+      - name: One bounded request; no case/gold, no retry or tier/model switch
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          READINESS_OUTPUT: /tmp/groq-readiness
+        run: timeout --signal=INT --kill-after=3s 45s python3 -B evaluation/engine073-groq-readiness-v1/readiness.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: engine073-groq-readiness-${{ github.run_id }}
+          path: |
+            /tmp/groq-readiness/
+            /tmp/readiness-runs.json
+          retention-days: 30
+          if-no-files-found: error

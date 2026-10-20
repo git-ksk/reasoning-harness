@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-17T13:56:07.311546+00:00",
+  "kind": "pure constructed output fixture RED, no Engine or cohort main",
+  "returncode": 1,
+  "engine_invocations": 0,
+  "real_cohort_scorer_invocations": 0,
+  "authored_cases": 0,
+  "score_sha256": "ea198222c182ab87a664c9090ff0f3d2a86ab1475ab0655253398e60054975a3",
+  "test_sha256": "ad2d35421a6266d76da9ee32c4380f125600fe1fbff86913284710cd18cd0406"
+}

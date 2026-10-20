@@ -1,0 +1,36 @@
+{
+  "scope": "Static structural mutation plan only. No checker/Engine/scorer/model execution, no new accuracy question/gold.",
+  "base": "A structure copy of actual Google2-stage trace, with the explicit new-host completion_status field. Original v1 trace bytes must remain untouched.",
+  "static_cases": [
+    {
+      "id": "TC1-a",
+      "mutation": "Remove answer_safety_state seq18, renumber seq19 to18; keep grounded pre-safety renderer and completed status.",
+      "current_path": "safety=[] is accepted unconditionally in answer_safety interval.",
+      "required_result": "Reject for pinned non-baseline verified profile with at least one unique grounded rendered target. Retain separate valid zero-target/noneligible/baseline profile controls."
+    },
+    {
+      "id": "TC1-b",
+      "mutation": "Keep answer_safety_state top-level round1 but change or delete observation.render_round, observation.observation.target, or phase; leave final terminal unchanged.",
+      "current_path": "Only safety event top-level round is inspected; nested data/target/schema/phase is ignored.",
+      "required_result": "Reject missing/malformed/wrong round/profile/target or duplicate/missing target observations when that profile actually runs safety for those grounded targets."
+    },
+    {
+      "id": "TC2-a",
+      "mutation": "Append copied final_render→renderer_candidate→answer_safety_state→answer_safety chain as round2 after a grounded_answer round1; reassign sequence/round. No retry resolution/grounding.",
+      "current_path": "Two noninterleaved rounds with proper stage names pass despite round1 not requiring verification.",
+      "required_result": "Reject round2 unless preceding authoritative stage requires_verification and a correctly bound finalization_retry_resolution changed-artifact transition occurred."
+    },
+    {
+      "id": "TC2-b",
+      "mutation": "Insert canonical_verified_target finalization plus matching-source render after already grounded renderer_candidate; render lacks required candidate/schema or contains a different phase/round-associated payload.",
+      "current_path": "Matching kind/round/source count only; previous-state guard and full render association not verified.",
+      "required_result": "Enforce host-declared optional-stage preconditions and complete matching-render schema; reject orphan/extra/mismatched rendering records. Do not reimplement Engine semantics."
+    },
+    {
+      "id": "TC3-control",
+      "mutation": "Legal host path: answer_safety status requires_verification; retry resolver produces the identical artifact; host records finalization_retry_resolution grounding and breaks without round2.",
+      "current_path": "last finalization is not last event, so events_after_final_safety_terminal rejects a legitimate completed withholding.",
+      "required_result": "Accept only the narrowly declared no-progress suffix when phase/round/outcome bind and artifact is unchanged; reject changed-artifact or arbitrary post-terminal event suffixes."
+    }
+  ]
+}

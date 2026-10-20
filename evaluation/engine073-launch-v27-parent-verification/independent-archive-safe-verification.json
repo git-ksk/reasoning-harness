@@ -1,0 +1,17 @@
+{
+  "identity": "engine073-v27-postcopy-archive-check",
+  "new99_byte_exact": true,
+  "old_and_new_source_plus_prep_references_including_manifest": 928,
+  "all928_child_and_root_hashes_match": true,
+  "both_new99_all_readonly": true,
+  "final_anchor": "abaae2385e6c17783cc7093c10e15424b6e4ce01080e8fcdea5eab3a9e5bb439",
+  "child_HEAD": "26c98adbec19f9e8ea0d46f260f080d4319a8e60",
+  "source_sha256": "4daf64b918532a9004dea9807b8001ec743244b20b5cd1892c7f3a7ce316d1ef",
+  "runtime_sha256": "b1c482ab5d20cf370868b27d0a3f62a67f1eb210f46731db7258016f56d31821",
+  "parent_audit_path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-v27-parent-verification/final-copy-verification.json",
+  "parent_audit_sha256": "7c61e5e5208115fb16a6e13a4a78d691774f10d3163abd11cfa4edff7baee5d6",
+  "parent_commit_push_reported": "ab788bca0aaeb39eef2262e68aee5c01ec3c59eb",
+  "archive_safe": true,
+  "Engine_scorer_authoring_invocations": 0,
+  "old_first_or_labels_modified": false
+}

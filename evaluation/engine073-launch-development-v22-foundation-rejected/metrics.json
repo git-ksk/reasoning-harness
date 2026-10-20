@@ -1,0 +1,55 @@
+{
+  "status": "REJECTED_DEVELOPMENT",
+  "reason": "FP1 li22-028 competing second owner statement ignored; not independent acceptance",
+  "axes": {
+    "v17_requested_relation": {
+      "confusion": {
+        "tp": 10,
+        "fp": 1,
+        "tn": 29,
+        "fn": 20
+      },
+      "n": 60,
+      "positive_support": 30,
+      "negative_support": 30,
+      "precision": 0.9090909090909091,
+      "recall": 0.3333333333333333,
+      "f1_positive": 0.4878048780487805,
+      "specificity": 0.9666666666666667,
+      "accuracy": 0.65,
+      "balanced_accuracy": 0.65,
+      "predicted_positive_rate": 0.18333333333333332,
+      "false_accept_rate": 0.03333333333333333,
+      "false_withhold_rate": 0.6666666666666666,
+      "mcc": 0.3876574430285532
+    },
+    "v30_relevant": {
+      "confusion": {
+        "tp": 9,
+        "fp": 1,
+        "tn": 29,
+        "fn": 21
+      },
+      "n": 60,
+      "positive_support": 30,
+      "negative_support": 30,
+      "precision": 0.9,
+      "recall": 0.3,
+      "f1_positive": 0.45,
+      "specificity": 0.9666666666666667,
+      "accuracy": 0.6333333333333333,
+      "balanced_accuracy": 0.6333333333333333,
+      "predicted_positive_rate": 0.16666666666666666,
+      "false_accept_rate": 0.03333333333333333,
+      "false_withhold_rate": 0.7,
+      "mcc": 0.35777087639996635
+    }
+  },
+  "inputs_frozen": true,
+  "old_seen": 1080,
+  "historical_byte_identical": 597,
+  "original_audit_passed": 14,
+  "scorer_provider_calls": 0,
+  "probe_executable_sha256": "f2efa5896bc99b58bcce4bd8503966c296457b991754f6404728421b72e4e55a",
+  "first_library_hash_not_persisted": "measurement assertion stopped before summary save; do not reuse this as accepted pinned candidate evidence"
+}

@@ -1,0 +1,102 @@
+{
+  "identity": "engine073-launch-independent-v15",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "frozen_utc": "2026-10-16T10:36:19.438095+00:00",
+  "candidate": {
+    "source_sha": "9a40b9277b59ba7a2606eedad77819e833496659",
+    "package_version": "0.7.2",
+    "source_file": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+    "source_sha256": "12d42896ef75492f2cd7229125a1a731ae4eb44215756d851b99d5370d33ce26",
+    "identity_note": "Candidate identified by frozen source SHA; package number unchanged before release."
+  },
+  "frozen_files": {
+    "author_cases.py": "7ad1a4b07005ca0bc4fa4e71415a38e66e18326a7d22e722481a126627cafb83",
+    "build-preflight.json": "514f5f8c4124bdde24ac8c555a30e4bf41a003426c1086626797f384539009b9",
+    "build.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cases.json": "4be2168c1ddc1967242c0a0b9b78d8aabfc7d1ca12feab96deceb99d245577f1",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "immutable-predecessor-check.json": "c0df5981666d9674a702d1b64e344a4d3e688294c6d82709c4bb7a57eb1d31d0",
+    "inputs.json": "02d0adaf0633ec44a9933152ab749f47c941f6b384cc679e1df57c85c729edd7",
+    "pre-freeze-scope-review.json": "1bdfa1f1edc37eafc32886af6f78b2a80769b5a92b640ff7f046121b1de6212e",
+    "predecessor-artifact-hashes.json": "b1d5e6242f705a28a58930873470f777286523b7a65c8fb68d7ddad0dad1496b",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "protocol.json": "e9f720e591a2cd555a98c25cf8ec2d017bee67f08d71b148661a6c64100c4f2d",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "static-preflight.json": "d116a1e3ff1c758c2b6b641ded0d83dfa3baab6ecb5b18da14447c14e1ebad08",
+    "static_preflight.py": "0d93f2fde37f0a596dbdaaf48e4763de3b6fb118a7527a7a095891c038a66ed5"
+  },
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "12d42896ef75492f2cd7229125a1a731ae4eb44215756d851b99d5370d33ce26",
+      "bytes": 670594
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+      "sha256": "788182e7c6da8783144b7dfe9e122c4cd3faab78b56f6859d6966514bf7de918",
+      "bytes": 30978776
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+      "sha256": "1a5d1b0174b7a17ca8f70859e6ca0e41880d21d2002f6a231f5ffe0b2036d0fb",
+      "bytes": 2110472
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v15-probe/probe",
+      "sha256": "c68c92e5de2669718eb6374d6581e3383d54a6dfac6667c4d122252c574b4209",
+      "bytes": 2886696
+    }
+  },
+  "corpus": {
+    "file": "cases.json",
+    "complete_engine_input": "inputs.json",
+    "count": 60,
+    "positive": 30,
+    "negative": 30,
+    "pairs": 30,
+    "targets": 30,
+    "real_documents": 0,
+    "new_after_candidate_fixed": true,
+    "old_inputs_or_v11_draft_reused": false
+  },
+  "probe": {
+    "sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "inherited_byte_identical": true,
+    "semantic_calls_at_freeze": 0,
+    "build_attempts": 1,
+    "parent_fixed_core_and_matching_serde": true
+  },
+  "scoring": {
+    "sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "inherited_byte_identical": true,
+    "protocol": "protocol.json",
+    "precommitted_before_first_API": true,
+    "positive": "requested_relation AND Relevant",
+    "negative": "not requested_relation AND not Relevant",
+    "permissive_change": false,
+    "retries": 0
+  },
+  "stages": {
+    "static": "STATIC_ONLY PASS: semantic0, required fields, budget2/192/90000, old290 unchanged.",
+    "scope": "All60 author labels reviewed pre-output; finite-scope explanations fixed.",
+    "semantic": "Not run at freeze; one first60 process planned."
+  },
+  "predecessors": {
+    "external_anchor": "9c59f7750ce81b95e93f02d6f42b272dc16f76ba8a7b24394102b955b3ab412f",
+    "all_v1_v14_verified_files": 290,
+    "hashes": "predecessor-artifact-hashes.json",
+    "v11_NOT_EVALUATED_unchanged": true
+  },
+  "isolation": {
+    "production_implementation_read": false,
+    "root_tests_historical_other_corpora_read": false,
+    "old_sets_known": true,
+    "Oracle": false,
+    "additional_agents": false,
+    "provider_API_calls": 0,
+    "Git_mutations": 0,
+    "cargo_invocations": 0
+  },
+  "first_result_contract": "Exactly one exclusive semantic60 process and one inherited scorer; first inputs/labels/raw/results including FAIL preserved; no retries/rescore/relabel. Narrow synthetic source gate, not real24/CLI/provider/human/adoption."
+}

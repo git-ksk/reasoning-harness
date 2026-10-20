@@ -1,0 +1,5 @@
+# Current v24 first-blocker development trace
+
+Exact source3ccda6b/source85a64b506f8c47828a4a3296c5d07c13e921c59b528ea27e10ec4993c5f636e2 in a separate private copy. Test-only records immediately before9 existing governing returns;predicates/order unchanged. Verified1 unit test emits exactly13 consumed misses;all13 effective tuples match original independent first outputs. Every first blocker is typed_reference_not_excluded. This is the first actual path,not every later blocker or complete cause.
+
+Records distinguish complete property/foreign-event declarations,typed roles and each adjacent segment/helper result. Exact unique UTF-8 offsets are recorded;null means repeated/reconstructed,no guessed location. New property/literal syntax is not yet sufficient to establish every later relation/risk condition. Original v24 labels,raw first,scorer and every previous first record remain unchanged. No independent scorer/provider/model/Oracle invocation. Temporary hooks were restored before private semantic repair;root source and normal independent library remain uninstrumented.

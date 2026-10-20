@@ -1,0 +1,15 @@
+{
+  "identity": "engine073-launch-independent-v26",
+  "utc": "2026-10-18T14:19:25.482574+00:00",
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-source26-freeze/reasoning-harness/evaluation/engine073-launch-independent-v26/execute_first.py"
+  ],
+  "M0_sha256": "ad980eba8479eec16e78f5ef2c2d108ac949ed1cf4b6fe2277df4dc0e3742510",
+  "M1_sha256": "7627332228e422c58b64890434f681066469d77ab3326a8037e9b8379508c366",
+  "driver_sha256": "47880cf22c7efcc4a87b506e88be855ab1f7b68415dbc3da308911b487d78772",
+  "first_Engine_processes_planned": 1,
+  "first_scorer_processes_planned": 1,
+  "retry": 0
+}

@@ -1,0 +1,201 @@
+{
+  "observed_utc": "2026-10-18T15:18:32.429089+00:00",
+  "candidate_code": "26c98adbec19f9e8ea0d46f260f080d4319a8e60",
+  "github": {
+    "headRefOid": "826c98db5b63b92d2bc1115c3988ec38d98cd2b1",
+    "isDraft": true,
+    "state": "OPEN",
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:03:38Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706316/job/117708455948",
+        "name": "Frozen v12 deterministic equivalence",
+        "startedAt": "2026-10-18T15:02:56Z",
+        "status": "COMPLETED",
+        "workflowName": "MCP identity context v12 adoption"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:11:55Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706276/job/117708455726",
+        "name": "rust",
+        "startedAt": "2026-10-18T15:02:56Z",
+        "status": "COMPLETED",
+        "workflowName": "ci"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:05:03Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706277/job/117708456001",
+        "name": "reason (linux-x86_64)",
+        "startedAt": "2026-10-18T15:02:57Z",
+        "status": "COMPLETED",
+        "workflowName": "cli-platform-smoke"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:04:18Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706302/job/117708456140",
+        "name": "package candidate (linux-x86_64)",
+        "startedAt": "2026-10-18T15:02:56Z",
+        "status": "COMPLETED",
+        "workflowName": "fresh-install-acceptance"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:03:48Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706312/job/117708456219",
+        "name": "lifecycle (linux-x86_64)",
+        "startedAt": "2026-10-18T15:02:57Z",
+        "status": "COMPLETED",
+        "workflowName": "lifecycle-smoke"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:04:38Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706277/job/117708455713",
+        "name": "reason (macos-aarch64)",
+        "startedAt": "2026-10-18T15:03:00Z",
+        "status": "COMPLETED",
+        "workflowName": "cli-platform-smoke"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:05:58Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706302/job/117708456175",
+        "name": "package candidate (macos-aarch64)",
+        "startedAt": "2026-10-18T15:03:58Z",
+        "status": "COMPLETED",
+        "workflowName": "fresh-install-acceptance"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:03:52Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706312/job/117708456196",
+        "name": "lifecycle (macos-aarch64)",
+        "startedAt": "2026-10-18T15:03:01Z",
+        "status": "COMPLETED",
+        "workflowName": "lifecycle-smoke"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:05:18Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706277/job/117708455933",
+        "name": "reason (macos-x86_64)",
+        "startedAt": "2026-10-18T15:02:57Z",
+        "status": "COMPLETED",
+        "workflowName": "cli-platform-smoke"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:06:48Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706302/job/117708456082",
+        "name": "package candidate (macos-x86_64)",
+        "startedAt": "2026-10-18T15:02:58Z",
+        "status": "COMPLETED",
+        "workflowName": "fresh-install-acceptance"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:04:58Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706312/job/117708455970",
+        "name": "lifecycle (macos-x86_64)",
+        "startedAt": "2026-10-18T15:02:57Z",
+        "status": "COMPLETED",
+        "workflowName": "lifecycle-smoke"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:06:20Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706277/job/117708455994",
+        "name": "reason (windows-x86_64)",
+        "startedAt": "2026-10-18T15:02:57Z",
+        "status": "COMPLETED",
+        "workflowName": "cli-platform-smoke"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:06:06Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706302/job/117708456130",
+        "name": "package candidate (windows-x86_64)",
+        "startedAt": "2026-10-18T15:02:57Z",
+        "status": "COMPLETED",
+        "workflowName": "fresh-install-acceptance"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:04:45Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706312/job/117708456188",
+        "name": "lifecycle (windows-x86_64)",
+        "startedAt": "2026-10-18T15:02:56Z",
+        "status": "COMPLETED",
+        "workflowName": "lifecycle-smoke"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:03:03Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706302/job/117708455879",
+        "name": "installer/provenance fail-closed contract",
+        "startedAt": "2026-10-18T15:02:56Z",
+        "status": "COMPLETED",
+        "workflowName": "fresh-install-acceptance"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:06:59Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706302/job/117709331388",
+        "name": "no-Rust consumer (linux-x86_64)",
+        "startedAt": "2026-10-18T15:06:50Z",
+        "status": "COMPLETED",
+        "workflowName": "fresh-install-acceptance"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:07:04Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706302/job/117709331384",
+        "name": "no-Rust consumer (macos-aarch64)",
+        "startedAt": "2026-10-18T15:06:55Z",
+        "status": "COMPLETED",
+        "workflowName": "fresh-install-acceptance"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:07:33Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706302/job/117709331524",
+        "name": "no-Rust consumer (macos-x86_64)",
+        "startedAt": "2026-10-18T15:06:56Z",
+        "status": "COMPLETED",
+        "workflowName": "fresh-install-acceptance"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-18T15:07:06Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/git-ksk/reasoning-harness/actions/runs/39138706302/job/117709331453",
+        "name": "no-Rust consumer (windows-x86_64)",
+        "startedAt": "2026-10-18T15:06:51Z",
+        "status": "COMPLETED",
+        "workflowName": "fresh-install-acceptance"
+      }
+    ]
+  }
+}

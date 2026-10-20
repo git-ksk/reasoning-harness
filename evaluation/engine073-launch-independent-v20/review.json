@@ -1,0 +1,150 @@
+{
+  "identity": "engine073-launch-independent-v20-source-review",
+  "saved_utc": "2026-10-16T22:58:07.976237+00:00",
+  "outcome": "FAIL",
+  "first_summary_sha256": "6e13fbf10a73f7d0659f121d96953a5fe110c14568b351064af176f7ff2b7ebd",
+  "counts": {
+    "observed": 60,
+    "passed": 51,
+    "positive_passed": 24,
+    "negative_passed": 27,
+    "positive_withheld": 6,
+    "negative_v17_requested_violations": 3,
+    "negative_v30_relevant_violations": 3,
+    "operational_errors": 0
+  },
+  "unsafe_negatives": [
+    {
+      "id": "li20-024",
+      "axis": "generic_claim_complete_apposition_vs_unknown",
+      "frozen_input_signals": [
+        {
+          "kind": "excerpt",
+          "text": "We deny the launch of Peridot Lodge and retract the launch of Lavender Hall. We also withdraw the remaining launch claim; its product identity is unavailable in this source."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Larkspur Device was launched."
+        }
+      ],
+      "precommitted_rationale": "Two prior event owners cannot identify the remaining explicitly unknown launch.",
+      "first_effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "first_v30": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "disposition": "relevant",
+        "evidence_id": "li20-024-evidence",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "path": "model_assisted",
+        "policy_id": "li20-policy-12",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ],
+        "source_id": "li20-024-synthetic-source",
+        "target_id": "li20-target-12"
+      }
+    },
+    {
+      "id": "li20-028",
+      "axis": "material_statement_and_separate_event_subject",
+      "frozen_input_signals": [
+        {
+          "kind": "excerpt",
+          "text": "Object: the material of Northwind Shell rim. We deny this Object. Subject: Northwind Shell does not exist. We maintain that Subject statement."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Northwind Shell was launched."
+        }
+      ],
+      "precommitted_rationale": "The maintained Subject asserts target nonexistence independently of the material denial.",
+      "first_effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "first_v30": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "disposition": "relevant",
+        "evidence_id": "li20-028-evidence",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "path": "model_assisted",
+        "policy_id": "li20-policy-14",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ],
+        "source_id": "li20-028-synthetic-source",
+        "target_id": "li20-target-14"
+      }
+    },
+    {
+      "id": "li20-038",
+      "axis": "different_event_after_foreign_non_event",
+      "frozen_input_signals": [
+        {
+          "kind": "excerpt",
+          "text": "Seabright Panel was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "No actual launch of Hyacinth House occurred. The separate event claim we withdraw has no recoverable product owner in this note. I deny the colour assertion about Seabright Panel edge."
+        }
+      ],
+      "precommitted_rationale": "The explicitly separate ownerless event cannot inherit the non-event owner.",
+      "first_effective_v17": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "first_v30": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "disposition": "relevant",
+        "evidence_id": "li20-038-evidence",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "path": "model_assisted",
+        "policy_id": "li20-policy-19",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ],
+        "source_id": "li20-038-synthetic-source",
+        "target_id": "li20-target-19"
+      }
+    }
+  ],
+  "unsafe_scope_findings": [
+    "024: Remaining launch claim with unavailable product identity admitted after two fully named foreign corrections.",
+    "028: Maintained Subject explicitly states target Northwind Shell does not exist, after a material Object denial.",
+    "038: Separate withdrawn event has no recoverable owner, after a named foreign non-event and before a physical property."
+  ],
+  "failed_positive_ids": [
+    "li20-009",
+    "li20-011",
+    "li20-023",
+    "li20-029",
+    "li20-045",
+    "li20-051"
+  ],
+  "positive_observation": "All6 unresolved/Ambiguous/risk none; original complete-property/foreign-scope expectations retained, including literal nonexistence words carried by a physical label object.",
+  "special_diagnostics": {
+    "actual_gap030_050": "raw context_gap -> effective unresolved/ownership_scope/Ambiguous; retained as observed. Individual risk preservation/loss not inferred from enum alone and not scored here.",
+    "literal_unknown_owner_font_positive043": "requested_relation/none/Relevant",
+    "canonical_full_clip_positive047": "requested_relation/none/Relevant",
+    "pure_risk_joint_negative": 0
+  },
+  "input_design_changes": 0,
+  "author_and_STATIC_ONLY_runs": 1,
+  "frozen_scope_labels_inputs_unchanged": true,
+  "post_freeze_retry_rescore_relabel": 0,
+  "source_implementation_read": false,
+  "provider_network_calls": 0,
+  "limits": "Finite synthetic candidate-only source gate, not real24/normalCLI/provider/human/adoption/release, no cross-corpus improvement/arbitrary-language guarantee. Parent supplied core hash-verified only; unread implementation means no causal diagnosis."
+}

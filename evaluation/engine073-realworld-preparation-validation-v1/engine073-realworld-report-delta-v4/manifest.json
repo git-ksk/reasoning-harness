@@ -1,0 +1,9 @@
+{
+  "files": {
+    "structural24.stderr": "7d6e46cd157a543d00e6cd8a19b3fed24da7f902d4b1885cd38305475227bbfd",
+    "engine073-realworld-independent-v1.yml": "42dd165f4f8e00dcd793dc0e1dfbc89d548b82dd76c19aeeda322d237982ca96",
+    "score_first.py": "288dc8d203320a35d7b1eb88d657f980231dd8daf0f2cfb52623ee6f923382af",
+    "scorer.py": "0356c198b972a7a5095d1b1df59847ca11adb828751eb346adf6eb593809fa9f"
+  },
+  "delta": "Prospective descriptive baseline/candidate and family P/R/F1, null citation applicability, source denominators; unchanged acceptance gates. Required M1 argv workflow fix."
+}

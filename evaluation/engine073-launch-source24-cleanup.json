@@ -1,0 +1,20 @@
+{
+  "source_sha": "3ccda6b4263eb5210477660b11f6926ec0186f4e",
+  "removed": [
+    {
+      "path": "/private/tmp/engine073-source23-trace-shadow",
+      "logical_bytes_removed": 71970060,
+      "kind": "own private development copied tree/build cache, all unique source/prototype/log evidence archived; no independent normal target affected"
+    },
+    {
+      "path": "/private/tmp/engine073-trace22-target",
+      "logical_bytes_removed": 555124564,
+      "kind": "own private development copied tree/build cache, all unique source/prototype/log evidence archived; no independent normal target affected"
+    }
+  ],
+  "logical_bytes_removed": 627094624,
+  "durable_index_sha256": "ac72902de314ef704f34d9398393071e5da95f87242dc783a0e298b18bd1ddc9",
+  "normal_independent_target_untouched": true,
+  "source_file_sha256_after": "85a64b506f8c47828a4a3296c5d07c13e921c59b528ea27e10ec4993c5f636e2",
+  "independent_files_mutated": 0
+}

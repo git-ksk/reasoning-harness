@@ -1,0 +1,9 @@
+{
+  "self_exclusion": "Only this hash index is excluded; preparation evidence is not an experiment freeze.",
+  "files": {
+    "docs/engine073-realworld-metrics-preparation.md": "9e90707b295ee4e273f7101f0d7d33804bff64c4629d980f9209a1258e6f73e7",
+    "docs/engine073-realworld-metrics-preparation.ja.md": "30a4f73c4f0cd4a6aa2a284f3243d997dbc1f769751defcb7617659f6605df08",
+    "evaluation/engine073-realworld-metrics-preparation-v1/review.json": "787da5422330047f4ca23f1020df867bc66eb6794f45fd40c01f72314d7189fc",
+    "evaluation/engine073-realworld-metrics-preparation-v1/reviewed-input-sha256.json": "76b41a7c06dc1893106695253dc303164e2905881cdeffabe26ca0251f7e36c0"
+  }
+}

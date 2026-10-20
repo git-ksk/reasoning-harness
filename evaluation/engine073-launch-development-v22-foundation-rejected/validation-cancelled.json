@@ -1,0 +1,18 @@
+{
+  "state": "CANCELLED_SUPERSEDED",
+  "reason": "first foundation rejected for frozen-v22 unsafeFP1; strictClippy/fmt passed, full run stopped and is not acceptance; replacement validator is separate",
+  "processes": [
+    {
+      "pid": 32314,
+      "command": "/opt/homebrew/Cellar/python@3.14/3.14.8/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python /private/tmp/engine073-foundation22-validate.py"
+    },
+    {
+      "pid": 32809,
+      "command": "/Users/sawadakousuke/.rustup/toolchains/1.88.0-aarch64-apple-darwin/bin/cargo test --locked --offline --workspace --exclude reasoning-harness-providers --jobs 2"
+    },
+    {
+      "pid": 37287,
+      "command": "/private/tmp/engine073-validation-target/debug/deps/launch_context_markers_520_521-e3ea1e35be4f019d"
+    }
+  ]
+}

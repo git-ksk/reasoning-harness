@@ -1,0 +1,77 @@
+{
+  "identity": "engine073-launch-independent-v25-pre-author",
+  "utc": "2026-10-17T15:32:17.877582+00:00",
+  "outcome": "READY_FOR_PARENT_CONTRACT_REVIEW",
+  "candidate_acceptance": "NOT_EVALUATED",
+  "scope": "Evaluator preparation only; no independent corpus exists.",
+  "selftests": {
+    "latest_pure_fixture_count": 48,
+    "latest_result": "PASS",
+    "original_attempt1": 41,
+    "after_incomplete_fix_attempt2": 43,
+    "added_literal_risk_and_process_chain_fixtures": 5,
+    "original_two_RED_failures_preserved": true,
+    "unit_helper_calls": "Pure fixtures only, not real cohort scoring."
+  },
+  "compile_only": {
+    "builds": 1,
+    "result": "PASS",
+    "probe_runs": 0
+  },
+  "corrections": [
+    {
+      "issue": "Python bool/int equality could admit integer gold.",
+      "fix": "Strict type bool required on both expected axes in score and static checker; original bytes and revision retained.",
+      "timing": "Before M0, authored/Engine/cohort-score0."
+    },
+    {
+      "issue": "Failed invocation or stderr had incomplete60 but successful joint counts.",
+      "fix": "Complete status precedes joint equality. Red2 preserved, success0/incomplete60/NO_GO verified.",
+      "timing": "Before M0, authored/Engine/cohort-score0."
+    },
+    {
+      "issue": "Literal risk diagnostic schema and outer execution success conditions needed explicit freeze.",
+      "fix": "Record raw/effective tuples literally in same scorer process; outer driver requires recorder/scorer success and empty scorer stderr. No helper/gate/semantic rescore.",
+      "timing": "Before M0, authored/Engine/cohort-score0."
+    }
+  ],
+  "risk_diagnostic_scope": "Only exact supplied/observed enum tuples; never hidden component retention/loss.",
+  "remaining": [
+    "Parent review of immutable M0.",
+    "Explicit future authoring-start authorization.",
+    "Fresh independent60 authorship, scope/static review, M1 and first-only observation.",
+    "All real-answer/CLI/provider/human/release/adoption gates remain open."
+  ],
+  "source_and_old_preservation": {
+    "identity": "engine073-launch-independent-v25-pre-author",
+    "utc": "2026-10-17T15:32:17.877227+00:00",
+    "stage": "HASH_AND_STATIC_ONLY",
+    "old_source_recursive_files": 632,
+    "separate_preparation_files": 5,
+    "old_source_anchor": "120f3c9e780512244c890635095069b100593ef8486300fba72390fcd2ae617a",
+    "old_inventory_and_hashes_match": true,
+    "preparation_hashes_match": true,
+    "candidate_HEAD": "95053007bba54c728eee428837b22eb9d52a4f61",
+    "checked_artifact_entries": 51,
+    "checked_artifact_unique_paths": 48,
+    "all_checked_artifacts_match": true,
+    "frozen_dependency_files": 39,
+    "frozen_dependency_inventory_and_hashes_match": true,
+    "frozen_dependencies_readonly": true,
+    "probe_compile_only_returncode": 0,
+    "probe_executable_sha256": "2c692c87307fa1b3ccd73c2134151d08287d38ab3335f094329ec129b3a5083a",
+    "probe_source_sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "recorder_sha256": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "legacy_parse_reference_sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "current_code_AST_parse": "PASS",
+    "no_authorship_or_execution_markers": true,
+    "Engine_invocations": 0,
+    "real_cohort_scorer_processes": 0,
+    "authored_cases": 0,
+    "forbidden_access": "No source body, current tests/parent diagnostics/developmentF1 or old author/corpus bodies read. Opaque parent inputs hash/copy only."
+  },
+  "known_source_controls": "Pinned parent-reported only; independently_rerun=false.",
+  "provider_model_network_Oracle_calls": 0,
+  "extra_agents": 0,
+  "Cargo_shared_target_Git_mutations": 0
+}

@@ -1,0 +1,15 @@
+    Checking reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+    Checking reasoning-harness-providers v0.4.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-providers)
+    Checking reasoning-harness-cli v0.5.4 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-cli)
+error: the borrowed expression implements the required traits
+    --> crates/reasoning-harness-core/tests/launch_context_markers_520_521.rs:2965:45
+     |
+2965 |             assert_eq!(serde_json::to_value(&raw).unwrap()["scope_risk"], risk);
+     |                                             ^^^^ help: change this to: `raw`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrows_for_generic_args
+     = note: `-D clippy::needless-borrows-for-generic-args` implied by `-D warnings`
+     = help: to override `-D warnings` add `#[allow(clippy::needless_borrows_for_generic_args)]`
+
+error: could not compile `reasoning-harness-core` (test "launch_context_markers_520_521") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...

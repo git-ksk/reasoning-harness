@@ -1,0 +1,112 @@
+{
+  "identity": "engine073-launch-independent-v20",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "purpose": "Finite synthetic #520 source qualification only, not #531 real24/ordinaryCLI/provider/human/quality/adoption/release.",
+  "candidate": {
+    "source_sha": "fd091b182999d874b802dcf92483f71ce359627c",
+    "source_sha256": "77727cdc14de86ad4821b1698a43799afb5b42e86d53ef566971623f1d9663f7",
+    "package_version": "0.7.2",
+    "opaque_parent_freeze_file": "/private/tmp/engine073-source19-freeze.json",
+    "opaque_parent_freeze_sha256": "b6cdaa01a48ae3646c5510bb39b37196cceb6da198a738c8350c578edac3e0f6",
+    "opaque_parent_freeze_contents_read": false
+  },
+  "prior_exposure": {
+    "known": "v1-v19 consumed/archived development, including unused v11/v17 and v19 pre-freeze history. V19 firstFAIL49/60 positive misses11/unsafe0 preserved.",
+    "fresh": "New30 hand-authored contrasts afterfd091 freeze. Cross-field foreign/typed declarations plus independent body events, multiple literal printed names versus real owner supplements, publisher metadata unable to fill an event, literal uncertainty text versus actual missing owner, maintained foreign non-event versus maintained target nonexistence, and target denial between foreign events are newly combined. No previous case/unused draft copied, renamed or lightly transformed. Public schema/finite vocabulary deliberately stable.",
+    "unread": "Engine source/root diagnostics/audits/tests/historical other corpora/new development repair files.",
+    "parent_reported_only": "Focused65/strictClippy PASS; full validation and known960/historical597 etc ongoing at task freeze, not independently read/rerun. Parent supplied stable normal build; hash-verify and rustc-link only."
+  },
+  "design": {
+    "cases": 60,
+    "positive": "Target launch uncontradicted; every adverse object fully owns a physical/printed/document property or one fully named foreign event. Multiple separate events each explicit, not one mixed owner. Property values not verified/approved/inferred.",
+    "semantic_negative": 30,
+    "pairs": 30,
+    "targets": 30,
+    "real_documents": 0,
+    "anchor": "Exactly one separate unadorned TARGET was launched. excerpt; no new affirmative predicate.",
+    "negative": "Actual target/global/existence denial or unresolved/mixed/conflicting launch ownership. Prior foreign events, publisher names, literal text and exemption labels cannot loan missing owners. No requested_relation AND non-Relevant.",
+    "finite_scope": [
+      "Object/Subject/Item, local same-role references, complete quotation/denial object/apposition and immediate author reply.",
+      "One full same-role owner supplements only an unowned event, including explicitly designated title/heading or immediately adjacent next-line name. Existing target/mixed owners not overwritten.",
+      "Literal denial/uncertainty words inside a fully described physical/font/ink property remain mentioned values, not asserted event/global denial or actual source gap. The source explicitly identifies the property-only correction object.",
+      "Neutral publisher/name metadata is not an event-owner role statement; a positive separately provides full explicit event ownership.",
+      "Separate source fields/roles/clauses keep their explicit scope; independent actual unknown/target/global correction survives safe objects around it.",
+      "Cause/contrast/reporting/parenthesis/before only join explicit scopes, no chronology/truth/general graph/alias/number AST inference."
+    ],
+    "unknown_or_missing_event_ids": [
+      "li20-002",
+      "li20-006",
+      "li20-012",
+      "li20-018",
+      "li20-020",
+      "li20-024",
+      "li20-030",
+      "li20-038",
+      "li20-044",
+      "li20-046",
+      "li20-050",
+      "li20-056"
+    ],
+    "existing_target_owner_conflict_ids": [
+      "li20-004",
+      "li20-022"
+    ],
+    "mixed_owner_ids": [
+      "li20-042"
+    ],
+    "whole_source_ids": [
+      "li20-008",
+      "li20-040"
+    ],
+    "actual_gap_ids": [
+      "li20-030",
+      "li20-050"
+    ],
+    "literal_property_decisions": {
+      "li20-009": "material of label plate carrying literal product-nonexistence words; only plate material withdrawn.",
+      "li20-043": "font of literal owner unidentified words, with separate fully owned foreign event; not actual missing event context."
+    },
+    "canonical_full_clip_positive": "li20-047",
+    "raw_risk": "Only030/050 raw context_gap, each independently missing event owner. No pure raw-risk joint-negative. Orthogonal axes diagnosed outside inherited score; combined enum not risk-component proof.",
+    "binding": "Optimistic exact/exact proposal and exact_target/requested_relation raw; no model extraction/equivalence/authority.",
+    "budget": {
+      "max_model_attempts": 2,
+      "max_tokens": 192,
+      "max_elapsed_ms": 90000
+    },
+    "labels": "Independent author controlled finite-scope expectations/rationales outside Engine input, not universal/human-approved product truth.",
+    "precommit": "All final scope/labels/rationales fixed before output. Design review required no input change so far; any before-freeze correction would preserve initial history and reason, never tune to outputs."
+  },
+  "scoring": {
+    "sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "inherited_byte_identical": true,
+    "positive": "v17 requested_relation AND v30 relevant",
+    "negative": "v17 not requested_relation AND v30 not relevant",
+    "v29": "Diagnostic only",
+    "PASS": "All60 joint expectations,60 unique valid rows,exit0/empty stderr; no missing/operational absence counts success.",
+    "immutable": "One first process,one scorer; no post-freeze retry/relabel/rescore/input/scope changes."
+  },
+  "stages": {
+    "static": "STATIC_ONLY required fields/count/budget/code/old hashes; semantic0.",
+    "freeze": "Full corpus/labels/inputs/protocol/scope/static/code/source/core/serde/opaque-freeze/executable hashes.",
+    "semantic": "One exclusive first60 local public API process, no sentinel/provider.",
+    "save": "First raw/results/summary/receipt/review/README and before/after identities; recursive self-excluding all-version final hashes/read-only seal."
+  },
+  "execution": {
+    "source_content_read": false,
+    "Oracle": false,
+    "additional_agents": 0,
+    "provider_network_calls": 0,
+    "cargo_invocations": 0,
+    "Git_mutations": 0,
+    "build_provenance": "Parent stable core/serde hash-verified; evaluator rustc links only, no independent core build."
+  },
+  "limits": [
+    "Finite synthetic candidate-only check; no baseline delta/cross-corpus improvement rate/statistically independent60 language samples.",
+    "Prior failures inform iterative development; v20 consumed after first observation.",
+    "Not #531 real24/acquisition/final-answer/ordinaryCLI/provider/model/human/quota/billing/headroom/adoption/release.",
+    "No arbitrary grammar/owner graph/alias/AST/chronology/property-truth guarantee.",
+    "Risk diagnostics outside inherited score; no pure-risk ablation or component proof.",
+    "Serialized model-labelled reasons do not imply provider calls."
+  ]
+}

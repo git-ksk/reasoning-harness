@@ -1,0 +1,31 @@
+{
+  "identity": "engine073-realworld-operational-amendment-independent-review-v3",
+  "result": "PASS",
+  "files": {
+    "amendment-receipt.draft.json": "42ffa2227bb582126f9d49da469113c7148814991fec4a19850cb4e8fd3835ac",
+    "ownership-control.parent.json": "5e32f0beef39a0d67a8e1641f48c8b160e6e7149e8ac7ba16b0d88ba28a4e623",
+    "permission-control.parent.json": "bf02c48383ebbafa5189c3034a5b3bc4504aaefcdffed5a71eb816bdd1d41090",
+    "previous-amendment-receipt.draft.json": "6e09027ced2fea50e24748b08978e10c9a40142067935311a9e71f4ac5d574f8",
+    "previous-successor-workflow.yml": "6b0414f06b13a1540e5a73ce907c42222daffd4fd19f2e7171c9c805a7bd9b9b",
+    "prior-review-manifest.json": "cbf3be52f1187525c6a8e718e98ab4e377edc044631f60241bef3ba10582ce04",
+    "receipt-v2-v3.diff": "19166f4d206c98b3d62f6135cab6d1421f1f4e276f235768fd1ee975c69fd624",
+    "review.json": "c01b684900df2c3d818f35bc564a0df6a9fedc3173d9df4b661e0e6d6d5f30cc",
+    "shell-0.sh": "d8abb02b97cc4274bcbcb21e29d0bd3caaf484d4b8a452a3a26d7cb03384b7bf",
+    "shell-1.sh": "1e343bf7f2e8185ed1254f30b6751984e989cccb17d999d80215f39778ee37df",
+    "shell-2.sh": "ab3c7e2c69df25025c4a2396edcfa18352913c244d9801c01bb75be7cde62f50",
+    "shell-3.sh": "b61856fd70b46c7da7787e5494d0a9a8124d907def54299f980d141d98b297e1",
+    "shell-4.sh": "c67ffdb328911664ac46cb2b1b03e3ca0a61f7ce9764bad4065916b07e65d119",
+    "successor-workflow.yml": "6d244e022351a57e12bf942199b006c0407e97d0ff81f9aad0f91cd8e789501b",
+    "workflow-v2-v3.diff": "73e42dfa43e94f542c867be340b2ad87e49b73d6174fc9422051836afa051987"
+  },
+  "input_hashes": {
+    "/private/tmp/engine073-realworld-operational-amendment-independent-review-v2/artifact-manifest.json": "cbf3be52f1187525c6a8e718e98ab4e377edc044631f60241bef3ba10582ce04",
+    "/private/tmp/engine073-realworld-operational-amendment-independent-review-v2/successor-workflow.yml": "6b0414f06b13a1540e5a73ce907c42222daffd4fd19f2e7171c9c805a7bd9b9b",
+    "/private/tmp/engine073-realworld-operational-amendment-independent-review-v2/amendment-receipt.draft.json": "6e09027ced2fea50e24748b08978e10c9a40142067935311a9e71f4ac5d574f8",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/.github/workflows/engine073-realworld-independent-v1a.yml": "6d244e022351a57e12bf942199b006c0407e97d0ff81f9aad0f91cd8e789501b",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-operational-v1a/receipt.json": "42ffa2227bb582126f9d49da469113c7148814991fec4a19850cb4e8fd3835ac",
+    "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/engine073-realworld-first-v1a/ownership-control.json": "5e32f0beef39a0d67a8e1641f48c8b160e6e7149e8ac7ba16b0d88ba28a4e623",
+    "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/engine073-realworld-first-v1a/permission-control.json": "bf02c48383ebbafa5189c3034a5b3bc4504aaefcdffed5a71eb816bdd1d41090"
+  },
+  "self_exclusion": "artifact-manifest.json excluded from files; external SHA256 anchors this immutable delta review."
+}

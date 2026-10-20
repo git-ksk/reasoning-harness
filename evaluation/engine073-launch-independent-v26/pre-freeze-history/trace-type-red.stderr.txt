@@ -1,0 +1,46 @@
+FFF
+======================================================================
+FAIL: test_bool_returncode_is_incomplete_not_success (test_evaluator.EvaluatorTests.test_bool_returncode_is_incomplete_not_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/sawadakousuke/.codex/worktrees/engine073-source26-freeze/reasoning-harness/evaluation/engine073-launch-independent-v26/test_evaluator.py", line 124, in test_bool_returncode_is_incomplete_not_success
+    self.assertEqual((x['decision'],x['passed'],x['incomplete']),('NO_GO',0,60))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ('GO', 60, 0) != ('NO_GO', 0, 60)
+
+First differing element 0:
+'GO'
+'NO_GO'
+
+- ('GO', 60, 0)
++ ('NO_GO', 0, 60)
+
+======================================================================
+FAIL: test_missing_execution_error_field_is_incomplete (test_evaluator.EvaluatorTests.test_missing_execution_error_field_is_incomplete)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/sawadakousuke/.codex/worktrees/engine073-source26-freeze/reasoning-harness/evaluation/engine073-launch-independent-v26/test_evaluator.py", line 127, in test_missing_execution_error_field_is_incomplete
+    self.assertEqual((x['decision'],x['passed'],x['incomplete']),('NO_GO',0,60))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ('GO', 60, 0) != ('NO_GO', 0, 60)
+
+First differing element 0:
+'GO'
+'NO_GO'
+
+- ('GO', 60, 0)
++ ('NO_GO', 0, 60)
+
+======================================================================
+FAIL: test_execution_bool_returncode_rejected (test_evaluator.EvaluatorTests.test_execution_bool_returncode_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/sawadakousuke/.codex/worktrees/engine073-source26-freeze/reasoning-harness/evaluation/engine073-launch-independent-v26/test_evaluator.py", line 151, in test_execution_bool_returncode_rejected
+    self.assertFalse(execute_first.execution_passed({'decision':'GO'},False,0,0));self.assertFalse(execute_first.execution_passed({'decision':'GO'},0,False,0))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.007s
+
+FAILED (failures=3)

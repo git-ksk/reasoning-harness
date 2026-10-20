@@ -1,0 +1,529 @@
+{
+  "schema_version": "reason-cli-output-v1",
+  "command": "ask",
+  "cli_version": "0.5.5",
+  "contracts": {
+    "artifact": "reasoning-artifact-v1",
+    "candidate": "reasoning-candidate-v1",
+    "config": "reason-config-v1"
+  },
+  "result": {
+    "output_contract": "reason-natural-output-v4",
+    "task": "According to the captured current Node.js documentation, are Buffer instances Uint8Array instances?",
+    "configuration": {
+      "mode": "natural_language_provider",
+      "provider": "mistral",
+      "model": "ministral-8b-2512",
+      "max_tokens": 1024,
+      "resolver_adapter": "bounded-investigation-v1",
+      "resolver_admission": "external_evidence_admission_v1",
+      "output_format": "json",
+      "config_sources": [
+        "explicit"
+      ]
+    },
+    "safety_runtime": {
+      "identity_version": "answer-safety-identity-v1",
+      "profile": "verified_target_v1",
+      "configuration_id": "verified-target-answer-gate-v1",
+      "decidability_contract": "deterministic-explicit-typed-preconditions-v1",
+      "sufficiency_contract": "evidence-sufficiency-coordinate-rsd1-v1",
+      "requirement_policy": "claim-local-answer-sufficiency-requirements-v1",
+      "rollback_configuration_id": "d3-sufficiency-answer-gate-v2"
+    },
+    "safety_observations": [
+      {
+        "render_round": 1,
+        "observation": {
+          "runtime": {
+            "identity_version": "answer-safety-identity-v1",
+            "profile": "verified_target_v1",
+            "configuration_id": "verified-target-answer-gate-v1",
+            "decidability_contract": "deterministic-explicit-typed-preconditions-v1",
+            "sufficiency_contract": "evidence-sufficiency-coordinate-rsd1-v1",
+            "requirement_policy": "claim-local-answer-sufficiency-requirements-v1",
+            "rollback_configuration_id": "d3-sufficiency-answer-gate-v2"
+          },
+          "target": {
+            "key": "node.buffer.uint8array",
+            "value": "true"
+          },
+          "disposition": "preserve_baseline",
+          "reasons": [],
+          "decidability": {
+            "disposition": "permit",
+            "reasons": []
+          },
+          "trusted_verification_short_circuit": true,
+          "latency_ms": 0
+        }
+      }
+    ],
+    "context": {
+      "files": [],
+      "stdin_context_bytes": 0,
+      "trusted_facts": 0,
+      "hypotheses": 0,
+      "resolver_facts": 0
+    },
+    "candidate": {
+      "claims": [
+        {
+          "id": "node-buffer",
+          "statement": "Buffer instances are Uint8Array instances.",
+          "proposed_state": "supported",
+          "proposition": {
+            "key": "node.buffer.uint8array",
+            "value": "true"
+          },
+          "evidence_ids": [
+            "snapshot:rw03-node-positive:1"
+          ]
+        },
+        {
+          "id": "harness_investigation_admitted_fact_1",
+          "statement": "node.buffer.uint8array = true",
+          "proposed_state": "assumed",
+          "proposition": {
+            "key": "node.buffer.uint8array",
+            "value": "true"
+          },
+          "evidence_ids": [
+            "snapshot:rw03-node-positive:1"
+          ]
+        }
+      ],
+      "inferences": []
+    },
+    "generation": {
+      "provider": "mistral",
+      "model": "ministral-8b-2512",
+      "usage": {
+        "input_tokens": 20,
+        "output_tokens": 10,
+        "total_tokens": 30
+      },
+      "latency_ms": 11,
+      "provider_attempts": 1
+    },
+    "usage": {
+      "run": {
+        "tracked_from_session_start": true,
+        "model_calls": 5,
+        "provider_attempts": 5,
+        "input_tokens": 100,
+        "output_tokens": 50,
+        "total_tokens": 150,
+        "resolution_calls": 1,
+        "resolution_added_tokens": 129,
+        "resolution_elapsed_ms": 95
+      },
+      "budget": {
+        "max_model_calls": 12,
+        "max_output_tokens": 4096,
+        "max_total_tokens": 28096
+      }
+    },
+    "initial_outcome": {
+      "verdict": "unknown",
+      "artifact": {
+        "task": "According to the captured current Node.js documentation, are Buffer instances Uint8Array instances?",
+        "evidence": [],
+        "hypotheses": [],
+        "assumptions": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "candidate_diagnostics": [],
+        "verification_receipts": [],
+        "adversarial_findings": [],
+        "assumption_findings": [],
+        "evidence_qualification_findings": [],
+        "claims": [
+          {
+            "id": "node-buffer",
+            "statement": "The Buffer subtype requires verification.",
+            "state": "unknown",
+            "proposition": {
+              "key": "node.buffer.uint8array",
+              "value": "true"
+            },
+            "evidence_ids": []
+          }
+        ],
+        "inferences": []
+      }
+    },
+    "final_outcome": {
+      "verdict": "accept",
+      "artifact": {
+        "task": "According to the captured current Node.js documentation, are Buffer instances Uint8Array instances?",
+        "evidence": [
+          {
+            "id": "snapshot:rw03-node-positive:1",
+            "source": "node-subclass",
+            "observation": "{\"context_summary\": \"Captured current Node.js Buffer documentation describes its relationship to Uint8Array.\", \"document_id\": \"node-buffer\", \"locator\": \"Buffer / Introduction\", \"origin_group\": \"nodejs-project\", \"quote\": \"The Buffer class is a subclass of JavaScript's <Uint8Array> class\", \"scope\": {\"product\": \"node\", \"release\": \"captured-current\"}, \"source_version\": \"sha256:23f92fc924708065b4998712ee080dda049e9fd2b4e16558b396d68694d6fa47\", \"synthetic_mutation\": false, \"url\": \"https://nodejs.org/api/buffer.html\"}",
+            "facts": {
+              "node.buffer.uint8array": "true"
+            },
+            "metadata": {
+              "temporal": {
+                "effective_from_unix_seconds": 1792019640,
+                "effective_until_unix_seconds": 1792106040
+              },
+              "scope": {
+                "product": {
+                  "kind": "values",
+                  "values": [
+                    "node"
+                  ]
+                },
+                "release": {
+                  "kind": "values",
+                  "values": [
+                    "captured-current"
+                  ]
+                }
+              },
+              "provenance_class": "primary"
+            }
+          }
+        ],
+        "hypotheses": [],
+        "assumptions": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {
+            "primary": 20,
+            "reference_host": 20,
+            "untrusted": 0
+          }
+        },
+        "candidate_diagnostics": [],
+        "verification_receipts": [
+          {
+            "id": "structured_fact_equality:node-buffer",
+            "verifier": "structured_fact_equality",
+            "proposition": {
+              "key": "node.buffer.uint8array",
+              "value": "true"
+            },
+            "claim_id": "node-buffer",
+            "conclusion": "supported",
+            "evidence_ids": [
+              "snapshot:rw03-node-positive:1"
+            ]
+          },
+          {
+            "id": "structured_fact_equality:harness_investigation_admitted_fact_1",
+            "verifier": "structured_fact_equality",
+            "proposition": {
+              "key": "node.buffer.uint8array",
+              "value": "true"
+            },
+            "claim_id": "harness_investigation_admitted_fact_1",
+            "conclusion": "supported",
+            "evidence_ids": [
+              "snapshot:rw03-node-positive:1"
+            ]
+          }
+        ],
+        "adversarial_findings": [],
+        "assumption_findings": [],
+        "evidence_qualification_findings": [],
+        "claims": [
+          {
+            "id": "node-buffer",
+            "statement": "node.buffer.uint8array = true",
+            "state": "supported",
+            "proposition": {
+              "key": "node.buffer.uint8array",
+              "value": "true"
+            },
+            "evidence_ids": [
+              "snapshot:rw03-node-positive:1"
+            ]
+          },
+          {
+            "id": "harness_investigation_admitted_fact_1",
+            "statement": "node.buffer.uint8array = true",
+            "state": "supported",
+            "proposition": {
+              "key": "node.buffer.uint8array",
+              "value": "true"
+            },
+            "evidence_ids": [
+              "snapshot:rw03-node-positive:1"
+            ]
+          }
+        ],
+        "inferences": []
+      }
+    },
+    "resolution_rounds": [
+      {
+        "initial_verdict": "unknown",
+        "final_verdict": "accept",
+        "terminal_status": "resolved_supported",
+        "final_artifact": {
+          "task": "According to the captured current Node.js documentation, are Buffer instances Uint8Array instances?",
+          "evidence": [
+            {
+              "id": "snapshot:rw03-node-positive:1",
+              "source": "node-subclass",
+              "observation": "{\"context_summary\": \"Captured current Node.js Buffer documentation describes its relationship to Uint8Array.\", \"document_id\": \"node-buffer\", \"locator\": \"Buffer / Introduction\", \"origin_group\": \"nodejs-project\", \"quote\": \"The Buffer class is a subclass of JavaScript's <Uint8Array> class\", \"scope\": {\"product\": \"node\", \"release\": \"captured-current\"}, \"source_version\": \"sha256:23f92fc924708065b4998712ee080dda049e9fd2b4e16558b396d68694d6fa47\", \"synthetic_mutation\": false, \"url\": \"https://nodejs.org/api/buffer.html\"}",
+              "facts": {
+                "node.buffer.uint8array": "true"
+              },
+              "metadata": {
+                "temporal": {
+                  "effective_from_unix_seconds": 1792019640,
+                  "effective_until_unix_seconds": 1792106040
+                },
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "node"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "captured-current"
+                    ]
+                  }
+                },
+                "provenance_class": "primary"
+              }
+            }
+          ],
+          "hypotheses": [],
+          "assumptions": [],
+          "evidence_requirements": [],
+          "authority_policy": {
+            "ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            }
+          },
+          "candidate_diagnostics": [],
+          "verification_receipts": [
+            {
+              "id": "structured_fact_equality:node-buffer",
+              "verifier": "structured_fact_equality",
+              "proposition": {
+                "key": "node.buffer.uint8array",
+                "value": "true"
+              },
+              "claim_id": "node-buffer",
+              "conclusion": "supported",
+              "evidence_ids": [
+                "snapshot:rw03-node-positive:1"
+              ]
+            }
+          ],
+          "adversarial_findings": [],
+          "assumption_findings": [],
+          "evidence_qualification_findings": [],
+          "claims": [
+            {
+              "id": "node-buffer",
+              "statement": "node.buffer.uint8array = true",
+              "state": "supported",
+              "proposition": {
+                "key": "node.buffer.uint8array",
+                "value": "true"
+              },
+              "evidence_ids": [
+                "snapshot:rw03-node-positive:1"
+              ]
+            }
+          ],
+          "inferences": []
+        },
+        "attempts": [
+          {
+            "attempt_index": 0,
+            "request": {
+              "id": "investigation:realworld-v3-source-0:realworld-v3-source-1",
+              "reason": "investigation",
+              "target": {
+                "kind": "investigation_question",
+                "target_id": "realworld-v3-source-0",
+                "question": "Are Buffer instances Uint8Array instances?",
+                "expected_fact_key": "node.buffer.uint8array"
+              },
+              "resolver_class": "evidence_acquisition",
+              "budget": {
+                "max_attempts": 1
+              }
+            },
+            "adapter_name": "investigation_external_command_v1",
+            "adapter_config_id": "investigation_external_command_v1:sha256:612886ee276411a5d16dbf46b64ec40d352eec680576dc03e00d85ac429b2344",
+            "admission_policy_id": "external_evidence_admission_v1:sha256:d1e36e6ef2b4d80551f861b07892e5aed6ed1b0922c8b3f30dc1e5fb4def2e55",
+            "status": "applied_evidence",
+            "cost": {
+              "added_tokens": 129,
+              "elapsed_ms": 95,
+              "calls": 1
+            },
+            "admitted_evidence_ids": [
+              "snapshot:rw03-node-positive:1"
+            ],
+            "verification_receipts": 0
+          }
+        ],
+        "usage": {
+          "attempts": 1,
+          "calls": 1,
+          "added_tokens": 129,
+          "elapsed_ms": 95
+        },
+        "request_usage": {
+          "investigation:realworld-v3-source-0:realworld-v3-source-1": {
+            "attempts": 1,
+            "calls": 1,
+            "added_tokens": 129,
+            "elapsed_ms": 95
+          }
+        },
+        "finalization": {
+          "status": "grounded_answer",
+          "text": "node.buffer.uint8array = true",
+          "factual_claims": 1,
+          "covered_claims": 1,
+          "factual_claim_coverage": 1.0,
+          "uncovered_propositions": []
+        }
+      }
+    ],
+    "investigation": {
+      "telemetry": {
+        "runtime_id": "bounded-investigation-v1",
+        "plan_contract": "reason-investigation-plan-v1",
+        "action_contract": "reason-investigation-action-v1",
+        "intent_contract": "reason-investigation-intent-v1",
+        "materialization_policy": "target-intent-materialization-v1",
+        "targets": [
+          {
+            "id": "realworld-v3-source-0",
+            "question": "Are Buffer instances Uint8Array instances?",
+            "expected_fact_key": "node.buffer.uint8array",
+            "origin": "model_proposed_untrusted"
+          }
+        ],
+        "capabilities": [
+          {
+            "id": "realworld-v3-source-0",
+            "adapter": "investigation_external_command_v1",
+            "read_only": true,
+            "supported_fact_keys": [
+              "node.buffer.uint8array"
+            ]
+          },
+          {
+            "id": "realworld-v3-source-1",
+            "adapter": "investigation_external_command_v1",
+            "read_only": true,
+            "supported_fact_keys": [
+              "node.buffer.uint8array"
+            ]
+          }
+        ],
+        "rounds": 1,
+        "planner_calls": 1,
+        "planner_intent_calls": 0,
+        "harness_intent_materializations": 0,
+        "intent_rejections": {},
+        "intent_rejection_records": [],
+        "harness_unique_selections": 0,
+        "harness_no_result_followup_selections": 0,
+        "harness_precedence_selections": 0,
+        "precedence_skip_reasons": {
+          "missing_priority": 1
+        },
+        "rejected_actions": {},
+        "action_rejection_records": [],
+        "actions": [
+          {
+            "round": 1,
+            "action": {
+              "action_index": 0,
+              "target_id": "realworld-v3-source-0",
+              "capability_id": "realworld-v3-source-1"
+            },
+            "status": "verification_progress",
+            "admitted_evidence": 1,
+            "verification_progress": true
+          }
+        ],
+        "stop_reason": "resolved"
+      },
+      "plan_generation": {
+        "provider": "mistral",
+        "model": "ministral-8b-2512",
+        "usage": {
+          "input_tokens": 20,
+          "output_tokens": 10,
+          "total_tokens": 30
+        },
+        "latency_ms": 6,
+        "provider_attempts": 1
+      },
+      "action_generations": [
+        {
+          "provider": "mistral",
+          "model": "ministral-8b-2512",
+          "usage": {
+            "input_tokens": 20,
+            "output_tokens": 10,
+            "total_tokens": 30
+          },
+          "latency_ms": 7,
+          "provider_attempts": 1
+        }
+      ],
+      "candidate_regenerations": [
+        {
+          "provider": "mistral",
+          "model": "ministral-8b-2512",
+          "usage": {
+            "input_tokens": 20,
+            "output_tokens": 10,
+            "total_tokens": 30
+          },
+          "latency_ms": 9,
+          "provider_attempts": 1
+        }
+      ]
+    },
+    "finalization": {
+      "status": "grounded_answer",
+      "text": "node.buffer.uint8array = true",
+      "factual_claims": 1,
+      "covered_claims": 1,
+      "factual_claim_coverage": 1.0,
+      "uncovered_propositions": []
+    },
+    "exposed_text": {
+      "policy_id": "harness-canonical-exposed-text-v1",
+      "renderer_text_exposed": false
+    },
+    "rendering": [
+      {
+        "provider": "mistral",
+        "model": "ministral-8b-2512",
+        "usage": {
+          "input_tokens": 20,
+          "output_tokens": 10,
+          "total_tokens": 30
+        },
+        "latency_ms": 8,
+        "provider_attempts": 1
+      }
+    ]
+  }
+}

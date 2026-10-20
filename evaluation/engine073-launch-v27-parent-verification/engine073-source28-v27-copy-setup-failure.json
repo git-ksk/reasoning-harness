@@ -1,0 +1,9 @@
+{
+  "stage": "PARENT_READONLY_SCHEMA_CHECK_BEFORE_COPY",
+  "error": "KeyError: all_corpus_reference_files_self_excluding",
+  "cause": "v27 final manifest field names differ from v26",
+  "files_copied": 0,
+  "Engine_scorer_helper_invocations": 0,
+  "child_archive_mutations": 0,
+  "correction": "use exact v27 corpus_references_* field names; original script saved"
+}

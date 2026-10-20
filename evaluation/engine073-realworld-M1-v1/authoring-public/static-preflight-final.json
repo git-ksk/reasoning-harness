@@ -1,0 +1,262 @@
+{
+  "scope": "STATIC_ONLY; no candidate Engine/model/scorer observation",
+  "schema_and_provenance_pass": true,
+  "cases": 24,
+  "documents": 12,
+  "products": 6,
+  "checks": [
+    {
+      "case_id": "rw-01",
+      "visible_packet_UTF8_bytes": 1450,
+      "native_shape_ModelRequest_UTF8_bytes": 2380,
+      "reserved_input_upper_bound": 2892,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-02",
+      "visible_packet_UTF8_bytes": 1935,
+      "native_shape_ModelRequest_UTF8_bytes": 2865,
+      "reserved_input_upper_bound": 3377,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-03",
+      "visible_packet_UTF8_bytes": 1357,
+      "native_shape_ModelRequest_UTF8_bytes": 2287,
+      "reserved_input_upper_bound": 2799,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-04",
+      "visible_packet_UTF8_bytes": 1848,
+      "native_shape_ModelRequest_UTF8_bytes": 2784,
+      "reserved_input_upper_bound": 3296,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-05",
+      "visible_packet_UTF8_bytes": 1674,
+      "native_shape_ModelRequest_UTF8_bytes": 2604,
+      "reserved_input_upper_bound": 3116,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-06",
+      "visible_packet_UTF8_bytes": 1612,
+      "native_shape_ModelRequest_UTF8_bytes": 2542,
+      "reserved_input_upper_bound": 3054,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-07",
+      "visible_packet_UTF8_bytes": 1490,
+      "native_shape_ModelRequest_UTF8_bytes": 2420,
+      "reserved_input_upper_bound": 2932,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-08",
+      "visible_packet_UTF8_bytes": 1455,
+      "native_shape_ModelRequest_UTF8_bytes": 2385,
+      "reserved_input_upper_bound": 2897,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-09",
+      "visible_packet_UTF8_bytes": 1287,
+      "native_shape_ModelRequest_UTF8_bytes": 2217,
+      "reserved_input_upper_bound": 2729,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-10",
+      "visible_packet_UTF8_bytes": 1518,
+      "native_shape_ModelRequest_UTF8_bytes": 2448,
+      "reserved_input_upper_bound": 2960,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-11",
+      "visible_packet_UTF8_bytes": 1540,
+      "native_shape_ModelRequest_UTF8_bytes": 2470,
+      "reserved_input_upper_bound": 2982,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-12",
+      "visible_packet_UTF8_bytes": 1275,
+      "native_shape_ModelRequest_UTF8_bytes": 2205,
+      "reserved_input_upper_bound": 2717,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-13",
+      "visible_packet_UTF8_bytes": 1950,
+      "native_shape_ModelRequest_UTF8_bytes": 2880,
+      "reserved_input_upper_bound": 3392,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-14",
+      "visible_packet_UTF8_bytes": 1604,
+      "native_shape_ModelRequest_UTF8_bytes": 2534,
+      "reserved_input_upper_bound": 3046,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-15",
+      "visible_packet_UTF8_bytes": 1505,
+      "native_shape_ModelRequest_UTF8_bytes": 2435,
+      "reserved_input_upper_bound": 2947,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-16",
+      "visible_packet_UTF8_bytes": 1581,
+      "native_shape_ModelRequest_UTF8_bytes": 2511,
+      "reserved_input_upper_bound": 3023,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-17",
+      "visible_packet_UTF8_bytes": 1372,
+      "native_shape_ModelRequest_UTF8_bytes": 2306,
+      "reserved_input_upper_bound": 2818,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-18",
+      "visible_packet_UTF8_bytes": 1856,
+      "native_shape_ModelRequest_UTF8_bytes": 2786,
+      "reserved_input_upper_bound": 3298,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-19",
+      "visible_packet_UTF8_bytes": 1517,
+      "native_shape_ModelRequest_UTF8_bytes": 2455,
+      "reserved_input_upper_bound": 2967,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-20",
+      "visible_packet_UTF8_bytes": 1457,
+      "native_shape_ModelRequest_UTF8_bytes": 2387,
+      "reserved_input_upper_bound": 2899,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-21",
+      "visible_packet_UTF8_bytes": 1576,
+      "native_shape_ModelRequest_UTF8_bytes": 2506,
+      "reserved_input_upper_bound": 3018,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-22",
+      "visible_packet_UTF8_bytes": 1502,
+      "native_shape_ModelRequest_UTF8_bytes": 2432,
+      "reserved_input_upper_bound": 2944,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-23",
+      "visible_packet_UTF8_bytes": 1358,
+      "native_shape_ModelRequest_UTF8_bytes": 2292,
+      "reserved_input_upper_bound": 2804,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    },
+    {
+      "case_id": "rw-24",
+      "visible_packet_UTF8_bytes": 1300,
+      "native_shape_ModelRequest_UTF8_bytes": 2230,
+      "reserved_input_upper_bound": 2742,
+      "within3584_request": true,
+      "reference_facts_visible_to_helper": false,
+      "gold_visible_to_models": false
+    }
+  ],
+  "all_request_budgets_pass": true,
+  "native_request_shape_source_sha256": "05d533a1ce00fddbb81826dfb6a41ec80edc6d17e3bbb74c58b85aed80f68fd8",
+  "gold_counts": {
+    "e2e_normal": {
+      "positive": 17,
+      "negative": 7,
+      "ambiguous": 0
+    },
+    "helper_opt_in": {
+      "positive": 8,
+      "negative": 16,
+      "ambiguous": 0
+    }
+  },
+  "family_counts": {
+    "e2e_normal": {
+      "compatible": 3,
+      "conflict": 3,
+      "duplicate_or_lineage": 3,
+      "missing_or_unrelated": 3,
+      "revision_or_history": 3,
+      "scope": 3,
+      "untrusted_control": 3,
+      "wrong_target": 3
+    },
+    "helper_opt_in": {
+      "compatible": 3,
+      "conflict": 3,
+      "duplicate_or_lineage": 3,
+      "missing_or_unrelated": 3,
+      "revision_or_history": 3,
+      "scope": 3,
+      "untrusted_control": 3,
+      "wrong_target": 3
+    }
+  },
+  "Engine_model_provider_actual_scorer_Oracle_calls": 0
+}

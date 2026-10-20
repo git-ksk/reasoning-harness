@@ -1,0 +1,237 @@
+{
+  "identity": "engine073-launch-independent-v21",
+  "recorded_utc": "2026-10-16T23:24:56.855792+00:00",
+  "reason": "Keep references explicitly in the stated this/that/the + same Object/Subject/Item scope; do not demand extra bare-role grammar. Add determiner the before bare/coordinated roles.",
+  "parent_explicitly_authorized": true,
+  "initial_author": "draft-history/initial-author-v1/author_cases.py",
+  "initial_static_result": "draft-history/initial-author-v1/static-author-stage-check.json",
+  "initial_author_sha256": "bdd7cca8dc4d52099f24ea39120ebe508b9c0d560258a60cc93bbd7e9ef4107e",
+  "final_author_sha256": "1e64aae62abed9633d562fc57f09dd5688624693c46499825aad081545abac2b",
+  "corresponding_differences": [
+    {
+      "before": "We deny Object and Subject and withdraw Item.",
+      "after": "We deny the Object and the Subject and withdraw the Item.",
+      "occurrences": 2
+    },
+    {
+      "before": "We deny the Object and Subject",
+      "after": "We deny the Object and the Subject",
+      "occurrences": 4
+    },
+    {
+      "before": "We deny Object",
+      "after": "We deny the Object",
+      "occurrences": 4
+    },
+    {
+      "before": "and withdraw Subject.",
+      "after": "and withdraw the Subject.",
+      "occurrences": 1
+    },
+    {
+      "before": "We withdraw Item.",
+      "after": "We withdraw the Item.",
+      "occurrences": 2
+    }
+  ],
+  "changed_contexts": [
+    {
+      "id": "li21-005",
+      "polarity": "positive",
+      "before": [
+        [
+          "excerpt",
+          "Object: the material of Cedarfield Hub base. Subject: the colour of Rowan Hall lid. Item: the launch of Silver Lodge. We deny the Object and Subject and withdraw the Item."
+        ]
+      ],
+      "after": [
+        [
+          "excerpt",
+          "Object: the material of Cedarfield Hub base. Subject: the colour of Rowan Hall lid. Item: the launch of Silver Lodge. We deny the Object and the Subject and withdraw the Item."
+        ]
+      ]
+    },
+    {
+      "id": "li21-006",
+      "polarity": "negative",
+      "before": [
+        [
+          "excerpt",
+          "Object: the material of Cedarfield Hub base. Subject: the colour of Rowan Hall lid. Item: the launch of Cedarfield Hub and Silver Lodge. We deny the Object and Subject and withdraw the Item."
+        ]
+      ],
+      "after": [
+        [
+          "excerpt",
+          "Object: the material of Cedarfield Hub base. Subject: the colour of Rowan Hall lid. Item: the launch of Cedarfield Hub and Silver Lodge. We deny the Object and the Subject and withdraw the Item."
+        ]
+      ]
+    },
+    {
+      "id": "li21-021",
+      "polarity": "positive",
+      "before": [
+        [
+          "excerpt",
+          "Object: the colour of Opal Court plate. Subject: the font of Lavender Lodge manual. We deny the Object and Subject. Item: the launch of Sapphire House. We retract the Item."
+        ]
+      ],
+      "after": [
+        [
+          "excerpt",
+          "Object: the colour of Opal Court plate. Subject: the font of Lavender Lodge manual. We deny the Object and the Subject. Item: the launch of Sapphire House. We retract the Item."
+        ]
+      ]
+    },
+    {
+      "id": "li21-022",
+      "polarity": "negative",
+      "before": [
+        [
+          "excerpt",
+          "Object: the colour of Opal Court plate. Subject: the font of Lavender Lodge manual. We deny the Object and Subject. Item: an unowned launch claim. We retract the Item, whose product name is absent."
+        ]
+      ],
+      "after": [
+        [
+          "excerpt",
+          "Object: the colour of Opal Court plate. Subject: the font of Lavender Lodge manual. We deny the Object and the Subject. Item: an unowned launch claim. We retract the Item, whose product name is absent."
+        ]
+      ]
+    },
+    {
+      "id": "li21-041",
+      "polarity": "positive",
+      "before": [
+        [
+          "excerpt",
+          "Object: the material of Mallow Court plate. Subject: the font of Marigold Lodge card. Item: the launch of Coral House. We deny Object and Subject and withdraw Item."
+        ]
+      ],
+      "after": [
+        [
+          "excerpt",
+          "Object: the material of Mallow Court plate. Subject: the font of Marigold Lodge card. Item: the launch of Coral House. We deny the Object and the Subject and withdraw the Item."
+        ]
+      ]
+    },
+    {
+      "id": "li21-042",
+      "polarity": "negative",
+      "before": [
+        [
+          "excerpt",
+          "Object: the material of Mallow Court plate. Subject: the font of Marigold Lodge card. Item: the launch claim for Umberline Pad and Coral House. We deny Object and Subject and withdraw Item."
+        ]
+      ],
+      "after": [
+        [
+          "excerpt",
+          "Object: the material of Mallow Court plate. Subject: the font of Marigold Lodge card. Item: the launch claim for Umberline Pad and Coral House. We deny the Object and the Subject and withdraw the Item."
+        ]
+      ]
+    },
+    {
+      "id": "li21-047",
+      "polarity": "positive",
+      "before": [
+        [
+          "heading",
+          "Starling Clip full product name"
+        ],
+        [
+          "excerpt",
+          "The canonical name is Starling Clip. Object: the material of Starling Clip bracket. Subject: the font of the printed name \"Peridot Court\" on Opal House card. We deny Object and withdraw Subject."
+        ]
+      ],
+      "after": [
+        [
+          "heading",
+          "Starling Clip full product name"
+        ],
+        [
+          "excerpt",
+          "The canonical name is Starling Clip. Object: the material of Starling Clip bracket. Subject: the font of the printed name \"Peridot Court\" on Opal House card. We deny the Object and withdraw the Subject."
+        ]
+      ]
+    },
+    {
+      "id": "li21-048",
+      "polarity": "negative",
+      "before": [
+        [
+          "heading",
+          "Starling Clip full product name"
+        ],
+        [
+          "excerpt",
+          "The canonical name is Starling Clip. Object: the material of Starling Clip bracket. We deny Object and withdraw a separate launch claim; its product owner cannot be established from this source."
+        ]
+      ],
+      "after": [
+        [
+          "heading",
+          "Starling Clip full product name"
+        ],
+        [
+          "excerpt",
+          "The canonical name is Starling Clip. Object: the material of Starling Clip bracket. We deny the Object and withdraw a separate launch claim; its product owner cannot be established from this source."
+        ]
+      ]
+    },
+    {
+      "id": "li21-055",
+      "polarity": "positive",
+      "before": [
+        [
+          "source_title",
+          "Publisher: Silver Court"
+        ],
+        [
+          "excerpt",
+          "Object: the material of Silver Court plate. We deny Object. Item: an unowned launch claim. Owner of the Item:\nLemon Hall. We withdraw Item."
+        ]
+      ],
+      "after": [
+        [
+          "source_title",
+          "Publisher: Silver Court"
+        ],
+        [
+          "excerpt",
+          "Object: the material of Silver Court plate. We deny the Object. Item: an unowned launch claim. Owner of the Item:\nLemon Hall. We withdraw the Item."
+        ]
+      ]
+    },
+    {
+      "id": "li21-056",
+      "polarity": "negative",
+      "before": [
+        [
+          "source_title",
+          "Publisher: Silver Court"
+        ],
+        [
+          "excerpt",
+          "Object: the material of Silver Court plate. We deny Object. Item: an unowned launch claim. Owner of the Object:\nLemon Hall. We withdraw Item."
+        ]
+      ],
+      "after": [
+        [
+          "source_title",
+          "Publisher: Silver Court"
+        ],
+        [
+          "excerpt",
+          "Object: the material of Silver Court plate. We deny the Object. Item: an unowned launch claim. Owner of the Object:\nLemon Hall. We withdraw the Item."
+        ]
+      ]
+    }
+  ],
+  "product_names_axes_rationales_budget_unchanged": true,
+  "meaning_and_expected_polarity_objective_unchanged": true,
+  "author_generator_runs_at_revision": 0,
+  "Engine_scorer_observations": 0,
+  "complete_manifest_frozen": false,
+  "output_based_tuning": false
+}

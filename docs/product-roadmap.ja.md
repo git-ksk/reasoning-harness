@@ -1,5 +1,15 @@
 # 製品ロードマップ: Reason CLI / Harness Engine
 
+**最新状況（2026-10-20、消費済み24問の開発採点済み）:** Googleは全24問/arm/trackを独立注釈して初回採点。通常case F1は旧版/候補とも0.583333（P1.00/R0.411765）、helperは0.222222→0.400000（候補P1.00/R0.25）。重大違反0件だが、通常引用0/28・有用回答の増加0/+1で基準未達。Mistral/Groqの全24問F1はnull、Mistral残量未確認のため追加保留。既知usage欠落はPR549/main53be613へ別修正済みだが、planner JSON途中切れと再完走は未解決。元v1/raw/gold/初回捕捉は不変、fresh accuracy0、0.7.3公開・CLI採用NO_GO。[固定スコアと次の改善](../evaluation/engine073-realworld-v2-consumed-score-v1/README.md)。
+
+**次の修正順:** [実測FNの原因と最小改善](engine073-consumed-real24-findings.ja.md)。型付き条件/注意と引用の保持→質問/計画coverage→実行・origin注意→helper比較範囲。hostが供給する事実の縮約も含むE2E課題で、Engine単体の成績とは区別する。
+
+**最新状況（2026-10-19、初回実戦評価・独立採点済み）:** M0/M1を固定し、未使用だった公式12文書・6製品の実資料24問でMistral/Googleを実行したが、CLI論理呼び出し上限6と失敗時の使用量欠落で早期停止。通常回答は評価器の2段階終端照合にも不備があり、24問全体のF1は全provider/trackで`null`、**採用NO_GO**。採点可能なGoogle補助API1問/armのみ、baseline/候補ともcase F1=0.00・claim F1=1.00（最終判定conflict、改善なし）。これは全体性能ではない。[初回結果・独立レビュー・修正順序](../evaluation/engine073-realworld-first-v1a-results/README.md)。次は#540の結果回収・終端照合・失敗時診断を修正して実経路を確認し、別途固定した評価へ進む。Groqは認証前延期を維持。元raw/gold/予算/初回FAILは不変、モデル再試行・再採点なし。公開CLI0.5.5/Engine0.6.1、Engine0.7.3未公開。以下の日付付き準備記録は履歴。
+
+**実資料評価の接続準備（2026-10-19）:** 通常CLI保存記録と全文資料・引用位置の照合に加え、既存Node開発入力で対象APIを呼ぶ実験hostを保存した。0.6.1/現在候補とも関連性は保留・引用0。別の手動binding対照では出典付き原文表示を確認し、関連性成功へ混ぜない。新規独立問題0・実回答F1未測定。次は意味/引用裁定・欠測会計・数値予算を完全M0へ結ぶ。[実験host](engine073-active-source-host-development.ja.md)、[通常CLI記録の照合](engine073-cli-trace-binding-development.ja.md)。
+
+**評価運用の見直し（2026-10-19）:** 合否は事前固定した独立F1/P/Rと安全性で判断する。既知対照の件数・満点は完成度にしない。着手済み6件の修正後は合成60件の追加・修正ループを止め、実資料・通常CLIの経路/traceと完全採点器へ重点を戻す。既知回帰は再発防止対象を著作前に定義し、新holdoutの全FNを自動で100%必須へ追加しない。凍結初回は不変。[詳細](engine073-evaluation-focus.ja.md)。
+
 日本語 | [English](product-roadmap.md)
 
 これは**これから進む方向だけを読むためのroadmap**です。releaseごとの詳細な実装台帳は[Product roadmap history](product-roadmap-history.ja.md)へ保存しました。
@@ -26,11 +36,15 @@
 
 `v0.4.2`が最後のunified historical releaseです。split CLI lineは`reason-v0.5.5`（Harness Engine 0.6.1）まで進み、CLI / Engine / machine-contract identityは独立して進みます。`reason-v0.5.2`はEngine 0.4.2のままimmutableで、`reason-v0.5.3`が独立release済みEngine 0.5.0をadoptしました。[バージョニング](versioning.ja.md)を参照してください。
 
-## 次の開発 — 実戦評価を先行
+## 次の開発 — Engine0.7.3の修正と再評価
 
-[#531](https://github.com/git-ksk/reasoning-harness/issues/531)／[Milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12)で、**実資料の0.6.1/0.7.2比較 → 必要な修正 → 新規再評価 → CLI採用 → 正式配布**の順に進めます。公開済み0.7.2に現在形の撤回・非実在の判定漏れが再現したため、#520を再オープンし、CLI採用はNO-GOです。#488/#489/#491は測定で必要性が確認できた場合だけ実装します。
+[0.7.3ロードマップ](engine-0.7.3-roadmap.ja.md)／[計画 #538](https://github.com/git-ksk/reasoning-harness/issues/538)／[評価 #531](https://github.com/git-ksk/reasoning-harness/issues/531)で、**#520修正 → 安全なrunner・通常経路の接続確認 → 小規模開発確認 → 新規独立の実資料受入 → ソース公開 → 専用CLI採用・配布**の順に進めます。0.7.3は未公開の計画です。0.7.2の公開物・比較結果は保持し、残存不具合があるため採用不可です。#488/#489/#491は実測で必要な場合だけ実装します。
 
-通常回答と明示有効化した補助APIは別集計です。[開発用v2/v3の初回3社比較](engine07-realworld-development-results.ja.md)を実施しましたが、両評価は不合格・測定不十分です。通常回答の改善は未確認、補助表示はMistral・Googleで各2件増加。Groqは日次quota枯渇中のため追加起動を止めています。#535の診断保持修正、停止制御の新runnerへの組み込み、#520の後継修正、新しい独立受入が残ります。採用は1/6（比較記録のみ）。公開CLI0.5.5 / Engine0.6.1と#506の配布受入は別工程です。
+[初回v2/v3の結果](engine07-realworld-development-results.ja.md)は不合格・不完全のままです。#535/#537/#541はmerge済み、共有runnerは47オフラインテストと限定独立再レビューを完了したが、live準備は未完了。Groqは日次枯渇のため追加起動を止めています。通常回答の改善と新規独立受入は未確認、採用1/6は開発比較・限界・NO-GO記録のみです。公開CLI0.5.5 / Engine0.6.1と#506の配布受入は別工程です。
+
+修正候補 `ab3c632` は、同じ観測済みv27の開発評価で両API TP30/FP0/TN30/FN0、P/R/F1=1.000。元の独立v27初回F1 .888889/Recall .8/NO_GOは変更しない。完全な印字属性・同roleのowner/複数参照・括弧内の属性限定を共通処理で修正した。修正した不具合と安全性境界の退行を確認し、全体1605PASS/0FAIL/既存ignore8・strict Clippy/fmt、元14・歴史597byte互換を保存。過去1400は同じsourceの通常成果物で一度確認し、rootでは必要な60/14/597照合に絞った。件数・開発満点を完成度にせず、次の合成60件は作らない。次は実資料・通常CLIのfeature-active経路/traceと完全採点器・数値予算へ重点を戻す。主張算術/表示binding部品32検証は準備のみ、独立部品レビューは利用上限で未完了。全928原参照は不変。実24問0/24・実回答F1未測定・Groq停止、sourceマージ/Engine公開/CLI採用NO_GO。[方針](engine073-evaluation-focus.ja.md)、[保存済み修正](../evaluation/engine073-launch-development-v27-bounded-properties/README.md)、[原独立判定](engine073-v27-decision.ja.md)。
+
+[実回答の採点準備](engine073-realworld-metrics-preparation.ja.md)で主張grounding Precision、必要主張Recall/F1、引用、正しい/過剰保留、有用性、運用欠測、provider別会計を定義した。PREPARATION_ONLY、M0/M1未固定・実回答未採点。新scorer、実host callback/dependency closure・数値予算/headroom・金額自己上限、featureが働く通常CLI経路が残る。[過去候補01dcの同一host offline CLI](../evaluation/engine07-cli-path-preparation-v3/README.md)は固定Node1経路で両Engineの同じgrounded回答・取得1・関連性API呼出し0、直接v17/v30対照ではcounter動作を確認した。全経路の不活性や今回修正の実回答効果を確定した結果ではない。#541共有runnerはmerge済みだが#540のlive準備はOPEN。#531新規実24問0/24・採用1/6、Groq追加起動禁止、provider/model/Oracle追加0を維持する。
 
 ## 製品目標
 

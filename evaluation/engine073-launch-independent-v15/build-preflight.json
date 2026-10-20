@@ -1,0 +1,23 @@
+{
+  "stage": "STATIC_BUILD_ONLY",
+  "command": [
+    "rustc",
+    "--edition=2024",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v15/probe.rs",
+    "-L",
+    "dependency=/private/tmp/engine073-target/debug/deps",
+    "--extern",
+    "reasoning_harness_core=/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-af992f1b2d90d349.rlib",
+    "--extern",
+    "serde_json=/private/tmp/engine073-target/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+    "-o",
+    "/private/tmp/engine073-launch-independent-v15-probe/probe"
+  ],
+  "returncode": 0,
+  "rustc": "rustc 1.88.0 (6b00bc388 2025-06-23)",
+  "core_and_serde_supplied_by_parent": true,
+  "independent_core_build": false,
+  "cargo_invocations": 0,
+  "semantic_observations": 0,
+  "shared_target_writes": 0
+}

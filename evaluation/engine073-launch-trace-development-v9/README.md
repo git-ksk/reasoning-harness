@@ -1,0 +1,7 @@
+# Current v25 remaining seven-case trace
+
+Actual sourcea3d772de673057e54a1be862271bb4633f7fdf5e/source SHA256ef30c96da5c63a97cf2b9ea8cac7ea6822982a51ce22fde3b4fb72a0575b4c2e. Separate-copy cfg(test) hooks before9 existing governing returns preserve predicates/order. One test emitted7 consumed misses; each effective tuple equals private roles04 and the current normal Cargo artifact output, verified before publication. Public derive events are derive_rule_trace; rule_trace additionally includes later helper calls. Unique original byte spans only; null is never a guessed source location.
+
+Six cases first block at typed_reference_not_excluded:031 quoted printed title;035 possessive property reference;037 appositional role;043 nominal printed illustration;045 quoted event with same-role owner reply;051 explicit denial-target explanation. Case053 has no governing block and retains RequestedRelation with ContextGap: the complete canonical name includes Clip; v30 still withholds. Do not describe all seven as a remaining typed-reference block or infer a new risk-loss from enums. Broader raw-risk precedence and unproven source scope must remain protected.
+
+These seven actual paths define the next development repair. No new v26 authorship/run, no canonical scorer/provider/model/Oracle calls, no relabel/rescore of independent first. Historicalv16/v29 and published releases remain unchanged. Earlier876/28cd traces are preserved in prototypes with their own source hashes; they do not represent this current source.

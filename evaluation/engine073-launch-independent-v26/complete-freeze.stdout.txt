@@ -1,0 +1,1 @@
+{"stage": "COMPLETE_M1_FREEZE", "manifest_sha256": "7627332228e422c58b64890434f681066469d77ab3326a8037e9b8379508c366", "Engine_invocations": 0, "scorer_invocations": 0}

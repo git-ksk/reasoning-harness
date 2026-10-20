@@ -1,0 +1,164 @@
+   Compiling reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running tests/launch_context_markers_520_521.rs (/private/tmp/engine073-target/debug/deps/launch_context_markers_520_521-b0e02a47023b9070)
+
+running 1 test
+test successor_retraction_and_non_event_contexts_preserve_scope ... FAILED
+
+failures:
+
+---- successor_retraction_and_non_event_contexts_preserve_scope stdout ----
+
+thread 'successor_retraction_and_non_event_contexts_preserve_scope' panicked at crates/reasoning-harness-core/tests/launch_context_markers_520_521.rs:66:5:
+"excerpt:true:The newsroom retracts this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:false:The newsroom retracts this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:true:The newsroom retracts this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:false:The newsroom retracts this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:true:The newsroom retracts this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:false:The newsroom retracts this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:true:The newsroom retracts this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:false:The newsroom retracts this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:true:The newsroom retracts this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:false:The newsroom retracts this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:true:We retract this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:false:We retract this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:true:We retract this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:false:We retract this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:true:We retract this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:false:We retract this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:true:We retract this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:false:We retract this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:true:We retract this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:false:We retract this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:true:We hereby retract the preceding statement.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:false:We hereby retract the preceding statement.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:true:We hereby retract the preceding statement.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:false:We hereby retract the preceding statement.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:true:We hereby retract the preceding statement.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:false:We hereby retract the preceding statement.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:true:We hereby retract the preceding statement.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:false:We hereby retract the preceding statement.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:true:We hereby retract the preceding statement.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:false:We hereby retract the preceding statement.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:true:The newsroom denies this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:false:The newsroom denies this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:true:The newsroom denies this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:false:The newsroom denies this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:true:The newsroom denies this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:false:The newsroom denies this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:true:The newsroom denies this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:false:The newsroom denies this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:true:The newsroom denies this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:false:The newsroom denies this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:true:We deny it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:false:We deny it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:true:We deny it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:false:We deny it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:true:We deny it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:false:We deny it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:true:We deny it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:false:We deny it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:true:We deny it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:false:We deny it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:true:We withdraw this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:false:We withdraw this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:true:We withdraw this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:false:We withdraw this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:true:We withdraw this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:false:We withdraw this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:true:We withdraw this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:false:We withdraw this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:true:We withdraw this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:false:We withdraw this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:true:The publisher withdraws it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:false:The publisher withdraws it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:true:The publisher withdraws it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:false:The publisher withdraws it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:true:The publisher withdraws it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:false:The publisher withdraws it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:true:The publisher withdraws it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:false:The publisher withdraws it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:true:The publisher withdraws it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:false:The publisher withdraws it.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:true:This event never happened.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:false:This event never happened.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:true:This event never happened.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:false:This event never happened.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:true:This event never happened.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:false:This event never happened.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:true:This event never happened.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:false:This event never happened.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:true:This event never happened.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:false:This event never happened.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:true:That did not happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:false:That did not happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:true:That did not happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:false:That did not happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:true:That did not happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:false:That did not happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:true:That did not happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:false:That did not happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:true:That did not happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:false:That did not happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:true:That didn't happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:false:That didn't happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:true:That didn't happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:false:That didn't happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:true:That didn't happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:false:That didn't happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:true:That didn't happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:false:That didn't happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:true:That didn't happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:false:That didn't happen.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:true:The launch never took place.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:false:The launch never took place.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:true:The launch never took place.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:false:The launch never took place.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:true:The launch never took place.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:false:The launch never took place.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:true:The launch never took place.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:false:The launch never took place.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:true:The launch never took place.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:false:The launch never took place.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:true:This report is not factual.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:false:This report is not factual.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:true:This report is not factual.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:false:This report is not factual.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:true:This report is not factual.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:false:This report is not factual.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:true:This report is not factual.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:false:This report is not factual.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:true:This report is not factual.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:false:This report is not factual.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:true:This is not a real event.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:false:This is not a real event.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:true:This is not a real event.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:false:This is not a real event.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:true:This is not a real event.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:false:This is not a real event.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:true:This is not a real event.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:false:This is not a real event.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:true:This is not a real event.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:false:This is not a real event.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:true:This event did not occur.": expected=false, relation=RequestedRelation, disposition=Relevant
+"excerpt:false:This event did not occur.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:true:This event did not occur.": expected=false, relation=RequestedRelation, disposition=Relevant
+"fact:false:This event did not occur.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:true:This event did not occur.": expected=false, relation=RequestedRelation, disposition=Relevant
+"heading:false:This event did not occur.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:true:This event did not occur.": expected=false, relation=RequestedRelation, disposition=Relevant
+"source_title:false:This event did not occur.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:true:This event did not occur.": expected=false, relation=RequestedRelation, disposition=Relevant
+"structured_metadata:false:This event did not occur.": expected=false, relation=RequestedRelation, disposition=Relevant
+"Silver Lens was launched in 2026. Maple Queue was introduced in 2026. We retract all these claims.": expected=false, relation=RequestedRelation, disposition=Relevant
+"Silver Lens supports face unlock. We retract this report. Silver Lens was launched in 2026.": expected=false, relation=RequestedRelation, disposition=Relevant
+"Silver Lens was launched in 2026. We retract Maple Queue's launch claim and this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    successor_retraction_and_non_event_contexts_preserve_scope
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 15 filtered out; finished in 1.72s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_context_markers_520_521`

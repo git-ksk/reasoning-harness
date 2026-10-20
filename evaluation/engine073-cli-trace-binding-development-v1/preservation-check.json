@@ -1,0 +1,11 @@
+{
+  "verified_utc": "2026-10-18T23:43:13.369511+00:00",
+  "independent_v27_anchor": "abaae2385e6c17783cc7093c10e15424b6e4ce01080e8fcdea5eab3a9e5bb439",
+  "all928_original_references_exact": true,
+  "old_claim_component_index_sha256": "b2b5e6a211f31145127faebfd0f92d7dbc9ece50b332fa75216a9f9a2806a486",
+  "old_claim_component_bytes_unchanged": true,
+  "engine_source_sha256": "2e9207177d9f1e91b8c031322dbbf83c2b374d8847e123e135dcca727b0214de",
+  "production_changes": 0,
+  "new_engine_execution": 0,
+  "old_scorer_execution": 0
+}

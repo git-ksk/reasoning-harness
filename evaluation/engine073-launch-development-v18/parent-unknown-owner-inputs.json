@@ -1,0 +1,158 @@
+[
+  {
+    "id": "root-unowned-v2-0",
+    "policy": {
+      "policy_id": "li15-policy-19",
+      "target_id": "li15-target-19",
+      "target_question": "Was Ivory Beacon launched?",
+      "entity": {
+        "canonical_id": "li15-target-19",
+        "canonical_name": "Ivory Beacon",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li15-038-evidence",
+      "source_id": "li15-038-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ivory Beacon was launched. We retract the claim about the colour of Ivory Beacon button, and we deny the launch of Teal Orchard. We also withdraw that other launch claim; its owner was not specified."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "root-unowned-v2-1",
+    "policy": {
+      "policy_id": "li15-policy-19",
+      "target_id": "li15-target-19",
+      "target_question": "Was Ivory Beacon launched?",
+      "entity": {
+        "canonical_id": "li15-target-19",
+        "canonical_name": "Ivory Beacon",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li15-038-evidence",
+      "source_id": "li15-038-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ivory Beacon was launched. We retract the claim about the colour of Ivory Beacon button, and we deny the launch of Teal Orchard. We also withdraw that other launch claim; the other launch claim has no named owner."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "root-unowned-v2-2",
+    "policy": {
+      "policy_id": "li15-policy-19",
+      "target_id": "li15-target-19",
+      "target_question": "Was Ivory Beacon launched?",
+      "entity": {
+        "canonical_id": "li15-target-19",
+        "canonical_name": "Ivory Beacon",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li15-038-evidence",
+      "source_id": "li15-038-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ivory Beacon was launched. We retract the claim about the colour of Ivory Beacon button, and we deny the launch of Teal Orchard. We also withdraw that other launch claim; the owner of that other claim is unstated."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "root-unowned-v2-3",
+    "policy": {
+      "policy_id": "li15-policy-19",
+      "target_id": "li15-target-19",
+      "target_question": "Was Ivory Beacon launched?",
+      "entity": {
+        "canonical_id": "li15-target-19",
+        "canonical_name": "Ivory Beacon",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li15-038-evidence",
+      "source_id": "li15-038-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ivory Beacon was launched. We retract the claim about the colour of Ivory Beacon button, and we deny the launch of Teal Orchard. We also withdraw that other launch claim; its owner is not stated."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "scope": "structural metadata only, not M0 approval",
+  "required_provider_readiness": {
+    "groq": {
+      "new_live_run_allowed": false
+    },
+    "mistral": {
+      "new_live_run_allowed": false
+    },
+    "google": {
+      "new_live_run_allowed": true
+    }
+  }
+}

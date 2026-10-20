@@ -1,0 +1,5408 @@
+{
+  "summary": {
+    "identity": "engine073-launch-independent-v25",
+    "candidate_source_sha": "95053007bba54c728eee428837b22eb9d52a4f61",
+    "engine_version": "0.7.2",
+    "outcome": "FAIL",
+    "decision": "NO_GO",
+    "gate": {
+      "gate_pass": false,
+      "blockers": [
+        "v17_requested_relation:recall_below_floor_or_undefined",
+        "v17_requested_relation:f1_below_floor",
+        "v30_relevant:recall_below_floor_or_undefined",
+        "v30_relevant:f1_below_floor"
+      ],
+      "observations": 60,
+      "positives": 30,
+      "negatives": 30,
+      "incomplete": 0,
+      "axes": {
+        "v17_requested_relation": {
+          "tp": 5,
+          "fp": 0,
+          "tn": 30,
+          "fn": 25,
+          "precision": 1.0,
+          "recall": 0.16666666666666666,
+          "f1": 0.2857142857142857,
+          "f0_5_diagnostic": 0.5
+        },
+        "v30_relevant": {
+          "tp": 5,
+          "fp": 0,
+          "tn": 30,
+          "fn": 25,
+          "precision": 1.0,
+          "recall": 0.16666666666666666,
+          "f1": 0.2857142857142857,
+          "f0_5_diagnostic": 0.5
+        }
+      },
+      "scope": "#520 future synthetic source API only, NOT #531 real-answer/CLI approval"
+    },
+    "axes": {
+      "v17_requested_relation": {
+        "tp": 5,
+        "fp": 0,
+        "tn": 30,
+        "fn": 25,
+        "precision": 1.0,
+        "recall": 0.16666666666666666,
+        "f1": 0.2857142857142857,
+        "f0_5_diagnostic": 0.5
+      },
+      "v30_relevant": {
+        "tp": 5,
+        "fp": 0,
+        "tn": 30,
+        "fn": 25,
+        "precision": 1.0,
+        "recall": 0.16666666666666666,
+        "f1": 0.2857142857142857,
+        "f0_5_diagnostic": 0.5
+      }
+    },
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 35,
+    "failed": 25,
+    "incomplete": 0,
+    "joint_exactness_is_diagnostic": true,
+    "strict_joint_outcome": "FAIL",
+    "positive_passed": 5,
+    "negative_passed": 30,
+    "operational_errors": [],
+    "controls": {
+      "known_regressions_total": 1264,
+      "known_regressions_passed": 1264,
+      "original_audit_total": 14,
+      "original_audit_passed": 14,
+      "historical_byte_equivalent": true,
+      "known_unfixed_critical_defects": [],
+      "operational_failures": 0,
+      "labels_frozen_before_observation": true,
+      "candidate_frozen_before_observation": true,
+      "first_observation_immutable": true
+    },
+    "parent_regressions": "parent-reported pinned source qualification only; future provenance separately verified",
+    "runtime_provenance": {
+      "checks": {
+        "candidate_identity": true,
+        "same_checked_artifacts": true,
+        "M0_evaluator_hashes": true,
+        "M1_all_frozen_hashes": true,
+        "gold_and_input_pinned": true,
+        "authorship_after_M0": true,
+        "author_start_bound": true,
+        "first_pre_invocation_manifest": true,
+        "first_pre_invocation_artifacts": true,
+        "first_command_and_markers": true,
+        "first_raw_hashes": true,
+        "first_order": true,
+        "first_score_marker": true
+      },
+      "labels_frozen_before_observation": true,
+      "candidate_frozen_before_observation": true,
+      "first_observation_immutable": true,
+      "boundary": "Cooperative operator freeze/hash/marker ordering, not proof against hostile filesystem writer or semantic proof of independent authorship."
+    },
+    "policy_sha256": "3a6d37e3fbf134f4a49677fdcd7de8b1b625739988a40e1c1e78b94978099767",
+    "helper_sha256": "00f6971900864ee9e89e4db6029d8196fabd0a4b6ab28e343f19506417735c6f",
+    "provider_calls": 0,
+    "retries": 0,
+    "rescores": 0,
+    "scope": "Future #520 synthetic source gate only; no historical rescore/real24/CLI/release approval",
+    "manifest_sha256": "78da5084a379b3717b804794dea6c7b76dd6bab60df25d71db3221990d1baebf",
+    "evaluator_freeze_sha256": "b172872d29b19e4308bf86bbce99b570f8d0198a087973def644f679fcb75ac6",
+    "raw": {
+      "stdout_sha256": "2c1008019fc20e7e0c57efb8f057869e0c41f5e5b1ea28b4510e6444f61e1568",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "ca47d6f34cc4ffd40657a5de163d2a0ce73b1abed8e383f18b9ee4cc251072ef"
+    }
+  },
+  "cases": [
+    {
+      "id": "li25-001",
+      "pair_id": "li25-pair-01",
+      "polarity": "positive",
+      "axis": "seal_color_and_target_denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-001",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-001-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-001-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-001-source",
+          "target_id": "li25-target-01"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-001-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-001-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-001-source",
+          "target_id": "li25-target-01"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-002",
+      "pair_id": "li25-pair-01",
+      "polarity": "negative",
+      "axis": "seal_color_and_target_denial",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-002",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-002-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-002-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-002-source",
+          "target_id": "li25-target-01"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-002-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-002-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-002-source",
+          "target_id": "li25-target-01"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-003",
+      "pair_id": "li25-pair-02",
+      "polarity": "positive",
+      "axis": "erratum_scope",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-003",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-003-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-003-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-003-source",
+          "target_id": "li25-target-02"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-003-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-003-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-003-source",
+          "target_id": "li25-target-02"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-004",
+      "pair_id": "li25-pair-02",
+      "polarity": "negative",
+      "axis": "erratum_scope",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-004",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-004-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-004-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-004-source",
+          "target_id": "li25-target-02"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-004-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-004-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-004-source",
+          "target_id": "li25-target-02"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-005",
+      "pair_id": "li25-pair-03",
+      "polarity": "positive",
+      "axis": "foreign_claim_and_unnamed_followup",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-005",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-005-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-005-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-005-source",
+          "target_id": "li25-target-03"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-005-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-005-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-005-source",
+          "target_id": "li25-target-03"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-006",
+      "pair_id": "li25-pair-03",
+      "polarity": "negative",
+      "axis": "foreign_claim_and_unnamed_followup",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-006",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-006-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-006-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-006-source",
+          "target_id": "li25-target-03"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-006-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-006-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-006-source",
+          "target_id": "li25-target-03"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-007",
+      "pair_id": "li25-pair-04",
+      "polarity": "positive",
+      "axis": "two_properties_and_nonexistence",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-007",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-007-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-007-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-007-source",
+          "target_id": "li25-target-04"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-007-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-007-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-007-source",
+          "target_id": "li25-target-04"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-008",
+      "pair_id": "li25-pair-04",
+      "polarity": "negative",
+      "axis": "two_properties_and_nonexistence",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-008",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-008-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-008-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-008-source",
+          "target_id": "li25-target-04"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-008-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-008-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-008-source",
+          "target_id": "li25-target-04"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-009",
+      "pair_id": "li25-pair-05",
+      "polarity": "positive",
+      "axis": "quotation_owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-009",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-009-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-009-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-009-source",
+          "target_id": "li25-target-05"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-009-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "model_assisted",
+          "policy_id": "li25-009-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-009-source",
+          "target_id": "li25-target-05"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-010",
+      "pair_id": "li25-pair-05",
+      "polarity": "negative",
+      "axis": "quotation_owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-010",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-010-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-010-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-010-source",
+          "target_id": "li25-target-05"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-010-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-010-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-010-source",
+          "target_id": "li25-target-05"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-011",
+      "pair_id": "li25-pair-06",
+      "polarity": "positive",
+      "axis": "unowned_role_owner_supplement",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-011",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-011-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-011-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-011-source",
+          "target_id": "li25-target-06"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-011-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-011-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-011-source",
+          "target_id": "li25-target-06"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-012",
+      "pair_id": "li25-pair-06",
+      "polarity": "negative",
+      "axis": "unowned_role_owner_supplement",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-012",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-012-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-012-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-012-source",
+          "target_id": "li25-target-06"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-012-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-012-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-012-source",
+          "target_id": "li25-target-06"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-013",
+      "pair_id": "li25-pair-07",
+      "polarity": "positive",
+      "axis": "heading_property_and_sourcewide_denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-013",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-013-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-013-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "positive_candidate_safe_to_accept"
+          ],
+          "source_id": "li25-013-source",
+          "target_id": "li25-target-07"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-013-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "model_assisted",
+          "policy_id": "li25-013-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "positive_candidate_safe_to_accept"
+          ],
+          "source_id": "li25-013-source",
+          "target_id": "li25-target-07"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "positive_candidate_safe_to_accept"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-014",
+      "pair_id": "li25-pair-07",
+      "polarity": "negative",
+      "axis": "heading_property_and_sourcewide_denial",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-014",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-014-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-014-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-014-source",
+          "target_id": "li25-target-07"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-014-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-014-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-014-source",
+          "target_id": "li25-target-07"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-015",
+      "pair_id": "li25-pair-08",
+      "polarity": "positive",
+      "axis": "source_title_foreign_event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-015",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-015-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-015-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-015-source",
+          "target_id": "li25-target-08"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-015-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-015-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-015-source",
+          "target_id": "li25-target-08"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-016",
+      "pair_id": "li25-pair-08",
+      "polarity": "negative",
+      "axis": "source_title_foreign_event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-016",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-016-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-016-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "positive_candidate_safe_to_accept"
+          ],
+          "source_id": "li25-016-source",
+          "target_id": "li25-target-08"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-016-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-016-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-016-source",
+          "target_id": "li25-target-08"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-017",
+      "pair_id": "li25-pair-09",
+      "polarity": "positive",
+      "axis": "two_event_roles",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-017",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-017-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-017-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-017-source",
+          "target_id": "li25-target-09"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-017-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-017-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-017-source",
+          "target_id": "li25-target-09"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-018",
+      "pair_id": "li25-pair-09",
+      "polarity": "negative",
+      "axis": "two_event_roles",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-018",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-018-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-018-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-018-source",
+          "target_id": "li25-target-09"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-018-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-018-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-018-source",
+          "target_id": "li25-target-09"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-019",
+      "pair_id": "li25-pair-10",
+      "polarity": "positive",
+      "axis": "parenthetical_scope",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-019",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-019-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-019-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-019-source",
+          "target_id": "li25-target-10"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-019-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-019-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-019-source",
+          "target_id": "li25-target-10"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-020",
+      "pair_id": "li25-pair-10",
+      "polarity": "negative",
+      "axis": "parenthetical_scope",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-020",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-020-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-020-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-020-source",
+          "target_id": "li25-target-10"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-020-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-020-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-020-source",
+          "target_id": "li25-target-10"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-021",
+      "pair_id": "li25-pair-11",
+      "polarity": "positive",
+      "axis": "because_clause",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-021",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-021-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-021-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-021-source",
+          "target_id": "li25-target-11"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-021-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-021-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-021-source",
+          "target_id": "li25-target-11"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-022",
+      "pair_id": "li25-pair-11",
+      "polarity": "negative",
+      "axis": "because_clause",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-022",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-022-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-022-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-022-source",
+          "target_id": "li25-target-11"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-022-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-022-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-022-source",
+          "target_id": "li25-target-11"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-023",
+      "pair_id": "li25-pair-12",
+      "polarity": "positive",
+      "axis": "although_clause",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-023",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-023-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-023-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-023-source",
+          "target_id": "li25-target-12"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-023-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-023-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-023-source",
+          "target_id": "li25-target-12"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-024",
+      "pair_id": "li25-pair-12",
+      "polarity": "negative",
+      "axis": "although_clause",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-024",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-024-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-024-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-024-source",
+          "target_id": "li25-target-12"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-024-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-024-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-024-source",
+          "target_id": "li25-target-12"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-025",
+      "pair_id": "li25-pair-13",
+      "polarity": "positive",
+      "axis": "while_clause",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-025",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-025-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-025-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-025-source",
+          "target_id": "li25-target-13"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-025-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-025-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-025-source",
+          "target_id": "li25-target-13"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-026",
+      "pair_id": "li25-pair-13",
+      "polarity": "negative",
+      "axis": "while_clause",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-026",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-026-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-026-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-026-source",
+          "target_id": "li25-target-13"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-026-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-026-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-026-source",
+          "target_id": "li25-target-13"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-027",
+      "pair_id": "li25-pair-14",
+      "polarity": "positive",
+      "axis": "before_clause",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-027",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-027-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-027-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-027-source",
+          "target_id": "li25-target-14"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-027-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-027-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-027-source",
+          "target_id": "li25-target-14"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-028",
+      "pair_id": "li25-pair-14",
+      "polarity": "negative",
+      "axis": "before_clause",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-028",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-028-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-028-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-028-source",
+          "target_id": "li25-target-14"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-028-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-028-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-028-source",
+          "target_id": "li25-target-14"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-029",
+      "pair_id": "li25-pair-15",
+      "polarity": "positive",
+      "axis": "author_reply_local_subject",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-029",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-029-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-029-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-029-source",
+          "target_id": "li25-target-15"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-029-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-029-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-029-source",
+          "target_id": "li25-target-15"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-030",
+      "pair_id": "li25-pair-15",
+      "polarity": "negative",
+      "axis": "author_reply_local_subject",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-030",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-030-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-030-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-030-source",
+          "target_id": "li25-target-15"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-030-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-030-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-030-source",
+          "target_id": "li25-target-15"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-031",
+      "pair_id": "li25-pair-16",
+      "polarity": "positive",
+      "axis": "quoted_printed_content",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-031",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-031-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-031-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-031-source",
+          "target_id": "li25-target-16"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-031-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-031-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-031-source",
+          "target_id": "li25-target-16"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-032",
+      "pair_id": "li25-pair-16",
+      "polarity": "negative",
+      "axis": "quoted_printed_content",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-032",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-032-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-032-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-032-source",
+          "target_id": "li25-target-16"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-032-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-032-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-032-source",
+          "target_id": "li25-target-16"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-033",
+      "pair_id": "li25-pair-17",
+      "polarity": "positive",
+      "axis": "newline_owner_supplement",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-033",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-033-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-033-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-033-source",
+          "target_id": "li25-target-17"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-033-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-033-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-033-source",
+          "target_id": "li25-target-17"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-034",
+      "pair_id": "li25-pair-17",
+      "polarity": "negative",
+      "axis": "newline_owner_supplement",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-034",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-034-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-034-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-034-source",
+          "target_id": "li25-target-17"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-034-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-034-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-034-source",
+          "target_id": "li25-target-17"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-035",
+      "pair_id": "li25-pair-18",
+      "polarity": "positive",
+      "axis": "reused_role_reference",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-035",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-035-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-035-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-035-source",
+          "target_id": "li25-target-18"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-035-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-035-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-035-source",
+          "target_id": "li25-target-18"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-036",
+      "pair_id": "li25-pair-18",
+      "polarity": "negative",
+      "axis": "reused_role_reference",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-036",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-036-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-036-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-036-source",
+          "target_id": "li25-target-18"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-036-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-036-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-036-source",
+          "target_id": "li25-target-18"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-037",
+      "pair_id": "li25-pair-19",
+      "polarity": "positive",
+      "axis": "property_apposition_and_event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-037",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-037-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-037-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-037-source",
+          "target_id": "li25-target-19"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-037-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-037-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-037-source",
+          "target_id": "li25-target-19"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-038",
+      "pair_id": "li25-pair-19",
+      "polarity": "negative",
+      "axis": "property_apposition_and_event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-038",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-038-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-038-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-038-source",
+          "target_id": "li25-target-19"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-038-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-038-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-038-source",
+          "target_id": "li25-target-19"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-039",
+      "pair_id": "li25-pair-20",
+      "polarity": "positive",
+      "axis": "heading_document_role",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-039",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-039-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-039-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "positive_candidate_safe_to_accept"
+          ],
+          "source_id": "li25-039-source",
+          "target_id": "li25-target-20"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-039-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "model_assisted",
+          "policy_id": "li25-039-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "positive_candidate_safe_to_accept"
+          ],
+          "source_id": "li25-039-source",
+          "target_id": "li25-target-20"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "positive_candidate_safe_to_accept"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-040",
+      "pair_id": "li25-pair-20",
+      "polarity": "negative",
+      "axis": "heading_document_role",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "unresolved",
+          "relation_scope": "unresolved",
+          "scope_risk": "multiple"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-040",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-040-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "conservative_fallback",
+          "policy_id": "li25-040-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_blocking_cue_present",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-040-source",
+          "target_id": "li25-target-20"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-040-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-040-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_blocking_cue_present",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-040-source",
+          "target_id": "li25-target-20"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "unresolved",
+          "relation_scope": "unresolved",
+          "scope_risk": "multiple"
+        },
+        "v29_disposition": "ambiguous",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-041",
+      "pair_id": "li25-pair-21",
+      "polarity": "positive",
+      "axis": "component_property",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-041",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-041-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-041-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-041-source",
+          "target_id": "li25-target-21"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-041-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-041-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-041-source",
+          "target_id": "li25-target-21"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-042",
+      "pair_id": "li25-pair-21",
+      "polarity": "negative",
+      "axis": "component_property",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-042",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-042-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-042-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-042-source",
+          "target_id": "li25-target-21"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-042-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-042-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-042-source",
+          "target_id": "li25-target-21"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-043",
+      "pair_id": "li25-pair-22",
+      "polarity": "positive",
+      "axis": "opening_word_in_physical_property",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-043",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-043-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-043-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-043-source",
+          "target_id": "li25-target-22"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-043-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-043-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-043-source",
+          "target_id": "li25-target-22"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-044",
+      "pair_id": "li25-pair-22",
+      "polarity": "negative",
+      "axis": "opening_word_in_physical_property",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-044",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-044-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-044-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-044-source",
+          "target_id": "li25-target-22"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-044-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-044-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-044-source",
+          "target_id": "li25-target-22"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-045",
+      "pair_id": "li25-pair-23",
+      "polarity": "positive",
+      "axis": "quote_with_owner_reply",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-045",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-045-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-045-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-045-source",
+          "target_id": "li25-target-23"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-045-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-045-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-045-source",
+          "target_id": "li25-target-23"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-046",
+      "pair_id": "li25-pair-23",
+      "polarity": "negative",
+      "axis": "quote_with_owner_reply",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-046",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-046-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-046-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-046-source",
+          "target_id": "li25-target-23"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-046-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-046-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-046-source",
+          "target_id": "li25-target-23"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-047",
+      "pair_id": "li25-pair-24",
+      "polarity": "positive",
+      "axis": "explicit_foreign_non_event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-047",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-047-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-047-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-047-source",
+          "target_id": "li25-target-24"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-047-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "model_assisted",
+          "policy_id": "li25-047-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-047-source",
+          "target_id": "li25-target-24"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-048",
+      "pair_id": "li25-pair-24",
+      "polarity": "negative",
+      "axis": "explicit_foreign_non_event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-048",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-048-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-048-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-048-source",
+          "target_id": "li25-target-24"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-048-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-048-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-048-source",
+          "target_id": "li25-target-24"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-049",
+      "pair_id": "li25-pair-25",
+      "polarity": "positive",
+      "axis": "several_safe_clauses",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-049",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-049-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-049-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-049-source",
+          "target_id": "li25-target-25"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-049-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-049-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-049-source",
+          "target_id": "li25-target-25"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-050",
+      "pair_id": "li25-pair-25",
+      "polarity": "negative",
+      "axis": "several_safe_clauses",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-050",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-050-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-050-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-050-source",
+          "target_id": "li25-target-25"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-050-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-050-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-050-source",
+          "target_id": "li25-target-25"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-051",
+      "pair_id": "li25-pair-26",
+      "polarity": "positive",
+      "axis": "property_denial_description",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-051",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-051-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-051-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-051-source",
+          "target_id": "li25-target-26"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-051-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-051-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-051-source",
+          "target_id": "li25-target-26"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-052",
+      "pair_id": "li25-pair-26",
+      "polarity": "negative",
+      "axis": "property_denial_description",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-052",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-052-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-052-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-052-source",
+          "target_id": "li25-target-26"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-052-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-052-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-052-source",
+          "target_id": "li25-target-26"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-053",
+      "pair_id": "li25-pair-27",
+      "polarity": "positive",
+      "axis": "canonical_Clip_and_actual_gap",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "context_gap"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-053",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-053-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "conservative_fallback",
+          "policy_id": "li25-053-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_blocking_cue_present",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-053-source",
+          "target_id": "li25-target-27"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-053-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-053-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_blocking_cue_present",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-053-source",
+          "target_id": "li25-target-27"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "context_gap"
+        },
+        "v29_disposition": "ambiguous",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-054",
+      "pair_id": "li25-pair-27",
+      "polarity": "negative",
+      "axis": "canonical_Clip_and_actual_gap",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "unresolved",
+          "relation_scope": "unresolved",
+          "scope_risk": "multiple"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-054",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-054-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "conservative_fallback",
+          "policy_id": "li25-054-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_blocking_cue_present",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-054-source",
+          "target_id": "li25-target-27"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-054-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-054-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_blocking_cue_present",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-054-source",
+          "target_id": "li25-target-27"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "unresolved",
+          "relation_scope": "unresolved",
+          "scope_risk": "multiple"
+        },
+        "v29_disposition": "ambiguous",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-055",
+      "pair_id": "li25-pair-28",
+      "polarity": "positive",
+      "axis": "title_named_owner_plain_non_event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-055",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-055-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-055-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-055-source",
+          "target_id": "li25-target-28"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-055-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "model_assisted",
+          "policy_id": "li25-055-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-055-source",
+          "target_id": "li25-target-28"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "relevant",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-056",
+      "pair_id": "li25-pair-28",
+      "polarity": "negative",
+      "axis": "title_named_owner_plain_non_event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-056",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-056-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-056-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "positive_candidate_safe_to_accept"
+          ],
+          "source_id": "li25-056-source",
+          "target_id": "li25-target-28"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-056-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-056-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-056-source",
+          "target_id": "li25-target-28"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-057",
+      "pair_id": "li25-pair-29",
+      "polarity": "positive",
+      "axis": "document_property_vs_unowned_event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-057",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-057-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-057-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-057-source",
+          "target_id": "li25-target-29"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-057-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-057-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-057-source",
+          "target_id": "li25-target-29"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-058",
+      "pair_id": "li25-pair-29",
+      "polarity": "negative",
+      "axis": "document_property_vs_unowned_event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-058",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-058-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-058-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-058-source",
+          "target_id": "li25-target-29"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-058-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-058-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-058-source",
+          "target_id": "li25-target-29"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    },
+    {
+      "id": "li25-059",
+      "pair_id": "li25-pair-30",
+      "polarity": "positive",
+      "axis": "foreign_explanation_cannot_override_unknown",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "complete": true,
+      "status": "fail",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-059",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "relevant",
+          "evidence_id": "li25-059-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "model_assisted",
+          "policy_id": "li25-059-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "positive_target_local_binding_confirmed",
+            "model_relevant"
+          ],
+          "source_id": "li25-059-source",
+          "target_id": "li25-target-30"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-059-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-059-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_disagreement",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-059-source",
+          "target_id": "li25-target-30"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "unresolved",
+          "scope_risk": "none"
+        },
+        "v29_disposition": "relevant",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "id": "li25-060",
+      "pair_id": "li25-pair-30",
+      "polarity": "negative",
+      "axis": "foreign_explanation_cannot_override_unknown",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "complete": true,
+      "status": "pass",
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "raw_observation": {
+        "effective_v17": {
+          "identity_scope": "unresolved",
+          "relation_scope": "unresolved",
+          "scope_risk": "ownership_scope"
+        },
+        "engine_version": "0.7.2",
+        "id": "li25-060",
+        "v29": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-060-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v29",
+          "path": "conservative_fallback",
+          "policy_id": "li25-060-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_blocking_cue_present",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-060-source",
+          "target_id": "li25-target-30"
+        },
+        "v30": {
+          "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+          "disposition": "ambiguous",
+          "evidence_id": "li25-060-evidence",
+          "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+          "path": "conservative_fallback",
+          "policy_id": "li25-060-policy",
+          "reasons": [
+            "harness_canonical_name_anchor",
+            "local_qualification_blocking_cue_present",
+            "model_ambiguous"
+          ],
+          "source_id": "li25-060-source",
+          "target_id": "li25-target-30"
+        }
+      },
+      "exact_risk_diagnostic": {
+        "raw_provided_tuple": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        },
+        "effective_v17_tuple": {
+          "identity_scope": "unresolved",
+          "relation_scope": "unresolved",
+          "scope_risk": "ownership_scope"
+        },
+        "v29_disposition": "ambiguous",
+        "v30_disposition": "ambiguous",
+        "interpretation": "Exact observed tuples; enum values alone do not establish internal risk-component retention/loss."
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      }
+    }
+  ],
+  "helper_rows": [
+    {
+      "id": "li25-001",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-002",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-003",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-004",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-005",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-006",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-007",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-008",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-009",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": true,
+      "v30_relevant": true
+    },
+    {
+      "id": "li25-010",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-011",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-012",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-013",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": true,
+      "v30_relevant": true
+    },
+    {
+      "id": "li25-014",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-015",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-016",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-017",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-018",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-019",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-020",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-021",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-022",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-023",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-024",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-025",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-026",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-027",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-028",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-029",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-030",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-031",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-032",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-033",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-034",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-035",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-036",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-037",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-038",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-039",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": true,
+      "v30_relevant": true
+    },
+    {
+      "id": "li25-040",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-041",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-042",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-043",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-044",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-045",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-046",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-047",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": true,
+      "v30_relevant": true
+    },
+    {
+      "id": "li25-048",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-049",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-050",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-051",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-052",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-053",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-054",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-055",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": true,
+      "v30_relevant": true
+    },
+    {
+      "id": "li25-056",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-057",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-058",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-059",
+      "gold": "positive",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    },
+    {
+      "id": "li25-060",
+      "gold": "negative",
+      "complete": true,
+      "v17_requested_relation": false,
+      "v30_relevant": false
+    }
+  ]
+}

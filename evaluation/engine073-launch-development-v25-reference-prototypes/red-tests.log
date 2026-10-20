@@ -1,0 +1,124 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.24
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling syn v3.0.4
+   Compiling zmij v1.0.23
+   Compiling ref-cast v1.0.27
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.151
+   Compiling ref-cast-impl v1.0.27
+   Compiling serde_derive v1.0.229
+   Compiling serde_derive_internals v0.30.0
+   Compiling memchr v2.8.3
+   Compiling thiserror v2.0.21
+   Compiling itoa v1.0.18
+   Compiling schemars_derive v1.2.2
+   Compiling thiserror-impl v2.0.21
+   Compiling tokio-macros v2.7.2
+   Compiling dyn-clone v1.0.20
+   Compiling pin-project-lite v0.2.17
+   Compiling tokio v1.53.2
+   Compiling schemars v1.2.2
+   Compiling reasoning-harness-core v0.7.2 (/private/tmp/engine073-source27-prototype/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 27.62s
+     Running unittests src/lib.rs (/private/tmp/engine073-source27-prototype-target/debug/deps/reasoning_harness_core-dcd4f612c7771d71)
+
+running 39 tests
+test evidence_relevance::tests::v30_accepts_target_owned_has_made_generally_available_launch_frame ... ok
+test evidence_relevance::tests::v30_complete_opaque_name_keeps_real_clipping_and_raw_risk_authoritative ... FAILED
+test evidence_relevance::tests::v30_does_not_promote_negated_has_not_made_generally_available ... ok
+test evidence_relevance::tests::v30_foreign_name_confirmation_requires_adjacent_same_owned_denial ... ok
+test evidence_relevance::tests::v30_does_not_accept_question_fiction_or_unverified_rumor_as_launch_fact ... ok
+test evidence_relevance::tests::v30_complete_printed_apposition_retains_event_and_global_denials ... ok
+test evidence_relevance::tests::v30_complete_clip_name_note_cannot_erase_actual_context_gap ... ok
+test evidence_relevance::tests::v30_complete_foreign_event_quote_does_not_borrow_document_owner ... ok
+test evidence_relevance::tests::v30_has_made_launch_frame_does_not_promote_other_negations_or_unrelated_clauses ... ok
+test evidence_relevance::tests::v30_foreign_role_and_reported_non_event_are_distinct_clauses ... ok
+test evidence_relevance::tests::v30_local_role_appositions_and_denial_targets_need_complete_scope ... FAILED
+test evidence_relevance::tests::v30_launch_authority_never_borrows_sibling_predicate ... ok
+test evidence_relevance::tests::v30_complete_foreign_quoted_event_and_reply_owner_remain_role_scoped ... ok
+test evidence_relevance::tests::v30_launch_frames_require_target_and_established_fact ... ok
+test evidence_relevance::tests::v30_copular_role_owners_cannot_be_borrowed_or_conflicted ... ok
+test evidence_relevance::tests::v30_possessive_role_properties_require_the_same_proven_property ... FAILED
+test evidence_relevance::tests::v30_made_available_requires_target_owned_affirmative_predicate ... ok
+test evidence_relevance::tests::v30_gerund_target_denials_cannot_inherit_copular_property_scope ... ok
+test evidence_relevance::tests::v30_immediate_and_competing_role_replies_keep_same_owner_checks ... ok
+test evidence_relevance::tests::v30_printed_illustration_is_a_property_only_with_its_named_carrier ... FAILED
+test evidence_relevance::tests::v30_copular_roles_preserve_property_and_target_denial_boundaries ... ok
+test evidence_relevance::tests::v30_printed_title_literals_keep_outside_property_scope ... FAILED
+test evidence_relevance::tests::v30_complete_claim_wrapper_preserves_only_proven_property_scope ... ok
+test evidence_relevance::tests::v30_printed_property_cannot_own_collective_event_withdrawal ... ok
+test evidence_relevance::tests::v30_copular_passives_and_restatements_keep_existing_role_values ... ok
+test evidence_relevance::tests::v30_prefixed_existence_denial_and_competing_reply_cannot_borrow_property_scope ... ok
+test evidence_relevance::tests::v30_quote_truth_status_is_not_a_printed_format_property ... ok
+test evidence_relevance::tests::v30_quoted_unowned_event_cannot_borrow_or_conflict_owners ... FAILED
+test evidence_relevance::tests::v30_property_explanation_and_quoted_owner_need_independent_matching_role ... ok
+test evidence_relevance::tests::v30_possessive_property_conjunction_requires_complete_same_component_scope ... ok
+test evidence_relevance::tests::v30_owned_appearance_predicates_require_component_and_non_event_value ... ok
+test evidence_relevance::tests::v30_role_property_summaries_require_an_existing_complete_value ... ok
+test evidence_relevance::tests::v30_printed_attribute_requires_outside_type_owner_and_balanced_literal ... ok
+test evidence_relevance::tests::v30_separate_maintained_non_event_and_parenthesis_keep_each_scope ... ok
+test evidence_relevance::tests::v30_quoted_event_owner_never_inherits_document_owner ... ok
+test evidence_relevance::tests::v30_quoted_owner_words_in_headings_do_not_hide_real_owner_gaps ... ok
+test evidence_relevance::tests::v30_owned_document_predicates_and_carriers_keep_event_scope_separate ... ok
+test evidence_relevance::tests::v30_unowned_reference_determiners_require_unique_same_role_owner ... ok
+test evidence_relevance::tests::v30_printed_component_proofs_keep_literal_roles_and_denials_inert ... ok
+
+failures:
+
+---- evidence_relevance::tests::v30_complete_opaque_name_keeps_real_clipping_and_raw_risk_authoritative stdout ----
+
+thread 'evidence_relevance::tests::v30_complete_opaque_name_keeps_real_clipping_and_raw_risk_authoritative' panicked at crates/reasoning-harness-core/src/evidence_relevance.rs:15137:13:
+assertion `left == right` failed: The full canonical product name here is Rowan Estuary Clip. The Subject is the diagonal grain on the Rowan Estuary Clip wooden insert. We withdraw the statement about this Subject.
+  left: false
+ right: true
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- evidence_relevance::tests::v30_local_role_appositions_and_denial_targets_need_complete_scope stdout ----
+
+thread 'evidence_relevance::tests::v30_local_role_appositions_and_denial_targets_need_complete_scope' panicked at crates/reasoning-harness-core/src/evidence_relevance.rs:15037:9:
+assertion `left == right` failed: v17: We deny the Subject, the dotted line printed around the Silver Lens diagram, and withdraw the separate claim that Violet Bell was launched.
+  left: false
+ right: true
+
+---- evidence_relevance::tests::v30_possessive_role_properties_require_the_same_proven_property stdout ----
+
+thread 'evidence_relevance::tests::v30_possessive_role_properties_require_the_same_proven_property' panicked at crates/reasoning-harness-core/src/evidence_relevance.rs:15037:9:
+assertion `left == right` failed: v17: The Object is the paper weight of the Silver Lens quick guide. We retract this Object. We also deny the claim about that Object's paper weight.
+  left: false
+ right: true
+
+---- evidence_relevance::tests::v30_printed_illustration_is_a_property_only_with_its_named_carrier stdout ----
+
+thread 'evidence_relevance::tests::v30_printed_illustration_is_a_property_only_with_its_named_carrier' panicked at crates/reasoning-harness-core/src/evidence_relevance.rs:15037:9:
+assertion `left == right` failed: v17: The Subject is the opening-pattern illustration printed on the Silver Lens package. We retract that Subject.
+  left: false
+ right: true
+
+---- evidence_relevance::tests::v30_printed_title_literals_keep_outside_property_scope stdout ----
+
+thread 'evidence_relevance::tests::v30_printed_title_literals_keep_outside_property_scope' panicked at crates/reasoning-harness-core/src/evidence_relevance.rs:15037:9:
+assertion `left == right` failed: v17: The Object is the printed cover title 'Launch notice' on the Silver Lens booklet. We deny this Object.
+  left: false
+ right: true
+
+---- evidence_relevance::tests::v30_quoted_unowned_event_cannot_borrow_or_conflict_owners stdout ----
+
+thread 'evidence_relevance::tests::v30_quoted_unowned_event_cannot_borrow_or_conflict_owners' panicked at crates/reasoning-harness-core/src/evidence_relevance.rs:15037:9:
+assertion `left == right` failed: v17: The Object is the quoted launch claim: 'The product was launched.' Immediate author reply: Object owner is Violet Bell. We retract this Object.
+  left: false
+ right: true
+
+
+failures:
+    evidence_relevance::tests::v30_complete_opaque_name_keeps_real_clipping_and_raw_risk_authoritative
+    evidence_relevance::tests::v30_local_role_appositions_and_denial_targets_need_complete_scope
+    evidence_relevance::tests::v30_possessive_role_properties_require_the_same_proven_property
+    evidence_relevance::tests::v30_printed_illustration_is_a_property_only_with_its_named_carrier
+    evidence_relevance::tests::v30_printed_title_literals_keep_outside_property_scope
+    evidence_relevance::tests::v30_quoted_unowned_event_cannot_borrow_or_conflict_owners
+
+test result: FAILED. 33 passed; 6 failed; 0 ignored; 0 measured; 323 filtered out; finished in 3.32s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --lib`

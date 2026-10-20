@@ -1,0 +1,20 @@
+{
+  "reason": "Parent evaluator design review: Python1==True and0==False must not allow integer gold. Strict bool checks added before any tests/authorship/freeze/semantic.",
+  "changes": [
+    {
+      "file": "score.py",
+      "before_sha256": "f80aaf514c9ceca3340b93b24171128cde4e3b1330a5f74bd3632a5c9c628b2a",
+      "after_sha256": "ea198222c182ab87a664c9090ff0f3d2a86ab1475ab0655253398e60054975a3",
+      "exact_diff": "--- score.py before\n+++ score.py after\n@@ -51,7 +51,9 @@\n   ids.add(c['id'])\n   if c.get('polarity') not in ['positive','negative']:raise ValueError('missing_independent_gold')\n   truth=c['polarity']=='positive'\n-  if c.get('expected')!={'v17_requested_relation':truth,'v30_relevant':truth}:raise ValueError('gold_axis_mismatch')\n+  expected=c.get('expected')\n+  if not isinstance(expected,dict) or set(expected)!={'v17_requested_relation','v30_relevant'} or not all(type(v) is bool for v in expected.values()):raise ValueError('gold_axes_require_strict_booleans')\n+  if expected!={'v17_requested_relation':truth,'v30_relevant':truth}:raise ValueError('gold_axis_mismatch')\n  if sum(c['polarity']=='positive' for c in cases)!=30:raise ValueError('balanced30_30_required')\n \n def validate_row(row,case):\n"
+    },
+    {
+      "file": "static_preflight.py",
+      "before_sha256": "b05c6d5b3c16507f3e3c302ac9bf01b826d2dbd5624d064b7500a7379b5735d6",
+      "after_sha256": "405995fa45de6fab26363a2615b87c0ceddd1416ec45d41541c0236f9f1b95d4",
+      "exact_diff": "--- static_preflight.py before\n+++ static_preflight.py after\n@@ -15,6 +15,7 @@\n   if not isinstance(c['rationale'],str) or not c['rationale'].strip():raise ValueError('independent_rationale_required')\n   positive=c['polarity']=='positive'\n   if c['semantic_basis'] not in (POSITIVE_BASIS if positive else NEGATIVE_BASIS):raise ValueError('semantic_reason_not_raw_risk')\n+  if not isinstance(c.get('expected'),dict) or set(c['expected'])!={'v17_requested_relation','v30_relevant'} or not all(type(v) is bool for v in c['expected'].values()):raise ValueError('gold_axes_require_strict_booleans')\n   if c['expected']!={'v17_requested_relation':positive,'v30_relevant':positive}:raise ValueError('gold_axis_mismatch')\n   if set(x)!={'id','policy','candidate','proposal','raw'} or x['id']!=c['id']:raise ValueError('labels_must_not_enter_Engine')\n   policy=x['policy']\n"
+    }
+  ],
+  "independent_authorship_started": false,
+  "Engine_invocations": 0,
+  "real_scorer_invocations": 0
+}

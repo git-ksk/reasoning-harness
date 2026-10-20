@@ -1,0 +1,484 @@
+{
+  "identity": "engine073-launch-independent-v9",
+  "review_utc": "2026-10-15T22:45:55.696751+00:00",
+  "stage": "PRE_OBSERVATION",
+  "semantic_observations": 0,
+  "scope_interpretation": "Rules fixed before Engine call: directly named property/other owner are positive; same-target launch or unselected/missing/mixed launch scope negative. No later easing.",
+  "all60_reviewed": true,
+  "positive": 30,
+  "negative": 30,
+  "unknown_scope_ids": [
+    "li9-024",
+    "li9-036",
+    "li9-040",
+    "li9-042",
+    "li9-046",
+    "li9-048",
+    "li9-050",
+    "li9-056",
+    "li9-058"
+  ],
+  "mixed_or_competing_scope_with_explicit_target_event_ids": [
+    "li9-032",
+    "li9-034",
+    "li9-054"
+  ],
+  "old_set_copy_or_name_substitution": false,
+  "newness_limit": "Pairs reuse the declared API syntax;30 newly authored boundary compositions, not60 documents or statistical independence. Iterative successor testing sees prior failures.",
+  "precommitted_pairs": [
+    {
+      "pair_id": "v9-pair-01",
+      "axis": "object_declaration_then_that_object",
+      "positive_id": "li9-001",
+      "negative_id": "li9-002",
+      "scope_rationale": "The typed object and repeated type uniquely identify button width or launch; the reference requires no general graph.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-02",
+      "axis": "subject_declaration_and_subject_statement",
+      "positive_id": "li9-003",
+      "negative_id": "li9-004",
+      "scope_rationale": "The subject type and full owner are explicit and adjacent to the denial.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-03",
+      "axis": "quoted_item_and_explicit_item_type",
+      "positive_id": "li9-005",
+      "negative_id": "li9-006",
+      "scope_rationale": "One complete quote defines the singular item; material and event objects are not confused.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-04",
+      "axis": "owner_supplement_before_current_reply",
+      "positive_id": "li9-007",
+      "negative_id": "li9-008",
+      "scope_rationale": "The adjacent supplement and final full-name restatement both assign the singular launch claim owner.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-05",
+      "axis": "singular_item_apposition",
+      "positive_id": "li9-009",
+      "negative_id": "li9-010",
+      "scope_rationale": "The same-sentence apposition fully defines the singular claim and owner rather than leaving an unbound item.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-06",
+      "axis": "object_subject_consistency_vs_explicit_event",
+      "positive_id": "li9-011",
+      "negative_id": "li9-012",
+      "scope_rationale": "The positive roles consistently describe a printed property. A typography subject cannot erase the negative explicit target launch retraction.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-07",
+      "axis": "reply_followed_by_adjacent_object",
+      "positive_id": "li9-013",
+      "negative_id": "li9-014",
+      "scope_rationale": "One adjacent complete typed object resolves the singular reply, with an explicit electrical/event head.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-08",
+      "axis": "subject_with_repeated_complete_launch_owner",
+      "positive_id": "li9-015",
+      "negative_id": "li9-016",
+      "scope_rationale": "The subject and final owner uniquely agree on another product or the target.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-09",
+      "axis": "item_heading_and_typed_reply",
+      "positive_id": "li9-017",
+      "negative_id": "li9-018",
+      "scope_rationale": "The heading supplies a full owner/object and the adjacent reply repeats its property/event head.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-10",
+      "axis": "concrete_quote_with_object_type",
+      "positive_id": "li9-019",
+      "negative_id": "li9-020",
+      "scope_rationale": "The quoted concrete property and object-type restatement are explicit; no arbitrary property truth inference is requested.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-11",
+      "axis": "subject_property_possessive_or_event",
+      "positive_id": "li9-021",
+      "negative_id": "li9-022",
+      "scope_rationale": "The subject head material is physical despite the component modifier launch; the event subject belongs to target launch.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-12",
+      "axis": "object_and_owner_supplement_agree_or_conflict",
+      "positive_id": "li9-023",
+      "negative_id": "li9-024",
+      "scope_rationale": "The positive uniquely assigns another owner. Conflicting complete owner assignments in the negative are unresolved and must withhold.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-13",
+      "axis": "property_subject_vs_reply_event_override",
+      "positive_id": "li9-025",
+      "negative_id": "li9-026",
+      "scope_rationale": "The positive object repeats the typed property; a property subject cannot waive the explicit target event denial in the negative.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-14",
+      "axis": "item_and_separate_explicit_correction",
+      "positive_id": "li9-027",
+      "negative_id": "li9-028",
+      "scope_rationale": "Both positive corrections have clear non-launch objects and one owner; the separate negative target launch denial must not be masked.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-15",
+      "axis": "property_object_with_independent_non_event",
+      "positive_id": "li9-029",
+      "negative_id": "li9-030",
+      "scope_rationale": "A typed property object does not erase a separate explicit same-target launch non-event.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-16",
+      "axis": "clear_property_vs_mixed_owner_header_reply",
+      "positive_id": "li9-031",
+      "negative_id": "li9-032",
+      "scope_rationale": "The positive is one clear property correction. The negative includes an explicit target launch withdrawal and conflicting header ownership.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-17",
+      "axis": "item_header_and_apposition_type_conflict",
+      "positive_id": "li9-033",
+      "negative_id": "li9-034",
+      "scope_rationale": "A full property apposition preserves launch; an explicit target launch apposition requires withholding despite the competing property header.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-18",
+      "axis": "subject_reply_with_owner_present_or_missing",
+      "positive_id": "li9-035",
+      "negative_id": "li9-036",
+      "scope_rationale": "The positive names another complete owner twice; the negative explicitly omits the owner and is not forced positive.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-19",
+      "axis": "forward_quoted_object_with_complete_type",
+      "positive_id": "li9-037",
+      "negative_id": "li9-038",
+      "scope_rationale": "One concrete quotation directly supplies a physical colour object or the existing launch proposition.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-20",
+      "axis": "one_property_owner_vs_mixed_launch_assignments",
+      "positive_id": "li9-039",
+      "negative_id": "li9-040",
+      "scope_rationale": "One complete property owner is unambiguous; mixed unselected launch-owner assignments are a withholding negative.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-21",
+      "axis": "typed_property_and_footer_unknown_launch",
+      "positive_id": "li9-041",
+      "negative_id": "li9-042",
+      "scope_rationale": "Neutral layout text is harmless; an additional owner-missing launch withdrawal cannot inherit or be waived by the property object.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-22",
+      "axis": "adjacent_owner_and_possessive_quote",
+      "positive_id": "li9-043",
+      "negative_id": "li9-044",
+      "scope_rationale": "Both adjacent owner declarations uniquely resolve the singular possessive to another product or the target.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-23",
+      "axis": "quoted_item_full_owner_vs_either_owner",
+      "positive_id": "li9-045",
+      "negative_id": "li9-046",
+      "scope_rationale": "The positive complete quotation and owner agree; an unselected either-owner launch item is unresolved.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-24",
+      "axis": "subject_property_quote_vs_absent_launch_owner",
+      "positive_id": "li9-047",
+      "negative_id": "li9-048",
+      "scope_rationale": "The positive subject/type/owner are explicit and non-launch; the negative lacks the owner of a launch correction.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-25",
+      "axis": "repeated_property_roles_vs_unselected_competing_types",
+      "positive_id": "li9-049",
+      "negative_id": "li9-050",
+      "scope_rationale": "The positive roles fully repeat one property object; the negative expressly leaves the reference between property and launch unselected.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-26",
+      "axis": "property_subject_item_vs_explicit_launch_reply",
+      "positive_id": "li9-051",
+      "negative_id": "li9-052",
+      "scope_rationale": "Consistent property roles are harmless; an explicit target launch withdrawal is not waived by a property title.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-27",
+      "axis": "quote_object_agreement_or_launch_conflict",
+      "positive_id": "li9-053",
+      "negative_id": "li9-054",
+      "scope_rationale": "The positive quote and typed material object agree; the negative explicitly includes target launch as the retracted typed object.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-28",
+      "axis": "subject_full_other_owner_vs_either_owner",
+      "positive_id": "li9-055",
+      "negative_id": "li9-056",
+      "scope_rationale": "The positive repeatedly names another owner; the negative either-owner subject is explicitly unresolved.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-29",
+      "axis": "appositive_physical_item_vs_ownerless_launch_item",
+      "positive_id": "li9-057",
+      "negative_id": "li9-058",
+      "scope_rationale": "The singular positive apposition fixes width scope; the negative item explicitly omits its launch owner.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    },
+    {
+      "pair_id": "v9-pair-30",
+      "axis": "typed_object_and_reply_full_proposition",
+      "positive_id": "li9-059",
+      "negative_id": "li9-060",
+      "scope_rationale": "The operative reply itself repeats a full property or event object, so no arbitrary dialogue-role parser is needed.",
+      "positive_expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "negative_expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      }
+    }
+  ],
+  "other_property_truth_approved": false,
+  "require_new_affirmative_syntax": false,
+  "require_arbitrary_reference_graph": false,
+  "provider_calls": 0
+}

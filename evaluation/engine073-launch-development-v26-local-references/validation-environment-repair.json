@@ -1,0 +1,11 @@
+{
+  "initial_controller": "engine073-source28-final1-validation-controller.log",
+  "initial_workspace_log": "engine073-source28-final1-verified-workspace.log",
+  "initial_workspace_returncode": 101,
+  "observed_failure": "Five existing MCP OAuth tests failed at TcpListener::bind(127.0.0.1:0),Os1 PermissionDenied Operation not permitted under restricted sandbox.",
+  "source_changed": false,
+  "head_changed": false,
+  "clippy_and_fmt_reused": "Exact successful logs from same pinned26c98ad/source4daf, no repeat needed.",
+  "next_execution": "Same full workspace and remaining validation with approved localhost mock sockets; no live provider/model API calls.",
+  "independent_first_retry_rescore_relabel": 0
+}

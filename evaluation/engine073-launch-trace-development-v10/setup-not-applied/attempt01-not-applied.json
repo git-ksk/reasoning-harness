@@ -1,0 +1,7 @@
+{
+  "status": "NOT_APPLIED",
+  "reason": "Exclusive diagnostic base path current30 already exists; refused before source write.",
+  "source_sha256": "4f82b2e41614394f1bd528f01c817f0e962f1c546d7212f75f15c2f9c5787999",
+  "Engine_calls": 0,
+  "scorer_calls": 0
+}

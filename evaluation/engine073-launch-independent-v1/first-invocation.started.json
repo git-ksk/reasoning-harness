@@ -1,0 +1,41 @@
+{
+  "state": "started",
+  "utc": "2026-10-15T11:34:50.166194+00:00",
+  "command": [
+    "/private/tmp/engine073-launch-independent-v1-probe/probe",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v1/inputs.json"
+  ],
+  "pre_invocation_identity": {
+    "verified_utc": "2026-10-15T11:34:50.165792+00:00",
+    "head": "b6c1598655a826b3eb5d3527d613dd50ed8b9bbc",
+    "artifacts": {
+      "evidence_relevance_source": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "sha256": "8acd799ae90a1407320b8899a437e0d0db3c2104a60a90db138fd76dd601a6f8"
+      },
+      "core_rlib": {
+        "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-876be67fd4b1ef90.rlib",
+        "sha256": "16b7b8e5c33b73eed5670c2eea5cf7f8725a165fc84cf71f03ec7270ce17874c"
+      },
+      "serde_json_rlib": {
+        "path": "/private/tmp/engine073-target/debug/deps/libserde_json-fdb0c033eb5b5773.rlib",
+        "sha256": "6790acd878f7472babebca4ae5c0e9e4dcaab113f41c3a212935db0380a2bd68"
+      },
+      "probe_executable": {
+        "path": "/private/tmp/engine073-launch-independent-v1-probe/probe",
+        "sha256": "1bcbd582e5a60a9887a066835ca3a3627787f21b3182cd4e93a12d6fa4401b1e"
+      }
+    },
+    "frozen_files": {
+      "cases.json": "1d192644996f2a63d5be47f034efd48e59e29c45ef68c67d155f32060b00923c",
+      "inputs.json": "ef52472bf8beba975eb57294f39c3791d048d4a0ea01e4d0b82154b726f35901",
+      "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+      "protocol.json": "5e8baac3b1673a23c63e8635b29cd88a5fbfa744513ede823afc50555e554273",
+      "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+      "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635"
+    },
+    "manifest_sha256": "71f9d1008f4e0d74703306b38a07f7593b8da0ac83006b9a4fd51a7a43f0392c"
+  },
+  "provider_calls": 0,
+  "retry": 0
+}

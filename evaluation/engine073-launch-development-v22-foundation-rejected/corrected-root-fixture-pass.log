@@ -1,0 +1,705 @@
+   Compiling reasoning-harness-core v0.7.2 (/private/tmp/engine073-source21-trace-shadow/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 18.95s
+     Running unittests src/lib.rs (/private/tmp/engine073-trace22-target/debug/deps/reasoning_harness_core-dcd4f612c7771d71)
+
+running 9 tests
+test evidence_relevance::tests::v30_does_not_promote_negated_has_not_made_generally_available ... ok
+test evidence_relevance::tests::v30_accepts_target_owned_has_made_generally_available_launch_frame ... ok
+test evidence_relevance::tests::v30_does_not_accept_question_fiction_or_unverified_rumor_as_launch_fact ... ok
+test evidence_relevance::tests::v30_launch_authority_never_borrows_sibling_predicate ... ok
+test evidence_relevance::tests::v30_has_made_launch_frame_does_not_promote_other_negations_or_unrelated_clauses ... ok
+test evidence_relevance::tests::v30_launch_frames_require_target_and_established_fact ... ok
+test evidence_relevance::tests::v30_made_available_requires_target_owned_affirmative_predicate ... ok
+test evidence_relevance::tests::v30_complete_claim_wrapper_preserves_only_proven_property_scope ... ok
+test evidence_relevance::tests::v30_unowned_reference_determiners_require_unique_same_role_owner ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 323 filtered out; finished in 0.58s
+
+     Running tests/assumption_benchmark.rs (/private/tmp/engine073-trace22-target/debug/deps/assumption_benchmark-1c8f82afec56258e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/benchmark.rs (/private/tmp/engine073-trace22-target/debug/deps/benchmark-f1ede1e216e0a063)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/bilingual_preparation_512.rs (/private/tmp/engine073-trace22-target/debug/deps/bilingual_preparation_512-5d4a4ae76f8f1ca1)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/candidate.rs (/private/tmp/engine073-trace22-target/debug/deps/candidate-48a50a7ee89b3a6c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/causal_benchmark.rs (/private/tmp/engine073-trace22-target/debug/deps/causal_benchmark-eb00c6ee0c1db231)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/corpus_manifest.rs (/private/tmp/engine073-trace22-target/debug/deps/corpus_manifest-d19d01883182e374)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/engine_0_6_1_launch_independent_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/engine_0_6_1_launch_independent_v2-c7a7397dd999de6a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/engine_0_7_dev_baseline_v1.rs (/private/tmp/engine073-trace22-target/debug/deps/engine_0_7_dev_baseline_v1-6ee3882b6645c8ac)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/evidence_need_routing.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_need_routing-09083bdb7ddf9577)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 24 filtered out; finished in 0.00s
+
+     Running tests/evidence_qualification_benchmark.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_qualification_benchmark-adaa5a6b634ddc0d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_successor_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_successor_v2-f6d67b26767c6683)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_successor_v3.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_successor_v3-e2986155be974d91)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_successor_v4.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_successor_v4-dc6269762c5c76bd)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_successor_v5.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_successor_v5-4e5ce9934b3c73db)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_successor_v6.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_successor_v6-b442f492b6201f62)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_successor_v7.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_successor_v7-5634aade80afa29c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v10.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v10-a0bd74b8ce4669ca)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v11.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v11-58e4677d640fc600)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v12.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v12-09bdccde91ab96a9)
+
+running 1 test
+test holdout_v12_expected_path_matches_v17_v30_contract ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.20s
+
+     Running tests/evidence_relevance_holdout_v4.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v4-c5e47033afb8419c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v5.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v5-c0d80319d37825c3)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v6.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v6-688456f99b3d5fbb)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v7.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v7-9ad99a349ba0dfcc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v8.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v8-69cc3305fdc54fd6)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_holdout_v9.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_holdout_v9-0049a43a1f54dc9f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing-c93e34a3f6da7a29)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v10.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v10-f878796dd5943971)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v11.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v11-bd5c6d9e307118ef)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v12.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v12-95910b890c986876)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v13.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v13-3f46aa62c1073863)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v14.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v14-3e8ea3b9138fd25c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v15.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v15-712fc49949b07dcd)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v16.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v16-3d8b677d302668c8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v17.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v17-1066c4ab5e0bae60)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v18.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v18-0c5598a985ae9d3c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 17 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v19.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v19-a4ca3f93c262ccf5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v2-15c2f25edaba3f6e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v20.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v20-eda6fbbceee72b3b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v21.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v21-2563fbe49a5b52c5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 20 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v22.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v22-22bf717bcb83cae0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v23.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v23-84b80ecef2f10257)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v3.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v3-6885d1c4806bfe19)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v4.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v4-1996340a8677c4e5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v5.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v5-ccaafcd973c9e22f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v6.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v6-15ffd73465112168)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v7.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v7-083cba8a6d764012)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v8.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v8-5d32ab4795155bfc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_routing_v9.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_routing_v9-e43e69a6cfaf1b83)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v10_development.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v10_development-fa86ee1da0efcca8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v10_development_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v10_development_v2-e887a647cc80113e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v10_development_v3.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v10_development_v3-c49f4141c5b50b41)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v10_development_v4.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v10_development_v4-1dc7238b26992ce5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v10_materialization_v27_replay.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v10_materialization_v27_replay-e778f467926b861d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v10_materialization_v28_replay.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v10_materialization_v28_replay-a7087faa300a9c9e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v11_development.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v11_development-6c2ca1f96fee3b07)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v11_development_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v11_development_v2-377372f55356cc01)
+
+running 1 test
+test successor_v11_v2_expected_path_matches_v17_v30_contract ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.17s
+
+     Running tests/evidence_relevance_successor_v11_materialization_v29_replay.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v11_materialization_v29_replay-114f8d21aa00eb51)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v11_materialization_v30_replay.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v11_materialization_v30_replay-3534deb3aa26a44a)
+
+running 2 tests
+test v30_development_v1_live_replay_repairs_only_explicit_ownership_identity_gap ... ok
+test v30_replays_recent_immutable_provider_observations_to_frozen_terminal_contracts ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 2.10s
+
+     Running tests/evidence_relevance_successor_v5_controls.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v5_controls-2d17a1b03a2701de)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v6_controls.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v6_controls-2e3bb6d7948a1da8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 17 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v7_controls.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v7_controls-6b9b5c1ed9d7dc54)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v7_development.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v7_development-9f4825f04a0369d6)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v8_development.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v8_development-28070c81a8beac09)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v8_relation_controls.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v8_relation_controls-7ef69fe746b949dc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v9_development.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v9_development-1f2c52bd4a70b88b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v9_historical_replay.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v9_historical_replay-2d4721d752c6b46b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/evidence_relevance_successor_v9_relation_controls.rs (/private/tmp/engine073-trace22-target/debug/deps/evidence_relevance_successor_v9_relation_controls-8d41e5920d9a1549)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+     Running tests/five_whys.rs (/private/tmp/engine073-trace22-target/debug/deps/five_whys-31038b39b776fe48)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/format_invariance.rs (/private/tmp/engine073-trace22-target/debug/deps/format_invariance-5f3fa2e5e088c9ad)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/harness.rs (/private/tmp/engine073-trace22-target/debug/deps/harness-cadabaa8186ad144)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/investigation_intent_materialization.rs (/private/tmp/engine073-trace22-target/debug/deps/investigation_intent_materialization-2b1bb975f579f539)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.00s
+
+     Running tests/investigation_plan_request_contract.rs (/private/tmp/engine073-trace22-target/debug/deps/investigation_plan_request_contract-143fa26ac08ba01b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_520_521.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_520_521-e481f9b596de9638)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 80 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v1.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v1-235c8e9cb1e10234)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v10.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v10-ea492dc3b56cf61f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v2-a0667f1763bde9fe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v3.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v3-e205bfccadcc3214)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v4.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v4-e66ed612d3743e2f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v5.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v5-a4b78f1416216a89)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v6.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v6-c9f692c7dd4e3388)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v7.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v7-7062df8a5cf54aca)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v8.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v8-f6b6fd393420a6fd)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_context_markers_independent_v9.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_context_markers_independent_v9-f39503fd1f9a9b40)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515-6339a725fa53f0d7)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v2-e20d335f67f17eac)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v3.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v3-abe16e43cd9b9608)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v4.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v4-1b63167461810b6b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v5.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v5-8e9c1bf367460093)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v6.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v6-8451812653b2bffd)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v7.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v7-8eedf3125e69e5e4)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v8.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v8-51155a5cd19b50c0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_independent_514_515_v9.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_independent_514_515_v9-419180d48259760d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/launch_source_frames_514_515.rs (/private/tmp/engine073-trace22-target/debug/deps/launch_source_frames_514_515-7ff978535d04a377)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.00s
+
+     Running tests/metamorphic_benchmark.rs (/private/tmp/engine073-trace22-target/debug/deps/metamorphic_benchmark-8937383eebca79f6)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/model_backed_soft_judge.rs (/private/tmp/engine073-trace22-target/debug/deps/model_backed_soft_judge-d020b92d092f8070)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+     Running tests/reasoning_policy_regression.rs (/private/tmp/engine073-trace22-target/debug/deps/reasoning_policy_regression-49b0f7ae59f93b27)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/reasoning_thread_replay.rs (/private/tmp/engine073-trace22-target/debug/deps/reasoning_thread_replay-68de74d6669e8f90)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+     Running tests/resolution_benchmark.rs (/private/tmp/engine073-trace22-target/debug/deps/resolution_benchmark-ee40a16037776aab)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/semantic_decidability.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_decidability-85626acdc9b32d49)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/semantic_decidability_holdout_v5.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_decidability_holdout_v5-15a5dfaab87fb8b2)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/semantic_judge_calibration.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_judge_calibration-4f0b4bc055be4cd0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.02s
+
+     Running tests/semantic_judge_holdout.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_judge_holdout-f43b2f15cba3e571)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/semantic_judge_holdout_v2.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_judge_holdout_v2-ae612140d139dba5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/semantic_judge_holdout_v3.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_judge_holdout_v3-e5dda5e3ef52b0fe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/semantic_judge_holdout_v4.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_judge_holdout_v4-5098748b09b6d16d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/semantic_materialization.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_materialization-9e30e00d726c2dd3)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 0.00s
+
+     Running tests/semantic_runtime.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_runtime-f48b5ae98a7168ce)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+     Running tests/semantic_stability.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_stability-6a8e7a799760573c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/semantic_sufficiency_rsd0.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_sufficiency_rsd0-0f15988295d49978)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/semantic_sufficiency_rsd1.rs (/private/tmp/engine073-trace22-target/debug/deps/semantic_sufficiency_rsd1-3f9ea7a5af1a4193)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/source_reconciliation_development_v1.rs (/private/tmp/engine073-trace22-target/debug/deps/source_reconciliation_development_v1-1031630b1a9be72a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/target_presentation_development_v1.rs (/private/tmp/engine073-trace22-target/debug/deps/target_presentation_development_v1-2e950f7c357d8bcc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 1.01s
+
+     Running tests/validate.rs (/private/tmp/engine073-trace22-target/debug/deps/validate-5af3c259ec253566)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+     Running tests/verification.rs (/private/tmp/engine073-trace22-target/debug/deps/verification-80c13fb23057452c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+

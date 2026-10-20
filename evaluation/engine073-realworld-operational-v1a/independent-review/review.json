@@ -1,0 +1,125 @@
+{
+  "identity": "engine073-realworld-operational-amendment-independent-review-v3",
+  "result": "PASS",
+  "reviewer": "/root/engine07_realworld_independent",
+  "reviewed_utc": "2026-10-19T12:12:15.950549+00:00",
+  "scope": "Static delta review of artifact ownership collection only; prior bounded v2 review remains immutable. No accuracy/prospective corpus change or live execution.",
+  "input_hashes": {
+    "/private/tmp/engine073-realworld-operational-amendment-independent-review-v2/artifact-manifest.json": "cbf3be52f1187525c6a8e718e98ab4e377edc044631f60241bef3ba10582ce04",
+    "/private/tmp/engine073-realworld-operational-amendment-independent-review-v2/successor-workflow.yml": "6b0414f06b13a1540e5a73ce907c42222daffd4fd19f2e7171c9c805a7bd9b9b",
+    "/private/tmp/engine073-realworld-operational-amendment-independent-review-v2/amendment-receipt.draft.json": "6e09027ced2fea50e24748b08978e10c9a40142067935311a9e71f4ac5d574f8",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/.github/workflows/engine073-realworld-independent-v1a.yml": "6d244e022351a57e12bf942199b006c0407e97d0ff81f9aad0f91cd8e789501b",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-realworld-operational-v1a/receipt.json": "42ffa2227bb582126f9d49da469113c7148814991fec4a19850cb4e8fd3835ac",
+    "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/engine073-realworld-first-v1a/ownership-control.json": "5e32f0beef39a0d67a8e1641f48c8b160e6e7149e8ac7ba16b0d88ba28a4e623",
+    "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/engine073-realworld-first-v1a/permission-control.json": "bf02c48383ebbafa5189c3034a5b3bc4504aaefcdffed5a71eb816bdd1d41090"
+  },
+  "prior_review_anchor": "cbf3be52f1187525c6a8e718e98ab4e377edc044631f60241bef3ba10582ce04",
+  "prior_review_all12_files_verified": true,
+  "successor_workflow_sha256": "6d244e022351a57e12bf942199b006c0407e97d0ff81f9aad0f91cd8e789501b",
+  "draft_amendment_receipt_sha256": "42ffa2227bb582126f9d49da469113c7148814991fec4a19850cb4e8fd3835ac",
+  "frozen_reference_hashes": {
+    "M0": "4023eb552ee964e0e99550a61a9f4c2d2800d2d994b7e42c439cf3cf7669d4d2",
+    "M1": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+    "original_first_manifest": "4061670a15ab061d592be9ad1770e41aa6e1703bd625d1dc2690a86d8b794884"
+  },
+  "checks": {
+    "exact_only_added_workflow_step": true,
+    "step_always": true,
+    "after_collect_and_contained_cleanup_before_upload": true,
+    "literal_output_path_only": "/tmp/results",
+    "operation": "sudo chown -R hostUID:hostGID /tmp/results",
+    "set_euo_pipefail_no_chown_failure_suppression": true,
+    "no_chmod_mode_or_byte_rewrite_in_new_step": true,
+    "no_runtime_UID_model_or_budget_change": true,
+    "receipt_changes_only": [
+      "workflow_sha256",
+      "artifact_collection_fix"
+    ],
+    "bash_syntax_only": [
+      {
+        "command": [
+          "bash",
+          "-n",
+          "/private/tmp/engine073-realworld-operational-amendment-independent-review-v3/shell-0.sh"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "bash",
+          "-n",
+          "/private/tmp/engine073-realworld-operational-amendment-independent-review-v3/shell-1.sh"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "bash",
+          "-n",
+          "/private/tmp/engine073-realworld-operational-amendment-independent-review-v3/shell-2.sh"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "bash",
+          "-n",
+          "/private/tmp/engine073-realworld-operational-amendment-independent-review-v3/shell-3.sh"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "bash",
+          "-n",
+          "/private/tmp/engine073-realworld-operational-amendment-independent-review-v3/shell-4.sh"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "M0_M1_first_manifest_unchanged": true
+  },
+  "parent_controls": {
+    "execution_authority": "Parent-executed Linux fixtures, independently read/hash-verified; not rerun by reviewer.",
+    "ownership_control": {
+      "uploader_initial_read_refused": true,
+      "ownership_transfer_read_pass": true,
+      "bytes_and_mode0600_unchanged": true,
+      "model_calls": 0,
+      "accuracy_cases": 0
+    },
+    "permission_control": {
+      "unprivileged_chmod_refused": true,
+      "privileged_chmod_pass": true,
+      "bytes_unchanged": true,
+      "files_read_only": true,
+      "model_calls": 0,
+      "accuracy_cases": 0
+    },
+    "full_command_or_syscall_trace_supplied": false,
+    "interpretation": "Supports the specific ownership/mode0600 problem and byte/mode-preserving remediation; not a new live-provider or host-wide reliability acceptance."
+  },
+  "decision": "No blocker within the scoped collection repair. Retain original first operational FAIL/nullF1; bind this new review, final receipt and unchanged workflow before the separately declared first v1a tag. Reauthoring not needed.",
+  "allowed_final_receipt_changes": [
+    "state",
+    "independent_review.result=PASS",
+    "independent_review.manifest_sha256=this artifact-manifest external SHA256"
+  ],
+  "limits": [
+    "No reviewer live Docker ownership replay; five bash -n commands only.",
+    "chown failures leave the job failed and must remain visible; upload uses always to retain available bytes, without converting incompleteness to success.",
+    "Existing container cleanup semantics and cooperative frozen repository assumptions are unchanged.",
+    "Mistral/Google first observations, actual F1 and all later semantic annotation/scoring remain unperformed; Groq remains deferred/full3 NO_GO."
+  ],
+  "reviewer_Engine_actual_scorer_model_provider_Oracle_calls": 0
+}

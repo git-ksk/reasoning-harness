@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "2c021bd61d6e2f7a57f9545b51cf38921072900f8fd12893820a50926c6a6d1e",
+    "python3",
+    "-c",
+    "from pathlib import Path;print(Path(\"/review/pid1-run/state.json\").read_text())"
+  ],
+  "returncode": 0,
+  "no_external_network": true,
+  "credentials_forwarded": false
+}

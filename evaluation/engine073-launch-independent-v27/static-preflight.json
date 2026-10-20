@@ -1,0 +1,24 @@
+{
+  "identity": "engine073-launch-independent-v27",
+  "stage": "STATIC_ONLY",
+  "utc": "2026-10-18T15:16:42.791420+00:00",
+  "outcome": "PASS",
+  "planned": 60,
+  "positive": 30,
+  "negative": 30,
+  "pairs": 30,
+  "evaluator_freeze_sha256": "aaa4b0d2494c3a89d87b3c0714847ee8d468f84295e1f868e7518398e41635bb",
+  "cases_sha256": "2d164ab42b1d2f0c558f3b50b340be42e91bc50654bc77ee1bc5bdac18086ab7",
+  "inputs_sha256": "3aa14b15997652ce09564b3c10b7dc99ab4ac91becd13ce8ac6b8b5b2e4e7baf",
+  "scope_review_sha256": "5e160cd9d519115188283f74e5e2824fd7a183b3d99dfde4f2f9efaaa33febb2",
+  "authoring_start_sha256": "2b30ef6a54dac4cd4fe296970e9ca11282c50893f4174b707a66dbcded2c9538",
+  "Engine_invocations": 0,
+  "scorer_invocations": 0,
+  "provider_calls": 0,
+  "labels_excluded": true,
+  "budget": {
+    "max_model_attempts": 2,
+    "max_tokens": 192,
+    "max_elapsed_ms": 90000
+  }
+}

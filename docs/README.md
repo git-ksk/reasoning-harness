@@ -67,7 +67,10 @@ Use the short current views:
 
 - [Project status](project-status.md) — what is released, what is active, and the main known product gaps.
 - [Product roadmap](product-roadmap.md) — current forward product/engine tracks.
-- [Engine0.7 real-world evaluation and CLI adoption](engine-07-realworld-evaluation.md) — #531, reopened #520, real-source pilot, pending provider/E2E/independent gates.
+- [Engine0.7 real-world evaluation and CLI adoption](engine-07-realworld-evaluation.md) — #531, preserved v2/v3 FAIL, pending fresh real-source/provider/E2E acceptance.
+- [Harness Engine0.7.3 plan](engine-0.7.3-roadmap.md) — #538 ordered repair, safe runner #540, fresh evaluation and separate release/adoption gates.
+- [Engine0.7.3 retraction repair](launch-retraction-520.md) — Draft #539, known regressions and immutable independent first outcomes; source release/CLI acceptance remain separate.
+- [Research-informed Engine0.7.3 repair](engine-073-research-informed-repair.md) — public Claude/Codex engineering and NLP research, archive-only diagnostics and the next scope/reference prototype.
 - [Harness Engine 0.7 roadmap](engine-0.7.0-roadmap.md) — published 0.7.0 scope, deferred mechanisms and historical acceptance gates.
 - [Harness Engine 0.7.1 release](engine-0.7.1-release.md) — previous source patch, #512/#514/#515 corrections, evidence and limits.
 - [Harness Engine 0.7.2 release](engine-0.7.2-release.md) — current normal source patch, scope, final validation and publication coordinates.

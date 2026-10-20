@@ -1,0 +1,24 @@
+   Compiling reasoning-harness-core v0.7.2 (/private/tmp/engine073-source21-trace-shadow/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 11.68s
+     Running unittests src/lib.rs (/private/tmp/engine073-trace22-target/debug/deps/reasoning_harness_core-dcd4f612c7771d71)
+
+running 1 test
+test evidence_relevance::tests::v30_separate_maintained_non_event_and_parenthesis_keep_each_scope ... FAILED
+
+failures:
+
+---- evidence_relevance::tests::v30_separate_maintained_non_event_and_parenthesis_keep_each_scope stdout ----
+
+thread 'evidence_relevance::tests::v30_separate_maintained_non_event_and_parenthesis_keep_each_scope' panicked at crates/reasoning-harness-core/src/evidence_relevance.rs:14276:13:
+assertion `left == right` failed: Object: the claim that the Cedar Basket case has a recessed hinge. We withdraw the Object. Subject: the launch of Violet Bell. We deny the Subject, and we maintain that an unknown product was not launched. Silver Lens was launched.
+  left: true
+ right: false
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    evidence_relevance::tests::v30_separate_maintained_non_event_and_parenthesis_keep_each_scope
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 338 filtered out; finished in 0.29s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --lib`

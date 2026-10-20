@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--pull=never",
+    "--platform",
+    "linux/amd64",
+    "--read-only",
+    "--network",
+    "none",
+    "--name",
+    "engine073-independent-m0-v1-pid1kill-recover",
+    "-v",
+    "/private/tmp/engine073-complete-M0-independent-review-v1:/review:ro",
+    "sha256:a71348d080761005e09b55c404489a9dfb1ca0c5d1f0e5ef5a4a9f446574eb82",
+    "python3",
+    "-c",
+    "import tarfile,sys;t=tarfile.open(fileobj=sys.stdout.buffer,mode='w|');t.add('/review/pid1-run',arcname='pid1-run');t.add('/review/pid1-plan.json',arcname='pid1-plan.json');t.close()"
+  ],
+  "returncode": 0,
+  "no_external_network": true,
+  "credentials_forwarded": false
+}

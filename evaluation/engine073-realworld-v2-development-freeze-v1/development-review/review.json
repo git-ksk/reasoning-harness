@@ -1,0 +1,100 @@
+{
+  "identity": "engine073-realworld-development-independent-review-v2",
+  "reviewer": "/root/engine07_realworld_independent",
+  "result": "PASS",
+  "scope": "Consumed real24 development operational plan guards and exact runtime-input byte binding only; NOT complete M0, fresh accuracy, real-answer F1, release or CLI adoption acceptance.",
+  "reviewed_HEAD": "b540f3d427953ca917ff96615522dcc640562d39",
+  "reviewed_runtime_files_sha256": "20c2e857ae8ff8f9bd3e536595ce170c2c8e9094e6c8f9504bd9b1671ca9b3f6",
+  "reviewed_runtime_files_count": 75,
+  "D1": {
+    "result": "FIX_CONFIRMED",
+    "exact_rejection": {
+      "control": "original D1: change plan M1 hash only",
+      "accepted": false,
+      "rejected_at_exact_guard": "plan consumed M1 mismatch"
+    },
+    "verified": "Plan M1 must match both fixed consumed input identity and checked receipt before scheduler creation. Actual original consumed manifest and full inventory were validated."
+  },
+  "D2": {
+    "result": "FIX_CONFIRMED",
+    "exact_rejection": {
+      "control": "original D2: normal wall360 to600 only",
+      "accepted": false,
+      "rejected_at_exact_guard": "frozen timeout or grace changed"
+    },
+    "verified": "Exact per-contract normal360/helper100/grace1 now required. Original normal360→600 mutation reaches the intended guard and is rejected."
+  },
+  "positive_controls": [
+    {
+      "control": "canonical generated 72-job plan mistral",
+      "accepted": true,
+      "cost_reservation_USD": "0.2184192",
+      "jobs": 72,
+      "token_budget": 1456128,
+      "actual_consumed_manifest_and_full_inventory_validated": true,
+      "generator_stdout": "{\"planned_jobs\": 72, \"purpose\": \"CONSUMED_REAL24_ENGINEERING_DIAGNOSTIC_NOT_ACCEPTANCE\", \"token_reservation\": 1456128, \"provider_model_calls\": 0}\n"
+    },
+    {
+      "control": "canonical generated 72-job plan google",
+      "accepted": true,
+      "cost_reservation_USD": "0.8896512",
+      "jobs": 72,
+      "token_budget": 1456128,
+      "actual_consumed_manifest_and_full_inventory_validated": true,
+      "generator_stdout": "{\"planned_jobs\": 72, \"purpose\": \"CONSUMED_REAL24_ENGINEERING_DIAGNOSTIC_NOT_ACCEPTANCE\", \"token_reservation\": 1456128, \"provider_model_calls\": 0}\n"
+    }
+  ],
+  "independent_verification": {
+    "pure_unit_tests": 3,
+    "unit_scope": "Actual test_plan_admission only; includes eleven plan mutations and added-file rejection. No complete test-suite or quality helper executed.",
+    "independent_generator_and_checker_controls": 4,
+    "explicit_stub": "Only checked_receipt return value is stubbed because no final real admission receipt exists. Consumed corpus/hash/file inventory and plan-input inventory are real. No scheduler/credentials/runtime callback was created."
+  },
+  "runtime_proof_verification": {
+    "runtime_files_count": 75,
+    "runtime_files_sha256": "20c2e857ae8ff8f9bd3e536595ce170c2c8e9094e6c8f9504bd9b1671ca9b3f6",
+    "all_CI_proof_files_match_local_exact_allowlist": true,
+    "all_CI_proof_files_match_current_checkout": true,
+    "raw_CI_proof_sha256": "919b9dda6f79028a1b65c2856aea613165ff25ca261c099a0cca010a9d8c21b4",
+    "CI_descriptor_sha256": "ec3ed8aabb27ba3439a72648a941a5ef38f8f054403f6b91fecffa509ced936e",
+    "CI_log_sha256": "52033401fa0940d1338a622704daeb8d81cd926f690833e31d82109d6534739b",
+    "runtime_image_archive_sha256": "810e7896db0866d5201cad609eef6480e36f54fbafaba9b3abe3264139df4916",
+    "runtime_image_id": "sha256:4c21d90d09f7d404bde0d85e162ef20a4969834b00859cde982a084d58b0f608",
+    "paired_host_identity_sha256": "463762ba9bcb5a50bee149fc4ae11c8f64133198f5cc7a5a89224ecfc9b91773",
+    "CI_source": {
+      "run_id": 39344591178,
+      "artifact_id": 12229659925,
+      "evidence_origin": "Parent-retrieved GitHub job log/proof/descriptor; independently hash-compared locally, not independent Docker/test rerun."
+    },
+    "CI_control_counts": {
+      "adapter_loopback": 18,
+      "actual_CLI_normal_and_budget": 12,
+      "paired_helper": 3,
+      "actual_acquisition_to_admission_to_binder": 2
+    },
+    "inherited_metric_quality_namespaces": "Hash-only comparison; no metric helper or scorer execution."
+  },
+  "additional_static_checks": [
+    "Per-job argv, case/arm order, corpus/policy/bin paths, token/currency reservation and complete artifact inventory are checked before scheduler creation.",
+    "consumed_corpus rejects any extra unbound file.",
+    "M0 non-development path remains provenance/validate-gated; not exercised by these development controls."
+  ],
+  "limits": [
+    "A separate final DEVELOPMENT_FROZEN receipt must still bind these exact runtime bytes, proof/identity, selected-provider readiness and this review manifest before any live lane. Receipt creation/live start is not performed by this review.",
+    "Image archive/config identity are bound to the CI descriptor. No independent image load/binary/runtime execution was performed in this re-review.",
+    "Whether logical12 finishes all consumed24 jobs and actual usage/cost is unmeasured; failure, unknown usage, quota, cancellation and restart-stop policy remain in force.",
+    "Groq remains prohibited for development. Consumed24 execution cannot establish fresh accuracy acceptance.",
+    "Private run_consumed_development_score.py and semantic annotation/scoring are explicitly excluded."
+  ],
+  "calls": {
+    "Engine": 0,
+    "model": 0,
+    "provider": 0,
+    "network": 0,
+    "aggregate_scorer": 0,
+    "quality_helper": 0,
+    "F1_calculation": 0,
+    "new_accuracy_authorship": 0,
+    "independent_pure_test_processes": 2
+  }
+}

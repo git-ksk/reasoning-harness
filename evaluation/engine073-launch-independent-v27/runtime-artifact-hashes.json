@@ -1,0 +1,12 @@
+{
+  "files": {
+    "/private/tmp/engine073-independent-v27-runtime/cargo-build.jsonl": "583b29c9ead57ea05edfdd762d5161910f9b1a9b2fff428b01dc79460c6605dc",
+    "/private/tmp/engine073-independent-v27-runtime/identity.json": "01e6f3a2dc478d62d23518b9226b85924882fabc7e75ba79aed0007693296756",
+    "/private/tmp/engine073-independent-v27-runtime/probe": "b1c482ab5d20cf370868b27d0a3f62a67f1eb210f46731db7258016f56d31821",
+    "/private/tmp/engine073-independent-v27-runtime/probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d"
+  },
+  "read_mode": "Supplied executable/compiler metadata/identity hash-only; probe source matches unchanged public probe bytes.",
+  "parent_build_report": "Actual normal Cargo source26c build copied by parent; evaluator compile/run/Cargo0.",
+  "runtime_files": 4,
+  "readonly_observed": true
+}

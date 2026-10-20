@@ -1,0 +1,258 @@
+{
+  "payload": {
+    "result": {
+      "output_contract": "reason-natural-output-v4",
+      "configuration": {
+        "provider": "mistral",
+        "model": "structural-fixture"
+      },
+      "usage": {
+        "run": {
+          "model_calls": 1
+        }
+      },
+      "finalization": {
+        "status": "grounded_answer",
+        "text": "different.key = not-present"
+      },
+      "final_outcome": {
+        "artifact": {
+          "evidence": [
+            {
+              "id": "e",
+              "source": "s",
+              "observation": "{\"quote\": \"Inert bytes.\", \"context_summary\": \"structural only\", \"document_id\": \"d\", \"url\": \"https://fixture.invalid/\", \"locator\": \"unit\", \"source_version\": \"v\", \"origin_group\": \"o\", \"scope\": {\"product\": \"unit\"}, \"synthetic_mutation\": false}",
+              "facts": {
+                "expected.key": "yes"
+              },
+              "metadata": {
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "unit"
+                    ]
+                  }
+                },
+                "provenance_class": "primary",
+                "temporal": {
+                  "effective_from_unix_seconds": 100,
+                  "effective_until_unix_seconds": 200
+                }
+              }
+            }
+          ],
+          "claims": [
+            {
+              "id": "claim",
+              "state": "supported",
+              "proposition": {
+                "key": "different.key",
+                "value": "not-present"
+              },
+              "evidence_ids": [
+                "e"
+              ]
+            }
+          ],
+          "verification_receipts": [
+            {
+              "id": "receipt",
+              "claim_id": "claim",
+              "proposition": {
+                "key": "different.key",
+                "value": "not-present"
+              },
+              "conclusion": "supported",
+              "evidence_ids": [],
+              "verifier": "non-structured-fixture"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "trace": {
+    "events": [
+      {
+        "sequence": 0,
+        "kind": "model_request",
+        "correlation_id": "r",
+        "attempt": 1
+      },
+      {
+        "sequence": 1,
+        "kind": "model_response",
+        "correlation_id": "r",
+        "attempt": 1
+      },
+      {
+        "sequence": 2,
+        "kind": "evidence_admission",
+        "target_id": "target",
+        "capability_id": "cap",
+        "admitted_evidence_ids": [
+          "e"
+        ]
+      },
+      {
+        "sequence": 3,
+        "kind": "grounding_state",
+        "outcome": {
+          "artifact": {
+            "evidence": [
+              {
+                "id": "e",
+                "source": "s",
+                "observation": "{\"quote\": \"Inert bytes.\", \"context_summary\": \"structural only\", \"document_id\": \"d\", \"url\": \"https://fixture.invalid/\", \"locator\": \"unit\", \"source_version\": \"v\", \"origin_group\": \"o\", \"scope\": {\"product\": \"unit\"}, \"synthetic_mutation\": false}",
+                "facts": {
+                  "expected.key": "yes"
+                },
+                "metadata": {
+                  "scope": {
+                    "product": {
+                      "kind": "values",
+                      "values": [
+                        "unit"
+                      ]
+                    }
+                  },
+                  "provenance_class": "primary",
+                  "temporal": {
+                    "effective_from_unix_seconds": 100,
+                    "effective_until_unix_seconds": 200
+                  }
+                }
+              }
+            ],
+            "claims": [
+              {
+                "id": "claim",
+                "state": "supported",
+                "proposition": {
+                  "key": "different.key",
+                  "value": "not-present"
+                },
+                "evidence_ids": [
+                  "e"
+                ]
+              }
+            ],
+            "verification_receipts": [
+              {
+                "id": "receipt",
+                "claim_id": "claim",
+                "proposition": {
+                  "key": "different.key",
+                  "value": "not-present"
+                },
+                "conclusion": "supported",
+                "evidence_ids": [],
+                "verifier": "non-structured-fixture"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "sequence": 4,
+        "kind": "finalization_state",
+        "result": {
+          "status": "grounded_answer",
+          "text": "different.key = not-present"
+        }
+      }
+    ]
+  },
+  "journal": [
+    {
+      "corpus_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "case": "unrelated-case",
+      "request": {
+        "request": {
+          "id": "investigation:target:cap",
+          "target": {
+            "target_id": "different-target",
+            "expected_fact_key": "unrelated"
+          }
+        }
+      },
+      "response": {
+        "contribution": {
+          "evidence": [
+            {
+              "id": "e",
+              "source": "s",
+              "observation": "{\"quote\": \"Inert bytes.\", \"context_summary\": \"structural only\", \"document_id\": \"d\", \"url\": \"https://fixture.invalid/\", \"locator\": \"unit\", \"source_version\": \"v\", \"origin_group\": \"o\", \"scope\": {\"product\": \"unit\"}, \"synthetic_mutation\": false}",
+              "facts": {
+                "expected.key": "yes"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "config": {
+    "resolution": {
+      "investigation": {
+        "capabilities": [
+          {
+            "id": "cap",
+            "admission": {
+              "sources": {
+                "s": {
+                  "scope": {
+                    "product": {
+                      "kind": "values",
+                      "values": [
+                        "unit"
+                      ]
+                    }
+                  },
+                  "authority_class": "primary",
+                  "max_age_seconds": 100
+                }
+              },
+              "required_scope": {
+                "product": {
+                  "kind": "values",
+                  "values": [
+                    "unit"
+                  ]
+                }
+              },
+              "authority_ranks": {
+                "primary": 20
+              },
+              "minimum_authority_class": "primary",
+              "evaluation_time_unix_seconds": 150
+            }
+          }
+        ]
+      }
+    }
+  },
+  "corpus": {
+    "_capture_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "sources": {
+      "s": {
+        "quote": "Inert bytes.",
+        "context_summary": "structural only",
+        "document_id": "d",
+        "url": "https://fixture.invalid/",
+        "locator": "unit",
+        "source_version": "v",
+        "origin_group": "o",
+        "scope": {
+          "product": "unit"
+        },
+        "synthetic_mutation": false,
+        "reference_facts": {
+          "expected.key": "yes"
+        },
+        "retrieved_at_unix_seconds": 100
+      }
+    }
+  }
+}

@@ -1,0 +1,1 @@
+{"structural_validation": "PASS", "pipeline": "AMBIGUOUS_WITHHELD_BOTH_ARMS", "renderer": "ISOLATED_EXACT_SOURCE_LOCAL_CITATION_BOTH_ARMS", "actual_answer_f1": null, "all928_original_references_exact": true, "acceptance": "NOT_EVALUATED"}
