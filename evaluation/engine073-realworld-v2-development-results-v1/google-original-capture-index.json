@@ -1,0 +1,88 @@
+{
+  "provider": "google",
+  "observations": 96,
+  "binding_failures": [
+    {
+      "job_id": "rw-02-candidate",
+      "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+    },
+    {
+      "job_id": "rw-02-baseline",
+      "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+    },
+    {
+      "job_id": "rw-03-baseline",
+      "failure": "capture_binding_failed:ValueError:acquisition_wrong_fact_key"
+    },
+    {
+      "job_id": "rw-03-candidate",
+      "failure": "capture_binding_failed:ValueError:acquisition_wrong_fact_key"
+    },
+    {
+      "job_id": "rw-04-candidate",
+      "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+    },
+    {
+      "job_id": "rw-04-baseline",
+      "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+    },
+    {
+      "job_id": "rw-06-candidate",
+      "failure": "capture_binding_failed:ValueError:acquisition_wrong_fact_key"
+    },
+    {
+      "job_id": "rw-06-baseline",
+      "failure": "capture_binding_failed:ValueError:acquisition_wrong_fact_key"
+    },
+    {
+      "job_id": "rw-11-baseline",
+      "failure": "capture_binding_failed:ValueError:acquisition_wrong_fact_key"
+    },
+    {
+      "job_id": "rw-11-candidate",
+      "failure": "capture_binding_failed:ValueError:acquisition_wrong_fact_key"
+    },
+    {
+      "job_id": "rw-14-candidate",
+      "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+    },
+    {
+      "job_id": "rw-14-baseline",
+      "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+    },
+    {
+      "job_id": "rw-16-candidate",
+      "failure": "capture_binding_failed:ValueError:acquisition_wrong_fact_key"
+    },
+    {
+      "job_id": "rw-16-baseline",
+      "failure": "capture_binding_failed:ValueError:acquisition_wrong_fact_key"
+    },
+    {
+      "job_id": "rw-17-baseline",
+      "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+    },
+    {
+      "job_id": "rw-17-candidate",
+      "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+    },
+    {
+      "job_id": "rw-20-candidate",
+      "failure": "capture_binding_failed:ValueError:acquisition_wrong_fact_key"
+    },
+    {
+      "job_id": "rw-20-baseline",
+      "failure": "capture_binding_failed:ValueError:acquisition_wrong_fact_key"
+    },
+    {
+      "job_id": "rw-22-candidate",
+      "failure": "capture_binding_failed:ValueError:acquisition_wrong_fact_key"
+    },
+    {
+      "job_id": "rw-22-baseline",
+      "failure": "capture_binding_failed:ValueError:acquisition_wrong_fact_key"
+    }
+  ],
+  "actual_answer_f1": null,
+  "semantic_review": "PENDING"
+}

@@ -1,0 +1,7 @@
+# Consumed real24: offline capture repair v1
+
+A separate development capture from the preserved raw39345330622. This does not replace the first v2 observations, change displayed answers/gold, rerun models or establish independent accuracy acceptance.
+
+Google executed72 jobs, but the frozen v2 collector left20 normal observations incomplete:8 repeated-evidence-ID refusals and12 single-lookup-key refusals. The eight reacquisitions carry identical full records under different request IDs, with empty duplicate admission. The twelve secondary keys are explicitly advertised in their selected host capability. The successor allows only exact full-record repeats and checks a requested key against that selected capability. Conflicting records, duplicate request IDs, unadvertised keys, changed source bytes/scope/metadata/receipts remain rejected. Captured evidence is still required to pass host admission before support credit.
+
+The collector checks the fixed original raw manifest/full inventory and consumed M1 before writing an exclusive new directory. Existing v2 collector, source snapshots, original operations, all first scores and metric/quality modules remain unchanged. The independent review must precede the offline recapture. Structural controls are not new accuracy questions. Any subsequent F1 remains a consumed-development measurement, not release acceptance. Mistral additional live calls are held pending quota verification.

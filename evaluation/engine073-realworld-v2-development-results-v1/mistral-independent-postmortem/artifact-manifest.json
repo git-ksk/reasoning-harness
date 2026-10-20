@@ -1,0 +1,41 @@
+{
+  "identity": "engine073-mistral-development-stop-independent-postmortem-v1",
+  "result": "CONFIRMED_LOCAL_USAGE_LOSS_AFTER_PLANNER_DECODE_FAILURE",
+  "files": {
+    "README.md": "0b05ae914d5a55bcbc48ed18e4fee4b9a248ff7c8262e36e8fb890f6c1de951c",
+    "parent-raw-manifest.json": "9c49fb2b38e5f234f8c1b147c1ae6725b1d636f316b16ec434c64a222a245f55",
+    "raw-preservation-verification.json": "b8d684a714e1b7ef19035bc69fb4b3a2fd70b9186a40f84f1dac514dae547760",
+    "raw-snapshot/lane/currency-reservation.json": "dd3ad9ff5fe607aa45993bdb859052af4f56aca7ac4fa84bef28933c8f3a95af",
+    "raw-snapshot/lane/plan.json": "3de2621533ef3630b284002316b1958ad335b7f3699d66c142add2ecfb2a626d",
+    "raw-snapshot/lane/rw-02-candidate/actual-cli.invocation.json": "b32e49180dcf4cdc6dbb3f5e5ae99971eb777bd6bf32e1c9fec68f35cc3f31dd",
+    "raw-snapshot/lane/rw-02-candidate/actual-cli.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw-snapshot/lane/rw-02-candidate/actual-cli.stdout": "725a2e56746e6c1b97afa06973090ff94b9fa2aaf2067213a8d033222fb2d06b",
+    "raw-snapshot/lane/rw-02-candidate/model-journal.jsonl": "c6da3cff4bc963584d971db48e5ee1cf6a28a83f87197785d4078c173e4b524e",
+    "raw-snapshot/lane/rw-02-candidate/row.json": "db71eb66eef4e15995746f1279ed21ef9b2fb66a250026dbab72729c7a7155ce",
+    "raw-snapshot/lane/rw-02-candidate/trace.json": "4bbae3b95ec26de4417e434bb68f9017f230cbf69f012eee5bcf712650555256",
+    "raw-snapshot/lane/summary.json": "24e132cd380e0277695a86e46c41226c4ce9827cb39fc984c281aa0100859669",
+    "raw-snapshot/observations/observation-index.json": "ef426cabaf40987522f7b8a9e81f38ca32d13703e8e5d6f825293c229735e03b",
+    "receipt.json": "84c343a4493d96e51ab421c80c713bf3cbd8ab7434007454536ba5cf93295d7a",
+    "reconstruct.py": "e2fcde64be2a96be5d684b85961282a9e0477a61ca41efce8107cd9e7ac67079",
+    "reconstruction.invocation.json": "f35ff6841767700373d4bd3f36972734b9f63aacf6d4b5577de8855072c2b7fc",
+    "reconstruction.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "reconstruction.stdout": "f04968468448ad5af773a05b6a1fdb70ac8c8fc20ce395649e304aaf21e4b2ff",
+    "review.json": "356ab35b8a3410b9c6ceafe5fc8a0b6b04b7650259ee8bc9e02f15bf18656363",
+    "source-provenance.json": "20fb0e3e3767114c74d8217e0301e59ee84743322a69f1c9bfd3aa8abd9747ed",
+    "source-snapshot/main.rs.excerpts.txt": "4f29335705b7e09f55365ae905fe498329116123227f704335bcdecb4f9a1246",
+    "source-snapshot/run_diagnostics.rs": "e9cdf89490d139eef32a051d3da7734b63e5fe59431d407c1707956c82500e66",
+    "source-snapshot/usage_budget.rs": "0eacd0beb557d91930fbfaff9df3d7c9fe29d32b4990ad6908df8daa840967e6"
+  },
+  "self_exclusion": "artifact-manifest.json",
+  "calls": {
+    "read_only_JSON_token_reconstruction": 1,
+    "Engine": 0,
+    "model": 0,
+    "provider": 0,
+    "network": 0,
+    "annotation": 0,
+    "aggregate_scorer": 0,
+    "semantic_metric_or_F1_helpers": 0,
+    "new_accuracy_authorship": 0
+  }
+}

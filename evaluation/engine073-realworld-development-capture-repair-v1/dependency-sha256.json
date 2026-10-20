@@ -1,0 +1,8 @@
+{
+  "collect.py": "bdfc45b6c27a3bfd074bacff00501199b948b8f4f2412694444afefc42677a84",
+  "protocol.json": "bc8fd0688fa30707ccdae6fac227c608a0302edc79c12a2b467f1586beb0b480",
+  "scorer.py": "2bda9f34f4d0782cf5d1682f911b6faf357e0dfbeb8e68ea1a5d6652d620997c",
+  "trace_audit.py": "82634a7594f4317986eb980c652c581e2eb01d70e58ad16d37be7ec58d46349f",
+  "terminal_chain.py": "2fb6780fe0e20713e15175034476a61dcbe8b3f4e84840900c47aadb1742a0c4",
+  "development.py": "febc35f5c5a7902faf0f4c4b2a28cef417996f0cac7f2c73b5aad58cbe12823a"
+}

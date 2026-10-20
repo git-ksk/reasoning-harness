@@ -1,0 +1,123 @@
+{
+  "identity": "engine073-mistral-development-stop-independent-postmortem-v1",
+  "result": "CONFIRMED_LOCAL_USAGE_LOSS_AFTER_PLANNER_DECODE_FAILURE",
+  "reviewer": "/root/engine07_realworld_independent",
+  "scope": "Operational postmortem of preserved Mistral39345330622 only; no semantic annotation or scoring.",
+  "raw_provenance": {
+    "manifest_sha256": "9c49fb2b38e5f234f8c1b147c1ae6725b1d636f316b16ec434c64a222a245f55",
+    "artifact_id": 12230489308,
+    "files": 393,
+    "all_complete_inventory_and_hashes_match": true,
+    "all_original_files_readonly": true
+  },
+  "confirmed_causal_chain": [
+    {
+      "step": "Provider observations",
+      "evidence": "Four HTTP200 and four ModelResponse records, each with complete integer input/output/total usage; trace usage matches every response.",
+      "reported_tokens": {
+        "input": 1917,
+        "output": 1193,
+        "total": 3110
+      }
+    },
+    {
+      "step": "Local structured planner decoding",
+      "evidence": "Initial generation schema-mode invalid JSON falls back successfully. Investigation planner then returns length-truncated invalid JSON in both schema and json_object attempts, each requested with max_tokens256.",
+      "logical_operations": 2,
+      "adapter_generations": 4,
+      "wire_attempts": 4
+    },
+    {
+      "step": "GenerationFailure loses usage",
+      "source": "CLI main.rs1418-1442 and1694-1717 at8525330ea3cadb897c50d6688228c4895558d3dc",
+      "evidence": "Second typed JSON parse failure constructs protocol GenerationFailure carrying attempts/message but no ModelUsage, despite both response usages being locally available."
+    },
+    {
+      "step": "Usage totals cleared and primary failure masked",
+      "source": "usage_budget.rs242-253/290-313; main.rs3419-3428 at the same exact commit",
+      "evidence": "record_failure increments calls/attempts then clears all run token Options for any positive failed attempts. check_current_limits sees missing output-token count and returns usage_budget_unmeasurable. The caller uses ? before assigning observation.generation_failure, so that budget diagnostic supersedes the underlying planner protocol error in the returned envelope."
+    },
+    {
+      "step": "Safe outer stop",
+      "evidence": "CLI partial diagnostics contain calls2/attempts4, token fields absent, partial trace written, pending0. Bridge preserves tokens=None; provider guard latches usage_unavailable and suppresses remaining jobs. Original None/unknown/incomplete records are retained."
+    }
+  ],
+  "distinctions": {
+    "not_provider_usage_omission": "All four responses reported usage. HTTP200 alone is not valid JSON; this run has explicit parser and truncation evidence.",
+    "not_logical12_exhaustion": "Failed job is logical2/12 and adapter4/24; reported output1193<4096 and total3110<28096.",
+    "not_zero_cost_or_recovered_completion": "Journal totals are supplemental diagnostic observations; they do not convert the archived failure into a successful row or refund its reserve.",
+    "fallback_scope": "Each logical operation used at most two declared structured generations, with one wire attempt per generation; no additional model retry was run by this review."
+  },
+  "observed_repair_progress": {
+    "failure_diagnostics": "Unlike old missing-failure diagnostics, this run preserves partial trace and actual calls/attempts. Token precision still fails on local decode errors, and usage_is_lower_bound=False does not mean token fields are known.",
+    "collector": "Recovered artifact already contains96 observations and96 review packets: complete4/incomplete1/not_run91, bindingfailures0. This supports current collection and automatic binder paths on two complete normal outputs and one paired helper. It is not independent semantic validation or a new binder execution.",
+    "bounded_completion": "First question normal arms each finish at logical7, using baseline9/candidate10 generations and10149/11052 tokens; paired helper uses1 generation/645. This demonstrates only that first question under the declared12 limit, not full24 completion.",
+    "lane_accounting": "Original summary known21846tokens/20attempts, unknown1, chargedreserve88768. All four executed jobs journals report24956tokens/24attempts; the3110 difference is preserved only as supplemental reported usage.",
+    "actual_answer_f1": null,
+    "semantic_annotation": "NOT_PERFORMED"
+  },
+  "needed_successor_fix_and_checks": [
+    "Carry usage/completeness on local parse/schema failures when actual responses report it, including both structured fallback attempts; do not erase known usage merely because the content failed decoding.",
+    "Preserve the underlying protocol/decode failure alongside any budget-stop diagnostic. A usage fix does not make truncated planner output valid or authorize continuation/retry.",
+    "For a genuine transport/provider failure with no usable response usage, missing usage or interrupted in-flight calls, preserve unknown/lower-bound accounting and safe stop; never substitute zero or claim full totals from only the completed part.",
+    "Validate single/two-response local parse failure, mixed known/unknown fallback and zero-wire failures under the exact new host with offline controls before any separately declared development run. Original raw/receipt/results remain unchanged."
+  ],
+  "source_provenance": {
+    "crates/reasoning-harness-cli/src/usage_budget.rs": {
+      "commit": "8525330ea3cadb897c50d6688228c4895558d3dc",
+      "full_blob_SHA256": "0eacd0beb557d91930fbfaff9df3d7c9fe29d32b4990ad6908df8daa840967e6",
+      "bytes": 20941
+    },
+    "crates/reasoning-harness-cli/src/run_diagnostics.rs": {
+      "commit": "8525330ea3cadb897c50d6688228c4895558d3dc",
+      "full_blob_SHA256": "e9cdf89490d139eef32a051d3da7734b63e5fe59431d407c1707956c82500e66",
+      "bytes": 11985
+    },
+    "crates/reasoning-harness-cli/src/main.rs": {
+      "commit": "8525330ea3cadb897c50d6688228c4895558d3dc",
+      "full_blob_SHA256": "f98029e0c360dbf8400bec715e4d7a40dbe0abace536060f770946c777f6c1a4",
+      "bytes": 499885,
+      "saved_line_ranges": [
+        [
+          1130,
+          1164
+        ],
+        [
+          1325,
+          1458
+        ],
+        [
+          1690,
+          1764
+        ],
+        [
+          3400,
+          3438
+        ],
+        [
+          3497,
+          3535
+        ],
+        [
+          3540,
+          3576
+        ],
+        [
+          3728,
+          3758
+        ]
+      ]
+    }
+  },
+  "calls": {
+    "read_only_JSON_token_reconstruction": 1,
+    "Engine": 0,
+    "model": 0,
+    "provider": 0,
+    "network": 0,
+    "annotation": 0,
+    "aggregate_scorer": 0,
+    "semantic_metric_or_F1_helpers": 0,
+    "new_accuracy_authorship": 0
+  }
+}

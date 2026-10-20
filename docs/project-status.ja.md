@@ -1,6 +1,6 @@
 # プロジェクト状況
 
-**最新状況（2026-10-20、評価基盤v2の修正中）:** 修正済み共通CLIと両EngineのLinuxビルド、実CLIの正常終了・上限停止12対照・補助API3対照を無課金で確認した。独立レビューのruntime設定・再試行groundingの漏れも修正。最新の取得→受入→採点接続2対照もLinuxで成功（run39343679253、実CLI/helper合計17対照）。開始前のM1・時間上限照合も修正し、独立再確認と実行物の再固定を進める。次は既存24問で予算・完走を確認し、その後に完全M0固定と新規独立評価へ進む。今回の構造試験数は精度問題数に加算しない。旧初回の全体F1=null/NO_GOは不変、Groq延期・0.7.3未公開・CLI未採用。[修正と検証範囲](../evaluation/engine073-realworld-v2-development-preparation/README.md)。
+**最新状況（2026-10-20、消費済み24問の開発測定）:** Googleは72ジョブ完走・320attempt/259540tokens。初回捕捉76complete/20incompleteで、再取得・複数項目照合の誤拒否を独立確認した。Mistralは初問の通常両arm/helper完了後、2問目の既知usage欠落で停止（#548/PR549で別修正）。新規API追加はMistral残量確認まで保留。後継オフライン捕捉と独立注釈・F1採点は未完了。元v1/初回は不変、0.7.3公開・CLI採用NO_GO。[測定結果と範囲](../evaluation/engine073-realworld-v2-development-results-v1/README.md)。
 
 **最新状況（2026-10-19、初回実戦評価・独立採点済み）:** M0/M1を固定し、未使用だった公式12文書・6製品の実資料24問でMistral/Googleを実行したが、CLI論理呼び出し上限6と失敗時の使用量欠落で早期停止。通常回答は評価器の2段階終端照合にも不備があり、24問全体のF1は全provider/trackで`null`、**採用NO_GO**。採点可能なGoogle補助API1問/armのみ、baseline/候補ともcase F1=0.00・claim F1=1.00（最終判定conflict、改善なし）。これは全体性能ではない。[初回結果・独立レビュー・修正順序](../evaluation/engine073-realworld-first-v1a-results/README.md)。次は#540の結果回収・終端照合・失敗時診断を修正して実経路を確認し、別途固定した評価へ進む。Groqは認証前延期を維持。元raw/gold/予算/初回FAILは不変、モデル再試行・再採点なし。公開CLI0.5.5/Engine0.6.1、Engine0.7.3未公開。以下の日付付き準備記録は履歴。
 

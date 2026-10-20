@@ -1,0 +1,80 @@
+{
+  "identity": "engine073-google-development-binding-independent-postmortem-v1",
+  "reviewer": "/root/engine07_realworld_independent",
+  "result": "CONFIRMED_OVERRESTRICTIVE_CAPTURE_GUARDS_ON_CHECKED_TRANSPORT",
+  "scope": "Static existing Google raw/config/acquisition/admission/verification-receipt comparison only. No full binder rerun or semantic scoring.",
+  "raw_manifest_sha256": "64e346484deaa3a2c72a037fb69e48035956e0463a3e8096bfcd6903bede09d7",
+  "raw_file_count": 1257,
+  "all_original_files_hash_match": true,
+  "operational_execution": {
+    "completed_jobs": 72,
+    "journal_model_responses": 320,
+    "reported_tokens": 259540,
+    "unknown_usage_rows": 0
+  },
+  "original_capture_counts": {
+    "complete": 76,
+    "incomplete": 20,
+    "actual_answer_f1": null,
+    "semantic_review": "PENDING"
+  },
+  "findings": [
+    {
+      "id": "GB1",
+      "first_error": "ambiguous_acquired_evidence",
+      "jobs": 8,
+      "affected_cases": [
+        "rw-02",
+        "rw-04",
+        "rw-14",
+        "rw-17"
+      ],
+      "source": "capture.py36: require(record id not in acquired)",
+      "observed": "In each affected normal job, a later different target/capability request reacquires an exactly identical full evidence record. Identity, source observation text, facts, acquisition metadata and canonical source fields match. Actual trace admits that evidence only once and later repeat admission is empty.",
+      "conclusion": "These checked repeats do not show a source/content collision. Global acquired-ID uniqueness incorrectly treats legitimate idempotent reacquisition as ambiguous.",
+      "needed": "Retain every request→capability→target provenance edge; permit reuse of an evidence ID only when the complete immutable record matches. Conflicting bytes/identity/version/time/scope must remain a binding failure. Do not promote the repeated acquisition into a second admission."
+    },
+    {
+      "id": "GB2",
+      "first_error": "acquisition_wrong_fact_key",
+      "jobs": 12,
+      "affected_cases": [
+        "rw-03",
+        "rw-06",
+        "rw-11",
+        "rw-16",
+        "rw-20",
+        "rw-22"
+      ],
+      "source": "capture.py51: request.target.expected_fact_key == case.lookup_key",
+      "observed": "Every alternate key triggering these first errors is explicitly listed in the actual selected capability supported_fact_keys. Requests concern distinct source facts from the fixed multi-fact natural question; source/manifest fields are unchanged.",
+      "conclusion": "The primary case lookup selector is not the sole legal investigation target. An equality requirement to that one key incorrectly rejects declared exploratory targets. All8 duplicate-first-error jobs also contain authorized alternate-key exploration, so repairing only GB1 would not remove GB2.",
+      "needed": "Bind requests to their exact planned target/capability and declared supported selector/immutable configuration rather than the single case lookup key. Preserve unknown/unadmitted evidence and all authority/scope/time checks. Do not manufacture a lookup key for absent/unrecognized hints."
+    }
+  ],
+  "independent_static_joins_verified": [
+    "All20 jobs: acquired source IDs belong to the original case, quote/context/document/URL/locator/version/origin/scope/synthetic flags equal frozen corpus fields, facts equal frozen host annotations, acquisition scope/times equal the source.",
+    "Every actual admission joins the same request target/capability and available evidence; artifact ID/source/observation/facts match and admitted metadata matches source authority/scope/time policy. Artifact evidence equals the actual admitted union.",
+    "Every checked supported verification receipt has actual admitted evidence and exact structured fact value matching; this is a byte/field binding check, not an adjudication of final displayed claims.",
+    "No changed-record reuse or mixed source identity was found in these20 checked jobs. Each duplicate record is admitted once; rw22 empty admissions remain empty."
+  ],
+  "limits": [
+    "Original capture stays complete76/incomplete20, actual_answer_f1=null, semantic_review=PENDING. No incomplete row is reclassified, no raw/review/gold/scorer is rewritten.",
+    "This static postmortem does not establish that every other capture condition would pass, nor any answer correctness, citation quality or safety outcome. A successor capture must preserve first artifacts and be explicitly separated before annotation/scoring.",
+    "Google72 operational jobs/320 responses/259540 reported tokens/unknown0 are independently counted from stored journals; provider billing or full acceptance is not inferred.",
+    "Mistral stopping run has known-response usage loss, while present account quota/headroom is unverified. No new Mistral invocation/probe is authorized by this report.",
+    "CLI #548 review is separate and will use only its3 changed CLI files; core relevance implementation remains unread."
+  ],
+  "calls": {
+    "read_only_JSON_binding_join_processes": 1,
+    "Engine": 0,
+    "model": 0,
+    "provider": 0,
+    "network": 0,
+    "annotation": 0,
+    "capture_or_binder_function": 0,
+    "aggregate_scorer": 0,
+    "F1_helpers": 0,
+    "new_accuracy_authorship": 0
+  }
+}
