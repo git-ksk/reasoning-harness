@@ -224,6 +224,7 @@ fn pin_runtime_identity(
     base.model = Some(runtime.model.clone());
     base.max_tokens = Some(runtime.max_tokens);
     base.safety_profile = runtime.safety_profile;
+    base.require_answer_context = runtime.answer_context.is_some();
     Ok(())
 }
 
@@ -543,6 +544,7 @@ mod tests {
             start_resolver_adapter: None,
             start_resolver_admission: None,
             start_trusted_verifier: None,
+            answer_context: None,
             config_sources: vec![],
         };
 

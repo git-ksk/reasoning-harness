@@ -1,0 +1,29 @@
+{
+  "identity": "cli-answer-context-offline-development-v1",
+  "scope": "SAVED_ARTIFACT_PRESENTATION_NOT_F1",
+  "raw_host": "8525330ea3cadb897c50d6688228c4895558d3dc",
+  "raw_candidate": "ab3c6322921c8c738ec35bd018345917b5afa538",
+  "verification_runtime": "main53be613 Engine0.7.2 types; deterministic current receipt/qualification checks, no Engine task or provider rerun",
+  "input_inventory": {
+    "inputs.json": "334c09116f06ad322bf13031f6dcf88c48794cda11fedc6a992e97b02733120e",
+    "Cargo.toml": "3a3cba90eb66f81b97fd4ef8282d5288594ef81d1af1bb1dc47265452b6550ab",
+    "src/main.rs": "5f0eddf6c0e9d0ce2fa5579337063a9f2ab488925ffa740bd60293b27d85dadd",
+    "pre-execution-manifest.json": "208b266acd16ff60b6da9be72426fd9a4ba16fd8fe75566cc55e219ea098b2df"
+  },
+  "first_failed_replay_log_sha256": "0dc102b1932f085a3b875fae1942c68653df48305ded3481fcd00f02d5fbbe18",
+  "successor_replay_log_sha256": "475f42194f3e77eec68b864b2b6de9828c9a710bb8d2758b73f39af8b4d3f710",
+  "output_inventory": {
+    "summary.json": "023441a6305cf90a503e4aaf44b2795b06777c894609a4ce8b1291ef345b4945",
+    "rw-02.json": "cf623c55cdb38471caa11f2aa6e29e7d43fdd2393c4e6057a2327335ede83806",
+    "rw-11.json": "ac5208362263e0fbbf7c602d4bf4daf7ab436aa72b06bad342c098e4a506b813",
+    "rw-06.json": "958b0848c8d8fe629140968888f0bdc70fea8f78cc4bf4603fd26de2e2364ac4",
+    "rw-17.json": "c7f82b8f439684fa920be19fc1a6ac158a00047b19854c8505f275808ad2ae6e"
+  },
+  "first_failure_preserved": "The stricter first projection refused plain structured receipts. Original investigation admission validates scope/time before emitting structured_fact_equality; both recognized structured verifier paths now require the same exact evidence/claim binding and current qualification checks. Separate successor output, no first-score edits.",
+  "original_score_sha256": "bfe04912745e2236a8d1995e0166f57aa6cd396e988229fc168aafc2dea37051",
+  "M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+  "new_accuracy_cases": 0,
+  "F1_calculations": 0,
+  "provider_calls": 0,
+  "limits": "Four observed candidate artifacts, host-curated source data and explicit task-input limitations. Not automatic extraction or fresh accuracy acceptance."
+}

@@ -1,3 +1,4 @@
+mod answer_context;
 mod auth;
 mod config_commands;
 mod diagnostic_trace;
@@ -153,6 +154,9 @@ struct Cli {
 
 #[derive(Debug, Clone, Default, Args)]
 struct NaturalArgs {
+    /// A resumed managed session must not silently lose its source-context policy.
+    #[arg(skip)]
+    require_answer_context: bool,
     /// Natural-language task. When no subcommand is used, this starts the AI-backed verified path.
     #[arg(value_name = "TASK")]
     task: Option<String>,
@@ -590,6 +594,8 @@ struct CliFileConfig {
     run: RunFileConfig,
     #[serde(default)]
     resolution: ResolutionFileConfig,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    answer_context: Option<answer_context::Config>,
 }
 
 impl Default for CliFileConfig {
@@ -598,6 +604,7 @@ impl Default for CliFileConfig {
             schema_version: CLI_CONFIG_CONTRACT_ID.into(),
             run: RunFileConfig::default(),
             resolution: ResolutionFileConfig::default(),
+            answer_context: None,
         }
     }
 }
@@ -1973,6 +1980,8 @@ struct SessionRuntimeIdentity {
     start_trusted_verifier: Option<String>,
     #[serde(default)]
     config_sources: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    answer_context: Option<answer_context::Config>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1981,6 +1990,8 @@ struct SessionTurnRecord {
     turn_index: usize,
     checkpoint_id: String,
     finalization: FinalizationResult,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    answer_context: Option<answer_context::View>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -2012,6 +2023,8 @@ struct SessionOperationOutput {
     pending_revalidation: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     finalization: Option<FinalizationResult>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    answer_context: Option<answer_context::View>,
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
@@ -2502,6 +2515,10 @@ struct NaturalOutput {
     #[serde(skip_serializing_if = "Option::is_none")]
     investigation: Option<NaturalInvestigationObservation>,
     finalization: FinalizationResult,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    answer_context: Option<answer_context::View>,
+    #[serde(skip)]
+    answer_context_config: Option<answer_context::Config>,
     exposed_text: NaturalExposedTextObservation,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     rendering: Vec<GenerationObservation>,
@@ -3844,6 +3861,7 @@ struct NaturalExecutionSeed {
     new_evidence_prefix: String,
     finalization_targets: Vec<Proposition>,
     candidate_materialization_targets: Vec<Proposition>,
+    answer_context: Option<answer_context::Config>,
 }
 
 fn merge_natural_execution_seed(
@@ -3982,6 +4000,21 @@ async fn execute_natural_inner(
         load_cli_config(args.config.as_ref())
             .map_err(|error| CliError::new("configuration", error))?
     };
+    let answer_context_config = seed
+        .as_ref()
+        .and_then(|seed| seed.answer_context.clone())
+        .or_else(|| loaded_config.config.answer_context.clone());
+    if args.require_answer_context && answer_context_config.is_none() {
+        return Err(CliError::new(
+            "session_incompatible",
+            "this session requires its host source-context configuration; supply --config or start a new session",
+        ));
+    }
+    if let Some(config) = &answer_context_config {
+        config
+            .validate()
+            .map_err(|error| CliError::new("configuration", error))?;
+    }
     let external_resolver_config = resolve_external_command_config(&args, &loaded_config)
         .map_err(|error| CliError::new("configuration", error))?;
     let external_admission_config = resolve_external_admission_config(&loaded_config)
@@ -4281,6 +4314,7 @@ async fn execute_natural_inner(
     let mut rendering_failure = None;
     let mut safety_observations = Vec::new();
     let mut finalization;
+    let mut final_rendered_claims = Vec::new();
     let mut render_round = 0usize;
     loop {
         render_round += 1;
@@ -4491,6 +4525,7 @@ async fn execute_natural_inner(
             }
         }
         finalization = gated;
+        final_rendered_claims.clone_from(&rendered.factual_claims);
         if let Some(trace) = diagnostic_trace.as_mut() {
             for observation in &observations {
                 trace.record_answer_safety(
@@ -4582,9 +4617,34 @@ async fn execute_natural_inner(
         }
     }
 
+    let answer_context = if let Some(config) = &answer_context_config {
+        let (composed, view) = answer_context::compose(
+            config,
+            &final_artifact,
+            &final_rendered_claims,
+            finalization,
+        )
+        .map_err(|error| CliError::new("answer_context_binding", error))?;
+        finalization = composed;
+        if let Some(trace) = diagnostic_trace.as_mut() {
+            trace.record_finalization(
+                DiagnosticPhase::new("source_context", Some(render_round)),
+                render_round,
+                "source_context",
+                &finalization,
+            );
+        }
+        Some(view)
+    } else {
+        None
+    };
     progress.done();
     let output = NaturalOutput {
-        output_contract: NATURAL_OUTPUT_CONTRACT_ID,
+        output_contract: if answer_context_config.is_some() {
+            answer_context::OUTPUT_ID
+        } else {
+            NATURAL_OUTPUT_CONTRACT_ID
+        },
         task,
         configuration: RunConfigurationObservation {
             mode: "natural_language_provider",
@@ -4630,8 +4690,14 @@ async fn execute_natural_inner(
         resolution_rounds,
         investigation: investigation_observation,
         finalization,
+        answer_context,
+        answer_context_config: answer_context_config.clone(),
         exposed_text: NaturalExposedTextObservation {
-            policy_id: EXPOSED_TEXT_POLICY_ID,
+            policy_id: if answer_context_config.is_some() {
+                answer_context::POLICY_ID
+            } else {
+                EXPOSED_TEXT_POLICY_ID
+            },
             renderer_text_exposed: false,
         },
         rendering,
@@ -5324,8 +5390,8 @@ fn session_runtime_from_output(
         )
     })?;
     Ok(SessionRuntimeIdentity {
-        natural_output_contract: NATURAL_OUTPUT_CONTRACT_ID.into(),
-        exposed_text_policy_id: EXPOSED_TEXT_POLICY_ID.into(),
+        natural_output_contract: output.output_contract.into(),
+        exposed_text_policy_id: output.exposed_text.policy_id.into(),
         reasoning_thread_schema_version: REASONING_THREAD_SCHEMA_VERSION,
         provider: provider_from_observed_name(provider)?,
         model,
@@ -5342,6 +5408,7 @@ fn session_runtime_from_output(
             .iter()
             .map(|source| (*source).to_string())
             .collect(),
+        answer_context: output.answer_context_config.clone(),
     })
 }
 
@@ -5355,8 +5422,18 @@ fn validate_session_runtime(session: &SessionFile) -> Result<(), CliError> {
             ),
         ));
     }
-    if session.runtime.natural_output_contract != NATURAL_OUTPUT_CONTRACT_ID
-        || session.runtime.exposed_text_policy_id != EXPOSED_TEXT_POLICY_ID
+    let expected_output = if session.runtime.answer_context.is_some() {
+        answer_context::OUTPUT_ID
+    } else {
+        NATURAL_OUTPUT_CONTRACT_ID
+    };
+    let expected_policy = if session.runtime.answer_context.is_some() {
+        answer_context::POLICY_ID
+    } else {
+        EXPOSED_TEXT_POLICY_ID
+    };
+    if session.runtime.natural_output_contract != expected_output
+        || session.runtime.exposed_text_policy_id != expected_policy
         || session.runtime.reasoning_thread_schema_version != REASONING_THREAD_SCHEMA_VERSION
         || session.runtime.continuation_policy_id != SESSION_CONTINUATION_POLICY_ID
     {
@@ -5373,7 +5450,46 @@ fn validate_session_runtime(session: &SessionFile) -> Result<(), CliError> {
         ));
     }
     validate_thread(&session.thread)
-        .map_err(|error| CliError::new("session_invalid", error.to_string()))
+        .map_err(|error| CliError::new("session_invalid", error.to_string()))?;
+    for turn in &session.turns {
+        match (&session.runtime.answer_context, &turn.answer_context) {
+            (Some(config), Some(view)) => {
+                let artifact = session
+                    .thread
+                    .checkpoints
+                    .iter()
+                    .find(|checkpoint| checkpoint.checkpoint_id == turn.checkpoint_id)
+                    .and_then(|checkpoint| checkpoint.snapshot.artifact.as_ref())
+                    .ok_or_else(|| {
+                        CliError::new(
+                            "session_invalid",
+                            "source context checkpoint artifact missing",
+                        )
+                    })?;
+                let (expected_finalization, expected_view) = answer_context::compose(
+                    config,
+                    artifact,
+                    &view.selected_claims,
+                    view.hard_finalization.clone(),
+                )
+                .map_err(|error| CliError::new("session_invalid", error))?;
+                if expected_finalization != turn.finalization || expected_view != *view {
+                    return Err(CliError::new(
+                        "session_invalid",
+                        "source context no longer matches its checkpoint",
+                    ));
+                }
+            }
+            (None, None) => {}
+            _ => {
+                return Err(CliError::new(
+                    "session_incompatible",
+                    "source context policy/turn mismatch",
+                ));
+            }
+        }
+    }
+    Ok(())
 }
 
 fn load_session_file(path: &Path) -> Result<SessionFile, CliError> {
@@ -5482,6 +5598,15 @@ fn session_operation_output(
         || replay.snapshot.current_candidate.is_none()
         || replay.snapshot.verdict.is_none()
         || replay.snapshot.status == ReasoningThreadStatus::NeedsReevaluation;
+    let answer_context = if !pending_revalidation {
+        session
+            .turns
+            .last()
+            .filter(|turn| Some(&turn.finalization) == finalization.as_ref())
+            .and_then(|turn| turn.answer_context.clone())
+    } else {
+        None
+    };
     Ok(SessionOperationOutput {
         session_contract: SESSION_CONTRACT_ID,
         operation,
@@ -5501,6 +5626,7 @@ fn session_operation_output(
         } else {
             finalization
         },
+        answer_context,
     })
 }
 
@@ -5590,6 +5716,7 @@ fn record_natural_turn(
         turn_index,
         checkpoint_id: checkpoint_id.clone(),
         finalization: output.finalization.clone(),
+        answer_context: output.answer_context.clone(),
     });
     Ok(checkpoint_id)
 }
@@ -5608,6 +5735,7 @@ fn continuation_args(
     format: OutputFormat,
 ) -> NaturalArgs {
     NaturalArgs {
+        require_answer_context: session.runtime.answer_context.is_some(),
         task: Some(task),
         file,
         fact,
@@ -6299,6 +6427,7 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                     new_evidence_prefix: format!("session-turn-{turn_index}"),
                     finalization_targets: vec![],
                     candidate_materialization_targets: vec![],
+                    answer_context: session.runtime.answer_context.clone(),
                 }),
             )
             .await?;
@@ -6367,6 +6496,7 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                     new_evidence_prefix: format!("session-turn-{turn_index}"),
                     finalization_targets,
                     candidate_materialization_targets,
+                    answer_context: session.runtime.answer_context.clone(),
                 }),
             )
             .await?;
@@ -8360,6 +8490,9 @@ fn merge_config_file(
 }
 
 fn merge_cli_config(base: &mut CliFileConfig, overlay: CliFileConfig) {
+    if overlay.answer_context.is_some() {
+        base.answer_context = overlay.answer_context;
+    }
     if overlay.run.provider.is_some() {
         base.run.provider = overlay.run.provider;
     }
@@ -10180,6 +10313,8 @@ mod candidate_json_tests {
             final_outcome,
             resolution_rounds: vec![],
             investigation: None,
+            answer_context: None,
+            answer_context_config: None,
             finalization: FinalizationResult {
                 status: FinalizationStatus::Unresolved,
                 text: None,
@@ -10272,6 +10407,7 @@ mod candidate_json_tests {
                 ..Default::default()
             },
             resolution: ResolutionFileConfig::default(),
+            answer_context: None,
         };
         merge_cli_config(
             &mut base,
@@ -10297,6 +10433,7 @@ mod candidate_json_tests {
                     trusted_command: None,
                     investigation: None,
                 },
+                answer_context: None,
             },
         );
         assert_eq!(base.run.provider, Some(Provider::Mistral));
@@ -10306,6 +10443,148 @@ mod candidate_json_tests {
         let external = base.resolution.external_command.as_ref().unwrap();
         assert_eq!(external.program, "resolver-bin");
         assert_eq!(external.args, vec!["--mode", "safe"]);
+    }
+
+    #[tokio::test]
+    async fn natural_execution_preserves_bound_context_through_current_safety_json_and_session() {
+        let (config, artifact, selected, _) = answer_context::test_fixture();
+        let candidate = ReasoningCandidate {
+            claims: artifact
+                .claims
+                .iter()
+                .map(|c| reasoning_harness_core::CandidateClaim {
+                    id: c.id.clone(),
+                    statement: "UNTRUSTED GENERATED STATEMENT".into(),
+                    proposed_state: c.state,
+                    proposition: c.proposition.clone(),
+                    evidence_ids: c.evidence_ids.clone(),
+                })
+                .collect(),
+            ..Default::default()
+        };
+        let rendered = FinalAnswerCandidate {
+            text: "UNTRUSTED RENDERED SHORTCUT".into(),
+            factual_claims: selected.clone(),
+        };
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::response(
+                &serde_json::to_string(&candidate).unwrap(),
+                1,
+            ),
+            StructuredCapabilityFallbackAdapter::response(
+                &serde_json::to_string(&rendered).unwrap(),
+                1,
+            ),
+        ]);
+        let input = input_from_artifact(&artifact);
+        let output = execute_natural_inner(
+            NaturalArgs {
+                task: Some(artifact.task.clone()),
+                provider: Some(Provider::Mistral),
+                model: Some("test-model".into()),
+                no_config: true,
+                format: Some(OutputFormat::Json),
+                ..Default::default()
+            },
+            Some(NaturalExecutionSeed {
+                input,
+                new_evidence_prefix: "test-turn".into(),
+                finalization_targets: vec![selected[0].proposition.clone()],
+                candidate_materialization_targets: vec![],
+                answer_context: Some(config.clone()),
+            }),
+            SubprocessCancellation::default(),
+            Arc::default(),
+            |_, _| {
+                Ok(LiveGenerator::Test(DiagnosticTestAdapter(Box::new(
+                    adapter,
+                ))))
+            },
+        )
+        .await
+        .unwrap();
+        assert_eq!(output.output_contract, answer_context::OUTPUT_ID);
+        assert_eq!(output.exposed_text.policy_id, answer_context::POLICY_ID);
+        assert_eq!(output.usage.run.model_calls, 2);
+        assert!(
+            output
+                .safety_observations
+                .iter()
+                .all(|o| o.observation.trusted_verification_short_circuit)
+        );
+        assert!(
+            output
+                .finalization
+                .text
+                .as_ref()
+                .unwrap()
+                .contains("条件Xの場合だけ")
+        );
+        assert!(
+            !output
+                .finalization
+                .text
+                .as_ref()
+                .unwrap()
+                .contains("UNTRUSTED")
+        );
+        let human = human_presentation::from_output(&output).render_for_test();
+        assert!(human.contains(output.finalization.text.as_ref().unwrap()));
+        let json = serde_json::to_value(&output).unwrap();
+        assert_eq!(
+            json["answer_context"]["citations"][0]["source_id"],
+            "manual"
+        );
+
+        let runtime =
+            session_runtime_from_output(&output, AnswerSafetyProfileArg::Current).unwrap();
+        let mut thread = ReasoningThread::new("source-context-test").unwrap();
+        thread
+            .record_task("context-task-event", "context-task", output.task.clone())
+            .unwrap();
+        let mut session = SessionFile {
+            schema_version: SESSION_CONTRACT_ID.into(),
+            runtime,
+            thread,
+            turns: vec![],
+        };
+        record_natural_turn(&mut session, &output, None).unwrap();
+        validate_session_runtime(&session).unwrap();
+        let path = synthetic_session_path("source-context");
+        save_session_file(&path, &session, true).unwrap();
+        let loaded = load_session_file(&path).unwrap();
+        let inspected =
+            session_operation_output("inspect", &loaded, None, Some(output.finalization.clone()))
+                .unwrap();
+        assert_eq!(inspected.finalization, Some(output.finalization.clone()));
+        assert_eq!(inspected.answer_context, output.answer_context);
+        let mut tampered = loaded.clone();
+        tampered.turns[0].answer_context.as_mut().unwrap().citations[0]
+            .quote
+            .push_str(" forged");
+        assert!(validate_session_runtime(&tampered).is_err());
+        fs::remove_file(path).unwrap();
+    }
+
+    #[tokio::test]
+    async fn resumed_context_policy_cannot_silently_fall_back_before_provider_start() {
+        let error = execute_natural_inner(
+            NaturalArgs {
+                task: Some("continue".into()),
+                no_config: true,
+                require_answer_context: true,
+                ..Default::default()
+            },
+            None,
+            SubprocessCancellation::default(),
+            Arc::default(),
+            |_, _| {
+                panic!("provider must not start without the required source-context configuration")
+            },
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(error.failure_class, "session_incompatible");
     }
 
     #[test]
@@ -10327,6 +10606,7 @@ mod candidate_json_tests {
                         ..Default::default()
                     },
                     resolution: ResolutionFileConfig::default(),
+                    answer_context: None,
                 },
                 sources: vec!["user"],
             },
@@ -10377,6 +10657,7 @@ mod candidate_json_tests {
                     ..Default::default()
                 },
                 resolution: ResolutionFileConfig::default(),
+                answer_context: None,
             },
             sources: vec!["user"],
         };
@@ -10426,6 +10707,7 @@ mod candidate_json_tests {
                         ..Default::default()
                     },
                     resolution: ResolutionFileConfig::default(),
+                    answer_context: None,
                 },
                 sources: vec!["project"],
             },
@@ -12756,12 +13038,14 @@ mod candidate_json_tests {
                 start_resolver_adapter: None,
                 start_resolver_admission: None,
                 start_trusted_verifier: None,
+                answer_context: None,
                 config_sources: vec![],
             },
             thread,
             turns: vec![SessionTurnRecord {
                 turn_index: 1,
                 checkpoint_id: "session-test-checkpoint".into(),
+                answer_context: None,
                 finalization: FinalizationResult {
                     status: FinalizationStatus::Unresolved,
                     text: None,

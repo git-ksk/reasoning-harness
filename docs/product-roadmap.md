@@ -1,5 +1,7 @@
 # Product roadmap: Reason CLI and Harness Engine
 
+**2026-10-21 component work:** [#550](https://github.com/git-ksk/reasoning-harness/issues/550) preserves host-bound source conditions, citations and unresolved inputs through ordinary CLI finalization. [Contract and scope](cli-answer-context.md). Saved-artifact presentation checks do not change the frozen F1; new paired measurement and Engine adoption remain separate gates.
+
 [日本語](product-roadmap.ja.md) | English
 
 This is the **current forward roadmap**. The previous release-by-release implementation ledger is preserved in [Product roadmap history](product-roadmap-history.md).

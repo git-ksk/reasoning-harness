@@ -1,0 +1,43 @@
+{
+  "actual_answer_f1": null,
+  "engine_task_reruns": 0,
+  "model_calls": 0,
+  "new_accuracy_cases": 0,
+  "original_inputs_outputs_unchanged": true,
+  "rows": [
+    {
+      "all_quote_and_fact_spans_match": true,
+      "case_id": "rw-02",
+      "exact_bound_quote_occurrences": 2,
+      "status": "qualified_partial_answer",
+      "unresolved_input_keys": []
+    },
+    {
+      "all_quote_and_fact_spans_match": true,
+      "case_id": "rw-06",
+      "exact_bound_quote_occurrences": 2,
+      "status": "qualified_partial_answer",
+      "unresolved_input_keys": []
+    },
+    {
+      "all_quote_and_fact_spans_match": true,
+      "case_id": "rw-11",
+      "exact_bound_quote_occurrences": 2,
+      "status": "qualified_partial_answer",
+      "unresolved_input_keys": [
+        "project.policy_settings"
+      ]
+    },
+    {
+      "all_quote_and_fact_spans_match": true,
+      "case_id": "rw-17",
+      "exact_bound_quote_occurrences": 2,
+      "status": "qualified_partial_answer",
+      "unresolved_input_keys": [
+        "all_build_targets.requirements"
+      ]
+    }
+  ],
+  "scope": "OFFLINE_SAVED_ARTIFACT_PRESENTATION_ONLY_NOT_F1",
+  "scoring_calls": 0
+}
