@@ -154,9 +154,9 @@ struct Cli {
 
 #[derive(Debug, Clone, Default, Args)]
 struct NaturalArgs {
-    /// A resumed managed session must not silently lose its source-context policy.
+    /// A resumed session pins the whole registry, including an explicitly absent policy.
     #[arg(skip)]
-    require_answer_context: bool,
+    pinned_answer_context: Option<Option<answer_context::Config>>,
     /// Natural-language task. When no subcommand is used, this starts the AI-backed verified path.
     #[arg(value_name = "TASK")]
     task: Option<String>,
@@ -4000,16 +4000,21 @@ async fn execute_natural_inner(
         load_cli_config(args.config.as_ref())
             .map_err(|error| CliError::new("configuration", error))?
     };
-    let answer_context_config = seed
+    let supplied_answer_context = seed
         .as_ref()
         .and_then(|seed| seed.answer_context.clone())
         .or_else(|| loaded_config.config.answer_context.clone());
-    if args.require_answer_context && answer_context_config.is_none() {
-        return Err(CliError::new(
-            "session_incompatible",
-            "this session requires its host source-context configuration; supply --config or start a new session",
-        ));
-    }
+    let answer_context_config = if let Some(pinned) = &args.pinned_answer_context {
+        if supplied_answer_context.is_some() && &supplied_answer_context != pinned {
+            return Err(CliError::new(
+                "session_incompatible",
+                "source-context configuration differs from this session; start a new session to change it",
+            ));
+        }
+        pinned.clone()
+    } else {
+        supplied_answer_context
+    };
     if let Some(config) = &answer_context_config {
         config
             .validate()
@@ -5454,23 +5459,32 @@ fn validate_session_runtime(session: &SessionFile) -> Result<(), CliError> {
     for turn in &session.turns {
         match (&session.runtime.answer_context, &turn.answer_context) {
             (Some(config), Some(view)) => {
-                let artifact = session
+                let checkpoint = session
                     .thread
                     .checkpoints
                     .iter()
                     .find(|checkpoint| checkpoint.checkpoint_id == turn.checkpoint_id)
-                    .and_then(|checkpoint| checkpoint.snapshot.artifact.as_ref())
                     .ok_or_else(|| {
-                        CliError::new(
-                            "session_invalid",
-                            "source context checkpoint artifact missing",
-                        )
+                        CliError::new("session_invalid", "source context checkpoint missing")
                     })?;
-                let (expected_finalization, expected_view) = answer_context::compose(
+                let artifact = checkpoint.snapshot.artifact.as_ref().ok_or_else(|| {
+                    CliError::new(
+                        "session_invalid",
+                        "source context checkpoint artifact missing",
+                    )
+                })?;
+                let verdict = checkpoint.snapshot.verdict.ok_or_else(|| {
+                    CliError::new(
+                        "session_invalid",
+                        "source context checkpoint verdict missing",
+                    )
+                })?;
+                let (expected_finalization, expected_view) = answer_context::restore(
                     config,
                     artifact,
-                    &view.selected_claims,
-                    view.hard_finalization.clone(),
+                    verdict,
+                    session.runtime.safety_profile.runtime_profile(),
+                    view,
                 )
                 .map_err(|error| CliError::new("session_invalid", error))?;
                 if expected_finalization != turn.finalization || expected_view != *view {
@@ -5735,7 +5749,7 @@ fn continuation_args(
     format: OutputFormat,
 ) -> NaturalArgs {
     NaturalArgs {
-        require_answer_context: session.runtime.answer_context.is_some(),
+        pinned_answer_context: Some(session.runtime.answer_context.clone()),
         task: Some(task),
         file,
         fact,
@@ -10483,6 +10497,7 @@ mod candidate_json_tests {
                 provider: Some(Provider::Mistral),
                 model: Some("test-model".into()),
                 no_config: true,
+                pinned_answer_context: Some(Some(config.clone())),
                 format: Some(OutputFormat::Json),
                 ..Default::default()
             },
@@ -10491,7 +10506,7 @@ mod candidate_json_tests {
                 new_evidence_prefix: "test-turn".into(),
                 finalization_targets: vec![selected[0].proposition.clone()],
                 candidate_materialization_targets: vec![],
-                answer_context: Some(config.clone()),
+                answer_context: None,
             }),
             SubprocessCancellation::default(),
             Arc::default(),
@@ -10563,28 +10578,83 @@ mod candidate_json_tests {
             .quote
             .push_str(" forged");
         assert!(validate_session_runtime(&tampered).is_err());
+        // A self-consistent display cannot promote a valid core checkpoint that
+        // actually records Reject. This checks the session path, not just View equality.
+        let mut rejected = loaded.clone();
+        rejected.thread = ReasoningThread::new("source-context-reject").unwrap();
+        rejected
+            .thread
+            .record_task("reject-task", "task", output.task.clone())
+            .unwrap();
+        rejected
+            .thread
+            .record_candidate(
+                "reject-candidate",
+                "candidate",
+                None,
+                output.candidate.clone(),
+            )
+            .unwrap();
+        rejected
+            .thread
+            .record_accepted_artifact(
+                "reject-artifact",
+                output.final_outcome.artifact.clone(),
+                Verdict::Reject,
+            )
+            .unwrap();
+        let checkpoint = rejected.turns[0].checkpoint_id.clone();
+        rejected
+            .thread
+            .create_checkpoint("reject-checkpoint", checkpoint.clone())
+            .unwrap();
+        rejected
+            .thread
+            .interrupt("reject-interrupt", checkpoint)
+            .unwrap();
+        validate_thread(&rejected.thread).unwrap();
+        let error = validate_session_runtime(&rejected).unwrap_err();
+        assert!(error.message.contains("checkpoint verdict"));
         fs::remove_file(path).unwrap();
     }
 
     #[tokio::test]
-    async fn resumed_context_policy_cannot_silently_fall_back_before_provider_start() {
-        let error = execute_natural_inner(
-            NaturalArgs {
-                task: Some("continue".into()),
-                no_config: true,
-                require_answer_context: true,
-                ..Default::default()
-            },
-            None,
-            SubprocessCancellation::default(),
-            Arc::default(),
-            |_, _| {
-                panic!("provider must not start without the required source-context configuration")
-            },
+    async fn resumed_context_registry_cannot_be_replaced_before_provider_start() {
+        let (original, _, _, _) = answer_context::test_fixture();
+        let replacement = answer_context::Config {
+            schema_version: answer_context::CONFIG_ID.into(),
+            sources: vec![],
+            unresolved_inputs: BTreeSet::from(["other.input".into()]),
+        };
+        let path = synthetic_session_path("replacement-context-config");
+        fs::write(
+            &path,
+            serde_json::to_vec(&serde_json::json!({
+                "schema_version": CLI_CONFIG_CONTRACT_ID,
+                "answer_context": replacement
+            }))
+            .unwrap(),
         )
-        .await
-        .unwrap_err();
-        assert_eq!(error.failure_class, "session_incompatible");
+        .unwrap();
+        // A new policy must not be added to an old unconfigured session either.
+        for pinned in [Some(original), None] {
+            let error = execute_natural_inner(
+                NaturalArgs {
+                    task: Some("continue".into()),
+                    config: Some(path.clone()),
+                    pinned_answer_context: Some(pinned),
+                    ..Default::default()
+                },
+                None,
+                SubprocessCancellation::default(),
+                Arc::default(),
+                |_, _| panic!("provider must not start after a source-context policy substitution"),
+            )
+            .await
+            .unwrap_err();
+            assert_eq!(error.failure_class, "session_incompatible");
+        }
+        fs::remove_file(path).unwrap();
     }
 
     #[test]

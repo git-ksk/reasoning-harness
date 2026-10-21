@@ -324,6 +324,123 @@ fn source_quote(source: &Source, artifact: &ReasoningArtifact) -> Result<String,
     Ok(quote.to_owned())
 }
 
+fn grounded_target_authorized(artifact: &ReasoningArtifact, target: &Proposition) -> bool {
+    let matching = artifact
+        .claims
+        .iter()
+        .filter(|c| c.proposition.as_ref() == Some(target))
+        .collect::<Vec<_>>();
+    !matching.is_empty()
+        && matching
+            .iter()
+            .all(|c| matches!(c.state, EpistemicState::Known | EpistemicState::Supported))
+        && !artifact.claims.iter().any(|c| {
+            c.proposition.as_ref().is_some_and(|p| {
+                p.key == target.key
+                    && (p.value != target.value || c.state == EpistemicState::Contradicted)
+            })
+        })
+        && !artifact.verification_receipts.iter().any(|r| {
+            r.proposition.as_ref().is_some_and(|p| p.key == target.key)
+                && r.conclusion == VerificationConclusion::Contradicted
+        })
+        && !artifact
+            .evidence_qualification_findings
+            .iter()
+            .any(|f| f.proposition.key == target.key)
+        && !artifact
+            .adversarial_findings
+            .iter()
+            .any(|f| f.proposition.key == target.key && f.strength == FindingStrength::Hard)
+}
+
+/// A saved View is display data, not authority to release an answer. Reconstruct
+/// its hard answer using the checkpoint's real verdict, then recheck the pure
+/// portion of the current safety gate. Model-dependent safety needs live
+/// reevaluation; a serialized claim that it passed is insufficient.
+pub(super) fn restore(
+    config: &Config,
+    artifact: &ReasoningArtifact,
+    verdict: reasoning_harness_core::Verdict,
+    profile: reasoning_harness_core::AnswerSafetyProfile,
+    saved: &View,
+) -> Result<(FinalizationResult, View), String> {
+    use reasoning_harness_core::*;
+    let hard = &saved.hard_finalization;
+    if matches!(
+        hard.status,
+        FinalizationStatus::GroundedAnswer | FinalizationStatus::QualifiedPartialAnswer
+    ) {
+        let candidate = FinalAnswerCandidate {
+            text: String::new(),
+            factual_claims: saved.selected_claims.clone(),
+        };
+        let baseline = finalize_answer(artifact, verdict, candidate, FinalizationPolicy::default());
+        let targets = saved
+            .selected_claims
+            .iter()
+            .map(|c| c.proposition.clone())
+            .collect::<Vec<_>>();
+        let partial = canonical_verified_target_partial_answer(artifact, verdict, &targets)
+            .or_else(|| {
+                canonical_verified_target_reject_partial_answer(artifact, verdict, &targets)
+            });
+        let matches_recovery = partial.as_ref().is_some_and(|(candidate, result)| {
+            candidate.factual_claims == saved.selected_claims && result == hard
+        });
+        if hard != &baseline && !matches_recovery {
+            return Err("saved source context is not authorized by the checkpoint verdict".into());
+        }
+        for claim in saved
+            .selected_claims
+            .iter()
+            .filter(|c| c.mode == FinalClaimMode::Grounded)
+        {
+            if profile == AnswerSafetyProfile::Baseline {
+                continue;
+            }
+            let target = &claim.proposition;
+            let request = SoftJudgeRequest {
+                id: format!("answer-d3:{}={}", target.key, target.value),
+                task: artifact.task.clone(),
+                kind: SemanticDiagnosticKind::UnsupportedPremise,
+                target: SemanticDiagnosticTarget::Proposition {
+                    proposition: target.clone(),
+                },
+                context: vec![],
+            };
+            let decidability =
+                assess_semantic_decidability(&request, artifact).map_err(|e| e.to_string())?;
+            if decidability.disposition == SemanticDecidabilityDisposition::ForceAbstain {
+                return Err("saved source context is blocked by current semantic safety".into());
+            }
+            // This is deliberately narrower than live execution: only the
+            // VerifiedTargetV1 trusted short circuit can be replayed offline.
+            let matching = artifact
+                .claims
+                .iter()
+                .filter(|c| c.proposition.as_ref() == Some(target))
+                .collect::<Vec<_>>();
+            if profile != AnswerSafetyProfile::VerifiedTargetV1
+                || !grounded_target_authorized(artifact, target)
+                || matching.iter().any(|c| {
+                    c.state != EpistemicState::Supported
+                        || !artifact.verification_receipts.iter().any(|r| {
+                            r.claim_id.as_deref() == Some(c.id.as_str())
+                                && r.proposition.as_ref() == Some(target)
+                                && r.conclusion == VerificationConclusion::Supported
+                        })
+                })
+            {
+                return Err("source context safety requires live reevaluation; cannot restore a model-dependent approval".into());
+            }
+        }
+    } else if hard.text.is_some() {
+        return Err("blocked saved source context contains exposed text".into());
+    }
+    compose(config, artifact, &saved.selected_claims, hard.clone())
+}
+
 pub(super) fn compose(
     config: &Config,
     artifact: &ReasoningArtifact,
@@ -351,12 +468,7 @@ pub(super) fn compose(
     if hard.factual_claims != selected.len()
         || selected.iter().any(|selected| {
             if selected.mode == FinalClaimMode::Grounded
-                && reasoning_harness_core::canonical_verified_target_answer(
-                    artifact,
-                    reasoning_harness_core::Verdict::Accept,
-                    std::slice::from_ref(&selected.proposition),
-                )
-                .is_none()
+                && !grounded_target_authorized(artifact, &selected.proposition)
             {
                 return true;
             }
@@ -574,6 +686,77 @@ pub(super) fn test_fixture() -> (
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn saved_self_consistent_accept_cannot_override_actual_reject_or_unknown() {
+        use reasoning_harness_core::{AnswerSafetyProfile, Verdict};
+        let (config, artifact, selected, hard) = test_fixture();
+        let (_, forged) = compose(&config, &artifact, &selected, hard).unwrap();
+        assert!(
+            restore(
+                &config,
+                &artifact,
+                Verdict::Accept,
+                AnswerSafetyProfile::VerifiedTargetV1,
+                &forged
+            )
+            .is_ok()
+        );
+        for actual in [Verdict::Reject, Verdict::Unknown] {
+            let error = restore(
+                &config,
+                &artifact,
+                actual,
+                AnswerSafetyProfile::VerifiedTargetV1,
+                &forged,
+            )
+            .unwrap_err();
+            assert!(error.contains("checkpoint verdict"));
+        }
+    }
+
+    #[test]
+    fn saved_supported_receipt_cannot_override_current_semantic_safety() {
+        use reasoning_harness_core::{AnswerSafetyProfile, Verdict};
+        let (config, mut artifact, selected, hard) = test_fixture();
+        let (_, saved) = compose(&config, &artifact, &selected, hard).unwrap();
+        artifact.evidence_requirements[0].as_of_unix_seconds = Some(400);
+        let error = restore(
+            &config,
+            &artifact,
+            Verdict::Accept,
+            AnswerSafetyProfile::VerifiedTargetV1,
+            &saved,
+        )
+        .unwrap_err();
+        assert!(error.contains("current semantic safety"));
+    }
+
+    #[test]
+    fn saved_model_dependent_approval_cannot_authorize_offline_restore() {
+        use reasoning_harness_core::{AnswerSafetyProfile, Verdict};
+        let (config, mut artifact, selected, hard) = test_fixture();
+        let (_, saved) = compose(&config, &artifact, &selected, hard).unwrap();
+        artifact.claims[0].state = EpistemicState::Known;
+        let error = restore(
+            &config,
+            &artifact,
+            Verdict::Accept,
+            AnswerSafetyProfile::VerifiedTargetV1,
+            &saved,
+        )
+        .unwrap_err();
+        assert!(error.contains("requires live reevaluation"));
+        let error = restore(
+            &config,
+            &artifact,
+            Verdict::Accept,
+            AnswerSafetyProfile::D3SufficiencyV2,
+            &saved,
+        )
+        .unwrap_err();
+        assert!(error.contains("requires live reevaluation"));
+    }
 
     #[test]
     fn complete_conditions_citations_and_unknown_input_survive_without_model_prose() {

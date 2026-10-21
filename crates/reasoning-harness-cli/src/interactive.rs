@@ -224,7 +224,7 @@ fn pin_runtime_identity(
     base.model = Some(runtime.model.clone());
     base.max_tokens = Some(runtime.max_tokens);
     base.safety_profile = runtime.safety_profile;
-    base.require_answer_context = runtime.answer_context.is_some();
+    base.pinned_answer_context = Some(runtime.answer_context.clone());
     Ok(())
 }
 
@@ -566,5 +566,11 @@ mod tests {
         assert_eq!(pinned.provider, Some(Provider::Groq));
         assert_eq!(pinned.model.as_deref(), Some("openai/gpt-oss-120b"));
         assert_eq!(pinned.max_tokens, Some(64));
+        assert_eq!(pinned.pinned_answer_context, Some(None));
+        let (context, _, _, _) = crate::answer_context::test_fixture();
+        let mut with_context = runtime;
+        with_context.answer_context = Some(context.clone());
+        pin_runtime_identity(&mut pinned, &with_context, true).unwrap();
+        assert_eq!(pinned.pinned_answer_context, Some(Some(context)));
     }
 }
