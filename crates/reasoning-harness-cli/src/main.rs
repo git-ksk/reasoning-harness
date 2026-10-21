@@ -4005,7 +4005,14 @@ async fn execute_natural_inner(
         .and_then(|seed| seed.answer_context.clone())
         .or_else(|| loaded_config.config.answer_context.clone());
     let answer_context_config = if let Some(pinned) = &args.pinned_answer_context {
-        if supplied_answer_context.is_some() && &supplied_answer_context != pinned {
+        if [
+            seed.as_ref().and_then(|seed| seed.answer_context.as_ref()),
+            loaded_config.config.answer_context.as_ref(),
+        ]
+        .into_iter()
+        .flatten()
+        .any(|supplied| Some(supplied) != pinned.as_ref())
+        {
             return Err(CliError::new(
                 "session_incompatible",
                 "source-context configuration differs from this session; start a new session to change it",
@@ -10637,7 +10644,11 @@ mod candidate_json_tests {
         )
         .unwrap();
         // A new policy must not be added to an old unconfigured session either.
-        for pinned in [Some(original), None] {
+        for (pinned, seeded) in [
+            (Some(original.clone()), None),
+            (Some(original.clone()), Some(original)),
+            (None, None),
+        ] {
             let error = execute_natural_inner(
                 NaturalArgs {
                     task: Some("continue".into()),
@@ -10645,7 +10656,16 @@ mod candidate_json_tests {
                     pinned_answer_context: Some(pinned),
                     ..Default::default()
                 },
-                None,
+                seeded.map(|answer_context| NaturalExecutionSeed {
+                    input: HarnessInput {
+                        task: "continue".into(),
+                        ..Default::default()
+                    },
+                    new_evidence_prefix: "explicit-resume".into(),
+                    finalization_targets: vec![],
+                    candidate_materialization_targets: vec![],
+                    answer_context: Some(answer_context),
+                }),
                 SubprocessCancellation::default(),
                 Arc::default(),
                 |_, _| panic!("provider must not start after a source-context policy substitution"),
