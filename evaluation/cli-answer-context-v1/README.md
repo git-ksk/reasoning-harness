@@ -1,6 +1,6 @@
 # Ordinary CLI: bound source context
 
-2026-10-21 JST. [Issue550](https://github.com/git-ksk/reasoning-harness/issues/550). [Configuration and trust boundary](../../docs/cli-answer-context.md).
+2026-10-21 JST. [Issue550](https://github.com/git-ksk/reasoning-harness/issues/550), [PR551](https://github.com/git-ksk/reasoning-harness/pull/551). [Configuration and trust boundary](../../docs/cli-answer-context.md).
 
 The CLI can preserve whole source quotations and host-declared input limitations alongside its verified facts. The optional host registry binds exact admitted evidence bytes, metadata, proposition, direct receipt, URL/version and whole-string pointers. It uses the final artifact after retries and safety checks, never model-rendered prose. New composed displays are source-local qualified partial answers with a separately preserved hard result. Text, JSON, diagnostic trace and persisted sessions share this display; blocked answers do not reexpose facts through human side sections.
 
@@ -9,3 +9,7 @@ The saved Google rw02/rw06/rw11/rw17 artifacts project successfully to source-lo
 The first stricter replay refused the ordinary investigation lane's plain structured receipts; its log/output boundary is preserved. That lane already checks scope/time on admission. The successor supports its direct structured receipts and the qualified verifier path, while retaining exact identity/hash/current-qualification checks. No acceptance metric or original budget was changed.
 
 Host registry preparation and separately fixed evaluation conditions are required before a new paired Google measurement. The original case F1 (.583333 ordinary; helper .222222→.400000) is unchanged. Incomplete acquisition, execution/origin notices and helper equivalence refusal remain separate work. Mistral/Groq holds, Engine0.7.3 publication and CLI adoption gates are unchanged.
+
+Independent diff review found two session trust-boundary defects in the first implementation: accepting a self-consistent saved display without reconstructing its actual checkpoint verdict/safety, and pinning only the presence of a registry on managed resume. The repair reconstructs the hard answer and pure current safety, refuses model-dependent offline approvals, and pins the whole registry in both resume paths. Original FAIL review evidence is retained; the repaired source is reviewed separately. Local validation: 234 unit tests and 29 product contract tests pass, existing ignored tests remain ignored, strict Clippy passes.
+
+Limited independent re-review of fixed source `34ef0a5` found no blocking issue: 18 structural boundaries passed and four original-artifact restores preserved all8 citations/view bytes, including the actual Unknown partial answers in rw02/rw17. No fresh question, Engine task, provider call or score was added. Reject partial recovery was checked statically against the existing core helper; no real-data positive Reject-partial case was executed. Explicit nonexistent `--config` paths still stop with their existing load error; disappearing default-discovered files inherit the saved registry.

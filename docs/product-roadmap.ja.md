@@ -1,6 +1,6 @@
 # 製品ロードマップ: Reason CLI / Harness Engine
 
-**2026-10-21 部品修正:** [#550](https://github.com/git-ksk/reasoning-harness/issues/550)で、通常CLIの条件・引用・未確認入力を最終表示まで保持する。[契約と範囲](cli-answer-context.md)。保存ログの表示確認で元F1は変更せず、別途固定した対照測定とEngine採用の判定を残す。
+**2026-10-21 部品修正:** [#550](https://github.com/git-ksk/reasoning-harness/issues/550) / [PR551](https://github.com/git-ksk/reasoning-harness/pull/551)で、通常CLIの条件・引用・未確認入力を最終表示まで保持する。[契約と範囲](cli-answer-context.md)。保存ログの表示確認で元F1は変更せず、別途固定した対照測定とEngine採用の判定を残す。
 
 日本語 | [English](product-roadmap.md)
 

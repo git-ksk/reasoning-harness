@@ -25,5 +25,33 @@
   "new_accuracy_cases": 0,
   "F1_calculations": 0,
   "provider_calls": 0,
-  "limits": "Four observed candidate artifacts, host-curated source data and explicit task-input limitations. Not automatic extraction or fresh accuracy acceptance."
+  "limits": "Four observed candidate artifacts, host-curated source data and explicit task-input limitations. Not automatic extraction or fresh accuracy acceptance.",
+  "final_component_projection": {
+    "identity": "answer-context-review-fixed-replay-v4",
+    "source_commit": "64e7060e15509cbebad64301c6384cbfb517d072",
+    "source_files": {
+      "answer_context.rs": "3dbab9f3e3e12ac2bb60d2397411f8d13410011d176660abb717fd0aee6fbaf9",
+      "main.rs": "940a5b388ab5e4a726a4df6fe08a4154eee36197df69e3dfcc2a4dafbba33f2f",
+      "human_presentation.rs": "4c27ebbda4acc04003c673e4136a8c078eeaf22e60339a1c9a5ba9fffcd1cf47",
+      "interactive.rs": "3d13e5c65c9c913858d4d5a1247b8cd325e800cde7cec2891e7c9850da7e5eea",
+      "managed_session.rs": "96d2ced036cf1fd1e31c48e895b5e94dac89ff0c5de3395f8697fabfb95c7ffb"
+    },
+    "pre_execution_sha256": "7bb30079bba2a4df1f354821cc44c46fe4086212bb471664573fb1bdff70d4e2",
+    "result_sha256": "5d9c74987dd6add54157b6160a6cbe57880f7d4169bb800a93ded2e788ca1983",
+    "log_sha256": "68edb1f8107ce3359ce999997b911c5575f2ca4d9d5637f2ece578a55df7dfd8",
+    "output_inventory": {
+      "rw-02.json": "cf623c55cdb38471caa11f2aa6e29e7d43fdd2393c4e6057a2327335ede83806",
+      "rw-06.json": "958b0848c8d8fe629140968888f0bdc70fea8f78cc4bf4603fd26de2e2364ac4",
+      "rw-11.json": "ac5208362263e0fbbf7c602d4bf4daf7ab436aa72b06bad342c098e4a506b813",
+      "rw-17.json": "c7f82b8f439684fa920be19fc1a6ac158a00047b19854c8505f275808ad2ae6e",
+      "summary.json": "023441a6305cf90a503e4aaf44b2795b06777c894609a4ce8b1291ef345b4945"
+    },
+    "source_unchanged": true,
+    "prior_outputs_preserved": [
+      "output",
+      "output-v2",
+      "output-v3"
+    ],
+    "subsequent_source_delta": "34ef0a5 changes only configuration-drift checks/tests in main.rs; composed source-context module is byte-identical"
+  }
 }
