@@ -117,16 +117,6 @@ impl Ledger {
         explicit_targets: &[Proposition],
     ) -> Option<(FinalAnswerCandidate, FinalizationResult)> {
         let mut targets = self.verified_targets(artifact);
-        if targets.is_empty()
-            || targets.iter().all(|p| {
-                rendered
-                    .factual_claims
-                    .iter()
-                    .any(|c| c.mode == FinalClaimMode::Grounded && &c.proposition == p)
-            })
-        {
-            return None;
-        }
         for p in explicit_targets.iter().chain(
             rendered
                 .factual_claims
@@ -139,6 +129,16 @@ impl Ledger {
             {
                 targets.push(p.clone());
             }
+        }
+        if targets.is_empty()
+            || targets.iter().all(|p| {
+                rendered
+                    .factual_claims
+                    .iter()
+                    .any(|c| c.mode == FinalClaimMode::Grounded && &c.proposition == p)
+            })
+        {
+            return None;
         }
         canonical_answer(artifact, verdict, &targets)
     }

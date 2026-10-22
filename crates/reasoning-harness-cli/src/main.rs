@@ -3820,6 +3820,12 @@ async fn run_natural_investigation(
         let admitted_materializations =
             coverage.materialization_facts(&acquisition.final_artifact.evidence);
         current_input = input_from_artifact(&acquisition.final_artifact);
+        // Admission is already a core result. A later model failure must not
+        // roll back its evidence while keeping its attempt and ledger binding.
+        current_outcome = HarnessOutcome {
+            verdict: acquisition.final_verdict,
+            artifact: acquisition.final_artifact.clone(),
+        };
         resolution_rounds.push(acquisition);
         let mut verification_progress = false;
 
@@ -10782,16 +10788,30 @@ mod candidate_json_tests {
             .find(|c| c.proposition.key == "left.value")
             .unwrap()
             .clone();
-        for explicit in [vec![], run.finalization_targets.clone()] {
+        let right = all
+            .factual_claims
+            .iter()
+            .find(|c| c.proposition.key == "right.value")
+            .unwrap()
+            .clone();
+        for (explicit, selected, expected_count) in [
+            (vec![], left.clone(), 2),
+            (run.finalization_targets.clone(), left, 2),
+            (run.finalization_targets.clone(), right.clone(), 2),
+            (vec![], right, 1),
+        ] {
             let output =
-                execute_coverage_render(&run, ledger.clone(), explicit, vec![left.clone()]).await;
+                execute_coverage_render(&run, ledger.clone(), explicit, vec![selected]).await;
             assert_eq!(
                 output.finalization.status,
                 FinalizationStatus::GroundedAnswer
             );
-            assert_eq!(output.finalization.factual_claims, 2);
+            assert_eq!(output.finalization.factual_claims, expected_count);
             let selected = &output.acquisition_coverage.unwrap().selected_claims;
-            assert!(selected.iter().any(|c| c.proposition.key == "left.value"));
+            assert_eq!(
+                selected.iter().any(|c| c.proposition.key == "left.value"),
+                expected_count == 2
+            );
             assert!(selected.iter().any(|c| c.proposition.key == "right.value"));
         }
     }
@@ -11147,55 +11167,90 @@ mod candidate_json_tests {
             assert!(display.text.unwrap().contains("right.value"));
         }
 
-        let (input, candidate, mut config) = coverage_fixture(false, false);
-        config.capabilities[0].resolver =
-            InvestigationResolverConfig::Fixture(Err(ResolutionAdapterError {
-                kind: reasoning_harness_core::ResolutionAdapterErrorKind::Transport,
-                cost: ResolutionCost {
-                    calls: 1,
-                    ..Default::default()
-                },
-            }));
-        let generator = LiveGenerator::Test(DiagnosticTestAdapter(Box::new(
-            StructuredCapabilityFallbackAdapter::with_responses([
+        for fail_resolver in [true, false] {
+            let (input, candidate, mut config) = coverage_fixture(false, false);
+            if fail_resolver {
+                config.capabilities[0].resolver =
+                    InvestigationResolverConfig::Fixture(Err(ResolutionAdapterError {
+                        kind: reasoning_harness_core::ResolutionAdapterErrorKind::Transport,
+                        cost: ResolutionCost {
+                            calls: 1,
+                            ..Default::default()
+                        },
+                    }));
+            }
+            let mut responses = vec![
                 StructuredCapabilityFallbackAdapter::response(COVERAGE_PLAN, 1),
                 StructuredCapabilityFallbackAdapter::response(
                     r#"{"action":"continue","target_id":"left"}"#,
                     1,
                 ),
-            ]),
-        )));
-        let initial_outcome = run_standard_grounding(input.clone(), candidate.clone()).unwrap();
-        let mut usage = usage_budget::UsageTracker::new(Default::default(), None).unwrap();
-        let run = run_natural_investigation(NaturalInvestigationCall {
-            task: &input.task.clone(),
-            input,
-            candidate,
-            initial_outcome,
-            generator: &generator,
-            trace: None,
-            config: &config,
-            model: "test-model",
-            max_tokens: 512,
-            seed: None,
-            usage: &mut usage,
-            progress: &progress::ProgressReporter::new(OutputFormat::Json, false, true),
-            cancellation: &SubprocessCancellation::default(),
-            seed_coverage: None,
-            failure_context: &Arc::default(),
-        })
-        .await
-        .unwrap();
-        assert_eq!(
-            run.resolution_rounds.len(),
-            1,
-            "operational failure stops further acquisition"
-        );
-        assert_eq!(
-            run.observation.telemetry.unwrap().stop_reason,
-            Some(InvestigationStopReason::OperationalTerminal)
-        );
-        assert!(!run.coverage.complete(&run.outcome.artifact));
+            ];
+            if !fail_resolver {
+                responses.push(Err(ModelError::new(
+                    ModelErrorKind::Quota,
+                    "fixture regeneration quota failure",
+                )
+                .with_provider_attempts(1)));
+            }
+            let generator = LiveGenerator::Test(DiagnosticTestAdapter(Box::new(
+                StructuredCapabilityFallbackAdapter::with_responses(responses),
+            )));
+            let initial_outcome = run_standard_grounding(input.clone(), candidate.clone()).unwrap();
+            let mut usage = usage_budget::UsageTracker::new(Default::default(), None).unwrap();
+            let run = run_natural_investigation(NaturalInvestigationCall {
+                task: &input.task.clone(),
+                input,
+                candidate,
+                initial_outcome,
+                generator: &generator,
+                trace: None,
+                config: &config,
+                model: "test-model",
+                max_tokens: 512,
+                seed: None,
+                usage: &mut usage,
+                progress: &progress::ProgressReporter::new(OutputFormat::Json, false, true),
+                cancellation: &SubprocessCancellation::default(),
+                seed_coverage: None,
+                failure_context: &Arc::default(),
+            })
+            .await
+            .unwrap();
+            assert_eq!(
+                run.resolution_rounds.len(),
+                1,
+                "operational failure stops further acquisition"
+            );
+            assert_eq!(
+                run.observation.telemetry.unwrap().stop_reason,
+                Some(InvestigationStopReason::OperationalTerminal)
+            );
+            assert!(!run.coverage.complete(&run.outcome.artifact));
+            if !fail_resolver {
+                assert_eq!(
+                    run.observation
+                        .generation_failure
+                        .as_ref()
+                        .unwrap()
+                        .failure_class,
+                    "quota"
+                );
+                let round = &run.resolution_rounds[0];
+                let admitted = &round.attempts[0].admitted_evidence_ids;
+                assert_eq!(admitted.len(), 1);
+                assert!(
+                    admitted.iter().all(|id| run
+                        .outcome
+                        .artifact
+                        .evidence
+                        .iter()
+                        .any(|e| &e.id == id)),
+                    "regeneration failure retains actual admitted evidence"
+                );
+                assert_eq!(run.outcome.artifact, round.final_artifact);
+            }
+        }
     }
 
     async fn source_context_execution_fixture(
