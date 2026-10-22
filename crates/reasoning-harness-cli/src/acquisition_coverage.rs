@@ -2,12 +2,14 @@
 use std::collections::BTreeSet;
 
 use reasoning_harness_core::{
-    EpistemicState, Evidence, FinalAnswerClaim, FinalClaimMode, FinalizationResult,
-    FinalizationStatus, FindingStrength, InvestigationStopReason, InvestigationTarget, Proposition,
-    ReasoningArtifact, ReasoningThread, ReasoningThreadEventKind, ResolutionAttempt,
-    ResolutionReason, ResolutionTarget, ResolverClass, SemanticDecidabilityDisposition,
-    SemanticDiagnosticKind, SemanticDiagnosticTarget, SoftJudgeRequest, VerificationConclusion,
-    assess_semantic_decidability,
+    EpistemicState, Evidence, FinalAnswerCandidate, FinalAnswerClaim, FinalClaimMode,
+    FinalizationPolicy, FinalizationResult, FinalizationStatus, FindingStrength,
+    InvestigationStopReason, InvestigationTarget, Proposition, ReasoningArtifact, ReasoningThread,
+    ReasoningThreadEventKind, ResolutionAttempt, ResolutionReason, ResolutionTarget, ResolverClass,
+    SemanticDecidabilityDisposition, SemanticDiagnosticKind, SemanticDiagnosticTarget,
+    SoftJudgeRequest, Verdict, VerificationConclusion, assess_semantic_decidability,
+    canonical_verified_target_answer, canonical_verified_target_partial_answer,
+    canonical_verified_target_reject_partial_answer, finalize_answer,
 };
 use serde::{Deserialize, Serialize};
 
@@ -78,6 +80,25 @@ pub(super) struct Snapshot {
     pub stop_reason: Option<InvestigationStopReason>,
 }
 
+fn canonical_answer(
+    artifact: &ReasoningArtifact,
+    verdict: Verdict,
+    targets: &[Proposition],
+) -> Option<(FinalAnswerCandidate, FinalizationResult)> {
+    canonical_verified_target_answer(artifact, verdict, targets)
+        .map(|candidate| {
+            let hard = finalize_answer(
+                artifact,
+                verdict,
+                candidate.clone(),
+                FinalizationPolicy::default(),
+            );
+            (candidate, hard)
+        })
+        .or_else(|| canonical_verified_target_partial_answer(artifact, verdict, targets))
+        .or_else(|| canonical_verified_target_reject_partial_answer(artifact, verdict, targets))
+}
+
 fn clean(s: &str) -> bool {
     !s.trim().is_empty()
         && !s.chars().any(|c| {
@@ -86,6 +107,42 @@ fn clean(s: &str) -> bool {
 }
 
 impl Ledger {
+    /// Recover missing verified plan facets without dropping an existing legal selection.
+    /// All recovered facts still pass actual-verdict finalization and the caller's safety gate.
+    pub fn recover_rendered(
+        &self,
+        artifact: &ReasoningArtifact,
+        verdict: Verdict,
+        rendered: &FinalAnswerCandidate,
+        explicit_targets: &[Proposition],
+    ) -> Option<(FinalAnswerCandidate, FinalizationResult)> {
+        let mut targets = self.verified_targets(artifact);
+        if targets.is_empty()
+            || targets.iter().all(|p| {
+                rendered
+                    .factual_claims
+                    .iter()
+                    .any(|c| c.mode == FinalClaimMode::Grounded && &c.proposition == p)
+            })
+        {
+            return None;
+        }
+        for p in explicit_targets.iter().chain(
+            rendered
+                .factual_claims
+                .iter()
+                .filter(|c| c.mode == FinalClaimMode::Grounded)
+                .map(|c| &c.proposition),
+        ) {
+            if !targets.contains(p)
+                && canonical_answer(artifact, verdict, std::slice::from_ref(p)).is_some()
+            {
+                targets.push(p.clone());
+            }
+        }
+        canonical_answer(artifact, verdict, &targets)
+    }
+
     pub fn registry(&self) -> Self {
         let mut registry = self.clone();
         for o in &mut registry.targets {

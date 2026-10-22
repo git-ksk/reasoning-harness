@@ -3394,25 +3394,6 @@ fn preserve_acquisition_progress(
         .acquisition_coverage = Some(snapshot);
 }
 
-fn canonical_acquisition_answer(
-    artifact: &ReasoningArtifact,
-    verdict: Verdict,
-    targets: &[Proposition],
-) -> Option<(FinalAnswerCandidate, FinalizationResult)> {
-    canonical_verified_target_answer(artifact, verdict, targets)
-        .map(|candidate| {
-            let hard = finalize_answer(
-                artifact,
-                verdict,
-                candidate.clone(),
-                FinalizationPolicy::default(),
-            );
-            (candidate, hard)
-        })
-        .or_else(|| canonical_verified_target_partial_answer(artifact, verdict, targets))
-        .or_else(|| canonical_verified_target_reject_partial_answer(artifact, verdict, targets))
-}
-
 struct NaturalInvestigationCall<'a> {
     task: &'a str,
     input: HarnessInput,
@@ -3965,7 +3946,7 @@ async fn run_natural_investigation(
         Some(&current_outcome.artifact),
         state.telemetry().stop_reason,
         failure_context,
-        trace.as_deref_mut(),
+        trace,
     );
     observation.telemetry = Some(state.into_telemetry());
     Ok(NaturalInvestigationRun {
@@ -4693,42 +4674,29 @@ async fn execute_natural_inner(
                 );
             }
         }
-        if let Some(ledger) = &acquisition_ledger {
-            let mut targets = ledger.verified_targets(&final_artifact);
-            if !targets.is_empty()
-                && targets.iter().any(|p| {
-                    !rendered
-                        .factual_claims
-                        .iter()
-                        .any(|c| c.mode == FinalClaimMode::Grounded && &c.proposition == p)
-                })
-            {
-                // Preserve already legal selections and explicit verified targets.
-                // An incomplete model render must not replace one valid facet with another.
-                for p in finalization_targets.iter().chain(
-                    rendered
-                        .factual_claims
-                        .iter()
-                        .filter(|c| c.mode == FinalClaimMode::Grounded)
-                        .map(|c| &c.proposition),
-                ) {
-                    if !targets.contains(p)
-                        && canonical_acquisition_answer(
-                            &final_artifact,
-                            final_verdict,
-                            std::slice::from_ref(p),
-                        )
-                        .is_some()
-                    {
-                        targets.push(p.clone());
-                    }
-                }
-                let recovered =
-                    canonical_acquisition_answer(&final_artifact, final_verdict, &targets);
-                if let Some((candidate, hard)) = recovered {
-                    rendered = candidate;
-                    finalization = hard;
-                }
+        if let Some(ledger) = &acquisition_ledger
+            && let Some((candidate, hard)) = ledger.recover_rendered(
+                &final_artifact,
+                final_verdict,
+                &rendered,
+                &finalization_targets,
+            )
+        {
+            rendered = candidate;
+            finalization = hard;
+            if let Some(trace) = diagnostic_trace.as_mut() {
+                trace.record_final_render(
+                    final_render_phase,
+                    render_round,
+                    "canonical_acquisition_coverage_recovery",
+                    &rendered,
+                );
+                trace.record_finalization(
+                    DiagnosticPhase::new("finalization", Some(render_round)),
+                    render_round,
+                    "canonical_acquisition_coverage_recovery",
+                    &finalization,
+                );
             }
         }
         let rendered_for_safety = rendered.clone();
