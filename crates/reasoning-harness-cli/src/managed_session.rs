@@ -457,6 +457,12 @@ impl ManagedSession {
         };
         let replay = replay_thread(&turn.typed_session.thread)
             .map_err(|error| CliError::new("session_invalid", error.to_string()))?;
+        if replay.snapshot.status == ReasoningThreadStatus::NeedsReevaluation
+            || replay.snapshot.current_candidate.is_none()
+            || replay.snapshot.verdict.is_none()
+        {
+            return Ok(None);
+        }
         let Some(artifact) = replay.snapshot.artifact.as_ref() else {
             return Ok(None);
         };
@@ -468,11 +474,15 @@ impl ManagedSession {
         else {
             return Ok(None);
         };
-        Ok(Some(human_presentation::from_parts(
+        Ok(Some(human_presentation::from_context_parts(
             finalization,
             artifact,
             &replay.snapshot.resolution_attempts,
             &turn.typed_session.runtime.safety_configuration_id,
+            turn.typed_session
+                .turns
+                .last()
+                .and_then(|record| record.answer_context.as_ref()),
         )))
     }
 

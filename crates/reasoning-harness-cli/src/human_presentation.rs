@@ -38,31 +38,49 @@ struct EvidenceView {
 }
 
 pub(super) fn from_output(output: &NaturalOutput) -> HumanPresentation {
-    let artifact = output
-        .resolution_rounds
-        .last()
-        .map(|round| &round.final_artifact)
-        .unwrap_or(&output.initial_outcome.artifact);
+    let artifact = &output.final_outcome.artifact;
     let attempts = output
         .resolution_rounds
         .iter()
         .flat_map(|round| round.attempts.iter())
         .cloned()
         .collect::<Vec<_>>();
-    from_parts(
+    from_context_parts(
         &output.finalization,
         artifact,
         &attempts,
         output.safety_runtime.configuration_id(),
+        output.answer_context.as_ref(),
     )
 }
 
+#[cfg(test)]
 pub(super) fn from_parts(
     finalization: &FinalizationResult,
     artifact: &ReasoningArtifact,
     attempts: &[ResolutionAttempt],
     safety_configuration_id: &str,
 ) -> HumanPresentation {
+    from_context_parts(
+        finalization,
+        artifact,
+        attempts,
+        safety_configuration_id,
+        None,
+    )
+}
+
+pub(super) fn from_context_parts(
+    finalization: &FinalizationResult,
+    artifact: &ReasoningArtifact,
+    attempts: &[ResolutionAttempt],
+    safety_configuration_id: &str,
+    context: Option<&super::answer_context::View>,
+) -> HumanPresentation {
+    let answer_exposed = matches!(
+        finalization.status,
+        FinalizationStatus::GroundedAnswer | FinalizationStatus::QualifiedPartialAnswer
+    );
     let mut supporting_ids = BTreeSet::new();
     let mut verified_facts = Vec::new();
     let mut unresolved = BTreeMap::<String, BTreeSet<String>>::new();
@@ -73,6 +91,16 @@ pub(super) fn from_parts(
         let canonical = proposition_text(&proposition.key, &proposition.value);
         match claim.state {
             EpistemicState::Known | EpistemicState::Supported => {
+                if !answer_exposed
+                    || context.is_some_and(|view| {
+                        !view.selected_claims.iter().any(|selected| {
+                            selected.mode == reasoning_harness_core::FinalClaimMode::Grounded
+                                && selected.proposition == *proposition
+                        })
+                    })
+                {
+                    continue;
+                }
                 verified_facts.push(FactView {
                     proposition: canonical,
                     state: epistemic_label(claim.state),
@@ -149,7 +177,14 @@ pub(super) fn from_parts(
         evidence,
         untrusted_context_sources: untrusted_sources.into_iter().collect(),
         acquisition_notes,
-        coverage: format!("{:.3}", finalization.factual_claim_coverage),
+        coverage: if context.is_some() {
+            format!(
+                "{:.3} (hard claims only; source quotations remain source-local)",
+                finalization.factual_claim_coverage
+            )
+        } else {
+            format!("{:.3}", finalization.factual_claim_coverage)
+        },
         safety_configuration_id: safety_configuration_id.into(),
     }
 }
@@ -245,7 +280,7 @@ impl HumanPresentation {
         }
     }
     #[cfg(test)]
-    fn render_for_test(&self) -> String {
+    pub(super) fn render_for_test(&self) -> String {
         let mut out = format!("Answer\n{}\nVerified facts\n", self.answer);
         for fact in &self.verified_facts {
             out.push_str(&format!("{} {}\n", fact.proposition, fact.state));
@@ -516,6 +551,21 @@ mod tests {
             from_parts(&f, &ReasoningArtifact::default(), &[], "safe-v1").render_for_test();
         assert!(rendered.contains("currently verified evidence"));
         assert!(!rendered.contains("UNSAFE RENDERER TEXT"));
+    }
+
+    #[test]
+    fn blocked_answer_does_not_reexpose_verified_facts_or_sources_in_side_sections() {
+        let (_, artifact, _, _) = super::super::answer_context::test_fixture();
+        for status in [
+            FinalizationStatus::RequiresVerification,
+            FinalizationStatus::Unresolved,
+            FinalizationStatus::Abstain,
+        ] {
+            let view = from_parts(&finalization(status), &artifact, &[], "safe-v1");
+            assert!(view.verified_facts.is_empty());
+            assert!(view.evidence.is_empty());
+            assert!(!view.render_for_test().contains("feature.rule=limited"));
+        }
     }
 
     #[test]
