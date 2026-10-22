@@ -1,3 +1,4 @@
+mod acquisition_coverage;
 mod answer_context;
 mod auth;
 mod config_commands;
@@ -439,6 +440,8 @@ struct McpSessionPolicyFileConfig {
 
 #[derive(Debug, Clone)]
 enum InvestigationResolverConfig {
+    #[cfg(test)]
+    Fixture(Vec<AcquiredEvidence>),
     ExternalCommand(ExternalCommandResolverConfig),
     McpReadonly(Box<McpReadOnlyResolverV3Config>),
 }
@@ -1982,6 +1985,10 @@ struct SessionRuntimeIdentity {
     config_sources: Vec<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     answer_context: Option<answer_context::Config>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    acquisition_coverage_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    acquisition_plan: Option<acquisition_coverage::Ledger>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1992,6 +1999,8 @@ struct SessionTurnRecord {
     finalization: FinalizationResult,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     answer_context: Option<answer_context::View>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    acquisition_coverage: Option<acquisition_coverage::View>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -2025,6 +2034,8 @@ struct SessionOperationOutput {
     finalization: Option<FinalizationResult>,
     #[serde(skip_serializing_if = "Option::is_none")]
     answer_context: Option<answer_context::View>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    acquisition_coverage: Option<acquisition_coverage::View>,
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
@@ -2485,6 +2496,7 @@ struct NaturalInvestigationObservation {
     generation_failure: Option<GenerationFailure>,
     #[serde(skip_serializing_if = "Option::is_none")]
     plan_rejection: Option<String>,
+    completed_target_proposals_rejected: usize,
 }
 
 #[derive(Debug)]
@@ -2493,6 +2505,7 @@ struct NaturalInvestigationRun {
     outcome: HarnessOutcome,
     resolution_rounds: Vec<GroundedResolutionOutcome>,
     finalization_targets: Vec<Proposition>,
+    coverage: acquisition_coverage::Ledger,
     observation: NaturalInvestigationObservation,
 }
 
@@ -2517,6 +2530,8 @@ struct NaturalOutput {
     finalization: FinalizationResult,
     #[serde(skip_serializing_if = "Option::is_none")]
     answer_context: Option<answer_context::View>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    acquisition_coverage: Option<acquisition_coverage::View>,
     #[serde(skip)]
     answer_context_config: Option<answer_context::Config>,
     exposed_text: NaturalExposedTextObservation,
@@ -2843,7 +2858,14 @@ impl ResolutionPlanner for SingleRequestPlanner {
         outcome: &HarnessOutcome,
         _policy: &GroundedResolutionPolicy,
     ) -> Vec<ResolutionRequest> {
-        if outcome.verdict == Verdict::Accept {
+        if outcome.verdict == Verdict::Accept
+            && !(self.request.reason == ResolutionReason::Investigation
+                && self.request.resolver_class == ResolverClass::EvidenceAcquisition
+                && matches!(
+                    self.request.target,
+                    ResolutionTarget::InvestigationQuestion { .. }
+                ))
+        {
             vec![]
         } else {
             vec![self.request.clone()]
@@ -2919,7 +2941,7 @@ fn run_investigation_resolution(
     policy.budget.required_authority_class =
         admission.and_then(|admission| admission.minimum_authority_class().map(str::to_string));
     runtime
-        .run(input, candidate, &policy)
+        .run_with_pending_investigation(input, candidate, &policy)
         .map_err(|error| CliError::new("harness_state", error.to_string()))
 }
 
@@ -3269,6 +3291,41 @@ fn run_configured_investigation_capability(
         .clone()
         .map(ExternalEvidenceAdmissionPolicy::new);
     match &capability.resolver {
+        #[cfg(test)]
+        InvestigationResolverConfig::Fixture(evidence) => {
+            struct Fixture<'a>(&'a [AcquiredEvidence]);
+            impl ResolutionResolver for Fixture<'_> {
+                fn name(&self) -> &'static str {
+                    "investigation_fixture"
+                }
+                fn class(&self) -> ResolverClass {
+                    ResolverClass::EvidenceAcquisition
+                }
+                fn resolve(
+                    &self,
+                    _: &ResolutionRequest,
+                    _: usize,
+                ) -> Result<ResolutionResolverOutput, ResolutionAdapterError> {
+                    Ok(ResolutionResolverOutput {
+                        contribution: ResolutionResolverContribution::AcquiredEvidence {
+                            evidence: self.0.to_vec(),
+                        },
+                        cost: ResolutionCost {
+                            calls: 1,
+                            ..Default::default()
+                        },
+                    })
+                }
+            }
+            run_investigation_resolution(
+                input,
+                candidate,
+                &Fixture(evidence),
+                admission.as_ref(),
+                request,
+            )
+        }
+
         InvestigationResolverConfig::ExternalCommand(config) => {
             let resolver = InvestigationExternalCommandResolver::new(config.clone())
                 .with_cancellation(cancellation.clone());
@@ -3356,58 +3413,13 @@ fn materialize_harness_owned_investigation_fact(
         });
 }
 
-fn record_investigation_finalization_observation(
-    observations: &mut BTreeMap<String, Vec<Proposition>>,
-    target_id: &str,
-    expected_fact_key: Option<&str>,
-    artifact: &ReasoningArtifact,
-    admitted_evidence_ids: &[String],
-) {
-    let Some(expected_fact_key) = expected_fact_key.filter(|key| !key.is_empty()) else {
-        return;
-    };
-    let entry = observations.entry(target_id.to_string()).or_default();
-    for evidence in &artifact.evidence {
-        if !admitted_evidence_ids.iter().any(|id| id == &evidence.id) {
-            continue;
-        }
-        let Some(value) = evidence.facts.get(expected_fact_key) else {
-            continue;
-        };
-        let proposition = Proposition {
-            key: expected_fact_key.to_string(),
-            value: value.clone(),
-        };
-        if !entry.contains(&proposition) {
-            entry.push(proposition);
-        }
-    }
-}
-
-fn resolved_investigation_finalization_targets(
-    target_keys: &[(String, Option<String>)],
-    observations: &BTreeMap<String, Vec<Proposition>>,
-) -> Vec<Proposition> {
-    if target_keys.is_empty() {
-        return vec![];
-    }
-
-    let mut resolved = Vec::with_capacity(target_keys.len());
-    for (target_id, expected_fact_key) in target_keys {
-        let Some(candidates) = observations.get(target_id) else {
-            return vec![];
-        };
-        if candidates.len() != 1 || resolved.contains(&candidates[0]) {
-            return vec![];
-        }
-        match expected_fact_key.as_deref() {
-            Some("") => return vec![],
-            Some(expected_fact_key) if candidates[0].key != expected_fact_key => return vec![],
-            Some(_) | None => {}
-        }
-        resolved.push(candidates[0].clone());
-    }
-    resolved
+fn pending_investigation_telemetry(
+    telemetry: &InvestigationTelemetry,
+    pending: &BTreeSet<String>,
+) -> InvestigationTelemetry {
+    let mut result = telemetry.clone();
+    result.targets.retain(|target| pending.contains(&target.id));
+    result
 }
 
 struct NaturalInvestigationCall<'a> {
@@ -3424,6 +3436,7 @@ struct NaturalInvestigationCall<'a> {
     usage: &'a mut usage_budget::UsageTracker,
     progress: &'a progress::ProgressReporter,
     cancellation: &'a SubprocessCancellation,
+    seed_coverage: Option<acquisition_coverage::Ledger>,
 }
 
 async fn run_natural_investigation(
@@ -3443,6 +3456,7 @@ async fn run_natural_investigation(
         usage,
         progress,
         cancellation,
+        seed_coverage,
     } = call;
     let descriptors = config
         .capabilities
@@ -3457,62 +3471,76 @@ async fn run_natural_investigation(
         candidate_regenerations: vec![],
         generation_failure: None,
         plan_rejection: None,
+        completed_target_proposals_rejected: 0,
     };
 
-    let plan_max_tokens = usage.cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
-    progress.phase("Planning", "building a bounded investigation plan");
-    let (proposal, plan_generation) = match progress
-        .wait_for_provider(
-            "waiting on the selected provider for an investigation plan",
-            generator.plan_investigation_traced(
-                task,
-                &descriptors,
-                plan_max_tokens,
-                seed,
-                model,
-                DiagnosticTraceCall {
-                    recorder: trace.as_deref_mut(),
-                    phase: DiagnosticPhase::new("investigation_plan", None),
-                },
-            ),
-        )
-        .await
-    {
-        Ok(result) => result,
-        Err(failure) => {
-            progress.failure(&failure);
-            usage.record_failure(&failure)?;
-            observation.generation_failure = Some(failure);
-            return Ok(NaturalInvestigationRun {
-                candidate,
-                outcome: initial_outcome,
-                resolution_rounds: vec![],
-                finalization_targets: vec![],
-                observation,
-            });
+    let reused = seed_coverage.filter(|ledger| ledger.plan_admitted);
+    let targets = if let Some(ledger) = &reused {
+        ledger.targets.iter().map(|o| o.target.clone()).collect()
+    } else {
+        let plan_max_tokens =
+            usage.cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
+        progress.phase("Planning", "building a bounded investigation plan");
+        let (proposal, plan_generation) = match progress
+            .wait_for_provider(
+                "waiting on the selected provider for an investigation plan",
+                generator.plan_investigation_traced(
+                    task,
+                    &descriptors,
+                    plan_max_tokens,
+                    seed,
+                    model,
+                    DiagnosticTraceCall {
+                        recorder: trace.as_deref_mut(),
+                        phase: DiagnosticPhase::new("investigation_plan", None),
+                    },
+                ),
+            )
+            .await
+        {
+            Ok(result) => result,
+            Err(failure) => {
+                progress.failure(&failure);
+                usage.record_failure(&failure)?;
+                observation.generation_failure = Some(failure);
+                return Ok(NaturalInvestigationRun {
+                    candidate,
+                    outcome: initial_outcome,
+                    resolution_rounds: vec![],
+                    finalization_targets: vec![],
+                    coverage: acquisition_coverage::Ledger::unavailable(),
+                    observation,
+                });
+            }
+        };
+        progress.provider(&plan_generation);
+        usage.record_generation(&plan_generation)?;
+        observation.plan_generation = Some(plan_generation);
+        match admit_investigation_plan(proposal, &config.policy) {
+            Ok(targets) => targets,
+            Err(reason) => {
+                observation.plan_rejection = Some(reason.into());
+                return Ok(NaturalInvestigationRun {
+                    candidate,
+                    outcome: initial_outcome,
+                    resolution_rounds: vec![],
+                    finalization_targets: vec![],
+                    coverage: acquisition_coverage::Ledger::unavailable(),
+                    observation,
+                });
+            }
         }
     };
-    progress.provider(&plan_generation);
-    usage.record_generation(&plan_generation)?;
-    observation.plan_generation = Some(plan_generation);
-    let targets = match admit_investigation_plan(proposal, &config.policy) {
-        Ok(targets) => targets,
-        Err(reason) => {
-            observation.plan_rejection = Some(reason.into());
-            return Ok(NaturalInvestigationRun {
-                candidate,
-                outcome: initial_outcome,
-                resolution_rounds: vec![],
-                finalization_targets: vec![],
-                observation,
-            });
-        }
+    let mut coverage = match reused {
+        Some(ledger) => ledger,
+        None => acquisition_coverage::Ledger::new(targets.clone())
+            .map_err(|e| CliError::new("investigation_coverage", e))?,
     };
+    coverage.bind_existing(&initial_outcome.artifact);
     let mut finalization_target_keys = targets
         .iter()
         .map(|target| (target.id.clone(), target.expected_fact_key.clone()))
         .collect::<Vec<_>>();
-    let mut finalization_target_observations = BTreeMap::new();
     let mut state = InvestigationState::new(targets, descriptors, config.policy.clone())
         .map_err(|reason| CliError::new("configuration", reason))?;
     let mut current_input = input;
@@ -3521,7 +3549,9 @@ async fn run_natural_investigation(
     let mut resolution_rounds = Vec::new();
 
     loop {
-        if current_outcome.verdict == Verdict::Accept {
+        if current_outcome.verdict == Verdict::Accept
+            && coverage.complete(&current_outcome.artifact)
+        {
             state.stop(InvestigationStopReason::Resolved);
             break;
         }
@@ -3529,41 +3559,62 @@ async fn run_natural_investigation(
             state.stop(InvestigationStopReason::TargetsExhausted);
             break;
         }
-        let (round_index, proposal) = if let Some((round, proposal)) =
-            state.select_no_result_followup_continuation()
-        {
-            (round, proposal)
-        } else {
-            let round_index = match state.begin_round() {
-                Ok(round) => round,
-                Err(_) => break,
-            };
-            let proposal = if let Some(proposal) = state.unique_compatible_action_proposal() {
-                state.note_harness_unique_selection();
-                proposal
-            } else if let Some(proposal) = state.unique_precedence_action_proposal_with_diagnostic()
-            {
-                state.note_harness_precedence_selection();
-                proposal
+        let pending = coverage
+            .targets(&current_outcome.artifact)
+            .into_iter()
+            .filter(|t| t.disposition != acquisition_coverage::Disposition::Verified)
+            .map(|t| t.target.id)
+            .collect::<BTreeSet<_>>();
+        if pending.is_empty() {
+            state.stop(InvestigationStopReason::TargetsExhausted);
+            break;
+        }
+        let (round_index, proposal) =
+            if let Some((round, proposal)) = state.select_no_result_followup_continuation() {
+                (round, proposal)
             } else {
-                let action_seed = seed.and_then(|seed| seed.checked_add(round_index as u64));
-                let mut materialized = None;
-                let materializable_target_ids = state.materializable_target_ids();
-                if !materializable_target_ids.is_empty() {
-                    state.note_planner_intent_call();
-                    let intent_max_tokens =
-                        usage.cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
-                    progress.phase(
-                        "Planning",
-                        "selecting the next bounded investigation target",
-                    );
-                    let (intent, intent_generation) = match progress
+                let round_index = match state.begin_round() {
+                    Ok(round) => round,
+                    Err(_) => break,
+                };
+                let proposal = if let Some(proposal) = state
+                    .unique_compatible_action_proposal()
+                    .filter(|p| p.target_id.as_ref().is_some_and(|id| pending.contains(id)))
+                {
+                    state.note_harness_unique_selection();
+                    proposal
+                } else if let Some(proposal) = state
+                    .unique_precedence_action_proposal_with_diagnostic()
+                    .filter(|p| p.target_id.as_ref().is_some_and(|id| pending.contains(id)))
+                {
+                    state.note_harness_precedence_selection();
+                    proposal
+                } else {
+                    let action_seed = seed.and_then(|seed| seed.checked_add(round_index as u64));
+                    let mut materialized = None;
+                    let materializable_target_ids = state
+                        .materializable_target_ids()
+                        .into_iter()
+                        .filter(|id| pending.contains(id))
+                        .collect::<Vec<_>>();
+                    if !materializable_target_ids.is_empty() {
+                        state.note_planner_intent_call();
+                        let intent_max_tokens = usage
+                            .cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
+                        progress.phase(
+                            "Planning",
+                            "selecting the next bounded investigation target",
+                        );
+                        let (intent, intent_generation) = match progress
                         .wait_for_provider(
                             "waiting on the selected provider for the next investigation target",
                             generator.choose_investigation_intent_traced(
                                 InvestigationIntentGenerationCall {
                                     task,
-                                    telemetry: state.telemetry(),
+                                    telemetry: &pending_investigation_telemetry(
+                                        state.telemetry(),
+                                        &pending,
+                                    ),
                                     materializable_target_ids: &materializable_target_ids,
                                     max_tokens: intent_max_tokens,
                                     seed: action_seed,
@@ -3589,25 +3640,25 @@ async fn run_natural_investigation(
                             break;
                         }
                     };
-                    progress.provider(&intent_generation);
-                    usage.record_generation(&intent_generation)?;
-                    observation.intent_generations.push(intent_generation);
-                    materialized = state.materialize_intent(round_index, intent).ok();
-                }
+                        progress.provider(&intent_generation);
+                        usage.record_generation(&intent_generation)?;
+                        observation.intent_generations.push(intent_generation);
+                        materialized = state.materialize_intent(round_index, intent).ok();
+                    }
 
-                if let Some(proposal) = materialized {
-                    proposal
-                } else {
-                    state.note_planner_call();
-                    let action_max_tokens =
-                        usage.cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
-                    progress.phase("Planning", "selecting the next bounded acquisition action");
-                    let (proposal, action_generation) = match progress
+                    if let Some(proposal) = materialized {
+                        proposal
+                    } else {
+                        state.note_planner_call();
+                        let action_max_tokens = usage
+                            .cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
+                        progress.phase("Planning", "selecting the next bounded acquisition action");
+                        let (proposal, action_generation) = match progress
                         .wait_for_provider(
                             "waiting on the selected provider for the next investigation action",
                             generator.choose_investigation_action_traced(
                                 task,
-                                state.telemetry(),
+                                &pending_investigation_telemetry(state.telemetry(), &pending),
                                 action_max_tokens,
                                 action_seed,
                                 model,
@@ -3631,14 +3682,22 @@ async fn run_natural_investigation(
                             break;
                         }
                     };
-                    progress.provider(&action_generation);
-                    usage.record_generation(&action_generation)?;
-                    observation.action_generations.push(action_generation);
-                    proposal
-                }
+                        progress.provider(&action_generation);
+                        usage.record_generation(&action_generation)?;
+                        observation.action_generations.push(action_generation);
+                        proposal
+                    }
+                };
+                (round_index, proposal)
             };
-            (round_index, proposal)
-        };
+        if proposal
+            .target_id
+            .as_ref()
+            .is_some_and(|id| state.target(id).is_some() && !pending.contains(id))
+        {
+            observation.completed_target_proposals_rejected += 1;
+            continue;
+        }
         let action = match state.validate_action(proposal) {
             Ok(Some(action)) => action,
             Ok(None) => break,
@@ -3715,13 +3774,14 @@ async fn run_natural_investigation(
         {
             *key = Some(fact.proposition.key.clone());
         }
-        record_investigation_finalization_observation(
-            &mut finalization_target_observations,
-            &action.target_id,
-            effective_fact_key.as_deref(),
-            &acquisition.final_artifact,
-            &admitted_evidence_ids,
-        );
+        coverage
+            .record(
+                &action.target_id,
+                effective_fact_key.as_deref(),
+                &acquisition.final_artifact,
+                &admitted_evidence_ids,
+            )
+            .map_err(|e| CliError::new("investigation_coverage", e))?;
         if let Some(trace) = trace.as_deref_mut() {
             let fact_keys = acquisition
                 .final_artifact
@@ -3739,6 +3799,9 @@ async fn run_natural_investigation(
                 fact_keys,
             );
         }
+        coverage.bind_existing(&acquisition.final_artifact);
+        let admitted_materializations =
+            coverage.materialization_facts(&acquisition.final_artifact.evidence);
         current_input = input_from_artifact(&acquisition.final_artifact);
         resolution_rounds.push(acquisition);
         let mut verification_progress = false;
@@ -3774,10 +3837,13 @@ async fn run_natural_investigation(
                     usage.record_generation(&generation)?;
                     observation.candidate_regenerations.push(generation);
                     current_candidate = regenerated;
-                    if let Some(fact) = harness_fact.as_ref() {
+                    for (proposition, evidence_ids) in admitted_materializations {
                         materialize_harness_owned_investigation_fact(
                             &mut current_candidate,
-                            fact,
+                            &HarnessOwnedInvestigationFact {
+                                proposition,
+                                evidence_ids,
+                            },
                             round_index,
                         );
                     }
@@ -3828,7 +3894,9 @@ async fn run_natural_investigation(
             admitted_evidence,
             verification_progress,
         );
-        if current_outcome.verdict == Verdict::Accept {
+        if current_outcome.verdict == Verdict::Accept
+            && coverage.complete(&current_outcome.artifact)
+        {
             state.stop(InvestigationStopReason::Resolved);
             break;
         }
@@ -3841,16 +3909,14 @@ async fn run_natural_investigation(
         }
     }
 
-    let finalization_targets = resolved_investigation_finalization_targets(
-        &finalization_target_keys,
-        &finalization_target_observations,
-    );
+    let finalization_targets = coverage.verified_targets(&current_outcome.artifact);
     observation.telemetry = Some(state.into_telemetry());
     Ok(NaturalInvestigationRun {
         candidate: current_candidate,
         outcome: current_outcome,
         resolution_rounds,
         finalization_targets,
+        coverage,
         observation,
     })
 }
@@ -3862,6 +3928,7 @@ struct NaturalExecutionSeed {
     finalization_targets: Vec<Proposition>,
     candidate_materialization_targets: Vec<Proposition>,
     answer_context: Option<answer_context::Config>,
+    acquisition_coverage: Option<acquisition_coverage::Ledger>,
 }
 
 fn merge_natural_execution_seed(
@@ -4101,6 +4168,9 @@ async fn execute_natural_inner(
         .as_ref()
         .map(|seed| seed.finalization_targets.clone())
         .unwrap_or_default();
+    let mut acquisition_ledger = seed
+        .as_ref()
+        .and_then(|seed| seed.acquisition_coverage.clone());
     let seed_candidate_materialization_targets = seed
         .as_ref()
         .map(|seed| seed.candidate_materialization_targets.clone())
@@ -4162,6 +4232,19 @@ async fn execute_natural_inner(
         "Verifying",
         "checking generated claims against Harness evidence",
     );
+    if let Some(ledger) = acquisition_ledger.as_mut() {
+        ledger.bind_evidence(&built.input.evidence);
+        for (proposition, evidence_ids) in ledger.materialization_facts(&built.input.evidence) {
+            materialize_harness_owned_investigation_fact(
+                &mut candidate,
+                &HarnessOwnedInvestigationFact {
+                    proposition,
+                    evidence_ids,
+                },
+                0,
+            );
+        }
+    }
     let initial_outcome = run_standard_grounding(built.input.clone(), candidate.clone())?;
     if let Some(trace) = diagnostic_trace.as_mut() {
         trace.record_grounding(
@@ -4230,7 +4313,7 @@ async fn execute_natural_inner(
         finalization_targets = seed_finalization_targets;
     }
 
-    if final_verdict != Verdict::Accept {
+    if final_verdict != Verdict::Accept || investigation_config.is_some() {
         if let Some(config) = investigation_config.as_ref() {
             let run = run_natural_investigation(NaturalInvestigationCall {
                 task: &task,
@@ -4246,11 +4329,13 @@ async fn execute_natural_inner(
                 usage: &mut usage_tracker,
                 progress: &progress,
                 cancellation: &cancellation,
+                seed_coverage: acquisition_ledger.take(),
             })
             .await?;
             if finalization_targets.is_empty() {
                 finalization_targets = run.finalization_targets.clone();
             }
+            acquisition_ledger = Some(run.coverage);
             candidate = run.candidate;
             final_artifact = run.outcome.artifact.clone();
             final_verdict = run.outcome.verdict;
@@ -4309,6 +4394,15 @@ async fn execute_natural_inner(
             final_artifact = round.final_artifact.clone();
             final_verdict = round.final_verdict;
             resolution_rounds.push(round);
+        }
+    }
+
+    if let Some(ledger) = acquisition_ledger.as_mut() {
+        ledger.bind_existing(&final_artifact);
+        for target in ledger.verified_targets(&final_artifact) {
+            if !finalization_targets.contains(&target) {
+                finalization_targets.push(target);
+            }
         }
     }
 
@@ -4511,6 +4605,47 @@ async fn execute_natural_inner(
                 );
             }
         }
+        if let Some(ledger) = &acquisition_ledger {
+            let targets = ledger.verified_targets(&final_artifact);
+            if !targets.is_empty()
+                && targets.iter().any(|p| {
+                    !rendered
+                        .factual_claims
+                        .iter()
+                        .any(|c| c.mode == FinalClaimMode::Grounded && &c.proposition == p)
+                })
+            {
+                let recovered =
+                    canonical_verified_target_answer(&final_artifact, final_verdict, &targets)
+                        .map(|candidate| {
+                            let hard = finalize_answer(
+                                &final_artifact,
+                                final_verdict,
+                                candidate.clone(),
+                                FinalizationPolicy::default(),
+                            );
+                            (candidate, hard)
+                        })
+                        .or_else(|| {
+                            canonical_verified_target_partial_answer(
+                                &final_artifact,
+                                final_verdict,
+                                &targets,
+                            )
+                        })
+                        .or_else(|| {
+                            canonical_verified_target_reject_partial_answer(
+                                &final_artifact,
+                                final_verdict,
+                                &targets,
+                            )
+                        });
+                if let Some((candidate, hard)) = recovered {
+                    rendered = candidate;
+                    finalization = hard;
+                }
+            }
+        }
         let rendered_for_safety = rendered.clone();
         progress.phase("Verifying", "running the answer-safety gate");
         let (gated, observations) = progress
@@ -4650,9 +4785,38 @@ async fn execute_natural_inner(
     } else {
         None
     };
+    let acquisition_coverage = if let Some(ledger) = &acquisition_ledger {
+        let stop_reason = investigation_observation
+            .as_ref()
+            .and_then(|o| o.telemetry.as_ref())
+            .and_then(|t| t.stop_reason);
+        let (composed, view) = acquisition_coverage::compose(
+            ledger,
+            &final_artifact,
+            &final_rendered_claims,
+            finalization,
+            stop_reason,
+        )
+        .map_err(|e| CliError::new("investigation_coverage", e))?;
+        finalization = composed;
+        if let Some(trace) = diagnostic_trace.as_mut() {
+            trace.record_acquisition_coverage(&view);
+            trace.record_finalization(
+                DiagnosticPhase::new("acquisition_coverage", Some(render_round)),
+                render_round,
+                "acquisition_coverage",
+                &finalization,
+            );
+        }
+        Some(view)
+    } else {
+        None
+    };
     progress.done();
     let output = NaturalOutput {
-        output_contract: if answer_context_config.is_some() {
+        output_contract: if acquisition_coverage.is_some() {
+            acquisition_coverage::OUTPUT_ID
+        } else if answer_context_config.is_some() {
             answer_context::OUTPUT_ID
         } else {
             NATURAL_OUTPUT_CONTRACT_ID
@@ -4702,10 +4866,17 @@ async fn execute_natural_inner(
         resolution_rounds,
         investigation: investigation_observation,
         finalization,
+        acquisition_coverage,
         answer_context,
         answer_context_config: answer_context_config.clone(),
         exposed_text: NaturalExposedTextObservation {
-            policy_id: if answer_context_config.is_some() {
+            policy_id: if acquisition_ledger.is_some() {
+                if answer_context_config.is_some() {
+                    acquisition_coverage::SOURCED_POLICY_ID
+                } else {
+                    acquisition_coverage::POLICY_ID
+                }
+            } else if answer_context_config.is_some() {
                 answer_context::POLICY_ID
             } else {
                 EXPOSED_TEXT_POLICY_ID
@@ -5421,6 +5592,14 @@ fn session_runtime_from_output(
             .map(|source| (*source).to_string())
             .collect(),
         answer_context: output.answer_context_config.clone(),
+        acquisition_coverage_policy: output
+            .acquisition_coverage
+            .as_ref()
+            .map(|_| acquisition_coverage::POLICY_ID.into()),
+        acquisition_plan: output
+            .acquisition_coverage
+            .as_ref()
+            .map(|view| view.ledger.clone()),
     })
 }
 
@@ -5434,17 +5613,42 @@ fn validate_session_runtime(session: &SessionFile) -> Result<(), CliError> {
             ),
         ));
     }
-    let expected_output = if session.runtime.answer_context.is_some() {
+    if session.runtime.acquisition_plan.is_some()
+        != session.runtime.acquisition_coverage_policy.is_some()
+    {
+        return Err(CliError::new(
+            "session_incompatible",
+            "acquisition plan/policy mismatch",
+        ));
+    }
+    if let Some(plan) = &session.runtime.acquisition_plan {
+        plan.validate()
+            .map_err(|e| CliError::new("session_invalid", e))?;
+    }
+    let expected_output = if session.runtime.acquisition_coverage_policy.is_some() {
+        acquisition_coverage::OUTPUT_ID
+    } else if session.runtime.answer_context.is_some() {
         answer_context::OUTPUT_ID
     } else {
         NATURAL_OUTPUT_CONTRACT_ID
     };
-    let expected_policy = if session.runtime.answer_context.is_some() {
+    let expected_policy = if session.runtime.acquisition_coverage_policy.is_some() {
+        if session.runtime.answer_context.is_some() {
+            acquisition_coverage::SOURCED_POLICY_ID
+        } else {
+            acquisition_coverage::POLICY_ID
+        }
+    } else if session.runtime.answer_context.is_some() {
         answer_context::POLICY_ID
     } else {
         EXPOSED_TEXT_POLICY_ID
     };
-    if session.runtime.natural_output_contract != expected_output
+    if session
+        .runtime
+        .acquisition_coverage_policy
+        .as_deref()
+        .is_some_and(|p| p != acquisition_coverage::POLICY_ID)
+        || session.runtime.natural_output_contract != expected_output
         || session.runtime.exposed_text_policy_id != expected_policy
         || session.runtime.reasoning_thread_schema_version != REASONING_THREAD_SCHEMA_VERSION
         || session.runtime.continuation_policy_id != SESSION_CONTINUATION_POLICY_ID
@@ -5464,50 +5668,132 @@ fn validate_session_runtime(session: &SessionFile) -> Result<(), CliError> {
     validate_thread(&session.thread)
         .map_err(|error| CliError::new("session_invalid", error.to_string()))?;
     for turn in &session.turns {
-        match (&session.runtime.answer_context, &turn.answer_context) {
+        if session.runtime.acquisition_coverage_policy.is_some()
+            != turn.acquisition_coverage.is_some()
+        {
+            return Err(CliError::new(
+                "session_incompatible",
+                "acquisition coverage policy/turn mismatch",
+            ));
+        }
+        if session.runtime.answer_context.is_none()
+            && turn.answer_context.is_none()
+            && turn.acquisition_coverage.is_none()
+        {
+            continue;
+        }
+        let checkpoint = session
+            .thread
+            .checkpoints
+            .iter()
+            .find(|c| c.checkpoint_id == turn.checkpoint_id)
+            .ok_or_else(|| CliError::new("session_invalid", "source context checkpoint missing"))?;
+        let artifact = checkpoint.snapshot.artifact.as_ref().ok_or_else(|| {
+            CliError::new(
+                "session_invalid",
+                "source context checkpoint artifact missing",
+            )
+        })?;
+        let verdict = checkpoint.snapshot.verdict.ok_or_else(|| {
+            CliError::new(
+                "session_invalid",
+                "source context checkpoint verdict missing",
+            )
+        })?;
+        let profile = session.runtime.safety_profile.runtime_profile();
+        let mut expected = match (&session.runtime.answer_context, &turn.answer_context) {
             (Some(config), Some(view)) => {
-                let checkpoint = session
-                    .thread
-                    .checkpoints
-                    .iter()
-                    .find(|checkpoint| checkpoint.checkpoint_id == turn.checkpoint_id)
-                    .ok_or_else(|| {
-                        CliError::new("session_invalid", "source context checkpoint missing")
-                    })?;
-                let artifact = checkpoint.snapshot.artifact.as_ref().ok_or_else(|| {
-                    CliError::new(
-                        "session_invalid",
-                        "source context checkpoint artifact missing",
-                    )
-                })?;
-                let verdict = checkpoint.snapshot.verdict.ok_or_else(|| {
-                    CliError::new(
-                        "session_invalid",
-                        "source context checkpoint verdict missing",
-                    )
-                })?;
-                let (expected_finalization, expected_view) = answer_context::restore(
-                    config,
-                    artifact,
-                    verdict,
-                    session.runtime.safety_profile.runtime_profile(),
-                    view,
-                )
-                .map_err(|error| CliError::new("session_invalid", error))?;
-                if expected_finalization != turn.finalization || expected_view != *view {
+                let (expected, reconstructed) =
+                    answer_context::restore(config, artifact, verdict, profile, view)
+                        .map_err(|e| CliError::new("session_invalid", e))?;
+                if &reconstructed != view {
                     return Err(CliError::new(
                         "session_invalid",
                         "source context no longer matches its checkpoint",
                     ));
                 }
+                expected
             }
-            (None, None) => {}
+            (None, None) => {
+                let coverage = turn
+                    .acquisition_coverage
+                    .as_ref()
+                    .ok_or_else(|| CliError::new("session_invalid", "coverage missing"))?;
+                answer_context::validate_restored_hard(
+                    artifact,
+                    verdict,
+                    profile,
+                    &coverage.selected_claims,
+                    &coverage.base_finalization,
+                )
+                .map_err(|e| CliError::new("session_invalid", e))?;
+                coverage.base_finalization.clone()
+            }
             _ => {
                 return Err(CliError::new(
                     "session_incompatible",
                     "source context policy/turn mismatch",
                 ));
             }
+        };
+        if let Some(view) = &turn.acquisition_coverage {
+            let frozen = session
+                .runtime
+                .acquisition_plan
+                .as_ref()
+                .ok_or_else(|| CliError::new("session_invalid", "frozen plan absent"))?;
+            if frozen.plan_admitted != view.ledger.plan_admitted
+                || frozen.targets.iter().map(|o| &o.target).collect::<Vec<_>>()
+                    != view
+                        .ledger
+                        .targets
+                        .iter()
+                        .map(|o| &o.target)
+                        .collect::<Vec<_>>()
+            {
+                return Err(CliError::new(
+                    "session_invalid",
+                    "coverage obligations differ from frozen session plan",
+                ));
+            }
+
+            if turn
+                .answer_context
+                .as_ref()
+                .is_some_and(|source| source.selected_claims != view.selected_claims)
+            {
+                return Err(CliError::new(
+                    "session_invalid",
+                    "coverage/source selected claims differ",
+                ));
+            }
+            if expected != view.base_finalization {
+                return Err(CliError::new(
+                    "session_invalid",
+                    "coverage base no longer matches source display",
+                ));
+            }
+            let (composed, reconstructed) = acquisition_coverage::compose(
+                &view.ledger,
+                artifact,
+                &view.selected_claims,
+                expected,
+                view.stop_reason,
+            )
+            .map_err(|e| CliError::new("session_invalid", e))?;
+            if &reconstructed != view {
+                return Err(CliError::new(
+                    "session_invalid",
+                    "acquisition coverage no longer matches its checkpoint",
+                ));
+            }
+            expected = composed;
+        }
+        if expected != turn.finalization {
+            return Err(CliError::new(
+                "session_invalid",
+                "final display no longer matches its checkpoint",
+            ));
         }
     }
     Ok(())
@@ -5628,6 +5914,15 @@ fn session_operation_output(
     } else {
         None
     };
+    let acquisition_coverage = if !pending_revalidation {
+        session
+            .turns
+            .last()
+            .filter(|turn| Some(&turn.finalization) == finalization.as_ref())
+            .and_then(|turn| turn.acquisition_coverage.clone())
+    } else {
+        None
+    };
     Ok(SessionOperationOutput {
         session_contract: SESSION_CONTRACT_ID,
         operation,
@@ -5648,6 +5943,7 @@ fn session_operation_output(
             finalization
         },
         answer_context,
+        acquisition_coverage,
     })
 }
 
@@ -5738,6 +6034,7 @@ fn record_natural_turn(
         checkpoint_id: checkpoint_id.clone(),
         finalization: output.finalization.clone(),
         answer_context: output.answer_context.clone(),
+        acquisition_coverage: output.acquisition_coverage.clone(),
     });
     Ok(checkpoint_id)
 }
@@ -5788,6 +6085,15 @@ fn continuation_args(
         interactive_context: vec![],
         session_usage_baseline: None,
     }
+}
+
+fn session_acquisition_ledger(session: &SessionFile) -> Option<acquisition_coverage::Ledger> {
+    session
+        .turns
+        .last()
+        .and_then(|turn| turn.acquisition_coverage.as_ref())
+        .map(|view| view.ledger.clone())
+        .or_else(|| session.runtime.acquisition_plan.clone())
 }
 
 fn seed_input_for_session_turn(
@@ -6449,6 +6755,7 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                     finalization_targets: vec![],
                     candidate_materialization_targets: vec![],
                     answer_context: session.runtime.answer_context.clone(),
+                    acquisition_coverage: session_acquisition_ledger(&session),
                 }),
             )
             .await?;
@@ -6518,6 +6825,7 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                     finalization_targets,
                     candidate_materialization_targets,
                     answer_context: session.runtime.answer_context.clone(),
+                    acquisition_coverage: session_acquisition_ledger(&session),
                 }),
             )
             .await?;
@@ -9964,157 +10272,6 @@ mod candidate_json_tests {
         }));
     }
 
-    #[test]
-    fn investigation_finalization_bridge_requires_exact_admitted_fact() {
-        let target_keys = vec![(
-            "deployment-region".to_string(),
-            Some("service.region".to_string()),
-        )];
-        let artifact = ReasoningArtifact {
-            evidence: vec![Evidence {
-                id: "admitted-1".into(),
-                source: "resolver".into(),
-                observation: "service.region=us-east-1".into(),
-                facts: BTreeMap::from([("service.region".into(), "us-east-1".into())]),
-                metadata: EvidenceMetadata::default(),
-            }],
-            ..ReasoningArtifact::default()
-        };
-        let mut observations = BTreeMap::new();
-
-        record_investigation_finalization_observation(
-            &mut observations,
-            "deployment-region",
-            Some("service.region"),
-            &artifact,
-            &["admitted-1".into()],
-        );
-
-        assert_eq!(
-            resolved_investigation_finalization_targets(&target_keys, &observations),
-            vec![Proposition {
-                key: "service.region".into(),
-                value: "us-east-1".into(),
-            }]
-        );
-    }
-
-    #[test]
-    fn investigation_finalization_bridge_accepts_harness_materialized_key_for_keyless_target() {
-        let target_keys = vec![("deployment-region".to_string(), None)];
-        let observations = BTreeMap::from([(
-            "deployment-region".to_string(),
-            vec![Proposition {
-                key: "service.region".into(),
-                value: "us-east-1".into(),
-            }],
-        )]);
-
-        assert_eq!(
-            resolved_investigation_finalization_targets(&target_keys, &observations),
-            vec![Proposition {
-                key: "service.region".into(),
-                value: "us-east-1".into(),
-            }]
-        );
-    }
-
-    #[test]
-    fn investigation_finalization_bridge_ignores_unadmitted_fact() {
-        let target_keys = vec![(
-            "deployment-region".to_string(),
-            Some("service.region".to_string()),
-        )];
-        let artifact = ReasoningArtifact {
-            evidence: vec![Evidence {
-                id: "context-1".into(),
-                source: "context".into(),
-                observation: "service.region=us-east-1".into(),
-                facts: BTreeMap::from([("service.region".into(), "us-east-1".into())]),
-                metadata: EvidenceMetadata::default(),
-            }],
-            ..ReasoningArtifact::default()
-        };
-        let mut observations = BTreeMap::new();
-
-        record_investigation_finalization_observation(
-            &mut observations,
-            "deployment-region",
-            Some("service.region"),
-            &artifact,
-            &[],
-        );
-
-        assert!(
-            resolved_investigation_finalization_targets(&target_keys, &observations).is_empty()
-        );
-    }
-
-    #[test]
-    fn investigation_finalization_bridge_fails_closed_on_conflicting_values() {
-        let target_keys = vec![(
-            "deployment-region".to_string(),
-            Some("service.region".to_string()),
-        )];
-        let artifact = ReasoningArtifact {
-            evidence: vec![
-                Evidence {
-                    id: "admitted-1".into(),
-                    source: "resolver-a".into(),
-                    observation: "service.region=us-east-1".into(),
-                    facts: BTreeMap::from([("service.region".into(), "us-east-1".into())]),
-                    metadata: EvidenceMetadata::default(),
-                },
-                Evidence {
-                    id: "admitted-2".into(),
-                    source: "resolver-b".into(),
-                    observation: "service.region=us-west-2".into(),
-                    facts: BTreeMap::from([("service.region".into(), "us-west-2".into())]),
-                    metadata: EvidenceMetadata::default(),
-                },
-            ],
-            ..ReasoningArtifact::default()
-        };
-        let mut observations = BTreeMap::new();
-
-        record_investigation_finalization_observation(
-            &mut observations,
-            "deployment-region",
-            Some("service.region"),
-            &artifact,
-            &["admitted-1".into(), "admitted-2".into()],
-        );
-
-        assert!(
-            resolved_investigation_finalization_targets(&target_keys, &observations).is_empty()
-        );
-    }
-
-    #[test]
-    fn investigation_finalization_bridge_requires_every_planned_target() {
-        let target_keys = vec![
-            (
-                "deployment-region".to_string(),
-                Some("service.region".to_string()),
-            ),
-            (
-                "deployment-owner".to_string(),
-                Some("service.owner".to_string()),
-            ),
-        ];
-        let observations = BTreeMap::from([(
-            "deployment-region".to_string(),
-            vec![Proposition {
-                key: "service.region".into(),
-                value: "us-east-1".into(),
-            }],
-        )]);
-
-        assert!(
-            resolved_investigation_finalization_targets(&target_keys, &observations).is_empty()
-        );
-    }
-
     #[tokio::test]
     async fn cancellation_is_typed_operational_failure() {
         let cancellation = progress::CancellationRun::test_instance();
@@ -10335,6 +10492,7 @@ mod candidate_json_tests {
             resolution_rounds: vec![],
             investigation: None,
             answer_context: None,
+            acquisition_coverage: None,
             answer_context_config: None,
             finalization: FinalizationResult {
                 status: FinalizationStatus::Unresolved,
@@ -10466,8 +10624,259 @@ mod candidate_json_tests {
         assert_eq!(external.args, vec!["--mode", "safe"]);
     }
 
+    fn coverage_fixture(
+        overlap: bool,
+        initial_known: bool,
+    ) -> (
+        HarnessInput,
+        ReasoningCandidate,
+        ResolvedInvestigationConfig,
+    ) {
+        let keys = ["left.value", "right.value"];
+        let sources = ["fixture:left", "fixture:right"];
+        let caps = (0..2)
+            .map(|i| {
+                let raw = AcquiredEvidence {
+                    id: format!("e{i}"),
+                    source: sources[i].into(),
+                    observation: format!("{}={i}", keys[i]),
+                    facts: BTreeMap::from([(keys[i].into(), i.to_string())]),
+                    acquisition_metadata: reasoning_harness_core::AcquiredEvidenceMetadata {
+                        observed_at_unix_seconds: Some(1000),
+                        retrieved_at_unix_seconds: Some(1000),
+                        claimed_authority_class: Some("primary".into()),
+                        ..Default::default()
+                    },
+                };
+                ResolvedInvestigationCapability {
+                    descriptor: InvestigationCapability {
+                        id: format!("cap{i}"),
+                        adapter: "investigation_fixture".into(),
+                        read_only: true,
+                        selection_priority: None,
+                        supported_fact_keys: if overlap {
+                            keys.iter().map(|k| k.to_string()).collect()
+                        } else {
+                            BTreeSet::from([keys[i].into()])
+                        },
+                    },
+                    resolver: InvestigationResolverConfig::Fixture(vec![raw]),
+                    admission: Some(ExternalEvidenceAdmissionConfig {
+                        resolver_name: "investigation_fixture",
+                        evaluation_time_unix_seconds: 1000,
+                        authority_policy: EvidenceAuthorityPolicy {
+                            ranks: BTreeMap::from([("primary".into(), 20)]),
+                        },
+                        minimum_authority_class: Some("primary".into()),
+                        required_scope: None,
+                        sources: BTreeMap::from([(
+                            sources[i].into(),
+                            ExternalEvidenceSourcePolicy {
+                                authority_class: "primary".into(),
+                                max_age_seconds: 60,
+                                scope: None,
+                            },
+                        )]),
+                    }),
+                }
+            })
+            .collect();
+        let mut input = HarnessInput {
+            task: "Compare left and right".into(),
+            ..Default::default()
+        };
+        let candidate = if initial_known {
+            input.evidence.push(Evidence { id: "initial-left".into(), source: sources[0].into(), observation: "left.value=0".into(), facts: BTreeMap::from([("left.value".into(), "0".into())]), metadata: serde_json::from_value(serde_json::json!({"provenance_class":"primary","temporal":{"effective_from_unix_seconds":1000,"effective_until_unix_seconds":1060}})).unwrap() });
+            ReasoningCandidate {
+                claims: vec![reasoning_harness_core::CandidateClaim {
+                    id: "left".into(),
+                    statement: "left.value=0".into(),
+                    proposed_state: reasoning_harness_core::EpistemicState::Assumed,
+                    proposition: Some(Proposition {
+                        key: "left.value".into(),
+                        value: "0".into(),
+                    }),
+                    evidence_ids: vec!["initial-left".into()],
+                }],
+                ..Default::default()
+            }
+        } else {
+            ReasoningCandidate {
+                claims: vec![reasoning_harness_core::CandidateClaim {
+                    id: "unbound".into(),
+                    statement: "Comparison not yet established".into(),
+                    proposed_state: reasoning_harness_core::EpistemicState::Assumed,
+                    proposition: None,
+                    evidence_ids: vec![],
+                }],
+                ..Default::default()
+            }
+        };
+        (
+            input,
+            candidate,
+            ResolvedInvestigationConfig {
+                policy: InvestigationPolicy::default(),
+                planner_max_tokens: 256,
+                capabilities: caps,
+            },
+        )
+    }
+
+    async fn scripted_coverage_run(
+        overlap: bool,
+        initial_known: bool,
+        action_limit: usize,
+        response_texts: &[&str],
+    ) -> NaturalInvestigationRun {
+        let (input, candidate, mut config) = coverage_fixture(overlap, initial_known);
+        config.policy.max_actions = action_limit;
+        let initial_outcome = run_standard_grounding(input.clone(), candidate.clone()).unwrap();
+        assert_eq!(
+            initial_outcome.verdict == Verdict::Accept,
+            initial_known,
+            "{initial_outcome:#?}"
+        );
+        let generator = LiveGenerator::Test(DiagnosticTestAdapter(Box::new(
+            StructuredCapabilityFallbackAdapter::with_responses(
+                response_texts
+                    .iter()
+                    .map(|s| StructuredCapabilityFallbackAdapter::response(s, 1)),
+            ),
+        )));
+        let mut usage =
+            usage_budget::UsageTracker::new(usage_budget::UsageBudget::default(), None).unwrap();
+        run_natural_investigation(NaturalInvestigationCall {
+            task: &input.task.clone(),
+            input,
+            candidate,
+            initial_outcome,
+            generator: &generator,
+            trace: None,
+            config: &config,
+            model: "test-model",
+            max_tokens: 512,
+            seed: None,
+            usage: &mut usage,
+            progress: &progress::ProgressReporter::new(OutputFormat::Json, false, true),
+            cancellation: &SubprocessCancellation::default(),
+            seed_coverage: None,
+        })
+        .await
+        .unwrap()
+    }
+
+    const COVERAGE_PLAN: &str = r#"{"targets":[{"id":"left","question":"Explain left","expected_fact_key":"left.value"},{"id":"right","question":"Explain right","expected_fact_key":"right.value"}]}"#;
+
     #[tokio::test]
-    async fn natural_execution_preserves_bound_context_through_current_safety_json_and_session() {
+    async fn investigation_finishes_both_planned_facets_after_first_candidate_accepts() {
+        let run = scripted_coverage_run(
+            false,
+            false,
+            4,
+            &[
+                COVERAGE_PLAN,
+                r#"{"action":"continue","target_id":"left"}"#,
+                r#"{"claims":[],"inferences":[]}"#,
+                r#"{"claims":[],"inferences":[]}"#,
+            ],
+        )
+        .await;
+        assert_eq!(run.resolution_rounds.len(), 2);
+        assert!(run.resolution_rounds.iter().all(|r| r.attempts.len() == 1));
+        assert_eq!(run.outcome.verdict, Verdict::Accept, "{run:#?}");
+        assert!(run.coverage.complete(&run.outcome.artifact));
+        assert_eq!(run.finalization_targets.len(), 2);
+        assert_eq!(
+            run.observation.telemetry.unwrap().stop_reason,
+            Some(InvestigationStopReason::Resolved)
+        );
+    }
+
+    #[tokio::test]
+    async fn accepted_initial_candidate_still_acquires_missing_planned_facet() {
+        let run = scripted_coverage_run(
+            false,
+            true,
+            4,
+            &[
+                COVERAGE_PLAN,
+                r#"{"action":"continue","target_id":"right"}"#,
+                r#"{"claims":[],"inferences":[]}"#,
+            ],
+        )
+        .await;
+        assert_eq!(run.resolution_rounds.len(), 1);
+        assert_eq!(run.resolution_rounds[0].initial_verdict, Verdict::Accept);
+        assert_eq!(run.resolution_rounds[0].attempts.len(), 1);
+        assert!(run.coverage.complete(&run.outcome.artifact));
+    }
+
+    #[tokio::test]
+    async fn planner_stop_and_action_budget_keep_missing_targets_without_extra_acquisition() {
+        let stopped = scripted_coverage_run(
+            true,
+            false,
+            4,
+            &[
+                COVERAGE_PLAN,
+                r#"{"action":"acquire","target_id":"left","capability_id":"cap0"}"#,
+                r#"{"claims":[],"inferences":[]}"#,
+                r#"{"action":"stop"}"#,
+            ],
+        )
+        .await;
+        let limited = scripted_coverage_run(
+            false,
+            false,
+            1,
+            &[
+                COVERAGE_PLAN,
+                r#"{"action":"continue","target_id":"left"}"#,
+                r#"{"claims":[],"inferences":[]}"#,
+            ],
+        )
+        .await;
+        for (run, reason) in [
+            (stopped, InvestigationStopReason::PlannerStop),
+            (limited, InvestigationStopReason::ActionBudget),
+        ] {
+            assert_eq!(run.resolution_rounds.len(), 1);
+            assert_eq!(run.outcome.verdict, Verdict::Accept);
+            assert!(!run.coverage.complete(&run.outcome.artifact));
+            assert_eq!(
+                run.observation.telemetry.as_ref().unwrap().stop_reason,
+                Some(reason)
+            );
+            let candidate = canonical_verified_target_answer(
+                &run.outcome.artifact,
+                run.outcome.verdict,
+                &run.finalization_targets,
+            )
+            .unwrap();
+            let hard = finalize_answer(
+                &run.outcome.artifact,
+                run.outcome.verdict,
+                candidate.clone(),
+                FinalizationPolicy::default(),
+            );
+            let (display, view) = acquisition_coverage::compose(
+                &run.coverage,
+                &run.outcome.artifact,
+                &candidate.factual_claims,
+                hard,
+                Some(reason),
+            )
+            .unwrap();
+            assert_eq!(display.status, FinalizationStatus::QualifiedPartialAnswer);
+            assert!(!view.plan_answer_complete);
+            assert!(display.text.unwrap().contains("right.value"));
+        }
+    }
+
+    async fn source_context_execution_fixture(
+        acquisition_coverage: Option<acquisition_coverage::Ledger>,
+    ) -> NaturalOutput {
         let (config, artifact, selected, _) = answer_context::test_fixture();
         let candidate = ReasoningCandidate {
             claims: artifact
@@ -10498,7 +10907,7 @@ mod candidate_json_tests {
             ),
         ]);
         let input = input_from_artifact(&artifact);
-        let output = execute_natural_inner(
+        execute_natural_inner(
             NaturalArgs {
                 task: Some(artifact.task.clone()),
                 provider: Some(Provider::Mistral),
@@ -10514,6 +10923,7 @@ mod candidate_json_tests {
                 finalization_targets: vec![selected[0].proposition.clone()],
                 candidate_materialization_targets: vec![],
                 answer_context: None,
+                acquisition_coverage,
             }),
             SubprocessCancellation::default(),
             Arc::default(),
@@ -10524,7 +10934,12 @@ mod candidate_json_tests {
             },
         )
         .await
-        .unwrap();
+        .unwrap()
+    }
+
+    #[tokio::test]
+    async fn natural_execution_preserves_bound_context_through_current_safety_json_and_session() {
+        let output = source_context_execution_fixture(None).await;
         assert_eq!(output.output_contract, answer_context::OUTPUT_ID);
         assert_eq!(output.exposed_text.policy_id, answer_context::POLICY_ID);
         assert_eq!(output.usage.run.model_calls, 2);
@@ -10626,6 +11041,97 @@ mod candidate_json_tests {
     }
 
     #[tokio::test]
+    async fn acquisition_coverage_composes_with_sources_and_survives_session_fork_and_validation() {
+        use reasoning_harness_core::{InvestigationTarget, InvestigationTargetOrigin};
+        let (_, _, selected, _) = answer_context::test_fixture();
+        let ledger = acquisition_coverage::Ledger::new(vec![
+            InvestigationTarget {
+                id: "verified".into(),
+                question: "Explain the rule".into(),
+                expected_fact_key: Some(selected[0].proposition.key.clone()),
+                origin: InvestigationTargetOrigin::ModelProposedUntrusted,
+            },
+            InvestigationTarget {
+                id: "missing".into(),
+                question: "Compare the other rule".into(),
+                expected_fact_key: Some("other.rule".into()),
+                origin: InvestigationTargetOrigin::ModelProposedUntrusted,
+            },
+        ])
+        .unwrap();
+        let output = source_context_execution_fixture(Some(ledger)).await;
+        assert_eq!(output.output_contract, acquisition_coverage::OUTPUT_ID);
+        assert_eq!(
+            output.exposed_text.policy_id,
+            acquisition_coverage::SOURCED_POLICY_ID
+        );
+        let text = output.finalization.text.as_ref().unwrap();
+        assert!(text.contains("other.rule") && text.contains("条件Xの場合だけ"));
+        let human = human_presentation::from_output(&output).render_for_test();
+        assert!(human.contains(text));
+        assert!(
+            !output
+                .acquisition_coverage
+                .as_ref()
+                .unwrap()
+                .plan_answer_complete
+        );
+        let mut thread = ReasoningThread::new("combined-coverage-test").unwrap();
+        thread
+            .record_task("combined-task", "combined-task-id", output.task.clone())
+            .unwrap();
+        let mut session = SessionFile {
+            schema_version: SESSION_CONTRACT_ID.into(),
+            runtime: session_runtime_from_output(&output, AnswerSafetyProfileArg::Current).unwrap(),
+            thread,
+            turns: vec![],
+        };
+        record_natural_turn(&mut session, &output, None).unwrap();
+        validate_session_runtime(&session).unwrap();
+        let path = synthetic_session_path("combined-source-coverage");
+        save_session_file(&path, &session, true).unwrap();
+        let loaded = load_session_file(&path).unwrap();
+        let inspected =
+            session_operation_output("inspect", &loaded, None, Some(output.finalization.clone()))
+                .unwrap();
+        assert_eq!(inspected.acquisition_coverage, output.acquisition_coverage);
+        for mutation in 0..3 {
+            let mut changed = loaded.clone();
+            let view = changed.turns[0].acquisition_coverage.as_mut().unwrap();
+            match mutation {
+                0 => view.plan_answer_complete = true,
+                1 => {
+                    view.ledger.targets.pop();
+                }
+                _ => view.selected_claims.clear(),
+            }
+            assert!(
+                validate_session_runtime(&changed).is_err(),
+                "mutation={mutation}"
+            );
+        }
+        let fork = SessionFile {
+            schema_version: SESSION_CONTRACT_ID.into(),
+            runtime: loaded.runtime.clone(),
+            thread: loaded
+                .thread
+                .fork_from_checkpoint(
+                    &loaded.turns[0].checkpoint_id,
+                    "coverage-child",
+                    "fork-event",
+                )
+                .unwrap(),
+            turns: vec![],
+        };
+        validate_session_runtime(&fork).unwrap();
+        assert_eq!(
+            session_acquisition_ledger(&fork),
+            loaded.runtime.acquisition_plan
+        );
+        fs::remove_file(path).unwrap();
+    }
+
+    #[tokio::test]
     async fn resumed_context_registry_cannot_be_replaced_before_provider_start() {
         let (original, _, _, _) = answer_context::test_fixture();
         let replacement = answer_context::Config {
@@ -10665,6 +11171,7 @@ mod candidate_json_tests {
                     finalization_targets: vec![],
                     candidate_materialization_targets: vec![],
                     answer_context: Some(answer_context),
+                    acquisition_coverage: None,
                 }),
                 SubprocessCancellation::default(),
                 Arc::default(),
@@ -13129,6 +13636,8 @@ mod candidate_json_tests {
                 start_resolver_admission: None,
                 start_trusted_verifier: None,
                 answer_context: None,
+                acquisition_coverage_policy: None,
+                acquisition_plan: None,
                 config_sources: vec![],
             },
             thread,
@@ -13136,6 +13645,7 @@ mod candidate_json_tests {
                 turn_index: 1,
                 checkpoint_id: "session-test-checkpoint".into(),
                 answer_context: None,
+                acquisition_coverage: None,
                 finalization: FinalizationResult {
                     status: FinalizationStatus::Unresolved,
                     text: None,

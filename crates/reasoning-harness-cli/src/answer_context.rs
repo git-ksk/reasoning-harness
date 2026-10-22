@@ -358,26 +358,24 @@ fn grounded_target_authorized(artifact: &ReasoningArtifact, target: &Proposition
 /// its hard answer using the checkpoint's real verdict, then recheck the pure
 /// portion of the current safety gate. Model-dependent safety needs live
 /// reevaluation; a serialized claim that it passed is insufficient.
-pub(super) fn restore(
-    config: &Config,
+pub(super) fn validate_restored_hard(
     artifact: &ReasoningArtifact,
     verdict: reasoning_harness_core::Verdict,
     profile: reasoning_harness_core::AnswerSafetyProfile,
-    saved: &View,
-) -> Result<(FinalizationResult, View), String> {
+    selected: &[FinalAnswerClaim],
+    hard: &FinalizationResult,
+) -> Result<(), String> {
     use reasoning_harness_core::*;
-    let hard = &saved.hard_finalization;
     if matches!(
         hard.status,
         FinalizationStatus::GroundedAnswer | FinalizationStatus::QualifiedPartialAnswer
     ) {
         let candidate = FinalAnswerCandidate {
             text: String::new(),
-            factual_claims: saved.selected_claims.clone(),
+            factual_claims: selected.to_vec(),
         };
         let baseline = finalize_answer(artifact, verdict, candidate, FinalizationPolicy::default());
-        let targets = saved
-            .selected_claims
+        let targets = selected
             .iter()
             .map(|c| c.proposition.clone())
             .collect::<Vec<_>>();
@@ -386,13 +384,12 @@ pub(super) fn restore(
                 canonical_verified_target_reject_partial_answer(artifact, verdict, &targets)
             });
         let matches_recovery = partial.as_ref().is_some_and(|(candidate, result)| {
-            candidate.factual_claims == saved.selected_claims && result == hard
+            candidate.factual_claims.as_slice() == selected && result == hard
         });
         if hard != &baseline && !matches_recovery {
             return Err("saved source context is not authorized by the checkpoint verdict".into());
         }
-        for claim in saved
-            .selected_claims
+        for claim in selected
             .iter()
             .filter(|c| c.mode == FinalClaimMode::Grounded)
         {
@@ -438,7 +435,29 @@ pub(super) fn restore(
     } else if hard.text.is_some() {
         return Err("blocked saved source context contains exposed text".into());
     }
-    compose(config, artifact, &saved.selected_claims, hard.clone())
+    Ok(())
+}
+
+pub(super) fn restore(
+    config: &Config,
+    artifact: &ReasoningArtifact,
+    verdict: reasoning_harness_core::Verdict,
+    profile: reasoning_harness_core::AnswerSafetyProfile,
+    saved: &View,
+) -> Result<(FinalizationResult, View), String> {
+    validate_restored_hard(
+        artifact,
+        verdict,
+        profile,
+        &saved.selected_claims,
+        &saved.hard_finalization,
+    )?;
+    compose(
+        config,
+        artifact,
+        &saved.selected_claims,
+        saved.hard_finalization.clone(),
+    )
 }
 
 pub(super) fn compose(

@@ -1,5 +1,7 @@
 # Product roadmap: Reason CLI and Harness Engine
 
+**2026-10-22:** PR551 merged; [#491](https://github.com/git-ksk/reasoning-harness/issues/491) now repairs measured early acquisition completion and missing plan targets. [Boundaries](acquisition-coverage.md). F1 improvement remains unmeasured.
+
 **2026-10-21 component work:** [#550](https://github.com/git-ksk/reasoning-harness/issues/550) / [PR551](https://github.com/git-ksk/reasoning-harness/pull/551) preserves host-bound source conditions, citations and unresolved inputs through ordinary CLI finalization. [Contract and scope](cli-answer-context.md). Saved-artifact presentation checks do not change the frozen F1; new paired measurement and Engine adoption remain separate gates.
 
 [日本語](product-roadmap.ja.md) | English

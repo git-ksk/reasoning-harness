@@ -545,6 +545,8 @@ mod tests {
             start_resolver_admission: None,
             start_trusted_verifier: None,
             answer_context: None,
+            acquisition_coverage_policy: None,
+            acquisition_plan: None,
             config_sources: vec![],
         };
 
