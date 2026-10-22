@@ -1,0 +1,36 @@
+{
+  "identity": "cli-acquisition-coverage-offline-development-v1",
+  "source_commit": "db808451a7887a67768525246df99f70ddfe819f",
+  "source_files": {
+    "crates/reasoning-harness-cli/src/acquisition_coverage.rs": "f96d03929eafbdd2d7eb8dc5fd6a172147a79242cbfaa4e13419000118d9e3f3",
+    "crates/reasoning-harness-cli/src/answer_context.rs": "20c83d7491f6939410ff4d4ea847abc23833e3a9d01e06f31267b92230f8e275",
+    "crates/reasoning-harness-cli/src/main.rs": "cf1303351a0287f466e5476291eb495d857abc0cc8e99e8de553a2c82f17267c",
+    "crates/reasoning-harness-cli/src/human_presentation.rs": "986df002926e8c95b3a015cd5a9f7cd61d93f5cf00028f0701dfc74f6ea68d4d",
+    "crates/reasoning-harness-cli/src/interactive.rs": "f58349abcec74b82e09f9fb7988e66a57e15f93fa199b5e51ab6cd2ca5f3e447",
+    "crates/reasoning-harness-cli/src/managed_session.rs": "f31f1d8ef6ce1e3c67a9e2f1088ae13e36d7ae70f3b7c028a9ff9f33f3c59824",
+    "crates/reasoning-harness-cli/src/diagnostic_trace.rs": "e2ccd2f31526854bfd07d0ba38362f78cb9faa71b3ab36038d396bc30371b8c4",
+    "crates/reasoning-harness-core/src/resolution.rs": "daabf73239f13ea1fbba757e8f64f1cead65ff5e1772d02e5856f9a0a12adf65",
+    "Cargo.lock": "36df99ef0828ffcdd9ca7b6d45658b42d2fe4cd7265e552672239d9d0934cf2e"
+  },
+  "input_manifest_sha256": "f9f353bc40a49ba1e316a6497ae36c191c0ac4f346c11a0e418ca6daac8e0d65",
+  "inputs_sha256": "6a45664cb4f510a87d67f82bfba17051c2f2c1f05c509c0e8bb20873589963d6",
+  "runner_sha256": "5f0d164e98104f0d6d003c1082b54a8a59e0fc51adb37b5bccc7cacb5dfaca31",
+  "runner_lock_sha256": "749f6e8ba299485b6bb3a5c703d064801a341e0305640893dd1dddffb5be0523",
+  "pre_execution_sha256": "7838b93c4e112a11bb427baf6ff42ac0beed6dd8882fc3de678229275a717b80",
+  "result_sha256": "00b15164a883d670a975463d84017215d6e6a46998f0eb230145e3446fd852fd",
+  "log_sha256": "d4353df8719455202227ea8da86f7e07c478ab4827ccaa37917b639a3c824dbc",
+  "outputs": {
+    "rw-10-baseline.json": "e20fb35e8ba9a2d567cb6520b1033a2215695573497b6ddade546607d2253a96",
+    "rw-10-candidate.json": "cdbc2587ce37cfd1749058059996dd6d9842e1b45c72e46159997194d8f2e0db",
+    "rw-13-baseline.json": "0b7e741de24d22e7bb42e5aeb8f9e35c793a5edfa761ab34b2c50b604f5267d4",
+    "rw-13-candidate.json": "d5e9e58c14ddc8864a95b9970f49b49c16187e6d9cb39e618e430c8565412aa4",
+    "rw-16-baseline.json": "f45ba6a0e6db4444522ab243280b130e8de54e4044693c4f559c0df1c6dae7c9",
+    "rw-16-candidate.json": "7330dc9766d6020e66ff7f2b8b634e9ef9790b10accb5901824e61b180805812",
+    "summary.json": "59f43ad08098d797335884d9e3ebf2aa8efb214720608e07589ff8f9a62547bd"
+  },
+  "original_score_sha256": "bfe04912745e2236a8d1995e0166f57aa6cd396e988229fc168aafc2dea37051",
+  "provider_calls": 0,
+  "F1_calculations": 0,
+  "new_accuracy_cases": 0,
+  "limits": "Deterministic finalization over six consumed original artifacts, not a new engine task or a real-world second-acquisition run."
+}
