@@ -10,6 +10,7 @@ pub(super) struct RunDiagnostics {
     pub usage: Option<UsageReport>,
     pub trace_written: Option<bool>,
     pub pending_adapter_generations: Option<usize>,
+    pub acquisition_coverage: Option<crate::acquisition_coverage::Snapshot>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -22,11 +23,16 @@ pub(super) struct PartialRunObservation {
     pub trace_written: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_adapter_generations: Option<usize>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acquisition_coverage: Option<crate::acquisition_coverage::Snapshot>,
 }
 
 impl RunDiagnostics {
     pub fn partial(&self, failure_class: &str) -> Option<Box<PartialRunObservation>> {
-        if self.usage.is_none() && self.trace_written.is_none() {
+        if self.usage.is_none()
+            && self.trace_written.is_none()
+            && self.acquisition_coverage.is_none()
+        {
             return None;
         }
         let lower_bound = failure_class == "cancelled"
@@ -53,6 +59,7 @@ impl RunDiagnostics {
             usage,
             trace_written: self.trace_written,
             pending_adapter_generations: self.pending_adapter_generations,
+            acquisition_coverage: self.acquisition_coverage.clone(),
         }))
     }
 }

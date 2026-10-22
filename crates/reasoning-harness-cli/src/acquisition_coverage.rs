@@ -4,8 +4,9 @@ use std::collections::BTreeSet;
 use reasoning_harness_core::{
     EpistemicState, Evidence, FinalAnswerClaim, FinalClaimMode, FinalizationResult,
     FinalizationStatus, FindingStrength, InvestigationStopReason, InvestigationTarget, Proposition,
-    ReasoningArtifact, SemanticDecidabilityDisposition, SemanticDiagnosticKind,
-    SemanticDiagnosticTarget, SoftJudgeRequest, VerificationConclusion,
+    ReasoningArtifact, ReasoningThread, ReasoningThreadEventKind, ResolutionAttempt,
+    ResolutionReason, ResolutionTarget, ResolverClass, SemanticDecidabilityDisposition,
+    SemanticDiagnosticKind, SemanticDiagnosticTarget, SoftJudgeRequest, VerificationConclusion,
     assess_semantic_decidability,
 };
 use serde::{Deserialize, Serialize};
@@ -14,7 +15,7 @@ pub(super) const POLICY_ID: &str = "harness-investigation-coverage-v1";
 pub(super) const SOURCED_POLICY_ID: &str = "harness-source-and-investigation-coverage-v1";
 pub(super) const OUTPUT_ID: &str = "reason-natural-output-v6";
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub(super) struct EvidenceBinding {
     pub evidence_id: String,
@@ -68,6 +69,15 @@ pub(super) struct View {
     pub stop_reason: Option<InvestigationStopReason>,
 }
 
+/// Failure diagnostics retain acquisition progress without releasing an answer.
+#[derive(Debug, Clone, Serialize)]
+pub(super) struct Snapshot {
+    pub policy_id: &'static str,
+    pub ledger: Ledger,
+    pub targets: Vec<TargetView>,
+    pub stop_reason: Option<InvestigationStopReason>,
+}
+
 fn clean(s: &str) -> bool {
     !s.trim().is_empty()
         && !s.chars().any(|c| {
@@ -76,6 +86,115 @@ fn clean(s: &str) -> bool {
 }
 
 impl Ledger {
+    pub fn registry(&self) -> Self {
+        let mut registry = self.clone();
+        for o in &mut registry.targets {
+            o.bindings.clear();
+        }
+        registry
+    }
+
+    /// Reconstruct binding authority from core history, never from a saved display.
+    /// Existing unique-key input and actual target-specific admission are separate paths.
+    pub fn from_thread(
+        frozen: &Self,
+        thread: &ReasoningThread,
+        through_sequence: u64,
+    ) -> Result<Self, String> {
+        let mut ledger = frozen.registry();
+        ledger.validate()?;
+        let mut pending = vec![];
+        for event in thread
+            .events
+            .iter()
+            .filter(|e| e.sequence <= through_sequence)
+        {
+            match &event.kind {
+                ReasoningThreadEventKind::ResolutionAttemptRecorded { attempt } => {
+                    pending.push(attempt.clone());
+                }
+                ReasoningThreadEventKind::ArtifactAccepted { artifact, .. } => {
+                    ledger.bind_existing(artifact);
+                    ledger.bind_attempts(artifact, &pending)?;
+                    pending.clear();
+                }
+                ReasoningThreadEventKind::ForkedFrom { snapshot, .. } => {
+                    if let Some(artifact) = &snapshot.artifact {
+                        ledger.bind_existing(artifact);
+                        ledger.bind_attempts(artifact, &snapshot.resolution_attempts)?;
+                    }
+                }
+                _ => {}
+            }
+        }
+        Ok(ledger)
+    }
+
+    fn bind_attempts(
+        &mut self,
+        artifact: &ReasoningArtifact,
+        attempts: &[ResolutionAttempt],
+    ) -> Result<(), String> {
+        for attempt in attempts {
+            if attempt.request.reason != ResolutionReason::Investigation
+                || attempt.request.resolver_class != ResolverClass::EvidenceAcquisition
+            {
+                continue;
+            }
+            let ResolutionTarget::InvestigationQuestion {
+                target_id,
+                question,
+                expected_fact_key,
+            } = &attempt.request.target
+            else {
+                continue;
+            };
+            if !self.targets.iter().any(|o| {
+                o.target.id == *target_id
+                    && o.target.question == *question
+                    && o.target
+                        .expected_fact_key
+                        .as_ref()
+                        .is_none_or(|k| Some(k) == expected_fact_key.as_ref())
+            }) {
+                continue;
+            }
+            self.record(
+                target_id,
+                expected_fact_key.as_deref(),
+                artifact,
+                &attempt.admitted_evidence_ids,
+            )?;
+        }
+        Ok(())
+    }
+
+    pub fn snapshot(
+        &self,
+        artifact: Option<&ReasoningArtifact>,
+        stop_reason: Option<InvestigationStopReason>,
+    ) -> Snapshot {
+        Snapshot {
+            policy_id: POLICY_ID,
+            ledger: self.clone(),
+            targets: artifact.map(|a| self.targets(a)).unwrap_or_else(|| {
+                self.targets
+                    .iter()
+                    .map(|o| TargetView {
+                        target: o.target.clone(),
+                        disposition: if o.bindings.is_empty() {
+                            Disposition::NotAcquired
+                        } else {
+                            Disposition::Unverified
+                        },
+                        verified_proposition: None,
+                    })
+                    .collect()
+            }),
+            stop_reason,
+        }
+    }
+
     pub fn unavailable() -> Self {
         Self {
             plan_admitted: false,
@@ -170,6 +289,7 @@ impl Ledger {
                     }
                 }
             }
+            o.bindings.sort();
         }
     }
 
@@ -197,6 +317,7 @@ impl Ledger {
                 }
             }
         }
+        o.bindings.sort();
         self.validate()
     }
 

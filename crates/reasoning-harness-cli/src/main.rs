@@ -441,7 +441,7 @@ struct McpSessionPolicyFileConfig {
 #[derive(Debug, Clone)]
 enum InvestigationResolverConfig {
     #[cfg(test)]
-    Fixture(Vec<AcquiredEvidence>),
+    Fixture(Result<Vec<AcquiredEvidence>, ResolutionAdapterError>),
     ExternalCommand(ExternalCommandResolverConfig),
     McpReadonly(Box<McpReadOnlyResolverV3Config>),
 }
@@ -3293,7 +3293,7 @@ fn run_configured_investigation_capability(
     match &capability.resolver {
         #[cfg(test)]
         InvestigationResolverConfig::Fixture(evidence) => {
-            struct Fixture<'a>(&'a [AcquiredEvidence]);
+            struct Fixture<'a>(&'a Result<Vec<AcquiredEvidence>, ResolutionAdapterError>);
             impl ResolutionResolver for Fixture<'_> {
                 fn name(&self) -> &'static str {
                     "investigation_fixture"
@@ -3308,7 +3308,7 @@ fn run_configured_investigation_capability(
                 ) -> Result<ResolutionResolverOutput, ResolutionAdapterError> {
                     Ok(ResolutionResolverOutput {
                         contribution: ResolutionResolverContribution::AcquiredEvidence {
-                            evidence: self.0.to_vec(),
+                            evidence: self.0.clone()?,
                         },
                         cost: ResolutionCost {
                             calls: 1,
@@ -3345,51 +3345,6 @@ struct HarnessOwnedInvestigationFact {
     evidence_ids: Vec<String>,
 }
 
-fn harness_owned_investigation_fact(
-    target: &reasoning_harness_core::InvestigationTarget,
-    capability: &InvestigationCapability,
-    artifact: &ReasoningArtifact,
-    admitted_evidence_ids: &[String],
-) -> Option<HarnessOwnedInvestigationFact> {
-    if !capability.read_only || capability.supported_fact_keys.len() != 1 {
-        return None;
-    }
-    let key = capability.supported_fact_keys.iter().next()?;
-    if key.is_empty() || key.trim() != key {
-        return None;
-    }
-    if let Some(expected) = target.expected_fact_key.as_deref() {
-        if expected != key {
-            return None;
-        }
-    }
-
-    let admitted = admitted_evidence_ids.iter().collect::<BTreeSet<_>>();
-    let mut values = BTreeSet::new();
-    let mut evidence_ids = Vec::new();
-    for evidence in &artifact.evidence {
-        if !admitted.contains(&evidence.id) {
-            continue;
-        }
-        let Some(value) = evidence.facts.get(key) else {
-            continue;
-        };
-        values.insert(value.clone());
-        evidence_ids.push(evidence.id.clone());
-    }
-    if values.len() != 1 || evidence_ids.is_empty() {
-        return None;
-    }
-
-    Some(HarnessOwnedInvestigationFact {
-        proposition: Proposition {
-            key: key.clone(),
-            value: values.into_iter().next().expect("one admitted exact value"),
-        },
-        evidence_ids,
-    })
-}
-
 fn materialize_harness_owned_investigation_fact(
     candidate: &mut ReasoningCandidate,
     fact: &HarnessOwnedInvestigationFact,
@@ -3422,6 +3377,42 @@ fn pending_investigation_telemetry(
     result
 }
 
+fn preserve_acquisition_progress(
+    ledger: &acquisition_coverage::Ledger,
+    artifact: Option<&ReasoningArtifact>,
+    stop_reason: Option<InvestigationStopReason>,
+    context: &run_diagnostics::SharedRunDiagnostics,
+    trace: Option<&mut DiagnosticTraceRecorder>,
+) {
+    let snapshot = ledger.snapshot(artifact, stop_reason);
+    if let Some(trace) = trace {
+        trace.record_acquisition_progress(&snapshot);
+    }
+    context
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+        .acquisition_coverage = Some(snapshot);
+}
+
+fn canonical_acquisition_answer(
+    artifact: &ReasoningArtifact,
+    verdict: Verdict,
+    targets: &[Proposition],
+) -> Option<(FinalAnswerCandidate, FinalizationResult)> {
+    canonical_verified_target_answer(artifact, verdict, targets)
+        .map(|candidate| {
+            let hard = finalize_answer(
+                artifact,
+                verdict,
+                candidate.clone(),
+                FinalizationPolicy::default(),
+            );
+            (candidate, hard)
+        })
+        .or_else(|| canonical_verified_target_partial_answer(artifact, verdict, targets))
+        .or_else(|| canonical_verified_target_reject_partial_answer(artifact, verdict, targets))
+}
+
 struct NaturalInvestigationCall<'a> {
     task: &'a str,
     input: HarnessInput,
@@ -3437,6 +3428,7 @@ struct NaturalInvestigationCall<'a> {
     progress: &'a progress::ProgressReporter,
     cancellation: &'a SubprocessCancellation,
     seed_coverage: Option<acquisition_coverage::Ledger>,
+    failure_context: &'a run_diagnostics::SharedRunDiagnostics,
 }
 
 async fn run_natural_investigation(
@@ -3457,6 +3449,7 @@ async fn run_natural_investigation(
         progress,
         cancellation,
         seed_coverage,
+        failure_context,
     } = call;
     let descriptors = config
         .capabilities
@@ -3475,6 +3468,15 @@ async fn run_natural_investigation(
     };
 
     let reused = seed_coverage.filter(|ledger| ledger.plan_admitted);
+    preserve_acquisition_progress(
+        reused
+            .as_ref()
+            .unwrap_or(&acquisition_coverage::Ledger::unavailable()),
+        Some(&initial_outcome.artifact),
+        None,
+        failure_context,
+        trace.as_deref_mut(),
+    );
     let targets = if let Some(ledger) = &reused {
         ledger.targets.iter().map(|o| o.target.clone()).collect()
     } else {
@@ -3501,6 +3503,13 @@ async fn run_natural_investigation(
             Ok(result) => result,
             Err(failure) => {
                 progress.failure(&failure);
+                preserve_acquisition_progress(
+                    &acquisition_coverage::Ledger::unavailable(),
+                    Some(&initial_outcome.artifact),
+                    Some(InvestigationStopReason::OperationalTerminal),
+                    failure_context,
+                    trace.as_deref_mut(),
+                );
                 usage.record_failure(&failure)?;
                 observation.generation_failure = Some(failure);
                 return Ok(NaturalInvestigationRun {
@@ -3537,10 +3546,13 @@ async fn run_natural_investigation(
             .map_err(|e| CliError::new("investigation_coverage", e))?,
     };
     coverage.bind_existing(&initial_outcome.artifact);
-    let mut finalization_target_keys = targets
-        .iter()
-        .map(|target| (target.id.clone(), target.expected_fact_key.clone()))
-        .collect::<Vec<_>>();
+    preserve_acquisition_progress(
+        &coverage,
+        Some(&initial_outcome.artifact),
+        None,
+        failure_context,
+        trace.as_deref_mut(),
+    );
     let mut state = InvestigationState::new(targets, descriptors, config.policy.clone())
         .map_err(|reason| CliError::new("configuration", reason))?;
     let mut current_input = input;
@@ -3549,6 +3561,9 @@ async fn run_natural_investigation(
     let mut resolution_rounds = Vec::new();
 
     loop {
+        if state.telemetry().stop_reason.is_some() {
+            break;
+        }
         if current_outcome.verdict == Verdict::Accept
             && coverage.complete(&current_outcome.artifact)
         {
@@ -3569,43 +3584,46 @@ async fn run_natural_investigation(
             state.stop(InvestigationStopReason::TargetsExhausted);
             break;
         }
-        let (round_index, proposal) =
-            if let Some((round, proposal)) = state.select_no_result_followup_continuation() {
-                (round, proposal)
+        let followup = state
+            .unique_no_result_followup_proposal()
+            .filter(|p| p.target_id.as_ref().is_some_and(|id| pending.contains(id)))
+            .and_then(|_| state.select_no_result_followup_continuation());
+        let (round_index, proposal) = if let Some((round, proposal)) = followup {
+            (round, proposal)
+        } else {
+            let round_index = match state.begin_round() {
+                Ok(round) => round,
+                Err(_) => break,
+            };
+            let proposal = if let Some(proposal) = state
+                .unique_compatible_action_proposal()
+                .filter(|p| p.target_id.as_ref().is_some_and(|id| pending.contains(id)))
+            {
+                state.note_harness_unique_selection();
+                proposal
+            } else if let Some(proposal) = state
+                .unique_precedence_action_proposal_with_diagnostic()
+                .filter(|p| p.target_id.as_ref().is_some_and(|id| pending.contains(id)))
+            {
+                state.note_harness_precedence_selection();
+                proposal
             } else {
-                let round_index = match state.begin_round() {
-                    Ok(round) => round,
-                    Err(_) => break,
-                };
-                let proposal = if let Some(proposal) = state
-                    .unique_compatible_action_proposal()
-                    .filter(|p| p.target_id.as_ref().is_some_and(|id| pending.contains(id)))
-                {
-                    state.note_harness_unique_selection();
-                    proposal
-                } else if let Some(proposal) = state
-                    .unique_precedence_action_proposal_with_diagnostic()
-                    .filter(|p| p.target_id.as_ref().is_some_and(|id| pending.contains(id)))
-                {
-                    state.note_harness_precedence_selection();
-                    proposal
-                } else {
-                    let action_seed = seed.and_then(|seed| seed.checked_add(round_index as u64));
-                    let mut materialized = None;
-                    let materializable_target_ids = state
-                        .materializable_target_ids()
-                        .into_iter()
-                        .filter(|id| pending.contains(id))
-                        .collect::<Vec<_>>();
-                    if !materializable_target_ids.is_empty() {
-                        state.note_planner_intent_call();
-                        let intent_max_tokens = usage
-                            .cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
-                        progress.phase(
-                            "Planning",
-                            "selecting the next bounded investigation target",
-                        );
-                        let (intent, intent_generation) = match progress
+                let action_seed = seed.and_then(|seed| seed.checked_add(round_index as u64));
+                let mut materialized = None;
+                let materializable_target_ids = state
+                    .materializable_target_ids()
+                    .into_iter()
+                    .filter(|id| pending.contains(id))
+                    .collect::<Vec<_>>();
+                if !materializable_target_ids.is_empty() {
+                    state.note_planner_intent_call();
+                    let intent_max_tokens =
+                        usage.cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
+                    progress.phase(
+                        "Planning",
+                        "selecting the next bounded investigation target",
+                    );
+                    let (intent, intent_generation) = match progress
                         .wait_for_provider(
                             "waiting on the selected provider for the next investigation target",
                             generator.choose_investigation_intent_traced(
@@ -3634,26 +3652,33 @@ async fn run_natural_investigation(
                         Ok(result) => result,
                         Err(failure) => {
                             progress.failure(&failure);
-                            usage.record_failure(&failure)?;
                             state.stop(InvestigationStopReason::OperationalTerminal);
+                            preserve_acquisition_progress(
+                                &coverage,
+                                Some(&current_outcome.artifact),
+                                state.telemetry().stop_reason,
+                                failure_context,
+                                trace.as_deref_mut(),
+                            );
+                            usage.record_failure(&failure)?;
                             observation.generation_failure = Some(failure);
                             break;
                         }
                     };
-                        progress.provider(&intent_generation);
-                        usage.record_generation(&intent_generation)?;
-                        observation.intent_generations.push(intent_generation);
-                        materialized = state.materialize_intent(round_index, intent).ok();
-                    }
+                    progress.provider(&intent_generation);
+                    usage.record_generation(&intent_generation)?;
+                    observation.intent_generations.push(intent_generation);
+                    materialized = state.materialize_intent(round_index, intent).ok();
+                }
 
-                    if let Some(proposal) = materialized {
-                        proposal
-                    } else {
-                        state.note_planner_call();
-                        let action_max_tokens = usage
-                            .cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
-                        progress.phase("Planning", "selecting the next bounded acquisition action");
-                        let (proposal, action_generation) = match progress
+                if let Some(proposal) = materialized {
+                    proposal
+                } else {
+                    state.note_planner_call();
+                    let action_max_tokens =
+                        usage.cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
+                    progress.phase("Planning", "selecting the next bounded acquisition action");
+                    let (proposal, action_generation) = match progress
                         .wait_for_provider(
                             "waiting on the selected provider for the next investigation action",
                             generator.choose_investigation_action_traced(
@@ -3676,20 +3701,27 @@ async fn run_natural_investigation(
                         Ok(result) => result,
                         Err(failure) => {
                             progress.failure(&failure);
-                            usage.record_failure(&failure)?;
                             state.stop(InvestigationStopReason::OperationalTerminal);
+                            preserve_acquisition_progress(
+                                &coverage,
+                                Some(&current_outcome.artifact),
+                                state.telemetry().stop_reason,
+                                failure_context,
+                                trace.as_deref_mut(),
+                            );
+                            usage.record_failure(&failure)?;
                             observation.generation_failure = Some(failure);
                             break;
                         }
                     };
-                        progress.provider(&action_generation);
-                        usage.record_generation(&action_generation)?;
-                        observation.action_generations.push(action_generation);
-                        proposal
-                    }
-                };
-                (round_index, proposal)
+                    progress.provider(&action_generation);
+                    usage.record_generation(&action_generation)?;
+                    observation.action_generations.push(action_generation);
+                    proposal
+                }
             };
+            (round_index, proposal)
+        };
         if proposal
             .target_id
             .as_ref()
@@ -3716,6 +3748,21 @@ async fn run_natural_investigation(
                     "validated investigation capability missing",
                 )
             })?;
+        // Persist the host-owned single-key selector before dispatch so restoration
+        // can recover keyless-plan bindings from the actual core attempt.
+        let effective_fact_key = target.expected_fact_key.clone().or_else(|| {
+            (capability.descriptor.read_only
+                && capability.descriptor.supported_fact_keys.len() == 1)
+                .then(|| {
+                    capability
+                        .descriptor
+                        .supported_fact_keys
+                        .iter()
+                        .next()
+                        .cloned()
+                })
+                .flatten()
+        });
         let request = ResolutionRequest {
             id: format!(
                 "investigation:{}:{}",
@@ -3725,7 +3772,7 @@ async fn run_natural_investigation(
             target: ResolutionTarget::InvestigationQuestion {
                 target_id: target.id.clone(),
                 question: target.question.clone(),
-                expected_fact_key: target.expected_fact_key.clone(),
+                expected_fact_key: effective_fact_key.clone(),
             },
             resolver_class: ResolverClass::EvidenceAcquisition,
             budget: ResolutionRequestBudget {
@@ -3753,27 +3800,6 @@ async fn run_natural_investigation(
             .last()
             .map(|attempt| attempt.admitted_evidence_ids.clone())
             .unwrap_or_default();
-        let harness_fact = harness_owned_investigation_fact(
-            &target,
-            &capability.descriptor,
-            &acquisition.final_artifact,
-            &admitted_evidence_ids,
-        );
-        let fallback_fact_key = finalization_target_keys
-            .iter()
-            .find(|(target_id, _)| target_id == &action.target_id)
-            .and_then(|(_, expected_fact_key)| expected_fact_key.clone());
-        let effective_fact_key = harness_fact
-            .as_ref()
-            .map(|fact| fact.proposition.key.clone())
-            .or(fallback_fact_key);
-        if let Some(fact) = harness_fact.as_ref()
-            && let Some((_, key)) = finalization_target_keys
-                .iter_mut()
-                .find(|(target_id, _)| target_id == &action.target_id)
-        {
-            *key = Some(fact.proposition.key.clone());
-        }
         coverage
             .record(
                 &action.target_id,
@@ -3800,6 +3826,16 @@ async fn run_natural_investigation(
             );
         }
         coverage.bind_existing(&acquisition.final_artifact);
+        if status == InvestigationObservationStatus::OperationalFailure {
+            state.stop(InvestigationStopReason::OperationalTerminal);
+        }
+        preserve_acquisition_progress(
+            &coverage,
+            Some(&acquisition.final_artifact),
+            state.telemetry().stop_reason,
+            failure_context,
+            trace.as_deref_mut(),
+        );
         let admitted_materializations =
             coverage.materialization_facts(&acquisition.final_artifact.evidence);
         current_input = input_from_artifact(&acquisition.final_artifact);
@@ -3870,8 +3906,15 @@ async fn run_natural_investigation(
                 }
                 Err(failure) => {
                     progress.failure(&failure);
-                    usage.record_failure(&failure)?;
                     state.stop(InvestigationStopReason::OperationalTerminal);
+                    preserve_acquisition_progress(
+                        &coverage,
+                        Some(&current_outcome.artifact),
+                        state.telemetry().stop_reason,
+                        failure_context,
+                        trace.as_deref_mut(),
+                    );
+                    usage.record_failure(&failure)?;
                     observation.generation_failure = Some(failure);
                 }
             }
@@ -3894,13 +3937,20 @@ async fn run_natural_investigation(
             admitted_evidence,
             verification_progress,
         );
+        preserve_acquisition_progress(
+            &coverage,
+            Some(&current_outcome.artifact),
+            state.telemetry().stop_reason,
+            failure_context,
+            trace.as_deref_mut(),
+        );
+        if state.telemetry().stop_reason.is_some() {
+            break;
+        }
         if current_outcome.verdict == Verdict::Accept
             && coverage.complete(&current_outcome.artifact)
         {
             state.stop(InvestigationStopReason::Resolved);
-            break;
-        }
-        if state.telemetry().stop_reason.is_some() {
             break;
         }
         if state.remaining_action_count() == 0 {
@@ -3910,6 +3960,13 @@ async fn run_natural_investigation(
     }
 
     let finalization_targets = coverage.verified_targets(&current_outcome.artifact);
+    preserve_acquisition_progress(
+        &coverage,
+        Some(&current_outcome.artifact),
+        state.telemetry().stop_reason,
+        failure_context,
+        trace.as_deref_mut(),
+    );
     observation.telemetry = Some(state.into_telemetry());
     Ok(NaturalInvestigationRun {
         candidate: current_candidate,
@@ -4192,7 +4249,18 @@ async fn execute_natural_inner(
         .map_err(|error| CliError::new(error.failure_class, error.message))?;
     let mut usage_tracker =
         usage_budget::UsageTracker::new(usage_budget, args.session_usage_baseline.clone())?;
-    usage_tracker.preserve_on_exit(failure_context);
+    usage_tracker.preserve_on_exit(failure_context.clone());
+    if investigation_config.is_some() || acquisition_ledger.is_some() {
+        preserve_acquisition_progress(
+            acquisition_ledger
+                .as_ref()
+                .unwrap_or(&acquisition_coverage::Ledger::unavailable()),
+            None,
+            None,
+            &failure_context,
+            diagnostic_trace.as_mut(),
+        );
+    }
     let initial_generation_phase = DiagnosticPhase::new("initial_generation", None);
     let initial_max_tokens = usage_tracker.cap_next_model_tokens(resolved.max_tokens)?;
     progress.phase("Planning", "waiting on provider for the initial candidate");
@@ -4246,6 +4314,15 @@ async fn execute_natural_inner(
         }
     }
     let initial_outcome = run_standard_grounding(built.input.clone(), candidate.clone())?;
+    if let Some(ledger) = &acquisition_ledger {
+        preserve_acquisition_progress(
+            ledger,
+            Some(&initial_outcome.artifact),
+            None,
+            &failure_context,
+            diagnostic_trace.as_mut(),
+        );
+    }
     if let Some(trace) = diagnostic_trace.as_mut() {
         trace.record_grounding(
             DiagnosticPhase::new("initial_grounding", None),
@@ -4330,6 +4407,7 @@ async fn execute_natural_inner(
                 progress: &progress,
                 cancellation: &cancellation,
                 seed_coverage: acquisition_ledger.take(),
+                failure_context: &failure_context,
             })
             .await?;
             if finalization_targets.is_empty() {
@@ -4404,6 +4482,16 @@ async fn execute_natural_inner(
                 finalization_targets.push(target);
             }
         }
+        preserve_acquisition_progress(
+            ledger,
+            Some(&final_artifact),
+            investigation_observation
+                .as_ref()
+                .and_then(|o| o.telemetry.as_ref())
+                .and_then(|t| t.stop_reason),
+            &failure_context,
+            diagnostic_trace.as_mut(),
+        );
     }
 
     if let Some(trace) = diagnostic_trace.as_mut() {
@@ -4606,7 +4694,7 @@ async fn execute_natural_inner(
             }
         }
         if let Some(ledger) = &acquisition_ledger {
-            let targets = ledger.verified_targets(&final_artifact);
+            let mut targets = ledger.verified_targets(&final_artifact);
             if !targets.is_empty()
                 && targets.iter().any(|p| {
                     !rendered
@@ -4615,31 +4703,28 @@ async fn execute_natural_inner(
                         .any(|c| c.mode == FinalClaimMode::Grounded && &c.proposition == p)
                 })
             {
+                // Preserve already legal selections and explicit verified targets.
+                // An incomplete model render must not replace one valid facet with another.
+                for p in finalization_targets.iter().chain(
+                    rendered
+                        .factual_claims
+                        .iter()
+                        .filter(|c| c.mode == FinalClaimMode::Grounded)
+                        .map(|c| &c.proposition),
+                ) {
+                    if !targets.contains(p)
+                        && canonical_acquisition_answer(
+                            &final_artifact,
+                            final_verdict,
+                            std::slice::from_ref(p),
+                        )
+                        .is_some()
+                    {
+                        targets.push(p.clone());
+                    }
+                }
                 let recovered =
-                    canonical_verified_target_answer(&final_artifact, final_verdict, &targets)
-                        .map(|candidate| {
-                            let hard = finalize_answer(
-                                &final_artifact,
-                                final_verdict,
-                                candidate.clone(),
-                                FinalizationPolicy::default(),
-                            );
-                            (candidate, hard)
-                        })
-                        .or_else(|| {
-                            canonical_verified_target_partial_answer(
-                                &final_artifact,
-                                final_verdict,
-                                &targets,
-                            )
-                        })
-                        .or_else(|| {
-                            canonical_verified_target_reject_partial_answer(
-                                &final_artifact,
-                                final_verdict,
-                                &targets,
-                            )
-                        });
+                    canonical_acquisition_answer(&final_artifact, final_verdict, &targets);
                 if let Some((candidate, hard)) = recovered {
                     rendered = candidate;
                     finalization = hard;
@@ -5599,7 +5684,7 @@ fn session_runtime_from_output(
         acquisition_plan: output
             .acquisition_coverage
             .as_ref()
-            .map(|view| view.ledger.clone()),
+            .map(|view| view.ledger.registry()),
     })
 }
 
@@ -5624,6 +5709,12 @@ fn validate_session_runtime(session: &SessionFile) -> Result<(), CliError> {
     if let Some(plan) = &session.runtime.acquisition_plan {
         plan.validate()
             .map_err(|e| CliError::new("session_invalid", e))?;
+        if plan.targets.iter().any(|o| !o.bindings.is_empty()) {
+            return Err(CliError::new(
+                "session_invalid",
+                "frozen plan registry must not contain display bindings",
+            ));
+        }
     }
     let expected_output = if session.runtime.acquisition_coverage_policy.is_some() {
         acquisition_coverage::OUTPUT_ID
@@ -5773,8 +5864,20 @@ fn validate_session_runtime(session: &SessionFile) -> Result<(), CliError> {
                     "coverage base no longer matches source display",
                 ));
             }
+            let ledger = acquisition_coverage::Ledger::from_thread(
+                frozen,
+                &session.thread,
+                checkpoint.event_sequence,
+            )
+            .map_err(|e| CliError::new("session_invalid", e))?;
+            if ledger != view.ledger {
+                return Err(CliError::new(
+                    "session_invalid",
+                    "coverage bindings do not match actual checkpoint admissions",
+                ));
+            }
             let (composed, reconstructed) = acquisition_coverage::compose(
-                &view.ledger,
+                &ledger,
                 artifact,
                 &view.selected_claims,
                 expected,
@@ -6087,13 +6190,22 @@ fn continuation_args(
     }
 }
 
-fn session_acquisition_ledger(session: &SessionFile) -> Option<acquisition_coverage::Ledger> {
+fn session_acquisition_ledger(
+    session: &SessionFile,
+) -> Result<Option<acquisition_coverage::Ledger>, CliError> {
     session
-        .turns
-        .last()
-        .and_then(|turn| turn.acquisition_coverage.as_ref())
-        .map(|view| view.ledger.clone())
-        .or_else(|| session.runtime.acquisition_plan.clone())
+        .runtime
+        .acquisition_plan
+        .as_ref()
+        .map(|plan| {
+            acquisition_coverage::Ledger::from_thread(
+                plan,
+                &session.thread,
+                session.thread.events.last().map_or(0, |e| e.sequence),
+            )
+            .map_err(|e| CliError::new("session_invalid", e))
+        })
+        .transpose()
 }
 
 fn seed_input_for_session_turn(
@@ -6755,7 +6867,7 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                     finalization_targets: vec![],
                     candidate_materialization_targets: vec![],
                     answer_context: session.runtime.answer_context.clone(),
-                    acquisition_coverage: session_acquisition_ledger(&session),
+                    acquisition_coverage: session_acquisition_ledger(&session)?,
                 }),
             )
             .await?;
@@ -6825,7 +6937,7 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                     finalization_targets,
                     candidate_materialization_targets,
                     answer_context: session.runtime.answer_context.clone(),
-                    acquisition_coverage: session_acquisition_ledger(&session),
+                    acquisition_coverage: session_acquisition_ledger(&session)?,
                 }),
             )
             .await?;
@@ -9995,151 +10107,6 @@ mod candidate_json_tests {
         assert!(cli.natural.verbose);
     }
 
-    fn test_investigation_target(
-        expected_fact_key: Option<&str>,
-    ) -> reasoning_harness_core::InvestigationTarget {
-        reasoning_harness_core::InvestigationTarget {
-            id: "target".into(),
-            question: "determine the configured value".into(),
-            expected_fact_key: expected_fact_key.map(str::to_string),
-            origin: reasoning_harness_core::InvestigationTargetOrigin::ModelProposedUntrusted,
-        }
-    }
-
-    fn test_investigation_capability(read_only: bool, keys: &[&str]) -> InvestigationCapability {
-        InvestigationCapability {
-            id: "capability".into(),
-            adapter: "fixture".into(),
-            read_only,
-            selection_priority: None,
-            supported_fact_keys: keys.iter().map(|key| (*key).to_string()).collect(),
-        }
-    }
-
-    fn test_admitted_artifact(values: &[(&str, &str, &str)]) -> ReasoningArtifact {
-        ReasoningArtifact {
-            evidence: values
-                .iter()
-                .map(|(id, key, value)| Evidence {
-                    id: (*id).into(),
-                    source: "resolver".into(),
-                    observation: format!("{key}={value}"),
-                    facts: BTreeMap::from([((*key).into(), (*value).into())]),
-                    metadata: EvidenceMetadata::default(),
-                })
-                .collect(),
-            ..ReasoningArtifact::default()
-        }
-    }
-
-    #[test]
-    fn investigation_exact_fact_materialization_accepts_keyless_selected_target() {
-        let target = test_investigation_target(None);
-        let capability = test_investigation_capability(true, &["service.region"]);
-        let artifact = test_admitted_artifact(&[("admitted-1", "service.region", "us-east-1")]);
-
-        let fact = harness_owned_investigation_fact(
-            &target,
-            &capability,
-            &artifact,
-            &["admitted-1".into()],
-        )
-        .unwrap();
-
-        assert_eq!(
-            fact.proposition,
-            Proposition {
-                key: "service.region".into(),
-                value: "us-east-1".into(),
-            }
-        );
-        assert_eq!(fact.evidence_ids, vec!["admitted-1"]);
-    }
-
-    #[test]
-    fn investigation_exact_fact_materialization_accepts_matching_explicit_target_key() {
-        let target = test_investigation_target(Some("service.region"));
-        let capability = test_investigation_capability(true, &["service.region"]);
-        let artifact = test_admitted_artifact(&[("admitted-1", "service.region", "us-east-1")]);
-
-        assert!(
-            harness_owned_investigation_fact(
-                &target,
-                &capability,
-                &artifact,
-                &["admitted-1".into()],
-            )
-            .is_some()
-        );
-    }
-
-    #[test]
-    fn investigation_exact_fact_materialization_fails_closed_on_wrong_target_key() {
-        let target = test_investigation_target(Some("service.owner"));
-        let capability = test_investigation_capability(true, &["service.region"]);
-        let artifact = test_admitted_artifact(&[("admitted-1", "service.region", "us-east-1")]);
-
-        assert!(
-            harness_owned_investigation_fact(
-                &target,
-                &capability,
-                &artifact,
-                &["admitted-1".into()],
-            )
-            .is_none()
-        );
-    }
-
-    #[test]
-    fn investigation_exact_fact_materialization_fails_closed_on_write_or_multi_key_capability() {
-        let target = test_investigation_target(None);
-        let artifact = test_admitted_artifact(&[("admitted-1", "service.region", "us-east-1")]);
-        let write = test_investigation_capability(false, &["service.region"]);
-        let multi = test_investigation_capability(true, &["service.region", "service.owner"]);
-
-        for capability in [&write, &multi] {
-            assert!(
-                harness_owned_investigation_fact(
-                    &target,
-                    capability,
-                    &artifact,
-                    &["admitted-1".into()],
-                )
-                .is_none()
-            );
-        }
-    }
-
-    #[test]
-    fn investigation_exact_fact_materialization_ignores_unadmitted_and_conflicting_values() {
-        let target = test_investigation_target(None);
-        let capability = test_investigation_capability(true, &["service.region"]);
-        let artifact = test_admitted_artifact(&[
-            ("admitted-1", "service.region", "us-east-1"),
-            ("admitted-2", "service.region", "us-west-2"),
-            ("context", "service.region", "eu-west-1"),
-        ]);
-
-        assert!(harness_owned_investigation_fact(&target, &capability, &artifact, &[]).is_none());
-        assert!(
-            harness_owned_investigation_fact(
-                &target,
-                &capability,
-                &artifact,
-                &["admitted-1".into(), "admitted-2".into()],
-            )
-            .is_none()
-        );
-        let fact = harness_owned_investigation_fact(
-            &target,
-            &capability,
-            &artifact,
-            &["admitted-1".into()],
-        )
-        .unwrap();
-        assert_eq!(fact.proposition.value, "us-east-1");
-    }
-
     #[test]
     fn investigation_exact_fact_claim_is_assumed_until_existing_verification_supports_it() {
         let input = HarnessInput {
@@ -10660,7 +10627,7 @@ mod candidate_json_tests {
                             BTreeSet::from([keys[i].into()])
                         },
                     },
-                    resolver: InvestigationResolverConfig::Fixture(vec![raw]),
+                    resolver: InvestigationResolverConfig::Fixture(Ok(vec![raw])),
                     admission: Some(ExternalEvidenceAdmissionConfig {
                         resolver_name: "investigation_fixture",
                         evaluation_time_unix_seconds: 1000,
@@ -10761,12 +10728,351 @@ mod candidate_json_tests {
             progress: &progress::ProgressReporter::new(OutputFormat::Json, false, true),
             cancellation: &SubprocessCancellation::default(),
             seed_coverage: None,
+            failure_context: &Arc::default(),
         })
         .await
         .unwrap()
     }
 
     const COVERAGE_PLAN: &str = r#"{"targets":[{"id":"left","question":"Explain left","expected_fact_key":"left.value"},{"id":"right","question":"Explain right","expected_fact_key":"right.value"}]}"#;
+
+    async fn execute_coverage_render(
+        run: &NaturalInvestigationRun,
+        ledger: acquisition_coverage::Ledger,
+        targets: Vec<Proposition>,
+        selected: Vec<reasoning_harness_core::FinalAnswerClaim>,
+    ) -> NaturalOutput {
+        let input = input_from_artifact(&run.outcome.artifact);
+        let rendered = FinalAnswerCandidate {
+            text: "model omitted a verified facet".into(),
+            factual_claims: selected,
+        };
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::response(
+                &serde_json::to_string(&run.candidate).unwrap(),
+                1,
+            ),
+            StructuredCapabilityFallbackAdapter::response(
+                &serde_json::to_string(&rendered).unwrap(),
+                1,
+            ),
+        ]);
+        execute_natural_inner(
+            NaturalArgs {
+                task: Some(input.task.clone()),
+                provider: Some(Provider::Google),
+                model: Some("test-model".into()),
+                no_config: true,
+                format: Some(OutputFormat::Json),
+                ..Default::default()
+            },
+            Some(NaturalExecutionSeed {
+                input,
+                new_evidence_prefix: "coverage-render".into(),
+                finalization_targets: targets,
+                candidate_materialization_targets: vec![],
+                answer_context: None,
+                acquisition_coverage: Some(ledger),
+            }),
+            SubprocessCancellation::default(),
+            Arc::default(),
+            |_, _| {
+                Ok(LiveGenerator::Test(DiagnosticTestAdapter(Box::new(
+                    adapter,
+                ))))
+            },
+        )
+        .await
+        .unwrap()
+    }
+
+    #[tokio::test]
+    async fn coverage_recovery_preserves_existing_and_explicit_verified_facets() {
+        let run = scripted_coverage_run(
+            false,
+            false,
+            4,
+            &[
+                COVERAGE_PLAN,
+                r#"{"action":"continue","target_id":"left"}"#,
+                r#"{"claims":[],"inferences":[]}"#,
+                r#"{"claims":[],"inferences":[]}"#,
+            ],
+        )
+        .await;
+        let all = canonical_verified_target_answer(
+            &run.outcome.artifact,
+            run.outcome.verdict,
+            &run.finalization_targets,
+        )
+        .unwrap();
+        let mut ledger = run.coverage.clone();
+        ledger.targets.retain(|o| o.target.id == "right");
+        let left = all
+            .factual_claims
+            .iter()
+            .find(|c| c.proposition.key == "left.value")
+            .unwrap()
+            .clone();
+        for explicit in [vec![], run.finalization_targets.clone()] {
+            let output =
+                execute_coverage_render(&run, ledger.clone(), explicit, vec![left.clone()]).await;
+            assert_eq!(
+                output.finalization.status,
+                FinalizationStatus::GroundedAnswer
+            );
+            assert_eq!(output.finalization.factual_claims, 2);
+            let selected = &output.acquisition_coverage.unwrap().selected_claims;
+            assert!(selected.iter().any(|c| c.proposition.key == "left.value"));
+            assert!(selected.iter().any(|c| c.proposition.key == "right.value"));
+        }
+    }
+
+    #[tokio::test]
+    async fn session_rejects_joint_binding_and_display_forgery_against_actual_acquisition() {
+        for keyless in [false, true] {
+            let plan = if keyless {
+                r#"{"targets":[{"id":"left","question":"Explain left"},{"id":"right","question":"Independently acquire right"}]}"#
+            } else {
+                r#"{"targets":[{"id":"left","question":"Explain left","expected_fact_key":"left.value"},{"id":"right","question":"Independently acquire right","expected_fact_key":"left.value"}]}"#
+            };
+            let run = scripted_coverage_run(
+                false,
+                false,
+                1,
+                &[
+                    plan,
+                    if keyless {
+                        r#"{"action":"acquire","target_id":"left","capability_id":"cap0"}"#
+                    } else {
+                        r#"{"action":"continue","target_id":"left"}"#
+                    },
+                    r#"{"claims":[],"inferences":[]}"#,
+                ],
+            )
+            .await;
+            assert!(!run.coverage.complete(&run.outcome.artifact));
+            let selected = canonical_verified_target_answer(
+                &run.outcome.artifact,
+                run.outcome.verdict,
+                &run.finalization_targets,
+            )
+            .unwrap()
+            .factual_claims;
+            let mut output = execute_coverage_render(
+                &run,
+                run.coverage.clone(),
+                run.finalization_targets.clone(),
+                selected,
+            )
+            .await;
+            output.resolution_rounds = run.resolution_rounds;
+            let mut thread = ReasoningThread::new("binding-forgery-control").unwrap();
+            thread
+                .record_task("task-event", "task", output.task.clone())
+                .unwrap();
+            let mut session = SessionFile {
+                schema_version: SESSION_CONTRACT_ID.into(),
+                runtime: session_runtime_from_output(&output, AnswerSafetyProfileArg::Current)
+                    .unwrap(),
+                thread,
+                turns: vec![],
+            };
+            record_natural_turn(&mut session, &output, None).unwrap();
+            let path = synthetic_session_path("joint-binding-forgery");
+            save_session_file(&path, &session, true).unwrap();
+            let mut changed = load_session_file(&path).unwrap();
+            let view = changed.turns[0].acquisition_coverage.as_mut().unwrap();
+            view.ledger.targets[1].bindings = view.ledger.targets[0].bindings.clone();
+            let artifact = changed.thread.checkpoints[0]
+                .snapshot
+                .artifact
+                .as_ref()
+                .unwrap();
+            let (display, forged_view) = acquisition_coverage::compose(
+                &view.ledger,
+                artifact,
+                &view.selected_claims,
+                view.base_finalization.clone(),
+                view.stop_reason,
+            )
+            .unwrap();
+            assert!(
+                forged_view.plan_answer_complete,
+                "the forged view is internally consistent"
+            );
+            changed.turns[0].finalization = display;
+            changed.turns[0].acquisition_coverage = Some(forged_view);
+            assert_eq!(
+                changed.thread, session.thread,
+                "core history stays unchanged"
+            );
+            assert_eq!(
+                changed.runtime.acquisition_plan,
+                session.runtime.acquisition_plan
+            );
+            fs::write(&path, serde_json::to_vec(&changed).unwrap()).unwrap();
+            let error = load_session_file(&path).unwrap_err();
+            assert!(
+                error.message.contains("actual checkpoint admissions"),
+                "{}",
+                error.message
+            );
+            fs::remove_file(path).unwrap();
+        }
+    }
+
+    #[tokio::test]
+    async fn acquisition_budget_and_cancellation_keep_partial_ledger_without_an_answer() {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+        struct PlanThenPending(Arc<AtomicUsize>);
+        impl ModelAdapter for PlanThenPending {
+            fn generate<'a>(
+                &'a self,
+                _: ModelRequest,
+            ) -> std::pin::Pin<
+                Box<
+                    dyn std::future::Future<
+                            Output = Result<reasoning_harness_core::ModelResponse, ModelError>,
+                        > + Send
+                        + 'a,
+                >,
+            > {
+                let call = self.0.fetch_add(1, Ordering::SeqCst);
+                Box::pin(async move {
+                    let text = match call {
+                        0 => COVERAGE_PLAN,
+                        1 => r#"{"action":"continue","target_id":"left"}"#,
+                        _ => return std::future::pending().await,
+                    };
+                    Ok(reasoning_harness_core::ModelResponse {
+                        text: text.into(),
+                        model: "test-model".into(),
+                        usage: ModelUsage {
+                            input_tokens: Some(10),
+                            output_tokens: Some(10),
+                            total_tokens: Some(20),
+                        },
+                        provider_attempts: 1,
+                        finish_reason: Some("stop".into()),
+                    })
+                })
+            }
+        }
+        for cancel in [false, true] {
+            let (input, candidate, config) = coverage_fixture(false, false);
+            let initial_outcome = run_standard_grounding(input.clone(), candidate.clone()).unwrap();
+            let context = run_diagnostics::SharedRunDiagnostics::default();
+            let cancellation = progress::CancellationRun::test_instance();
+            let calls = Arc::new(AtomicUsize::new(0));
+            let generator = LiveGenerator::Test(DiagnosticTestAdapter(Box::new(PlanThenPending(
+                calls.clone(),
+            ))));
+            let path = synthetic_session_path(if cancel {
+                "cancel-coverage"
+            } else {
+                "budget-coverage"
+            });
+            let operation = async {
+                let mut trace = DiagnosticTraceRecorder::new("test", "test-model", None);
+                trace.preserve_on_exit(path.clone(), context.clone());
+                let mut usage = usage_budget::UsageTracker::new(
+                    usage_budget::UsageBudget {
+                        max_model_calls: (!cancel).then_some(2),
+                        ..Default::default()
+                    },
+                    None,
+                )
+                .unwrap();
+                usage.preserve_on_exit(context.clone());
+                run_natural_investigation(NaturalInvestigationCall {
+                    task: &input.task.clone(),
+                    input,
+                    candidate,
+                    initial_outcome,
+                    generator: &generator,
+                    trace: Some(&mut trace),
+                    config: &config,
+                    model: "test-model",
+                    max_tokens: 512,
+                    seed: None,
+                    usage: &mut usage,
+                    progress: &progress::ProgressReporter::new(OutputFormat::Json, false, true),
+                    cancellation: &cancellation.subprocess_token(),
+                    seed_coverage: None,
+                    failure_context: &context,
+                })
+                .await
+            };
+            let error = if cancel {
+                let cancel_task = async {
+                    tokio::time::timeout(std::time::Duration::from_secs(5), async {
+                        while calls.load(Ordering::SeqCst) < 3 {
+                            tokio::task::yield_now().await;
+                        }
+                    })
+                    .await
+                    .unwrap();
+                    cancellation.cancel_for_test();
+                };
+                let (result, ()) = tokio::join!(
+                    await_cancellable_operation(&cancellation, operation),
+                    cancel_task
+                );
+                result.unwrap_err()
+            } else {
+                operation.await.unwrap_err()
+            };
+            assert_eq!(
+                error.failure_class,
+                if cancel {
+                    "cancelled"
+                } else {
+                    "usage_budget_exceeded"
+                }
+            );
+            assert_eq!(calls.load(Ordering::SeqCst), if cancel { 3 } else { 2 });
+            let partial = context
+                .lock()
+                .unwrap()
+                .partial(error.failure_class)
+                .unwrap();
+            assert!(!partial.complete);
+            assert_eq!(partial.usage_is_lower_bound, cancel);
+            let snapshot = partial.acquisition_coverage.as_ref().unwrap();
+            assert_eq!(snapshot.ledger.targets.len(), 2);
+            assert_eq!(snapshot.ledger.targets[0].bindings.len(), 1);
+            assert!(snapshot.ledger.targets[1].bindings.is_empty());
+            assert_eq!(
+                snapshot.targets[1].disposition,
+                acquisition_coverage::Disposition::NotAcquired
+            );
+            let mut error = error;
+            error.partial_diagnostics = Some(partial);
+            let envelope =
+                serde_json::to_value(ProductFailureOutput::from_error("ask", &error)).unwrap();
+            assert_eq!(envelope["status"], "failed");
+            assert!(envelope.get("final_outcome").is_none());
+            let trace: serde_json::Value =
+                serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+            assert_eq!(trace["completion_status"], "partial");
+            assert!(
+                trace["events"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|e| e["kind"] == "acquisition_coverage_progress")
+            );
+            assert!(
+                !trace["events"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|e| e["kind"] == "acquisition_coverage")
+            );
+            fs::remove_file(path).unwrap();
+        }
+    }
 
     #[tokio::test]
     async fn investigation_finishes_both_planned_facets_after_first_candidate_accepts() {
@@ -10872,6 +11178,56 @@ mod candidate_json_tests {
             assert!(!view.plan_answer_complete);
             assert!(display.text.unwrap().contains("right.value"));
         }
+
+        let (input, candidate, mut config) = coverage_fixture(false, false);
+        config.capabilities[0].resolver =
+            InvestigationResolverConfig::Fixture(Err(ResolutionAdapterError {
+                kind: reasoning_harness_core::ResolutionAdapterErrorKind::Transport,
+                cost: ResolutionCost {
+                    calls: 1,
+                    ..Default::default()
+                },
+            }));
+        let generator = LiveGenerator::Test(DiagnosticTestAdapter(Box::new(
+            StructuredCapabilityFallbackAdapter::with_responses([
+                StructuredCapabilityFallbackAdapter::response(COVERAGE_PLAN, 1),
+                StructuredCapabilityFallbackAdapter::response(
+                    r#"{"action":"continue","target_id":"left"}"#,
+                    1,
+                ),
+            ]),
+        )));
+        let initial_outcome = run_standard_grounding(input.clone(), candidate.clone()).unwrap();
+        let mut usage = usage_budget::UsageTracker::new(Default::default(), None).unwrap();
+        let run = run_natural_investigation(NaturalInvestigationCall {
+            task: &input.task.clone(),
+            input,
+            candidate,
+            initial_outcome,
+            generator: &generator,
+            trace: None,
+            config: &config,
+            model: "test-model",
+            max_tokens: 512,
+            seed: None,
+            usage: &mut usage,
+            progress: &progress::ProgressReporter::new(OutputFormat::Json, false, true),
+            cancellation: &SubprocessCancellation::default(),
+            seed_coverage: None,
+            failure_context: &Arc::default(),
+        })
+        .await
+        .unwrap();
+        assert_eq!(
+            run.resolution_rounds.len(),
+            1,
+            "operational failure stops further acquisition"
+        );
+        assert_eq!(
+            run.observation.telemetry.unwrap().stop_reason,
+            Some(InvestigationStopReason::OperationalTerminal)
+        );
+        assert!(!run.coverage.complete(&run.outcome.artifact));
     }
 
     async fn source_context_execution_fixture(
@@ -11125,8 +11481,11 @@ mod candidate_json_tests {
         };
         validate_session_runtime(&fork).unwrap();
         assert_eq!(
-            session_acquisition_ledger(&fork),
-            loaded.runtime.acquisition_plan
+            session_acquisition_ledger(&fork).unwrap(),
+            loaded.turns[0]
+                .acquisition_coverage
+                .as_ref()
+                .map(|v| v.ledger.clone())
         );
         fs::remove_file(path).unwrap();
     }
