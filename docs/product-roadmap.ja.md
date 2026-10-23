@@ -1,5 +1,7 @@
 # 製品ロードマップ: Reason CLI / Harness Engine
 
+**2026-10-22:** PR551はmerge済み。次は[#491](https://github.com/git-ksk/reasoning-harness/issues/491) / [PR552](https://github.com/git-ksk/reasoning-harness/pull/552)で、実測された取得の早期終了と未確認対象の消失を限定修正する。[範囲](acquisition-coverage.md)。F1改善は未測定。
+
 **2026-10-21 部品修正:** [#550](https://github.com/git-ksk/reasoning-harness/issues/550) / [PR551](https://github.com/git-ksk/reasoning-harness/pull/551)で、通常CLIの条件・引用・未確認入力を最終表示まで保持する。[契約と範囲](cli-answer-context.md)。保存ログの表示確認で元F1は変更せず、別途固定した対照測定とEngine採用の判定を残す。
 
 日本語 | [English](product-roadmap.md)
@@ -30,7 +32,7 @@
 
 ## 次の開発 — 実戦評価を先行
 
-[#531](https://github.com/git-ksk/reasoning-harness/issues/531)／[Milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12)で、**実資料の0.6.1/0.7.2比較 → 必要な修正 → 新規再評価 → CLI採用 → 正式配布**の順に進めます。公開済み0.7.2に現在形の撤回・非実在の判定漏れが再現したため、#520を再オープンし、CLI採用はNO-GOです。#488/#489/#491は測定で必要性が確認できた場合だけ実装します。
+[#531](https://github.com/git-ksk/reasoning-harness/issues/531)／[Milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12)で、**実資料の0.6.1/0.7.2比較 → 必要な修正 → 新規再評価 → CLI採用 → 正式配布**の順に進めます。公開済み0.7.2に現在形の撤回・非実在の判定漏れが再現したため、#520を再オープンし、CLI採用はNO-GOです。#488/#489は測定で必要性が確認できた場合だけ実装します。#491の取得制御に限る実測不備はPR552で対応し、広い新機能と新規受入の条件はOPENのままです。
 
 通常回答と明示有効化した補助APIは別集計です。[開発用v2/v3の初回3社比較](engine07-realworld-development-results.ja.md)を実施しましたが、両評価は不合格・測定不十分です。通常回答の改善は未確認、補助表示はMistral・Googleで各2件増加。Groqは日次quota枯渇中のため追加起動を止めています。#535の診断保持修正、停止制御の新runnerへの組み込み、#520の後継修正、新しい独立受入が残ります。採用は1/6（比較記録のみ）。公開CLI0.5.5 / Engine0.6.1と#506の配布受入は別工程です。
 
@@ -159,7 +161,7 @@ Engine 0.6.0のmilestoneと`engine-v0.6.0` releaseは完了済みで、変更し
 
 **[Engine 0.7.2](https://github.com/git-ksk/reasoning-harness/releases/tag/engine-v0.7.2)をEngine単独の通常ソースパッチとして公開済みです。** [リリースPR #525](https://github.com/git-ksk/reasoning-harness/pull/525)の公開commitは`296690a86e049b75ee693ae5032a71504366137c`。#523で修正した[#520](https://github.com/git-ksk/reasoning-harness/issues/520)の架空・撤回・偽の上位文脈と、[#521](https://github.com/git-ksk/reasoning-harness/issues/521)の元の取り消し線・否定記号をv17/v30で保持します。最終候補はworkspace 1490成功・失敗0・ignore 8、strict Clippy・format・fixture20件・元archive13件を通過。最終PR head CI 23/23、マージ後CI 22/22も成功。受け入れ済みの新規独立v10 50/50、旧v16/v29の597入力byte一致を保持。[リリースノート](engine-0.7.2-release.ja.md)／[修正報告](launch-context-markers-520-521.md)／[0.7.2ロードマップ](engine-0.7.2-roadmap.ja.md)を参照。[#524](https://github.com/git-ksk/reasoning-harness/issues/524)と[Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11)で公開完了を記録します。過去tag・初回失敗は不変。現在の公開CLIは0.5.5 / Engine 0.6.1で、合成・ローカル・CIの成功を新しいlive-providerの正しさ、外部truth、実ユーザーの有用性の実証とは扱いません。
 
-[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10)／[親#486](https://github.com/git-ksk/reasoning-harness/issues/486)は、保留した[#488の出典系譜](https://github.com/git-ksk/reasoning-harness/issues/488)、[#489の信頼済み改訂関係](https://github.com/git-ksk/reasoning-harness/issues/489)、[#491の追加回答可否・再取得](https://github.com/git-ksk/reasoning-harness/issues/491)のためOPENです。新機構を必要とする具体的な製品上の失敗は未実証で、実装前に必要性の実測と別acceptanceの固定が必要です。限定的なソースパッチの公開は妨げません。
+[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10)／[親#486](https://github.com/git-ksk/reasoning-harness/issues/486)は、保留した[#488の出典系譜](https://github.com/git-ksk/reasoning-harness/issues/488)、[#489の信頼済み改訂関係](https://github.com/git-ksk/reasoning-harness/issues/489)、[#491の追加回答可否・再取得](https://github.com/git-ksk/reasoning-harness/issues/491)のためOPENです。広い新機構は保留です。10月22日の保存baseline/候補artifactで、#491の取得制御・表示に限る不備が実証され、PR552で対応しています。広いsufficiency/reacquisition機能の採用や改善の立証には、別の測定・受入固定が必要です。限定的なソースパッチの公開は妨げません。
 
 修正した2件が0.7.2の修正範囲です。保留3件は実験が必要な改善案で、追加の既知不具合3件ではありません。ほかの不具合が皆無とするものでもありません。#465の旧MCP CI安定性と#506のCLI配布検証は別工程です。
 

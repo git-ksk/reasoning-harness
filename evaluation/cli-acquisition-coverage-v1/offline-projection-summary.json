@@ -1,0 +1,76 @@
+{
+  "Engine_task_reruns": 0,
+  "F1_calculations": 0,
+  "new_accuracy_cases": 0,
+  "original_scores_unchanged": true,
+  "provider_calls": 0,
+  "rows": [
+    {
+      "arm": "baseline",
+      "case_id": "rw-10",
+      "new_acquisition_calls": 0,
+      "new_status": "qualified_partial_answer",
+      "original_status": "grounded_answer",
+      "original_stop_reason": "resolved",
+      "planned_targets": 2,
+      "unestablished_targets_without_value": 1,
+      "verified_targets": 1
+    },
+    {
+      "arm": "candidate",
+      "case_id": "rw-10",
+      "new_acquisition_calls": 0,
+      "new_status": "qualified_partial_answer",
+      "original_status": "grounded_answer",
+      "original_stop_reason": "resolved",
+      "planned_targets": 2,
+      "unestablished_targets_without_value": 1,
+      "verified_targets": 1
+    },
+    {
+      "arm": "baseline",
+      "case_id": "rw-13",
+      "new_acquisition_calls": 0,
+      "new_status": "qualified_partial_answer",
+      "original_status": "grounded_answer",
+      "original_stop_reason": "resolved",
+      "planned_targets": 2,
+      "unestablished_targets_without_value": 1,
+      "verified_targets": 1
+    },
+    {
+      "arm": "candidate",
+      "case_id": "rw-13",
+      "new_acquisition_calls": 0,
+      "new_status": "qualified_partial_answer",
+      "original_status": "grounded_answer",
+      "original_stop_reason": "resolved",
+      "planned_targets": 2,
+      "unestablished_targets_without_value": 1,
+      "verified_targets": 1
+    },
+    {
+      "arm": "baseline",
+      "case_id": "rw-16",
+      "new_acquisition_calls": 0,
+      "new_status": "qualified_partial_answer",
+      "original_status": "unresolved",
+      "original_stop_reason": "planner_stop",
+      "planned_targets": 2,
+      "unestablished_targets_without_value": 1,
+      "verified_targets": 1
+    },
+    {
+      "arm": "candidate",
+      "case_id": "rw-16",
+      "new_acquisition_calls": 0,
+      "new_status": "qualified_partial_answer",
+      "original_status": "unresolved",
+      "original_stop_reason": "planner_stop",
+      "planned_targets": 2,
+      "unestablished_targets_without_value": 1,
+      "verified_targets": 1
+    }
+  ],
+  "scope": "DETERMINISTIC_FINALIZATION_OVER_SAVED_ARTIFACTS_NOT_F1"
+}

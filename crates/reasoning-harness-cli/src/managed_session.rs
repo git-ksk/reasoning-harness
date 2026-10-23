@@ -483,6 +483,11 @@ impl ManagedSession {
                 .turns
                 .last()
                 .and_then(|record| record.answer_context.as_ref()),
+            turn.typed_session
+                .turns
+                .last()
+                .and_then(|record| record.acquisition_coverage.as_ref())
+                .map(|view| view.selected_claims.as_slice()),
         )))
     }
 

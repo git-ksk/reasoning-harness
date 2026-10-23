@@ -695,6 +695,33 @@ impl<'a> GroundedResolutionRuntime<'a> {
         candidate: ReasoningCandidate,
         policy: &GroundedResolutionPolicy,
     ) -> Result<GroundedResolutionOutcome, ResolutionError> {
+        self.run_inner(input, candidate, policy, false)
+    }
+
+    /// Execute one explicitly planned investigation acquisition even if the current
+    /// candidate already passes. This never grants answer authority or raises a budget.
+    /// Ordinary `run` retains its existing Accept short circuit.
+    pub fn run_with_pending_investigation(
+        &self,
+        input: HarnessInput,
+        candidate: ReasoningCandidate,
+        policy: &GroundedResolutionPolicy,
+    ) -> Result<GroundedResolutionOutcome, ResolutionError> {
+        if policy.budget.max_attempts != 1 {
+            return Err(ResolutionError::InvalidPolicy(
+                "pending investigation requires exactly one bounded attempt".into(),
+            ));
+        }
+        self.run_inner(input, candidate, policy, true)
+    }
+
+    fn run_inner(
+        &self,
+        input: HarnessInput,
+        candidate: ReasoningCandidate,
+        policy: &GroundedResolutionPolicy,
+        pending_investigation: bool,
+    ) -> Result<GroundedResolutionOutcome, ResolutionError> {
         validate_policy(&input, policy)?;
         let mut current_input = input;
         let mut current_candidate = candidate;
@@ -709,7 +736,28 @@ impl<'a> GroundedResolutionRuntime<'a> {
         let mut usage = ResolutionUsage::default();
 
         loop {
-            if current.verdict == Verdict::Accept {
+            let pending = if pending_investigation
+                && current.verdict == Verdict::Accept
+                && attempts.is_empty()
+            {
+                Some(
+                    self.planner
+                        .plan(&current, policy)
+                        .into_iter()
+                        .filter(|r| {
+                            r.reason == ResolutionReason::Investigation
+                                && r.resolver_class == ResolverClass::EvidenceAcquisition
+                                && matches!(
+                                    r.target,
+                                    ResolutionTarget::InvestigationQuestion { .. }
+                                )
+                        })
+                        .collect::<Vec<_>>(),
+                )
+            } else {
+                None
+            };
+            if current.verdict == Verdict::Accept && pending.as_ref().is_none_or(Vec::is_empty) {
                 let rendered = self.renderer.render(&current.artifact, current.verdict);
                 let finalization = finalize_answer(
                     &current.artifact,
@@ -789,7 +837,7 @@ impl<'a> GroundedResolutionRuntime<'a> {
                 ));
             }
 
-            let requests = self.planner.plan(&current, policy);
+            let requests = pending.unwrap_or_else(|| self.planner.plan(&current, policy));
             if requests.is_empty() {
                 let terminal = if usage.attempts >= policy.budget.max_attempts {
                     ResolutionTerminalStatus::Exhausted

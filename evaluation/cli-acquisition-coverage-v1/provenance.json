@@ -1,0 +1,48 @@
+{
+  "identity": "cli-acquisition-coverage-offline-development-v4",
+  "source_commit": "b93df2859549ea027e0e0c986124da0da70f7656",
+  "source_files": {
+    "crates/reasoning-harness-cli/src/acquisition_coverage.rs": "1f7d33ada49fe4eed1a9d45d2c388f7b96dccdba0882c337072e3cc4a19f9cec",
+    "crates/reasoning-harness-cli/src/answer_context.rs": "20c83d7491f6939410ff4d4ea847abc23833e3a9d01e06f31267b92230f8e275",
+    "crates/reasoning-harness-cli/src/main.rs": "edc8b80e8c02451208ddf6da0d892f69973f1bbfb03670b1a0e912dafdc81dfd",
+    "crates/reasoning-harness-cli/src/human_presentation.rs": "986df002926e8c95b3a015cd5a9f7cd61d93f5cf00028f0701dfc74f6ea68d4d",
+    "crates/reasoning-harness-cli/src/interactive.rs": "f58349abcec74b82e09f9fb7988e66a57e15f93fa199b5e51ab6cd2ca5f3e447",
+    "crates/reasoning-harness-cli/src/managed_session.rs": "f31f1d8ef6ce1e3c67a9e2f1088ae13e36d7ae70f3b7c028a9ff9f33f3c59824",
+    "crates/reasoning-harness-cli/src/diagnostic_trace.rs": "4c27909f739baeafa1cc268bc91169eb208a6bafb4534b69611db1fab8cd4238",
+    "crates/reasoning-harness-core/src/resolution.rs": "daabf73239f13ea1fbba757e8f64f1cead65ff5e1772d02e5856f9a0a12adf65",
+    "crates/reasoning-harness-cli/src/run_diagnostics.rs": "fbf1c2403b966a614a8592e7847e69c1247fb3fe5341e73ee369d38d998239d1",
+    "Cargo.lock": "36df99ef0828ffcdd9ca7b6d45658b42d2fe4cd7265e552672239d9d0934cf2e"
+  },
+  "input_manifest_sha256": "f9f353bc40a49ba1e316a6497ae36c191c0ac4f346c11a0e418ca6daac8e0d65",
+  "inputs_sha256": "6a45664cb4f510a87d67f82bfba17051c2f2c1f05c509c0e8bb20873589963d6",
+  "runner_sha256": "dbca989e33d6c305d929a31f7ff80aec65589a5596bc11fd9c3198523727dcf1",
+  "runner_lock_sha256": "749f6e8ba299485b6bb3a5c703d064801a341e0305640893dd1dddffb5be0523",
+  "pre_execution_sha256": "da0f81ffbc1baf2c55a8d1ff535b90b4ad2ca10549809142eef81817f529b866",
+  "result_sha256": "6444ee74290042a651d1b7dfd2576b787a02ae07288a9bbe916c9e47b351f883",
+  "log_sha256": "d627b15a38828d855c3b68708ac3607304387f7959d5e76b9583e9ad772f0e35",
+  "outputs": {
+    "rw-10-baseline.json": "e20fb35e8ba9a2d567cb6520b1033a2215695573497b6ddade546607d2253a96",
+    "rw-10-candidate.json": "cdbc2587ce37cfd1749058059996dd6d9842e1b45c72e46159997194d8f2e0db",
+    "rw-13-baseline.json": "0b7e741de24d22e7bb42e5aeb8f9e35c793a5edfa761ab34b2c50b604f5267d4",
+    "rw-13-candidate.json": "d5e9e58c14ddc8864a95b9970f49b49c16187e6d9cb39e618e430c8565412aa4",
+    "rw-16-baseline.json": "f45ba6a0e6db4444522ab243280b130e8de54e4044693c4f559c0df1c6dae7c9",
+    "rw-16-candidate.json": "7330dc9766d6020e66ff7f2b8b634e9ef9790b10accb5901824e61b180805812",
+    "summary.json": "59f43ad08098d797335884d9e3ebf2aa8efb214720608e07589ff8f9a62547bd"
+  },
+  "source_unchanged": true,
+  "original_score_sha256": "bfe04912745e2236a8d1995e0166f57aa6cd396e988229fc168aafc2dea37051",
+  "provider_calls": 0,
+  "F1_calculations": 0,
+  "new_accuracy_cases": 0,
+  "limits": "Deterministic finalization over six consumed original artifacts; not a new engine task or real-world second acquisition.",
+  "prior_closures": {
+    "source_db80845_review": "FAIL: binding authority, omitted lawful selection, missing partial ledger",
+    "source_db80845_review_bundle_sha256": "e309e1d2dd81b766febdde94550e7c650dd948176cdc8d03623c2757c2861a8c",
+    "projection_v2": "FAIL: projection runner omitted the existing caller Unknown partial recovery; original source unchanged",
+    "projection_v2_result_sha256": "dda9af3132e6eeaac363f82459d3c8521e8c0d62549031915845945d1a35033e",
+    "source_ccdc741_review": "FAIL: explicit target omitted when plan target already selected; regeneration failure rolls back admitted artifact",
+    "source_ccdc741_review_bundle_sha256": "d7fcaf5046b33261f502fafdf08a6c9accd137495782f70c38432aa8c47c6794",
+    "projection_v3": "PASS at ccdc741; does not negate FAIL independent review",
+    "projection_v3_result_sha256": "55ffa3ae19809b496c67db2574df4eb92043be3f1004c6622998f24ccadebbe5"
+  }
+}

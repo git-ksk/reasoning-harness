@@ -237,6 +237,14 @@ enum DiagnosticEvent {
         stage: &'static str,
         result: Value,
     },
+    AcquisitionCoverage {
+        sequence: usize,
+        view: Value,
+    },
+    AcquisitionCoverageProgress {
+        sequence: usize,
+        snapshot: Value,
+    },
     AnswerSafetyState {
         sequence: usize,
         phase: &'static str,
@@ -487,6 +495,26 @@ impl DiagnosticTraceRecorder {
             stage,
             result: sanitized_value(result),
         });
+    }
+
+    pub fn record_acquisition_coverage<T: Serialize>(&mut self, view: &T) {
+        let sequence = self.sequence();
+        self.events.push(DiagnosticEvent::AcquisitionCoverage {
+            sequence,
+            view: sanitized_value(view),
+        });
+    }
+
+    pub fn record_acquisition_progress(
+        &mut self,
+        snapshot: &crate::acquisition_coverage::Snapshot,
+    ) {
+        let sequence = self.sequence();
+        self.events
+            .push(DiagnosticEvent::AcquisitionCoverageProgress {
+                sequence,
+                snapshot: sanitized_value(snapshot),
+            });
     }
 
     pub fn record_answer_safety<T: Serialize>(

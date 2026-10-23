@@ -51,6 +51,10 @@ pub(super) fn from_output(output: &NaturalOutput) -> HumanPresentation {
         &attempts,
         output.safety_runtime.configuration_id(),
         output.answer_context.as_ref(),
+        output
+            .acquisition_coverage
+            .as_ref()
+            .map(|view| view.selected_claims.as_slice()),
     )
 }
 
@@ -67,6 +71,7 @@ pub(super) fn from_parts(
         attempts,
         safety_configuration_id,
         None,
+        None,
     )
 }
 
@@ -76,6 +81,7 @@ pub(super) fn from_context_parts(
     attempts: &[ResolutionAttempt],
     safety_configuration_id: &str,
     context: Option<&super::answer_context::View>,
+    selected: Option<&[reasoning_harness_core::FinalAnswerClaim]>,
 ) -> HumanPresentation {
     let answer_exposed = matches!(
         finalization.status,
@@ -92,6 +98,12 @@ pub(super) fn from_context_parts(
         match claim.state {
             EpistemicState::Known | EpistemicState::Supported => {
                 if !answer_exposed
+                    || selected.is_some_and(|selection| {
+                        !selection.iter().any(|c| {
+                            c.mode == reasoning_harness_core::FinalClaimMode::Grounded
+                                && c.proposition == *proposition
+                        })
+                    })
                     || context.is_some_and(|view| {
                         !view.selected_claims.iter().any(|selected| {
                             selected.mode == reasoning_harness_core::FinalClaimMode::Grounded
