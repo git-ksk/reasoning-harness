@@ -223,12 +223,25 @@ impl<'de> Deserialize<'de> for UniqueJson {
     }
 }
 
-fn source_quote(source: &Source, artifact: &ReasoningArtifact) -> Result<String, String> {
+fn source_quote(source: &Source, artifact: &ReasoningArtifact) -> Result<Option<String>, String> {
+    // A predeclared source is only a candidate until this proposition's actual
+    // claim/receipt refers to it. Either kind of reference must still validate;
+    // an incomplete or forged reference cannot become a silent omission.
+    let referenced = artifact.claims.iter().any(|claim| {
+        claim.proposition.as_ref() == Some(&source.proposition)
+            && claim.evidence_ids.contains(&source.evidence_id)
+    }) || artifact.verification_receipts.iter().any(|receipt| {
+        receipt.proposition.as_ref() == Some(&source.proposition)
+            && receipt.evidence_ids.contains(&source.evidence_id)
+    });
     let matches = artifact
         .evidence
         .iter()
         .filter(|e| e.id == source.evidence_id)
         .collect::<Vec<_>>();
+    if matches.is_empty() && !referenced {
+        return Ok(None);
+    }
     let [evidence] = matches.as_slice() else {
         return Err("answer_context evidence missing or ambiguous".into());
     };
@@ -263,6 +276,11 @@ fn source_quote(source: &Source, artifact: &ReasoningArtifact) -> Result<String,
         .ok_or("answer_context quote pointer must select a complete string")?;
     if !clean(quote) || quote.len() > 32768 {
         return Err("answer_context quote is unsafe or exceeds its bound; no truncation".into());
+    }
+    // Acquired but unselected candidates remain hash/metadata checked above.
+    // Acquisition alone does not attach their quotation to the selected claim.
+    if !referenced {
+        return Ok(None);
     }
     let matching_claims = artifact
         .claims
@@ -321,7 +339,7 @@ fn source_quote(source: &Source, artifact: &ReasoningArtifact) -> Result<String,
     if !safe || !receipt_bound || unsafe_key {
         return Err("answer_context source has no exact current authorized claim/receipt".into());
     }
-    Ok(quote.to_owned())
+    Ok(Some(quote.to_owned()))
 }
 
 fn grounded_target_authorized(artifact: &ReasoningArtifact, target: &Proposition) -> bool {
@@ -527,7 +545,9 @@ pub(super) fn compose(
         for source in config.sources.iter().filter(|s| {
             s.proposition == claim.proposition && claim.mode == FinalClaimMode::Grounded
         }) {
-            let quote = source_quote(source, artifact)?;
+            let Some(quote) = source_quote(source, artifact)? else {
+                continue;
+            };
             total_quote_bytes += quote.len();
             if total_quote_bytes > 65536 {
                 return Err("answer_context total quote limit exceeded; no truncation".into());
@@ -807,6 +827,65 @@ mod tests {
             serde_json::from_str::<View>(&serde_json::to_string(&view).unwrap()).unwrap(),
             view
         );
+    }
+
+    #[test]
+    fn source_registry_candidates_follow_actual_acquisition_and_receipt_selection() {
+        use reasoning_harness_core::{AnswerSafetyProfile, Verdict};
+        let (mut config, original, selected, hard) = test_fixture();
+        let mut sibling = original.evidence[0].clone();
+        sibling.id = "admitted-e2".into();
+        sibling.source = "alternate-manual".into();
+        let mut binding = config.sources[0].clone();
+        binding.evidence_id = sibling.id.clone();
+        binding.source_id = sibling.source.clone();
+        binding.evidence_sha256 = evidence_hash(&sibling);
+        config.sources.push(binding);
+        // The registry is fixed before either source is acquired. The same
+        // proposition can be established by either exact admitted source.
+        for selected_source in 0..2 {
+            let mut artifact = original.clone();
+            if selected_source == 1 {
+                artifact.evidence[0] = sibling.clone();
+                artifact.claims[0].evidence_ids = vec![sibling.id.clone()];
+                artifact.verification_receipts[0].evidence_ids = vec![sibling.id.clone()];
+            }
+            let (answer, saved) = compose(&config, &artifact, &selected, hard.clone()).unwrap();
+            assert_eq!(saved.citations.len(), 1);
+            assert_eq!(saved.citations[0].evidence_id, artifact.evidence[0].id);
+            assert_eq!(
+                restore(
+                    &config,
+                    &artifact,
+                    Verdict::Accept,
+                    AnswerSafetyProfile::VerifiedTargetV1,
+                    &saved
+                )
+                .unwrap()
+                .0,
+                answer
+            );
+        }
+        let mut artifact = original.clone();
+        artifact.evidence.push(sibling.clone());
+        // Merely acquiring another agreeing document is not a bound receipt.
+        let (_, view) = compose(&config, &artifact, &selected, hard.clone()).unwrap();
+        assert_eq!(view.citations.len(), 1);
+        for change in 0..4 {
+            let mut changed = artifact.clone();
+            match change {
+                0 => changed.evidence[1].observation.push(' '),
+                1 => changed.evidence.push(sibling.clone()),
+                2 => changed.claims[0].evidence_ids.push(sibling.id.clone()),
+                _ => changed.verification_receipts[0]
+                    .evidence_ids
+                    .push(sibling.id.clone()),
+            }
+            assert!(
+                compose(&config, &changed, &selected, hard.clone()).is_err(),
+                "change={change}"
+            );
+        }
     }
 
     #[test]
