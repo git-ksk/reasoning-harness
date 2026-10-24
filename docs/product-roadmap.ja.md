@@ -1,5 +1,9 @@
 # 製品ロードマップ: Reason CLI / Harness Engine
 
+**2026-10-24 現在:** PR551・[PR552](https://github.com/git-ksk/reasoning-harness/pull/552)はマージ済み。比較準備で再現した「未取得の同一命題の資料候補があると回答全体が失敗する」不備は[#553](https://github.com/git-ksk/reasoning-harness/issues/553) / [PR555](https://github.com/git-ksk/reasoning-harness/pull/555)で修正し、CI22/22成功。修正後の独立レビューは担当の利用上限で未完了のためDraftを維持する。
+
+[次の共通CLI比較の準備](../evaluation/cli-repair-paired-v1/README.md)を保存。両Engineに同一の取得制御パッチを適用したローカルビルドと、外部APIなしの接続17通り・評価器44件を確認した。これはF1改善の証拠ではなく、元の採点は不変。最終Linux環境・独立レビュー・API残量・実行条件の固定後に、既知24問の開発測定へ進む。新規独立受入とCLI採用は別途。Mistral/Groq保留を維持し、Googleも新しい実行条件は未確定。詳細は[準備記録](../evaluation/cli-repair-paired-v1/offline-checkpoint.json)。
+
 **2026-10-22:** PR551はmerge済み。次は[#491](https://github.com/git-ksk/reasoning-harness/issues/491) / [PR552](https://github.com/git-ksk/reasoning-harness/pull/552)で、実測された取得の早期終了と未確認対象の消失を限定修正する。[範囲](acquisition-coverage.md)。F1改善は未測定。
 
 **2026-10-21 部品修正:** [#550](https://github.com/git-ksk/reasoning-harness/issues/550) / [PR551](https://github.com/git-ksk/reasoning-harness/pull/551)で、通常CLIの条件・引用・未確認入力を最終表示まで保持する。[契約と範囲](cli-answer-context.md)。保存ログの表示確認で元F1は変更せず、別途固定した対照測定とEngine採用の判定を残す。

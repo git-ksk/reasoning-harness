@@ -1,5 +1,9 @@
 # Product roadmap: Reason CLI and Harness Engine
 
+**Current, 2026-10-24:** PR551 and [PR552](https://github.com/git-ksk/reasoning-harness/pull/552) are merged. A same-proposition unacquired registry candidate could abort an otherwise valid answer; [#553](https://github.com/git-ksk/reasoning-harness/issues/553) / [PR555](https://github.com/git-ksk/reasoning-harness/pull/555) repair that boundary, with CI22/22 green. PR555 remains Draft because the final independent review stopped at the reviewer's usage limit.
+
+The [next common-CLI comparison preparation](../evaluation/cli-repair-paired-v1/README.md) is saved. Both historical core trees build locally with the identical acquisition-control patch; 17 inert connection controls and 44 evaluator controls pass. These checks do not measure F1 improvement; original scores remain unchanged. Final Linux containment, independent review, account readiness and a new execution freeze precede the consumed24 development measurement. Fresh independent acceptance and CLI adoption remain separate. Mistral/Groq holds remain; Google's new execution conditions are incomplete. See the [offline checkpoint](../evaluation/cli-repair-paired-v1/offline-checkpoint.json).
+
 **2026-10-22:** PR551 merged; [#491](https://github.com/git-ksk/reasoning-harness/issues/491) / [PR552](https://github.com/git-ksk/reasoning-harness/pull/552) now repairs measured early acquisition completion and missing plan targets. [Boundaries](acquisition-coverage.md). F1 improvement remains unmeasured.
 
 **2026-10-21 component work:** [#550](https://github.com/git-ksk/reasoning-harness/issues/550) / [PR551](https://github.com/git-ksk/reasoning-harness/pull/551) preserves host-bound source conditions, citations and unresolved inputs through ordinary CLI finalization. [Contract and scope](cli-answer-context.md). Saved-artifact presentation checks do not change the frozen F1; new paired measurement and Engine adoption remain separate gates.
