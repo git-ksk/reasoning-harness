@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-24",
+  "state": "OFFLINE_PREPARATION_NOT_FROZEN",
+  "common_cli_host": "73bbd18173b4dfcd6664a26241de0385f2eb2e3e",
+  "build_identity_recorded_host": "73bbd18",
+  "build_identity_sha256": "144a9adca6d0277a7eebbeffe2699c92fca2e1df1563bf642ed73243bc9c2885",
+  "registry_build_proof_sha256": "b59dde87375591735c2057a75387005e4289ed6d47b104e021dbf5dcaaf98b5f",
+  "arms": {
+    "baseline": {
+      "engine_commit": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+      "core_changed_files": [
+        "src/resolution.rs"
+      ],
+      "common_resolution_patch_sha256": "f0cbea7b4ca7f2d265468d1dab7fb0155fb2dc06bd393178eacbe10627c42c39",
+      "binaries_verified": 5
+    },
+    "candidate": {
+      "engine_commit": "ab3c6322921c8c738ec35bd018345917b5afa538",
+      "core_changed_files": [
+        "src/resolution.rs"
+      ],
+      "common_resolution_patch_sha256": "f0cbea7b4ca7f2d265468d1dab7fb0155fb2dc06bd393178eacbe10627c42c39",
+      "binaries_verified": 5
+    }
+  },
+  "same_provider_instrumentation": true,
+  "local_platform": "macOS aarch64",
+  "build_limitation": "Registry binaries were compiled separately. Consolidated final builder and Linux containment remain unvalidated.",
+  "unit_controls_passed": 44,
+  "loopback_controls_passed": 17,
+  "saved_output_mutations_rejected": 14,
+  "preparation_guard_controls": 7,
+  "new_external_provider_requests": 0,
+  "new_accuracy_cases": 0,
+  "F1_recomputed": false,
+  "independent_review_complete": false,
+  "original_consumed_score_sha256": "bfe04912745e2236a8d1995e0166f57aa6cd396e988229fc168aafc2dea37051",
+  "verification_report_sha256": "4021bde9523d845eaa30a98cd5a4e013baa29b39af1b949e856171221d8e80e8",
+  "first_failures_preserved": [
+    "patch did not apply in exported worktree; fixed invocation, no Engine result",
+    "capture adapter incorrectly required private serde-skipped field; saved bytes recaptured without HTTP",
+    "transport unit fixtures updated to real resolver shape; prior failures retained",
+    "inherited plan test isolated from preparation guard; both independently checked"
+  ],
+  "next": [
+    "independent review of PR555 and evaluator",
+    "matched final Linux build and containment",
+    "new runtime receipt and provider readiness",
+    "consumed-set paired measurement",
+    "fresh independent acceptance before CLI adoption"
+  ]
+}
