@@ -11256,7 +11256,13 @@ mod candidate_json_tests {
     async fn source_context_execution_fixture(
         acquisition_coverage: Option<acquisition_coverage::Ledger>,
     ) -> NaturalOutput {
-        let (config, artifact, selected, _) = answer_context::test_fixture();
+        let (mut config, artifact, selected, _) = answer_context::test_fixture();
+        // Runtime/session controls use a registry fixed before acquisition,
+        // including a same-proposition source that this turn never acquired.
+        let mut pending_source = config.sources[0].clone();
+        pending_source.evidence_id = "not-acquired-source".into();
+        pending_source.source_id = "pending-manual".into();
+        config.sources.push(pending_source);
         let candidate = ReasoningCandidate {
             claims: artifact
                 .claims
