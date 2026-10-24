@@ -1,6 +1,6 @@
 # CLI repair paired evaluation preparation
 
-This is an **offline preparation checkpoint**, not a completed evaluation or a frozen execution runtime. PR552 is merged at `2c4fea29ac9ae7c0447766cd0d83200ae01ea9f1`. The common host includes the source-registry fix in PR555 at `73bbd18173b4dfcd6664a26241de0385f2eb2e3e`; PR555 remains Draft pending independent review.
+This is an **offline preparation checkpoint**, not a completed evaluation or a frozen execution runtime. PR552 is merged at `2c4fea29ac9ae7c0447766cd0d83200ae01ea9f1`. The common host includes the source-registry fix in PR555 at `73bbd18173b4dfcd6664a26241de0385f2eb2e3e`; PR555 passed its bounded independent review and was merged at `3ceed8ac122c8be51ddc2a97f8d1f689827dcd02`. The historical common-host pin remains fixed.
 
 The next measurement uses the consumed 24-document-task development set. It can measure whether the repaired CLI improves those previously observed tasks. It cannot establish fresh generalization or authorize Engine adoption. The original scores, observations and published tags stay immutable; fresh independent acceptance follows separately.
 
@@ -28,7 +28,7 @@ python3 -m unittest discover -s target/cli-paired-preparation/repo/evaluation/cl
 
 `prepare.py` imports only declared files and applies this overlay without changing historical sources. The destination must not exist. `preparation.json` records imported, rewritten and overlay file hashes; it is explicitly not an execution receipt.
 
-The builder is at `target/cli-paired-preparation/repo/evaluation/cli-repair-paired-v1/build.py`. It produces five binaries per arm, including a registry generator linked to the actual core's Evidence serializer. A final build and containment review are still required before freezing. The local checkpoint used eight paired host binaries plus two separately compiled registry binaries; the consolidated builder was updated afterward and is not claimed as a frozen build.
+The builder is at `target/cli-paired-preparation/repo/evaluation/cli-repair-paired-v1/build.py`. It produces five binaries per arm, including a registry generator linked to the actual core's Evidence serializer. The consolidated builder completed both Linux aarch64 arms and all ten binary hashes were checked. Source inventories show only the identical PR552 resolution patch in each core tree; provider patches match. The final runtime containment and independent review still precede any freeze. The older macOS checkpoint used separately compiled registry binaries.
 
 The existing local raw controls can be rechecked without another model call:
 
@@ -43,8 +43,8 @@ The observations are local ignored artifacts. No API keys, raw private corpus or
 
 ## Remaining gates
 
-1. Finish independent review of PR555 and this evaluator. The requested reviewer hit an account usage limit before reviewing the final fix; no PASS is recorded.
-2. Build the final matched Linux runtime with all ten binaries; verify inventories, registry parity, containment, process-tree cancellation and durable quota accounting. Local macOS checks do not satisfy this gate.
+1. PR555 passed bounded independent review and is merged. The first PR556 review at `687fb04` found three defects: blocked-answer projection acceptance, keyless selector rejection, and an inherited preflight status assertion. The successor fixes require independent re-review; no evaluator PASS is recorded yet.
+2. Both Linux aarch64 hosts and all ten binaries are built. Complete final runtime registry parity, containment, process-tree cancellation and durable quota accounting. The original inherited runner suite passed 19/21; two startup-sensitive controls signalled before fixture readiness. Those failures remain recorded, and a separate readiness-aware verification must pass before execution.
 3. Complete the new development execution receipt and current provider readiness. Historical M0/runtime-reuse receipts cannot authorize this host. The inherited independent-M0 path still expects the old host; it must be separately migrated and reviewed before fresh acceptance.
 4. Freeze input/config/registry generation, scoring arithmetic, reviewers and limits before any new paid observation. Review full output bytes and exact quote attachments; annotations must be bound to the new outputs.
 5. Run the admitted consumed-set comparison once, record complete and incomplete rows, then decide on a fresh independent set. All three providers and both tracks remain required for the final adoption decision.

@@ -53,8 +53,13 @@ def bind_normal(payload,trace,journal,config,corpus,model_events,provider,model)
         target=targets[event['target_id']];selector=request.get('target',{})
         require(selector.get('target_id')==target['id'] and selector.get('question')==target['question'],
                 'acquisition_wrong_target')
-        require(selector.get('expected_fact_key')==target['expected_fact_key']
-                and target['expected_fact_key'] in caps[event['capability_id']]['supported_fact_keys'],
+        capability=caps[event['capability_id']]
+        fact_keys=capability['supported_fact_keys']
+        effective_key=target.get('expected_fact_key')
+        if effective_key is None and capability.get('read_only') is True and len(fact_keys)==1:
+            effective_key=fact_keys[0]
+        require(selector.get('expected_fact_key')==effective_key
+                and (effective_key is None or effective_key in fact_keys),
                 'acquisition_wrong_fact_key')
         if result.get('acquisition_coverage') is not None:
             progress=[e for e in trace['events'][:event['sequence']] if e.get('kind')=='acquisition_coverage_progress']
@@ -98,6 +103,10 @@ def bind_normal(payload,trace,journal,config,corpus,model_events,provider,model)
     from display_projection import citations
     displayed_citations=citations(result,config,corpus,require,sha)
     return {'display_artifacts':[{'id':'answer','kind':'final_answer','text':text or ''}], 'display_citations':displayed_citations,
+            'hard_finalization':result.get('answer_context',{}).get('hard_finalization',
+                result.get('acquisition_coverage',{}).get('base_finalization',result['finalization'])),
+            'source_context_view':result.get('answer_context'),
+            'acquisition_coverage_view':result.get('acquisition_coverage'),
             'acquired_source_ids':sorted({e['source'] for e in acquired.values()}),
             'admitted_source_ids':sorted({e['source_id'] for e in admitted.values()}),'admission_routes':admitted,
             'internal_claims':list(claims.values()),'verification_receipts':list(receipts.values()),'usage':usage,

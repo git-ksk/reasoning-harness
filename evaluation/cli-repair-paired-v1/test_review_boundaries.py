@@ -34,7 +34,7 @@ def normal_fixture():
         'completion_status':'completed'}
     payload={'schema_version':'reason-cli-output-v1','command':'ask','result':{'output_contract':'reason-natural-output-v4','task':case['question'],'configuration':{'provider':provider,'model':model},'usage':{'run':{'model_calls':1}},'safety_runtime':runtime,'safety_observations':[trace['events'][6]['observation']],'finalization':final,'final_outcome':outcome,'investigation':{'telemetry':{'targets':[{'id':'target','question':case['question'],'expected_fact_key':'value','origin':'model_proposed_untrusted'}]}}}}
     policy={'sources':{'s':{'scope':scope,'authority_class':'primary','max_age_seconds':100}},'required_scope':scope,'authority_ranks':{'primary':20},'minimum_authority_class':'primary','evaluation_time_unix_seconds':150}
-    config={'resolution':{'investigation':{'capabilities':[{'id':'cap','supported_fact_keys':['value'],'admission':policy}]}}}
+    config={'resolution':{'investigation':{'capabilities':[{'id':'cap','read_only':True,'supported_fact_keys':['value'],'admission':policy}]}}}
     journal=[{'corpus_sha256':'c'*64,'case':case['id'],'request':{'schema_version':'reason-investigation-external-resolver-request-v1','request':{'id':'investigation:target:cap','target':{'target_id':'target','question':case['question'],'expected_fact_key':'value'}}},'response':{'schema_version':'reason-external-resolver-response-v1','contribution':{'kind':'acquired_evidence','evidence':[record]}}}]
     data={'_capture_sha256':'c'*64,'_expected_case_id':case['id'],'cases':[case],'sources':{'s':source}}
     return [payload,trace,journal,config,data,events,provider,model]
@@ -43,6 +43,23 @@ class ReviewBoundaries(unittest.TestCase):
     @classmethod
     def setUpClass(cls):cls.deps=scorer.frozen_dependencies(REPO)
     def test_valid_capture_transport(self):self.assertEqual(capture.bind_normal(*normal_fixture())['usage']['generations'],1)
+    def test_keyless_target_preserves_actual_selector_rules(self):
+        for omitted in [False,True]:
+            with self.subTest(omitted=omitted):
+                args=normal_fixture();target=args[0]['result']['investigation']['telemetry']['targets'][0]
+                if omitted:target.pop('expected_fact_key')
+                else:target['expected_fact_key']=None
+                self.assertEqual(capture.bind_normal(*args)['usage']['generations'],1)
+                args[2][0]['request']['request']['target']['expected_fact_key']='other'
+                with self.assertRaisesRegex(ValueError,'acquisition_wrong_fact_key'):capture.bind_normal(*args)
+        for read_only,keys in [(True,['value','other']),(False,['value'])]:
+            with self.subTest(read_only=read_only,keys=keys):
+                args=normal_fixture();args[0]['result']['investigation']['telemetry']['targets'][0]['expected_fact_key']=None
+                cap=args[3]['resolution']['investigation']['capabilities'][0];cap.update(read_only=read_only,supported_fact_keys=keys)
+                args[2][0]['request']['request']['target']['expected_fact_key']=None
+                self.assertEqual(capture.bind_normal(*args)['usage']['generations'],1)
+                args[2][0]['request']['request']['target']['expected_fact_key']='value'
+                with self.assertRaisesRegex(ValueError,'acquisition_wrong_fact_key'):capture.bind_normal(*args)
     def test_orphan_citation_cannot_disappear(self):
         g,o,r,s=pair();o['display_citations'].append({**o['display_citations'][0],'id':'orphan','artifact_id':'absent'});rebind(o,r)
         with self.assertRaisesRegex(ValueError,'orphan_citation_artifact'):scorer.validate_review(g,o,r,s,self.deps)

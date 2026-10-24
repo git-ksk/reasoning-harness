@@ -22,6 +22,7 @@ def main():
     from capture import bind_normal, bind_helper
     from scorer import check_model_journal, check_terminal_order
     from preparation_guard import require_loopback_preparation
+    from trace_audit import sanitize
     from run_lane import check_plan
     from development import checked_receipt
 
@@ -80,7 +81,8 @@ def main():
     mutations = []
     for index, original in enumerate(acquisition_inputs):
         for name in ['citation_url', 'unacquired_citation', 'quote_span', 'missing_safety',
-                     'request_fact_key', 'request_question', 'changed_acquired_record']:
+                     'request_fact_key', 'request_question', 'changed_acquired_record',
+                     'source_promotes_withheld', 'coverage_promotes_withheld']:
             inputs = copy.deepcopy(original)
             result, trace, journal = inputs[0]['result'], inputs[1], inputs[2]
             citation = result['answer_context']['citations'][0]
@@ -100,8 +102,37 @@ def main():
                 journal[0]['request']['request']['target']['expected_fact_key'] = 'other.key'
             elif name == 'request_question':
                 journal[0]['request']['request']['target']['question'] = 'different target'
-            else:
+            elif name == 'changed_acquired_record':
                 journal[0]['response']['contribution']['evidence'][0]['facts']['unit.value'] = '5'
+            else:
+                context = result['answer_context']
+                target = context['selected_claims'][0]['proposition']
+                hard = copy.deepcopy(context['hard_finalization'])
+                hard.update(status='requires_verification', text=None, uncovered_propositions=[target])
+                context['hard_finalization'] = hard
+                coverage = result['acquisition_coverage']
+                for observation in result['safety_observations']:
+                    observation['observation']['disposition'] = 'force_verification'
+                for event in trace['events']:
+                    if event['kind'] == 'answer_safety_state':
+                        event['observation']['observation']['disposition'] = 'force_verification'
+                    if event.get('stage') == 'answer_safety':
+                        event['result'] = sanitize(hard)
+                if name == 'source_promotes_withheld':
+                    coverage['base_finalization']['uncovered_propositions'] = [target]
+                    result['finalization']['uncovered_propositions'] = [target]
+                else:
+                    context.update(citations=[], unresolved_inputs=[], input_reasons={})
+                    coverage['base_finalization'] = hard
+                    coverage['plan_answer_complete'] = False
+                    result['finalization']['uncovered_propositions'] = [target]
+                for event in trace['events']:
+                    if event.get('stage') == 'source_context':
+                        event['result'] = sanitize(coverage['base_finalization'])
+                    elif event['kind'] == 'acquisition_coverage':
+                        event['view'] = sanitize(coverage)
+                    elif event.get('stage') == 'acquisition_coverage':
+                        event['result'] = sanitize(result['finalization'])
             try:
                 bind_normal(*inputs)
             except ValueError as error:

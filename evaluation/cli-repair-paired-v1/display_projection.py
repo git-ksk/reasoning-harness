@@ -4,6 +4,66 @@ from trace_audit import sanitize
 import json
 
 
+def is_exposed(finalization):
+    return finalization['status'] in ['grounded_answer', 'qualified_partial_answer'] and finalization.get('text') is not None
+
+
+def same_claim_coverage(before, after, require):
+    for key in ['factual_claims', 'covered_claims', 'factual_claim_coverage', 'uncovered_propositions']:
+        require(before.get(key) == after.get(key), 'projection_changed_hard_coverage:' + key)
+
+
+def source_transition(hard, view, display, require):
+    same_claim_coverage(hard, display, require)
+    if not is_exposed(hard):
+        require(display == hard, 'source_context_promoted_withheld_answer')
+        require(not view['citations'] and not view['unresolved_inputs'] and not view['input_reasons'], 'blocked_source_context_not_empty')
+    elif not view['citations'] and not view['unresolved_inputs']:
+        require(display == hard, 'empty_source_context_changed_answer')
+    else:
+        require(display['status'] == 'qualified_partial_answer' and isinstance(display.get('text'), str) and bool(display['text']), 'source_context_invalid_status')
+        require(hard['factual_claims'] == len(view['selected_claims']), 'source_context_claim_inventory')
+
+
+def coverage_transition(view, display, require):
+    base = view['base_finalization']
+    same_claim_coverage(base, display, require)
+    admitted = view['ledger']['plan_admitted']
+    targets = view['targets']
+    require(type(admitted) is bool and [t['target'] for t in targets] == [t['target'] for t in view['ledger']['targets']], 'coverage_target_inventory')
+    exposed = is_exposed(base)
+    complete = admitted and exposed and all(t['disposition'] == 'verified' for t in targets)
+    evidence_complete = admitted and all(t['disposition'] in ['verified', 'verified_not_selected'] for t in targets)
+    require(type(view['plan_answer_complete']) is bool and view['plan_answer_complete'] == complete, 'coverage_answer_completeness')
+    require(type(view['plan_evidence_complete']) is bool and view['plan_evidence_complete'] == evidence_complete, 'coverage_evidence_completeness')
+    if complete:
+        require(display == base, 'complete_coverage_changed_answer')
+        return
+    # The production coverage projection adds diagnostics only. Reconstruct its
+    # exact text so a blocked hard result cannot gain factual output here.
+    encode = lambda value: json.dumps(value, ensure_ascii=False, separators=(',', ':'))
+    text = base['text'] if exposed else ''
+    if text:
+        text += '\n'
+    text += 'Investigation coverage (admitted plan only; not proof that the whole question is answered):'
+    if not admitted:
+        text += '\nNo admitted plan is available; task coverage has not been established.'
+    for target in targets:
+        if target['disposition'] == 'verified' and exposed:
+            continue
+        data = target['target']
+        disposition = ('evidence_verified_but_answer_not_released' if not exposed and target['disposition'] == 'verified'
+                       else encode(target['disposition']))
+        text += '\n- target ' + encode(data['id']) + ' / question ' + encode(data['question']) + ' / selector ' + encode(data.get('expected_fact_key')) + ': ' + disposition
+    stop = encode(view['stop_reason']) if view['stop_reason'] is not None else 'not run in this turn'
+    text += '\nInvestigation stopped: ' + stop + '. Unestablished targets have no asserted value.'
+    expected = deepcopy(base)
+    expected['text'] = text
+    if base['status'] == 'grounded_answer':
+        expected['status'] = 'qualified_partial_answer'
+    require(display == expected, 'coverage_invalid_display_transition')
+
+
 def peel(trace, result, require):
     events = trace.get('events', [])
     require(all(e.get('sequence') == n for n, e in enumerate(events)), 'trace_sequence')
@@ -33,6 +93,7 @@ def peel(trace, result, require):
         require(context['policy_id'] == 'harness-bound-source-context-v1', 'source_context_policy')
         require(sanitize(context['hard_finalization']) == hard and sanitize(context['selected_claims']) == selected, 'source_context_hard_binding')
         require(suffix[0]['phase'] == 'source_context' and suffix[0]['round'] == safety[-1]['round'] and suffix[0]['result'] == sanitize(source_display), 'source_context_trace_binding')
+        source_transition(context['hard_finalization'], context, source_display, require)
     else:
         require(sanitize(source_display) == hard, 'coverage_base_without_context')
     if coverage is not None:
@@ -41,6 +102,7 @@ def peel(trace, result, require):
         require(suffix[-2]['view'] == sanitize(coverage), 'coverage_trace_view_binding')
         require(suffix[-1]['phase'] == 'acquisition_coverage' and suffix[-1]['round'] == safety[-1]['round'], 'coverage_trace_round')
         require(suffix[-1]['result'] == sanitize(result['finalization']), 'coverage_trace_display_binding')
+        coverage_transition(coverage, result['finalization'], require)
     # The preserved hard-state validator sees all pre-projection events with
     # their original sequence numbers. No renderer/safety event is discarded.
     core_trace = deepcopy(trace)
