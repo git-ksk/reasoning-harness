@@ -22,22 +22,16 @@ def aggregate_reserve(budget):
     return i+o
 
 def check_plan(plan,protocol):
-    if protocol.get('state')=='PREPARATION_NO_LIVE_ALLOWED':raise ValueError('paired_runtime_preparation_only')
+    if protocol.get('state')!='DEVELOPMENT_REQUIRES_FROZEN_RECEIPT':raise ValueError('paired_runtime_preparation_only')
     from plan_inputs import inventory
     provider=plan['provider'];settings=protocol['providers'][provider]
     root=Path(plan['corpus_root'])
     if not root.is_absolute() or str(root.resolve())!=str(root):raise ValueError('canonical absolute corpus root required')
-    if plan.get('purpose')=='CONSUMED_REAL24_ENGINEERING_DIAGNOSTIC_NOT_ACCEPTANCE':
-        from development import checked_receipt,consumed_corpus,INPUT_M1
-        receipt_path=plan['development_receipt_file'];receipt=checked_receipt(receipt_path,provider)
-        if plan['M1_sha256']!=INPUT_M1 or plan['M1_sha256']!=receipt['consumed_M1_sha256']:raise ValueError('plan consumed M1 mismatch')
-        data=consumed_corpus(root)
-    else:
-        from corpus import validate,verify_provenance
-        if plan.get('purpose') is not None:raise ValueError('unknown evaluation purpose')
-        receipt_path=plan['M0_receipt_file'];m0=verify_provenance(root,receipt_path)
-        if m0['required_provider_readiness'][provider]['new_live_run_allowed'] is not True:raise ValueError('selected provider deferred before credentials')
-        data,_,_=validate(root,plan['M1_sha256'])
+    if plan.get('purpose')!='CONSUMED_REAL24_ENGINEERING_DIAGNOSTIC_NOT_ACCEPTANCE':raise ValueError('development_execution_only')
+    from development import checked_receipt,consumed_corpus,INPUT_M1
+    receipt_path=plan['development_receipt_file'];receipt=checked_receipt(receipt_path,provider)
+    if plan['M1_sha256']!=INPUT_M1 or plan['M1_sha256']!=receipt['consumed_M1_sha256']:raise ValueError('plan consumed M1 mismatch')
+    data=consumed_corpus(root)
     recovery=plan.get('groq_recovery_file') if provider=='groq' else None
     if plan['artifacts']!=inventory(root,receipt_path,recovery):raise ValueError('complete callback input inventory changed')
     if plan['model']!=settings['model']:raise ValueError('model swap')
@@ -73,12 +67,16 @@ def check_plan(plan,protocol):
 class AuditedRunner(scheduler.OperationalRunner):
     def __init__(self,plan,output,protocol):
         self.currency_reservation=check_plan(plan,protocol)
+        if plan.get('purpose')!='CONSUMED_REAL24_ENGINEERING_DIAGNOSTIC_NOT_ACCEPTANCE':raise ValueError('development_execution_only')
+        self.receipt_path=str(Path(plan['development_receipt_file']).resolve())
+        from scorer import sha
+        self.receipt_sha256=sha(Path(self.receipt_path).read_bytes())
         # Explicit successor integration: the pure reserve formula now uses the
         # aggregate pre-HTTP bounds in the pinned host, not per-generation
         # product bounds. Inherited immutable plan, inflight, accounting, grace,
         # restart refusal and attempt-count checks are unchanged.
         scheduler.reserve_for=aggregate_reserve
-        super().__init__(plan,output,lambda provider:{})
+        super().__init__(plan,output,lambda provider:{'CLI_REPAIR_DEVELOPMENT_RECEIPT':self.receipt_path,'CLI_REPAIR_DEVELOPMENT_RECEIPT_SHA256':self.receipt_sha256})
         if plan['provider']=='groq':
             recovery_path=Path(plan['groq_recovery_file'])
             recovery=json.loads(recovery_path.read_text())

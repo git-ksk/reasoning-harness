@@ -14,8 +14,8 @@ def invoke(argv,name,env):
     return r.returncode,value
 def main():
     p=argparse.ArgumentParser();p.add_argument('--provider',required=True);p.add_argument('--model',required=True);p.add_argument('--corpus',type=Path,required=True);p.add_argument('--host-policy',type=Path,required=True);p.add_argument('--case',required=True);p.add_argument('--track',choices=['e2e_normal','helper_opt_in'],required=True);p.add_argument('--arm',choices=['baseline','candidate','helper'],required=True);p.add_argument('--bin-dir',type=Path,required=True);a=p.parse_args()
-    from preparation_guard import require_loopback_preparation
-    require_loopback_preparation(a.model,os.environ)
+    from preparation_guard import require_callback_admission
+    require_callback_admission(a,os.environ)
     corpus=json.loads(a.corpus.read_text());case=next(c for c in corpus['cases'] if c['id']==a.case);seed=49200+corpus['cases'].index(case)
     work=Path.cwd();env=os.environ.copy();env.update(ENGINE073_MODEL_JOURNAL=str(work/'model-journal.jsonl'),ENGINE073_GENERATION_CAP='24' if a.track=='e2e_normal' else '1',REASON_GROQ_STRUCTURED_OUTPUT_RETRIES='0',REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS='0')
     if 'ENGINE073_LOOPBACK_BASE_URL' in env and a.model!='fixture-model':raise ValueError('live_callback_cannot_use_engineering_redirect')

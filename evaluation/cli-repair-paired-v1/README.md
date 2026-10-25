@@ -1,4 +1,15 @@
-# CLI repair paired evaluation preparation
+# Paired real-model development evaluation
+
+This successor profile runs the previously observed 24 real-document tasks against baseline0.6.1 and the unpublished0.7.3 repair under the same common CLI. It requires a new independent operational review and frozen receipt before real model calls. The original scores and raw data remain immutable; this is consumed-set development measurement, not fresh accuracy acceptance.
+
+Planner output is now512 tokens in both arms (previous256 truncated Mistral planning). Aggregate output4096, input24000, logical12/generation24 caps, pacing, first-only/no-external-retry policy and currency caps remain unchanged. Mistral/Google are eligible only with the new receipt; Groq remains held. Account whole-cohort headroom is unknown and strict quota-stop may leave a cohort incomplete.
+
+The direct callback checks receipt identity/hash, actual independent verdict+manifest, all runtime files/binaries, exact72-job plan, current provider/model/job, inflight reservation and durable charge before HTTP. The exclusive model journal rejects duplicate callback execution. The live workflow reads model Secrets only after offline admission; it always preserves raw, usage, trace and incomplete rows.
+
+`score_development_first.py` is frozen before execution. New full-display/quote annotations are independently authored and bound to new observation/gold hashes, then sealed before exclusive first scoring. The metric arithmetic and all quality/safety/utility/efficiency gates are unchanged.
+
+## Earlier preparation checkpoints
+
 
 This is an **offline preparation checkpoint**, not a completed evaluation or a frozen execution runtime. PR552 is merged at `2c4fea29ac9ae7c0447766cd0d83200ae01ea9f1`. The common host includes the source-registry fix in PR555 at `73bbd18173b4dfcd6664a26241de0385f2eb2e3e`; PR555 passed its bounded independent review and was merged at `3ceed8ac122c8be51ddc2a97f8d1f689827dcd02`. The historical common-host pin remains fixed.
 
@@ -49,7 +60,7 @@ The observations are local ignored artifacts. No API keys, raw private corpus or
 4. Freeze input/config/registry generation, scoring arithmetic, reviewers and limits before any new paid observation. Review full output bytes and exact quote attachments; annotations must be bound to the new outputs.
 5. Run the admitted consumed-set comparison once, record complete and incomplete rows, then decide on a fresh independent set. All three providers and both tracks remain required for the final adoption decision.
 
-All providers are held in this preparation. The owner reported Mistral can resume on 2026-10-25. Its new execution readiness/receipt is still required. Groq's prior whole-cohort reservation did not fit the verified daily capacity. Google's new runtime/review/account readiness is incomplete. `run_lane` and receipt validation reject preparation mode, while `run_task` permits only inert numeric loopback with no real credentials. Enabling live execution requires an explicit implementation and review change, not toggling a JSON flag.
+Earlier preparation kept all providers held. The successor protocol enables only receipt-gated Mistral/Google development. The owner reported Mistral can resume on 2026-10-25. Its new execution readiness/receipt is still required. Groq's prior whole-cohort reservation did not fit the verified daily capacity. Google's new runtime/review/account readiness is incomplete. `run_lane` and receipt validation reject preparation mode, while `run_task` permits only inert numeric loopback with no real credentials. Enabling live execution requires an explicit implementation and review change, not toggling a JSON flag.
 
 ## GitHub runtime artifact
 

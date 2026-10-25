@@ -1,6 +1,6 @@
 {
   "identity": "cli-repair-paired-v1",
-  "state": "PREPARATION_NO_LIVE_ALLOWED",
+  "state": "DEVELOPMENT_REQUIRES_FROZEN_RECEIPT",
   "baseline": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
   "candidate": "ab3c6322921c8c738ec35bd018345917b5afa538",
   "common_cli_host": "73bbd18173b4dfcd6664a26241de0385f2eb2e3e",
@@ -16,8 +16,10 @@
       "USD_per_million_input": 0.15,
       "USD_per_million_output": 0.15,
       "price_source": "https://docs.mistral.ai/models/ministral-3-8b-25-12",
-      "new_live_run_allowed": false,
-      "hold_reason": "Owner reports possible free-quota depletion; remaining quota unverified."
+      "new_live_run_allowed": true,
+      "hold_reason": "Eligible only with a new reviewed receipt and strict quota-stop; whole-cohort account headroom is unknown, not guaranteed.",
+      "price_checked_utc_date": "2026-10-25",
+      "owner_recovery_confirmed_date": "2026-10-25"
     },
     "google": {
       "model": "gemini-3.5-flash-lite",
@@ -25,9 +27,9 @@
       "USD_per_million_input": 0.3,
       "USD_per_million_output": 2.5,
       "price_source": "https://ai.google.dev/gemini-api/docs/generate-content/whats-new-gemini-3.6",
-      "new_live_run_allowed": false,
-      "hold_reason": "Await complete runtime, independent operational review, account readiness and new frozen execution receipt.",
-      "price_checked_utc_date": "2026-10-24"
+      "new_live_run_allowed": true,
+      "hold_reason": "Eligible only with a new reviewed receipt and strict quota-stop; whole-cohort account headroom is unknown, not guaranteed.",
+      "price_checked_utc_date": "2026-10-25"
     },
     "groq": {
       "model": "openai/gpt-oss-120b",
@@ -41,7 +43,7 @@
       "hold_reason": "Whole-cohort conservative reservation exceeds previously verified free daily capacity; no recovery admitted."
     }
   },
-  "price_checked_utc_date": "2026-10-19",
+  "price_checked_utc_date": "2026-10-25",
   "sample": {
     "cases": 24,
     "minimum_clear_positive": 8,
@@ -79,7 +81,8 @@
       "requirement_policy": "claim-local-answer-sufficiency-requirements-v1",
       "rollback_configuration_id": "d3-sufficiency-answer-gate-v2"
     },
-    "CLI_safety_profile_arg": "current"
+    "CLI_safety_profile_arg": "current",
+    "investigation_planner_output_tokens": 512
   },
   "helper_bound": {
     "adapter_generations": 1,
@@ -161,5 +164,10 @@
   "previous_frozen_results_unchanged": true,
   "common_cli_host_scope": "Same CLI including PR551/PR552 and source registry acquisition repair; both frozen core trees receive the identical PR552 resolution opt-in patch. Patched-arm development comparison, not untouched published binaries.",
   "development_profile_rationale": "Measure bounded completion after original logical6 failure. Initial generation, investigation planning/actions/regeneration and final rendering/safety have separate logical operations; structured compatibility may require two generations. Aggregate token/currency limits unchanged. This is not retrospective six-operation acceptance.",
-  "registry_contract": "Pre-execution host source snapshots and admission metadata only; no gold, annotations or model output; actual core serde Evidence hashes; no unresolved keys inferred from gold."
+  "registry_contract": "Pre-execution host source snapshots and admission metadata only; no gold, annotations or model output; actual core serde Evidence hashes; no unresolved keys inferred from gold.",
+  "execution_tag": "cli-repair-paired-real24-development-v1",
+  "offline_validation": {
+    "expected_unit_controls": 55
+  },
+  "activation_policy": "Actual HTTP requires exact independently reviewed development receipt, immutable runtime/input inventory and current durable per-job reservation; this profile alone is not admission."
 }

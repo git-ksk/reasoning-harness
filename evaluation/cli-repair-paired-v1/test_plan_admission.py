@@ -13,7 +13,7 @@ class PlanAdmission(unittest.TestCase):
         self.protocol=json.loads((Path(__file__).parent/'protocol.json').read_bytes())
         # Exercise the inherited plan validator separately from the preparation
         # entry guard, which verify_local.py checks without these fixture mocks.
-        self.protocol['state']='UNIT_PLAN_VALIDATION_ONLY'
+        self.protocol['state']='DEVELOPMENT_REQUIRES_FROZEN_RECEIPT'
         output=self.root/'plan.json'
         argv=['make_development_plan.py','--receipt',str(self.root/'receipt.json'),'--corpus-dir',str(self.root),'--provider','mistral','--output',str(output)]
         with patch.object(sys,'argv',argv),patch.object(make_development_plan,'checked_receipt',return_value=self.receipt),patch.object(make_development_plan,'consumed_corpus',return_value=self.corpus),patch.object(make_development_plan,'inventory',return_value=self.artifacts),contextlib.redirect_stdout(io.StringIO()):

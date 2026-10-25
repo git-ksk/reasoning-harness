@@ -56,6 +56,8 @@ def run_case(arm,provider,mode,bins,root):
         usage=check_model_journal(events,provider,'fixture-model',24)
         if mode=='acquisition':
             assert p.returncode==0 and len(Handler.requests)==5,value
+            model_requests=[event for event in events if event['kind']=='model_request']
+            assert model_requests[1]['request']['max_tokens']==json.loads((HERE/'protocol.json').read_text())['normal_bound']['investigation_planner_output_tokens']
             trace=json.loads((out/'trace.json').read_text());corpus['_capture_sha256']=sha((out/'corpus.json').read_bytes());corpus['_expected_case_id']='engineering-01'
             journal=[json.loads(x) for x in (out/'resolver.jsonl').read_text().splitlines()]
             captured=bind_normal(value,trace,journal,json.loads((out/'config.json').read_text()),corpus,events,provider,'fixture-model')

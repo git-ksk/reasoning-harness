@@ -156,7 +156,7 @@ def main():
         try:
             callback()
         except ValueError as error:
-            assert str(error) == 'paired_runtime_preparation_only'
+            assert str(error) in ['paired_runtime_preparation_only', 'development_receipt_missing']
         else:
             raise AssertionError('preparation admitted execution')
 

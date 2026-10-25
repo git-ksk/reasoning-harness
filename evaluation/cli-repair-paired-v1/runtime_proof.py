@@ -33,8 +33,8 @@ def main():
              if path.is_file() and '__pycache__' not in path.parts}
     assert files == prepared['files']
     protocol = read(runtime / 'evaluation/cli-repair-paired-v1/protocol.json')
-    assert protocol['state'] == 'PREPARATION_NO_LIVE_ALLOWED'
-    assert all(profile['new_live_run_allowed'] is False for profile in protocol['providers'].values())
+    assert protocol['state'] in ['PREPARATION_NO_LIVE_ALLOWED', 'DEVELOPMENT_REQUIRES_FROZEN_RECEIPT']
+    assert protocol['providers']['groq']['new_live_run_allowed'] is False
     identity = read(args.bin_dir / 'identity.json')
     assert identity['host_commit'] == protocol['common_cli_host']
     assert identity['build_script_sha256'] == sha(runtime / 'evaluation/cli-repair-paired-v1/build.py')
@@ -61,7 +61,8 @@ def main():
     registry = read(args.controls / 'registry-parity.json')
     assert registry['pass'] is True and registry['identical_output'] is True
     unit = (args.controls / 'unit.log').read_text()
-    assert 'Ran 51 tests' in unit and unit.rstrip().endswith('OK')
+    expected_units = protocol.get('offline_validation', {}).get('expected_unit_controls', 51)
+    assert 'Ran ' + str(expected_units) + ' tests' in unit and unit.rstrip().endswith('OK')
     assert args.image_id.startswith('sha256:') and len(args.image_id) == 71
     with tarfile.open(args.image_archive, 'r:gz') as archive:
         manifest = json.load(archive.extractfile('manifest.json'))
@@ -92,7 +93,7 @@ def main():
              'preparation_sha256': sha(args.prepared / 'preparation.json'),
              'protocol_sha256': sha(runtime / 'evaluation/cli-repair-paired-v1/protocol.json'),
              'runtime_files': files, 'controls': controls, 'registry_parity_sha256': sha(args.controls / 'registry-parity.json'),
-             'unit_controls': 51, 'unit_log_sha256': sha(args.controls / 'unit.log'),
+             'unit_controls': expected_units, 'unit_log_sha256': sha(args.controls / 'unit.log'),
              'independent_operational_review_complete': False, 'new_external_provider_requests': 0,
              'new_accuracy_cases': 0, 'F1_recomputed': False, 'API_execution_admitted': False,
              'runtime_proof_script_sha256': sha(Path(__file__))}

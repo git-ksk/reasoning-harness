@@ -1,5 +1,5 @@
 """Separate seen-corpus diagnostic admission; never an accuracy/M0 receipt."""
-import json
+import json,time
 from pathlib import Path
 from scorer import require,sha
 
@@ -9,19 +9,33 @@ HERE=Path(__file__).resolve().parent
 REPO=HERE.parents[1]
 
 def checked_receipt(path,provider):
-    require(json.loads((HERE/'protocol.json').read_text())['state']!='PREPARATION_NO_LIVE_ALLOWED','paired_runtime_preparation_only')
+    protocol=json.loads((HERE/'protocol.json').read_text())
+    require(protocol['state']=='DEVELOPMENT_REQUIRES_FROZEN_RECEIPT','paired_runtime_preparation_only')
     require(provider in ['mistral','google'],'Groq_deferred_for_development')
+    require(protocol['providers'][provider]['new_live_run_allowed'] is True,'provider_profile_deferred')
+    path=Path(path).resolve()
+    require(path.is_file(),'development_receipt_missing')
     receipt=json.loads(Path(path).read_bytes())
     require(receipt.get('identity')=='cli-repair-paired-v1-development-freeze-v1' and receipt.get('state')=='DEVELOPMENT_FROZEN','development_not_frozen')
     require(receipt.get('purpose')==PURPOSE and receipt.get('fresh_accuracy_cases')==0 and receipt.get('accuracy_acceptance') is False,'development_scope_mismatch')
     require(receipt.get('consumed_M1_sha256')==INPUT_M1,'wrong_consumed_corpus')
+    require(receipt.get('execution_tag')==protocol['execution_tag'],'wrong_development_execution')
+    require(receipt.get('semantic_reviewer_id')=='/root/paired_evaluation_independent','wrong_semantic_reviewer')
+    require(receipt.get('provider_profiles')==protocol['providers'],'provider_profile_changed')
     require(receipt['required_provider_readiness'][provider]['new_live_run_allowed'] is True,'provider_not_admitted')
+    require(time.time()<=receipt['required_provider_readiness'][provider]['valid_until_unix_seconds'],'provider_readiness_expired')
     review=receipt.get('independent_operational_review',{})
-    require(review.get('result')=='PASS' and review.get('reviewer')=='/root/engine07_realworld_independent','development_review_missing')
+    require(review.get('result')=='PASS' and review.get('reviewer')=='/root/paired_evaluation_independent','development_review_missing')
     require(sha((Path(path).parent/'development-review/artifact-manifest.json').read_bytes())==review['manifest_sha256'],'development_review_manifest_changed')
+    verdict_path=path.parent/'development-review/review.json'
+    require(sha(verdict_path.read_bytes())==review['verdict_sha256'],'development_review_verdict_changed')
+    verdict=json.loads(verdict_path.read_bytes())
+    require(verdict.get('result')=='PASS' and verdict.get('reviewer')==review['reviewer']
+            and verdict.get('scope')=='cli-repair-paired-development-runtime','development_review_scope_mismatch')
     files={str(p.relative_to(REPO)):sha(p.read_bytes()) for p in REPO.rglob('*') if p.is_file() and '__pycache__' not in p.parts}
     require(files==receipt['files'],'development_runtime_changed')
     require(sha(json.dumps(files,sort_keys=True,separators=(',',':')).encode())==review['reviewed_runtime_files_sha256'],'runtime_not_reviewed')
+    require(verdict.get('reviewed_runtime_files_sha256')==review['reviewed_runtime_files_sha256'],'review_not_for_runtime')
     require(sha((HERE/'protocol.json').read_bytes())==receipt['protocol_sha256'],'development_protocol_changed')
     proof=Path('/eval/bin/identity.json');identity=json.loads(proof.read_bytes())
     require(sha(proof.read_bytes())==receipt['paired_host_identity_sha256'],'development_binary_identity_changed')
