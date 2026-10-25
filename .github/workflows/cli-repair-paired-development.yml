@@ -22,7 +22,7 @@ jobs:
       group: ${{ matrix.provider == 'mistral' && 'reasoning-harness-mistral-live' || 'engine07-realworld-google-live' }}
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # upstream v7 tag verified 2026-10-26
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -34,14 +34,13 @@ jobs:
           set -euo pipefail
           mkdir -p /tmp/results /tmp/runtime /tmp/frozen
           test "$GITHUB_RUN_ATTEMPT" = 1
-          # Workflow-specific history is 404 before its first registered tag push.
-          # Tag-filtered repository history is available beforehand and also sees cross-head replays.
-          gh api --paginate --slurp "repos/$GITHUB_REPOSITORY/actions/runs?event=push&branch=$GITHUB_REF_NAME&per_page=100" > /tmp/results/run-reservation.json
+          # One-shot guard: no branch=tag filtering (can omit historical tag uses),
+          # and the Actions API caps unbounded search at 1000 even when total_count is larger.
+          # The hash-pinned collector checks the repository's full push history in monthly windows.
           python3 - <<'PY'
           import hashlib,json,os,shutil,subprocess,sys
           from pathlib import Path
           sys.path.insert(0,'evaluation/cli-repair-paired-v1')
-          from tag_admission import single_first_push
           source=Path('evaluation/cli-repair-paired-real24-development-v1')
           receipt=json.loads((source/'receipt.json').read_bytes())
           assert receipt['identity']=='cli-repair-paired-v1-development-freeze-v1' and receipt['state']=='DEVELOPMENT_FROZEN'
@@ -50,8 +49,10 @@ jobs:
           assert receipt['execution_workflow_sha256']==hashlib.sha256(Path('.github/workflows/cli-repair-paired-development.yml').read_bytes()).hexdigest()
           tag_gate=Path('evaluation/cli-repair-paired-v1/tag_admission.py')
           assert hashlib.sha256(tag_gate.read_bytes()).hexdigest()==receipt['files']['evaluation/cli-repair-paired-v1/tag_admission.py']
-          single_first_push(json.load(open('/tmp/results/run-reservation.json')),
-                            os.environ['GITHUB_REF_NAME'],os.environ['GITHUB_SHA'],os.environ['GITHUB_RUN_ID'])
+          subprocess.run(['python3',str(tag_gate),'--repo',os.environ['GITHUB_REPOSITORY'],
+                          '--tag',os.environ['GITHUB_REF_NAME'],'--source-sha',os.environ['GITHUB_SHA'],
+                          '--run-id',os.environ['GITHUB_RUN_ID'],
+                          '--output','/tmp/results/run-reservation.json'],check=True)
           shutil.copyfile(source/'receipt.json','/tmp/frozen/development.json')
           shutil.copytree(source/'development-review','/tmp/frozen/development-review')
           # Both authenticated metadata GET records are hash-bound before either provider gets credentials.
@@ -99,7 +100,7 @@ jobs:
       - name: Preserve private raw modes and transfer ownership to the uploader
         if: always()
         run: sudo chown -R "$(id -u):$(id -g)" /tmp/results
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # upstream v7 tag verified 2026-10-26
         if: always()
         with:
           name: cli-repair-real24-${{ matrix.provider }}-${{ github.run_id }}
