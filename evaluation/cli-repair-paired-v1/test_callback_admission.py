@@ -90,7 +90,9 @@ class CallbackAdmission(unittest.TestCase):
         protocol=json.loads((Path(__file__).parent/'protocol.json').read_bytes())
         receipt={'source_commit':'1'*40,'runtime_proof_sha256':'2'*64}
         review={'result':'PASS','reviewer':OPERATIONAL_REVIEWER,'reviewer_kind':'agent_nonhuman',
-                'scope':'cli-repair-paired-development-runtime',**receipt}
+                'scope':'cli-repair-paired-development-runtime',
+                'formal_verdict_issued':True,'verdict_stage':'FINAL_INDEPENDENT_OPERATIONAL_REVIEW',
+                'synthetic_offline_integration_input_only':False,'not_formal_operational_verdict':False,**receipt}
         require_operational_review_identity(protocol,review,receipt)
         for reviewer in ['/root/paired_evaluation_independent','owner','']:
             with self.subTest(reviewer=reviewer):
@@ -102,7 +104,9 @@ class CallbackAdmission(unittest.TestCase):
         protocol=json.loads((Path(__file__).parent/'protocol.json').read_bytes())
         receipt={'source_commit':'1'*40,'runtime_proof_sha256':'2'*64}
         review={'result':'PASS','reviewer':OPERATIONAL_REVIEWER,'reviewer_kind':'agent_nonhuman',
-                'scope':'cli-repair-paired-development-runtime',**receipt}
+                'scope':'cli-repair-paired-development-runtime',
+                'formal_verdict_issued':True,'verdict_stage':'FINAL_INDEPENDENT_OPERATIONAL_REVIEW',
+                'synthetic_offline_integration_input_only':False,'not_formal_operational_verdict':False,**receipt}
         for result in ['PASS_BOUNDED_SOURCE_AND_OFFLINE_RUNTIME_ONLY','PENDING','FAIL']:
             altered=copy.deepcopy(review);altered['result']=result
             with self.subTest(result=result),self.assertRaisesRegex(ValueError,'development_full_operational_review_missing'):
@@ -118,6 +122,8 @@ class CallbackAdmission(unittest.TestCase):
                  'runtime_image_archive_sha256':'5'*64}
         review={'result':'PASS','reviewer':OPERATIONAL_REVIEWER,'reviewer_kind':'agent_nonhuman',
                 'scope':'cli-repair-paired-development-runtime',
+                'formal_verdict_issued':True,'verdict_stage':'FINAL_INDEPENDENT_OPERATIONAL_REVIEW',
+                'synthetic_offline_integration_input_only':False,'not_formal_operational_verdict':False,
                 'source_commit':receipt['source_commit'],'runtime_proof_sha256':receipt['runtime_proof_sha256']}
         verdict={**review,**receipt}
         require_operational_verdict(protocol,review,verdict,receipt)
@@ -126,6 +132,53 @@ class CallbackAdmission(unittest.TestCase):
             changed=copy.deepcopy(verdict);changed[name]='bad'
             with self.subTest(field=name),self.assertRaisesRegex(ValueError,'review_not_for_runtime'):
                 require_operational_verdict(protocol,review,changed,receipt)
+
+
+    def test_provisional_pass_cannot_admit_metadata_or_real_callbacks(self):
+        from provider_readiness import verify
+        import hashlib
+        protocol=json.loads((Path(__file__).parent/'protocol.json').read_bytes())
+        runtime_dir=self.root/'repo';runtime_dir.mkdir()
+        (runtime_dir/'immutable.py').write_text('sealed-runtime')
+        proof_path=self.root/'runtime-proof.json'
+        inventory={'immutable.py':hashlib.sha256((runtime_dir/'immutable.py').read_bytes()).hexdigest()}
+        proof={'source_commit':'1'*40,'paired_host_identity_sha256':'2'*64,
+               'runtime_image_id':'sha256:'+'3'*64,'runtime_image_archive_sha256':'4'*64,
+               'runtime_files':inventory}
+        proof_path.write_text(json.dumps(proof))
+        reviewed_digest=hashlib.sha256(json.dumps(inventory,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+        base={'result':'PASS','reviewer':OPERATIONAL_REVIEWER,'reviewer_kind':'agent_nonhuman',
+              'scope':'cli-repair-paired-development-runtime','source_commit':proof['source_commit'],
+              'runtime_proof_sha256':hashlib.sha256(proof_path.read_bytes()).hexdigest(),
+              'paired_host_identity_sha256':proof['paired_host_identity_sha256'],
+              'runtime_image_id':proof['runtime_image_id'],
+              'runtime_image_archive_sha256':proof['runtime_image_archive_sha256'],
+              'reviewed_runtime_files_sha256':reviewed_digest}
+        import provider_readiness
+        for update in [
+                {'synthetic_offline_integration_input_only':True,'not_formal_operational_verdict':True},
+                {'formal_verdict_issued':False,'verdict_stage':'FINAL_INDEPENDENT_OPERATIONAL_REVIEW',
+                 'synthetic_offline_integration_input_only':False,'not_formal_operational_verdict':False},
+                {'formal_verdict_issued':True,'verdict_stage':'DRAFT',
+                 'synthetic_offline_integration_input_only':False,'not_formal_operational_verdict':False},
+                {'formal_verdict_issued':True,'verdict_stage':'FINAL_INDEPENDENT_OPERATIONAL_REVIEW',
+                 'synthetic_offline_integration_input_only':True,'not_formal_operational_verdict':False},
+                {'formal_verdict_issued':True,'verdict_stage':'FINAL_INDEPENDENT_OPERATIONAL_REVIEW',
+                 'synthetic_offline_integration_input_only':False,'not_formal_operational_verdict':True}]:
+            provisional=base | update
+            review_path=self.root/'review.json';review_path.write_text(json.dumps(provisional))
+            with self.subTest(update=update),patch.object(provider_readiness,'REPO',runtime_dir):
+                with self.assertRaisesRegex(ValueError,'development_rejects_provisional_or_synthetic_review'):
+                    verify(review_path,proof_path)
+                with self.assertRaisesRegex(ValueError,'development_rejects_provisional_or_synthetic_review'):
+                    require_operational_review_identity(protocol,provisional,base)
+        final=base|{'formal_verdict_issued':True,'verdict_stage':'FINAL_INDEPENDENT_OPERATIONAL_REVIEW',
+                    'synthetic_offline_integration_input_only':False,'not_formal_operational_verdict':False}
+        review_path.write_text(json.dumps(final))
+        with patch.object(provider_readiness,'REPO',runtime_dir):
+            verified_protocol, verified_proof=verify(review_path,proof_path)
+        self.assertEqual(verified_proof,proof)
+        self.assertEqual(verified_protocol['operational_review'],protocol['operational_review'])
 
 
 if __name__ == '__main__':

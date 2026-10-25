@@ -31,6 +31,13 @@ def require_operational_review_identity(protocol,review,receipt):
             and review.get('reviewer_kind')=='agent_nonhuman'
             and review.get('result')=='PASS'
             and review.get('scope')==policy['required_scope'],'development_full_operational_review_missing')
+    # A staged integration fixture can contain result=PASS for wiring tests.
+    # Only an explicitly completed, non-fixture final verdict can open a secret-backed path.
+    require(review.get('formal_verdict_issued') is True
+            and review.get('verdict_stage')=='FINAL_INDEPENDENT_OPERATIONAL_REVIEW'
+            and review.get('synthetic_offline_integration_input_only') is False
+            and review.get('not_formal_operational_verdict') is False,
+            'development_rejects_provisional_or_synthetic_review')
     # The previous bounded review must never be promoted to full operational PASS.
     require(review.get('source_commit')==receipt.get('source_commit')
             and review.get('runtime_proof_sha256')==receipt.get('runtime_proof_sha256'),

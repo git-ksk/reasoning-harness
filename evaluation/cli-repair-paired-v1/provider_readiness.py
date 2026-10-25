@@ -23,9 +23,10 @@ def verify(review_path, proof_path):
     proof = json.loads(proof_path.read_bytes())
     protocol = json.loads((HERE/'protocol.json').read_bytes())
     policy = protocol['operational_review']
-    assert review['result'] == 'PASS' and review['scope'] == policy['required_scope']
-    assert review['reviewer'] == policy['reviewer_id'] and review['reviewer_kind'] == 'agent_nonhuman'
-    assert review['runtime_proof_sha256'] == digest(proof_path)
+    from development import require_operational_review_identity
+    # Share the real admission guard: a fixture PASS is never a final review.
+    require_operational_review_identity(protocol,review,
+        {'source_commit':proof['source_commit'],'runtime_proof_sha256':digest(proof_path)})
     for key in ['source_commit','paired_host_identity_sha256','runtime_image_id','runtime_image_archive_sha256']:
         assert review[key] == proof[key]
     files = {str(p.relative_to(REPO)): digest(p) for p in REPO.rglob('*')
