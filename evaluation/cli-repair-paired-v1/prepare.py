@@ -16,7 +16,7 @@ FOLDERS = ['engine073-realworld-evaluator-v2', 'engine073-answer-metrics-develop
            'engine07-realworld-operations-v1']
 WORKFLOWS = ['engine073-realworld-independent-v2.yml', 'engine073-realworld-development-v2.yml']
 OVERLAY = ['build.py', 'registry.rs', 'resolver.py', 'capture.py', 'terminal_chain.py',
-           'display_projection.py', 'development.py', 'protocol.json', 'run_task.py',
+           'display_projection.py', 'development.py', 'provider_readiness.py', 'protocol.json', 'run_task.py',
            'run_lane.py', 'preparation_guard.py', 'test_review_boundaries.py', 'test_plan_admission.py',
            'preflight_cli.py', 'collect.py', 'plan_inputs.py', 'score_development_first.py', 'test_callback_admission.py', 'prepare_consumed_sources.py', 'test_projection_boundary.py', 'verify_containment.py', 'README.md', 'PROTOCOL.md']
 

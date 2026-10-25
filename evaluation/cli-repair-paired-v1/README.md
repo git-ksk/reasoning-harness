@@ -68,7 +68,9 @@ Earlier preparation kept all providers held. The successor protocol enables only
 
 ## GitHub runtime artifact
 
-The manual `cli-repair-paired-runtime` workflow reconstructs both hosts on GitHub Linux, runs only inert controls with external networking disabled, and uploads the exact image plus identity and offline proof. It receives no model credentials. The proof asserts `API_execution_admitted: false`; it is not an execution receipt. This provides the artifact needed for the later secret-backed Mistral/Google execution path.
+The default `cli-repair-paired-runtime` workflow reconstructs both hosts on GitHub Linux, runs only inert controls with external networking disabled, and uploads the exact image plus identity and offline proof. Its offline job receives no model credentials. The proof asserts `API_execution_admitted: false`; it is not an execution receipt. This provides the artifact needed for the later secret-backed Mistral/Google execution path.
+
+The separate `check_provider_readiness=true` mode requires a committed runtime reference and independently authored exact-runtime PASS before credentials. It makes one metadata GET per provider, with no generation, retry, redirect or raw response retention. Successful authentication/model availability does not establish quota headroom or guarantee cohort completion. The receipt separately binds these short-lived metadata reports and the bounded currency/strict-stop policy. Groq is excluded. The development workflow reserves the only push execution across the entire workflow history, including different source heads; truncated or inconsistent history fails closed.
 
 The additional workflow/proof review was interrupted by the independent reviewer's usage limit. The completed `552a6d7` source/capture PASS remains valid; no independent PASS is claimed for the final runtime, account readiness or paid execution. Groq remains held.
 

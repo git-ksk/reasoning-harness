@@ -34,7 +34,7 @@ jobs:
           set -euo pipefail
           mkdir -p /tmp/results /tmp/runtime /tmp/frozen
           test "$GITHUB_RUN_ATTEMPT" = 1
-          gh api "repos/$GITHUB_REPOSITORY/actions/runs?event=push&head_sha=$GITHUB_SHA&per_page=100" > /tmp/results/run-reservation.json
+          gh api --paginate --slurp "repos/$GITHUB_REPOSITORY/actions/workflows/cli-repair-paired-development.yml/runs?event=push&per_page=100" > /tmp/results/run-reservation.json
           python3 - <<'PY'
           import hashlib,json,os,shutil,subprocess
           from pathlib import Path
@@ -44,9 +44,15 @@ jobs:
           assert receipt['execution_tag']==os.environ['GITHUB_REF_NAME']=='cli-repair-paired-real24-development-v1'
           assert receipt['required_provider_readiness'][os.environ['EVALUATION_PROVIDER']]['new_live_run_allowed'] is True
           assert receipt['execution_workflow_sha256']==hashlib.sha256(Path('.github/workflows/cli-repair-paired-development.yml').read_bytes()).hexdigest()
-          runs=json.load(open('/tmp/results/run-reservation.json'))['workflow_runs']
-          matches=[run for run in runs if run['path']=='.github/workflows/cli-repair-paired-development.yml']
-          assert len(matches)==1 and str(matches[0]['id'])==os.environ['GITHUB_RUN_ID']
+          pages=json.load(open('/tmp/results/run-reservation.json'))
+          runs=[run for page in pages for run in page['workflow_runs']]
+          assert pages and all(page['total_count']==len(runs) for page in pages)
+          assert len({run['id'] for run in runs})==len(runs)==1
+          current=runs[0]
+          assert current['path']=='.github/workflows/cli-repair-paired-development.yml'
+          assert current['event']=='push' and current['head_branch']==os.environ['GITHUB_REF_NAME']
+          assert current['head_sha']==os.environ['GITHUB_SHA'] and current['run_attempt']==1
+          assert str(current['id'])==os.environ['GITHUB_RUN_ID']
           shutil.copyfile(source/'receipt.json','/tmp/frozen/development.json')
           shutil.copytree(source/'development-review','/tmp/frozen/development-review')
           artifact=receipt['runtime_artifact_id']
