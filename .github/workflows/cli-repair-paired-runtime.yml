@@ -126,6 +126,9 @@ jobs:
           name=cli-paired-metadata-$EVALUATION_PROVIDER-$GITHUB_RUN_ID
           trap 'docker rm -f "$name" >/dev/null 2>&1 || true' EXIT INT TERM
           timeout --signal=INT --kill-after=5s 60s docker run --name "$name" --rm --read-only --tmpfs /tmp -v /tmp/review:/review:ro -v /tmp/readiness:/output -e MISTRAL_API_KEY -e GEMINI_API_KEY paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/provider_readiness.py --provider "$EVALUATION_PROVIDER" --review /review/review.json --runtime-proof /review/runtime-proof.json --output /output/readiness.json
+      - name: Stop metadata container before collection
+        if: always()
+        run: docker rm -f cli-paired-metadata-${{ matrix.provider }}-${{ github.run_id }} >/dev/null 2>&1 || true
       - uses: actions/upload-artifact@v7
         if: always()
         with:
