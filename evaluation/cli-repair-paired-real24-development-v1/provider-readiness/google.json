@@ -1,0 +1,18 @@
+{
+  "provider": "google",
+  "model": "gemini-3.5-flash-lite",
+  "source_commit": "441ac12b36470896b1ae2a9d6e7366d6a2405a0c",
+  "runtime_proof_sha256": "728429f037d8d0220636bd735c60d4e6a5aa7c628026277834d81b0d29260291",
+  "operational_review_sha256": "3affde92266a61c983a703fcba6520073661fa8c6ee9605c1b31cb0271b89166",
+  "checked_at_unix_seconds": 1792943238,
+  "valid_until_unix_seconds": 1793029638,
+  "model_generations": 0,
+  "maximum_metadata_requests": 1,
+  "metadata_requests_attempted": 1,
+  "authentication_and_model_available": true,
+  "quota_headroom": "UNKNOWN",
+  "full_cohort_completion_guaranteed": false,
+  "http_status": 200,
+  "response_rate_limits": {},
+  "error_class": null
+}
