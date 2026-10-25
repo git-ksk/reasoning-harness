@@ -19,6 +19,34 @@ def checked_binaries(identity,bin_dir):
         for name,digest in record['binaries'].items():
             require(sha((bin_dir/(name+'-'+arm)).read_bytes())==digest,'development_binary_changed')
 
+OPERATIONAL_REVIEWER='chatgpt-gpt6-technical-review-20261025'
+
+def require_operational_review_identity(protocol,review,receipt):
+    policy=protocol.get('operational_review',{})
+    require(policy.get('reviewer_id')==OPERATIONAL_REVIEWER
+            and policy.get('reviewer_kind')=='agent_nonhuman'
+            and policy.get('required_scope')=='cli-repair-paired-development-runtime'
+            and policy.get('required_result')=='PASS', 'development_operational_reviewer_policy_changed')
+    require(review.get('reviewer')==OPERATIONAL_REVIEWER
+            and review.get('reviewer_kind')=='agent_nonhuman'
+            and review.get('result')=='PASS'
+            and review.get('scope')==policy['required_scope'],'development_full_operational_review_missing')
+    # The previous bounded review must never be promoted to full operational PASS.
+    require(review.get('source_commit')==receipt.get('source_commit')
+            and review.get('runtime_proof_sha256')==receipt.get('runtime_proof_sha256'),
+            'operational_review_not_for_source_or_proof')
+
+def require_operational_verdict(protocol,review,verdict,receipt):
+    require_operational_review_identity(protocol,review,receipt)
+    require(verdict.get('result')=='PASS'
+            and verdict.get('reviewer')==review['reviewer']
+            and verdict.get('reviewer_kind')=='agent_nonhuman'
+            and verdict.get('scope')==protocol['operational_review']['required_scope'],
+            'development_review_scope_mismatch')
+    for key in ['source_commit','runtime_proof_sha256','paired_host_identity_sha256',
+                'runtime_image_id','runtime_image_archive_sha256']:
+        require(verdict.get(key)==receipt.get(key),'review_not_for_runtime:'+key)
+
 def checked_receipt(path,provider):
     protocol=json.loads((HERE/'protocol.json').read_text())
     require(protocol['state']=='DEVELOPMENT_REQUIRES_FROZEN_RECEIPT','paired_runtime_preparation_only')
@@ -36,15 +64,12 @@ def checked_receipt(path,provider):
     require(receipt['required_provider_readiness'][provider]['new_live_run_allowed'] is True,'provider_not_admitted')
     require(time.time()<=receipt['required_provider_readiness'][provider]['valid_until_unix_seconds'],'provider_readiness_expired')
     review=receipt.get('independent_operational_review',{})
-    require(review.get('result')=='PASS' and review.get('reviewer')=='/root/paired_evaluation_independent','development_review_missing')
+    require_operational_review_identity(protocol,review,receipt)
     require(sha((Path(path).parent/'development-review/artifact-manifest.json').read_bytes())==review['manifest_sha256'],'development_review_manifest_changed')
     verdict_path=path.parent/'development-review/review.json'
     require(sha(verdict_path.read_bytes())==review['verdict_sha256'],'development_review_verdict_changed')
     verdict=json.loads(verdict_path.read_bytes())
-    require(verdict.get('result')=='PASS' and verdict.get('reviewer')==review['reviewer']
-            and verdict.get('scope')=='cli-repair-paired-development-runtime','development_review_scope_mismatch')
-    for key in ['paired_host_identity_sha256','runtime_image_id','runtime_image_archive_sha256']:
-        require(verdict.get(key)==receipt[key],'review_not_for_runtime:'+key)
+    require_operational_verdict(protocol,review,verdict,receipt)
     files={str(p.relative_to(REPO)):sha(p.read_bytes()) for p in REPO.rglob('*') if p.is_file() and '__pycache__' not in p.parts}
     require(files==receipt['files'],'development_runtime_changed')
     require(sha(json.dumps(files,sort_keys=True,separators=(',',':')).encode())==review['reviewed_runtime_files_sha256'],'runtime_not_reviewed')

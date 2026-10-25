@@ -167,7 +167,15 @@
   "registry_contract": "Pre-execution host source snapshots and admission metadata only; no gold, annotations or model output; actual core serde Evidence hashes; no unresolved keys inferred from gold.",
   "execution_tag": "cli-repair-paired-real24-development-v1",
   "offline_validation": {
-    "expected_unit_controls": 56
+    "expected_unit_controls": 59
   },
-  "activation_policy": "Actual HTTP requires exact independently reviewed development receipt, immutable runtime/input inventory and current durable per-job reservation; this profile alone is not admission."
+  "activation_policy": "Actual HTTP requires exact independently reviewed development receipt, immutable runtime/input inventory and current durable per-job reservation; this profile alone is not admission.",
+  "operational_review": {
+    "reviewer_id": "chatgpt-gpt6-technical-review-20261025",
+    "reviewer_kind": "agent_nonhuman",
+    "required_scope": "cli-repair-paired-development-runtime",
+    "required_result": "PASS",
+    "policy": "Separate code/operational review, not the semantic reviewer. A bounded source-only result cannot admit execution; require a full review for the EXACT rebuilt runtime and independently checked artifact identity. No human or cryptographic sign-off asserted.",
+    "prior_bounded_review_comment": "https://github.com/git-ksk/reasoning-harness/pull/560#issuecomment-6394310061"
+  }
 }

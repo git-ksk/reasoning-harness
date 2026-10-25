@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 from preparation_guard import require_callback_admission, validate_reserved_callback
-from development import checked_binaries
+from development import checked_binaries, require_operational_review_identity, require_operational_verdict, OPERATIONAL_REVIEWER
 
 
 class CallbackAdmission(unittest.TestCase):
@@ -84,6 +84,48 @@ class CallbackAdmission(unittest.TestCase):
                 for arm in changed['arms'].values():arm['binaries']={}
             with self.subTest(count=count),self.assertRaisesRegex(ValueError,'development_binary_inventory_incomplete'):
                 checked_binaries(changed,self.root)
+
+
+    def test_operational_review_agent_identity_is_not_semantic_reviewer(self):
+        protocol=json.loads((Path(__file__).parent/'protocol.json').read_bytes())
+        receipt={'source_commit':'1'*40,'runtime_proof_sha256':'2'*64}
+        review={'result':'PASS','reviewer':OPERATIONAL_REVIEWER,'reviewer_kind':'agent_nonhuman',
+                'scope':'cli-repair-paired-development-runtime',**receipt}
+        require_operational_review_identity(protocol,review,receipt)
+        for reviewer in ['/root/paired_evaluation_independent','owner','']:
+            with self.subTest(reviewer=reviewer):
+                altered=copy.deepcopy(review);altered['reviewer']=reviewer
+                with self.assertRaisesRegex(ValueError,'development_full_operational_review_missing'):
+                    require_operational_review_identity(protocol,altered,receipt)
+
+    def test_bounded_result_and_forged_policy_not_admissible(self):
+        protocol=json.loads((Path(__file__).parent/'protocol.json').read_bytes())
+        receipt={'source_commit':'1'*40,'runtime_proof_sha256':'2'*64}
+        review={'result':'PASS','reviewer':OPERATIONAL_REVIEWER,'reviewer_kind':'agent_nonhuman',
+                'scope':'cli-repair-paired-development-runtime',**receipt}
+        for result in ['PASS_BOUNDED_SOURCE_AND_OFFLINE_RUNTIME_ONLY','PENDING','FAIL']:
+            altered=copy.deepcopy(review);altered['result']=result
+            with self.subTest(result=result),self.assertRaisesRegex(ValueError,'development_full_operational_review_missing'):
+                require_operational_review_identity(protocol,altered,receipt)
+        protocol['operational_review']['reviewer_id']='/root/paired_evaluation_independent'
+        with self.assertRaisesRegex(ValueError,'development_operational_reviewer_policy_changed'):
+            require_operational_review_identity(protocol,review,receipt)
+
+    def test_operational_verdict_binds_exact_reviewed_image_source_and_proof(self):
+        protocol=json.loads((Path(__file__).parent/'protocol.json').read_bytes())
+        receipt={'source_commit':'1'*40,'runtime_proof_sha256':'2'*64,
+                 'paired_host_identity_sha256':'3'*64,'runtime_image_id':'sha256:'+'4'*64,
+                 'runtime_image_archive_sha256':'5'*64}
+        review={'result':'PASS','reviewer':OPERATIONAL_REVIEWER,'reviewer_kind':'agent_nonhuman',
+                'scope':'cli-repair-paired-development-runtime',
+                'source_commit':receipt['source_commit'],'runtime_proof_sha256':receipt['runtime_proof_sha256']}
+        verdict={**review,**receipt}
+        require_operational_verdict(protocol,review,verdict,receipt)
+        for name in ['source_commit','runtime_proof_sha256','paired_host_identity_sha256',
+                     'runtime_image_id','runtime_image_archive_sha256']:
+            changed=copy.deepcopy(verdict);changed[name]='bad'
+            with self.subTest(field=name),self.assertRaisesRegex(ValueError,'review_not_for_runtime'):
+                require_operational_verdict(protocol,review,changed,receipt)
 
 
 if __name__ == '__main__':

@@ -8,6 +8,10 @@ The direct callback checks receipt identity/hash, actual independent verdict+man
 
 `score_development_first.py` is frozen before execution. New full-display/quote annotations are independently authored and bound to new observation/gold hashes, then sealed before exclusive first scoring. The metric arithmetic and all quality/safety/utility/efficiency gates are unchanged.
 
+## Separate review identities and execution policy
+
+The technical / operational reviewer is `chatgpt-gpt6-technical-review-20261025` (declared non-human agent). This is distinct from the independently required semantic annotation reviewer `/root/paired_evaluation_independent`; do not relabel either as the other or as a human signature. The ChatGPT source review of the previous image is bounded and **cannot** be promoted to a full operational PASS on an amended image. A later operational verdict must explicitly use `result=PASS`, full scope `cli-repair-paired-development-runtime`, the exact new source commit, runtime proof hash, binary identity, image ID and archive hash, with an authentic independently maintained evidence chain; a reviewer string or SHA alone does not establish authorship. The runtime receipt still requires separate actual provider quota/readiness evidence and immutable job admission. This profile does not authorize a tag or API call.
+
 ## Earlier preparation checkpoints
 
 
