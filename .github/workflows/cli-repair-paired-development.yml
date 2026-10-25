@@ -34,25 +34,24 @@ jobs:
           set -euo pipefail
           mkdir -p /tmp/results /tmp/runtime /tmp/frozen
           test "$GITHUB_RUN_ATTEMPT" = 1
-          gh api --paginate --slurp "repos/$GITHUB_REPOSITORY/actions/workflows/cli-repair-paired-development.yml/runs?event=push&per_page=100" > /tmp/results/run-reservation.json
+          # Workflow-specific history is 404 before its first registered tag push.
+          # Tag-filtered repository history is available beforehand and also sees cross-head replays.
+          gh api --paginate --slurp "repos/$GITHUB_REPOSITORY/actions/runs?event=push&branch=$GITHUB_REF_NAME&per_page=100" > /tmp/results/run-reservation.json
           python3 - <<'PY'
-          import hashlib,json,os,shutil,subprocess
+          import hashlib,json,os,shutil,subprocess,sys
           from pathlib import Path
+          sys.path.insert(0,'evaluation/cli-repair-paired-v1')
+          from tag_admission import single_first_push
           source=Path('evaluation/cli-repair-paired-real24-development-v1')
           receipt=json.loads((source/'receipt.json').read_bytes())
           assert receipt['identity']=='cli-repair-paired-v1-development-freeze-v1' and receipt['state']=='DEVELOPMENT_FROZEN'
           assert receipt['execution_tag']==os.environ['GITHUB_REF_NAME']=='cli-repair-paired-real24-development-v1'
           assert receipt['required_provider_readiness'][os.environ['EVALUATION_PROVIDER']]['new_live_run_allowed'] is True
           assert receipt['execution_workflow_sha256']==hashlib.sha256(Path('.github/workflows/cli-repair-paired-development.yml').read_bytes()).hexdigest()
-          pages=json.load(open('/tmp/results/run-reservation.json'))
-          runs=[run for page in pages for run in page['workflow_runs']]
-          assert pages and all(page['total_count']==len(runs) for page in pages)
-          assert len({run['id'] for run in runs})==len(runs)==1
-          current=runs[0]
-          assert current['path']=='.github/workflows/cli-repair-paired-development.yml'
-          assert current['event']=='push' and current['head_branch']==os.environ['GITHUB_REF_NAME']
-          assert current['head_sha']==os.environ['GITHUB_SHA'] and current['run_attempt']==1
-          assert str(current['id'])==os.environ['GITHUB_RUN_ID']
+          tag_gate=Path('evaluation/cli-repair-paired-v1/tag_admission.py')
+          assert hashlib.sha256(tag_gate.read_bytes()).hexdigest()==receipt['files']['evaluation/cli-repair-paired-v1/tag_admission.py']
+          single_first_push(json.load(open('/tmp/results/run-reservation.json')),
+                            os.environ['GITHUB_REF_NAME'],os.environ['GITHUB_SHA'],os.environ['GITHUB_RUN_ID'])
           shutil.copyfile(source/'receipt.json','/tmp/frozen/development.json')
           shutil.copytree(source/'development-review','/tmp/frozen/development-review')
           # Both authenticated metadata GET records are hash-bound before either provider gets credentials.

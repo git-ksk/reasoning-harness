@@ -18,7 +18,7 @@ WORKFLOWS = ['engine073-realworld-independent-v2.yml', 'engine073-realworld-deve
 OVERLAY = ['assemble_image.py', 'image_inventory.py', 'image_identity.py', 'verify_development.py', 'build.py', 'registry.rs', 'resolver.py', 'capture.py', 'terminal_chain.py',
            'display_projection.py', 'development.py', 'provider_readiness.py', 'protocol.json', 'run_task.py',
            'run_lane.py', 'preparation_guard.py', 'test_review_boundaries.py', 'test_plan_admission.py',
-           'preflight_cli.py', 'collect.py', 'plan_inputs.py', 'score_development_first.py', 'test_callback_admission.py', 'prepare_consumed_sources.py', 'test_projection_boundary.py', 'verify_containment.py', 'README.md', 'PROTOCOL.md']
+           'preflight_cli.py', 'collect.py', 'plan_inputs.py', 'score_development_first.py', 'test_callback_admission.py', 'tag_admission.py', 'test_tag_admission.py', 'prepare_consumed_sources.py', 'test_projection_boundary.py', 'verify_containment.py', 'README.md', 'PROTOCOL.md']
 
 
 def sha(data):
