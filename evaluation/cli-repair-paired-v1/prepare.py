@@ -59,6 +59,7 @@ def main():
     if set(imported) != set(source_manifest):
         raise ValueError('incomplete upstream inventory')
     output = args.output.resolve()
+    output.parent.mkdir(parents=True, exist_ok=True)
     output.mkdir()  # never overwrite an earlier preparation or observation
     repo = output / 'repo'
     for destination, data in contents.items():
