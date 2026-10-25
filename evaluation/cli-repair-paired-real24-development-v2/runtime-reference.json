@@ -1,0 +1,11 @@
+{
+  "identity": "cli-repair-paired-reviewed-runtime-reference-v1",
+  "runtime_artifact_id": 12605803481,
+  "runtime_build_run_id": 40211547873,
+  "source_commit": "4dbf8ba0409002eb45bb6b854a28a78f002fbbda",
+  "runtime_proof_sha256": "28b9327a0736b2844801945a350f69b9912f5eb94b49657c395b919a20b16a78",
+  "operational_review_sha256": "888572303bbecb92eaa075298ba57b17a7af34eec4ca153c5779d0c8e8ecb050",
+  "operational_manifest_sha256": "6882e853754cb71af8adfbae8f90d4f927a80a5dcf1655dfc46e4a6ca41064e5",
+  "stage_at_creation": "BEFORE_V2_METADATA_AND_EXECUTION_RECEIPT",
+  "quota_headroom": "UNKNOWN"
+}

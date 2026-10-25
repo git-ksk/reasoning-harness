@@ -1,0 +1,117 @@
+{
+  "reviewer": "/root/real24_operational_review",
+  "reviewer_kind": "agent_nonhuman",
+  "scope": "cli-repair-paired-development-runtime",
+  "result": "PASS",
+  "formal_verdict_issued": true,
+  "verdict_stage": "FINAL_INDEPENDENT_OPERATIONAL_REVIEW",
+  "not_formal_operational_verdict": false,
+  "synthetic_offline_integration_input_only": false,
+  "source_commit": "4dbf8ba0409002eb45bb6b854a28a78f002fbbda",
+  "runtime_proof_sha256": "28b9327a0736b2844801945a350f69b9912f5eb94b49657c395b919a20b16a78",
+  "paired_host_identity_sha256": "dbd1f69f5088e377716ccd578d30c2226f2b1d2d2c3feeb8e0809a4b48f4b348",
+  "runtime_image_id": "sha256:aba9bacaadcbf42937ffd00e9ee7b9853fc48b33ae35de9c68b2ce80ed881753",
+  "runtime_image_archive_sha256": "c7ea22de4e952967d43a0a659a2cdff7795bccd53d0b76a5bb32639b6bf8acf1",
+  "reviewed_runtime_files_sha256": "b7fab92e0d05b780f10a55830ef4fedf4d227b72cd7ad2d5285a471a03d2f9d9",
+  "actual_loaded_image_id": "sha256:5b137b44e3e3685029e6abca17168044ea8ebf2ae2425e6d4f21cb37cc6c3e64",
+  "archive_verified_image_ids": [
+    "sha256:aba9bacaadcbf42937ffd00e9ee7b9853fc48b33ae35de9c68b2ce80ed881753",
+    "sha256:5b137b44e3e3685029e6abca17168044ea8ebf2ae2425e6d4f21cb37cc6c3e64"
+  ],
+  "preparation_sha256": "59be533ac1876d19c78bfb91981ca3c5672086933287d2d48d7adbfdaa9276ff",
+  "github_run": 40211547873,
+  "github_artifact_id": 12605803481,
+  "issued_utc": "2026-10-25T16:45:57.405382+00:00",
+  "execution_tag": "cli-repair-paired-real24-development-v2",
+  "independent_authorship": "Actual separately spawned operational reviewer /root/real24_operational_review authored this new final verdict from independently observed source, new archive/image, exact binaries and actual scheduler accounting controls. No other actor or human/cryptographic signature is impersonated.",
+  "prior_runtime_verdict_or_artifact_promoted_for_v2_admission": false,
+  "v1_failure_and_review_gap": "The v1 admission audit did not carry real v6 success through the inherited v4-only accounting bridge. That bridge returned UNKNOWN and discarded known usage. This v2 review adds saved-full-payload transport replay through actual AuditedRunner constructor/process/run, known accounting and subsequent normal/helper subprocess spawns. Original v1 raw, state, receipt, tag and verdict remain unchanged.",
+  "not_an_execution_receipt": true,
+  "API_execution_admitted": false,
+  "measurement_scope": "CONSUMED_REAL24_ENGINEERING_DIAGNOSTIC_NOT_ACCEPTANCE",
+  "evidence": {
+    "independent_actual_runtime_file_hashes": 79,
+    "independent_actual_binary_hashes": 10,
+    "independent_source_unit_controls": 80,
+    "independent_actual_Linux_unit_controls": 80,
+    "independent_saved_full_v6_adversarial_AuditedRunner_controls": 22,
+    "independent_actual_baseline_candidate_helper_order_controls": 2,
+    "saved_first_normal_usage_preserved": {
+      "mistral": {
+        "tokens": 11074,
+        "provider_attempts": 10,
+        "next_inert_row_spawned": true
+      },
+      "google": {
+        "tokens": 3555,
+        "provider_attempts": 5,
+        "next_inert_row_spawned": true
+      }
+    },
+    "inert_three_row_reservations_before_spawns": [
+      [
+        28096,
+        28096
+      ],
+      [
+        28096,
+        56192
+      ],
+      [
+        4480,
+        60672
+      ]
+    ],
+    "official_provider_controls": 18,
+    "official_actual_CLI_controls": 17,
+    "official_containment_controls": 7,
+    "official_registry_parity": "PASS",
+    "official_actual_image_inventory_hash_verified": true,
+    "both_frozen_core_trees_and_identical_resolution_patch_verified": true,
+    "actual_normal_and_helper_preflight_accounting_matches_model_journal": true,
+    "legacy_bridge_runner_source_bytes_preserved": true,
+    "original_v1_raw_files_hash_unchanged": 712
+  },
+  "saved_payload_replay_scope": "Inert engineering transport controls only. Only inert two/three-row plan admission was mocked; actual adapter dispatch, guard types, AuditedRunner constructor/process/run, durable accounting, returncodes and subsequent subprocesses were unmocked. Saved baseline bytes reused for arm-order transport are not candidate accuracy observations. No scorer or provider API was invoked.",
+  "reviewed_contracts": [
+    "Current known v5/v6 strict-success accounting and legacy v4/typed-failure delegation; same guard Outcome/FailureClass types and actual scheduler dispatch",
+    "Quota, unknown/malformed usage, nonzero exit, unknown envelope/contract and reservation/attempt overrun still stop subsequent work without refund",
+    "Actual79runtimefiles/10binaries and frozen core/CLI/identical common patch bound to this new source/proof/image/archive/identity",
+    "Exact72job provider plans, alternating normal arms/shared helper, per-job durable inflight/charge before spawn, no retry/restart/duplicate callback HTTP",
+    "Fixed v2 tag/protocol/workflow/reference identity and complete monthly unfiltered GitHub push history with pagination/unique-ID/API-cap checks",
+    "Genuine final reviewer status and external verdict/manifest; both current hash-bound metadata reports/source/model/HTTP200/exactly1GET/0generation/24h before provider credentials",
+    "Timeout/cancel containment and raw/trace/journal/all-incomplete-row preservation",
+    "Frozen input/model/budget/metric gates and separate new-output/gold-bound semantic annotation/analysis-freeze before exclusive scoring"
+  ],
+  "open_blocking_runtime_findings": [],
+  "trust_boundary": "Independently maintained actor evidence and hashes are process/provenance guarantees, not human or cryptographic attestation. Visible GitHub history does not prove resistance to administrative deletion.",
+  "provider_authentication_and_model_availability": "REQUIRES_NEW_V2_ACTUAL_METADATA_REPORTS_AND_NEW_FROZEN_RECEIPT",
+  "whole_account_quota_headroom": "UNKNOWN",
+  "quota_verified": false,
+  "full_cohort_completion_guaranteed": false,
+  "previous_nonrefunded_reserved_tokens_per_provider": 28096,
+  "new_cohort_reserved_tokens_per_provider": 1456128,
+  "combined_known_v1_and_new_v2_token_reservations_per_provider": 1484224,
+  "new_cohort_frozen_price_currency_reservations_USD": {
+    "mistral": "0.2184192",
+    "google": "0.8896512"
+  },
+  "previous_plus_new_frozen_price_reservations_USD": {
+    "mistral": "0.2226336",
+    "google": "0.9070912"
+  },
+  "currency_reservations_are_not_provider_billing_guarantees": true,
+  "Groq_scheduled": false,
+  "new_model_HTTP_calls_by_reviewer": 0,
+  "additional_provider_API_calls_by_reviewer": 0,
+  "paid_cohort_or_original_run_started_by_reviewer": false,
+  "original_v1_state_or_ledger_rewritten": false,
+  "semantic_outputs_labeled": 0,
+  "F1_recomputed": false,
+  "new_accuracy_cases": 0,
+  "accuracy_acceptance": false,
+  "adoption_GO": false,
+  "source_merge_release_CLI_distribution_approved": false,
+  "semantic_reviewer_remains": "/root/paired_evaluation_independent",
+  "post_issue_release_gate": "These exact authentic issued bytes must pass actual metadata verify-only with actual archive/load ID and network disabled before release. New v2 actual metadata and frozen execution receipt remain separate gates."
+}
