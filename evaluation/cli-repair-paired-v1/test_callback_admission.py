@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 from preparation_guard import require_callback_admission, validate_reserved_callback
+from development import checked_binaries
 
 
 class CallbackAdmission(unittest.TestCase):
@@ -64,6 +65,25 @@ class CallbackAdmission(unittest.TestCase):
                 mutation(plan, state)
                 with self.assertRaises(ValueError):
                     validate_reserved_callback(self.args, plan, state, self.root / 'engineering-baseline', self.argv, self.receipt, self.digest)
+
+    def test_both_complete_binary_sets_are_required(self):
+        import hashlib
+        names=['reason','adviser','source-host','audit-probe','registry']
+        identity={'host_commit':'73bbd18173b4dfcd6664a26241de0385f2eb2e3e','arms':{}}
+        for arm,pin in [('baseline','4abee90f0501f0d8fc09b453a0b45c942fbed69e'),('candidate','ab3c6322921c8c738ec35bd018345917b5afa538')]:
+            binaries={}
+            for name in names:
+                value=(name+'-'+arm).encode();(self.root/(name+'-'+arm)).write_bytes(value)
+                binaries[name]=hashlib.sha256(value).hexdigest()
+            identity['arms'][arm]={'engine_commit':pin,'cli_package_version':'0.5.4','binaries':binaries}
+        checked_binaries(identity,self.root)
+        for count in [9,0]:
+            changed=copy.deepcopy(identity)
+            if count==9:changed['arms']['baseline']['binaries'].pop('reason')
+            else:
+                for arm in changed['arms'].values():arm['binaries']={}
+            with self.subTest(count=count),self.assertRaisesRegex(ValueError,'development_binary_inventory_incomplete'):
+                checked_binaries(changed,self.root)
 
 
 if __name__ == '__main__':

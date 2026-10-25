@@ -167,7 +167,7 @@
   "registry_contract": "Pre-execution host source snapshots and admission metadata only; no gold, annotations or model output; actual core serde Evidence hashes; no unresolved keys inferred from gold.",
   "execution_tag": "cli-repair-paired-real24-development-v1",
   "offline_validation": {
-    "expected_unit_controls": 55
+    "expected_unit_controls": 56
   },
   "activation_policy": "Actual HTTP requires exact independently reviewed development receipt, immutable runtime/input inventory and current durable per-job reservation; this profile alone is not admission."
 }

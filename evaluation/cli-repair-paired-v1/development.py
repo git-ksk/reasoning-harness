@@ -8,6 +8,17 @@ PURPOSE='CONSUMED_REAL24_ENGINEERING_DIAGNOSTIC_NOT_ACCEPTANCE'
 HERE=Path(__file__).resolve().parent
 REPO=HERE.parents[1]
 
+def checked_binaries(identity,bin_dir):
+    require(identity.get('host_commit')=='73bbd18173b4dfcd6664a26241de0385f2eb2e3e','development_host_changed')
+    expected={'baseline':'4abee90f0501f0d8fc09b453a0b45c942fbed69e','candidate':'ab3c6322921c8c738ec35bd018345917b5afa538'}
+    require(set(identity.get('arms',{}))==set(expected),'development_arm_inventory_changed')
+    for arm,pin in expected.items():
+        record=identity['arms'][arm]
+        require(record['engine_commit']==pin and record['cli_package_version']=='0.5.4','development_core_or_version_changed')
+        require(set(record.get('binaries',{}))=={'reason','adviser','source-host','audit-probe','registry'},'development_binary_inventory_incomplete')
+        for name,digest in record['binaries'].items():
+            require(sha((bin_dir/(name+'-'+arm)).read_bytes())==digest,'development_binary_changed')
+
 def checked_receipt(path,provider):
     protocol=json.loads((HERE/'protocol.json').read_text())
     require(protocol['state']=='DEVELOPMENT_REQUIRES_FROZEN_RECEIPT','paired_runtime_preparation_only')
@@ -32,6 +43,8 @@ def checked_receipt(path,provider):
     verdict=json.loads(verdict_path.read_bytes())
     require(verdict.get('result')=='PASS' and verdict.get('reviewer')==review['reviewer']
             and verdict.get('scope')=='cli-repair-paired-development-runtime','development_review_scope_mismatch')
+    for key in ['paired_host_identity_sha256','runtime_image_id','runtime_image_archive_sha256']:
+        require(verdict.get(key)==receipt[key],'review_not_for_runtime:'+key)
     files={str(p.relative_to(REPO)):sha(p.read_bytes()) for p in REPO.rglob('*') if p.is_file() and '__pycache__' not in p.parts}
     require(files==receipt['files'],'development_runtime_changed')
     require(sha(json.dumps(files,sort_keys=True,separators=(',',':')).encode())==review['reviewed_runtime_files_sha256'],'runtime_not_reviewed')
@@ -39,11 +52,7 @@ def checked_receipt(path,provider):
     require(sha((HERE/'protocol.json').read_bytes())==receipt['protocol_sha256'],'development_protocol_changed')
     proof=Path('/eval/bin/identity.json');identity=json.loads(proof.read_bytes())
     require(sha(proof.read_bytes())==receipt['paired_host_identity_sha256'],'development_binary_identity_changed')
-    require(identity['host_commit']=='73bbd18173b4dfcd6664a26241de0385f2eb2e3e','development_host_changed')
-    expected={'baseline':'4abee90f0501f0d8fc09b453a0b45c942fbed69e','candidate':'ab3c6322921c8c738ec35bd018345917b5afa538'}
-    for arm,pin in expected.items():
-        record=identity['arms'][arm];require(record['engine_commit']==pin and record['cli_package_version']=='0.5.4','development_core_or_version_changed')
-        for name,digest in record['binaries'].items():require(sha((proof.parent/(name+'-'+arm)).read_bytes())==digest,'development_binary_changed')
+    checked_binaries(identity,proof.parent)
     return receipt
 
 def consumed_corpus(root):
