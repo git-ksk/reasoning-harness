@@ -56,3 +56,5 @@ All providers are held in this preparation. The owner reported Mistral can resum
 The manual `cli-repair-paired-runtime` workflow reconstructs both hosts on GitHub Linux, runs only inert controls with external networking disabled, and uploads the exact image plus identity and offline proof. It receives no model credentials. The proof asserts `API_execution_admitted: false`; it is not an execution receipt. This provides the artifact needed for the later secret-backed Mistral/Google execution path.
 
 The additional workflow/proof review was interrupted by the independent reviewer's usage limit. The completed `552a6d7` source/capture PASS remains valid; no independent PASS is claimed for the final runtime, account readiness or paid execution. Groq remains held.
+
+The first GitHub attempt stopped at a missing output parent; PR558 fixed it while retaining exclusive output creation. Run40151642317 completed both x86_64 hosts and all offline controls. The downloaded image/identity/preparation hashes match the proof. See [the GitHub checkpoint](../../docs/cli-paired-runtime-checkpoint-20261025.ja.md). API execution remains unadmitted.

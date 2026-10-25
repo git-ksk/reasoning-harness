@@ -2,7 +2,7 @@
 
 **2026-10-25 現在:** [PR555](https://github.com/git-ksk/reasoning-harness/pull/555)は限定独立レビューPASS・CI22/22成功後にmainへマージ済み。PR556の初回独立レビューで評価器の3点（保留回答の表示昇格を許容、keyless対象の拒否、旧preflight期待値）を確認し、修正source `552a6d7`は限定再レビューPASS。Linux両armの10バイナリ、取得・引用を含む実CLI17経路、provider計測18経路、評価器51検証、停止/予約/再開拒否7経路、registry一致を確認した。[Linux記録](../evaluation/cli-repair-paired-v1/linux-checkpoint.json)。
 
-次は同じ環境のGitHub成果物・新しい実行receipt・残量確認を揃えて、既知24問のF1/P/R/引用/効率を測定する。新API・新accuracy問題・F1再採点は今回0、元成績は不変。ownerよりMistral再開可能の連絡あり。Mistral/Googleは新しいreadiness・receiptを固定後に開始し、Groq保留と新規独立受入・Engine採用のゲートを維持する。
+[GitHubの比較環境構築も完走](cli-paired-runtime-checkpoint-20261025.ja.md)。次はplanner上限を含む後継profile・新しい実行receipt・最新readinessを独立確認し、既知24問のF1/P/R/引用/効率を測定する。新API・新accuracy問題・F1再採点は今回0、元成績は不変。ownerよりMistral再開可能の連絡あり。Mistral/Googleは新しいreadiness・receiptを固定後に開始し、Groq保留と新規独立受入・Engine採用のゲートを維持する。
 
 **2026-10-24 時点:** PR551・[PR552](https://github.com/git-ksk/reasoning-harness/pull/552)はマージ済み。比較準備で再現した「未取得の同一命題の資料候補があると回答全体が失敗する」不備は[#553](https://github.com/git-ksk/reasoning-harness/issues/553) / [PR555](https://github.com/git-ksk/reasoning-harness/pull/555)で修正し、CI22/22成功。修正後の独立レビューは担当の利用上限で未完了のためDraftを維持する。
 
