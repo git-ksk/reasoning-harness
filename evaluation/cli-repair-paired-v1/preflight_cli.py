@@ -7,7 +7,8 @@ from scorer import check_model_journal,check_terminal_order,sha
 from capture import bind_normal
 HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE.parents[1]/'evaluation/engine07-realworld-operations-v1'))
-from bridge import outcome_from_normal
+from bridge import outcome_from_helper
+from operational_bridge import outcome_from_normal
 
 class Handler(BaseHTTPRequestHandler):
     requests=[];provider='mistral';mode='success'
@@ -54,8 +55,11 @@ def run_case(arm,provider,mode,bins,root):
         (out/'stdout.json').write_bytes(p.stdout);(out/'stderr.txt').write_bytes(p.stderr);(out/'requests.json').write_text(json.dumps(Handler.requests,indent=2)+'\n');(out/'invocation.json').write_text(json.dumps({'argv':cmd,'returncode':p.returncode},indent=2)+'\n')
         value=json.loads(p.stdout);events=[json.loads(x) for x in (out/'model-journal.jsonl').read_text().splitlines()]
         usage=check_model_journal(events,provider,'fixture-model',24)
+        observed=outcome_from_helper(value) if mode=='helper' else outcome_from_normal(value)
+        assert observed.tokens==usage['total_tokens'] and observed.provider_attempts==usage['provider_attempts'],(value,usage)
         if mode=='acquisition':
             assert p.returncode==0 and len(Handler.requests)==5,value
+            assert observed.failure_class is None,value
             model_requests=[event for event in events if event['kind']=='model_request']
             assert model_requests[1]['request']['max_tokens']==json.loads((HERE/'protocol.json').read_text())['normal_bound']['investigation_planner_output_tokens']
             trace=json.loads((out/'trace.json').read_text());corpus['_capture_sha256']=sha((out/'corpus.json').read_bytes());corpus['_expected_case_id']='engineering-01'
@@ -65,10 +69,10 @@ def run_case(arm,provider,mode,bins,root):
             (out/'capture.json').write_text(json.dumps(captured,indent=2)+'\n')
         elif mode=='helper':
             assert p.returncode==0 and len(Handler.requests)==1,value
+            assert observed.failure_class is None,value
             for side in ['baseline','candidate']:assert value[side]['artifact_unchanged'] and value[side]['replay_equal'] and not value[side]['claims_promoted'] and not value[side]['unauthorized_reviewed'],value
         else:
-            result=value['result'];trace=json.loads((out/'trace.json').read_text());observed=outcome_from_normal(value)
-            assert observed.tokens==usage['total_tokens'] and observed.provider_attempts==usage['provider_attempts'],(value,usage)
+            result=value['result'];trace=json.loads((out/'trace.json').read_text())
             if mode=='success':
                 assert p.returncode==0 and result['finalization']['status']=='grounded_answer',value
                 last=check_terminal_order(trace,result);assert last['result']==result['finalization']

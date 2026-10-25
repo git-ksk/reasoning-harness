@@ -75,3 +75,9 @@ The separate `check_provider_readiness=true` mode requires a committed runtime r
 The additional workflow/proof review was interrupted by the independent reviewer's usage limit. The completed `552a6d7` source/capture PASS remains valid; no independent PASS is claimed for the final runtime, account readiness or paid execution. Groq remains held.
 
 The first GitHub attempt stopped at a missing output parent; PR558 fixed it while retaining exclusive output creation. Run40151642317 completed both x86_64 hosts and all offline controls. The downloaded image/identity/preparation hashes match the proof. See [the GitHub checkpoint](../../docs/cli-paired-runtime-checkpoint-20261025.ja.md). API execution remains unadmitted.
+
+## v1 live stop and v2 accounting successor
+
+The first real run40209467266 used source441ac12 and stopped after one normal baseline task per provider. Both actual CLI callbacks returned0 and the v6 output envelope with measured run usage; the preserved scheduler bridge recognized only v4 and latched UNKNOWN. The original raw, state, receipt and tag remain immutable and unscored. New source adds a strict v5/v6 accounting adapter at the real scheduler dispatch, with actual AuditedRunner/process/run tests for continuation, typed quota, unknown usage, nonzero exit and unknown envelopes. Historical bridge bytes remain untouched.
+
+The new execution uses `cli-repair-paired-real24-development-v2` and a separate `evaluation/cli-repair-paired-real24-development-v2/` receipt. Engine/CLI pins, questions, models, output/aggregate/currency budgets and semantic quality gates are unchanged. A new image, genuine independent verdict and two source-bound metadata reports precede this successor. The v1 charged reservations are retained; no automatic retry or resume is performed. This repair is an evaluation accounting correction, not an Engine accuracy gain or new accuracy case.

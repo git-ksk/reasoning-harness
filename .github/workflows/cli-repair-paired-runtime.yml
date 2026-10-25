@@ -103,7 +103,7 @@ jobs:
           python3 - <<'PY'
           import hashlib,json,os,shutil,subprocess
           from pathlib import Path
-          source=Path('evaluation/cli-repair-paired-real24-development-v1')
+          source=Path('evaluation/cli-repair-paired-real24-development-v2')
           reference=json.loads((source/'runtime-reference.json').read_bytes())
           review=source/'development-review/review.json'
           assert hashlib.sha256(review.read_bytes()).hexdigest()==reference['operational_review_sha256']

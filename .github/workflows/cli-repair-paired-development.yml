@@ -3,7 +3,7 @@ name: cli-repair-paired-development
 on:
   push:
     tags:
-      - cli-repair-paired-real24-development-v1
+      - cli-repair-paired-real24-development-v2
 
 permissions:
   contents: read
@@ -41,10 +41,10 @@ jobs:
           import hashlib,json,os,shutil,subprocess,sys
           from pathlib import Path
           sys.path.insert(0,'evaluation/cli-repair-paired-v1')
-          source=Path('evaluation/cli-repair-paired-real24-development-v1')
+          source=Path('evaluation/cli-repair-paired-real24-development-v2')
           receipt=json.loads((source/'receipt.json').read_bytes())
           assert receipt['identity']=='cli-repair-paired-v1-development-freeze-v1' and receipt['state']=='DEVELOPMENT_FROZEN'
-          assert receipt['execution_tag']==os.environ['GITHUB_REF_NAME']=='cli-repair-paired-real24-development-v1'
+          assert receipt['execution_tag']==os.environ['GITHUB_REF_NAME']=='cli-repair-paired-real24-development-v2'
           assert receipt['required_provider_readiness'][os.environ['EVALUATION_PROVIDER']]['new_live_run_allowed'] is True
           assert receipt['execution_workflow_sha256']==hashlib.sha256(Path('.github/workflows/cli-repair-paired-development.yml').read_bytes()).hexdigest()
           tag_gate=Path('evaluation/cli-repair-paired-v1/tag_admission.py')

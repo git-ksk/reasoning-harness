@@ -165,9 +165,9 @@
   "common_cli_host_scope": "Same CLI including PR551/PR552 and source registry acquisition repair; both frozen core trees receive the identical PR552 resolution opt-in patch. Patched-arm development comparison, not untouched published binaries.",
   "development_profile_rationale": "Measure bounded completion after original logical6 failure. Initial generation, investigation planning/actions/regeneration and final rendering/safety have separate logical operations; structured compatibility may require two generations. Aggregate token/currency limits unchanged. This is not retrospective six-operation acceptance.",
   "registry_contract": "Pre-execution host source snapshots and admission metadata only; no gold, annotations or model output; actual core serde Evidence hashes; no unresolved keys inferred from gold.",
-  "execution_tag": "cli-repair-paired-real24-development-v1",
+  "execution_tag": "cli-repair-paired-real24-development-v2",
   "offline_validation": {
-    "expected_unit_controls": 76
+    "expected_unit_controls": 80
   },
   "activation_policy": "Actual HTTP requires exact independently reviewed development receipt, immutable runtime/input inventory and current durable per-job reservation; this profile alone is not admission.",
   "operational_review": {
@@ -177,5 +177,50 @@
     "required_result": "PASS",
     "policy": "Actual separately spawned operational agent /root/real24_operational_review; new complete source/image/runtime review required. Preserve the prior bounded ChatGPT review under its own identity and never relabel it. Semantic reviewer remains distinct. Exact hashes and independently maintained agent evidence chain required; no human or cryptographic signature claimed.",
     "prior_bounded_review_comment": "https://github.com/git-ksk/reasoning-harness/pull/560#issuecomment-6394310061"
+  },
+  "development_successor_reason": "v1 stopped after one successful v6 CLI result per provider because the preserved legacy accounting bridge accepted only v4. v2 adds a strict current-envelope accounting adapter; input, models, budgets, quality/scoring gates unchanged. v1 raw/state/receipt/tag remain immutable and unscored.",
+  "previous_execution": {
+    "tag": "cli-repair-paired-real24-development-v1",
+    "run_id": 40209467266,
+    "receipt_sha256": "7a72c9e2f7cf895597bbd3545905899842602fb0b0683a425d2790fa9f5183b7",
+    "reason_for_successor": "Independently diagnose/fix current-output accounting mismatch before new execution; original unknown-failure latch/state stays unchanged. No quota recovery or speculative refund is inferred. New source/image/review/metadata/receipt required.",
+    "evidence": {
+      "mistral": {
+        "original_state_sha256": "a2176ec3771f3746404b8a0a124f76020c3f9991b7cacfaff4b356c9b48bb65a",
+        "original_summary_sha256": "605754bb6cc4f489b4a8a5641be83d37c27ea4035fb8cbbef3633f8966ec6bce",
+        "original_stdout_sha256": "5d3151d357fe0f40ec89c7e71d827bf7a4e7f4e3c4b01858def4479ef3ecc311",
+        "charged_reservation_tokens_not_refunded": 28096,
+        "original_latch": "unknown_failure_class",
+        "CLI_reported_usage_not_rewritten_into_original_ledger": {
+          "tracked_from_session_start": true,
+          "model_calls": 7,
+          "provider_attempts": 10,
+          "input_tokens": 9313,
+          "output_tokens": 1761,
+          "total_tokens": 11074,
+          "resolution_calls": 2,
+          "resolution_added_tokens": 332,
+          "resolution_elapsed_ms": 356
+        }
+      },
+      "google": {
+        "original_state_sha256": "72dbe067755d60dfc3052aa6499ad18788739247f26fc00f0ce39a2094bcf782",
+        "original_summary_sha256": "3abf4e17852bb9c71e55758ae08e74805534e40ccfb97dbf1212fca8133b3751",
+        "original_stdout_sha256": "0c426deac99d66ec1b102b3b51507cf9024829d873f82c55187fc2b2a77b4b9a",
+        "charged_reservation_tokens_not_refunded": 28096,
+        "original_latch": "unknown_failure_class",
+        "CLI_reported_usage_not_rewritten_into_original_ledger": {
+          "tracked_from_session_start": true,
+          "model_calls": 5,
+          "provider_attempts": 5,
+          "input_tokens": 3140,
+          "output_tokens": 415,
+          "total_tokens": 3555,
+          "resolution_calls": 1,
+          "resolution_added_tokens": 163,
+          "resolution_elapsed_ms": 183
+        }
+      }
+    }
   }
 }

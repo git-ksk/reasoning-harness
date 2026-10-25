@@ -13,6 +13,8 @@ REPO=HERE.parents[1]
 LEGACY=REPO/'evaluation/engine07-realworld-runner-v1/runner.py'
 sys.path.insert(0,str(LEGACY.parent))
 spec=importlib.util.spec_from_file_location('preserved_scheduler',LEGACY);scheduler=importlib.util.module_from_spec(spec);spec.loader.exec_module(scheduler)
+from operational_bridge import outcome_from_normal
+scheduler.outcome_from_normal=outcome_from_normal
 original_reserve=scheduler.reserve_for
 
 def aggregate_reserve(budget):

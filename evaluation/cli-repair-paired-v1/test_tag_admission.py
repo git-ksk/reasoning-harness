@@ -76,9 +76,15 @@ class TagAdmission(unittest.TestCase):
         self.assertEqual(windows_since(date(2026,12,31),date(2027,1,1)),
             [('2026-12-31','2026-12-31'),('2027-01-01','2027-01-01')])
 
-    def test_live_workflow_actions_are_pinned_to_immutable_commit_shas(self):
+    def test_live_workflow_pins_and_execution_identity_match_protocol(self):
         from pathlib import Path
-        workflow=(Path(__file__).resolve().parents[2]/'.github/workflows/cli-repair-paired-development.yml').read_text()
+        import json
+        here=Path(__file__).resolve().parent;repo=here.parents[1]
+        workflow=(repo/'.github/workflows/cli-repair-paired-development.yml').read_text()
+        self.assertEqual(json.loads((here/'protocol.json').read_bytes())['execution_tag'],TAG)
+        self.assertIn('      - '+TAG,workflow)
+        self.assertIn("source=Path('evaluation/"+TAG+"')",workflow)
+        self.assertIn("source=Path('evaluation/"+TAG+"')",(repo/'.github/workflows/cli-repair-paired-runtime.yml').read_text())
         self.assertIn('actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1',workflow)
         self.assertIn('actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9',workflow)
         self.assertNotIn('actions/checkout@v7',workflow)

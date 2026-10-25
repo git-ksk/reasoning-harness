@@ -15,7 +15,7 @@ import re
 import subprocess
 
 WORKFLOW_PATH='.github/workflows/cli-repair-paired-development.yml'
-TAG='cli-repair-paired-real24-development-v1'
+TAG='cli-repair-paired-real24-development-v2'
 
 def windows_since(first,last):
     if not isinstance(first,date) or not isinstance(last,date) or first>last:
