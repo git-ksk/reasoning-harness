@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+"""Record built runtime identity and offline controls; never grants API access."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import tarfile
+
+
+def sha(path):
+    digest = hashlib.sha256()
+    with path.open('rb') as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b''):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--repo', type=Path, required=True)
+    parser.add_argument('--prepared', type=Path, required=True)
+    parser.add_argument('--bin-dir', type=Path, required=True)
+    parser.add_argument('--controls', type=Path, required=True)
+    parser.add_argument('--image-id', required=True)
+    parser.add_argument('--image-archive', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    read = lambda path: json.loads(path.read_bytes())
+    prepared = read(args.prepared / 'preparation.json')
+    runtime = args.prepared / 'repo'
+    files = {str(path.relative_to(runtime)): sha(path) for path in sorted(runtime.rglob('*'))
+             if path.is_file() and '__pycache__' not in path.parts}
+    assert files == prepared['files']
+    protocol = read(runtime / 'evaluation/cli-repair-paired-v1/protocol.json')
+    assert protocol['state'] == 'PREPARATION_NO_LIVE_ALLOWED'
+    assert all(profile['new_live_run_allowed'] is False for profile in protocol['providers'].values())
+    identity = read(args.bin_dir / 'identity.json')
+    assert identity['host_commit'] == protocol['common_cli_host']
+    assert identity['build_script_sha256'] == sha(runtime / 'evaluation/cli-repair-paired-v1/build.py')
+    assert identity['registry_source_sha256'] == sha(runtime / 'evaluation/cli-repair-paired-v1/registry.rs')
+    for arm in ['baseline', 'candidate']:
+        record = identity['arms'][arm]
+        assert record['engine_commit'] == protocol[arm]
+        original, patched = record['original_core_files'], record['patched_core_files']
+        assert original.keys() == patched.keys()
+        assert [key for key in original if original[key] != patched[key]] == ['src/resolution.rs']
+        assert set(record['binaries']) == {'reason', 'adviser', 'source-host', 'audit-probe', 'registry'}
+        for name, digest in record['binaries'].items():
+            assert sha(args.bin_dir / (name + '-' + arm)) == digest
+    baseline, candidate = identity['arms']['baseline'], identity['arms']['candidate']
+    assert baseline['provider_patch'] == candidate['provider_patch']
+    assert baseline['common_resolution_patch_sha256'] == candidate['common_resolution_patch_sha256']
+    controls = {}
+    for name, count in [('provider', 18), ('cli', 17), ('containment', 7)]:
+        path = args.controls / name / 'summary.json'
+        data = read(path)
+        assert data['all_pass'] is True and len(data['controls']) == count
+        assert data['external_provider_requests'] == 0
+        controls[name] = {'count': count, 'summary_sha256': sha(path)}
+    registry = read(args.controls / 'registry-parity.json')
+    assert registry['pass'] is True and registry['identical_output'] is True
+    unit = (args.controls / 'unit.log').read_text()
+    assert 'Ran 51 tests' in unit and unit.rstrip().endswith('OK')
+    assert args.image_id.startswith('sha256:') and len(args.image_id) == 71
+    with tarfile.open(args.image_archive, 'r:gz') as archive:
+        manifest = json.load(archive.extractfile('manifest.json'))
+        assert len(manifest) == 1
+        config = archive.extractfile(manifest[0]['Config']).read()
+        assert 'sha256:' + hashlib.sha256(config).hexdigest() == args.image_id
+    proof = {'state': 'BUILT_OFFLINE_NOT_EXECUTION_ADMISSION',
+             'source_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=args.repo).decode().strip(),
+             'runtime_image_id': args.image_id, 'runtime_image_archive_sha256': sha(args.image_archive),
+             'paired_host_identity_sha256': sha(args.bin_dir / 'identity.json'),
+             'preparation_sha256': sha(args.prepared / 'preparation.json'),
+             'protocol_sha256': sha(runtime / 'evaluation/cli-repair-paired-v1/protocol.json'),
+             'runtime_files': files, 'controls': controls, 'registry_parity_sha256': sha(args.controls / 'registry-parity.json'),
+             'unit_controls': 51, 'unit_log_sha256': sha(args.controls / 'unit.log'),
+             'independent_operational_review_complete': False, 'new_external_provider_requests': 0,
+             'new_accuracy_cases': 0, 'F1_recomputed': False, 'API_execution_admitted': False,
+             'runtime_proof_script_sha256': sha(Path(__file__))}
+    with args.output.open('x') as handle:
+        json.dump(proof, handle, indent=2)
+        handle.write('\n')
+    print(json.dumps({'state': proof['state'], 'runtime_image_id': args.image_id, 'API_execution_admitted': False}))
+
+
+if __name__ == '__main__':
+    main()

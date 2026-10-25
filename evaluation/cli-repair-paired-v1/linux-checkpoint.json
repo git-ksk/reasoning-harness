@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-25",
+  "state": "LINUX_OFFLINE_PASS_NOT_EXECUTION_ADMISSION",
+  "production_fix_pr": 555,
+  "production_fix_merge_commit": "3ceed8ac122c8be51ddc2a97f8d1f689827dcd02",
+  "reviewed_evaluator_source": "552a6d724e1d7ebbfccade8d0448e529d033467f",
+  "independent_source_review": "PASS_BOUNDED_NOT_FULL_RUNTIME",
+  "independent_review_manifest_sha256": "414e076abae5c9eebfe218f61487957191ca8dac6c9834a2bb23c51fc759df70",
+  "original_evaluator_review": "FAIL_THREE_FINDINGS_RETAINED",
+  "original_review_manifest_sha256": "35b0e9c3f6d06320033ea7d016ab138f11a5b6a23c85cd29f8c5fd9ba50ce1f5",
+  "platform": "Linux aarch64 in local Docker",
+  "runtime_image_id": "sha256:8e6e6aee9d70d7e9cce9ac1e0abbcdd74c02dea22469a15d57c71bb8dd47916d",
+  "runtime_image_archive_sha256": "a4132153e5d03a0586071f70e2bfda9859761c83f11e4abccb1349621699a2ed",
+  "paired_host_identity_sha256": "ce57fcf21b2550561614e272f98cc0631573dc5f8d0cd2871c38689b824563fd",
+  "runtime_proof_sha256": "f6177476bf3578c5523e8e838d3a8cfcd927d1104073fe7493c8f0f6f24b29c6",
+  "unit_controls": 51,
+  "actual_CLI_controls": 17,
+  "provider_audit_controls": 18,
+  "readiness_aware_containment_controls": 7,
+  "registry_parity": true,
+  "unchanged_legacy_runner_suite": {
+    "pass": 19,
+    "fail": 2,
+    "cause": "120ms child startup and early SIGTERM before readiness; full failure log retained",
+    "log_sha256": "33ef0f098dd41c0ead7d9857d40363320d9a3e34656d7bca6dac01c5f9b2df09",
+    "successor_verification": "Readiness marker after installed signal handler; longer startup allowance. Preserved scheduler unchanged."
+  },
+  "new_external_provider_requests": 0,
+  "new_accuracy_cases": 0,
+  "F1_recomputed": false,
+  "original_consumed_score_sha256": "bfe04912745e2236a8d1995e0166f57aa6cd396e988229fc168aafc2dea37051",
+  "complete_M0": false,
+  "API_execution_admitted": false,
+  "remaining": [
+    "GitHub runtime artifact with reproducible provenance for secret-backed execution",
+    "independent final runtime admission and new development receipt",
+    "current provider quota/readiness",
+    "consumed-set paired measurement",
+    "fresh independent acceptance before CLI adoption"
+  ]
+}

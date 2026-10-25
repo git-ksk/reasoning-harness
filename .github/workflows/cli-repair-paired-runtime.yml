@@ -1,0 +1,64 @@
+name: cli-repair-paired-runtime
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cli-repair-paired-runtime
+  cancel-in-progress: false
+
+jobs:
+  offline-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify pinned Git objects and prepare isolated runtime sources
+        run: |
+          set -euo pipefail
+          git cat-file -e 6165de77c1544a7fe58fc1e675e7cb3a8ec7cc98^{commit}
+          git cat-file -e 73bbd18173b4dfcd6664a26241de0385f2eb2e3e^{commit}
+          git cat-file -e 4abee90f0501f0d8fc09b453a0b45c942fbed69e^{commit}
+          git cat-file -e ab3c6322921c8c738ec35bd018345917b5afa538^{commit}
+          python3 evaluation/cli-repair-paired-v1/prepare.py --repo . --output target/paired-runtime
+          mkdir -p target/paired-build target/paired-context target/paired-controls target/paired-artifact
+      - name: Build both patched Engine hosts with identical instrumentation
+        run: |
+          set -euo pipefail
+          stage=target/paired-runtime/repo/evaluation/cli-repair-paired-v1
+          docker build -f "$stage/Dockerfile.build" -t paired-builder "$stage"
+          docker run --rm --cpus 2 --memory 4g -v "$PWD:/repo:ro" -v "$PWD/target/paired-runtime/repo:/prepared:ro" -v "$PWD/target/paired-build:/work" paired-builder python3 /prepared/evaluation/cli-repair-paired-v1/build.py --repo /repo --work-dir /work/build --fetch-dependencies
+          python3 "$stage/assemble_image.py" --repo target/paired-runtime/repo --bin-dir target/paired-build/build/bin --context target/paired-context
+          docker build -f "$stage/Dockerfile.runtime" -t paired-runtime target/paired-context
+      - name: Verify actual CLI and provider paths without external networking
+        run: |
+          set -euo pipefail
+          docker run --rm --read-only --network none --tmpfs /tmp paired-runtime python3 -B -m unittest discover -s /repo/evaluation/cli-repair-paired-v1 -p 'test_*.py' > target/paired-controls/unit.log 2>&1
+          docker run --rm --read-only --network none --tmpfs /tmp -v "$PWD/target/paired-controls:/output" paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/preflight.py --bin-dir /eval/bin --output /output/provider
+          docker run --rm --read-only --network none --tmpfs /tmp -v "$PWD/target/paired-controls:/output" paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/preflight_cli.py --bin-dir /eval/bin --output /output/cli
+          docker run --rm --read-only --network none --tmpfs /tmp -v "$PWD/target/paired-controls:/output" paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/verify_containment.py --output /output/containment
+          docker run --rm -i --read-only --network none --tmpfs /tmp -e PYTHONPATH=/repo/evaluation/cli-repair-paired-v1 -v "$PWD/target/paired-controls:/output" paired-runtime python3 -B - --corpus /output/cli/baseline-google-acquisition/corpus.json --output /output/registry-parity.json < evaluation/cli-repair-paired-v1/verify_registry_parity.py
+      - name: Archive exact image and offline identity without granting execution
+        run: |
+          set -euo pipefail
+          docker save paired-runtime | gzip > target/paired-artifact/runtime-image.tar.gz
+          image_id=$(docker image inspect paired-runtime --format '{{.Id}}')
+          python3 evaluation/cli-repair-paired-v1/runtime_proof.py --repo . --prepared target/paired-runtime --bin-dir target/paired-build/build/bin --controls target/paired-controls --image-id "$image_id" --image-archive target/paired-artifact/runtime-image.tar.gz --output target/paired-artifact/runtime-proof.json
+          cp target/paired-build/build/bin/identity.json target/paired-artifact/identity.json
+          cp target/paired-runtime/preparation.json target/paired-artifact/preparation.json
+          sudo tar -czf target/paired-artifact/offline-controls.tar.gz -C target/paired-controls .
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: cli-paired-runtime-${{ github.sha }}
+          path: |
+            target/paired-artifact/
+            target/paired-controls/unit.log
+          if-no-files-found: error
+          retention-days: 14
