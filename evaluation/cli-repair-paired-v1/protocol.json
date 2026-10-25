@@ -171,11 +171,11 @@
   },
   "activation_policy": "Actual HTTP requires exact independently reviewed development receipt, immutable runtime/input inventory and current durable per-job reservation; this profile alone is not admission.",
   "operational_review": {
-    "reviewer_id": "chatgpt-gpt6-technical-review-20261025",
+    "reviewer_id": "/root/real24_operational_review",
     "reviewer_kind": "agent_nonhuman",
     "required_scope": "cli-repair-paired-development-runtime",
     "required_result": "PASS",
-    "policy": "Separate code/operational review, not the semantic reviewer. A bounded source-only result cannot admit execution; require a full review for the EXACT rebuilt runtime and independently checked artifact identity. No human or cryptographic sign-off asserted.",
+    "policy": "Actual separately spawned operational agent /root/real24_operational_review; new complete source/image/runtime review required. Preserve the prior bounded ChatGPT review under its own identity and never relabel it. Semantic reviewer remains distinct. Exact hashes and independently maintained agent evidence chain required; no human or cryptographic signature claimed.",
     "prior_bounded_review_comment": "https://github.com/git-ksk/reasoning-harness/pull/560#issuecomment-6394310061"
   }
 }

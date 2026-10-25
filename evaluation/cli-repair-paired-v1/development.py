@@ -19,7 +19,7 @@ def checked_binaries(identity,bin_dir):
         for name,digest in record['binaries'].items():
             require(sha((bin_dir/(name+'-'+arm)).read_bytes())==digest,'development_binary_changed')
 
-OPERATIONAL_REVIEWER='chatgpt-gpt6-technical-review-20261025'
+OPERATIONAL_REVIEWER='/root/real24_operational_review'
 
 def require_operational_review_identity(protocol,review,receipt):
     policy=protocol.get('operational_review',{})
