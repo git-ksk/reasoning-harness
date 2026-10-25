@@ -36,6 +36,9 @@ def main():
     assert protocol['state'] in ['PREPARATION_NO_LIVE_ALLOWED', 'DEVELOPMENT_REQUIRES_FROZEN_RECEIPT']
     assert protocol['providers']['groq']['new_live_run_allowed'] is False
     identity = read(args.bin_dir / 'identity.json')
+    actual_image = read(args.controls / 'image-inventory.json')
+    assert actual_image['runtime_files'] == files
+    assert actual_image['binary_files'] == {path.name: sha(path) for path in args.bin_dir.iterdir() if path.is_file()}
     assert identity['host_commit'] == protocol['common_cli_host']
     assert identity['build_script_sha256'] == sha(runtime / 'evaluation/cli-repair-paired-v1/build.py')
     assert identity['registry_source_sha256'] == sha(runtime / 'evaluation/cli-repair-paired-v1/registry.rs')
@@ -93,6 +96,7 @@ def main():
              'preparation_sha256': sha(args.prepared / 'preparation.json'),
              'protocol_sha256': sha(runtime / 'evaluation/cli-repair-paired-v1/protocol.json'),
              'runtime_files': files, 'controls': controls, 'registry_parity_sha256': sha(args.controls / 'registry-parity.json'),
+             'actual_image_inventory_sha256': sha(args.controls / 'image-inventory.json'),
              'unit_controls': expected_units, 'unit_log_sha256': sha(args.controls / 'unit.log'),
              'independent_operational_review_complete': False, 'new_external_provider_requests': 0,
              'new_accuracy_cases': 0, 'F1_recomputed': False, 'API_execution_admitted': False,

@@ -46,6 +46,14 @@ jobs:
       - name: Verify actual CLI and provider paths without external networking
         run: |
           set -euo pipefail
+          docker run --rm --read-only --network none --tmpfs /tmp paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/image_inventory.py > target/paired-controls/image-inventory.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          actual=json.loads(Path('target/paired-controls/image-inventory.json').read_bytes())
+          prepared=json.loads(Path('target/paired-runtime/preparation.json').read_bytes())
+          assert actual['runtime_files']==prepared['files']
+          PY
           docker run --rm --read-only --network none --tmpfs /tmp paired-runtime python3 -B -m unittest discover -s /repo/evaluation/cli-repair-paired-v1 -p 'test_*.py' > target/paired-controls/unit.log 2>&1
           docker run --rm --read-only --network none --tmpfs /tmp -v "$PWD/target/paired-controls:/output" paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/preflight.py --bin-dir /eval/bin --output /output/provider
           docker run --rm --read-only --network none --tmpfs /tmp -v "$PWD/target/paired-controls:/output" paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/preflight_cli.py --bin-dir /eval/bin --output /output/cli
