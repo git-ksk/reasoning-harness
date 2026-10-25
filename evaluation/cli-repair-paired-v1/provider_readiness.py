@@ -41,9 +41,14 @@ def main():
     parser.add_argument('--runtime-proof', type=Path, required=True)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--verify-only', action='store_true')
+    parser.add_argument('--image-archive', type=Path)
+    parser.add_argument('--actual-image-id')
     args = parser.parse_args()
     protocol, proof = verify(args.review, args.runtime_proof)
     if args.verify_only:
+        from image_identity import verify_loaded_image
+        assert args.image_archive is not None and args.actual_image_id is not None
+        verify_loaded_image(args.image_archive,proof['runtime_image_archive_sha256'],proof['runtime_image_id'],args.actual_image_id)
         print('Exact operational review and runtime verified; no provider request.')
         return
     assert args.output is not None

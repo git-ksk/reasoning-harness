@@ -115,15 +115,8 @@ jobs:
           artifact_root=$(dirname "$(find /tmp/runtime -name runtime-proof.json -print -quit)")
           docker load -i "$artifact_root/runtime-image.tar.gz"
           cp "$artifact_root/runtime-proof.json" /tmp/review/runtime-proof.json
-          python3 - "$artifact_root/runtime-image.tar.gz" <<'PY'
-          import hashlib,json,subprocess,sys
-          from pathlib import Path
-          proof=json.loads(Path('/tmp/review/runtime-proof.json').read_bytes())
-          actual=subprocess.check_output(['docker','image','inspect','paired-runtime','--format','{{.Id}}']).decode().strip()
-          assert actual==proof['runtime_image_id']
-          assert hashlib.file_digest(open(sys.argv[1],'rb'),'sha256').hexdigest()==proof['runtime_image_archive_sha256']
-          PY
-          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/review:/review:ro paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/provider_readiness.py --provider "$EVALUATION_PROVIDER" --review /review/review.json --runtime-proof /review/runtime-proof.json --verify-only
+          image_id=$(docker image inspect paired-runtime --format '{{.Id}}')
+          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/review:/review:ro -v "$artifact_root:/image:ro" paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/provider_readiness.py --provider "$EVALUATION_PROVIDER" --review /review/review.json --runtime-proof /review/runtime-proof.json --image-archive /image/runtime-image.tar.gz --actual-image-id "$image_id" --verify-only
       - name: Single metadata GET with no generation or retry
         env:
           MISTRAL_API_KEY: ${{ matrix.provider == 'mistral' && secrets.MISTRAL_API_KEY || '' }}
