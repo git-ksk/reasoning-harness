@@ -56,6 +56,44 @@ def require_operational_verdict(protocol,review,verdict,receipt):
                 'runtime_image_id','runtime_image_archive_sha256']:
         require(verdict.get(key)==receipt.get(key),'review_not_for_runtime:'+key)
 
+def require_bound_readiness(receipt_path,receipt,protocol,review_sha):
+    """Bind both provider metadata GET records; a receipt Boolean is not proof."""
+    folder=Path(receipt_path).resolve().parent/'provider-readiness'
+    require(folder.is_dir(),'missing_provider_metadata_evidence_directory')
+    expected={'mistral.json','google.json'}
+    require({p.name for p in folder.iterdir()}==expected,'provider_metadata_evidence_inventory_changed')
+    readiness=receipt.get('required_provider_readiness',{})
+    require(set(readiness)=={'mistral','google'},'incomplete_cohort_readiness')
+    now=time.time()
+    for provider in ['mistral','google']:
+        admission=readiness[provider]
+        require(admission.get('new_live_run_allowed') is True,'cohort_provider_not_admitted:'+provider)
+        path=folder/(provider+'.json')
+        raw=path.read_bytes()
+        require(sha(raw)==admission.get('metadata_report_sha256'),'provider_metadata_record_not_frozen:'+provider)
+        report=json.loads(raw)
+        require(report.get('provider')==provider
+                and report.get('model')==protocol['providers'][provider]['model']
+                and report.get('source_commit')==receipt.get('source_commit')
+                and report.get('runtime_proof_sha256')==receipt.get('runtime_proof_sha256')
+                and report.get('operational_review_sha256')==review_sha,
+                'provider_metadata_wrong_review_or_source:'+provider)
+        require(report.get('http_status')==200 and report.get('authentication_and_model_available') is True
+                and report.get('metadata_requests_attempted')==1
+                and report.get('maximum_metadata_requests')==1
+                and report.get('model_generations')==0
+                and report.get('error_class') is None
+                and report.get('quota_headroom')=='UNKNOWN'
+                and report.get('full_cohort_completion_guaranteed') is False,
+                'provider_metadata_not_successfully_admitted:'+provider)
+        checked=report.get('checked_at_unix_seconds')
+        expiry=report.get('valid_until_unix_seconds')
+        require(type(checked) is int and type(expiry) is int
+                and checked>0 and checked<=now+60
+                and expiry==checked+86400 and now<=expiry
+                and admission.get('valid_until_unix_seconds')==expiry,
+                'provider_metadata_expired_or_forged:'+provider)
+
 def checked_receipt(path,provider):
     protocol=json.loads((HERE/'protocol.json').read_text())
     require(protocol['state']=='DEVELOPMENT_REQUIRES_FROZEN_RECEIPT','paired_runtime_preparation_only')
@@ -79,6 +117,7 @@ def checked_receipt(path,provider):
     require(sha(verdict_path.read_bytes())==review['verdict_sha256'],'development_review_verdict_changed')
     verdict=json.loads(verdict_path.read_bytes())
     require_operational_verdict(protocol,review,verdict,receipt)
+    require_bound_readiness(path,receipt,protocol,review['verdict_sha256'])
     files={str(p.relative_to(REPO)):sha(p.read_bytes()) for p in REPO.rglob('*') if p.is_file() and '__pycache__' not in p.parts}
     require(files==receipt['files'],'development_runtime_changed')
     require(sha(json.dumps(files,sort_keys=True,separators=(',',':')).encode())==review['reviewed_runtime_files_sha256'],'runtime_not_reviewed')

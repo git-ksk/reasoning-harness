@@ -55,6 +55,8 @@ jobs:
           assert str(current['id'])==os.environ['GITHUB_RUN_ID']
           shutil.copyfile(source/'receipt.json','/tmp/frozen/development.json')
           shutil.copytree(source/'development-review','/tmp/frozen/development-review')
+          # Both authenticated metadata GET records are hash-bound before either provider gets credentials.
+          shutil.copytree(source/'provider-readiness','/tmp/frozen/provider-readiness')
           artifact=receipt['runtime_artifact_id']
           with open('/tmp/runtime.zip','wb') as stream:
               subprocess.run(['gh','api',f'repos/{os.environ["GITHUB_REPOSITORY"]}/actions/artifacts/{artifact}/zip'],stdout=stream,check=True)

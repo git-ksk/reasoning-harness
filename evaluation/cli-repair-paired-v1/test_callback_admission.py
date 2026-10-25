@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 from preparation_guard import require_callback_admission, validate_reserved_callback
-from development import checked_binaries, require_operational_review_identity, require_operational_verdict, OPERATIONAL_REVIEWER
+from development import checked_binaries, require_operational_review_identity, require_operational_verdict, OPERATIONAL_REVIEWER, require_bound_readiness
 
 
 class CallbackAdmission(unittest.TestCase):
@@ -197,6 +197,66 @@ class CallbackAdmission(unittest.TestCase):
             verified_protocol, verified_proof=verify(review_path,proof_path)
         self.assertEqual(verified_proof,proof)
         self.assertEqual(verified_protocol['operational_review'],protocol['operational_review'])
+
+
+    def _build_dual_metadata(self):
+        import hashlib,time
+        protocol=json.loads((Path(__file__).parent/'protocol.json').read_bytes())
+        source='1'*40;proof='2'*64;review='3'*64
+        folder=self.root/'provider-readiness';folder.mkdir(exist_ok=True)
+        receipt={'source_commit':source,'runtime_proof_sha256':proof,'required_provider_readiness':{}}
+        now=int(time.time())
+        for provider in ['mistral','google']:
+            record={'provider':provider,'model':protocol['providers'][provider]['model'],
+                    'source_commit':source,'runtime_proof_sha256':proof,
+                    'operational_review_sha256':review,
+                    'checked_at_unix_seconds':now-10,'valid_until_unix_seconds':now-10+86400,
+                    'model_generations':0,'maximum_metadata_requests':1,
+                    'metadata_requests_attempted':1,'authentication_and_model_available':True,
+                    'quota_headroom':'UNKNOWN','full_cohort_completion_guaranteed':False,
+                    'http_status':200,'response_rate_limits':{},'error_class':None}
+            path=folder/(provider+'.json');path.write_text(json.dumps(record))
+            receipt['required_provider_readiness'][provider]={
+                'new_live_run_allowed':True,'metadata_report_sha256':hashlib.sha256(path.read_bytes()).hexdigest(),
+                'valid_until_unix_seconds':record['valid_until_unix_seconds']}
+        return receipt,protocol,review,folder
+
+    def test_two_valid_metadata_records_required_before_either_provider(self):
+        receipt,protocol,review,folder=self._build_dual_metadata()
+        require_bound_readiness(self.receipt,receipt,protocol,review)
+        # A single provider's otherwise valid result cannot start a partial cohort.
+        (folder/'google.json').unlink()
+        with self.assertRaisesRegex(ValueError,'provider_metadata_evidence_inventory_changed'):
+            require_bound_readiness(self.receipt,receipt,protocol,review)
+
+    def test_metadata_receipt_hash_and_semantics_are_not_self_attested(self):
+        import hashlib
+        for kind in ['unbound_sha','wrong_model','wrong_source','wrong_review','unauthorized_http',
+                     'unauthenticated','missing_get','extra_generation','expired','future_created',
+                     'unbounded_quota_assertion','missing_provider_admission']:
+            # Separate temp fixture state per mutation, no model or key required.
+            with tempfile.TemporaryDirectory() as d:
+                path=Path(d)/'receipt.json';folder=Path(d)/'provider-readiness';folder.mkdir()
+                receipt,protocol,review,original=self._build_dual_metadata()
+                for f in original.iterdir(): (folder/f.name).write_bytes(f.read_bytes())
+                target=folder/'mistral.json';record=json.loads(target.read_text())
+                if kind=='unbound_sha':receipt['required_provider_readiness']['mistral']['metadata_report_sha256']='0'*64
+                elif kind=='wrong_model':record['model']='different-model'
+                elif kind=='wrong_source':record['source_commit']='0'*40
+                elif kind=='wrong_review':record['operational_review_sha256']='0'*64
+                elif kind=='unauthorized_http':record['http_status']=401
+                elif kind=='unauthenticated':record['authentication_and_model_available']=False
+                elif kind=='missing_get':record['metadata_requests_attempted']=0
+                elif kind=='extra_generation':record['model_generations']=1
+                elif kind=='expired':record['valid_until_unix_seconds']=0
+                elif kind=='future_created':record['checked_at_unix_seconds']+=200
+                elif kind=='unbounded_quota_assertion':record['full_cohort_completion_guaranteed']=True
+                elif kind=='missing_provider_admission':receipt['required_provider_readiness'].pop('google')
+                if kind not in ['unbound_sha','missing_provider_admission']:
+                    target.write_text(json.dumps(record))
+                    receipt['required_provider_readiness']['mistral']['metadata_report_sha256']=hashlib.sha256(target.read_bytes()).hexdigest()
+                with self.subTest(kind=kind),self.assertRaises(ValueError):
+                    require_bound_readiness(path,receipt,protocol,review)
 
 
 if __name__ == '__main__':
