@@ -67,10 +67,27 @@ def main():
         manifest = json.load(archive.extractfile('manifest.json'))
         assert len(manifest) == 1
         config = archive.extractfile(manifest[0]['Config']).read()
-        assert 'sha256:' + hashlib.sha256(config).hexdigest() == args.image_id
+        config_id = 'sha256:' + hashlib.sha256(config).hexdigest()
+        archive_ids = [config_id]
+        if 'index.json' in archive.getnames():
+            index = json.load(archive.extractfile('index.json'))
+            assert len(index['manifests']) == 1
+            descriptor = index['manifests'][0]
+            digest = descriptor['digest']
+            assert digest.startswith('sha256:') and len(digest) == 71
+            blob = archive.extractfile('blobs/sha256/' + digest[7:]).read()
+            assert 'sha256:' + hashlib.sha256(blob).hexdigest() == digest
+            image_manifest = json.loads(blob)
+            assert image_manifest['config']['digest'] == config_id
+            archive_ids.append(digest)
+        # Docker stores may expose a config ID or an OCI manifest ID. Both
+        # accepted identities are derived from archive bytes and linked to its
+        # one actual config; a declared index digest alone is insufficient.
+        assert args.image_id in archive_ids
     proof = {'state': 'BUILT_OFFLINE_NOT_EXECUTION_ADMISSION',
              'source_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=args.repo).decode().strip(),
              'runtime_image_id': args.image_id, 'runtime_image_archive_sha256': sha(args.image_archive),
+             'archive_verified_image_ids': archive_ids,
              'paired_host_identity_sha256': sha(args.bin_dir / 'identity.json'),
              'preparation_sha256': sha(args.prepared / 'preparation.json'),
              'protocol_sha256': sha(runtime / 'evaluation/cli-repair-paired-v1/protocol.json'),
