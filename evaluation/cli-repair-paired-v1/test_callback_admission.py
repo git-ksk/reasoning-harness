@@ -130,9 +130,27 @@ class CallbackAdmission(unittest.TestCase):
         for name in ['source_commit','runtime_proof_sha256','paired_host_identity_sha256',
                      'runtime_image_id','runtime_image_archive_sha256']:
             changed=copy.deepcopy(verdict);changed[name]='bad'
-            with self.subTest(field=name),self.assertRaisesRegex(ValueError,'review_not_for_runtime'):
+            with self.subTest(field=name),self.assertRaisesRegex(ValueError,'review_not_for_runtime|operational_review_not_for_source_or_proof'):
                 require_operational_verdict(protocol,review,changed,receipt)
 
+
+
+    def test_provisional_actual_verdict_rejected_even_when_receipt_claims_final(self):
+        protocol=json.loads((Path(__file__).parent/'protocol.json').read_bytes())
+        receipt={'source_commit':'1'*40,'runtime_proof_sha256':'2'*64,
+                 'paired_host_identity_sha256':'3'*64,'runtime_image_id':'sha256:'+'4'*64,
+                 'runtime_image_archive_sha256':'5'*64}
+        review={**receipt,'result':'PASS','reviewer':OPERATIONAL_REVIEWER,'reviewer_kind':'agent_nonhuman',
+                'scope':'cli-repair-paired-development-runtime','formal_verdict_issued':True,
+                'verdict_stage':'FINAL_INDEPENDENT_OPERATIONAL_REVIEW',
+                'synthetic_offline_integration_input_only':False,'not_formal_operational_verdict':False}
+        for changed_field,changed_value in [
+                ('formal_verdict_issued',False),('verdict_stage','CANDIDATE'),
+                ('synthetic_offline_integration_input_only',True),('not_formal_operational_verdict',True)]:
+            verdict=copy.deepcopy(review);verdict[changed_field]=changed_value
+            with self.subTest(changed_field=changed_field),self.assertRaisesRegex(ValueError,'development_rejects_provisional_or_synthetic_review'):
+                require_operational_verdict(protocol,review,verdict,receipt)
+        require_operational_verdict(protocol,review,review,receipt)
 
     def test_provisional_pass_cannot_admit_metadata_or_real_callbacks(self):
         from provider_readiness import verify

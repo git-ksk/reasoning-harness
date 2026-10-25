@@ -45,6 +45,8 @@ def require_operational_review_identity(protocol,review,receipt):
 
 def require_operational_verdict(protocol,review,verdict,receipt):
     require_operational_review_identity(protocol,review,receipt)
+    # Recheck the hashed external verdict, not only the receipt's own declaration.
+    require_operational_review_identity(protocol,verdict,receipt)
     require(verdict.get('result')=='PASS'
             and verdict.get('reviewer')==review['reviewer']
             and verdict.get('reviewer_kind')=='agent_nonhuman'
