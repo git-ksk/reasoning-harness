@@ -1947,6 +1947,15 @@ fn parse_candidate_json(text: &str) -> Result<(ReasoningCandidate, bool), serde_
     if let Some(claims) = object.get("claims").and_then(serde_json::Value::as_array) {
         for claim in claims {
             let claim = claim.as_object().ok_or_else(invalid_object)?;
+            // Serde unit enums also accept singleton maps, although the
+            // model-facing epistemic-state schema only permits strings.
+            if let Some(state) = claim.get("proposed_state")
+                && !state.is_string()
+            {
+                return Err(<serde_json::Error as serde::de::Error>::custom(
+                    "model candidate proposed_state must be a JSON string",
+                ));
+            }
             if let Some(proposition) = claim.get("proposition")
                 && !proposition.is_null()
                 && !proposition.is_object()
@@ -10425,6 +10434,7 @@ mod candidate_json_tests {
             r#"{"candidate":{"claims":[]}}"#,
             r#"{"claims":null}"#,
             r#"{"claims":[["c","value","unknown"]]}"#,
+            r#"{"claims":[{"id":"c","statement":"value","proposed_state":{"unknown":null}}]}"#,
             r#"{"claims":[{"id":"c","statement":"value","proposed_state":"unknown","proposition":["key","value"]}]}"#,
             r#"{"claims":[],"inferences":[["i",[],"c","fixture"]]}"#,
         ] {
@@ -12997,6 +13007,7 @@ mod candidate_json_tests {
             r#"{"claims":[{"id":"c","statement":"unknown","proposed_state":"unknown","evidence_ids'":[]}]}"#,
             "[[]]",
             r#"{"claims":[["c","unknown","unknown"]]}"#,
+            r#"{"claims":[{"id":"c","statement":"unknown","proposed_state":{"unknown":null}}]}"#,
         ] {
             let adapter = StructuredCapabilityFallbackAdapter::with_responses([
                 StructuredCapabilityFallbackAdapter::response(first, 1),
