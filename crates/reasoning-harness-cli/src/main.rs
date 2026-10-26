@@ -1934,6 +1934,37 @@ struct ModelCandidateInference {
 }
 
 fn parse_candidate_json(text: &str) -> Result<(ReasoningCandidate, bool), serde_json::Error> {
+    // Serde's derived struct decoder also accepts positional JSON arrays. The
+    // model-facing schema requires objects, so enforce that boundary before
+    // typed decoding (which still detects duplicate and unknown fields).
+    let (wire, _) = parse_single_typed_json::<serde_json::Value>(text)?;
+    let invalid_object = || {
+        <serde_json::Error as serde::de::Error>::custom(
+            "model candidate and its claim, proposition, and inference entries must be JSON objects",
+        )
+    };
+    let object = wire.as_object().ok_or_else(invalid_object)?;
+    if let Some(claims) = object.get("claims").and_then(serde_json::Value::as_array) {
+        for claim in claims {
+            let claim = claim.as_object().ok_or_else(invalid_object)?;
+            if let Some(proposition) = claim.get("proposition")
+                && !proposition.is_null()
+                && !proposition.is_object()
+            {
+                return Err(invalid_object());
+            }
+        }
+    }
+    if let Some(inferences) = object
+        .get("inferences")
+        .and_then(serde_json::Value::as_array)
+    {
+        for inference in inferences {
+            if !inference.is_object() {
+                return Err(invalid_object());
+            }
+        }
+    }
     let (candidate, normalized) = parse_single_typed_json::<ModelCandidate>(text)?;
     Ok((
         ReasoningCandidate {
@@ -10387,10 +10418,15 @@ mod candidate_json_tests {
     fn model_candidate_requires_claims_without_changing_public_defaults() {
         for text in [
             "{}",
+            "[[]]",
+            "[[],[]]",
             r#"{"inferences":[]}"#,
             r#"{"type":"object","properties":{"claims":{"type":"array"}}}"#,
             r#"{"candidate":{"claims":[]}}"#,
             r#"{"claims":null}"#,
+            r#"{"claims":[["c","value","unknown"]]}"#,
+            r#"{"claims":[{"id":"c","statement":"value","proposed_state":"unknown","proposition":["key","value"]}]}"#,
+            r#"{"claims":[],"inferences":[["i",[],"c","fixture"]]}"#,
         ] {
             assert!(parse_candidate_json(text).is_err(), "{text}");
         }
@@ -12959,6 +12995,8 @@ mod candidate_json_tests {
         for first in [
             r#"{"type":"object","properties":{"claims":{"type":"array"}}}"#,
             r#"{"claims":[{"id":"c","statement":"unknown","proposed_state":"unknown","evidence_ids'":[]}]}"#,
+            "[[]]",
+            r#"{"claims":[["c","unknown","unknown"]]}"#,
         ] {
             let adapter = StructuredCapabilityFallbackAdapter::with_responses([
                 StructuredCapabilityFallbackAdapter::response(first, 1),
