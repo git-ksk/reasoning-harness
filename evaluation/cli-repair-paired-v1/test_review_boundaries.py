@@ -43,6 +43,46 @@ class ReviewBoundaries(unittest.TestCase):
     @classmethod
     def setUpClass(cls):cls.deps=scorer.frozen_dependencies(REPO)
     def test_valid_capture_transport(self):self.assertEqual(capture.bind_normal(*normal_fixture())['usage']['generations'],1)
+    def repeated_snapshot_fixture(self):
+        args=normal_fixture()
+        target=copy.deepcopy(args[0]['result']['investigation']['telemetry']['targets'][0])
+        target.update(id='target-two',question='Second target reads the same immutable snapshot')
+        args[0]['result']['investigation']['telemetry']['targets'].append(target)
+        second=copy.deepcopy(args[2][0]);second['request']['request'].update(id='investigation:target-two:cap',target={k:target[k] for k in ['question','expected_fact_key']})
+        second['request']['request']['target']['target_id']=target['id'];args[2].append(second)
+        args[1]['events'].insert(1,{'kind':'evidence_admission','target_id':target['id'],'capability_id':'cap','admitted_evidence_ids':[]})
+        for n,event in enumerate(args[1]['events']):event['sequence']=n
+        return args
+    def test_exact_snapshot_reacquisition_keeps_one_admitted_record(self):
+        result=capture.bind_normal(*self.repeated_snapshot_fixture())
+        self.assertEqual(result['acquired_source_ids'],['s']);self.assertEqual(result['admitted_source_ids'],['s'])
+        self.assertEqual(list(result['admission_routes']),['snapshot:engineering-only:0'])
+    def test_reacquisition_cannot_hide_collision_or_duplicate_response(self):
+        args=self.repeated_snapshot_fixture();args[2][1]['response']['contribution']['evidence'][0]['facts']={'value':'5'}
+        with self.assertRaisesRegex(ValueError,'ambiguous_acquired_evidence'):capture.bind_normal(*args)
+        args=self.repeated_snapshot_fixture();records=args[2][1]['response']['contribution']['evidence'];records.append(copy.deepcopy(records[0]))
+        with self.assertRaisesRegex(ValueError,'ambiguous_acquired_evidence'):capture.bind_normal(*args)
+    def test_reacquisition_preserves_request_target_and_single_admission(self):
+        args=self.repeated_snapshot_fixture();args[2][1]['request']['request']['id']=args[2][0]['request']['request']['id']
+        with self.assertRaisesRegex(ValueError,'duplicate_acquisition_request'):capture.bind_normal(*args)
+        args=self.repeated_snapshot_fixture();args[2][1]['request']['request']['target']['target_id']='wrong-target'
+        with self.assertRaisesRegex(ValueError,'acquisition_wrong_target'):capture.bind_normal(*args)
+        args=self.repeated_snapshot_fixture();args[1]['events'][1]['admitted_evidence_ids']=['snapshot:engineering-only:0']
+        with self.assertRaisesRegex(ValueError,'unacquired_admission'):capture.bind_normal(*args)
+    def skipped_acquisition_fixture(self):
+        args=self.repeated_snapshot_fixture();args[2].pop();args[1]['events'][1]['fact_keys']=[]
+        return args
+    def test_empty_skipped_action_adds_no_acquisition_credit(self):
+        result=capture.bind_normal(*self.skipped_acquisition_fixture())
+        self.assertEqual(result['acquired_source_ids'],['s']);self.assertEqual(result['admitted_source_ids'],['s'])
+        self.assertEqual(list(result['admission_routes']),['snapshot:engineering-only:0'])
+    def test_skipped_action_cannot_admit_or_name_foreign_route(self):
+        for key,value in [('admitted_evidence_ids',['snapshot:engineering-only:0']),('fact_keys',['value']),('capability_id','unknown-capability')]:
+            with self.subTest(key=key):
+                args=self.skipped_acquisition_fixture();args[1]['events'][1][key]=value
+                with self.assertRaisesRegex(ValueError,'admission_without_same_target_acquisition'):capture.bind_normal(*args)
+        args=self.skipped_acquisition_fixture();args[1]['events'][1]['target_id']='unknown-target'
+        with self.assertRaisesRegex(ValueError,'acquisition_target_not_planned'):capture.bind_normal(*args)
     def test_keyless_target_preserves_actual_selector_rules(self):
         for omitted in [False,True]:
             with self.subTest(omitted=omitted):

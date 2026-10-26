@@ -15,10 +15,10 @@ FOLDERS = ['engine073-realworld-evaluator-v2', 'engine073-answer-metrics-develop
            'engine07-quality-gates-v1', 'engine07-realworld-runner-v1',
            'engine07-realworld-operations-v1']
 WORKFLOWS = ['engine073-realworld-independent-v2.yml', 'engine073-realworld-development-v2.yml']
-OVERLAY = ['build.py', 'registry.rs', 'resolver.py', 'capture.py', 'terminal_chain.py',
-           'display_projection.py', 'development.py', 'protocol.json', 'run_task.py',
+OVERLAY = ['assemble_image.py', 'image_inventory.py', 'image_identity.py', 'verify_development.py', 'build.py', 'registry.rs', 'resolver.py', 'capture.py', 'terminal_chain.py',
+           'display_projection.py', 'development.py', 'operational_bridge.py', 'test_operational_bridge.py', 'provider_readiness.py', 'protocol.json', 'run_task.py',
            'run_lane.py', 'preparation_guard.py', 'test_review_boundaries.py', 'test_plan_admission.py',
-           'preflight_cli.py', 'collect.py', 'test_projection_boundary.py', 'verify_containment.py', 'README.md', 'PROTOCOL.md']
+           'preflight_cli.py', 'collect.py', 'plan_inputs.py', 'score_development_first.py', 'test_callback_admission.py', 'tag_admission.py', 'test_tag_admission.py', 'prepare_consumed_sources.py', 'test_projection_boundary.py', 'verify_containment.py', 'README.md', 'PROTOCOL.md']
 
 
 def sha(data):
@@ -68,9 +68,11 @@ def main():
         path.write_bytes(data)
     for name in OVERLAY:
         shutil.copyfile(HERE / name, repo / 'evaluation/cli-repair-paired-v1' / name)
+    for name in ['cli-repair-paired-runtime.yml', 'cli-repair-paired-development.yml']:
+        shutil.copyfile(HERE.parents[1] / '.github/workflows' / name, repo / '.github/workflows' / name)
     inventory = {str(path.relative_to(repo)): sha(path.read_bytes())
                  for path in sorted(repo.rglob('*')) if path.is_file()}
-    proof = {'state': 'PREPARATION_NO_LIVE_ALLOWED', 'upstream_commit': PIN,
+    proof = {'state': json.loads((HERE / 'protocol.json').read_bytes())['state'], 'upstream_commit': PIN,
              'prepare_script_sha256': sha(Path(__file__).read_bytes()), 'imported': imported,
              'overlay': {name: sha((HERE / name).read_bytes()) for name in OVERLAY},
              'files': inventory, 'frozen_execution_receipt': False,

@@ -1,4 +1,26 @@
-# CLI repair paired evaluation preparation
+# Paired real-model development evaluation
+
+The v2 actual Mistral/Google run and independent first score are now recorded in
+[the execution report](../../docs/cli-paired-real24-v2-20261026.ja.md).
+Both providers completed72 jobs. Helper case F1 is0.222222→0.400000 in both;
+ordinary full-cohort F1 remains unavailable because22 capture rows are incomplete.
+The future capture repair in this branch does not alter that frozen first score.
+Earlier preparation and admission checkpoints below retain their original scope.
+
+This successor profile runs the previously observed 24 real-document tasks against baseline0.6.1 and the unpublished0.7.3 repair under the same common CLI. It requires a new independent operational review and frozen receipt before real model calls. The original scores and raw data remain immutable; this is consumed-set development measurement, not fresh accuracy acceptance.
+
+Planner output is now512 tokens in both arms (previous256 truncated Mistral planning). Aggregate output4096, input24000, logical12/generation24 caps, pacing, first-only/no-external-retry policy and currency caps remain unchanged. Mistral/Google are eligible only with the new receipt; Groq remains held. Account whole-cohort headroom is unknown and strict quota-stop may leave a cohort incomplete.
+
+The direct callback checks receipt identity/hash, actual independent verdict+manifest, all runtime files/binaries, exact72-job plan, current provider/model/job, inflight reservation and durable charge before HTTP. The exclusive model journal rejects duplicate callback execution. The live workflow reads model Secrets only after offline admission; it always preserves raw, usage, trace and incomplete rows.
+
+`score_development_first.py` is frozen before execution. New full-display/quote annotations are independently authored and bound to new observation/gold hashes, then sealed before exclusive first scoring. The metric arithmetic and all quality/safety/utility/efficiency gates are unchanged.
+
+## Separate review identities and execution policy
+
+The current technical / operational reviewer is the separately spawned `/root/real24_operational_review` (actual non-human agent with its own tool/evidence chain). The earlier external ChatGPT audit keeps its original identity and bounded scope; it is not reused as the new verdict. This is distinct from the independently required semantic annotation reviewer `/root/paired_evaluation_independent`; do not relabel either as the other or as a human signature. The ChatGPT source review of the previous image is bounded and **cannot** be promoted to a full operational PASS on an amended image. A later operational verdict must explicitly identify `formal_verdict_issued=true`, `verdict_stage=FINAL_INDEPENDENT_OPERATIONAL_REVIEW`, and both provisional/fixture flags `false` in addition to `result=PASS`, full scope `cli-repair-paired-development-runtime`, the exact new source commit, runtime proof hash, binary identity, image ID and archive hash, with an authentic independently maintained evidence chain; a reviewer string or SHA alone does not establish authorship. The runtime receipt still requires separate actual provider quota/readiness evidence and immutable job admission. This profile does not authorize a tag or API call.
+
+## Earlier preparation checkpoints
+
 
 This is an **offline preparation checkpoint**, not a completed evaluation or a frozen execution runtime. PR552 is merged at `2c4fea29ac9ae7c0447766cd0d83200ae01ea9f1`. The common host includes the source-registry fix in PR555 at `73bbd18173b4dfcd6664a26241de0385f2eb2e3e`; PR555 passed its bounded independent review and was merged at `3ceed8ac122c8be51ddc2a97f8d1f689827dcd02`. The historical common-host pin remains fixed.
 
@@ -49,12 +71,20 @@ The observations are local ignored artifacts. No API keys, raw private corpus or
 4. Freeze input/config/registry generation, scoring arithmetic, reviewers and limits before any new paid observation. Review full output bytes and exact quote attachments; annotations must be bound to the new outputs.
 5. Run the admitted consumed-set comparison once, record complete and incomplete rows, then decide on a fresh independent set. All three providers and both tracks remain required for the final adoption decision.
 
-All providers are held in this preparation. The owner reported Mistral can resume on 2026-10-25. Its new execution readiness/receipt is still required. Groq's prior whole-cohort reservation did not fit the verified daily capacity. Google's new runtime/review/account readiness is incomplete. `run_lane` and receipt validation reject preparation mode, while `run_task` permits only inert numeric loopback with no real credentials. Enabling live execution requires an explicit implementation and review change, not toggling a JSON flag.
+Earlier preparation kept all providers held. The successor protocol enables only receipt-gated Mistral/Google development. The owner reported Mistral can resume on 2026-10-25. Its new execution readiness/receipt is still required. Groq's prior whole-cohort reservation did not fit the verified daily capacity. Google's new runtime/review/account readiness is incomplete. `run_lane` and receipt validation reject preparation mode, while `run_task` permits only inert numeric loopback with no real credentials. Enabling live execution requires an explicit implementation and review change, not toggling a JSON flag.
 
 ## GitHub runtime artifact
 
-The manual `cli-repair-paired-runtime` workflow reconstructs both hosts on GitHub Linux, runs only inert controls with external networking disabled, and uploads the exact image plus identity and offline proof. It receives no model credentials. The proof asserts `API_execution_admitted: false`; it is not an execution receipt. This provides the artifact needed for the later secret-backed Mistral/Google execution path.
+The default `cli-repair-paired-runtime` workflow reconstructs both hosts on GitHub Linux, runs only inert controls with external networking disabled, and uploads the exact image plus identity and offline proof. Its offline job receives no model credentials. The proof asserts `API_execution_admitted: false`; it is not an execution receipt. This provides the artifact needed for the later secret-backed Mistral/Google execution path.
+
+The separate `check_provider_readiness=true` mode requires a committed runtime reference and independently authored exact-runtime PASS before credentials. It makes one metadata GET per provider, with no generation, retry, redirect or raw response retention. Successful authentication/model availability does not establish quota headroom or guarantee cohort completion. The receipt must bind **both** short-lived authenticated metadata GET result files by SHA256 (provider/model, exact source, exact runtime proof and independent review hash, GET=1, HTTP200, zero generations, account headroom still UNKNOWN) before **either** real-model lane may run. Both immutable metadata inputs are included in the actual plan inventory. The receipt also retains the bounded currency/strict-stop policy. Groq is excluded. The development workflow uses unfiltered repository-wide push history (a workflow-specific endpoint 404s before its first registration; branch=tag may miss earlier runs). It divides the full repository lifetime into UTC calendar-month windows, rejects any window at the observed GitHub Actions 1000-result cap, validates all returned pages/dates/IDs and permits exactly one first tag-push run across source heads. The checker source SHA256 is frozen in the receipt. Missing/capped, replayed or duplicated visible history fails closed; this cannot prove history that GitHub administrators have deleted. The live GitHub workflow pins actions/checkout and actions/upload-artifact to GitHub-verified v7 commit SHA references, not mutable major-version tags.
 
 The additional workflow/proof review was interrupted by the independent reviewer's usage limit. The completed `552a6d7` source/capture PASS remains valid; no independent PASS is claimed for the final runtime, account readiness or paid execution. Groq remains held.
 
 The first GitHub attempt stopped at a missing output parent; PR558 fixed it while retaining exclusive output creation. Run40151642317 completed both x86_64 hosts and all offline controls. The downloaded image/identity/preparation hashes match the proof. See [the GitHub checkpoint](../../docs/cli-paired-runtime-checkpoint-20261025.ja.md). API execution remains unadmitted.
+
+## v1 live stop and v2 accounting successor
+
+The first real run40209467266 used source441ac12 and stopped after one normal baseline task per provider. Both actual CLI callbacks returned0 and the v6 output envelope with measured run usage; the preserved scheduler bridge recognized only v4 and latched UNKNOWN. The original raw, state, receipt and tag remain immutable and unscored. New source adds a strict v5/v6 accounting adapter at the real scheduler dispatch, with actual AuditedRunner/process/run tests for continuation, typed quota, unknown usage, nonzero exit and unknown envelopes. Historical bridge bytes remain untouched.
+
+The new execution uses `cli-repair-paired-real24-development-v2` and a separate `evaluation/cli-repair-paired-real24-development-v2/` receipt. Engine/CLI pins, questions, models, output/aggregate/currency budgets and semantic quality gates are unchanged. A new image, genuine independent verdict and two source-bound metadata reports precede this successor. The v1 charged reservations are retained; no automatic retry or resume is performed. This repair is an evaluation accounting correction, not an Engine accuracy gain or new accuracy case.

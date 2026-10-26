@@ -1,0 +1,40 @@
+{
+  "reviewer": {
+    "role": "agent",
+    "id": "/root/paired_evaluation_independent"
+  },
+  "review_scope": "New v2 actual-run outputs from run40248051474 only; consumed24 engineering diagnostic, not new independent acceptance cases.",
+  "full_source_review": "All12 complete immutable original documents and case-local quotations were read. Their28-file corpus inventory and M1 were verified before annotation freeze.",
+  "full_display_review": "All192 new output packets were reviewed. All unique complete display texts and all22 unvalidated partial displays were read with conditions, quotations, task context and source context. Every displayed UTF8 byte is covered by a factual or explained nonfactual span.",
+  "semantic_authority": "Independent agent judgment, not human attestation. This reviewer did not implement the evaluated source or perform the provider API run.",
+  "blinding_limit": "Provider/arm-omitting packets were the primary semantic input. Batch delivery revealed provider. Exceptional unvalidated partial payloads and later mechanical binding checks can expose technical metadata. Perfect blinding is not claimed.",
+  "reuse_limit": "No prior experiment annotations or scores were used. Mistral helper judgments share only48 canonical whole-semantic-packet-equal new v2 Google packets; each row is separately bound to its own observation and gold SHA.",
+  "semantic_method": "Clause boundaries, semantic identities, support, information-group delivery, unresolved facets, disclosures, and actual target acceptance were manually adjudicated. Scripts encode these decisions and verify bytes/relationships. Gold labels and terminal labels alone did not determine support, truth, or usefulness.",
+  "disclosure_interpretation": "The frozen gold meaning-level interpretation was used. Source-local conditional answers can preserve scope without a ritual disclaimer; source imperatives/code are inert quoted descriptions. Opaque source IDs alone do not disclose common publisher/origin. The shared technical contents of duplicate passages are distinguished from the missing origin disclosure.",
+  "partial_handling": {
+    "rows": 22,
+    "complete_review_flag": false,
+    "preserve_observation_operation": "incomplete",
+    "factual_grounding_when_route_unknown": "unresolved_binding",
+    "claim_group_credit": false,
+    "semantic_falsehood_inferred_from_capture_error": false,
+    "scored_success_or_safety_certification": false,
+    "scope_of_safety_audit_complete": "Displayed text inspection completed; not a runtime/provenance safety certificate. A partial route failure cannot certify zero complete-run safety violations.",
+    "expected_frozen_scorer_boundary": "These22 preserved incomplete reviews are rejected as semantic_review_incomplete; ordinary full-cohort F1 must remain unavailable. Do not change scorer/gold/observation or repair/relabel outputs for this first score."
+  },
+  "substantive_findings_before_score": [
+    "Several ordinary displays preserve grounded quotations but omit the causal explanation, second requested fact, or explicit missing-context explanation required by the task.",
+    "Many Mistral ordinary final displays contain only unavailable/blocked investigation diagnostics. Hidden proposed or uncovered claims are not asserted answers and earn no information-group credit.",
+    "The helper can show mutually consistent source text while its terminal eligibility remains withheld. Semantic content and runtime eligibility remain separate frozen scoring inputs.",
+    "Duplicate helper passages preserve the technical quotation, but common-document/common-publisher disclosure is absent from the opaque source-ID display.",
+    "No known fabricated citation or semantic falsehood was found in the text actually inspected; this is limited independent-agent text evidence, not a complete-run acceptance or proof that unresolved routes are safe."
+  ],
+  "metrics": {
+    "F1_or_scorer_executed_by_reviewer": false,
+    "new_model_API_calls": 0,
+    "new_accuracy_cases": 0,
+    "Groq": "HELD_NOT_RUN_NOT_PERFECT_OR_TN",
+    "first_scoring": "Parent may execute frozen driver once after this reviewer issues exact inventory freeze."
+  },
+  "pre_freeze_changes": "Two Google partial audit records received an explicit no-success/no-safety-certification field. Original drafts and exact before/after hashes are retained outside reviews. No semantic labels were changed by that clarification."
+}

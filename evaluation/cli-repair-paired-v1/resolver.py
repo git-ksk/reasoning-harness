@@ -37,7 +37,7 @@ def config(corpus,case,corpus_path,journal):
     for slot,record in enumerate(records(corpus,case)):
         cap={'id':'independent-v2-source-'+str(slot),'kind':'external_command','program':sys.executable,'args':[str(Path(__file__).resolve()),'--corpus',str(Path(corpus_path).resolve()),'--case',case['id'],'--slot',str(slot),'--journal',str(Path(journal).resolve())],'read_only':True,'supported_fact_keys':sorted(set(record['facts'])|{case['lookup_key']}),'timeout_ms':5000,'max_response_bytes':65536,'admission':admission}
         capabilities.append(cap)
-    output={'schema_version':'reason-config-v1','resolution':{'investigation':{'capabilities':capabilities,'max_actions':4,'max_no_progress_rounds':2,'max_rounds':3,'max_targets':3,'planner_max_tokens':256}}}
+    output={'schema_version':'reason-config-v1','resolution':{'investigation':{'capabilities':capabilities,'max_actions':4,'max_no_progress_rounds':2,'max_rounds':3,'max_targets':3,'planner_max_tokens':json.loads((Path(__file__).parent/'protocol.json').read_text())['normal_bound'].get('investigation_planner_output_tokens',256)}}}
     snapshots=[]
     for record in records(corpus,case):
         if record['source'] not in corpus['sources'] or record['source'] not in sources:continue

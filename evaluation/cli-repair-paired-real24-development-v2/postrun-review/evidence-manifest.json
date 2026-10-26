@@ -1,0 +1,29 @@
+{
+  "identity": "independent-postrun-diagnostic-evidence-inventory-v1",
+  "reviewer_id": "/root/real24_operational_review",
+  "scope": "private diagnostic evidence inventory; not a formal runtime review manifest",
+  "raw_originals_final_hash_check": true,
+  "files": {
+    "admission-event-details.json": "cf5f2aa603aa13229fbdc1420f9363b4dfd53e140917e7db12307baf2047d3d6",
+    "conclusions.json": "30cdab707217d74b6f48adf29ad6cb3a7065e9f13db4948a0ccb1cf1b1d920d4",
+    "diagnose_saved_raw.py": "f6f527812686a4fc27e7ca19c475087261125926b8b87641bdc610e202a976cf",
+    "frozen-source-cause.json": "9f0e0631e6b781b41fafec6e678b63ff730f5e5fa809fc760743775a31d5766c",
+    "future-capture-2a936b6/bounded-review.json": "fdaf47c657d38a7365eb07008cf07ce11f9f0c11b3552e98c976b8af0bd258df",
+    "future-capture-2a936b6/bounded_probe.py": "3fb63bb2afcab23e46c09600bbef18f9efa22d0c25d8416959d1c7b4cee2f173",
+    "future-capture-2a936b6/capture.py": "2168c117bd90d759c7a9dce009b32516bccf05f1a196e3f74ebabece1e831631",
+    "future-capture-2a936b6/linux-structural-probe.json": "969004c6e025861693e6d61017da8ea2981651efeb64ab7f546921edd12fe388",
+    "future-capture-2a936b6/linux-structural-probe.stderr": "b1147cb5841b87f1888d23e40ba93c2531d31271164b9b705b89fc2786edcacb",
+    "future-capture-2a936b6/linux-unit.stderr": "cae3d9274d1749fb37c4edc6d35e1ce87a7a97c05b755cb798b1cca4d49a652a",
+    "future-capture-2a936b6/linux-unit.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "future-capture-2a936b6/test_review_boundaries.py": "3172dbd1ce8cdb9a5ae7f2fd83d188750cb85815c52720f9c39eaa84e2fbcf01",
+    "input-file-hashes-after.json": "d275728265d0c3f378657be67d355e94104e65cc4b5925388f05d4b1550d879a",
+    "input-file-hashes-before.json": "d275728265d0c3f378657be67d355e94104e65cc4b5925388f05d4b1550d879a",
+    "local-probe-authoring-log.json": "6b758474fe51244fbbb59569913ee5f507c6f063d735bf4c4ca8c10727265132",
+    "saved-raw-diagnosis.json": "07aae0e38f89049441d408c59d4197927c71b7f9053977bb4935e80120c171c9",
+    "source-evidence/baseline/crates/reasoning-harness-core/src/resolution.rs": "daabf73239f13ea1fbba757e8f64f1cead65ff5e1772d02e5856f9a0a12adf65",
+    "source-evidence/candidate/crates/reasoning-harness-core/src/resolution.rs": "daabf73239f13ea1fbba757e8f64f1cead65ff5e1772d02e5856f9a0a12adf65",
+    "source-evidence/common-cli-main.rs": "78bcd72822ad5c7ff95b3c0e3daff6948bfb3f2f5c6d561056ca0dd314a77c68",
+    "source-evidence/common-google-adapter-original.rs": "fa0ed08c117035840451dbb4e19af6e1f3c9d88ffc83d3f2ae432cc1cb2a2d29",
+    "source-evidence/common-resolution.patch": "f0cbea7b4ca7f2d265468d1dab7fb0155fb2dc06bd393178eacbe10627c42c39"
+  }
+}
