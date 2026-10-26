@@ -1,5 +1,7 @@
 # 実資料24問の実API比較v2 — 2026-10-26
 
+> 本文は旧v2の凍結条件による初回記録。次回以降は[通常CLI中心・補助APIはモデルなしの計画](engine-073-cli-evaluation-plan.ja.md)に従う。旧helperの不合格や初回reportは書き換えず、将来のCLI採用条件と区別する。
+
 **新規実API比較と独立初回採点が完了（通常系列に欠測）。** [実run40248051474](https://github.com/git-ksk/reasoning-harness/actions/runs/40248051474)でMistral・Googleを測定している。Groqは保留。既知24問の開発測定であり、新規独立の精度受入・Engine公開・CLI採用は別判定。
 
 ## 固定した比較

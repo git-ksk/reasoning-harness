@@ -1,5 +1,9 @@
 # Product roadmap: Reason CLI and Harness Engine
 
+<!-- ordinary-cli-policy-20261026-start -->
+**Next policy (2026-10-26, user approved):** Follow the [ordinary CLI plan](engine-073-cli-evaluation-plan.md). Real-model ordinary F1/P/R, safety, citations, non-regression and efficiency drive CLI evaluation; auxiliary APIs receive model-free contract/authority/tampering/replay/compatibility checks. Retain the old0.400000 model-assisted helper F1 as a reference, not an API-unit or independent CLI adoption gate. First check APIs offline and diagnose saved Mistral outputs, repair reproduced defects, then run an ordinary-only comparison. Gemini0.933333 on23 tasks is encouraging but full final-candidate and fresh independent acceptance remain incomplete. Groq held; adoption pending. Historical v2 conditions/results remain immutable.
+<!-- ordinary-cli-policy-20261026-end -->
+
 <!-- real24-v2-current-start -->
 **Current, 2026-10-26:** [Actual-API v2 and independent first F1 (Japanese)](cli-paired-real24-v2-20261026.ja.md) are recorded. Both providers completed72 jobs;192 new observations were independently annotated and scored once with the frozen driver. Helper case F1 improved0.222222→0.400000 on both providers (precision1.000/recall0.250), below the gate. Google ordinary descriptive F1 is0.933333 on the same23 complete tasks in both arms. Mistral ordinary subsets differ (15/13 complete); no full-cohort improvement claim is valid. Ordinary22 missing observations remain intact and full F1 stays null. Future capture repairs for repeated snapshots and empty action events passed bounded independent review. Groq held; fresh accuracy cases0; Engine release/CLI adoption NO_GO.
 <!-- real24-v2-current-end -->
