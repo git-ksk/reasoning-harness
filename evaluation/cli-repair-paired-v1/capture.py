@@ -37,8 +37,15 @@ def bind_normal(payload,trace,journal,config,corpus,model_events,provider,model)
         require(event['request'].get('schema_version')=='reason-investigation-external-resolver-request-v1' and event['response'].get('schema_version')=='reason-external-resolver-response-v1' and event['response'].get('contribution',{}).get('kind')=='acquired_evidence','resolver_contract')
         request=event['request']['request'];rid=request['id'];require(rid not in journal_requests,'duplicate_acquisition_request')
         journal_requests[rid]=event
+        response_ids=set()
         for record in event['response']['contribution']['evidence']:
-            require(record['id'] not in acquired,'ambiguous_acquired_evidence')
+            # Distinct targets may read the same immutable source snapshot.
+            # Keep per-response uniqueness and reject conflicting same-ID
+            # records; every occurrence still has to match the frozen source.
+            eid=record['id']
+            require(eid not in response_ids,'ambiguous_acquired_evidence')
+            response_ids.add(eid)
+            require(eid not in acquired or acquired[eid]==record,'ambiguous_acquired_evidence')
             require(record['id'] in expected_records and record==expected_records[record['id']],
                     'changed_or_foreign_acquired_record')
             acquired[record['id']]=record
@@ -46,11 +53,24 @@ def bind_normal(payload,trace,journal,config,corpus,model_events,provider,model)
     for event in trace['events']:
         if event['kind']!='evidence_admission':continue
         rid='investigation:'+event['target_id']+':'+event['capability_id']
-        require(rid in journal_requests and event['capability_id'] in caps,'admission_without_same_target_acquisition')
-        policy=caps[event['capability_id']]['admission'];acquisition=journal_requests[rid]
-        request=acquisition['request']['request']
+        require(event['capability_id'] in caps,'admission_without_same_target_acquisition')
         require(event['target_id'] in targets,'acquisition_target_not_planned')
-        target=targets[event['target_id']];selector=request.get('target',{})
+        target=targets[event['target_id']]
+        if result.get('acquisition_coverage') is not None:
+            progress=[e for e in trace['events'][:event['sequence']] if e.get('kind')=='acquisition_coverage_progress']
+            require(progress and progress[-1]['snapshot']['ledger']['plan_admitted'] is True,
+                    'acquisition_before_plan_admission')
+            admitted_targets=[t['target'] for t in progress[-1]['snapshot']['ledger']['targets']]
+            require(target in admitted_targets,'acquisition_target_not_in_ledger')
+        require(event['sequence']<pre_terminal_grounded[-1]['sequence']<terminals[-1]['sequence'],'admission_after_finalization')
+        if rid not in journal_requests:
+            # The CLI also traces failed/skipped actions with no resolver
+            # invocation. Such an event cannot contribute evidence or facts.
+            require(event.get('admitted_evidence_ids')==[] and event.get('fact_keys')==[],
+                    'admission_without_same_target_acquisition')
+            continue
+        policy=caps[event['capability_id']]['admission'];acquisition=journal_requests[rid]
+        request=acquisition['request']['request'];selector=request.get('target',{})
         require(selector.get('target_id')==target['id'] and selector.get('question')==target['question'],
                 'acquisition_wrong_target')
         capability=caps[event['capability_id']]
@@ -61,15 +81,8 @@ def bind_normal(payload,trace,journal,config,corpus,model_events,provider,model)
         require(selector.get('expected_fact_key')==effective_key
                 and (effective_key is None or effective_key in fact_keys),
                 'acquisition_wrong_fact_key')
-        if result.get('acquisition_coverage') is not None:
-            progress=[e for e in trace['events'][:event['sequence']] if e.get('kind')=='acquisition_coverage_progress']
-            require(progress and progress[-1]['snapshot']['ledger']['plan_admitted'] is True,
-                    'acquisition_before_plan_admission')
-            admitted_targets=[t['target'] for t in progress[-1]['snapshot']['ledger']['targets']]
-            require(target in admitted_targets,'acquisition_target_not_in_ledger')
         task_scope={k:{'kind':'values','values':[v]} for k,v in case['required_scope'].items()}
         require(policy['required_scope']==task_scope,'task_admission_scope_mismatch')
-        require(event['sequence']<pre_terminal_grounded[-1]['sequence']<terminals[-1]['sequence'],'admission_after_finalization')
         available=keyed(acquisition['response']['contribution']['evidence'])
         for eid in event['admitted_evidence_ids']:
             require(eid not in admitted and eid in available and eid in evidence,'unacquired_admission')

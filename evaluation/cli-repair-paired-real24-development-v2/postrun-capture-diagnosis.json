@@ -1,0 +1,49 @@
+{
+  "identity": "cli-repair-paired-real24-v2-postrun-capture-diagnosis-v1",
+  "author": {
+    "role": "implementer",
+    "id": "/root"
+  },
+  "independent_review_complete": false,
+  "run_id": 40248051474,
+  "original_receipt_sha256": "2e964414858613223af8c26c3ddd28901b197d004b594b26dd73a04eb421cd1c",
+  "original_runtime_source": "4dbf8ba0409002eb45bb6b854a28a78f002fbbda",
+  "original_observations_modified": false,
+  "first_scoring_replaced": false,
+  "additional_model_calls": 0,
+  "diagnosis": [
+    {
+      "failure": "ambiguous_acquired_evidence",
+      "google_rows": 2,
+      "mistral_rows": 14,
+      "cause": "Distinct acquisition requests return the same immutable source record; the core admits it once, while the frozen capture rejects every repeated record ID."
+    },
+    {
+      "failure": "admission_without_same_target_acquisition",
+      "google_rows": 0,
+      "mistral_rows": 6,
+      "cause": "The common CLI traces failed/skipped investigation actions with no admitted IDs or fact keys even when the external resolver is not invoked. The frozen capture requires a resolver journal entry for every trace event."
+    }
+  ],
+  "future_source_repair": {
+    "requires_new_runtime_review_receipt_before_live": true,
+    "does_not_repair_current_scored_observations": true,
+    "source_files": {
+      "evaluation/cli-repair-paired-v1/capture.py": "2168c117bd90d759c7a9dce009b32516bccf05f1a196e3f74ebabece1e831631",
+      "evaluation/cli-repair-paired-v1/test_review_boundaries.py": "3172dbd1ce8cdb9a5ae7f2fd83d188750cb85815c52720f9c39eaa84e2fbcf01"
+    },
+    "unit_controls_passed": 85,
+    "unit_command": "python3 -m unittest discover -s target/paired-v2-postrun-capture-repair-v2/repo/evaluation/cli-repair-paired-v1 -p 'test_*.py'",
+    "saved_raw_structural_probe": {
+      "sha256": "2f39eaf28cce0ff921dd9ca317db09244816f532f70c37ef0f3c505c2c541861",
+      "normal_rows_bound": {
+        "google": 48,
+        "mistral": 48
+      },
+      "previously_complete_rows_unchanged": 74,
+      "new_observations_or_annotations_written": false,
+      "semantic_scoring_performed": false
+    }
+  },
+  "limits": "Structural diagnostics only. No accuracy, safety, semantic F1 or adoption verdict is inferred."
+}
