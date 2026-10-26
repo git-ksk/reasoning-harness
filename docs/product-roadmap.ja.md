@@ -1,6 +1,10 @@
 # 製品ロードマップ: Reason CLI / Harness Engine
 
-**2026-10-25 現在:** [PR555](https://github.com/git-ksk/reasoning-harness/pull/555)は限定独立レビューPASS・CI22/22成功後にmainへマージ済み。PR556の初回独立レビューで評価器の3点（保留回答の表示昇格を許容、keyless対象の拒否、旧preflight期待値）を確認し、修正source `552a6d7`は限定再レビューPASS。Linux両armの10バイナリ、取得・引用を含む実CLI17経路、provider計測18経路、評価器51検証、停止/予約/再開拒否7経路、registry一致を確認した。[Linux記録](../evaluation/cli-repair-paired-v1/linux-checkpoint.json)。
+<!-- real24-v2-current-start -->
+**2026-10-26 現在:** [実API比較v2と独立初回F1](cli-paired-real24-v2-20261026.ja.md)を記録。Mistral・Googleは各72jobs完走、192新観測を独立注釈し凍結採点を一度実行した。helper case F1は両社0.222222→0.400000（Precision1.000/Recall0.250）で未達。Google通常の参考23問F1は両arm0.933333、Mistral通常は15/13問と欠測集合が異なり全件改善判定不可。通常欠測22行を保持し全件F1はnull。captureの再取得/空イベント修正は限定独立PASSで、元測定へ混入させない。Groq保留、新規独立accuracy0、Engine公開・CLI採用NO_GO。
+<!-- real24-v2-current-end -->
+
+**2026-10-25 時点:** [PR555](https://github.com/git-ksk/reasoning-harness/pull/555)は限定独立レビューPASS・CI22/22成功後にmainへマージ済み。PR556の初回独立レビューで評価器の3点（保留回答の表示昇格を許容、keyless対象の拒否、旧preflight期待値）を確認し、修正source `552a6d7`は限定再レビューPASS。Linux両armの10バイナリ、取得・引用を含む実CLI17経路、provider計測18経路、評価器51検証、停止/予約/再開拒否7経路、registry一致を確認した。[Linux記録](../evaluation/cli-repair-paired-v1/linux-checkpoint.json)。
 
 [GitHubの比較環境構築も完走](cli-paired-runtime-checkpoint-20261025.ja.md)。次はplanner上限を含む後継profile・新しい実行receipt・最新readinessを独立確認し、既知24問のF1/P/R/引用/効率を測定する。新API・新accuracy問題・F1再採点は今回0、元成績は不変。ownerよりMistral再開可能の連絡あり。Mistral/Googleは新しいreadiness・receiptを固定後に開始し、Groq保留と新規独立受入・Engine採用のゲートを維持する。
 

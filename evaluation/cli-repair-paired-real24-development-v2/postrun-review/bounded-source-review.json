@@ -1,0 +1,151 @@
+{
+  "identity": "independent-bounded-future-capture-review-v1",
+  "reviewer_id": "/root/real24_operational_review",
+  "reviewer_kind": "agent_nonhuman",
+  "source_commit": "2a936b6a62b188d39096ba8552365f6d17972237",
+  "scope": [
+    "evaluation/cli-repair-paired-v1/capture.py",
+    "evaluation/cli-repair-paired-v1/test_review_boundaries.py"
+  ],
+  "overlay_file_sha256": {
+    "capture.py": "2168c117bd90d759c7a9dce009b32516bccf05f1a196e3f74ebabece1e831631",
+    "test_review_boundaries.py": "3172dbd1ce8cdb9a5ae7f2fd83d188750cb85815c52720f9c39eaa84e2fbcf01"
+  },
+  "result": "PASS_BOUNDED_SOURCE_AND_OFFLINE_CONTROLS_ONLY",
+  "blocking_findings": [],
+  "formal_verdict_issued": false,
+  "verdict_stage": "BOUNDED_SOURCE_AND_OFFLINE_REPLAY_ONLY",
+  "not_formal_operational_verdict": true,
+  "eligible_for_real_execution_admission": false,
+  "runtime_identity": "Existing source4dbf8ba image with exactly two read-only future source overlays; not a newly built or independently approved future runtime.",
+  "existing_image_id": "sha256:5b137b44e3e3685029e6abca17168044ea8ebf2ae2425e6d4f21cb37cc6c3e64",
+  "isolation": {
+    "network": "none",
+    "rootfs": "read-only",
+    "user": "65534:65534",
+    "capabilities": "ALL dropped",
+    "security_opt": "no-new-privileges",
+    "tmpfs": "/tmp noexec nosuid 128m",
+    "pids_limit": 128,
+    "memory": "2g",
+    "cpus": 2,
+    "python": "-B",
+    "provider_credentials_supplied": false,
+    "raw_inputs_read_only": true,
+    "pull": "never"
+  },
+  "independent_actual_Linux_unit_controls": 85,
+  "independent_saved_normal_structural_controls": 96,
+  "old_complete_bound_fields_identical": 74,
+  "independent_adversarial_controls": [
+    {
+      "name": "same_ID_changed_facts",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "ambiguous_acquired_evidence"
+    },
+    {
+      "name": "same_ID_changed_metadata",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "ambiguous_acquired_evidence"
+    },
+    {
+      "name": "same_ID_changed_source",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "ambiguous_acquired_evidence"
+    },
+    {
+      "name": "duplicate_inside_one_response",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "ambiguous_acquired_evidence"
+    },
+    {
+      "name": "duplicate_request_ID",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "duplicate_acquisition_request"
+    },
+    {
+      "name": "reacquisition_wrong_target",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "acquisition_wrong_target"
+    },
+    {
+      "name": "reacquisition_wrong_question",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "acquisition_wrong_target"
+    },
+    {
+      "name": "reacquisition_wrong_key",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "acquisition_wrong_fact_key"
+    },
+    {
+      "name": "reacquisition_cannot_admit_ID_twice",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "unacquired_admission"
+    },
+    {
+      "name": "no_resolver_nonempty_IDs",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "admission_without_same_target_acquisition"
+    },
+    {
+      "name": "no_resolver_nonempty_facts",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "admission_without_same_target_acquisition"
+    },
+    {
+      "name": "no_resolver_missing_fact_field",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "admission_without_same_target_acquisition"
+    },
+    {
+      "name": "no_resolver_unknown_capability",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "admission_without_same_target_acquisition"
+    },
+    {
+      "name": "no_resolver_unknown_target",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "acquisition_target_not_planned"
+    },
+    {
+      "name": "no_resolver_requires_prior_admitted_plan",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "acquisition_before_plan_admission"
+    },
+    {
+      "name": "no_resolver_target_must_be_in_prior_ledger",
+      "rejected": true,
+      "exception_type": "ValueError",
+      "reason": "acquisition_target_not_in_ledger"
+    }
+  ],
+  "new_provider_or_model_requests": 0,
+  "new_observations_or_annotations": 0,
+  "new_F1_calculations": 0,
+  "findings": [
+    "The two changes align binding with the frozen resolver/core/CLI contract without granting duplicate source or empty-event admission credit.",
+    "All original complete normal bound fields remain identical. The 22 previously incomplete normal rows bind structurally only under the future overlay; current measurement completeness is unchanged.",
+    "Any new real execution requires its own frozen source, complete new runtime proof, independent operational review and receipt; this bounded review grants none of those."
+  ],
+  "evidence_files": {
+    "linux-unit.stderr": "cae3d9274d1749fb37c4edc6d35e1ce87a7a97c05b755cb798b1cca4d49a652a",
+    "linux-structural-probe.json": "969004c6e025861693e6d61017da8ea2981651efeb64ab7f546921edd12fe388",
+    "bounded_probe.py": "3fb63bb2afcab23e46c09600bbef18f9efa22d0c25d8416959d1c7b4cee2f173"
+  }
+}

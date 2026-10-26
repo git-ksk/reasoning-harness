@@ -1,0 +1,975 @@
+{
+  "identity": "cli-repair-paired-real24-v2-independent-first-score-interpretation-v1",
+  "reviewer": {
+    "role": "agent",
+    "id": "/root/paired_evaluation_independent"
+  },
+  "recorded_utc": "2026-10-26T06:13:45.428383+00:00",
+  "inputs": {
+    "report_sha256": "be4f58e4436fcd282eb7cfd81c8b6c030cd769a9203fe7d4123c63604c8d797e",
+    "rows_sha256": "e69a84bdc8bb45fe4da2482393d4f975f2b2e856f20131921242283f24df9ddf",
+    "analysis_freeze_sha256": "45ad679943fcc056052503d8a9583f17c6c8c524abb27ce8b7ec3712f97ddccc",
+    "execution_receipt_sha256": "2e964414858613223af8c26c3ddd28901b197d004b594b26dd73a04eb421cd1c",
+    "observation_inventory_unchanged": true,
+    "review_inventory_unchanged": true
+  },
+  "scope": "Read-only interpretation of the one frozen initial score. No reannotation, rescoring, new aggregate F1, API call, or replacement output.",
+  "helper": {
+    "evidence": {
+      "google": {
+        "baseline_metrics_copied_from_first_report": {
+          "precision": 1.0,
+          "recall": 0.125,
+          "f1": 0.2222222222222222
+        },
+        "candidate_metrics_copied_from_first_report": {
+          "precision": 1.0,
+          "recall": 0.25,
+          "f1": 0.4
+        },
+        "candidate_case_counts_copied_from_first_report": {
+          "fn": 6,
+          "tn": 16,
+          "tp": 2
+        },
+        "candidate_claim_micro_copied_from_first_report": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "f1_null_or_zero_reason": null
+        },
+        "case_evidence": {
+          "rw-01": {
+            "baseline": {
+              "case": "rw-01",
+              "row_id": "a9ffc5027416d4be928ad4ea",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "conflict",
+              "observation_sha256": "72f525923b69c4638d0841748749528a40071081334a1258f15cf62027ecf4d6",
+              "annotation_sha256": "6d6c4d18ce15da64040d465c74e028ec3ed1dc476bf0327155f0f6505a320dd1",
+              "frozen_annotation_rationale": "Both displayed source-local clauses state the retry companion rule; the display contains no generalization that every HTTP error status is a transfer error."
+            },
+            "candidate": {
+              "case": "rw-01",
+              "row_id": "d037ebfbb717fd7d51b7b449",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "conflict",
+              "observation_sha256": "3c2996f692f33de0e9efd0832217ae49538e4d0470b46ac5d410ab0b7254a4e6",
+              "annotation_sha256": "76a43464be86b505b10ea214a592ecff218471163a99203a623c3d486280cc21",
+              "frozen_annotation_rationale": "Both displayed source-local clauses state the retry companion rule; the display contains no generalization that every HTTP error status is a transfer error."
+            }
+          },
+          "rw-05": {
+            "baseline": {
+              "case": "rw-05",
+              "row_id": "43b46abfb78f636de472ea1c",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "qualified",
+              "observation_sha256": "f212d10c3ce6be6ae22200c16380b6179e924a161b152b873e0ed3817cb4aaf0",
+              "annotation_sha256": "6365142c2f96aff6dcfc65f16554f17b813f6315640a56c4fbb6c30e802d570c",
+              "frozen_annotation_rationale": "The shared NUL grammar is displayed, but the two opaque source IDs do not disclose that they are copies of one upstream passage/publisher."
+            },
+            "candidate": {
+              "case": "rw-05",
+              "row_id": "0dceb7bce9157126935279a5",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "qualified",
+              "observation_sha256": "b2d5438bb958f576b16b1068ce883647b06dd3ea2c11547bb72de39e07d472de",
+              "annotation_sha256": "309c1b83249949faf317b8cf230d7854bb40cbcde67cfb6650edd9476c464f47",
+              "frozen_annotation_rationale": "The shared NUL grammar is displayed, but the two opaque source IDs do not disclose that they are copies of one upstream passage/publisher."
+            }
+          },
+          "rw-08": {
+            "baseline": {
+              "case": "rw-08",
+              "row_id": "5a3449ced4493906158bdba2",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "qualified",
+              "observation_sha256": "1e3ef8a21c1b921e34dacfb4f37bf763fa3d925dd34dd05a307dbe8d32e581c3",
+              "annotation_sha256": "6fbb08434a5549f9a4d6e91ba91343b5330c4bf6a280c30591341138f007780e",
+              "frozen_annotation_rationale": "The whole0/1/128 mapping is shown, but the two opaque source IDs do not disclose the common document/publisher."
+            },
+            "candidate": {
+              "case": "rw-08",
+              "row_id": "054c09028b6c211668131768",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "qualified",
+              "observation_sha256": "a57ec7f5453ef5e3b7934e537d6574af5776a8a2e3076b553677756d60863b84",
+              "annotation_sha256": "7d8721dfbfad432b0f3e3c2bb6b66353dbcf62e3803db3bd49b3f85a95a6f663",
+              "frozen_annotation_rationale": "The whole0/1/128 mapping is shown, but the two opaque source IDs do not disclose the common document/publisher."
+            }
+          },
+          "rw-09": {
+            "baseline": {
+              "case": "rw-09",
+              "row_id": "4c2d05f10f2717e6ea46904d",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "conflict",
+              "observation_sha256": "7af3f39f431794bb6ee81dcd3c7f966b35dfd98fc661ebc0b30909cabf697de8",
+              "annotation_sha256": "d29609a678325a270df9b8bb6160bef8e2564762b0b3f41b609838aeee335414",
+              "frozen_annotation_rationale": "Both complete clauses mean break exits an enclosing foreach or while loop; markup and inflection do not change that meaning. Their text is reviewed independently of the differing terminal labels."
+            },
+            "candidate": {
+              "case": "rw-09",
+              "row_id": "0229719f98deece036fe1dac",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "accept",
+              "complete_useful_answer": true,
+              "terminal": "reviewed_compatible",
+              "observation_sha256": "0610c91a27003b52ddd788911eb8c6bacdaa9a56c7867b9657d70a156d1524d3",
+              "annotation_sha256": "cbcd4da50c811dd7aff81b54e131d56280f613eda4cdc0ef28a8e3154b2af09a",
+              "frozen_annotation_rationale": "Both complete clauses mean break exits an enclosing foreach or while loop; markup and inflection do not change that meaning. Their text is reviewed independently of the differing terminal labels."
+            }
+          },
+          "rw-14": {
+            "baseline": {
+              "case": "rw-14",
+              "row_id": "a443e6c7978563dfa88e7103",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "conflict",
+              "observation_sha256": "55fb189936993852fe270cc348f002135cf6ca21a73025cba27d41df4bb78501",
+              "annotation_sha256": "f9415294fa9eace3e84f86d80b5a031e5820e593f41085fd50cc2089e6933502",
+              "frozen_annotation_rationale": "The conditional no-peer OK result and the disjunction describe API semantics, not an observation that this connection authenticated."
+            },
+            "candidate": {
+              "case": "rw-14",
+              "row_id": "b224466d36e1eb1ea916d13f",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "conflict",
+              "observation_sha256": "5852909483ed0e6bbd8c69a63cc57fca0509cca73b2594833a52d8c2f341a13b",
+              "annotation_sha256": "bf4c82d6223403819b31c423522975307553e784366649d1536d777bf7ed98eb",
+              "frozen_annotation_rationale": "The conditional no-peer OK result and the disjunction describe API semantics, not an observation that this connection authenticated."
+            }
+          },
+          "rw-15": {
+            "baseline": {
+              "case": "rw-15",
+              "row_id": "b94bc9c8563bc5bcc47f055e",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "qualified",
+              "observation_sha256": "d666c5515460a88a6d87a2db4a24e9dd3b62d86237043d9077ba6653fe3e8f6d",
+              "annotation_sha256": "793d0cba9c030de1b9528654765986f4661effcaa3398d975bd82211013b5580",
+              "frozen_annotation_rationale": "The shared session-reuse rule is displayed, but common-document provenance is not disclosed by the two opaque IDs."
+            },
+            "candidate": {
+              "case": "rw-15",
+              "row_id": "58bdb97f449d371c3fe4cc9b",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "qualified",
+              "observation_sha256": "ef0f393aedd995aae3abd14456e80bd8701770b692dd9120658789486e13d8dd",
+              "annotation_sha256": "1efde5eca84530f576e73263c8da33499bb20d477e4554b21fc6835cb0d80932",
+              "frozen_annotation_rationale": "The shared session-reuse rule is displayed, but common-document provenance is not disclosed by the two opaque IDs."
+            }
+          },
+          "rw-19": {
+            "baseline": {
+              "case": "rw-19",
+              "row_id": "877a73d59267be1aa7fb5709",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "accept",
+              "complete_useful_answer": true,
+              "terminal": "qualified",
+              "observation_sha256": "889d61d09defa8df9258f2074c3075e2edab306be0cc23dce6f22c60671cb4a3",
+              "annotation_sha256": "e4747a85375ea8164f22da8a3e3e0c19fe0e813205756f34d6742bbaf3d72f03",
+              "frozen_annotation_rationale": "The shared optional-extension-before-tests rule is explicit and confined to the SQLite Tcl extension; other prerequisites and platform commands are not equated."
+            },
+            "candidate": {
+              "case": "rw-19",
+              "row_id": "4ca3b715e3e62cdb0ec063a8",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "accept",
+              "complete_useful_answer": true,
+              "terminal": "qualified",
+              "observation_sha256": "8213ef669684db8ab44b239e4c7539e4d852884d0c8939d6bbfbc077dfaa891a",
+              "annotation_sha256": "704bf4164f522b7dd5d095af7965b86bde65e23c971fdb2267e8ebce8a94bc63",
+              "frozen_annotation_rationale": "The shared optional-extension-before-tests rule is explicit and confined to the SQLite Tcl extension; other prerequisites and platform commands are not equated."
+            }
+          },
+          "rw-21": {
+            "baseline": {
+              "case": "rw-21",
+              "row_id": "363b88465bf2e38779a27617",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "conflict",
+              "observation_sha256": "33299694275fe099a0daccafbb5637719f33879f9bc9896584be1bd501838ca4",
+              "annotation_sha256": "597492fdc962561404cfc8f0e3d2febba6f17155dfde2d5d95ad5fdd3ed47c42",
+              "frozen_annotation_rationale": "Both full passages state jemalloc as Linux default; the libc default exception and override remain bounded rather than generalized to all platforms."
+            },
+            "candidate": {
+              "case": "rw-21",
+              "row_id": "21b0c621a922db42844bd739",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "conflict",
+              "observation_sha256": "5bec1825f6dc1143c2b507e6e1b5eb7444f545c5517dd6a3acc40fabe8cfcd4a",
+              "annotation_sha256": "736ce128036ef4cf579ec48b4b132a50b3b0ec6e94446fbb8226d749f7a1b295",
+              "frozen_annotation_rationale": "Both full passages state jemalloc as Linux default; the libc default exception and override remain bounded rather than generalized to all platforms."
+            }
+          }
+        }
+      },
+      "mistral": {
+        "baseline_metrics_copied_from_first_report": {
+          "precision": 1.0,
+          "recall": 0.125,
+          "f1": 0.2222222222222222
+        },
+        "candidate_metrics_copied_from_first_report": {
+          "precision": 1.0,
+          "recall": 0.25,
+          "f1": 0.4
+        },
+        "candidate_case_counts_copied_from_first_report": {
+          "fn": 6,
+          "tn": 16,
+          "tp": 2
+        },
+        "candidate_claim_micro_copied_from_first_report": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "f1_null_or_zero_reason": null
+        },
+        "case_evidence": {
+          "rw-01": {
+            "baseline": {
+              "case": "rw-01",
+              "row_id": "38a005c79202f33f99cc3d03",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "conflict",
+              "observation_sha256": "83fe8f00a6533cc531bd5a5e28a930abdeeb1de1fe9c5e29d21f3ba78cae165f",
+              "annotation_sha256": "395341379b1c2061572546234d38a81662939717f28f50a45d65701f6fc9eb4e",
+              "frozen_annotation_rationale": "Both displayed source-local clauses state the retry companion rule; the display contains no generalization that every HTTP error status is a transfer error."
+            },
+            "candidate": {
+              "case": "rw-01",
+              "row_id": "2ef6c827bbf8f32418c4fc7a",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "conflict",
+              "observation_sha256": "dedd4a9b3c518c9853824a7e0f3a87df74634314c67dfde96480ee56cd211499",
+              "annotation_sha256": "5747c9a885ac2f9c36f8f1b2603fad28b0f0e814d6058f8e8e156f9ee0f23528",
+              "frozen_annotation_rationale": "Both displayed source-local clauses state the retry companion rule; the display contains no generalization that every HTTP error status is a transfer error."
+            }
+          },
+          "rw-05": {
+            "baseline": {
+              "case": "rw-05",
+              "row_id": "731843cf656a501e8aab5b83",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "qualified",
+              "observation_sha256": "89478764542bd07f2e6dce40d23fb3d0f4a568871e8318efde25aa0ea3950678",
+              "annotation_sha256": "86068b5a16e1059d89b7f34c358f0275dc184bb4c23d6a33130abaebec7c1423",
+              "frozen_annotation_rationale": "The shared NUL grammar is displayed, but the two opaque source IDs do not disclose that they are copies of one upstream passage/publisher."
+            },
+            "candidate": {
+              "case": "rw-05",
+              "row_id": "0f5fd9a064ec89ae9a2b8d89",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "qualified",
+              "observation_sha256": "c0645811790ff4af59bb711e44baa16f1179c4d6170990157a3074cadc6aa915",
+              "annotation_sha256": "91ac796397199242189571ebeca656ade5f13a9109a603bfcc1b3df187b245c6",
+              "frozen_annotation_rationale": "The shared NUL grammar is displayed, but the two opaque source IDs do not disclose that they are copies of one upstream passage/publisher."
+            }
+          },
+          "rw-08": {
+            "baseline": {
+              "case": "rw-08",
+              "row_id": "078ae371c3556d27886293a3",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "qualified",
+              "observation_sha256": "a219631b9e69b2801eba92dbb8c05a08a32acb94a429ada6c13cf20882f4517f",
+              "annotation_sha256": "036e6c10f9743b8ba0c943619c8dd9ca23a0320c9952ad913590ebfd8c35c930",
+              "frozen_annotation_rationale": "The whole0/1/128 mapping is shown, but the two opaque source IDs do not disclose the common document/publisher."
+            },
+            "candidate": {
+              "case": "rw-08",
+              "row_id": "00891428ed34de1bbe396267",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "qualified",
+              "observation_sha256": "db3e96b79ddc403a0548711a92689a10a2c83b50f05191ea58218914c4ded7fc",
+              "annotation_sha256": "9cc78a9194212dde36dd6c2e1f51b38c8f918c328f34eae86bf38dbda7bfd96e",
+              "frozen_annotation_rationale": "The whole0/1/128 mapping is shown, but the two opaque source IDs do not disclose the common document/publisher."
+            }
+          },
+          "rw-09": {
+            "baseline": {
+              "case": "rw-09",
+              "row_id": "2439a2eaa3778a7fc9c54406",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "conflict",
+              "observation_sha256": "5658d8b3ae1f8a1c9f7251b0cab37c03da053dc20e9e80cdbe45a2d597c3e6ce",
+              "annotation_sha256": "bdb4c18324da19a2b02d2e4c58d91bc106211e447cfa2c0af00c549642ebc2be",
+              "frozen_annotation_rationale": "Both complete clauses mean break exits an enclosing foreach or while loop; markup and inflection do not change that meaning. Their text is reviewed independently of the differing terminal labels."
+            },
+            "candidate": {
+              "case": "rw-09",
+              "row_id": "a7898df5056383eebea8f0ad",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "accept",
+              "complete_useful_answer": true,
+              "terminal": "reviewed_compatible",
+              "observation_sha256": "740d111cc1fa687311ff9c9bb43f1184fde2b1b319809d3f6680c3f949b486ae",
+              "annotation_sha256": "cc51e514ea2da04fa02bc050a91a716828ec93974b4507f2496f154d2bf7e929",
+              "frozen_annotation_rationale": "Both complete clauses mean break exits an enclosing foreach or while loop; markup and inflection do not change that meaning. Their text is reviewed independently of the differing terminal labels."
+            }
+          },
+          "rw-14": {
+            "baseline": {
+              "case": "rw-14",
+              "row_id": "622b4bedb026c04b9fbb6267",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "conflict",
+              "observation_sha256": "29e7abf2054588be79cfbd121dc1ac6d7794b49707006ff6efb21552fb120b85",
+              "annotation_sha256": "97f1f49d29dd2aeea902363d321cc7ebab23d7525886142ee3a9ff3864566ddf",
+              "frozen_annotation_rationale": "The conditional no-peer OK result and the disjunction describe API semantics, not an observation that this connection authenticated."
+            },
+            "candidate": {
+              "case": "rw-14",
+              "row_id": "1d0df759556c2a342b99c3bc",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "conflict",
+              "observation_sha256": "56a3c194897e04418c388df7796fb0e92c3cedcf615953a2be66b9759c4da51e",
+              "annotation_sha256": "6f21409dec311792cb6e9ec4c44b513131f23610570c884b53f8e802a3d4f0f9",
+              "frozen_annotation_rationale": "The conditional no-peer OK result and the disjunction describe API semantics, not an observation that this connection authenticated."
+            }
+          },
+          "rw-15": {
+            "baseline": {
+              "case": "rw-15",
+              "row_id": "2588285b3276947fcc9bdb7e",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "qualified",
+              "observation_sha256": "a9512e9050ce06d8c7777cccf8f4c37999473556c286a305bd338fce9e262719",
+              "annotation_sha256": "35a4b5081b0df7cab54c1fbd24e5bd4f59a94aefe37c3bae7f58e852083923ce",
+              "frozen_annotation_rationale": "The shared session-reuse rule is displayed, but common-document provenance is not disclosed by the two opaque IDs."
+            },
+            "candidate": {
+              "case": "rw-15",
+              "row_id": "fd31a53e9e362026912fb65a",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "qualified",
+              "observation_sha256": "fbf0c5791bd411e6aff822bbfb35047804fab4ba49616c6e786336ce5f5fa29d",
+              "annotation_sha256": "527a94b7a7e28104800c5cbfcac086343944529439b3cfc57232824ec3735acf",
+              "frozen_annotation_rationale": "The shared session-reuse rule is displayed, but common-document provenance is not disclosed by the two opaque IDs."
+            }
+          },
+          "rw-19": {
+            "baseline": {
+              "case": "rw-19",
+              "row_id": "400f3b9c8911fb33e6af3330",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "accept",
+              "complete_useful_answer": true,
+              "terminal": "qualified",
+              "observation_sha256": "878c505d67607777924a730a97674878bd91a03baa10fa5137e40ae51560471c",
+              "annotation_sha256": "af1f25f2d3ab44e7dcb4af3282270ebe47994ef65202754029dea682d2577123",
+              "frozen_annotation_rationale": "The shared optional-extension-before-tests rule is explicit and confined to the SQLite Tcl extension; other prerequisites and platform commands are not equated."
+            },
+            "candidate": {
+              "case": "rw-19",
+              "row_id": "70d657417b037733e4a0ea4b",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "accept",
+              "complete_useful_answer": true,
+              "terminal": "qualified",
+              "observation_sha256": "7767054493e5b5937225ade5c70035351386d56f5659277e6be5bf714eb3869e",
+              "annotation_sha256": "e131e65d7b7b05120e0257611c5d613954d576fab3a2f3e63eb9b7d29f330ed1",
+              "frozen_annotation_rationale": "The shared optional-extension-before-tests rule is explicit and confined to the SQLite Tcl extension; other prerequisites and platform commands are not equated."
+            }
+          },
+          "rw-21": {
+            "baseline": {
+              "case": "rw-21",
+              "row_id": "ae02ab3a337528b43ba60a0f",
+              "arm": "baseline",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "conflict",
+              "observation_sha256": "2496a012a1e653e8cf18a276dbff007c9933db5c3ae259af778d320821b96a50",
+              "annotation_sha256": "7c88c41364c803753c3298a7b9155e45551a30eb27b02ef1d088df9551997898",
+              "frozen_annotation_rationale": "Both full passages state jemalloc as Linux default; the libc default exception and override remain bounded rather than generalized to all platforms."
+            },
+            "candidate": {
+              "case": "rw-21",
+              "row_id": "06466b83fd21561ac2cd5402",
+              "arm": "candidate",
+              "complete": true,
+              "decision": "abstain",
+              "complete_useful_answer": false,
+              "terminal": "conflict",
+              "observation_sha256": "e668275ef15859b2534fcec0782d53eba5004449a5207041ab68857fcb7af2a4",
+              "annotation_sha256": "57d4e74c6b59af5cec9535b50624ee31b045effe9e97d107a3d39fa6a8ecbae4",
+              "frozen_annotation_rationale": "Both full passages state jemalloc as Linux default; the libc default exception and override remain bounded rather than generalized to all platforms."
+            }
+          }
+        }
+      }
+    },
+    "interpretation_ja": "両社とも補助APIの正式な24問F1は初回reportの0.2222222222222222から0.4へ上昇。候補はTP2/FN6/TN16/FP0で、Precision1.0は受理2問についての値であり全問正答率100%ではない。改善は共通のrw-09一問で、CMakeのbreakがforeach/whileを抜ける同義文をconflictからreviewed_compatibleへ扱えるようになった。rw-19は元から受理。",
+    "claim_vs_case_ja": "claim_micro F1=1.0は、表示された出典付き事実の支持と、採点済み技術的情報群の充足を数える算術。この層はterminalの受理可否、同一由来の明示、全体の回答有用性を要求していない。case F1はそれらを別条件として要求する。引用が正確でも最終的に使える回答にならなければcaseは不合格となる。",
+    "remaining_false_negatives": {
+      "content_supported_but_terminal_conflict": [
+        "rw-01",
+        "rw-14",
+        "rw-21"
+      ],
+      "qualified_but_required_common_origin_disclosure_missing": [
+        "rw-05",
+        "rw-08",
+        "rw-15"
+      ]
+    },
+    "missing_disclosure_ja": "NUL出力形式、終了コード、セッション再利用の3問では内容自体は合っているが、2つのsource IDが同じ原文・発行元の複製だと利用者に分からない。凍結注釈は共通技術内容と由来説明を分離して記録し、由来説明欠落により回答全体を合格させていない。",
+    "negative_case_limit_ja": "TN16は誤って対象命題を受理しなかったという二値判定。拒否理由や不足情報を分かりやすく説明した有用な回答16件という意味ではない。実rowのcorrect_withholdは別指標。",
+    "causal_scope_ja": "rw-09では同じ表示内容に対するterminal扱いの改善が実測された。ただし同じ24問・同じ12原文を使う開発診断で、2社で再現した同じ一問を独立した二問の改善とは数えない。",
+    "gate_ja": "候補F1 0.4、Recall0.25は凍結基準未達。純増も各社1問で、必要な各社2問に届いていない。claim F1=1.0単独で合格・CLI採用とは判断できない。"
+  },
+  "google_normal": {
+    "baseline_metrics_copied_from_first_report": {
+      "precision": 1.0,
+      "recall": 0.875,
+      "f1": 0.9333333333333333
+    },
+    "candidate_metrics_copied_from_first_report": {
+      "precision": 1.0,
+      "recall": 0.875,
+      "f1": 0.9333333333333333
+    },
+    "complete_rows_per_arm": 23,
+    "excluded_case_both_arms": "rw-20",
+    "actual_answer_f1": null,
+    "interpretation_ja": "同じ23問の完全観測部分では両armともF1 0.9333333333333333。rw-04は重複出力の原因説明、rw-16はコールバック継続と検証成功の区別が欠けるため2FN。通常経路で改善を示す結果ではなく、rw-20欠測により24問全体のactual_answer_f1はnull。部分値が基準を超えても全体合格ではない。"
+  },
+  "mistral_normal": {
+    "baseline_metrics_copied_from_first_report": {
+      "precision": 1.0,
+      "recall": 0.2727272727272727,
+      "f1": 0.42857142857142855
+    },
+    "candidate_metrics_copied_from_first_report": {
+      "precision": 1.0,
+      "recall": 0.3,
+      "f1": 0.46153846153846156
+    },
+    "complete_baseline_rows": 15,
+    "complete_candidate_rows": 13,
+    "paired_utility_copied_from_first_report": {
+      "net_gain": 0,
+      "regressions": 2,
+      "paired_cases": 24
+    },
+    "actual_answer_f1": null,
+    "unpaired_metric_warning_ja": "0.42857142857142855と0.46153846153846156は15問と13問という異なる完全観測集合の参考値。改善率として引き算・比較をしてはならない。全体F1はいずれも利用不能。",
+    "planned_utility_interpretation_ja": "reportのpaired_utilityは全計画24ケースに欠測placeholderを補い、欠測をcomplete_useful_answer=falseとして比較する。数値は利用可能な有用回答の提供状況を保守的に数えており、両arm完全観測の意味品質比較ではない。paired_cases24を完全比較24問と説明してはならない。",
+    "reported_regressions": {
+      "rw-04": {
+        "evidence": {
+          "baseline": {
+            "case": "rw-04",
+            "row_id": "ce2b9f0c145939d7233ac110",
+            "arm": "baseline",
+            "complete": true,
+            "decision": "accept",
+            "complete_useful_answer": true,
+            "terminal": "qualified_partial_answer",
+            "observation_sha256": "693fe0a364eae35189bd9208c832c951d67a26cb6804551a0a81e7f077cf572a",
+            "annotation_sha256": "1562c595fb1073dc6b82e0105e00190c59c08961b2a1e2d83a887ba34d800a77",
+            "frozen_annotation_rationale": "Both the non-reset property and duplicate-data risk are explicitly displayed, with the general warning separately quoted. This supplies the requested causal explanation without executing a transfer."
+          },
+          "candidate": {
+            "case": "rw-04",
+            "row_id": "e9462ee8f071f09ea7a2ab0d",
+            "arm": "candidate",
+            "complete": false,
+            "decision": "abstain",
+            "complete_useful_answer": false,
+            "terminal": "unavailable",
+            "observation_sha256": "a5e6d545892d7571f8c138f620ee62f9f8791e1b2fd6e1e7c06d706bc560bcf4",
+            "annotation_sha256": "b336857875139140017afd46458644a6519a60af553caf517510a6398cb841a7",
+            "frozen_annotation_rationale": "Only unestablished investigation questions are exposed; the duplicate-data mechanism is not delivered."
+          }
+        },
+        "interpretation_ja": "baseline有用回答に対しcandidateはcapture経路未確定。partial表示は原因の答えを欠いているが、採点可能な意味品質退行としては確定できない。"
+      },
+      "rw-20": {
+        "evidence": {
+          "baseline": {
+            "case": "rw-20",
+            "row_id": "1cb5e00a740cc6209250d25e",
+            "arm": "baseline",
+            "complete": true,
+            "decision": "accept",
+            "complete_useful_answer": true,
+            "terminal": "qualified_partial_answer",
+            "observation_sha256": "8f7e990f1207fbd2f227079ec242c09611730911e8f18c23b20b1a2eec7aaf18",
+            "annotation_sha256": "1b50c38ae9aeb838ba25689e17e5f5a2d6f86eb8985f9005dea8c4bf370deeef",
+            "frozen_annotation_rationale": "The displayed limitation distinguishes accidental-change detection from malicious makefile changes that can hide tampering, answering the guarantee question in the negative. The documented command is not executed."
+          },
+          "candidate": {
+            "case": "rw-20",
+            "row_id": "21b6f183bd7e35f9ebf2101a",
+            "arm": "candidate",
+            "complete": false,
+            "decision": "abstain",
+            "complete_useful_answer": false,
+            "terminal": "unavailable",
+            "observation_sha256": "00618c6da9192019d68927047e24fc488c3af2642d0e46df65275a8c31b7ec49",
+            "annotation_sha256": "6f1a709045d2d638ab801ed643c1ccd33f7d3e71b1a7427e447af07d9f75b38c",
+            "frozen_annotation_rationale": "The visible makefile limitation agrees with the document and does not claim tamper-proof authenticity or execution. Capture-route validity remains unavailable."
+          }
+        },
+        "interpretation_ja": "baseline有用回答に対しcandidateはcapture経路未確定。candidate partial本文は改竄検出限界を実際には正しく述べており、欠測のfalseを意味的退行とするのは特に不適切。"
+      }
+    },
+    "offsetting_positive_changes": {
+      "rw-09": {
+        "evidence": {
+          "baseline": {
+            "case": "rw-09",
+            "row_id": "434088ec1814baa013b5aad5",
+            "arm": "baseline",
+            "complete": false,
+            "decision": "abstain",
+            "complete_useful_answer": false,
+            "terminal": "unavailable",
+            "observation_sha256": "e7ccbfcf87fe2e61bee1aca878a75cda75eed1b4c5cb7167152bce3762bed92c",
+            "annotation_sha256": "4c86a9314f884bc4e3a40af6b80da2cc81ede6a8c093ee6541560985f9a4791a",
+            "frozen_annotation_rationale": "Loop-kind targets are conflicting/blocked or not acquired. The final display does not assert the loop kinds."
+          },
+          "candidate": {
+            "case": "rw-09",
+            "row_id": "559d5166276e0b727df3d7fa",
+            "arm": "candidate",
+            "complete": true,
+            "decision": "accept",
+            "complete_useful_answer": true,
+            "terminal": "qualified_partial_answer",
+            "observation_sha256": "737f987f42db94cb721d2679508368319573c7691a1be1bee52557dbc2aea040",
+            "annotation_sha256": "ade30c519778f5e9eb480af822a0b6ac9bd56a876ee1d56239ce56f398ee3d83",
+            "frozen_annotation_rationale": "The single loop-kind fact is supported by both source-local wording variants. Both say an enclosing foreach or while loop; no function-return behavior is added."
+          }
+        },
+        "interpretation_ja": "baseline capture欠測からcandidate有用へ。両側完全比較の改善ではない。"
+      },
+      "rw-21": {
+        "evidence": {
+          "baseline": {
+            "case": "rw-21",
+            "row_id": "2b876a263dfbbc1a06f3e819",
+            "arm": "baseline",
+            "complete": true,
+            "decision": "withhold",
+            "complete_useful_answer": false,
+            "terminal": "unresolved",
+            "observation_sha256": "165d690fe1c97e338ac0b480b7d44447a40ec04f46e11dc9980bd299e45aaa0e",
+            "annotation_sha256": "75c236ceae4220eb3f1e38d9bcfac6ff0bd1a687831ad858be1a585d0d95b358",
+            "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+          },
+          "candidate": {
+            "case": "rw-21",
+            "row_id": "5e16780de57588e683079922",
+            "arm": "candidate",
+            "complete": true,
+            "decision": "accept",
+            "complete_useful_answer": true,
+            "terminal": "qualified_partial_answer",
+            "observation_sha256": "5ceffd3e4b510835222d2d8d9574faa605da3c893735225fe39a37c3c25a52be",
+            "annotation_sha256": "f7b2f549b2a4bab5729f121850a32a891ef9604cd6bfe526f773c23b2da8ade4",
+            "frozen_annotation_rationale": "The Linux jemalloc default and libc build override are explicitly displayed. The adjoining complete quotation retains the non-Linux default exception."
+          }
+        },
+        "interpretation_ja": "両側complete。baselineは取得済み計画なしという未回答、candidateはLinuxのjemalloc既定値とlibcへの切替方法を引用付きで回答。これは観測された有用化。"
+      }
+    },
+    "both_complete_cases": [
+      "rw-02",
+      "rw-05",
+      "rw-08",
+      "rw-11",
+      "rw-12",
+      "rw-15",
+      "rw-16",
+      "rw-17",
+      "rw-21",
+      "rw-22",
+      "rw-24"
+    ],
+    "both_complete_row_evidence": {
+      "rw-02": {
+        "baseline": {
+          "case": "rw-02",
+          "row_id": "6e8719767a8a21bbf08927f3",
+          "arm": "baseline",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "requires_verification",
+          "observation_sha256": "7ba07c529b7dc090978442035d5b42bd19442a16b51cfa0cae290b380a5eed22",
+          "annotation_sha256": "b88831a0272da151a6632f89272c0ad1dffaf51af4aec3532ac5e4bc42cfc1fe",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        },
+        "candidate": {
+          "case": "rw-02",
+          "row_id": "bb85130dc8a04ef70e67e99b",
+          "arm": "candidate",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "requires_verification",
+          "observation_sha256": "6b04991f793936d729552419aa1f9d1fd0310057579bff6de6c6c764b4f54ec3",
+          "annotation_sha256": "bbc617bec68f49a86b7e1bdca18b86a9959e1dd8fa5b16742a842675a41e2605",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        }
+      },
+      "rw-05": {
+        "baseline": {
+          "case": "rw-05",
+          "row_id": "7b86a44af9312d19d1e03813",
+          "arm": "baseline",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "unresolved",
+          "observation_sha256": "66d4993729bd30b553418b57ce949df963aa74b72cd8cde0e9b927483478d31e",
+          "annotation_sha256": "36ee27c5c70091c7376c1dfbfea8ae85cb53623c17ae18fb32e85fb1fff7a0ff",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        },
+        "candidate": {
+          "case": "rw-05",
+          "row_id": "724d2b023b7153704d50a03c",
+          "arm": "candidate",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "unresolved",
+          "observation_sha256": "26cf15a14fabdffec4cd8ec1f3b0df67faebc9c7db313219137e366f4d5e6e46",
+          "annotation_sha256": "73dfb71705ee5725ea9466cdce18482634161ab67239445e4e735f13811f7b2e",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        }
+      },
+      "rw-08": {
+        "baseline": {
+          "case": "rw-08",
+          "row_id": "2eb1fd450fd8545abbbed1c9",
+          "arm": "baseline",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "unresolved",
+          "observation_sha256": "2e548bc0a74d719de512c47aa9ed5a6d05287a28be6359961a1e1f48a29c9acb",
+          "annotation_sha256": "12f650b28a0593ff27a1353178cef82187569998947994c30f3404c4fca1f6c8",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        },
+        "candidate": {
+          "case": "rw-08",
+          "row_id": "1d2ec2a3a5f269be7dc30d82",
+          "arm": "candidate",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "unresolved",
+          "observation_sha256": "e3935e9ada544400b1b890477ff99e6e9886f62c6ffce430bb984d4f21e9dca9",
+          "annotation_sha256": "85934bae57220b057263de17e8633616953eedfc717a8e44d7969121b53f1b2e",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        }
+      },
+      "rw-11": {
+        "baseline": {
+          "case": "rw-11",
+          "row_id": "a7add3551a2cc50e8de3d690",
+          "arm": "baseline",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "requires_verification",
+          "observation_sha256": "3870dd74b27d99d803ed5870ced1c864ce4548f5b32c8925c2227abddb40d56b",
+          "annotation_sha256": "958a20caab909179032f2ba7f97b4931b8440ccaa75e5fc70b1863c3eedd7def",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        },
+        "candidate": {
+          "case": "rw-11",
+          "row_id": "f5fa141ef06ec0daa493c443",
+          "arm": "candidate",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "requires_verification",
+          "observation_sha256": "da20f92973ec6d0be10b54a5edb3991fabc16201b953ca0e766c0e233fb879d4",
+          "annotation_sha256": "04c4a5fe975109ba8c791a77657ce2b2cc090f411b88e88f7dac46c7f743e317",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        }
+      },
+      "rw-12": {
+        "baseline": {
+          "case": "rw-12",
+          "row_id": "7a8774b9cabeb8651adfc8bb",
+          "arm": "baseline",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "requires_verification",
+          "observation_sha256": "056f056d2332849d2d4242b2a1ffe472b3238458508ece9c942161e3f0b5d4fc",
+          "annotation_sha256": "906682b5c60a159927eeb6e6622f9faab3bb7d82d6f231997aa3efe80c8782eb",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        },
+        "candidate": {
+          "case": "rw-12",
+          "row_id": "d99914ed62fb1f26f8983c3e",
+          "arm": "candidate",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "requires_verification",
+          "observation_sha256": "aeee181265b4d0fe4f5413e909ae7e027ad0d136df9b645f0ffe302c7c1e5b32",
+          "annotation_sha256": "07e0eef0e7843244ea2b781bcdd40faa1ed1877458a9b96d0888c301925294b3",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        }
+      },
+      "rw-15": {
+        "baseline": {
+          "case": "rw-15",
+          "row_id": "b59ec027a3e23d9cd76894b6",
+          "arm": "baseline",
+          "complete": true,
+          "decision": "accept",
+          "complete_useful_answer": true,
+          "terminal": "qualified_partial_answer",
+          "observation_sha256": "60f6f97393f64f35cdf684d8a7a02438b9c26e490a645b0c0810129621609ac0",
+          "annotation_sha256": "8b412dbdc2cfc664e2d182d5d2e9b79d2ace265e114e53e2fa860a3cc89a5bf6",
+          "frozen_annotation_rationale": "The session-result-restoration fact and two identical source quotations preserve the same one-document rule. No independent-publisher assertion is made."
+        },
+        "candidate": {
+          "case": "rw-15",
+          "row_id": "b46ec8d69f5c70f164b7ac3b",
+          "arm": "candidate",
+          "complete": true,
+          "decision": "accept",
+          "complete_useful_answer": true,
+          "terminal": "qualified_partial_answer",
+          "observation_sha256": "53dcb9e6f308dacb2978d5a4927910193ccd54279bee5043638a6f39100fc94a",
+          "annotation_sha256": "7c4bdcb75ec6de84fd798bc1462b4e84449087bbb73a8bcae7f58b1c5bdefc34",
+          "frozen_annotation_rationale": "The session-result-restoration fact and two identical source quotations preserve the same one-document rule. No independent-publisher assertion is made."
+        }
+      },
+      "rw-16": {
+        "baseline": {
+          "case": "rw-16",
+          "row_id": "78fe53bbae4f92dc47abd8ed",
+          "arm": "baseline",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "requires_verification",
+          "observation_sha256": "29f887e8ef3d76e70f4488aca1cbd7201eef1914d7bbd6ffba21b9e3b9733987",
+          "annotation_sha256": "a240b292dc3d0f47dab97d7de0b52bef3add92456787297c4d3cabca1ba0fe89",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        },
+        "candidate": {
+          "case": "rw-16",
+          "row_id": "228ad2d5c62f33db3630aace",
+          "arm": "candidate",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "requires_verification",
+          "observation_sha256": "b8da4737c8dc8e5ed2a03dde9b5f031b220f46cd37edde5f68098d4fa14827a9",
+          "annotation_sha256": "b10d821392935ad95c0c5dc10ce1bd471f8bcc9f0cde664a44e2f2d4dc78826a",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        }
+      },
+      "rw-17": {
+        "baseline": {
+          "case": "rw-17",
+          "row_id": "c083ae85fcc94ed57d690fea",
+          "arm": "baseline",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "requires_verification",
+          "observation_sha256": "8372ad76f523f35e981771d88847c9cece91e3ccef80a8ec3a7f0e02ff16b63d",
+          "annotation_sha256": "ca8843b4831bf8dc09984cee548bfffd7b7fbc59b7b646685c64af961fed58e8",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        },
+        "candidate": {
+          "case": "rw-17",
+          "row_id": "7f5ad33fbfa26a56a6fc46c9",
+          "arm": "candidate",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "requires_verification",
+          "observation_sha256": "514973e566b3a2514943a7c0063a84e703c307e13b5d378094e995764ff02e21",
+          "annotation_sha256": "09e7e46fb57c2865fd9af7e28b8c5f22d0910513acc65a4b776a5cec81424ea8",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        }
+      },
+      "rw-21": {
+        "baseline": {
+          "case": "rw-21",
+          "row_id": "2b876a263dfbbc1a06f3e819",
+          "arm": "baseline",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "unresolved",
+          "observation_sha256": "165d690fe1c97e338ac0b480b7d44447a40ec04f46e11dc9980bd299e45aaa0e",
+          "annotation_sha256": "75c236ceae4220eb3f1e38d9bcfac6ff0bd1a687831ad858be1a585d0d95b358",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        },
+        "candidate": {
+          "case": "rw-21",
+          "row_id": "5e16780de57588e683079922",
+          "arm": "candidate",
+          "complete": true,
+          "decision": "accept",
+          "complete_useful_answer": true,
+          "terminal": "qualified_partial_answer",
+          "observation_sha256": "5ceffd3e4b510835222d2d8d9574faa605da3c893735225fe39a37c3c25a52be",
+          "annotation_sha256": "f7b2f549b2a4bab5729f121850a32a891ef9604cd6bfe526f773c23b2da8ade4",
+          "frozen_annotation_rationale": "The Linux jemalloc default and libc build override are explicitly displayed. The adjoining complete quotation retains the non-Linux default exception."
+        }
+      },
+      "rw-22": {
+        "baseline": {
+          "case": "rw-22",
+          "row_id": "651d8635312f5a3084c0deca",
+          "arm": "baseline",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "requires_verification",
+          "observation_sha256": "6db1bdd26988db4bd7b2aa7c6fb7e2a706558a3daa483cca5171bfeb7c7f4475",
+          "annotation_sha256": "e49dcf47578428a2a3e2bdcfc44f1f390e9f0b14700d70a0f311061562f8f78b",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        },
+        "candidate": {
+          "case": "rw-22",
+          "row_id": "b4b91cf06142cdfc26519745",
+          "arm": "candidate",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "unresolved",
+          "observation_sha256": "3fe1cb796e41ca1125d4fb3b58136d788222fcc03511cb7fba718f997b6b6f0b",
+          "annotation_sha256": "779e6e119f3761b443d5221837413acd6a134f35f23509f8f8d16f8d57ec9829",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        }
+      },
+      "rw-24": {
+        "baseline": {
+          "case": "rw-24",
+          "row_id": "415d93b713ab1641abb771d5",
+          "arm": "baseline",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "unresolved",
+          "observation_sha256": "d15a3609aaaba1a4d8a546384f72989c464452782cbc8261bf5b02dbce1fca9f",
+          "annotation_sha256": "94737551bf80350b07327a7f606da47169c5d0dc1b1b192957d07394ccdfae8a",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        },
+        "candidate": {
+          "case": "rw-24",
+          "row_id": "ed87db8590cdbf2807e3790b",
+          "arm": "candidate",
+          "complete": true,
+          "decision": "withhold",
+          "complete_useful_answer": false,
+          "terminal": "unresolved",
+          "observation_sha256": "bfe969b961e03687da8d9561d60acfab7348e7b73e002650a0bca4ce555c20fe",
+          "annotation_sha256": "1c28590eb18514ad1fbb56eea4127694e839f3a342b05cec67b95b8de5801dee",
+          "frozen_annotation_rationale": "The display reports unavailable investigation coverage and expressly asserts no answer value. It does not deliver the requested domain facts or an adequate task-specific explanation."
+        }
+      }
+    },
+    "both_complete_interpretation_ja": "完全な11組ではrw-21だけが未回答から有用回答へ移り、観測された有用回答退行はない。rw-15は両方有用、残る9組は両方未回答または有用性不足。この行別確認は新F1計算ではない。",
+    "causal_limit_ja": "11組は欠測を除いた選択集合で、単回のモデル調査・計画出力も異なる。rw-21の出力改善は観測できるが、それをcore差分の因果効果・全24問での改善・退行不存在として一般化できない。"
+  },
+  "safety_limit_ja": "22不完全行の本文監査では既知の意味的虚偽を認めなかったが、取得・採用経路を確定していない。reportのhard_violations_including_partial=0は拒否された注釈を欠測placeholderへ置き換えた結果も含むため、192件全体の安全性違反ゼロの証明ではない。完全に束縛された観測の監査結果と、部分表示の限定監査を区別する。",
+  "groq_limit_ja": "Groqは未実行。actual_answer_f1=nullを正とし、内部case_quality.f1=0.0の空集合既定値を実測F1=0と紹介しない。",
+  "conclusion_ja": "rootが示した参考値は初回reportと一致する。必要な表現修正は、Mistral通常の退行2件を意味品質退行と呼ばないこと、net0を完全pairの比較と呼ばないこと、helper claim F1=1を完成度100%と呼ばないこと、22欠測を含む安全違反ゼロを断定しないこと。結論は改善の一部を確認したが品質・完全性・採用条件は未達。",
+  "no_mutation_or_new_scoring": {
+    "new_aggregate_F1_computed": false,
+    "scorer_invocations": 0,
+    "model_API_calls": 0,
+    "freeze_reviews_observations_modified": false
+  }
+}

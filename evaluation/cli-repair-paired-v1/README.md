@@ -1,5 +1,12 @@
 # Paired real-model development evaluation
 
+The v2 actual Mistral/Google run and independent first score are now recorded in
+[the execution report](../../docs/cli-paired-real24-v2-20261026.ja.md).
+Both providers completed72 jobs. Helper case F1 is0.222222→0.400000 in both;
+ordinary full-cohort F1 remains unavailable because22 capture rows are incomplete.
+The future capture repair in this branch does not alter that frozen first score.
+Earlier preparation and admission checkpoints below retain their original scope.
+
 This successor profile runs the previously observed 24 real-document tasks against baseline0.6.1 and the unpublished0.7.3 repair under the same common CLI. It requires a new independent operational review and frozen receipt before real model calls. The original scores and raw data remain immutable; this is consumed-set development measurement, not fresh accuracy acceptance.
 
 Planner output is now512 tokens in both arms (previous256 truncated Mistral planning). Aggregate output4096, input24000, logical12/generation24 caps, pacing, first-only/no-external-retry policy and currency caps remain unchanged. Mistral/Google are eligible only with the new receipt; Groq remains held. Account whole-cohort headroom is unknown and strict quota-stop may leave a cohort incomplete.

@@ -1,0 +1,24 @@
+{
+  "identity": "cli-repair-paired-real24-v2-first-score-origin-v1",
+  "run_id": 40248051474,
+  "original_execution_receipt_sha256": "2e964414858613223af8c26c3ddd28901b197d004b594b26dd73a04eb421cd1c",
+  "runtime_source_commit": "4dbf8ba0409002eb45bb6b854a28a78f002fbbda",
+  "actual_local_scoring_image_id": "sha256:5b137b44e3e3685029e6abca17168044ea8ebf2ae2425e6d4f21cb37cc6c3e64",
+  "development_scoring_driver_sha256": "2e7ff7e6d8706af7d09ed736bd6ba93e9d864f033c9d1d734b794df7964a7d06",
+  "first_score_returncode": 0,
+  "automatic_retry": false,
+  "semantic_author": "/root/paired_evaluation_independent",
+  "scoring_operator": "/root",
+  "frozen_input_and_output_sha256": {
+    "analysis-freeze.json": "45ad679943fcc056052503d8a9583f17c6c8c524abb27ce8b7ec3712f97ddccc",
+    "encoding-verification.json": "8353f756631315eb36ebeade6b4afb599c87936f3cbea4deae58d3ae820d9d9a",
+    "report.json": "be4f58e4436fcd282eb7cfd81c8b6c030cd769a9203fe7d4123c63604c8d797e",
+    "semantic-review-method.json": "c8006605248fb34e77b0e25cbc28b0fd31c84d4ff41aacd549c90b27c41c9367"
+  },
+  "private_scored_rows_sha256": "e69a84bdc8bb45fe4da2482393d4f975f2b2e856f20131921242283f24df9ddf",
+  "private_invocation_sha256": "75862559a716799aa170a7196347241f4b7803773a1cd6b6285deccea81c168b",
+  "private_stdout_sha256": "398d9f7230a58f60132ae67a24fe980b97758781bdf8c013220fe9b73e973356",
+  "source_repair_in_this_branch_applied_to_scoring": false,
+  "fresh_accuracy_cases": 0,
+  "limits": "Consumed24 development diagnostic. Ordinary full-cohort F1 remains null where capture is incomplete. Held Groq is unavailable. Structural source fixes are future-only and do not change this first score."
+}

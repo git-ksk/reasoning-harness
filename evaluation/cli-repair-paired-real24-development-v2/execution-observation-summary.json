@@ -1,0 +1,196 @@
+{
+  "identity": "cli-repair-paired-real24-v2-execution-observation-summary-v1",
+  "run_id": 40248051474,
+  "run_url": "https://github.com/git-ksk/reasoning-harness/actions/runs/40248051474",
+  "tag": "cli-repair-paired-real24-development-v2",
+  "tag_commit": "76dde2887d5110d8606cfd449ededabe6258ed36",
+  "runtime_source_commit": "4dbf8ba0409002eb45bb6b854a28a78f002fbbda",
+  "execution_receipt_sha256": "2e964414858613223af8c26c3ddd28901b197d004b594b26dd73a04eb421cd1c",
+  "providers": {
+    "google": {
+      "artifact_id": 12620809469,
+      "artifact_digest_sha256": "dcb6a1c08f9d1533e5513298275ed6df602b163908958ba334e2b348c99f2462",
+      "raw_files": 1257,
+      "raw_inventory_sha256": "4b27b2169da4565b124c7076f010137ac930518f1c1e5d12578fb5ff4673d79a",
+      "summary_file_sha256": "59abf06614b74fd342f72bbc4aa2f670e05bd393177a5c8f2178de729ae577b3",
+      "observation_index_sha256": "4d85641e8b3fc111322d508a4306b107892b722b8b1a0b3f42596b3403555549",
+      "operational": {
+        "charged_reservations": 1456128,
+        "complete": true,
+        "known_provider_attempts": 320,
+        "known_total_tokens": 264844,
+        "latch": null,
+        "semantic_acceptance": "NOT_SCORED",
+        "unknown_usage_rows": 0
+      },
+      "operational_rows": 72,
+      "capture_operations_by_track_arm": {
+        "e2e_normal/baseline": {
+          "complete": 23,
+          "incomplete": 1
+        },
+        "e2e_normal/candidate": {
+          "complete": 23,
+          "incomplete": 1
+        },
+        "helper_opt_in/candidate": {
+          "complete": 24
+        },
+        "helper_opt_in/baseline": {
+          "complete": 24
+        }
+      },
+      "capture_binding_failures": [
+        {
+          "job_id": "rw-20-candidate",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        },
+        {
+          "job_id": "rw-20-baseline",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        }
+      ],
+      "semantic_review": "COMPLETE_WITH_PRESERVED_CAPTURE_MISSINGNESS",
+      "F1": {
+        "e2e_normal": null,
+        "helper_opt_in": 0.4
+      }
+    },
+    "mistral": {
+      "artifact_id": 12621736415,
+      "artifact_digest_sha256": "1b30bdcd8a2174fb411ec53cf6ff0d5318cd7bda29576fe2a7f95dc23406ad6d",
+      "raw_files": 1241,
+      "raw_inventory_sha256": "7a4d22ac0c40a5638d369590a78bcaf845cc5098b7cd7e33252d88da247b54db",
+      "summary_file_sha256": "417923db2f1c1bedd6c9524dd2fe260dff006d947b6f653342c1bd8b27f5af0b",
+      "observation_index_sha256": "de8cd4c827eef2febc9c423244bc2a6b035d11fe2ecfc42db37f71b12df422b6",
+      "operational": {
+        "charged_reservations": 1456128,
+        "complete": true,
+        "known_provider_attempts": 384,
+        "known_total_tokens": 374908,
+        "latch": null,
+        "semantic_acceptance": "NOT_SCORED",
+        "unknown_usage_rows": 0
+      },
+      "operational_rows": 72,
+      "capture_operations_by_track_arm": {
+        "helper_opt_in/candidate": {
+          "complete": 24
+        },
+        "e2e_normal/baseline": {
+          "incomplete": 9,
+          "complete": 15
+        },
+        "helper_opt_in/baseline": {
+          "complete": 24
+        },
+        "e2e_normal/candidate": {
+          "incomplete": 11,
+          "complete": 13
+        }
+      },
+      "capture_binding_failures": [
+        {
+          "job_id": "rw-01-baseline",
+          "failure": "capture_binding_failed:ValueError:admission_without_same_target_acquisition"
+        },
+        {
+          "job_id": "rw-01-candidate",
+          "failure": "capture_binding_failed:ValueError:admission_without_same_target_acquisition"
+        },
+        {
+          "job_id": "rw-03-candidate",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        },
+        {
+          "job_id": "rw-04-candidate",
+          "failure": "capture_binding_failed:ValueError:admission_without_same_target_acquisition"
+        },
+        {
+          "job_id": "rw-06-baseline",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        },
+        {
+          "job_id": "rw-07-baseline",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        },
+        {
+          "job_id": "rw-07-candidate",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        },
+        {
+          "job_id": "rw-09-baseline",
+          "failure": "capture_binding_failed:ValueError:admission_without_same_target_acquisition"
+        },
+        {
+          "job_id": "rw-10-candidate",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        },
+        {
+          "job_id": "rw-10-baseline",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        },
+        {
+          "job_id": "rw-13-baseline",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        },
+        {
+          "job_id": "rw-13-candidate",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        },
+        {
+          "job_id": "rw-14-candidate",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        },
+        {
+          "job_id": "rw-18-candidate",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        },
+        {
+          "job_id": "rw-18-baseline",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        },
+        {
+          "job_id": "rw-19-baseline",
+          "failure": "capture_binding_failed:ValueError:admission_without_same_target_acquisition"
+        },
+        {
+          "job_id": "rw-19-candidate",
+          "failure": "capture_binding_failed:ValueError:admission_without_same_target_acquisition"
+        },
+        {
+          "job_id": "rw-20-candidate",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        },
+        {
+          "job_id": "rw-23-baseline",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        },
+        {
+          "job_id": "rw-23-candidate",
+          "failure": "capture_binding_failed:ValueError:ambiguous_acquired_evidence"
+        }
+      ],
+      "semantic_review": "COMPLETE_WITH_PRESERVED_CAPTURE_MISSINGNESS",
+      "F1": {
+        "e2e_normal": null,
+        "helper_opt_in": 0.4
+      }
+    }
+  },
+  "Groq": "HELD_NO_NEW_EXECUTION",
+  "original_observations_modified": false,
+  "operational_completion_is_not_capture_or_semantic_completion": true,
+  "fresh_accuracy_cases": 0,
+  "release_CLI_adoption": "NO_GO_SEPARATE_GATES",
+  "first_scoring_executed": true,
+  "first_score_report_sha256": "be4f58e4436fcd282eb7cfd81c8b6c030cd769a9203fe7d4123c63604c8d797e",
+  "analysis_freeze_sha256": "45ad679943fcc056052503d8a9583f17c6c8c524abb27ce8b7ec3712f97ddccc",
+  "semantic_reviews": {
+    "authored": 192,
+    "valid_complete": 170,
+    "preserved_incomplete": 22,
+    "held_Groq_not_run": 96,
+    "author": "/root/paired_evaluation_independent"
+  }
+}
