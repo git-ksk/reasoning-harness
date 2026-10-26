@@ -1,0 +1,511 @@
+{
+  "identity": "model-free-source-reconciliation-independent-review-v1",
+  "reviewer_id": "/root/real24_operational_review",
+  "reviewer_kind": "agent_nonhuman",
+  "created_at": "2026-10-26T07:59:40.952903+00:00",
+  "result": "PASS_MODEL_FREE_API_CONTRACT_SCOPE",
+  "blocking_findings": [],
+  "scope": [
+    "record_trusted_source_equivalence",
+    "reconcile_source_attributed_answer",
+    "reconcile_source_attributed_targets",
+    "legacy source attribution materialization/finalization compatibility and immutability"
+  ],
+  "candidate": {
+    "source_commit": "ab3c6322921c8c738ec35bd018345917b5afa538",
+    "core_tree": "535d2f1ad21457905fa43722c74510de59015695",
+    "package_version": "0.7.2",
+    "release_status": "unpublished 0.7.3 candidate scope; this package identifies itself as 0.7.2",
+    "core_source_files_hash_verified_before_after": 157
+  },
+  "baseline": {
+    "source_commit": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+    "core_tree": "fa32450addcbe9dfa3ad74f6ef8e94fbc7eda119",
+    "package_version": "0.6.1",
+    "core_source_files_hash_verified_before_after": 131
+  },
+  "platform": {
+    "rustc": "rustc 1.88.0 (6b00bc388 2025-06-23)\nbinary: rustc\ncommit-hash: 6b00bc3880198600130e1cf62b8f8a93494488cc\ncommit-date: 2025-06-23\nhost: aarch64-apple-darwin\nrelease: 1.88.0\nLLVM version: 20.1.5\n",
+    "execution": "local aarch64 macOS native build from clean pinned exports",
+    "cargo": "--locked --offline; provider credentials omitted from build and probe environments",
+    "runtime_formal_verdict": false
+  },
+  "existing_candidate_core_tests": {
+    "passed": 960,
+    "failed": 0,
+    "ignored": 2,
+    "test_suites": 116,
+    "ignored_historical_red_controls_preserved": [
+      "test fresh_independent_launch_context_markers_first_observation ... ignored, Historical v1 first observation is RED; do not rerun/rescore or overwrite it",
+      "test independent_launch_context_markers_v3 ... ignored, Historical v3 first observation is RED; do not rerun/rescore or overwrite it"
+    ],
+    "source_reconciliation_and_target_presentation_fixtures": {
+      "ENGINE_070_RECONCILIATION_SUMMARY": [
+        {
+          "cases": 22,
+          "external_calls": 0,
+          "hard_authority_promotions": 0,
+          "model_calls": 0,
+          "passed": 22,
+          "provider_attempts": 0,
+          "source_state_mutations": 0
+        }
+      ],
+      "ENGINE_070_TARGET_PRESENTATION_SUMMARY": [
+        {
+          "cases": 14,
+          "external_acquisition": 0,
+          "model_calls": 0,
+          "passed": 14,
+          "provider_attempts": 0,
+          "truth_promotions": 0
+        }
+      ]
+    },
+    "note": "Pre-existing development/specification regression fixtures, not new accuracy cases or F1 evidence. The broader core suite may invoke scripted model doubles; no external provider API is called."
+  },
+  "independent_direct_API_controls": {
+    "groups": 44,
+    "all_passed": true,
+    "controls": [
+      {
+        "details": {
+          "citations": 2,
+          "hard_claims": 0,
+          "legacy_status": "conflict",
+          "new_status": "reviewed_compatible",
+          "verification_receipts": 0
+        },
+        "name": "normal_host_review_adds_metadata_preserves_legacy_conflict_text_citations_and_no_truth",
+        "passed": true
+      },
+      {
+        "details": {
+          "authority": false
+        },
+        "name": "no_review_stays_conflict_without_authority",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "InvalidAuthority",
+          "artifact_unchanged": true,
+          "targets_rejected": "InvalidAuthority"
+        },
+        "name": "persisted_review_does_not_self_authorize",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "UntrustedReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "UntrustedReview"
+        },
+        "name": "changed_or_revoked_host_policy_rejects_old_review",
+        "passed": true
+      },
+      {
+        "details": {
+          "subcases": 5
+        },
+        "name": "invalid_authority_identifiers_rejected",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "UntrustedReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "UntrustedReview"
+        },
+        "name": "tampered_review_contract",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "UntrustedReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "UntrustedReview"
+        },
+        "name": "tampered_review_policy",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "StaleOrTamperedReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "StaleOrTamperedReview"
+        },
+        "name": "tampered_review_quote",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "StaleOrTamperedReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "StaleOrTamperedReview"
+        },
+        "name": "tampered_review_source",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "StaleOrTamperedReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "StaleOrTamperedReview"
+        },
+        "name": "tampered_review_facts",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "StaleOrTamperedReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "StaleOrTamperedReview"
+        },
+        "name": "tampered_review_version",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "StaleOrTamperedReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "StaleOrTamperedReview"
+        },
+        "name": "stale_review_full_source_context_append",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "StaleOrTamperedReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "StaleOrTamperedReview"
+        },
+        "name": "stale_review_current_binding_version",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "StaleOrTamperedReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "StaleOrTamperedReview"
+        },
+        "name": "stale_review_current_retrieval_time",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "StaleOrTamperedReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "StaleOrTamperedReview"
+        },
+        "name": "stale_review_current_target_question",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "StaleOrTamperedReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "StaleOrTamperedReview"
+        },
+        "name": "stale_review_current_provenance",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "StaleOrTamperedReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "StaleOrTamperedReview"
+        },
+        "name": "stale_review_current_facts",
+        "passed": true
+      },
+      {
+        "details": {
+          "same_result": true
+        },
+        "name": "serialized_replay_requires_explicit_current_host_authority_and_is_deterministic",
+        "passed": true
+      },
+      {
+        "details": {
+          "rejected": true
+        },
+        "name": "unknown_top_level_review_fields_rejected",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "NotDistinctSourceQuotes"
+        },
+        "name": "same_claim_cannot_review_itself",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "UnknownClaim(\"missing\")"
+        },
+        "name": "unknown_claim_rejected",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "NotDistinctSourceQuotes"
+        },
+        "name": "identical_quote_needs_no_equivalence_review",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "WrongTargetOrHardVerification"
+        },
+        "name": "different_target_cannot_share_review",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "InvalidSource(\"source_attributed_claim_hard_target: claim c-0 attempts to satisfy a hard-verification target\")"
+        },
+        "name": "hard_verification_target_cannot_use_source_compatibility",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "DeterministicConflict"
+        },
+        "name": "opposing_polarity",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "DeterministicConflict"
+        },
+        "name": "numeric_conflict",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "DeterministicConflict"
+        },
+        "name": "possibility_not_certainty",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "DeterministicConflict"
+        },
+        "name": "past_not_present",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "DeterministicConflict"
+        },
+        "name": "future_not_present",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "DeterministicConflict"
+        },
+        "name": "conditional_not_unconditional",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "DeterministicConflict"
+        },
+        "name": "some_not_all",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "DifferentEvidenceContext"
+        },
+        "name": "different_source_versions_rejected",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "DifferentEvidenceContext"
+        },
+        "name": "different_effective_time_rejected",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "DifferentEvidenceContext"
+        },
+        "name": "different_scope_rejected",
+        "passed": true
+      },
+      {
+        "details": {
+          "artifact_unchanged": true,
+          "rejected": "DifferentEvidenceContext"
+        },
+        "name": "different_authority_class_rejected",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "DuplicateOrExtraneousReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "DuplicateOrExtraneousReview"
+        },
+        "name": "duplicate_review_rejected",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "DuplicateOrExtraneousReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "DuplicateOrExtraneousReview"
+        },
+        "name": "reversed_duplicate_pair_rejected",
+        "passed": true
+      },
+      {
+        "details": {
+          "subcases": 3
+        },
+        "name": "duplicate_or_extraneous_target_selection_rejected",
+        "passed": true
+      },
+      {
+        "details": {
+          "subcases": 2
+        },
+        "name": "empty_and_unknown_selections_cannot_gain_credit",
+        "passed": true
+      },
+      {
+        "details": {
+          "answer_rejected": "DuplicateOrExtraneousReview",
+          "artifact_unchanged": true,
+          "targets_rejected": "DuplicateOrExtraneousReview"
+        },
+        "name": "excessive_review_count_rejected_before_pair_work",
+        "passed": true
+      },
+      {
+        "details": {
+          "citations": 4,
+          "legacy_status": "conflict",
+          "target_statuses": [
+            "reviewed_compatible",
+            "conflict"
+          ]
+        },
+        "name": "mixed_targets_keep_conflict_isolation_citations_and_selection_order",
+        "passed": true
+      },
+      {
+        "details": {
+          "claims": 3,
+          "reordered_equal": true,
+          "review_pairs": 3,
+          "status": "reviewed_compatible"
+        },
+        "name": "pairwise_complete_no_transitive_closure_bounded_group_3",
+        "passed": true
+      },
+      {
+        "details": {
+          "claims": 16,
+          "reordered_equal": true,
+          "review_pairs": 120,
+          "status": "reviewed_compatible"
+        },
+        "name": "pairwise_complete_no_transitive_closure_bounded_group_16",
+        "passed": true
+      },
+      {
+        "details": {
+          "claims": 17,
+          "reordered_equal": true,
+          "review_pairs": 136,
+          "status": "conflict"
+        },
+        "name": "pairwise_complete_no_transitive_closure_bounded_group_17",
+        "passed": true
+      }
+    ],
+    "provider_crates_linked": false,
+    "external_model_API_calls": 0,
+    "input": "Fixed synthetic source records and explicit host authority; no model advice, credentials, live raw or semantic labels are inputs."
+  },
+  "old_API_compatibility": {
+    "cases": 9,
+    "case_ids": [
+      "identical",
+      "different_wording",
+      "contradiction",
+      "different_targets",
+      "mixed_targets",
+      "UTF8_exact_quotes",
+      "inert_instruction_as_source_data",
+      "unknown_target",
+      "empty_selection"
+    ],
+    "same_legacy_implementation_sha256": "7fe3bb5ab376f0eb926b61cff5d681033d7fda8311006495ac8a12eb4d84b098",
+    "baseline_candidate_artifact_and_finalization_outputs_equal": true,
+    "source_prose_citations_conflicts_and_receipts_unchanged": true,
+    "UTF8_and_inert_instruction_input_included": true
+  },
+  "repeat_and_persistence": {
+    "candidate_process_runs": 2,
+    "entire_direct_output_bytes_equal": true,
+    "output_sha256": "5cffa05cdc564cc9739be67ded837e489933592e24e7497b79387575c2b78ffa",
+    "serialized_artifact_review_and_reconstructed_current_authority_replay_equal": true,
+    "saved_review_without_authority_rejected": true,
+    "authority_deserialization_compile_negative": true
+  },
+  "security_contract_limits": [
+    "TrustedSourceReviewAuthority::new validates a host-supplied policy identifier; actual caller authentication and authorization are the host responsibility. The type is not a credential verifier or a cryptographic signature.",
+    "record_trusted_source_equivalence records a trusted host determination; it does not discover semantic equivalence or consult a model. Polarity/number/modality guards are conservative safeguards, not a complete semantic contradiction detector.",
+    "Saved reviews cannot self-authorize: an explicit host authority matching the policy is required again. Hosts revoke/change authorization by withholding that authority or changing their policy identity.",
+    "Snapshot changes including full admitted source text beyond the quote, facts, target question, provenance, retrieval time and version invalidate a saved review. The library does not independently consult the current clock or enforce an external review TTL; source freshness remains an upstream/host policy.",
+    "ReviewedCompatible is added metadata for source-local wording. Global legacy Conflict, original prose/citations and hard truth claims/verification receipts remain unchanged; mixed targets retain separate conflicts.",
+    "Complete pairwise reviews are required without transitive closure; groups above 16 claims remain Conflict, and more than 1024 submitted reviews fail closed."
+  ],
+  "policy_alignment": {
+    "normal_CLI_real_model_metrics_are_primary": "outside this review; no CLI adoption verdict",
+    "helper_API": "model-free specification/safety/replay validation only",
+    "model_included_helper_F1": "not calculated or used as CLI adoption criterion",
+    "capture_85_test_result_reused_as_API_verdict": false
+  },
+  "preservation": {
+    "candidate_or_baseline_original_source_edits": 0,
+    "repository_tracked_file_edits_by_reviewer": 0,
+    "old_v2_raw_files_hash_unchanged": 2498,
+    "old_v2_observation_or_score_writes": 0,
+    "external_model_API_calls": 0,
+    "credentials_supplied": 0,
+    "paid_calls": 0,
+    "new_real_cohort_F1_calculations": 0,
+    "new_receipt_tag_or_operational_lane": false
+  },
+  "eligibility": {
+    "CLI_adoption_GO": false,
+    "fresh_accuracy_acceptance": false,
+    "real_provider_execution_permission": false,
+    "formal_runtime_operational_verdict_issued": false
+  },
+  "source_export_sha256": "7a736aeaf0c5c1cb03bf663af69ec5ba35086d365f414d9ea182e1ba7d2e1ec7",
+  "direct_probe_source_sha256": "d5a89eea02ee8e120584ea5166dfff93c563afd294d90bf17acec3e7a90600c3"
+}

@@ -16,6 +16,14 @@ The API records and applies authorized caller reviews; it does not discover gene
 
 [The v2 first score](cli-paired-real24-v2-20261026.ja.md) remains immutable. Gemini ordinary F1 is0.933333 on23/24 tasks in each arm (precision1.000, recall0.875); full coverage and final-candidate effects still require confirmation. Mistral has15/24 baseline and13/24 candidate complete observations, so subset F1 values0.428571/0.461538 are not a comparable improvement. PR560 merged the capture repair; its85 tests exercise measurement code, not the auxiliary API itself. Groq stays held and unavailable.
 
+## Current work
+
+- Policy, Japanese/English roadmaps and Issues531/538/540 are synchronized in PR561.
+- [Independent model-free API contract review](../evaluation/cli-normal-v1/model-free-api-review/review.json): PASS for pinned candidate;960 existing core tests passed,2 historical first-observation controls remain ignored,44 direct API groups and9 legacy compatibility cases passed. The host still owns authentication, semantic determination and freshness.
+- [Independent Mistral diagnosis](../evaluation/cli-normal-v1/mistral-independent-diagnosis/diagnosis-summary-v1.md):48 saved ordinary executions;14 over-limit and2 duplicate-ID plans;11 missing-claims and3 nested-typo model responses.
+- CLI source commits `ed30857` and `25d602c` address Issues562/563. Independent review found and the second commit repairs positional JSON-array acceptance. Public stored candidates and explicit `claims:[]` remain compatible; source review is ongoing.
+- Duplicate acquisitions, early Reject, selector/typed-value alignment and trusted explanations remain distinct diagnosed issues. No new model generations or F1 score have been produced.
+
 ## Order
 
 1. Synchronize this plan, both roadmaps and Issues531/538/540 first.

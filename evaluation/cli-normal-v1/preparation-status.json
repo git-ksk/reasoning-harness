@@ -1,0 +1,70 @@
+{
+  "identity": "ordinary-cli-evaluation-preparation-v1",
+  "state": "PREPARATION_NO_LIVE_EXECUTION",
+  "policy_commit": "0c415ff0cb9514d46c7239ad2ebeaa62d9a85161",
+  "common_CLI_repair_commit": "25d602cd799893f8f35db67515e2380165c4bdcb",
+  "baseline_engine": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+  "candidate_engine": "ab3c6322921c8c738ec35bd018345917b5afa538",
+  "model_free_API": {
+    "reviewer": "/root/real24_operational_review",
+    "result": "PASS_MODEL_FREE_API_CONTRACT_SCOPE",
+    "review_sha256": "8d268aeff37aaea0a54e7aab3ae47f073dce483aced5087c9276d1ca86a734a1",
+    "existing_core_passed": 960,
+    "existing_historical_ignored": 2,
+    "independent_direct_groups": 44,
+    "legacy_compatibility_cases": 9,
+    "external_model_calls": 0,
+    "API_correctness_is_not_CLI_adoption": true
+  },
+  "Mistral_saved_raw_diagnosis": {
+    "reviewer": "/root/paired_evaluation_independent",
+    "report_sha256": "236fede9bd3cf4a1e0f6591a5fce4ee410ce6059cc112fee6c4a9999f2a57e1a",
+    "normal_executions": 48,
+    "plan_over_limit": 14,
+    "plan_duplicate_ID": 2,
+    "accepted_missing_claims_responses": 11,
+    "accepted_nested_typo_responses": 3,
+    "additional_model_calls": 0,
+    "old_F1_rescored": false
+  },
+  "CLI_repairs": {
+    "issues": [
+      562,
+      563
+    ],
+    "scope": "CLI model request/response boundary only; Engine core and auxiliary APIs unchanged",
+    "independent_bounded_review": "IN_PROGRESS; earlier source ed30857 rejected positional arrays and was repaired in 25d602c",
+    "validation": {
+      "CLI_initial_passed": 237,
+      "CLI_initial_loopback_permission_denied": 5,
+      "CLI_preexisting_ignored": 3,
+      "OAuth_module_recheck_passed": 10,
+      "OAuth_module_preexisting_ignored": 2,
+      "workspace_all_target_clippy": "PASS after 25d602c",
+      "last_planner_boundary_test": "PASS",
+      "candidate_json_subset": "136 PASS after 25d602c"
+    },
+    "remaining_diagnostic_findings": [
+      "duplicate immutable acquisition handled as operational failure",
+      "Reject short circuit before requested read-only acquisition",
+      "selector/typed-value alignment",
+      "trusted explanation of withheld answers"
+    ],
+    "source_commits": [
+      "ed3085750f6eb8a25e4796a8d30eb950dd8b10b6",
+      "25d602cd799893f8f35db67515e2380165c4bdcb"
+    ]
+  },
+  "next": [
+    "independent source review of CLI repair",
+    "implement and review ordinary-only48-job profile",
+    "freeze fresh runtime/inputs/scorer/readiness/receipt before model calls",
+    "Mistral ordinary development measurement and final-candidate Gemini confirmation",
+    "fresh independent ordinary acceptance then release/adoption gates"
+  ],
+  "new_model_generations": 0,
+  "new_live_runtime_formally_approved": false,
+  "new_normal_F1": null,
+  "old_v1_v2_artifacts_modified": false,
+  "Groq": "HELD"
+}
