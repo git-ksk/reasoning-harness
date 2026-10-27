@@ -2,7 +2,7 @@
   "identity": "ordinary-cli-evaluation-preparation-v1",
   "state": "PREPARATION_NO_LIVE_EXECUTION",
   "policy_commit": "0c415ff0cb9514d46c7239ad2ebeaa62d9a85161",
-  "common_CLI_repair_commit": "25d602cd799893f8f35db67515e2380165c4bdcb",
+  "common_CLI_repair_commit": "c38d87d3af1a2b576cf5e4985c765935876837b8",
   "baseline_engine": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
   "candidate_engine": "ab3c6322921c8c738ec35bd018345917b5afa538",
   "model_free_API": {
@@ -30,19 +30,18 @@
   "CLI_repairs": {
     "issues": [
       562,
-      563
+      563,
+      564
     ],
-    "scope": "CLI model request/response boundary only; Engine core and auxiliary APIs unchanged",
-    "independent_bounded_review": "IN_PROGRESS; earlier source ed30857 rejected positional arrays and was repaired in 25d602c",
+    "scope": "CLI model boundary, token budget and provider usage; Engine core and auxiliary API contracts unchanged",
+    "independent_bounded_review": "PASS for b0240bf model wire shape; separate PASS for c38d87d token budget scope; neither is an F1, full runtime or release verdict",
     "validation": {
-      "CLI_initial_passed": 237,
-      "CLI_initial_loopback_permission_denied": 5,
-      "CLI_preexisting_ignored": 3,
-      "OAuth_module_recheck_passed": 10,
-      "OAuth_module_preexisting_ignored": 2,
-      "workspace_all_target_clippy": "PASS after 25d602c",
-      "last_planner_boundary_test": "PASS",
-      "candidate_json_subset": "136 PASS after 25d602c"
+      "exact_cli_commit": "c38d87d3af1a2b576cf5e4985c765935876837b8",
+      "CLI_unit": "250 passed, 3 ignored",
+      "provider_unit": "170 passed, 1 ignored",
+      "workspace_clippy": "PASS --all-targets -D warnings",
+      "independent_legacy_core_compile": "PASS limited offline source reconstruction",
+      "CI": "PENDING exact final PR head"
     },
     "remaining_diagnostic_findings": [
       "duplicate immutable acquisition handled as operational failure",
@@ -52,19 +51,23 @@
     ],
     "source_commits": [
       "ed3085750f6eb8a25e4796a8d30eb950dd8b10b6",
-      "25d602cd799893f8f35db67515e2380165c4bdcb"
-    ]
+      "25d602cd799893f8f35db67515e2380165c4bdcb",
+      "b0240bf7334b9c444bd08c1112dfe4ca5cc36c5b",
+      "c38d87d3af1a2b576cf5e4985c765935876837b8"
+    ],
+    "wire_review_sha256": "f0d5e77f50c903849869d0310524402656caac2e59100a0a0b30992cd027f284",
+    "budget_review_sha256": "d10aed22e03783ce7d00ae0c10eaf172e72f1a6d1d362060abc90c0d90c32a0c"
   },
   "next": [
-    "independent source review of CLI repair",
-    "implement and review ordinary-only48-job profile",
-    "freeze fresh runtime/inputs/scorer/readiness/receipt before model calls",
-    "Mistral ordinary development measurement and final-candidate Gemini confirmation",
-    "fresh independent ordinary acceptance then release/adoption gates"
+    "complete and independently review Mistral-only ordinary runtime",
+    "freeze exact source/runtime/inputs/scorer/readiness/receipt before any model calls",
+    "run Mistral ordinary consumed-set development comparison and measure new F1",
+    "fresh independent ordinary acceptance and remaining release/adoption gates"
   ],
   "new_model_generations": 0,
   "new_live_runtime_formally_approved": false,
   "new_normal_F1": null,
   "old_v1_v2_artifacts_modified": false,
-  "Groq": "HELD"
+  "Groq": "HELD",
+  "Google": "Historical 23/24 candidate result is incomplete; no new Google call in Mistral-only development"
 }

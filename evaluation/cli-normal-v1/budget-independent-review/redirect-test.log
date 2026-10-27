@@ -1,0 +1,17 @@
+    Blocking waiting for file lock on build directory
+   Compiling reasoning-harness-providers v0.4.2 (/private/tmp/budget-review-061-fhtaooyd/crates/reasoning-harness-providers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.30s
+     Running unittests src/lib.rs (/private/tmp/budget-review-061-fhtaooyd/target/debug/deps/reasoning_harness_providers-6366398ba3c91adf)
+
+running 1 test
+physical_http_requests=1 logical_attempts=Err(ModelError { kind: Provider, message: "Gemini API returned HTTP 307 Temporary Redirect after 1 provider attempts", provider_attempts: 1 })
+test gemma::independent_redirect_review::independently_probe_redirects_with_single_attempt ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 171 filtered out; finished in 5.01s
+
+     Running tests/mcp_readonly_fixture_stress.rs (/private/tmp/budget-review-061-fhtaooyd/target/debug/deps/mcp_readonly_fixture_stress-6a8e491e4e1d082e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+

@@ -1,0 +1,21 @@
+{
+  "saved_candidate_responses": 180,
+  "newly_rejected_prior_false_acceptances": 14,
+  "missing_top_level_claims": 11,
+  "nested_unknown_fields": 3,
+  "previous_valid_preserved": 83,
+  "previous_invalid_rejected": 83,
+  "serialization_controls": 53,
+  "valid_forms_accepted": 12,
+  "invalid_forms_rejected": 41,
+  "object_enum_variants_rejected": 6,
+  "ordinary_string_enum_variants_preserved": 6,
+  "saved_rejected_plans": 16,
+  "oversize_plans_rejected": 14,
+  "duplicate_target_plans_rejected": 2,
+  "primary_and_fallback_request_schema_unchanged_since_ed30857": true,
+  "targeted_actual_cli_test_filters_passed": 5,
+  "all_probe_shared_dependencies_match_workspace_lock": true,
+  "model_api_calls": 0,
+  "new_f1_calculations": 0
+}
