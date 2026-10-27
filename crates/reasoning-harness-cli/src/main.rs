@@ -628,6 +628,7 @@ struct ResolvedRunConfig {
 }
 
 struct DiagnosticTraceCall<'a> {
+    limits: usage_budget::GenerationLimits,
     recorder: Option<&'a mut DiagnosticTraceRecorder>,
     phase: DiagnosticPhase,
 }
@@ -764,6 +765,17 @@ impl LiveGenerator {
         Self::try_from_provider(provider, model).map_err(|error| error.message)
     }
 
+    fn set_single_provider_attempt(&mut self, enabled: bool) {
+        match self {
+            Self::Mistral(adapter) => adapter.set_single_attempt(enabled),
+            Self::Google(adapter) => adapter.set_single_attempt(enabled),
+            Self::Groq(adapter) => adapter.set_single_attempt(enabled),
+            Self::Nvidia(adapter) => adapter.set_single_attempt(enabled),
+            #[cfg(test)]
+            Self::Test(_) => {}
+        }
+    }
+
     fn adapter(&self) -> &dyn ModelAdapter {
         match self {
             Self::Mistral(adapter) => adapter,
@@ -823,21 +835,31 @@ impl LiveGenerator {
                 self.provider_label(),
                 requested_model,
             );
-            generate_with_adapter(
+            generate_with_adapter_budgeted(
                 &adapter,
                 self.provider_label(),
                 requested_model,
                 input,
                 max_tokens,
                 seed,
+                trace.limits,
             )
             .await
         } else {
-            self.generate(input, max_tokens, seed, requested_model)
-                .await
+            generate_with_adapter_budgeted(
+                self.adapter(),
+                self.provider_label(),
+                requested_model,
+                input,
+                max_tokens,
+                seed,
+                trace.limits,
+            )
+            .await
         }
     }
 
+    #[cfg(test)]
     async fn plan_investigation(
         &self,
         call: InvestigationPlanGenerationCall<'_>,
@@ -880,15 +902,31 @@ impl LiveGenerator {
                 self.provider_label(),
                 call.requested_model,
             );
-            run_structured_json_call(
+            run_structured_json_call_budgeted(
                 &adapter,
                 self.provider_label(),
                 call.requested_model,
                 request,
+                trace.limits,
             )
             .await
         } else {
-            self.plan_investigation(call).await
+            let request = call.request().map_err(|error| {
+                generation_failure(
+                    self.provider_label(),
+                    call.requested_model,
+                    Instant::now(),
+                    error,
+                )
+            })?;
+            run_structured_json_call_budgeted(
+                self.adapter(),
+                self.provider_label(),
+                call.requested_model,
+                request,
+                trace.limits,
+            )
+            .await
         }
     }
 
@@ -928,43 +966,24 @@ impl LiveGenerator {
                 self.provider_label(),
                 requested_model,
             );
-            run_structured_json_call(&adapter, self.provider_label(), requested_model, request)
-                .await
+            run_structured_json_call_budgeted(
+                &adapter,
+                self.provider_label(),
+                requested_model,
+                request,
+                trace.limits,
+            )
+            .await
         } else {
-            run_structured_json_call(
+            run_structured_json_call_budgeted(
                 self.adapter(),
                 self.provider_label(),
                 requested_model,
                 request,
+                trace.limits,
             )
             .await
         }
-    }
-
-    async fn choose_investigation_action(
-        &self,
-        task: &str,
-        telemetry: &InvestigationTelemetry,
-        max_tokens: u32,
-        seed: Option<u64>,
-        requested_model: &str,
-    ) -> Result<(InvestigationActionProposal, GenerationObservation), GenerationFailure> {
-        let request = build_investigation_action_request(task, telemetry, Some(max_tokens), seed)
-            .map_err(|error| {
-            generation_failure(
-                self.provider_label(),
-                requested_model,
-                Instant::now(),
-                ModelError::new(ModelErrorKind::Protocol, error.to_string()),
-            )
-        })?;
-        run_structured_json_call(
-            self.adapter(),
-            self.provider_label(),
-            requested_model,
-            request,
-        )
-        .await
     }
 
     async fn choose_investigation_action_traced(
@@ -994,11 +1013,33 @@ impl LiveGenerator {
                 self.provider_label(),
                 requested_model,
             );
-            run_structured_json_call(&adapter, self.provider_label(), requested_model, request)
-                .await
+            run_structured_json_call_budgeted(
+                &adapter,
+                self.provider_label(),
+                requested_model,
+                request,
+                trace.limits,
+            )
+            .await
         } else {
-            self.choose_investigation_action(task, telemetry, max_tokens, seed, requested_model)
-                .await
+            let request =
+                build_investigation_action_request(task, telemetry, Some(max_tokens), seed)
+                    .map_err(|error| {
+                        generation_failure(
+                            self.provider_label(),
+                            requested_model,
+                            Instant::now(),
+                            ModelError::new(ModelErrorKind::Protocol, error.to_string()),
+                        )
+                    })?;
+            run_structured_json_call_budgeted(
+                self.adapter(),
+                self.provider_label(),
+                requested_model,
+                request,
+                trace.limits,
+            )
+            .await
         }
     }
 
@@ -1013,94 +1054,6 @@ impl LiveGenerator {
         }
     }
 
-    async fn render_final(
-        &self,
-        task: &str,
-        artifact: &ReasoningArtifact,
-        verdict: Verdict,
-        max_tokens: u32,
-        seed: Option<u64>,
-        requested_model: &str,
-    ) -> Result<(FinalAnswerCandidate, GenerationObservation), GenerationFailure> {
-        match self {
-            Self::Mistral(adapter) => {
-                render_final_with_adapter(
-                    adapter,
-                    FinalRenderCall {
-                        provider: "mistral",
-                        requested_model,
-                        task,
-                        artifact,
-                        verdict,
-                        max_tokens,
-                        seed,
-                    },
-                )
-                .await
-            }
-            Self::Google(adapter) => {
-                render_final_with_adapter(
-                    adapter,
-                    FinalRenderCall {
-                        provider: "google",
-                        requested_model,
-                        task,
-                        artifact,
-                        verdict,
-                        max_tokens,
-                        seed,
-                    },
-                )
-                .await
-            }
-            Self::Groq(adapter) => {
-                render_final_with_adapter(
-                    adapter,
-                    FinalRenderCall {
-                        provider: "groq",
-                        requested_model,
-                        task,
-                        artifact,
-                        verdict,
-                        max_tokens,
-                        seed,
-                    },
-                )
-                .await
-            }
-            Self::Nvidia(adapter) => {
-                render_final_with_adapter(
-                    adapter,
-                    FinalRenderCall {
-                        provider: "nvidia",
-                        requested_model,
-                        task,
-                        artifact,
-                        verdict,
-                        max_tokens,
-                        seed,
-                    },
-                )
-                .await
-            }
-            #[cfg(test)]
-            Self::Test(adapter) => {
-                render_final_with_adapter(
-                    adapter,
-                    FinalRenderCall {
-                        provider: "groq",
-                        requested_model,
-                        task,
-                        artifact,
-                        verdict,
-                        max_tokens,
-                        seed,
-                    },
-                )
-                .await
-            }
-        }
-    }
     async fn render_final_traced(
         &self,
         call: FinalRenderCall<'_>,
@@ -1114,17 +1067,9 @@ impl LiveGenerator {
                 self.provider_label(),
                 call.requested_model,
             );
-            render_final_with_adapter(&adapter, call).await
+            render_final_with_adapter_budgeted(&adapter, call, trace.limits).await
         } else {
-            self.render_final(
-                call.task,
-                call.artifact,
-                call.verdict,
-                call.max_tokens,
-                call.seed,
-                call.requested_model,
-            )
-            .await
+            render_final_with_adapter_budgeted(self.adapter(), call, trace.limits).await
         }
     }
 }
@@ -1188,6 +1133,7 @@ fn parse_single_typed_json<T: DeserializeOwned>(
     }
 }
 
+#[cfg(test)]
 async fn run_structured_json_call<T: DeserializeOwned>(
     adapter: &dyn ModelAdapter,
     provider: &'static str,
@@ -1195,6 +1141,19 @@ async fn run_structured_json_call<T: DeserializeOwned>(
     request: ModelRequest,
 ) -> Result<(T, GenerationObservation), GenerationFailure> {
     let recording = generation_usage::RecordingAdapter::new(adapter);
+    let result =
+        run_structured_json_call_inner(&recording, provider, requested_model, request).await;
+    recording.finish(result)
+}
+
+async fn run_structured_json_call_budgeted<T: DeserializeOwned>(
+    adapter: &dyn ModelAdapter,
+    provider: &'static str,
+    requested_model: &str,
+    request: ModelRequest,
+    limits: usage_budget::GenerationLimits,
+) -> Result<(T, GenerationObservation), GenerationFailure> {
+    let recording = generation_usage::RecordingAdapter::with_limits(adapter, limits);
     let result =
         run_structured_json_call_inner(&recording, provider, requested_model, request).await;
     recording.finish(result)
@@ -1532,8 +1491,8 @@ async fn run_structured_json_call_inner<T: DeserializeOwned>(
     }
 }
 
-async fn generate_with_adapter<A: ModelAdapter>(
-    adapter: &A,
+async fn generate_with_adapter(
+    adapter: &dyn ModelAdapter,
     provider: &'static str,
     requested_model: &str,
     input: &HarnessInput,
@@ -1541,6 +1500,28 @@ async fn generate_with_adapter<A: ModelAdapter>(
     seed: Option<u64>,
 ) -> Result<(ReasoningCandidate, GenerationObservation), GenerationFailure> {
     let recording = generation_usage::RecordingAdapter::new(adapter);
+    let result = generate_with_adapter_inner(
+        &recording,
+        provider,
+        requested_model,
+        input,
+        max_tokens,
+        seed,
+    )
+    .await;
+    recording.finish(result)
+}
+
+async fn generate_with_adapter_budgeted(
+    adapter: &dyn ModelAdapter,
+    provider: &'static str,
+    requested_model: &str,
+    input: &HarnessInput,
+    max_tokens: u32,
+    seed: Option<u64>,
+    limits: usage_budget::GenerationLimits,
+) -> Result<(ReasoningCandidate, GenerationObservation), GenerationFailure> {
+    let recording = generation_usage::RecordingAdapter::with_limits(adapter, limits);
     let result = generate_with_adapter_inner(
         &recording,
         provider,
@@ -1581,8 +1562,8 @@ fn candidate_generation_request(
     Ok(request)
 }
 
-async fn generate_with_adapter_inner<A: ModelAdapter>(
-    adapter: &A,
+async fn generate_with_adapter_inner(
+    adapter: &dyn ModelAdapter,
     provider: &'static str,
     requested_model: &str,
     input: &HarnessInput,
@@ -1696,8 +1677,9 @@ struct FinalRenderCall<'a> {
     seed: Option<u64>,
 }
 
-async fn render_final_with_adapter<A: ModelAdapter>(
-    adapter: &A,
+#[cfg(test)]
+async fn render_final_with_adapter(
+    adapter: &dyn ModelAdapter,
     call: FinalRenderCall<'_>,
 ) -> Result<(FinalAnswerCandidate, GenerationObservation), GenerationFailure> {
     let recording = generation_usage::RecordingAdapter::new(adapter);
@@ -1705,8 +1687,18 @@ async fn render_final_with_adapter<A: ModelAdapter>(
     recording.finish(result)
 }
 
-async fn render_final_with_adapter_inner<A: ModelAdapter>(
-    adapter: &A,
+async fn render_final_with_adapter_budgeted(
+    adapter: &dyn ModelAdapter,
+    call: FinalRenderCall<'_>,
+    limits: usage_budget::GenerationLimits,
+) -> Result<(FinalAnswerCandidate, GenerationObservation), GenerationFailure> {
+    let recording = generation_usage::RecordingAdapter::with_limits(adapter, limits);
+    let result = render_final_with_adapter_inner(&recording, call).await;
+    recording.finish(result)
+}
+
+async fn render_final_with_adapter_inner(
+    adapter: &dyn ModelAdapter,
     call: FinalRenderCall<'_>,
 ) -> Result<(FinalAnswerCandidate, GenerationObservation), GenerationFailure> {
     let FinalRenderCall {
@@ -3365,25 +3357,64 @@ async fn apply_natural_answer_safety(
     for (index, target) in targets.iter().enumerate() {
         let target_seed = seed.and_then(|seed| seed.checked_add(index as u64));
         let safety_max_tokens = usage.cap_next_model_tokens(max_tokens.min(128))?;
-        let observation = run_answer_safety_gate(
-            profile,
+        let recording = generation_usage::RecordingAdapter::with_limits(
             generator.adapter(),
+            usage.generation_limits(),
+        );
+        let result = run_answer_safety_gate(
+            profile,
+            &recording,
             model,
             target,
             artifact,
             safety_max_tokens,
             target_seed,
         )
-        .await
-        .map_err(|error| {
-            CliError::new(
-                answer_safety_error_class(&error),
-                format!(
+        .await;
+        let mut observation = match result {
+            Ok(observation) => observation,
+            Err(error) => {
+                let class = answer_safety_error_class(&error);
+                let message = format!(
                     "answer safety gate failed for {}={}: {error}",
                     target.key, target.value
-                ),
-            )
-        })?;
+                );
+                let failure = recording
+                    .finish::<()>(Err(GenerationFailure {
+                        usage: None,
+                        provider: generator.provider_label(),
+                        model: model.to_string(),
+                        latency_ms: 0,
+                        provider_attempts: 0,
+                        failure_class: class,
+                        message,
+                    }))
+                    .unwrap_err();
+                if failure.provider_attempts > 0 {
+                    usage.record_failure(&failure)?;
+                }
+                return Err(CliError::new(failure.failure_class, failure.message));
+            }
+        };
+        // The core response can omit a failed capability attempt's unknown
+        // usage. The recording adapter accounts for every actual attempt.
+        if let Some(sufficiency) = observation.sufficiency.as_mut() {
+            let (_, recorded) = recording
+                .finish(Ok((
+                    (),
+                    GenerationObservation {
+                        provider: generator.provider_label(),
+                        model: model.to_string(),
+                        usage: ModelUsage::default(),
+                        latency_ms: observation.latency_ms,
+                        provider_attempts: 0,
+                        cost_usd: None,
+                    },
+                )))
+                .expect("a successful safety observation remains successful");
+            sufficiency.usage = recorded.usage;
+            sufficiency.provider_attempts = recorded.provider_attempts;
+        }
         if observation.disposition == AnswerSafetyDisposition::ForceVerification {
             blocked.push(target.clone());
         }
@@ -3661,6 +3692,7 @@ async fn run_natural_investigation(
                         requested_model: model,
                     },
                     DiagnosticTraceCall {
+                        limits: usage.generation_limits(),
                         recorder: trace.as_deref_mut(),
                         phase: DiagnosticPhase::new("investigation_plan", None),
                     },
@@ -3807,6 +3839,7 @@ async fn run_natural_investigation(
                                     requested_model: model,
                                 },
                                 DiagnosticTraceCall {
+                                    limits: usage.generation_limits(),
                                     recorder: trace.as_deref_mut(),
                                     phase: DiagnosticPhase::new(
                                         "investigation_intent",
@@ -3856,6 +3889,7 @@ async fn run_natural_investigation(
                                 action_seed,
                                 model,
                                 DiagnosticTraceCall {
+                                    limits: usage.generation_limits(),
                                     recorder: trace.as_deref_mut(),
                                     phase: DiagnosticPhase::new(
                                         "investigation_action",
@@ -4035,6 +4069,7 @@ async fn run_natural_investigation(
                         regeneration_seed,
                         model,
                         DiagnosticTraceCall {
+                            limits: usage.generation_limits(),
                             recorder: trace.as_deref_mut(),
                             phase: regeneration_phase,
                         },
@@ -4419,8 +4454,11 @@ async fn execute_natural_inner(
     if let (Some(path), Some(trace)) = (diagnostic_trace_path, diagnostic_trace.as_mut()) {
         trace.preserve_on_exit(path, failure_context.clone());
     }
-    let generator = make_generator(provider, &model)
+    let mut generator = make_generator(provider, &model)
         .map_err(|error| CliError::new(error.failure_class, error.message))?;
+    generator.set_single_provider_attempt(
+        usage_budget.max_output_tokens.is_some() || usage_budget.max_total_tokens.is_some(),
+    );
     let mut usage_tracker =
         usage_budget::UsageTracker::new(usage_budget, args.session_usage_baseline.clone())?;
     usage_tracker.preserve_on_exit(failure_context.clone());
@@ -4447,6 +4485,7 @@ async fn execute_natural_inner(
                 args.seed,
                 &model,
                 DiagnosticTraceCall {
+                    limits: usage_tracker.generation_limits(),
                     recorder: diagnostic_trace.as_mut(),
                     phase: initial_generation_phase,
                 },
@@ -4703,6 +4742,7 @@ async fn execute_natural_inner(
                         seed: args.seed,
                     },
                     DiagnosticTraceCall {
+                        limits: usage_tracker.generation_limits(),
                         recorder: diagnostic_trace.as_mut(),
                         phase: final_render_phase,
                     },
@@ -12879,6 +12919,7 @@ mod candidate_json_tests {
                             requested_model: "test-model",
                         },
                         DiagnosticTraceCall {
+                            limits: usage_budget::GenerationLimits::default(),
                             recorder: traced.then_some(&mut trace),
                             phase: DiagnosticPhase::new("investigation_plan", None),
                         },
@@ -13318,6 +13359,263 @@ mod candidate_json_tests {
             provider_attempts: 1,
             finish_reason: Some("stop".into()),
         })
+    }
+
+    #[tokio::test]
+    async fn budgeted_candidate_fallback_caps_remaining_and_preserves_usage() {
+        for traced in [false, true] {
+            let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+                metered_response("{}", 3, 4),
+                metered_response(r#"{"claims":[]}"#, 3, 1),
+            ]);
+            let requests = adapter.requests.clone();
+            let generator = LiveGenerator::Test(DiagnosticTestAdapter(Box::new(adapter)));
+            let mut trace = DiagnosticTraceRecorder::new("groq", "test-model", None);
+            let (candidate, observed) = generator
+                .generate_traced(
+                    &HarnessInput::default(),
+                    5,
+                    None,
+                    "test-model",
+                    DiagnosticTraceCall {
+                        limits: usage_budget::GenerationLimits {
+                            output: Some(5),
+                            total: None,
+                        },
+                        recorder: traced.then_some(&mut trace),
+                        phase: DiagnosticPhase::new("initial_generation", None),
+                    },
+                )
+                .await
+                .unwrap();
+            assert_eq!(candidate, ReasoningCandidate::default());
+            assert_eq!(observed.usage.output_tokens, Some(5));
+            assert_eq!(observed.provider_attempts, 2);
+            let requests = requests.lock().unwrap();
+            assert_eq!(
+                requests.iter().map(|r| r.max_tokens).collect::<Vec<_>>(),
+                vec![Some(5), Some(1)]
+            );
+        }
+    }
+
+    #[tokio::test]
+    async fn budgeted_fallback_stops_for_exhausted_or_unknown_usage() {
+        for (first, limits, class) in [
+            (
+                metered_response("{}", 1, 5),
+                usage_budget::GenerationLimits {
+                    output: Some(5),
+                    total: None,
+                },
+                "usage_budget_exceeded",
+            ),
+            (
+                StructuredCapabilityFallbackAdapter::response("{}", 1),
+                usage_budget::GenerationLimits {
+                    output: Some(5),
+                    total: None,
+                },
+                "usage_budget_unmeasurable",
+            ),
+            (
+                metered_response("{}", 6, 4),
+                usage_budget::GenerationLimits {
+                    output: None,
+                    total: Some(10),
+                },
+                "usage_budget_exceeded",
+            ),
+        ] {
+            let adapter = StructuredCapabilityFallbackAdapter::with_responses([first]);
+            let failure = generate_with_adapter_budgeted(
+                &adapter,
+                "test",
+                "model",
+                &HarnessInput::default(),
+                5,
+                None,
+                limits,
+            )
+            .await
+            .unwrap_err();
+            assert_eq!(failure.failure_class, class);
+            assert_eq!(failure.provider_attempts, 1);
+            assert_eq!(adapter.requests.lock().unwrap().len(), 1);
+        }
+    }
+
+    #[tokio::test]
+    async fn budgeted_planner_and_renderer_share_remaining_allowance() {
+        let limits = usage_budget::GenerationLimits {
+            output: Some(5),
+            total: None,
+        };
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            metered_response("{", 2, 4),
+            metered_response(r#"{"targets":[]}"#, 2, 1),
+        ]);
+        let request = build_investigation_plan_request("test", &[], Some(5), None).unwrap();
+        let (_, observation): (InvestigationPlanProposal, _) =
+            run_structured_json_call_budgeted(&adapter, "test", "model", request, limits)
+                .await
+                .unwrap();
+        assert_eq!(observation.usage.output_tokens, Some(5));
+        assert_eq!(
+            adapter
+                .requests
+                .lock()
+                .unwrap()
+                .iter()
+                .map(|r| r.max_tokens)
+                .collect::<Vec<_>>(),
+            vec![Some(5), Some(1)]
+        );
+
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            metered_response("{", 2, 4),
+            metered_response(r#"{"text":"No answer.","factual_claims":[]}"#, 2, 1),
+        ]);
+        let artifact = ReasoningArtifact::default();
+        let (_, observation) = render_final_with_adapter_budgeted(
+            &adapter,
+            FinalRenderCall {
+                provider: "test",
+                requested_model: "model",
+                task: "test",
+                artifact: &artifact,
+                verdict: Verdict::Unknown,
+                max_tokens: 5,
+                seed: None,
+            },
+            limits,
+        )
+        .await
+        .unwrap();
+        assert_eq!(observation.usage.output_tokens, Some(5));
+        assert_eq!(
+            adapter
+                .requests
+                .lock()
+                .unwrap()
+                .iter()
+                .map(|r| r.max_tokens)
+                .collect::<Vec<_>>(),
+            vec![Some(5), Some(1)]
+        );
+    }
+
+    #[tokio::test]
+    async fn budgeted_local_capability_refusal_still_allows_fallback() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::capability_failure("local capability refusal", 0),
+            metered_response(r#"{"targets":[]}"#, 2, 4),
+        ]);
+        let request = build_investigation_plan_request("test", &[], Some(5), None).unwrap();
+        let (_, observation): (InvestigationPlanProposal, _) = run_structured_json_call_budgeted(
+            &adapter,
+            "test",
+            "model",
+            request,
+            usage_budget::GenerationLimits {
+                output: Some(5),
+                total: None,
+            },
+        )
+        .await
+        .unwrap();
+        assert_eq!(observation.usage.output_tokens, Some(4));
+        assert_eq!(observation.provider_attempts, 1);
+        assert_eq!(adapter.requests.lock().unwrap().len(), 2);
+
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::capability_failure("remote capability refusal", 1),
+        ]);
+        let request = build_investigation_plan_request("test", &[], Some(5), None).unwrap();
+        let failure = run_structured_json_call_budgeted::<InvestigationPlanProposal>(
+            &adapter,
+            "test",
+            "model",
+            request,
+            usage_budget::GenerationLimits {
+                output: Some(5),
+                total: None,
+            },
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(failure.failure_class, "usage_budget_unmeasurable");
+        assert_eq!(failure.provider_attempts, 1);
+        assert_eq!(adapter.requests.lock().unwrap().len(), 1);
+    }
+
+    #[tokio::test]
+    async fn budgeted_safety_failure_keeps_first_attempt_usage() {
+        let target = Proposition {
+            key: "deployment.safe".into(),
+            value: "true".into(),
+        };
+        let artifact = ReasoningArtifact {
+            task: "Decide whether deployment is safe.".into(),
+            evidence: vec![reasoning_harness_core::Evidence {
+                id: "e1".into(),
+                source: "fixture".into(),
+                observation: "deployment checks passed".into(),
+                facts: std::collections::BTreeMap::from([(
+                    "deployment.safe".into(),
+                    "true".into(),
+                )]),
+                metadata: Default::default(),
+            }],
+            ..Default::default()
+        };
+        let rendered = FinalAnswerCandidate {
+            text: "safe".into(),
+            factual_claims: vec![reasoning_harness_core::FinalAnswerClaim {
+                proposition: target,
+                mode: FinalClaimMode::Grounded,
+            }],
+        };
+        let baseline = FinalizationResult {
+            status: FinalizationStatus::GroundedAnswer,
+            text: Some("safe".into()),
+            factual_claims: 1,
+            covered_claims: 1,
+            factual_claim_coverage: 1.0,
+            uncovered_propositions: vec![],
+        };
+        let adapter =
+            StructuredCapabilityFallbackAdapter::with_responses([metered_response("{", 6, 5)]);
+        let requests = adapter.requests.clone();
+        let generator = LiveGenerator::Test(DiagnosticTestAdapter(Box::new(adapter)));
+        let mut usage = usage_budget::UsageTracker::new(
+            usage_budget::UsageBudget {
+                max_output_tokens: Some(5),
+                ..Default::default()
+            },
+            None,
+        )
+        .unwrap();
+        let error = apply_natural_answer_safety(NaturalAnswerSafetyCall {
+            profile: AnswerSafetyProfile::D3SufficiencyV1,
+            generator: &generator,
+            model: "test-model",
+            artifact: &artifact,
+            rendered: &rendered,
+            baseline,
+            max_tokens: 5,
+            seed: None,
+            render_round: 1,
+            usage: &mut usage,
+        })
+        .await
+        .unwrap_err();
+        assert_eq!(error.failure_class, "usage_budget_exceeded");
+        assert_eq!(requests.lock().unwrap().len(), 1);
+        let totals = usage.report().run;
+        assert_eq!(totals.output_tokens, Some(5));
+        assert_eq!(totals.provider_attempts, 1);
+        assert_eq!(totals.model_calls, 1);
     }
 
     #[tokio::test]

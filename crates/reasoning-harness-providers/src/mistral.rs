@@ -25,11 +25,17 @@ pub struct MistralAdapter {
     api_key: String,
     base_url: Url,
     model: String,
+    single_attempt: bool,
     execution_budget: Mutex<Option<ModelExecutionBudget>>,
     execution_telemetry: crate::network::ExecutionTelemetryCounters,
 }
 
 impl MistralAdapter {
+    /// Disable adapter-internal HTTP retries for cumulative token-budget enforcement.
+    pub fn set_single_attempt(&mut self, enabled: bool) {
+        self.single_attempt = enabled;
+    }
+
     pub fn from_env(model: impl Into<String>) -> Result<Self, ModelError> {
         let api_key = env::var("MISTRAL_API_KEY").map_err(|_| {
             ModelError::new(ModelErrorKind::Credentials, "MISTRAL_API_KEY is not set")
@@ -75,6 +81,8 @@ impl MistralAdapter {
                     format!("failed to configure HTTP client: {}", error.message()),
                 )
             })?
+            .redirect(reqwest::redirect::Policy::none())
+            .retry(reqwest::retry::never())
             .timeout(DEFAULT_TIMEOUT)
             .build()
             .map_err(|error| {
@@ -89,6 +97,7 @@ impl MistralAdapter {
             api_key,
             base_url,
             model,
+            single_attempt: false,
             execution_budget: Mutex::new(None),
             execution_telemetry: crate::network::ExecutionTelemetryCounters::default(),
         })
@@ -177,6 +186,7 @@ impl MistralAdapter {
 
             if response.status() != StatusCode::TOO_MANY_REQUESTS
                 || rate_limit_retries >= MAX_RATE_LIMIT_RETRIES
+                || self.single_attempt
             {
                 break response;
             }
@@ -238,16 +248,21 @@ impl MistralAdapter {
                 )
             })?,
             model: response.model,
-            usage: ModelUsage {
-                input_tokens: response
-                    .usage
-                    .as_ref()
-                    .and_then(|usage| usage.prompt_tokens),
-                output_tokens: response
-                    .usage
-                    .as_ref()
-                    .and_then(|usage| usage.completion_tokens),
-                total_tokens: response.usage.and_then(|usage| usage.total_tokens),
+            usage: if rate_limit_retries > 0 {
+                // Failed HTTP attempts do not expose their token usage.
+                ModelUsage::default()
+            } else {
+                ModelUsage {
+                    input_tokens: response
+                        .usage
+                        .as_ref()
+                        .and_then(|usage| usage.prompt_tokens),
+                    output_tokens: response
+                        .usage
+                        .as_ref()
+                        .and_then(|usage| usage.completion_tokens),
+                    total_tokens: response.usage.and_then(|usage| usage.total_tokens),
+                }
             },
             provider_attempts: u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX),
             finish_reason: choice.finish_reason,
@@ -943,7 +958,7 @@ mod tests {
                     (
                         "200 OK",
                         "",
-                        r#"{"model":"test-model","choices":[{"finish_reason":"stop","message":{"content":"ok"}}]}"#,
+                        r#"{"model":"test-model","choices":[{"finish_reason":"stop","message":{"content":"ok"}}],"usage":{"prompt_tokens":3,"completion_tokens":1,"total_tokens":4}}"#,
                     )
                 };
                 write!(
@@ -974,6 +989,156 @@ mod tests {
         assert_eq!(response.text, "ok");
         assert_eq!(response.model, "test-model");
         assert_eq!(response.provider_attempts, 2);
+        assert_eq!(response.usage, ModelUsage::default());
         server.join().unwrap();
+    }
+    #[tokio::test]
+    async fn token_guard_single_attempt_stops_rate_limit_retry() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            let mut buffer = [0u8; 8192];
+            let _ = stream.read(&mut buffer);
+            let body = r#"{"error":{"message":"busy"}}"#;
+            write!(stream, "HTTP/1.1 429 Too Many Requests\r\nContent-Type: application/json\r\nContent-Length: {}\r\nRetry-After: 1\r\nConnection: close\r\n\r\n{body}", body.len()).unwrap();
+        });
+        let mut adapter = MistralAdapter::with_base_url(
+            "test-key",
+            "test-model",
+            &format!("http://{address}/v1/"),
+        )
+        .unwrap();
+        adapter.set_single_attempt(true);
+        let error = adapter
+            .generate(ModelRequest {
+                task: "test".into(),
+                system: None,
+                output_format: ModelOutputFormat::Text,
+                max_tokens: Some(8),
+                random_seed: None,
+                reasoning_preference: None,
+            })
+            .await
+            .unwrap_err();
+        assert_eq!(error.kind, ModelErrorKind::RateLimit);
+        assert_eq!(error.provider_attempts, 1);
+        assert_eq!(
+            adapter
+                .execution_telemetry_snapshot()
+                .unwrap()
+                .provider_attempts_started,
+            1
+        );
+        server.join().unwrap();
+    }
+    #[tokio::test]
+    async fn provider_does_not_follow_redirect_or_resend_post() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+        for status in ["307 Temporary Redirect", "308 Permanent Redirect"] {
+            for single in [false, true] {
+                let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+                let address = listener.local_addr().unwrap();
+                let server = thread::spawn(move || {
+                    let (mut stream, _) = listener.accept().unwrap();
+                    let mut buffer = [0u8; 8192];
+                    let _ = stream.read(&mut buffer);
+                    write!(stream, "HTTP/1.1 {status}\r\nLocation: http://{address}/redirected\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").unwrap();
+                    listener.set_nonblocking(true).unwrap();
+                    let deadline = Instant::now() + Duration::from_millis(300);
+                    loop {
+                        match listener.accept() {
+                            Ok((mut redirected, _)) => {
+                                let _ = redirected.read(&mut buffer);
+                                let _ = redirected.write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: close\r\n\r\n{}");
+                                return 2;
+                            }
+                            Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
+                                if Instant::now() >= deadline {
+                                    return 1;
+                                }
+                                thread::sleep(Duration::from_millis(5));
+                            }
+                            Err(error) => panic!("listener failed: {error}"),
+                        }
+                    }
+                });
+                let mut adapter = MistralAdapter::with_base_url(
+                    "test-key",
+                    "test-model",
+                    &format!("http://{address}/v1/"),
+                )
+                .unwrap();
+                adapter.set_single_attempt(single);
+                let error = adapter
+                    .generate(ModelRequest {
+                        task: "test".into(),
+                        system: None,
+                        output_format: ModelOutputFormat::Text,
+                        max_tokens: Some(8),
+                        random_seed: None,
+                        reasoning_preference: None,
+                    })
+                    .await
+                    .unwrap_err();
+                assert_eq!(error.provider_attempts, 1);
+                assert_eq!(
+                    server.join().unwrap(),
+                    1,
+                    "{status} must not resend model POST, single={single}"
+                );
+            }
+        }
+    }
+    #[tokio::test]
+    async fn no_retry_preserves_successful_response_usage() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+        for single in [false, true] {
+            let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+            let address = listener.local_addr().unwrap();
+            let server = thread::spawn(move || {
+                let (mut stream, _) = listener.accept().unwrap();
+                let mut buffer = [0u8; 8192];
+                let _ = stream.read(&mut buffer);
+                let body = r#"{"model":"test-model","choices":[{"finish_reason":"stop","message":{"content":"ok"}}],"usage":{"prompt_tokens":3,"completion_tokens":1,"total_tokens":4}}"#;
+                write!(stream, "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",body.len()).unwrap();
+            });
+            let mut adapter = MistralAdapter::with_base_url(
+                "test-key",
+                "test-model",
+                &format!("http://{address}/v1/"),
+            )
+            .unwrap();
+            adapter.set_single_attempt(single);
+            let response = adapter
+                .generate(ModelRequest {
+                    task: "test".into(),
+                    system: None,
+                    output_format: ModelOutputFormat::Text,
+                    max_tokens: Some(8),
+                    random_seed: None,
+                    reasoning_preference: None,
+                })
+                .await
+                .unwrap();
+            assert_eq!(response.provider_attempts, 1);
+            assert_eq!(response.usage.input_tokens, Some(3));
+            assert_eq!(response.usage.output_tokens, Some(1));
+            assert_eq!(response.usage.total_tokens, Some(4));
+            server.join().unwrap();
+        }
     }
 }

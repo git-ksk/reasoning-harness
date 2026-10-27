@@ -162,6 +162,15 @@ pub(super) struct UsageTracker {
     failure_context: Option<crate::run_diagnostics::SharedRunDiagnostics>,
 }
 
+/// Remaining cumulative limits at the start of a logical model operation.
+/// Total tokens are checked after responses because request input usage is not
+/// known until the provider reports it.
+#[derive(Debug, Clone, Copy, Default)]
+pub(super) struct GenerationLimits {
+    pub output: Option<u64>,
+    pub total: Option<u64>,
+}
+
 impl UsageTracker {
     pub(super) fn new(
         budget: UsageBudget,
@@ -194,6 +203,20 @@ impl UsageTracker {
             .unwrap_or_else(|| self.run.clone())
     }
 
+    pub(super) fn generation_limits(&self) -> GenerationLimits {
+        let combined = self.combined();
+        GenerationLimits {
+            output: self
+                .budget
+                .max_output_tokens
+                .map(|limit| limit.saturating_sub(combined.output_tokens.unwrap_or(limit))),
+            total: self
+                .budget
+                .max_total_tokens
+                .map(|limit| limit.saturating_sub(combined.total_tokens.unwrap_or(limit))),
+        }
+    }
+
     pub(super) fn cap_next_model_tokens(&self, requested: u32) -> Result<u32, CliError> {
         let combined = self.combined();
         if self.budget.max_model_calls.is_some() && !combined.tracked_from_session_start {
@@ -208,6 +231,18 @@ impl UsageTracker {
                 "model call budget exhausted ({}/{max_calls})",
                 combined.model_calls
             )));
+        }
+        if let Some(max_total) = self.budget.max_total_tokens {
+            let Some(consumed) = combined.total_tokens else {
+                return Err(budget_unmeasurable(
+                    "provider did not report total-token usage required by the configured total-token ceiling",
+                ));
+            };
+            if consumed >= max_total {
+                return Err(budget_exceeded(format!(
+                    "total-token budget exhausted ({consumed}/{max_total})"
+                )));
+            }
         }
         let Some(max_output) = self.budget.max_output_tokens else {
             return Ok(requested);
@@ -249,7 +284,15 @@ impl UsageTracker {
             let unknown = ModelUsage::default();
             add_model_usage(&mut self.run, failure.usage.as_deref().unwrap_or(&unknown));
         }
-        self.check_current_limits()
+        match self.check_current_limits() {
+            Err(_) if matches!(failure.failure_class, "quota" | "rate_limit") => {
+                Err(CliError::new(
+                    failure.failure_class,
+                    super::format_generation_failure(failure),
+                ))
+            }
+            result => result,
+        }
     }
 
     pub(super) fn record_safety(
@@ -496,6 +539,86 @@ mod tests {
             .record_generation(&observation(Some(6), Some(9)))
             .unwrap();
         assert_eq!(tracker.cap_next_model_tokens(100).unwrap(), 4);
+    }
+
+    #[test]
+    fn generation_limits_include_previous_managed_session_and_current_run() {
+        let baseline = UsageTotals {
+            output_tokens: Some(7),
+            total_tokens: Some(20),
+            ..Default::default()
+        };
+        let mut tracker = UsageTracker::new(
+            UsageBudget {
+                max_output_tokens: Some(20),
+                max_total_tokens: Some(50),
+                ..Default::default()
+            },
+            Some(baseline),
+        )
+        .unwrap();
+        tracker
+            .record_generation(&observation(Some(3), Some(5)))
+            .unwrap();
+        assert_eq!(tracker.cap_next_model_tokens(100).unwrap(), 10);
+        let remaining = tracker.generation_limits();
+        assert_eq!(remaining.output, Some(10));
+        assert_eq!(remaining.total, Some(25));
+    }
+
+    #[test]
+    fn exact_total_exhaustion_stops_before_another_operation() {
+        let mut tracker = UsageTracker::new(
+            UsageBudget {
+                max_total_tokens: Some(5),
+                ..Default::default()
+            },
+            None,
+        )
+        .unwrap();
+        tracker
+            .record_generation(&observation(Some(2), Some(5)))
+            .unwrap();
+        assert_eq!(
+            tracker
+                .cap_next_model_tokens(100)
+                .unwrap_err()
+                .failure_class,
+            "usage_budget_exceeded"
+        );
+    }
+
+    #[test]
+    fn quota_and_rate_limit_remain_typed_and_unknown_usage_blocks_later_requests() {
+        for class in ["quota", "rate_limit"] {
+            let mut tracker = UsageTracker::new(
+                UsageBudget {
+                    max_output_tokens: Some(5),
+                    ..Default::default()
+                },
+                None,
+            )
+            .unwrap();
+            let failure = GenerationFailure {
+                usage: None,
+                provider: "fixture",
+                model: "fixture".into(),
+                latency_ms: 1,
+                provider_attempts: 1,
+                failure_class: class,
+                message: "provider refused".into(),
+            };
+            assert_eq!(
+                tracker.record_failure(&failure).unwrap_err().failure_class,
+                class
+            );
+            assert_eq!(tracker.report().run.provider_attempts, 1);
+            assert_eq!(tracker.report().run.output_tokens, None);
+            assert_eq!(
+                tracker.cap_next_model_tokens(5).unwrap_err().failure_class,
+                "usage_budget_unmeasurable"
+            );
+        }
     }
 
     #[test]
