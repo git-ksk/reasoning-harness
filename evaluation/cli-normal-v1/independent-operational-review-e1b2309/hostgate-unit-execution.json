@@ -1,0 +1,24 @@
+{
+  "reviewer": "/root/real24_operational_review",
+  "source_commit": "e1b230974231efe46ceea5b9d20e49b4612cf7d8",
+  "scope": "hostgate source negative/positive unit controls only; loaded-image-ID host membership pending next source",
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_runtime_archive"
+  ],
+  "cwd": "/private/tmp/normal-hostgate-source-u2rcp0p4/evaluation/cli-normal-v1",
+  "returncode": 0,
+  "source_files_sha256": {
+    "evaluation/cli-normal-v1/verify_runtime_archive.py": "59c9e151f395e173c59d7cd6420ea95d2f1b5169c2a1ccd376bdd8d151741f2d",
+    "evaluation/cli-normal-v1/test_runtime_archive.py": "18dbdd614f701f182df984a77c01afde6d8b90daa97fb2737df9165f5bd17dab",
+    ".github/workflows/cli-normal-runtime.yml": "8f304c4f298d04aec4f83eb44224424fad2d66edb2293d769274507232eca38a",
+    ".github/workflows/cli-normal-real24-development.yml": "855a97d3b4a2be926763f79b16ef77b3614b1c1ab049205bbe686ff0ab64262b"
+  },
+  "credentials_supplied": false,
+  "actual_Docker_or_provider_requests": 0,
+  "formal_verdict_issued": false
+}

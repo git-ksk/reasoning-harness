@@ -1,0 +1,27 @@
+{
+  "identity": "independent-normal-precredential-source-finding-v1",
+  "reviewer": "/root/real24_operational_review",
+  "reviewer_kind": "agent_nonhuman",
+  "source_commit": "bf39d97d0402f517cb4d5574ac9373691f1dde57",
+  "scope": "source-only precredential image trust boundary; no final image reviewed",
+  "result": "BLOCKED_SOURCE_TRUST_BOUNDARY",
+  "formal_verdict_issued": false,
+  "finding": {
+    "id": "unreviewed-image-verifies-itself-before-receiving-provider-secret",
+    "severity": "execution_blocker",
+    "evidence": [
+      "Both workflows download and load a runtime archive without a checkout-side comparison to the independently reviewed archive SHA.",
+      "Their first integrity check runs the downloaded image own Python verifier.",
+      "A substitute image could return success and then receive MISTRAL_API_KEY in the next workflow step."
+    ],
+    "required_fix": "Authenticate review/proof/reference-or-receipt and actual archive bytes in trusted checkout code before docker load/run; keep image self-verification only as an additional check."
+  },
+  "source_files_sha256": {
+    ".github/workflows/cli-normal-real24-development.yml": "dd21b6106509d510ff09fb47cae136465309fca416a105a24b77602c437b9020",
+    ".github/workflows/cli-normal-runtime.yml": "6609ac62a23903d2fb8d91964916b652ea85ee6bb66f38ac94658f99df535aad",
+    "evaluation/cli-normal-v1/runtime/verify_development.py": "7a390520f54f48567a32920e00264a73316bb44d457571b46975e510b57c0007",
+    "evaluation/cli-normal-v1/runtime/provider_readiness.py": "3af72dee4a1bb6dccedc540ed278cc25a2f46e75da71efbdea9fa83131ac601b"
+  },
+  "model_metadata_credential_tag_calls": 0,
+  "old_results_modified": false
+}

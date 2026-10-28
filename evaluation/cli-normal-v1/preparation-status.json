@@ -107,10 +107,23 @@
       }
     ],
     "host_archive_boundary": {
-      "status": "REPAIRED_PENDING_INDEPENDENT_REVIEW",
+      "status": "PASS_BOUNDED_SOURCE_ONLY_4bab9cd",
       "scope": "checkout code verifies final independent review, proof, trusted receipt/reference, host verifier hash, and actual image archive bytes before any docker load/run",
       "controls": "3 host-boundary controls PASS: substituted archive or unapproved loaded ID cannot start container; both workflows use verified immutable ID with --pull=never; optimized Python checked",
       "model_calls": 0
+    },
+    "preparation_merge_commit": "a7de5a4fd40d0ddcec3edff62352e827dd795c5d",
+    "final_bounded_source_review": {
+      "source": "4bab9cd5dd29e71d161884e6dd255b621b00d50f",
+      "review_sha256": "284d2e4496b70bf6a545fb557ccb4f4a7e3d0dbdf895ebe246908888959bc842",
+      "formal_verdict_issued": false
+    },
+    "actual_AMD64_offline_build": {
+      "run_id": 40787270979,
+      "source": "a7de5a4fd40d0ddcec3edff62352e827dd795c5d",
+      "check_provider_readiness": false,
+      "status": "IN_PROGRESS",
+      "model_generations": 0
     }
   },
   "prospective_common_CLI_host": "dbad2dc25d3487819206582f1fad778d9af75da1",
@@ -118,11 +131,12 @@
     "PR": 567,
     "source_review": "PASS_BOUNDED_SOURCE_ONLY",
     "review_sha256": "4fb916890a79bfb70528e56be2a177061407d4ec52142fe72aa3d24c0e9f9db8",
-    "source_CI": "15 success; macOS jobs pending. One unassigned runner cancelled for hosted capacity; only that job rerun on exact dbad2dc.",
-    "source_merged": false,
+    "source_CI": "22 PASS on exact dbad2dc; macOS capacity cancellations rerun only as affected jobs",
+    "source_merged": true,
     "Linux_both_arms_built": true,
     "actual_Linux_reacquisition_loopback": "PASS; two distinct targets; second NoResult; cost and nonempty claims/receipts retained; next quota stops; 3 observations no binding failure",
     "model_calls": 0,
-    "new_F1": null
+    "new_F1": null,
+    "merge_commit": "41fbd175c6cf69cf1162c1f0680ce78b8811b886"
   }
 }

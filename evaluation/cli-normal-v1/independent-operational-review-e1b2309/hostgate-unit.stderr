@@ -1,0 +1,7 @@
+test_changed_image_cannot_reach_docker_in_either_workflow (test_runtime_archive.HostArchiveBoundary.test_changed_image_cannot_reach_docker_in_either_workflow) ... ok
+test_trusted_review_proof_archive_and_host_code_all_bind (test_runtime_archive.HostArchiveBoundary.test_trusted_review_proof_archive_and_host_code_all_bind) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.811s
+
+OK
