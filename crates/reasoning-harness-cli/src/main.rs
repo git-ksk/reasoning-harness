@@ -63,8 +63,8 @@ use reasoning_harness_core::{
     StructuredFactConflictDetector, ThreadInputChange, TrustedVerificationPass, Verdict,
     VerificationPass, VerificationReceipt, admit_investigation_plan, aggregate_benchmark,
     aggregate_claim_corpus, aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
-    aggregate_soft_judge_calibration, build_candidate_json_fallback_request,
-    build_candidate_request, build_final_answer_json_fallback_request, build_final_answer_request,
+    aggregate_soft_judge_calibration, build_candidate_request,
+    build_final_answer_json_fallback_request, build_final_answer_request,
     build_investigation_action_request, build_investigation_intent_request,
     build_investigation_plan_request, canonical_verified_target_answer,
     canonical_verified_target_partial_answer, canonical_verified_target_reject_partial_answer,
@@ -628,8 +628,63 @@ struct ResolvedRunConfig {
 }
 
 struct DiagnosticTraceCall<'a> {
+    limits: usage_budget::GenerationLimits,
     recorder: Option<&'a mut DiagnosticTraceRecorder>,
     phase: DiagnosticPhase,
+}
+
+struct InvestigationPlanGenerationCall<'a> {
+    task: &'a str,
+    capabilities: &'a [InvestigationCapability],
+    max_targets: usize,
+    max_tokens: u32,
+    seed: Option<u64>,
+    requested_model: &'a str,
+}
+
+impl InvestigationPlanGenerationCall<'_> {
+    fn request(&self) -> Result<ModelRequest, ModelError> {
+        if self.max_targets == 0 {
+            return Err(ModelError::new(
+                ModelErrorKind::Protocol,
+                "investigation target limit must be positive",
+            ));
+        }
+        let mut request = build_investigation_plan_request(
+            self.task,
+            self.capabilities,
+            Some(self.max_tokens),
+            self.seed,
+        )
+        .map_err(|error| ModelError::new(ModelErrorKind::Protocol, error.to_string()))?;
+        let ModelOutputFormat::JsonSchema { schema, .. } = &mut request.output_format else {
+            return Err(ModelError::new(
+                ModelErrorKind::Protocol,
+                "investigation planner must expose a target array schema",
+            ));
+        };
+        let targets = schema
+            .pointer_mut("/properties/targets")
+            .and_then(serde_json::Value::as_object_mut)
+            .ok_or_else(|| {
+                ModelError::new(
+                    ModelErrorKind::Protocol,
+                    "investigation planner must expose a target array schema",
+                )
+            })?;
+        targets.insert("minItems".into(), serde_json::json!(1));
+        targets.insert("maxItems".into(), serde_json::json!(self.max_targets));
+        let bounds = format!(
+            "Harness-owned target limit: return between 1 and {} investigation targets inclusive. Give every target a distinct target ID; capability IDs identify acquisition tools, not targets. Cover the requested facts within this limit; do not add duplicate questions or return an empty plan. Targets remain untrusted proposals subject to admission.",
+            self.max_targets
+        );
+        request.system = Some(format!(
+            "{}\n{bounds}",
+            request.system.as_deref().unwrap_or_default()
+        ));
+        request.task.push_str(&format!("\n\n{bounds}"));
+        Ok(request)
+    }
 }
 
 struct InvestigationIntentGenerationCall<'a> {
@@ -710,6 +765,17 @@ impl LiveGenerator {
         Self::try_from_provider(provider, model).map_err(|error| error.message)
     }
 
+    fn set_single_provider_attempt(&mut self, enabled: bool) {
+        match self {
+            Self::Mistral(adapter) => adapter.set_single_attempt(enabled),
+            Self::Google(adapter) => adapter.set_single_attempt(enabled),
+            Self::Groq(adapter) => adapter.set_single_attempt(enabled),
+            Self::Nvidia(adapter) => adapter.set_single_attempt(enabled),
+            #[cfg(test)]
+            Self::Test(_) => {}
+        }
+    }
+
     fn adapter(&self) -> &dyn ModelAdapter {
         match self {
             Self::Mistral(adapter) => adapter,
@@ -769,42 +835,47 @@ impl LiveGenerator {
                 self.provider_label(),
                 requested_model,
             );
-            generate_with_adapter(
+            generate_with_adapter_budgeted(
                 &adapter,
                 self.provider_label(),
                 requested_model,
                 input,
                 max_tokens,
                 seed,
+                trace.limits,
             )
             .await
         } else {
-            self.generate(input, max_tokens, seed, requested_model)
-                .await
+            generate_with_adapter_budgeted(
+                self.adapter(),
+                self.provider_label(),
+                requested_model,
+                input,
+                max_tokens,
+                seed,
+                trace.limits,
+            )
+            .await
         }
     }
 
+    #[cfg(test)]
     async fn plan_investigation(
         &self,
-        task: &str,
-        capabilities: &[InvestigationCapability],
-        max_tokens: u32,
-        seed: Option<u64>,
-        requested_model: &str,
+        call: InvestigationPlanGenerationCall<'_>,
     ) -> Result<(InvestigationPlanProposal, GenerationObservation), GenerationFailure> {
-        let request = build_investigation_plan_request(task, capabilities, Some(max_tokens), seed)
-            .map_err(|error| {
-                generation_failure(
-                    self.provider_label(),
-                    requested_model,
-                    Instant::now(),
-                    ModelError::new(ModelErrorKind::Protocol, error.to_string()),
-                )
-            })?;
+        let request = call.request().map_err(|error| {
+            generation_failure(
+                self.provider_label(),
+                call.requested_model,
+                Instant::now(),
+                error,
+            )
+        })?;
         run_structured_json_call(
             self.adapter(),
             self.provider_label(),
-            requested_model,
+            call.requested_model,
             request,
         )
         .await
@@ -812,36 +883,50 @@ impl LiveGenerator {
 
     async fn plan_investigation_traced(
         &self,
-        task: &str,
-        capabilities: &[InvestigationCapability],
-        max_tokens: u32,
-        seed: Option<u64>,
-        requested_model: &str,
+        call: InvestigationPlanGenerationCall<'_>,
         trace: DiagnosticTraceCall<'_>,
     ) -> Result<(InvestigationPlanProposal, GenerationObservation), GenerationFailure> {
         if let Some(recorder) = trace.recorder {
-            let request =
-                build_investigation_plan_request(task, capabilities, Some(max_tokens), seed)
-                    .map_err(|error| {
-                        generation_failure(
-                            self.provider_label(),
-                            requested_model,
-                            Instant::now(),
-                            ModelError::new(ModelErrorKind::Protocol, error.to_string()),
-                        )
-                    })?;
+            let request = call.request().map_err(|error| {
+                generation_failure(
+                    self.provider_label(),
+                    call.requested_model,
+                    Instant::now(),
+                    error,
+                )
+            })?;
             let adapter = DiagnosticModelAdapter::new(
                 self.adapter(),
                 recorder,
                 trace.phase,
                 self.provider_label(),
-                requested_model,
+                call.requested_model,
             );
-            run_structured_json_call(&adapter, self.provider_label(), requested_model, request)
-                .await
+            run_structured_json_call_budgeted(
+                &adapter,
+                self.provider_label(),
+                call.requested_model,
+                request,
+                trace.limits,
+            )
+            .await
         } else {
-            self.plan_investigation(task, capabilities, max_tokens, seed, requested_model)
-                .await
+            let request = call.request().map_err(|error| {
+                generation_failure(
+                    self.provider_label(),
+                    call.requested_model,
+                    Instant::now(),
+                    error,
+                )
+            })?;
+            run_structured_json_call_budgeted(
+                self.adapter(),
+                self.provider_label(),
+                call.requested_model,
+                request,
+                trace.limits,
+            )
+            .await
         }
     }
 
@@ -881,43 +966,24 @@ impl LiveGenerator {
                 self.provider_label(),
                 requested_model,
             );
-            run_structured_json_call(&adapter, self.provider_label(), requested_model, request)
-                .await
+            run_structured_json_call_budgeted(
+                &adapter,
+                self.provider_label(),
+                requested_model,
+                request,
+                trace.limits,
+            )
+            .await
         } else {
-            run_structured_json_call(
+            run_structured_json_call_budgeted(
                 self.adapter(),
                 self.provider_label(),
                 requested_model,
                 request,
+                trace.limits,
             )
             .await
         }
-    }
-
-    async fn choose_investigation_action(
-        &self,
-        task: &str,
-        telemetry: &InvestigationTelemetry,
-        max_tokens: u32,
-        seed: Option<u64>,
-        requested_model: &str,
-    ) -> Result<(InvestigationActionProposal, GenerationObservation), GenerationFailure> {
-        let request = build_investigation_action_request(task, telemetry, Some(max_tokens), seed)
-            .map_err(|error| {
-            generation_failure(
-                self.provider_label(),
-                requested_model,
-                Instant::now(),
-                ModelError::new(ModelErrorKind::Protocol, error.to_string()),
-            )
-        })?;
-        run_structured_json_call(
-            self.adapter(),
-            self.provider_label(),
-            requested_model,
-            request,
-        )
-        .await
     }
 
     async fn choose_investigation_action_traced(
@@ -947,11 +1013,33 @@ impl LiveGenerator {
                 self.provider_label(),
                 requested_model,
             );
-            run_structured_json_call(&adapter, self.provider_label(), requested_model, request)
-                .await
+            run_structured_json_call_budgeted(
+                &adapter,
+                self.provider_label(),
+                requested_model,
+                request,
+                trace.limits,
+            )
+            .await
         } else {
-            self.choose_investigation_action(task, telemetry, max_tokens, seed, requested_model)
-                .await
+            let request =
+                build_investigation_action_request(task, telemetry, Some(max_tokens), seed)
+                    .map_err(|error| {
+                        generation_failure(
+                            self.provider_label(),
+                            requested_model,
+                            Instant::now(),
+                            ModelError::new(ModelErrorKind::Protocol, error.to_string()),
+                        )
+                    })?;
+            run_structured_json_call_budgeted(
+                self.adapter(),
+                self.provider_label(),
+                requested_model,
+                request,
+                trace.limits,
+            )
+            .await
         }
     }
 
@@ -966,94 +1054,6 @@ impl LiveGenerator {
         }
     }
 
-    async fn render_final(
-        &self,
-        task: &str,
-        artifact: &ReasoningArtifact,
-        verdict: Verdict,
-        max_tokens: u32,
-        seed: Option<u64>,
-        requested_model: &str,
-    ) -> Result<(FinalAnswerCandidate, GenerationObservation), GenerationFailure> {
-        match self {
-            Self::Mistral(adapter) => {
-                render_final_with_adapter(
-                    adapter,
-                    FinalRenderCall {
-                        provider: "mistral",
-                        requested_model,
-                        task,
-                        artifact,
-                        verdict,
-                        max_tokens,
-                        seed,
-                    },
-                )
-                .await
-            }
-            Self::Google(adapter) => {
-                render_final_with_adapter(
-                    adapter,
-                    FinalRenderCall {
-                        provider: "google",
-                        requested_model,
-                        task,
-                        artifact,
-                        verdict,
-                        max_tokens,
-                        seed,
-                    },
-                )
-                .await
-            }
-            Self::Groq(adapter) => {
-                render_final_with_adapter(
-                    adapter,
-                    FinalRenderCall {
-                        provider: "groq",
-                        requested_model,
-                        task,
-                        artifact,
-                        verdict,
-                        max_tokens,
-                        seed,
-                    },
-                )
-                .await
-            }
-            Self::Nvidia(adapter) => {
-                render_final_with_adapter(
-                    adapter,
-                    FinalRenderCall {
-                        provider: "nvidia",
-                        requested_model,
-                        task,
-                        artifact,
-                        verdict,
-                        max_tokens,
-                        seed,
-                    },
-                )
-                .await
-            }
-            #[cfg(test)]
-            Self::Test(adapter) => {
-                render_final_with_adapter(
-                    adapter,
-                    FinalRenderCall {
-                        provider: "groq",
-                        requested_model,
-                        task,
-                        artifact,
-                        verdict,
-                        max_tokens,
-                        seed,
-                    },
-                )
-                .await
-            }
-        }
-    }
     async fn render_final_traced(
         &self,
         call: FinalRenderCall<'_>,
@@ -1067,17 +1067,9 @@ impl LiveGenerator {
                 self.provider_label(),
                 call.requested_model,
             );
-            render_final_with_adapter(&adapter, call).await
+            render_final_with_adapter_budgeted(&adapter, call, trace.limits).await
         } else {
-            self.render_final(
-                call.task,
-                call.artifact,
-                call.verdict,
-                call.max_tokens,
-                call.seed,
-                call.requested_model,
-            )
-            .await
+            render_final_with_adapter_budgeted(self.adapter(), call, trace.limits).await
         }
     }
 }
@@ -1141,6 +1133,7 @@ fn parse_single_typed_json<T: DeserializeOwned>(
     }
 }
 
+#[cfg(test)]
 async fn run_structured_json_call<T: DeserializeOwned>(
     adapter: &dyn ModelAdapter,
     provider: &'static str,
@@ -1148,6 +1141,19 @@ async fn run_structured_json_call<T: DeserializeOwned>(
     request: ModelRequest,
 ) -> Result<(T, GenerationObservation), GenerationFailure> {
     let recording = generation_usage::RecordingAdapter::new(adapter);
+    let result =
+        run_structured_json_call_inner(&recording, provider, requested_model, request).await;
+    recording.finish(result)
+}
+
+async fn run_structured_json_call_budgeted<T: DeserializeOwned>(
+    adapter: &dyn ModelAdapter,
+    provider: &'static str,
+    requested_model: &str,
+    request: ModelRequest,
+    limits: usage_budget::GenerationLimits,
+) -> Result<(T, GenerationObservation), GenerationFailure> {
+    let recording = generation_usage::RecordingAdapter::with_limits(adapter, limits);
     let result =
         run_structured_json_call_inner(&recording, provider, requested_model, request).await;
     recording.finish(result)
@@ -1485,8 +1491,8 @@ async fn run_structured_json_call_inner<T: DeserializeOwned>(
     }
 }
 
-async fn generate_with_adapter<A: ModelAdapter>(
-    adapter: &A,
+async fn generate_with_adapter(
+    adapter: &dyn ModelAdapter,
     provider: &'static str,
     requested_model: &str,
     input: &HarnessInput,
@@ -1506,8 +1512,58 @@ async fn generate_with_adapter<A: ModelAdapter>(
     recording.finish(result)
 }
 
-async fn generate_with_adapter_inner<A: ModelAdapter>(
-    adapter: &A,
+async fn generate_with_adapter_budgeted(
+    adapter: &dyn ModelAdapter,
+    provider: &'static str,
+    requested_model: &str,
+    input: &HarnessInput,
+    max_tokens: u32,
+    seed: Option<u64>,
+    limits: usage_budget::GenerationLimits,
+) -> Result<(ReasoningCandidate, GenerationObservation), GenerationFailure> {
+    let recording = generation_usage::RecordingAdapter::with_limits(adapter, limits);
+    let result = generate_with_adapter_inner(
+        &recording,
+        provider,
+        requested_model,
+        input,
+        max_tokens,
+        seed,
+    )
+    .await;
+    recording.finish(result)
+}
+
+fn candidate_generation_request(
+    input: &HarnessInput,
+    max_tokens: u32,
+    seed: Option<u64>,
+    json_fallback: bool,
+) -> Result<ModelRequest, serde_json::Error> {
+    let mut request = build_candidate_request(input, Some(max_tokens), seed)?;
+    let ModelOutputFormat::JsonSchema { schema, .. } = &mut request.output_format else {
+        unreachable!("candidate builder must supply its model-facing schema");
+    };
+    *schema = serde_json::to_value(schema_for!(ModelCandidate))?;
+    let schema_text = serde_json::to_string_pretty(schema)?;
+    const SHAPE: &str = "Return a candidate instance, not a JSON Schema or an example wrapper. The top-level object must include a claims array. If you cannot propose any claims, explicitly return claims: [].";
+    request.system = Some(format!(
+        "{}\n{SHAPE}",
+        request.system.as_deref().unwrap_or_default()
+    ));
+    request.task.push_str(&format!("\n\n{SHAPE}"));
+    if json_fallback {
+        request.output_format = ModelOutputFormat::JsonObject;
+        request.task = format!(
+            "JSON Schema:\n{schema_text}\n\n{}\n\nReturn exactly one JSON object conforming to the schema and no prose.",
+            request.task
+        );
+    }
+    Ok(request)
+}
+
+async fn generate_with_adapter_inner(
+    adapter: &dyn ModelAdapter,
     provider: &'static str,
     requested_model: &str,
     input: &HarnessInput,
@@ -1515,14 +1571,15 @@ async fn generate_with_adapter_inner<A: ModelAdapter>(
     seed: Option<u64>,
 ) -> Result<(ReasoningCandidate, GenerationObservation), GenerationFailure> {
     let started = Instant::now();
-    let request = build_candidate_request(input, Some(max_tokens), seed).map_err(|error| {
-        generation_failure(
-            provider,
-            requested_model,
-            started,
-            ModelError::new(ModelErrorKind::Protocol, error.to_string()),
-        )
-    })?;
+    let request =
+        candidate_generation_request(input, max_tokens, seed, false).map_err(|error| {
+            generation_failure(
+                provider,
+                requested_model,
+                started,
+                ModelError::new(ModelErrorKind::Protocol, error.to_string()),
+            )
+        })?;
     let first = adapter
         .generate(request)
         .await
@@ -1538,8 +1595,8 @@ async fn generate_with_adapter_inner<A: ModelAdapter>(
             (candidate, first.clone(), first.provider_attempts, usage)
         }
         Err(first_error) => {
-            let fallback = build_candidate_json_fallback_request(input, Some(max_tokens), seed)
-                .map_err(|error| {
+            let fallback =
+                candidate_generation_request(input, max_tokens, seed, true).map_err(|error| {
                     generation_failure(
                         provider,
                         requested_model,
@@ -1620,8 +1677,9 @@ struct FinalRenderCall<'a> {
     seed: Option<u64>,
 }
 
-async fn render_final_with_adapter<A: ModelAdapter>(
-    adapter: &A,
+#[cfg(test)]
+async fn render_final_with_adapter(
+    adapter: &dyn ModelAdapter,
     call: FinalRenderCall<'_>,
 ) -> Result<(FinalAnswerCandidate, GenerationObservation), GenerationFailure> {
     let recording = generation_usage::RecordingAdapter::new(adapter);
@@ -1629,8 +1687,18 @@ async fn render_final_with_adapter<A: ModelAdapter>(
     recording.finish(result)
 }
 
-async fn render_final_with_adapter_inner<A: ModelAdapter>(
-    adapter: &A,
+async fn render_final_with_adapter_budgeted(
+    adapter: &dyn ModelAdapter,
+    call: FinalRenderCall<'_>,
+    limits: usage_budget::GenerationLimits,
+) -> Result<(FinalAnswerCandidate, GenerationObservation), GenerationFailure> {
+    let recording = generation_usage::RecordingAdapter::with_limits(adapter, limits);
+    let result = render_final_with_adapter_inner(&recording, call).await;
+    recording.finish(result)
+}
+
+async fn render_final_with_adapter_inner(
+    adapter: &dyn ModelAdapter,
     call: FinalRenderCall<'_>,
 ) -> Result<(FinalAnswerCandidate, GenerationObservation), GenerationFailure> {
     let FinalRenderCall {
@@ -1818,8 +1886,116 @@ fn format_generation_failure(failure: &GenerationFailure) -> String {
     )
 }
 
+// Model-only DTOs keep a closed response contract. Stored/public candidates
+// retain their legacy defaults and serialization contract in the core crate.
+#[derive(Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct ModelCandidate {
+    claims: Vec<ModelCandidateClaim>,
+    #[serde(default)]
+    inferences: Vec<ModelCandidateInference>,
+}
+
+#[derive(Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct ModelCandidateClaim {
+    id: String,
+    statement: String,
+    proposed_state: reasoning_harness_core::EpistemicState,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    proposition: Option<ModelCandidateProposition>,
+    #[serde(default)]
+    evidence_ids: Vec<String>,
+}
+
+#[derive(Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct ModelCandidateProposition {
+    key: String,
+    value: String,
+}
+
+#[derive(Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct ModelCandidateInference {
+    id: String,
+    #[serde(default)]
+    premise_claim_ids: Vec<String>,
+    conclusion_claim_id: String,
+    method: String,
+}
+
 fn parse_candidate_json(text: &str) -> Result<(ReasoningCandidate, bool), serde_json::Error> {
-    parse_single_typed_json(text)
+    // Serde's derived struct decoder also accepts positional JSON arrays. The
+    // model-facing schema requires objects, so enforce that boundary before
+    // typed decoding (which still detects duplicate and unknown fields).
+    let (wire, _) = parse_single_typed_json::<serde_json::Value>(text)?;
+    let invalid_object = || {
+        <serde_json::Error as serde::de::Error>::custom(
+            "model candidate and its claim, proposition, and inference entries must be JSON objects",
+        )
+    };
+    let object = wire.as_object().ok_or_else(invalid_object)?;
+    if let Some(claims) = object.get("claims").and_then(serde_json::Value::as_array) {
+        for claim in claims {
+            let claim = claim.as_object().ok_or_else(invalid_object)?;
+            // Serde unit enums also accept singleton maps, although the
+            // model-facing epistemic-state schema only permits strings.
+            if let Some(state) = claim.get("proposed_state")
+                && !state.is_string()
+            {
+                return Err(<serde_json::Error as serde::de::Error>::custom(
+                    "model candidate proposed_state must be a JSON string",
+                ));
+            }
+            if let Some(proposition) = claim.get("proposition")
+                && !proposition.is_null()
+                && !proposition.is_object()
+            {
+                return Err(invalid_object());
+            }
+        }
+    }
+    if let Some(inferences) = object
+        .get("inferences")
+        .and_then(serde_json::Value::as_array)
+    {
+        for inference in inferences {
+            if !inference.is_object() {
+                return Err(invalid_object());
+            }
+        }
+    }
+    let (candidate, normalized) = parse_single_typed_json::<ModelCandidate>(text)?;
+    Ok((
+        ReasoningCandidate {
+            claims: candidate
+                .claims
+                .into_iter()
+                .map(|claim| reasoning_harness_core::CandidateClaim {
+                    id: claim.id,
+                    statement: claim.statement,
+                    proposed_state: claim.proposed_state,
+                    proposition: claim.proposition.map(|proposition| Proposition {
+                        key: proposition.key,
+                        value: proposition.value,
+                    }),
+                    evidence_ids: claim.evidence_ids,
+                })
+                .collect(),
+            inferences: candidate
+                .inferences
+                .into_iter()
+                .map(|inference| reasoning_harness_core::Inference {
+                    id: inference.id,
+                    premise_claim_ids: inference.premise_claim_ids,
+                    conclusion_claim_id: inference.conclusion_claim_id,
+                    method: inference.method,
+                })
+                .collect(),
+        },
+        normalized,
+    ))
 }
 
 #[derive(Debug, Subcommand)]
@@ -3181,25 +3357,64 @@ async fn apply_natural_answer_safety(
     for (index, target) in targets.iter().enumerate() {
         let target_seed = seed.and_then(|seed| seed.checked_add(index as u64));
         let safety_max_tokens = usage.cap_next_model_tokens(max_tokens.min(128))?;
-        let observation = run_answer_safety_gate(
-            profile,
+        let recording = generation_usage::RecordingAdapter::with_limits(
             generator.adapter(),
+            usage.generation_limits(),
+        );
+        let result = run_answer_safety_gate(
+            profile,
+            &recording,
             model,
             target,
             artifact,
             safety_max_tokens,
             target_seed,
         )
-        .await
-        .map_err(|error| {
-            CliError::new(
-                answer_safety_error_class(&error),
-                format!(
+        .await;
+        let mut observation = match result {
+            Ok(observation) => observation,
+            Err(error) => {
+                let class = answer_safety_error_class(&error);
+                let message = format!(
                     "answer safety gate failed for {}={}: {error}",
                     target.key, target.value
-                ),
-            )
-        })?;
+                );
+                let failure = recording
+                    .finish::<()>(Err(GenerationFailure {
+                        usage: None,
+                        provider: generator.provider_label(),
+                        model: model.to_string(),
+                        latency_ms: 0,
+                        provider_attempts: 0,
+                        failure_class: class,
+                        message,
+                    }))
+                    .unwrap_err();
+                if failure.provider_attempts > 0 {
+                    usage.record_failure(&failure)?;
+                }
+                return Err(CliError::new(failure.failure_class, failure.message));
+            }
+        };
+        // The core response can omit a failed capability attempt's unknown
+        // usage. The recording adapter accounts for every actual attempt.
+        if let Some(sufficiency) = observation.sufficiency.as_mut() {
+            let (_, recorded) = recording
+                .finish(Ok((
+                    (),
+                    GenerationObservation {
+                        provider: generator.provider_label(),
+                        model: model.to_string(),
+                        usage: ModelUsage::default(),
+                        latency_ms: observation.latency_ms,
+                        provider_attempts: 0,
+                        cost_usd: None,
+                    },
+                )))
+                .expect("a successful safety observation remains successful");
+            sufficiency.usage = recorded.usage;
+            sufficiency.provider_attempts = recorded.provider_attempts;
+        }
         if observation.disposition == AnswerSafetyDisposition::ForceVerification {
             blocked.push(target.clone());
         }
@@ -3468,12 +3683,16 @@ async fn run_natural_investigation(
             .wait_for_provider(
                 "waiting on the selected provider for an investigation plan",
                 generator.plan_investigation_traced(
-                    task,
-                    &descriptors,
-                    plan_max_tokens,
-                    seed,
-                    model,
+                    InvestigationPlanGenerationCall {
+                        task,
+                        capabilities: &descriptors,
+                        max_targets: config.policy.max_targets,
+                        max_tokens: plan_max_tokens,
+                        seed,
+                        requested_model: model,
+                    },
                     DiagnosticTraceCall {
+                        limits: usage.generation_limits(),
                         recorder: trace.as_deref_mut(),
                         phase: DiagnosticPhase::new("investigation_plan", None),
                     },
@@ -3620,6 +3839,7 @@ async fn run_natural_investigation(
                                     requested_model: model,
                                 },
                                 DiagnosticTraceCall {
+                                    limits: usage.generation_limits(),
                                     recorder: trace.as_deref_mut(),
                                     phase: DiagnosticPhase::new(
                                         "investigation_intent",
@@ -3669,6 +3889,7 @@ async fn run_natural_investigation(
                                 action_seed,
                                 model,
                                 DiagnosticTraceCall {
+                                    limits: usage.generation_limits(),
                                     recorder: trace.as_deref_mut(),
                                     phase: DiagnosticPhase::new(
                                         "investigation_action",
@@ -3848,6 +4069,7 @@ async fn run_natural_investigation(
                         regeneration_seed,
                         model,
                         DiagnosticTraceCall {
+                            limits: usage.generation_limits(),
                             recorder: trace.as_deref_mut(),
                             phase: regeneration_phase,
                         },
@@ -4232,8 +4454,11 @@ async fn execute_natural_inner(
     if let (Some(path), Some(trace)) = (diagnostic_trace_path, diagnostic_trace.as_mut()) {
         trace.preserve_on_exit(path, failure_context.clone());
     }
-    let generator = make_generator(provider, &model)
+    let mut generator = make_generator(provider, &model)
         .map_err(|error| CliError::new(error.failure_class, error.message))?;
+    generator.set_single_provider_attempt(
+        usage_budget.max_output_tokens.is_some() || usage_budget.max_total_tokens.is_some(),
+    );
     let mut usage_tracker =
         usage_budget::UsageTracker::new(usage_budget, args.session_usage_baseline.clone())?;
     usage_tracker.preserve_on_exit(failure_context.clone());
@@ -4260,6 +4485,7 @@ async fn execute_natural_inner(
                 args.seed,
                 &model,
                 DiagnosticTraceCall {
+                    limits: usage_tracker.generation_limits(),
                     recorder: diagnostic_trace.as_mut(),
                     phase: initial_generation_phase,
                 },
@@ -4516,6 +4742,7 @@ async fn execute_natural_inner(
                         seed: args.seed,
                     },
                     DiagnosticTraceCall {
+                        limits: usage_tracker.generation_limits(),
                         recorder: diagnostic_trace.as_mut(),
                         phase: final_render_phase,
                     },
@@ -10237,6 +10464,56 @@ mod candidate_json_tests {
     }
 
     #[test]
+    fn model_candidate_requires_claims_without_changing_public_defaults() {
+        for text in [
+            "{}",
+            "[[]]",
+            "[[],[]]",
+            r#"{"inferences":[]}"#,
+            r#"{"type":"object","properties":{"claims":{"type":"array"}}}"#,
+            r#"{"candidate":{"claims":[]}}"#,
+            r#"{"claims":null}"#,
+            r#"{"claims":[["c","value","unknown"]]}"#,
+            r#"{"claims":[{"id":"c","statement":"value","proposed_state":{"unknown":null}}]}"#,
+            r#"{"claims":[{"id":"c","statement":"value","proposed_state":"unknown","proposition":["key","value"]}]}"#,
+            r#"{"claims":[],"inferences":[["i",[],"c","fixture"]]}"#,
+        ] {
+            assert!(parse_candidate_json(text).is_err(), "{text}");
+        }
+        assert_eq!(
+            serde_json::from_str::<ReasoningCandidate>("{}").unwrap(),
+            ReasoningCandidate::default()
+        );
+        let (candidate, normalized) = parse_candidate_json(r#"{"claims":[]}"#).unwrap();
+        assert_eq!(candidate, ReasoningCandidate::default());
+        assert!(!normalized);
+    }
+
+    #[test]
+    fn model_candidate_rejects_unknown_nested_fields_without_repair() {
+        let valid = serde_json::json!({"claims":[{"id":"c","statement":"unknown value","proposed_state":"unknown","proposition":{"key":"value","value":"4"},"evidence_ids":[]}],"inferences":[{"id":"i","premise_claim_ids":["c"],"conclusion_claim_id":"c","method":"fixture"}]});
+        let (parsed, _) = parse_candidate_json(&valid.to_string()).unwrap();
+        assert_eq!(parsed, serde_json::from_value(valid.clone()).unwrap());
+        for (path, field) in [
+            ("", "candidate"),
+            ("/claims/0", "evidence_ids'"),
+            ("/claims/0", "proposition'"),
+            ("/claims/0/proposition", "value'"),
+            ("/inferences/0", "premise_claim_ids'"),
+        ] {
+            let mut wrong = valid.clone();
+            wrong
+                .pointer_mut(path)
+                .unwrap()
+                .as_object_mut()
+                .unwrap()
+                .insert(field.into(), serde_json::json!([]));
+            assert!(parse_candidate_json(&wrong.to_string()).is_err(), "{wrong}");
+        }
+        assert!(parse_candidate_json(r#"{"claims":[],"claims":[]}"#).is_err());
+    }
+
+    #[test]
     fn rejects_multiple_json_candidate_values() {
         let text = r#"{"claims":[],"inferences":[]}
 {"claims":[],"inferences":[]}"#;
@@ -12539,6 +12816,7 @@ mod candidate_json_tests {
 
     struct StructuredCapabilityFallbackAdapter {
         calls: std::sync::Mutex<Vec<ModelOutputFormat>>,
+        requests: Arc<std::sync::Mutex<Vec<ModelRequest>>>,
         responses:
             std::sync::Mutex<VecDeque<Result<reasoning_harness_core::ModelResponse, ModelError>>>,
     }
@@ -12551,6 +12829,7 @@ mod candidate_json_tests {
         ) -> Self {
             Self {
                 calls: std::sync::Mutex::new(Vec::new()),
+                requests: Arc::default(),
                 responses: std::sync::Mutex::new(responses.into_iter().collect()),
             }
         }
@@ -12609,10 +12888,231 @@ mod candidate_json_tests {
                     + 'a,
             >,
         > {
+            self.requests.lock().unwrap().push(request.clone());
             self.calls.lock().unwrap().push(request.output_format);
             let response = self.responses.lock().unwrap().pop_front().unwrap();
             Box::pin(async move { response })
         }
+    }
+
+    #[tokio::test]
+    async fn planner_requests_carry_effective_target_bounds_with_or_without_trace() {
+        for traced in [false, true] {
+            for max_targets in [1, 3, InvestigationPolicy::default().max_targets] {
+                let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+                    StructuredCapabilityFallbackAdapter::response(
+                        r#"{"targets":[{"id":"target","question":"What is the value?"}]}"#,
+                        1,
+                    ),
+                ]);
+                let requests = adapter.requests.clone();
+                let generator = LiveGenerator::Test(DiagnosticTestAdapter(Box::new(adapter)));
+                let mut trace = DiagnosticTraceRecorder::new("groq", "test-model", Some(2));
+                let (plan, _) = generator
+                    .plan_investigation_traced(
+                        InvestigationPlanGenerationCall {
+                            task: "investigate",
+                            capabilities: &[],
+                            max_targets,
+                            max_tokens: 192,
+                            seed: Some(2),
+                            requested_model: "test-model",
+                        },
+                        DiagnosticTraceCall {
+                            limits: usage_budget::GenerationLimits::default(),
+                            recorder: traced.then_some(&mut trace),
+                            phase: DiagnosticPhase::new("investigation_plan", None),
+                        },
+                    )
+                    .await
+                    .unwrap();
+                assert_eq!(plan.targets.len(), 1);
+                let requests = requests.lock().unwrap();
+                assert_eq!(requests.len(), 1);
+                let request = &requests[0];
+                let ModelOutputFormat::JsonSchema { schema, .. } = &request.output_format else {
+                    panic!("expected planner schema");
+                };
+                assert_eq!(schema["properties"]["targets"]["minItems"], 1);
+                assert_eq!(schema["properties"]["targets"]["maxItems"], max_targets);
+                let bounds = format!("between 1 and {max_targets} investigation targets");
+                assert!(request.task.contains(&bounds));
+                assert!(request.system.as_ref().unwrap().contains(&bounds));
+                assert_eq!(request.max_tokens, Some(192));
+                assert_eq!(request.random_seed, Some(2));
+            }
+        }
+    }
+
+    #[tokio::test]
+    async fn planner_json_fallback_keeps_target_bounds_and_exact_key_constraints() {
+        let cap = InvestigationCapability {
+            id: "a".into(),
+            adapter: "fixture".into(),
+            read_only: true,
+            selection_priority: None,
+            supported_fact_keys: ["value".to_string()].into_iter().collect(),
+        };
+        let mut second = cap.clone();
+        second.id = "b".into();
+        let adapter = StructuredCapabilityFallbackAdapter::new(
+            r#"{"targets":[{"id":"target","question":"What is the value?","expected_fact_key":"value"}]}"#,
+        );
+        let requests = adapter.requests.clone();
+        let generator = LiveGenerator::Test(DiagnosticTestAdapter(Box::new(adapter)));
+        generator
+            .plan_investigation(InvestigationPlanGenerationCall {
+                task: "investigate",
+                capabilities: &[cap, second],
+                max_targets: 3,
+                max_tokens: 192,
+                seed: Some(2),
+                requested_model: "test-model",
+            })
+            .await
+            .unwrap();
+        let requests = requests.lock().unwrap();
+        assert_eq!(requests.len(), 2);
+        let ModelOutputFormat::JsonSchema { schema, .. } = &requests[0].output_format else {
+            panic!("expected planner schema");
+        };
+        assert!(schema.to_string().contains("\"enum\":[\"value\"]"));
+        assert_eq!(requests[1].output_format, ModelOutputFormat::JsonObject);
+        assert!(requests[1].task.contains("\"maxItems\": 3"));
+        assert!(
+            requests[1]
+                .task
+                .contains("between 1 and 3 investigation targets")
+        );
+    }
+
+    #[tokio::test]
+    async fn planner_still_rejects_invalid_plans_before_acquisition() {
+        for (response, max_targets, expected_rejection) in [
+            (r#"{"targets":[]}"#, 1, "invalid_target_count"),
+            (COVERAGE_PLAN, 1, "invalid_target_count"),
+            (
+                r#"{"targets":[{"id":"duplicate","question":"First facet"},{"id":"duplicate","question":"Second facet"}]}"#,
+                3,
+                "invalid_target_identity",
+            ),
+        ] {
+            let (input, candidate, mut config) = coverage_fixture(false, false);
+            config.policy.max_targets = max_targets;
+            let initial_outcome = run_standard_grounding(input.clone(), candidate.clone()).unwrap();
+            let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+                StructuredCapabilityFallbackAdapter::response(response, 1),
+            ]);
+            let requests = adapter.requests.clone();
+            let generator = LiveGenerator::Test(DiagnosticTestAdapter(Box::new(adapter)));
+            let mut usage =
+                usage_budget::UsageTracker::new(usage_budget::UsageBudget::default(), None)
+                    .unwrap();
+            let result = run_natural_investigation(NaturalInvestigationCall {
+                task: &input.task.clone(),
+                input,
+                candidate,
+                initial_outcome,
+                generator: &generator,
+                trace: None,
+                config: &config,
+                model: "test-model",
+                max_tokens: 512,
+                seed: None,
+                usage: &mut usage,
+                progress: &progress::ProgressReporter::new(OutputFormat::Json, false, true),
+                cancellation: &SubprocessCancellation::default(),
+                seed_coverage: None,
+                failure_context: &Arc::default(),
+            })
+            .await
+            .unwrap();
+            assert_eq!(
+                result.observation.plan_rejection.as_deref(),
+                Some(expected_rejection)
+            );
+            assert!(result.resolution_rounds.is_empty());
+            assert!(result.outcome.artifact.evidence.is_empty());
+            assert_eq!(requests.lock().unwrap().len(), 1);
+        }
+    }
+
+    #[tokio::test]
+    async fn candidate_schema_echo_uses_existing_fallback_and_preserves_explicit_abstention() {
+        let input = HarnessInput {
+            task: "unknown value".into(),
+            ..Default::default()
+        };
+        for first in [
+            r#"{"type":"object","properties":{"claims":{"type":"array"}}}"#,
+            r#"{"claims":[{"id":"c","statement":"unknown","proposed_state":"unknown","evidence_ids'":[]}]}"#,
+            "[[]]",
+            r#"{"claims":[["c","unknown","unknown"]]}"#,
+            r#"{"claims":[{"id":"c","statement":"unknown","proposed_state":{"unknown":null}}]}"#,
+        ] {
+            let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+                StructuredCapabilityFallbackAdapter::response(first, 1),
+                StructuredCapabilityFallbackAdapter::response(r#"{"claims":[]}"#, 1),
+            ]);
+            let (candidate, observation) =
+                generate_with_adapter(&adapter, "mistral", "test-model", &input, 192, Some(2))
+                    .await
+                    .unwrap();
+            assert_eq!(candidate, ReasoningCandidate::default());
+            assert_eq!(observation.provider_attempts, 2);
+            let requests = adapter.requests.lock().unwrap();
+            assert_eq!(requests.len(), 2);
+            let ModelOutputFormat::JsonSchema { schema, .. } = &requests[0].output_format else {
+                panic!("expected candidate schema");
+            };
+            assert!(
+                schema["required"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|field| field == "claims")
+            );
+            assert_eq!(schema["additionalProperties"], false);
+            assert_eq!(
+                schema["$defs"]["ModelCandidateClaim"]["additionalProperties"],
+                false
+            );
+            assert_eq!(requests[1].output_format, ModelOutputFormat::JsonObject);
+            assert!(
+                requests[1]
+                    .task
+                    .contains(&serde_json::to_string_pretty(schema).unwrap())
+            );
+            assert_eq!(requests[1].max_tokens, Some(192));
+            assert_eq!(requests[1].random_seed, Some(2));
+        }
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::response(r#"{"claims":[]}"#, 1),
+        ]);
+        generate_with_adapter(&adapter, "mistral", "test-model", &input, 192, Some(2))
+            .await
+            .unwrap();
+        assert_eq!(adapter.requests.lock().unwrap().len(), 1);
+    }
+
+    #[tokio::test]
+    async fn malformed_candidate_fallback_stays_a_protocol_failure() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::response("{}", 1),
+            StructuredCapabilityFallbackAdapter::response(r#"{"candidate":{"claims":[]}}"#, 1),
+        ]);
+        let error = generate_with_adapter(
+            &adapter,
+            "mistral",
+            "test-model",
+            &HarnessInput::default(),
+            192,
+            None,
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(error.failure_class, "protocol");
+        assert_eq!(adapter.requests.lock().unwrap().len(), 2);
     }
 
     #[tokio::test]
@@ -12859,6 +13359,263 @@ mod candidate_json_tests {
             provider_attempts: 1,
             finish_reason: Some("stop".into()),
         })
+    }
+
+    #[tokio::test]
+    async fn budgeted_candidate_fallback_caps_remaining_and_preserves_usage() {
+        for traced in [false, true] {
+            let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+                metered_response("{}", 3, 4),
+                metered_response(r#"{"claims":[]}"#, 3, 1),
+            ]);
+            let requests = adapter.requests.clone();
+            let generator = LiveGenerator::Test(DiagnosticTestAdapter(Box::new(adapter)));
+            let mut trace = DiagnosticTraceRecorder::new("groq", "test-model", None);
+            let (candidate, observed) = generator
+                .generate_traced(
+                    &HarnessInput::default(),
+                    5,
+                    None,
+                    "test-model",
+                    DiagnosticTraceCall {
+                        limits: usage_budget::GenerationLimits {
+                            output: Some(5),
+                            total: None,
+                        },
+                        recorder: traced.then_some(&mut trace),
+                        phase: DiagnosticPhase::new("initial_generation", None),
+                    },
+                )
+                .await
+                .unwrap();
+            assert_eq!(candidate, ReasoningCandidate::default());
+            assert_eq!(observed.usage.output_tokens, Some(5));
+            assert_eq!(observed.provider_attempts, 2);
+            let requests = requests.lock().unwrap();
+            assert_eq!(
+                requests.iter().map(|r| r.max_tokens).collect::<Vec<_>>(),
+                vec![Some(5), Some(1)]
+            );
+        }
+    }
+
+    #[tokio::test]
+    async fn budgeted_fallback_stops_for_exhausted_or_unknown_usage() {
+        for (first, limits, class) in [
+            (
+                metered_response("{}", 1, 5),
+                usage_budget::GenerationLimits {
+                    output: Some(5),
+                    total: None,
+                },
+                "usage_budget_exceeded",
+            ),
+            (
+                StructuredCapabilityFallbackAdapter::response("{}", 1),
+                usage_budget::GenerationLimits {
+                    output: Some(5),
+                    total: None,
+                },
+                "usage_budget_unmeasurable",
+            ),
+            (
+                metered_response("{}", 6, 4),
+                usage_budget::GenerationLimits {
+                    output: None,
+                    total: Some(10),
+                },
+                "usage_budget_exceeded",
+            ),
+        ] {
+            let adapter = StructuredCapabilityFallbackAdapter::with_responses([first]);
+            let failure = generate_with_adapter_budgeted(
+                &adapter,
+                "test",
+                "model",
+                &HarnessInput::default(),
+                5,
+                None,
+                limits,
+            )
+            .await
+            .unwrap_err();
+            assert_eq!(failure.failure_class, class);
+            assert_eq!(failure.provider_attempts, 1);
+            assert_eq!(adapter.requests.lock().unwrap().len(), 1);
+        }
+    }
+
+    #[tokio::test]
+    async fn budgeted_planner_and_renderer_share_remaining_allowance() {
+        let limits = usage_budget::GenerationLimits {
+            output: Some(5),
+            total: None,
+        };
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            metered_response("{", 2, 4),
+            metered_response(r#"{"targets":[]}"#, 2, 1),
+        ]);
+        let request = build_investigation_plan_request("test", &[], Some(5), None).unwrap();
+        let (_, observation): (InvestigationPlanProposal, _) =
+            run_structured_json_call_budgeted(&adapter, "test", "model", request, limits)
+                .await
+                .unwrap();
+        assert_eq!(observation.usage.output_tokens, Some(5));
+        assert_eq!(
+            adapter
+                .requests
+                .lock()
+                .unwrap()
+                .iter()
+                .map(|r| r.max_tokens)
+                .collect::<Vec<_>>(),
+            vec![Some(5), Some(1)]
+        );
+
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            metered_response("{", 2, 4),
+            metered_response(r#"{"text":"No answer.","factual_claims":[]}"#, 2, 1),
+        ]);
+        let artifact = ReasoningArtifact::default();
+        let (_, observation) = render_final_with_adapter_budgeted(
+            &adapter,
+            FinalRenderCall {
+                provider: "test",
+                requested_model: "model",
+                task: "test",
+                artifact: &artifact,
+                verdict: Verdict::Unknown,
+                max_tokens: 5,
+                seed: None,
+            },
+            limits,
+        )
+        .await
+        .unwrap();
+        assert_eq!(observation.usage.output_tokens, Some(5));
+        assert_eq!(
+            adapter
+                .requests
+                .lock()
+                .unwrap()
+                .iter()
+                .map(|r| r.max_tokens)
+                .collect::<Vec<_>>(),
+            vec![Some(5), Some(1)]
+        );
+    }
+
+    #[tokio::test]
+    async fn budgeted_local_capability_refusal_still_allows_fallback() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::capability_failure("local capability refusal", 0),
+            metered_response(r#"{"targets":[]}"#, 2, 4),
+        ]);
+        let request = build_investigation_plan_request("test", &[], Some(5), None).unwrap();
+        let (_, observation): (InvestigationPlanProposal, _) = run_structured_json_call_budgeted(
+            &adapter,
+            "test",
+            "model",
+            request,
+            usage_budget::GenerationLimits {
+                output: Some(5),
+                total: None,
+            },
+        )
+        .await
+        .unwrap();
+        assert_eq!(observation.usage.output_tokens, Some(4));
+        assert_eq!(observation.provider_attempts, 1);
+        assert_eq!(adapter.requests.lock().unwrap().len(), 2);
+
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::capability_failure("remote capability refusal", 1),
+        ]);
+        let request = build_investigation_plan_request("test", &[], Some(5), None).unwrap();
+        let failure = run_structured_json_call_budgeted::<InvestigationPlanProposal>(
+            &adapter,
+            "test",
+            "model",
+            request,
+            usage_budget::GenerationLimits {
+                output: Some(5),
+                total: None,
+            },
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(failure.failure_class, "usage_budget_unmeasurable");
+        assert_eq!(failure.provider_attempts, 1);
+        assert_eq!(adapter.requests.lock().unwrap().len(), 1);
+    }
+
+    #[tokio::test]
+    async fn budgeted_safety_failure_keeps_first_attempt_usage() {
+        let target = Proposition {
+            key: "deployment.safe".into(),
+            value: "true".into(),
+        };
+        let artifact = ReasoningArtifact {
+            task: "Decide whether deployment is safe.".into(),
+            evidence: vec![reasoning_harness_core::Evidence {
+                id: "e1".into(),
+                source: "fixture".into(),
+                observation: "deployment checks passed".into(),
+                facts: std::collections::BTreeMap::from([(
+                    "deployment.safe".into(),
+                    "true".into(),
+                )]),
+                metadata: Default::default(),
+            }],
+            ..Default::default()
+        };
+        let rendered = FinalAnswerCandidate {
+            text: "safe".into(),
+            factual_claims: vec![reasoning_harness_core::FinalAnswerClaim {
+                proposition: target,
+                mode: FinalClaimMode::Grounded,
+            }],
+        };
+        let baseline = FinalizationResult {
+            status: FinalizationStatus::GroundedAnswer,
+            text: Some("safe".into()),
+            factual_claims: 1,
+            covered_claims: 1,
+            factual_claim_coverage: 1.0,
+            uncovered_propositions: vec![],
+        };
+        let adapter =
+            StructuredCapabilityFallbackAdapter::with_responses([metered_response("{", 6, 5)]);
+        let requests = adapter.requests.clone();
+        let generator = LiveGenerator::Test(DiagnosticTestAdapter(Box::new(adapter)));
+        let mut usage = usage_budget::UsageTracker::new(
+            usage_budget::UsageBudget {
+                max_output_tokens: Some(5),
+                ..Default::default()
+            },
+            None,
+        )
+        .unwrap();
+        let error = apply_natural_answer_safety(NaturalAnswerSafetyCall {
+            profile: AnswerSafetyProfile::D3SufficiencyV1,
+            generator: &generator,
+            model: "test-model",
+            artifact: &artifact,
+            rendered: &rendered,
+            baseline,
+            max_tokens: 5,
+            seed: None,
+            render_round: 1,
+            usage: &mut usage,
+        })
+        .await
+        .unwrap_err();
+        assert_eq!(error.failure_class, "usage_budget_exceeded");
+        assert_eq!(requests.lock().unwrap().len(), 1);
+        let totals = usage.report().run;
+        assert_eq!(totals.output_tokens, Some(5));
+        assert_eq!(totals.provider_attempts, 1);
+        assert_eq!(totals.model_calls, 1);
     }
 
     #[tokio::test]

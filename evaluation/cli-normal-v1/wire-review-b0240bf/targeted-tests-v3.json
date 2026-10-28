@@ -1,0 +1,97 @@
+[
+  {
+    "test": "candidate_schema_echo_uses_existing_fallback_and_preserves_explicit_abstention",
+    "exit_code": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--offline",
+      "--locked",
+      "--target-dir",
+      "target/cli-normal-tests",
+      "-p",
+      "reasoning-harness-cli",
+      "--bin",
+      "reason",
+      "candidate_json_tests::candidate_schema_echo_uses_existing_fallback_and_preserves_explicit_abstention",
+      "--",
+      "--exact"
+    ]
+  },
+  {
+    "test": "malformed_candidate_fallback_stays_a_protocol_failure",
+    "exit_code": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--offline",
+      "--locked",
+      "--target-dir",
+      "target/cli-normal-tests",
+      "-p",
+      "reasoning-harness-cli",
+      "--bin",
+      "reason",
+      "candidate_json_tests::malformed_candidate_fallback_stays_a_protocol_failure",
+      "--",
+      "--exact"
+    ]
+  },
+  {
+    "test": "planner_requests_carry_effective_target_bounds_with_or_without_trace",
+    "exit_code": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--offline",
+      "--locked",
+      "--target-dir",
+      "target/cli-normal-tests",
+      "-p",
+      "reasoning-harness-cli",
+      "--bin",
+      "reason",
+      "candidate_json_tests::planner_requests_carry_effective_target_bounds_with_or_without_trace",
+      "--",
+      "--exact"
+    ]
+  },
+  {
+    "test": "planner_json_fallback_keeps_target_bounds_and_exact_key_constraints",
+    "exit_code": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--offline",
+      "--locked",
+      "--target-dir",
+      "target/cli-normal-tests",
+      "-p",
+      "reasoning-harness-cli",
+      "--bin",
+      "reason",
+      "candidate_json_tests::planner_json_fallback_keeps_target_bounds_and_exact_key_constraints",
+      "--",
+      "--exact"
+    ]
+  },
+  {
+    "test": "planner_still_rejects_invalid_plans_before_acquisition",
+    "exit_code": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--offline",
+      "--locked",
+      "--target-dir",
+      "target/cli-normal-tests",
+      "-p",
+      "reasoning-harness-cli",
+      "--bin",
+      "reason",
+      "candidate_json_tests::planner_still_rejects_invalid_plans_before_acquisition",
+      "--",
+      "--exact"
+    ]
+  }
+]

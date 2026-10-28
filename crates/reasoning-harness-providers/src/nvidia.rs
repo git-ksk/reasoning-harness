@@ -28,11 +28,17 @@ pub struct NvidiaAdapter {
     api_key: String,
     base_url: Url,
     model: String,
+    single_attempt: bool,
     min_request_interval: Duration,
     last_request_started: tokio::sync::Mutex<Option<Instant>>,
 }
 
 impl NvidiaAdapter {
+    /// Disable adapter-internal HTTP retries for cumulative token-budget enforcement.
+    pub fn set_single_attempt(&mut self, enabled: bool) {
+        self.single_attempt = enabled;
+    }
+
     pub fn from_env(model: impl Into<String>) -> Result<Self, ModelError> {
         let api_key = env::var("NVIDIA_API_KEY").map_err(|_| {
             ModelError::new(ModelErrorKind::Credentials, "NVIDIA_API_KEY is not set")
@@ -103,6 +109,8 @@ impl NvidiaAdapter {
                     format!("failed to configure HTTP client: {}", error.message()),
                 )
             })?
+            .redirect(reqwest::redirect::Policy::none())
+            .retry(reqwest::retry::never())
             .timeout(timeout)
             .build()
             .map_err(|error| {
@@ -117,6 +125,7 @@ impl NvidiaAdapter {
             api_key,
             base_url,
             model,
+            single_attempt: false,
             min_request_interval,
             last_request_started: tokio::sync::Mutex::new(None),
         })
@@ -181,6 +190,7 @@ impl NvidiaAdapter {
 
             if response.status() != StatusCode::TOO_MANY_REQUESTS
                 || rate_limit_retries >= MAX_RATE_LIMIT_RETRIES
+                || self.single_attempt
             {
                 break response;
             }
@@ -226,10 +236,15 @@ impl NvidiaAdapter {
         Ok(ModelResponse {
             text,
             model: response.model.unwrap_or_else(|| self.model.clone()),
-            usage: ModelUsage {
-                input_tokens: usage.prompt_tokens,
-                output_tokens: usage.completion_tokens,
-                total_tokens: usage.total_tokens,
+            usage: if rate_limit_retries > 0 {
+                // Failed HTTP attempts do not expose their token usage.
+                ModelUsage::default()
+            } else {
+                ModelUsage {
+                    input_tokens: usage.prompt_tokens,
+                    output_tokens: usage.completion_tokens,
+                    total_tokens: usage.total_tokens,
+                }
             },
             provider_attempts: u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX),
             finish_reason: choice.finish_reason,
@@ -612,7 +627,7 @@ mod tests {
                     (
                         "200 OK",
                         "",
-                        r#"{"model":"test-model","choices":[{"finish_reason":"stop","message":{"content":"ok"}}]}"#,
+                        r#"{"model":"test-model","choices":[{"finish_reason":"stop","message":{"content":"ok"}}],"usage":{"prompt_tokens":3,"completion_tokens":1,"total_tokens":4}}"#,
                     )
                 };
                 write!(
@@ -644,6 +659,7 @@ mod tests {
         assert_eq!(response.text, "ok");
         assert_eq!(response.model, "test-model");
         assert_eq!(response.provider_attempts, 2);
+        assert_eq!(response.usage, ModelUsage::default());
         server.join().unwrap();
     }
 
@@ -726,5 +742,151 @@ mod tests {
             .unwrap();
         assert_eq!(error.kind, ModelErrorKind::Credentials);
         assert!(!error.to_string().contains("Bearer"));
+    }
+    #[tokio::test]
+    async fn token_guard_single_attempt_stops_rate_limit_retry() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            let mut buffer = [0u8; 8192];
+            let _ = stream.read(&mut buffer);
+            let body = r#"{"error":{"message":"busy"}}"#;
+            write!(stream, "HTTP/1.1 429 Too Many Requests\r\nContent-Type: application/json\r\nContent-Length: {}\r\nRetry-After: 1\r\nConnection: close\r\n\r\n{body}", body.len()).unwrap();
+        });
+        let mut adapter = NvidiaAdapter::with_base_url_and_timeout(
+            "test-key",
+            "test-model",
+            &format!("http://{address}/v1/"),
+            Duration::from_secs(2),
+        )
+        .unwrap();
+        adapter.set_single_attempt(true);
+        let error = adapter
+            .generate(ModelRequest {
+                task: "test".into(),
+                system: None,
+                output_format: ModelOutputFormat::Text,
+                max_tokens: Some(8),
+                random_seed: None,
+                reasoning_preference: None,
+            })
+            .await
+            .unwrap_err();
+        assert_eq!(error.kind, ModelErrorKind::RateLimit);
+        assert_eq!(error.provider_attempts, 1);
+
+        server.join().unwrap();
+    }
+    #[tokio::test]
+    async fn provider_does_not_follow_redirect_or_resend_post() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+        for status in ["307 Temporary Redirect", "308 Permanent Redirect"] {
+            for single in [false, true] {
+                let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+                let address = listener.local_addr().unwrap();
+                let server = thread::spawn(move || {
+                    let (mut stream, _) = listener.accept().unwrap();
+                    let mut buffer = [0u8; 8192];
+                    let _ = stream.read(&mut buffer);
+                    write!(stream, "HTTP/1.1 {status}\r\nLocation: http://{address}/redirected\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").unwrap();
+                    listener.set_nonblocking(true).unwrap();
+                    let deadline = Instant::now() + Duration::from_millis(300);
+                    loop {
+                        match listener.accept() {
+                            Ok((mut redirected, _)) => {
+                                let _ = redirected.read(&mut buffer);
+                                let _ = redirected.write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: close\r\n\r\n{}");
+                                return 2;
+                            }
+                            Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
+                                if Instant::now() >= deadline {
+                                    return 1;
+                                }
+                                thread::sleep(Duration::from_millis(5));
+                            }
+                            Err(error) => panic!("listener failed: {error}"),
+                        }
+                    }
+                });
+                let mut adapter = NvidiaAdapter::with_base_url_and_timeout(
+                    "test-key",
+                    "test-model",
+                    &format!("http://{address}/v1/"),
+                    Duration::from_secs(2),
+                )
+                .unwrap();
+                adapter.set_single_attempt(single);
+                let error = adapter
+                    .generate(ModelRequest {
+                        task: "test".into(),
+                        system: None,
+                        output_format: ModelOutputFormat::Text,
+                        max_tokens: Some(8),
+                        random_seed: None,
+                        reasoning_preference: None,
+                    })
+                    .await
+                    .unwrap_err();
+                assert_eq!(error.provider_attempts, 1);
+                assert_eq!(
+                    server.join().unwrap(),
+                    1,
+                    "{status} must not resend model POST, single={single}"
+                );
+            }
+        }
+    }
+    #[tokio::test]
+    async fn no_retry_preserves_successful_response_usage() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+        for single in [false, true] {
+            let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+            let address = listener.local_addr().unwrap();
+            let server = thread::spawn(move || {
+                let (mut stream, _) = listener.accept().unwrap();
+                let mut buffer = [0u8; 8192];
+                let _ = stream.read(&mut buffer);
+                let body = r#"{"model":"test-model","choices":[{"finish_reason":"stop","message":{"content":"ok"}}],"usage":{"prompt_tokens":3,"completion_tokens":1,"total_tokens":4}}"#;
+                write!(stream, "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",body.len()).unwrap();
+            });
+            let mut adapter = NvidiaAdapter::with_base_url_and_timeout(
+                "test-key",
+                "test-model",
+                &format!("http://{address}/v1/"),
+                Duration::from_secs(2),
+            )
+            .unwrap();
+            adapter.set_single_attempt(single);
+            let response = adapter
+                .generate(ModelRequest {
+                    task: "test".into(),
+                    system: None,
+                    output_format: ModelOutputFormat::Text,
+                    max_tokens: Some(8),
+                    random_seed: None,
+                    reasoning_preference: None,
+                })
+                .await
+                .unwrap();
+            assert_eq!(response.provider_attempts, 1);
+            assert_eq!(response.usage.input_tokens, Some(3));
+            assert_eq!(response.usage.output_tokens, Some(1));
+            assert_eq!(response.usage.total_tokens, Some(4));
+            server.join().unwrap();
+        }
     }
 }

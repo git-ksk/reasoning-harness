@@ -1,5 +1,7 @@
 # Engine 0.7 実戦評価とCLI採用
 
+> 2026-10-26のユーザー承認で、今後の評価は[通常CLI中心の新計画](engine-073-cli-evaluation-plan.ja.md)に従う。補助APIはモデルなしの契約検証とし、旧モデル連携helperのF1をCLI採用の必須条件にしない。以下の各track必須・改善件数の記述は旧計画と凍結結果の履歴であり、後付けで変更/再採点しない。通常CLIの絶対品質・安全性・非退行・効率と新規独立受入は維持する。
+
 日本語 | [English](engine-07-realworld-evaluation.md)
 
 2026-10-15 JST時点で **評価作業中・CLI採用不可（NO-GO）**。[Issue #531](https://github.com/git-ksk/reasoning-harness/issues/531)／[Milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12)で管理します。公開製品はReason CLI0.5.5 / Engine0.6.1。Engine0.7.2は独立したソースリリースです。

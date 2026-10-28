@@ -1,0 +1,118 @@
+{
+  "identity": "cli-wire-review-b0240bf-v3",
+  "reviewer": {
+    "role": "agent",
+    "id": "/root/paired_evaluation_independent"
+  },
+  "source_commit": "b0240bf7334b9c444bd08c1112dfe4ca5cc36c5b",
+  "result": "BOUNDED_PASS",
+  "created_utc": "2026-10-26T22:49:01.943644+00:00",
+  "scope": "Effective investigation-plan bounds and model-only candidate wire request/schema/decode/fallback paths. Not new real-model F1, whole-runtime readiness, helper API acceptance, or release/adoption approval.",
+  "source_main_sha256": "f37ebeb027eeac35898e564f93c99e1fe8897c6dcaaac7a068494bd9984730e6",
+  "source_anchors": {
+    "struct InvestigationPlanGenerationCall": 635,
+    "fn candidate_generation_request(": 1556,
+    "struct ModelCandidate {": 1901,
+    "fn parse_candidate_json(": 1936,
+    "max_targets: config.policy.max_targets": 3658,
+    "current_candidate = regenerated": 4049
+  },
+  "code_files_changed_since_original_fix_base": [
+    "crates/reasoning-harness-cli/src/main.rs"
+  ],
+  "verification": {
+    "saved_candidate_responses": 180,
+    "newly_rejected_prior_false_acceptances": 14,
+    "missing_top_level_claims": 11,
+    "nested_unknown_fields": 3,
+    "previous_valid_preserved": 83,
+    "previous_invalid_rejected": 83,
+    "serialization_controls": 53,
+    "valid_forms_accepted": 12,
+    "invalid_forms_rejected": 41,
+    "object_enum_variants_rejected": 6,
+    "ordinary_string_enum_variants_preserved": 6,
+    "saved_rejected_plans": 16,
+    "oversize_plans_rejected": 14,
+    "duplicate_target_plans_rejected": 2,
+    "primary_and_fallback_request_schema_unchanged_since_ed30857": true,
+    "targeted_actual_cli_test_filters_passed": 5,
+    "all_probe_shared_dependencies_match_workspace_lock": true,
+    "model_api_calls": 0,
+    "new_f1_calculations": 0
+  },
+  "conclusions": [
+    {
+      "area": "plan request",
+      "result": "PASS",
+      "basis": "Actual run_natural_investigation passes config.policy.max_targets into traced/untraced request. minItems=1/maxItems=effective bound and unique target ID vs capability ID guidance are added. Existing exact-key constraints, token max, seed and admission remain. All 14 saved oversize and 2 duplicate-ID plans remain rejected rather than truncated/relabelled."
+    },
+    {
+      "area": "schema/decode",
+      "result": "PASS",
+      "basis": "Same private DTO defines primary and fallback schema. Explicit claims array required; [] allowed. Closed top/claim/proposition/inference structs reject unknown fields. JSON Value preflight requires object structures and string proposed_state, followed by strict decoding of unchanged original text. Six string enum forms pass; six externally-tagged object forms fail."
+    },
+    {
+      "area": "duplicate/trailing rules",
+      "result": "PASS",
+      "basis": "Object preflight does not replace original text with reserialized Value; second strict decode still detects duplicate root/claim/proposition/inference keys. Existing acceptable non-JSON suffix is preserved; second JSON value and JSON-like truncated suffix still rejected."
+    },
+    {
+      "area": "fallback and correct abstention",
+      "result": "PASS",
+      "basis": "Candidate bad shapes enter existing single fallback. Malformed fallback stays protocol failure; explicit empty claims is accepted without extra request. Actual CLI mock-adapter test filters passed, with no external API."
+    },
+    {
+      "area": "public compatibility and phase isolation",
+      "result": "PASS_WITH_SCOPE",
+      "basis": "Only CLI main.rs changed. Core ReasoningCandidate defaults and enum representation remain compatible; private DTO conversion preserves fields. Final renderer parser, investigation action/intent parsing, final truth gates, helper API sources and published old evaluation artifacts are not altered. Schema-only acceptance is not semantic correctness."
+    }
+  ],
+  "prior_findings": {
+    "ed30857_array_bypass": {
+      "result": "fixed_in_successor",
+      "prior_report_sha256": "b1d2254078a6e80bcf35c2c6c4a13b426971df626aafbbc17b037e8cd1e5fb2f"
+    },
+    "25d602c_object_enum_bypass": {
+      "result": "fixed_in_successor",
+      "prior_report_sha256": "9d8d3479701171379703ef20c0da5b025e9db7b44f4bdfc72f51868897c292a1"
+    }
+  },
+  "limits": [
+    "No new model/API execution or F1 measurement. Saved-response parser replay does not predict future model accuracy.",
+    "Full provider budget/reservation and execution admission review is a separate operational scope. This result does not authorize a fresh live run by itself.",
+    "Earlier diagnosis of duplicate snapshot acquisition, Reject short circuit, selectors and explanation loss remains unresolved by this two-part change.",
+    "The current consumed24 score and incomplete observation states remain unchanged.",
+    "No claim that all CLI phases or operating systems were dynamically revalidated; other-phase isolation is based on the diff and selected route tests."
+  ],
+  "preservation": {
+    "raw_normal_files": 512,
+    "observation_packet_files": 384,
+    "independent_review_files": 192,
+    "all_hashes_unchanged": true,
+    "original_score_report_sha256": "be4f58e4436fcd282eb7cfd81c8b6c030cd769a9203fe7d4123c63604c8d797e",
+    "analysis_freeze_sha256": "45ad679943fcc056052503d8a9583f17c6c8c524abb27ce8b7ec3712f97ddccc"
+  },
+  "activity": {
+    "model_api_calls": 0,
+    "new_f1_calculations": 0,
+    "tracked_source_edits_by_reviewer": 0,
+    "old_report_edits": 0
+  },
+  "evidence": {
+    "candidate_schema_echo_uses_existing_fallback_and_preserves_explicit_abstention.log": "100b21ee29df8f9d648e98c0e1c8f89f4e827a817922b1a92ab53281aac88d16",
+    "exact-export-probe/Cargo.lock": "2783920586e55ed654b1dd2cf307179e90ceaa97155de55d3608c2c68fd3e2ab",
+    "exact-export-probe/Cargo.toml": "7b60508dbdf2c4b071be77e55692f2c2470b4928a1156f4b2496e1b5c3fe8bc9",
+    "exact-export-probe/src/main.rs": "aa1ba3cb683465d6f5d78db0165295f4da0415321291aff41a4257b111d53746",
+    "exact-source-export-v3.json": "15a69e35af28427efaba17b29565d97cdd4aa7393f1818c69cf433a6255b8e9a",
+    "malformed_candidate_fallback_stays_a_protocol_failure.log": "ccd6bcfbb614a5fe44df371596fcc999ff9b9bd363f96af8ca35b0bcd834eaa7",
+    "planner_json_fallback_keeps_target_bounds_and_exact_key_constraints.log": "63672acf5ebebdae149560e9c436e7c5bf386d51558222e23d522ec5c56ff749",
+    "planner_requests_carry_effective_target_bounds_with_or_without_trace.log": "56e7bdb6294ccceb10f9d7f7a8335f2f0733c657b66fd6044fee6b1d9d3deda6",
+    "planner_still_rejects_invalid_plans_before_acquisition.log": "e21f182753da1669758587690f4791f49033449bf886e3e5fc0581bca3e6f466",
+    "probe-build-v3.log": "7d184f47bb14459925287cc8a7adaac748b80132f364a6547e7b947bc95c9cc7",
+    "replay-inputs-v3.json": "354998d44e1eba675022cf05fe41dfa1f7522590bbf37a79b437740823303285",
+    "replay-results-v3.json": "4eb94a918ced692c45c79d4512c5f0ae11f0725afa49eaa4b0c2f76b048962d1",
+    "replay-verification-v3.json": "0e33b7cb69e1c3cc59cf3dce8008a034cf411c7f8fae922270a0ebefc199fc52",
+    "targeted-tests-v3.json": "3ac08f3610ccacf3bcf19a606b7a01e97b109c3a252c0c05ebd5054618afd801"
+  }
+}

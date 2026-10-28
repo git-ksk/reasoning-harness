@@ -32,7 +32,9 @@ reason "TASK" \
 
 `reason-config-v1`では`run.max_model_calls`、`run.max_output_tokens`、`run.max_total_tokens`です。
 
-`max_model_calls`は次のlogical model operation前に確認します。`max_output_tokens`は次requestの`max_tokens`自体を残量まで縮めます。`max_total_tokens`はinput tokenをReasonが推測せずprovider reportを使うため、測定可能なresponseごとに事後確認します。token ceiling設定時にproviderがusageを返さず検証不能なら`usage_budget_unmeasurable`でfail-closed、超過は`usage_budget_exceeded`です。どちらもtyped operational failureで、semantic uncertaintyではありません。
+`max_model_calls`は次のlogical model operation前に確認します。`max_output_tokens`設定時は、構造化出力の再出力を含む各requestの`max_tokens`を累積残量まで縮めます。必要なusageが不明な場合は、次のrequest前に`usage_budget_unmeasurable`で停止し、残量を使い切った場合は`usage_budget_exceeded`になります。どちらもtyped operational failureで、semantic uncertaintyではありません。
+
+token ceilingを設定したrunでは、adapter内部のHTTP再試行を停止します。そのためrate limitや一時的なエラーで早く終了する場合があります。usageと残量が確認できる場合、既存のschema互換用fallbackは利用できます。モデル用clientは暗黙のHTTPリダイレクトと通信層の自動再送も無効化します。token ceilingがない場合は、adapterの明示的な再試行方針は維持します。出力上限はproviderがrequestの上限を守ることを前提とします。`max_total_tokens`は入力tokenを送信前に正確に把握できないため、測定可能なresponseごとに事後確認し、単一responseで上限を超える場合があります。総token数や通貨costの送信前hard boundではありません。
 
 resolver/action側は既存の`max_resolution_attempts`とinvestigationのtarget/round/action上限がhard boundのままです。
 

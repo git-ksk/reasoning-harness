@@ -1,5 +1,7 @@
 # Engine 0.7 real-world evaluation and CLI adoption
 
+> User-approved successor policy,2026-10-26: use the [ordinary CLI plan](engine-073-cli-evaluation-plan.md). Auxiliary APIs receive model-free contract checks; historical model-assisted helper F1 is not an independent CLI adoption gate. The per-track/gain requirements below retain their historical scope and frozen results. No retrospective relabeling/rescoring. Ordinary absolute quality, safety, non-regression, efficiency and fresh independent acceptance remain required.
+
 [日本語](engine-07-realworld-evaluation.ja.md) | English
 
 Status: **in progress / adoption NO-GO**, 2026-10-15 JST. [Issue #531](https://github.com/git-ksk/reasoning-harness/issues/531), [milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12). The published product is Reason CLI0.5.5 / Engine0.6.1. Engine0.7.2 is an independent source release, not an adopted CLI Engine.

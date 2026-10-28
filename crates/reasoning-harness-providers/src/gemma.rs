@@ -47,6 +47,7 @@ pub struct GoogleAdapter {
     api_key: String,
     base_url: Url,
     model: String,
+    single_attempt: bool,
     request_pacer: Option<Arc<RequestPacer>>,
     attempt_telemetry_path: Option<PathBuf>,
     execution_budget: Mutex<Option<ModelExecutionBudget>>,
@@ -253,6 +254,11 @@ async fn wait_shared_request_slot(
 }
 
 impl GoogleAdapter {
+    /// Disable adapter-internal HTTP retries for cumulative token-budget enforcement.
+    pub fn set_single_attempt(&mut self, enabled: bool) {
+        self.single_attempt = enabled;
+    }
+
     pub fn from_env(model: impl Into<String>) -> Result<Self, ModelError> {
         let api_key = env::var("GEMINI_API_KEY").map_err(|_| {
             ModelError::new(ModelErrorKind::Credentials, "GEMINI_API_KEY is not set")
@@ -310,6 +316,8 @@ impl GoogleAdapter {
                     format!("failed to configure HTTP client: {}", error.message()),
                 )
             })?
+            .redirect(reqwest::redirect::Policy::none())
+            .retry(reqwest::retry::never())
             .timeout(DEFAULT_TIMEOUT)
             .build()
             .map_err(|error| {
@@ -324,6 +332,7 @@ impl GoogleAdapter {
             api_key,
             base_url,
             model,
+            single_attempt: false,
             request_pacer: None,
             attempt_telemetry_path: None,
             execution_budget: Mutex::new(None),
@@ -358,6 +367,11 @@ impl GoogleAdapter {
         let mut rate_limit_retries = 0usize;
         let mut transient_retries = 0usize;
         let mut empty_text_retries = 0usize;
+        let mut cumulative_usage = ModelUsage {
+            input_tokens: Some(0),
+            output_tokens: Some(0),
+            total_tokens: Some(0),
+        };
         let execution_budget = *self
             .execution_budget
             .lock()
@@ -502,6 +516,7 @@ impl GoogleAdapter {
 
                 if status == StatusCode::TOO_MANY_REQUESTS
                     && kind == ModelErrorKind::RateLimit
+                    && !self.single_attempt
                     && rate_limit_retries < MAX_RATE_LIMIT_RETRIES
                     && provider_attempts < MAX_PROVIDER_ATTEMPTS
                 {
@@ -519,10 +534,14 @@ impl GoogleAdapter {
                     used_wait = used_wait.saturating_add(delay);
                     self.execution_telemetry
                         .wait_completed(crate::network::ProviderWaitKind::Retry, delay);
+                    // Error responses do not report model usage through this
+                    // contract; a later success must not appear complete.
+                    cumulative_usage = ModelUsage::default();
                     continue;
                 }
 
                 if is_transient_http_status(status)
+                    && !self.single_attempt
                     && transient_retries < MAX_TRANSIENT_RETRIES
                     && provider_attempts < MAX_PROVIDER_ATTEMPTS
                 {
@@ -535,6 +554,7 @@ impl GoogleAdapter {
                     used_wait = used_wait.saturating_add(delay);
                     self.execution_telemetry
                         .wait_completed(crate::network::ProviderWaitKind::Retry, delay);
+                    cumulative_usage = ModelUsage::default();
                     continue;
                 }
 
@@ -574,10 +594,27 @@ impl GoogleAdapter {
                 )
                 .with_provider_attempts(provider_attempts)
             })?;
+            // Empty-text responses can still consume tokens. Preserve every
+            // measurable field across successful HTTP responses before retrying.
+            // Missing fields and arithmetic overflow remain unmeasurable.
+            let usage = response.usage.as_ref();
+            cumulative_usage.input_tokens = add_reported_usage(
+                cumulative_usage.input_tokens,
+                usage.and_then(|usage| usage.total_input_tokens),
+            );
+            cumulative_usage.output_tokens = add_reported_usage(
+                cumulative_usage.output_tokens,
+                usage.and_then(|usage| usage.total_output_tokens),
+            );
+            cumulative_usage.total_tokens = add_reported_usage(
+                cumulative_usage.total_tokens,
+                usage.and_then(|usage| usage.total_tokens),
+            );
             let text = match response.text() {
                 Ok(text) => text,
                 Err(error)
                     if error.kind == ModelErrorKind::Protocol
+                        && !self.single_attempt
                         && empty_text_retries < MAX_EMPTY_TEXT_RETRIES
                         && provider_attempts < MAX_PROVIDER_ATTEMPTS =>
                 {
@@ -596,21 +633,21 @@ impl GoogleAdapter {
                 }
                 Err(error) => return Err(error.with_provider_attempts(provider_attempts)),
             };
-            let usage = response.usage.unwrap_or_default();
-
             return Ok(ModelResponse {
                 text,
                 model: response.model.unwrap_or_else(|| self.model.clone()),
-                usage: ModelUsage {
-                    input_tokens: usage.total_input_tokens,
-                    output_tokens: usage.total_output_tokens,
-                    total_tokens: usage.total_tokens,
-                },
+                usage: cumulative_usage,
                 provider_attempts,
                 finish_reason: response.status,
             });
         }
     }
+}
+
+fn add_reported_usage(total: Option<u64>, next: Option<u64>) -> Option<u64> {
+    total
+        .zip(next)
+        .and_then(|(total, next)| total.checked_add(next))
 }
 
 impl ModelAdapter for GoogleAdapter {
@@ -1557,6 +1594,61 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn empty_response_retry_preserves_all_reported_usage() {
+        let (base_url, server) = spawn_sequence_server(vec![
+            ("200 OK", empty_text_body(), ""),
+            ("200 OK", success_body("ok"), ""),
+        ]);
+        let adapter = GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+        let response = adapter.generate(test_request()).await.unwrap();
+        assert_eq!(response.provider_attempts, 2);
+        assert_eq!(response.usage.input_tokens, Some(4));
+        assert_eq!(response.usage.output_tokens, Some(1));
+        assert_eq!(response.usage.total_tokens, Some(5));
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn empty_response_retry_retains_missing_and_overflow_as_unknown() {
+        for first_usage in [
+            serde_json::json!({"total_output_tokens": 0, "total_tokens": 2}),
+            serde_json::json!({"total_input_tokens": u64::MAX, "total_output_tokens": 0, "total_tokens": 2}),
+        ] {
+            let mut empty: serde_json::Value = serde_json::from_str(&empty_text_body()).unwrap();
+            empty["usage"] = first_usage;
+            let (base_url, server) = spawn_sequence_server(vec![
+                ("200 OK", empty.to_string(), ""),
+                ("200 OK", success_body("ok"), ""),
+            ]);
+            let adapter =
+                GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+            let response = adapter.generate(test_request()).await.unwrap();
+            assert_eq!(response.provider_attempts, 2);
+            assert_eq!(response.usage.input_tokens, None);
+            assert_eq!(response.usage.output_tokens, Some(1));
+            assert_eq!(response.usage.total_tokens, Some(5));
+            server.join().unwrap();
+        }
+    }
+
+    #[tokio::test]
+    async fn unreported_failed_http_retry_makes_later_usage_unknown() {
+        let (base_url, server) = spawn_sequence_server(vec![
+            (
+                "503 Service Unavailable",
+                r#"{"error":{"message":"busy"}}"#.into(),
+                "",
+            ),
+            ("200 OK", success_body("ok"), ""),
+        ]);
+        let adapter = GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+        let response = adapter.generate(test_request()).await.unwrap();
+        assert_eq!(response.provider_attempts, 2);
+        assert_eq!(response.usage, ModelUsage::default());
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
     async fn empty_model_text_can_recover_on_final_allowed_attempt() {
         let (base_url, server) = spawn_sequence_server(vec![
             ("200 OK", empty_text_body(), ""),
@@ -1782,5 +1874,100 @@ mod tests {
         assert_eq!(response.text, "ok");
         assert_eq!(response.provider_attempts, 2);
         server.join().unwrap();
+    }
+    #[tokio::test]
+    async fn token_guard_single_attempt_stops_all_internal_retry_classes() {
+        for (status, body, expected) in [
+            (
+                "429 Too Many Requests",
+                r#"{"error":{"message":"busy"}}"#.to_string(),
+                ModelErrorKind::RateLimit,
+            ),
+            (
+                "503 Service Unavailable",
+                r#"{"error":{"message":"busy"}}"#.to_string(),
+                ModelErrorKind::ProviderUnavailable,
+            ),
+            ("200 OK", empty_text_body(), ModelErrorKind::Protocol),
+        ] {
+            let (base_url, server) =
+                spawn_sequence_server(vec![(status, body, "Retry-After: 1\r\n")]);
+            let mut adapter =
+                GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+            adapter.set_single_attempt(true);
+            let error = adapter.generate(test_request()).await.unwrap_err();
+            assert_eq!(error.kind, expected);
+            assert_eq!(error.provider_attempts, 1);
+            assert_eq!(
+                adapter
+                    .execution_telemetry_snapshot()
+                    .unwrap()
+                    .provider_attempts_started,
+                1
+            );
+            server.join().unwrap();
+        }
+    }
+    #[tokio::test]
+    async fn provider_does_not_follow_redirect_or_resend_post() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+        for status in ["307 Temporary Redirect", "308 Permanent Redirect"] {
+            for single in [false, true] {
+                let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+                let address = listener.local_addr().unwrap();
+                let server = thread::spawn(move || {
+                    let (mut stream, _) = listener.accept().unwrap();
+                    let mut buffer = [0u8; 8192];
+                    let _ = stream.read(&mut buffer);
+                    write!(stream, "HTTP/1.1 {status}\r\nLocation: http://{address}/redirected\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").unwrap();
+                    listener.set_nonblocking(true).unwrap();
+                    let deadline = Instant::now() + Duration::from_millis(300);
+                    loop {
+                        match listener.accept() {
+                            Ok((mut redirected, _)) => {
+                                let _ = redirected.read(&mut buffer);
+                                let _ = redirected.write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: close\r\n\r\n{}");
+                                return 2;
+                            }
+                            Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
+                                if Instant::now() >= deadline {
+                                    return 1;
+                                }
+                                thread::sleep(Duration::from_millis(5));
+                            }
+                            Err(error) => panic!("listener failed: {error}"),
+                        }
+                    }
+                });
+                let mut adapter = GoogleAdapter::with_base_url(
+                    "test-key",
+                    "test-model",
+                    &format!("http://{address}/v1beta/"),
+                )
+                .unwrap();
+                adapter.set_single_attempt(single);
+                let error = adapter
+                    .generate(ModelRequest {
+                        task: "test".into(),
+                        system: None,
+                        output_format: ModelOutputFormat::Text,
+                        max_tokens: Some(8),
+                        random_seed: None,
+                        reasoning_preference: None,
+                    })
+                    .await
+                    .unwrap_err();
+                assert_eq!(error.provider_attempts, 1);
+                assert_eq!(
+                    server.join().unwrap(),
+                    1,
+                    "{status} must not resend model POST, single={single}"
+                );
+            }
+        }
     }
 }

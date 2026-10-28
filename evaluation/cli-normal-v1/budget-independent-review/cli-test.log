@@ -1,0 +1,12 @@
+   Compiling reasoning-harness-cli v0.5.4 (/private/tmp/budget-review-061-fhtaooyd/crates/reasoning-harness-cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.22s
+     Running unittests src/main.rs (/private/tmp/budget-review-061-fhtaooyd/target/debug/deps/reason-09e23316c97eac0e)
+
+running 4 tests
+test independent_budget_review::independent_safety_unknown_usage_blocks_fallback_and_is_recorded ... ok
+test independent_budget_review::independent_quota_records_unknown_and_does_not_retry ... ok
+test independent_budget_review::independent_session_remaining_fallback_and_exhaustion ... ok
+test independent_budget_review::independent_unknown_internal_attempt_and_total_overrun_stop_fallback ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 253 filtered out; finished in 0.01s
+

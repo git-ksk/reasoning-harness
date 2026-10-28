@@ -1,0 +1,277 @@
+{
+  "identity": "mistral-normal48-independent-causal-diagnosis-v1",
+  "reviewer": {
+    "role": "agent",
+    "id": "/root/paired_evaluation_independent"
+  },
+  "created_utc": "2026-10-26T11:56:58.949250+00:00",
+  "scope": "SAVED_RAW_STRUCTURAL_CAUSAL_DIAGNOSIS_NOT_FRESH_F1_NOT_ADOPTION_GO",
+  "frozen_inputs": {
+    "common_cli_source": "73bbd18173b4dfcd6664a26241de0385f2eb2e3e",
+    "baseline_core": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+    "candidate_core": "ab3c6322921c8c738ec35bd018345917b5afa538",
+    "api_run_id": 40248051474,
+    "model": "ministral-8b-2512",
+    "receipt_sha256": "2e964414858613223af8c26c3ddd28901b197d004b594b26dd73a04eb421cd1c",
+    "normal_run_count": 48,
+    "same_resolution_opt_in_patch_both_arms": true
+  },
+  "method": "Read all normal run candidate/plan/request/response/acquisition/resolution/finalization sequences. Verify all 360 model request, wire request, response journal, and trace bindings. Match findings to exact frozen CLI/core/resolver code. Diagnostic Python uses structural fields only and does not label semantic correctness or calculate F1.",
+  "summary": {
+    "scope": "STRUCTURAL_DIAGNOSIS_ONLY_NOT_SCORING_OR_ACCEPTANCE",
+    "reviewer": {
+      "role": "agent",
+      "id": "/root/paired_evaluation_independent"
+    },
+    "normal_runs": 48,
+    "normal_rows_capture_incomplete_preserved": 20,
+    "raw_inventory_files": 512,
+    "raw_inventory_unchanged": true,
+    "all_wire_trace_journal_links_verified": true,
+    "model_response_count": 360,
+    "model_response_phase_counts": {
+      "initial_generation": 92,
+      "investigation_plan": 48,
+      "investigation_action": 73,
+      "post_investigation_regeneration": 88,
+      "investigation_intent": 11,
+      "final_render": 48
+    },
+    "candidate_generation_logical_calls": {
+      "initial_generation": 48,
+      "post_investigation_regeneration": 49
+    },
+    "wrong_shape_accepted_count": 11,
+    "wrong_shape_by_phase": {
+      "post_investigation_regeneration": 7,
+      "initial_generation": 4
+    },
+    "wrong_shape_fallback_bypassed": 11,
+    "finish_error_response_count": 82,
+    "finish_error_by_phase": {
+      "initial_generation": 44,
+      "post_investigation_regeneration": 38
+    },
+    "finish_error_existing_fallback_observed": 82,
+    "plan_rejections": {
+      "invalid_target_count": 14,
+      "invalid_target_identity": 2
+    },
+    "invalid_target_count_by_reason": {
+      "above_effective_max_3": 14
+    },
+    "invalid_target_count_size_distribution": {
+      "4": 9,
+      "5": 2,
+      "6": 2,
+      "7": 1
+    },
+    "empty_targets_count": 0,
+    "malformed_reacquisition_stop_rows": [
+      "rw-03-candidate",
+      "rw-06-baseline",
+      "rw-07-baseline",
+      "rw-07-candidate",
+      "rw-10-baseline",
+      "rw-10-candidate",
+      "rw-13-baseline",
+      "rw-13-candidate",
+      "rw-14-candidate",
+      "rw-18-baseline",
+      "rw-18-candidate",
+      "rw-20-candidate",
+      "rw-23-baseline",
+      "rw-23-candidate"
+    ],
+    "preexisting_reject_skipped_acquisition_rows": [
+      "rw-01-baseline",
+      "rw-01-candidate",
+      "rw-04-candidate",
+      "rw-09-baseline",
+      "rw-19-baseline",
+      "rw-19-candidate"
+    ],
+    "new_model_api_calls": 0,
+    "new_f1_computations": 0,
+    "annotation_observation_or_raw_mutations": 0,
+    "projection_note": "Use trace candidate_states for initial candidates; projection initial_candidate is the stdout result candidate and is not an initial-generation event."
+  },
+  "candidate_extra_detail": {
+    "candidate_logical_calls": 97,
+    "candidate_response_events": 180,
+    "finish_error_fallback": 82,
+    "finish_length_fallback": 1,
+    "top_level_missing_claims_bypass": 11,
+    "nested_wrong_key_accepted": 3,
+    "model_api_or_rust_reexecution": 0
+  },
+  "findings": [
+    {
+      "id": "D1",
+      "area": "planner request/admission",
+      "priority": "first bounded CLI fix",
+      "observed": "16 runs stopped before acquisition: 14 over max_targets=3 (4..7 targets), 0 empty targets; 2 duplicate target IDs at valid count 3. The effective max is absent from prompt and schema. Some model targets reuse capability IDs.",
+      "examples": [
+        "rw-02-baseline",
+        "rw-02-candidate",
+        "rw-05-baseline",
+        "rw-05-candidate",
+        "rw-06-candidate",
+        "rw-08-baseline",
+        "rw-08-candidate",
+        "rw-11-baseline",
+        "rw-11-candidate",
+        "rw-16-baseline",
+        "rw-16-candidate",
+        "rw-17-baseline",
+        "rw-17-candidate",
+        "rw-22-baseline",
+        "rw-03-baseline",
+        "rw-21-baseline"
+      ],
+      "cause": "Host validates an uncommunicated numeric limit once and aborts on rejection. Identity uniqueness is not explicit enough for multi-question capability reuse.",
+      "minimum_fix": "Transmit effective bounds and distinct unique target ID requirement in the CLI model request/schema; retain strict admission and budgets. Current fix scope does not require automatic truncation/retry.",
+      "remaining_risk": "Does not guarantee a valid or complete new plan. Never silently truncate or equate capability ID and target ID. Count-only schema uniqueItems cannot enforce unique object.id."
+    },
+    {
+      "id": "D2",
+      "area": "candidate JSON boundary",
+      "priority": "first bounded CLI fix",
+      "observed": "11 attempt-1 / finish:stop JSON objects lack top-level claims but structured:true is recorded; no fallback attempt follows. Four initial, seven post-acquisition regenerations. Accepted candidates have no model-authored claims/inferences; only 3 host materializations survive.",
+      "examples": [
+        "rw-03-candidate:r1",
+        "rw-07-candidate:r1",
+        "rw-13-baseline:r2",
+        "rw-13-candidate:initial",
+        "rw-14-candidate:r1",
+        "rw-14-candidate:r2",
+        "rw-19-baseline:initial",
+        "rw-20-candidate:r2",
+        "rw-22-baseline:initial",
+        "rw-23-baseline:r1",
+        "rw-24-candidate:initial"
+      ],
+      "cause": "parse_candidate_json directly deserializes ReasoningCandidate whose claims/inferences default to empty. Unknown top-level schema/wrong-key properties are ignored. Successful parse bypasses existing fallback. Regeneration replaces the prior candidate, then restores only host-bound facts.",
+      "minimum_fix": "Require explicit top-level claims array at model-wire parsing, before typed deserialization, and feed missing/invalid shape into existing bounded fallback. Preserve explicit claims:[] abstention and existing safe serialization normalization.",
+      "remaining_risk": "Top-level-only fix does not catch 3 separate nested claim typo responses; does not prove fresh F1 improvement. Do not recover claims by guessing/mapping misspelled keys."
+    },
+    {
+      "id": "D2b",
+      "area": "nested candidate JSON and provider structured-output mode",
+      "priority": "separate residual diagnosis",
+      "observed": "3 other attempt-1 outputs contain claims but misspell evidence_ids and/or proposition. rw13 baseline r1 drops evidence/proposition; rw15 baseline r2 drops model citations while host canonical fact restores useful output; rw07 baseline r2 has an empty misspelled evidence_ids field. Additionally 82 finish:error and 1 finish:length candidate responses trigger the existing fallback.",
+      "examples": [
+        "rw-07-baseline:r2",
+        "rw-13-baseline:r1",
+        "rw-15-baseline:r2",
+        "rw-14-baseline:r2"
+      ],
+      "cause": "Nested optional/default fields silently discard misspellings. The first JSON-schema route is consistently problematic in this saved cohort; wire response HTTP status is 200 for all 360 model responses. Root cause inside provider/model schema handling is not established.",
+      "minimum_fix": "Separate strict model DTO validation from backwards-compatible persisted core types; require defined fields and reject unknown field typos where contract requires them. Evaluate schema compatibility with offline request-shape controls first.",
+      "remaining_risk": "Blank evidence IDs can be legitimate before acquisition, and genuine unknown claims must remain allowed. No claim that stricter parsing alone fixes semantic quality or quota issues."
+    },
+    {
+      "id": "D3",
+      "area": "typed proposition encoding and Reject short circuit",
+      "priority": "separate future control fix",
+      "observed": "Six rows have selected pending acquisition but core returns resolved_refuted with attempts=[] because current verdict is Reject. CLI records no_result and evidence_admission with no call. Capture rejects these paths as admission_without_same_target_acquisition.",
+      "examples": [
+        "rw-01-baseline",
+        "rw-01-candidate",
+        "rw-04-candidate",
+        "rw-09-baseline",
+        "rw-19-baseline",
+        "rw-19-candidate"
+      ],
+      "cause": "Models retain a refuted alternative or rephrase/split an exact typed value. rw01 emits requires=none as a contradicted candidate alongside --retry; rw04 paraphrases warning; rw09 splits foreach or while into same-key foreach/while; rw19 splits Helpful but not required before tests into helpful/not required. Exact verifier rejects these, global Reject suppresses further pending acquisition, and empty attempts becomes misleading no_result.",
+      "minimum_fix": "Keep typed key/value references exact in model protocol; separate natural prose and hypothesis/refutation roles. Distinguish skipped acquisition from actually executed no_result and only record admission for an actual matching attempt. Any future allow-acquisition-on-Reject policy must be bounded/read-only and leave hard truth gates unchanged.",
+      "remaining_risk": "Do not drop conflicting model claims to force acceptance; do not weaken equality or safety. Actual deficiency may exist even though model prose is intuitively a paraphrase. Capture repair is not runtime repair."
+    },
+    {
+      "id": "D4",
+      "area": "resolver stable evidence identity and repeat acquisition",
+      "priority": "separate future control fix",
+      "observed": "Fourteen rows perform a third acquisition returning a previously held snapshot:rw-XX:slot. Core rejects existing evidence ID as malformed_output and CLI stops operational_terminal. Capture independently marks ambiguous_acquired_evidence.",
+      "examples": [
+        "rw-03-candidate",
+        "rw-06-baseline",
+        "rw-07-baseline",
+        "rw-07-candidate",
+        "rw-10-baseline",
+        "rw-10-candidate",
+        "rw-13-baseline",
+        "rw-13-candidate",
+        "rw-14-candidate",
+        "rw-18-baseline",
+        "rw-18-candidate",
+        "rw-20-candidate",
+        "rw-23-baseline",
+        "rw-23-candidate"
+      ],
+      "cause": "Frozen resolver is a slot-based immutable snapshot source and returns the same evidence ID/content irrespective of repetition; generic core acquired-evidence path treats duplicate IDs as malformed. Planner may choose same capability again for another unresolved target.",
+      "minimum_fix": "Design explicit bounded immutable-cache reuse/no-new-evidence behavior with content identity, current admissibility, and exact target binding; avoid calling same exhausted capability where appropriate. Preserve a distinct error for same-ID changed bytes.",
+      "remaining_risk": "Never randomize IDs to simulate independent corroboration or count reuse as new progress. No blanket duplicate-ID acceptance. Existing missing observations remain incomplete."
+    },
+    {
+      "id": "D5",
+      "area": "capability fact selectors and coverage binding",
+      "priority": "separate future adapter/CLI boundary fix",
+      "observed": "Generic plans often omit expected_fact_key. Resolver advertises union(actual record facts, primary lookup_key); source with a different actual fact then has multiple keys. Host only fills absent selector for unique read-only key, so a correct acquired fact may remain unverified for its target.",
+      "examples": [
+        "rw-03-candidate",
+        "rw-10-baseline",
+        "rw-10-candidate",
+        "rw-13-baseline",
+        "rw-13-candidate",
+        "rw-20-candidate"
+      ],
+      "cause": "rw03 source1 advertises retry.introduced plus actual retry_all.introduced; rw10 included-source advertises function plus included; rw20 command source advertises command plus limit. Correct source content can be acquired/supported while target selector stays null, preventing canonical fallback/materialization from using that fact.",
+      "minimum_fix": "Make resolver capabilities truthful about available fact families; require or safely materialize an exact selector from authoritative metadata. If genuinely multiple keys, obtain a bounded explicit selection or preserve uncertainty.",
+      "remaining_risk": "Do not infer a selector from gold, question keywords, or a desired answer; preserve foreign-product/current/private-value negative controls. Correct bytes and evidence admission alone do not prove target coverage."
+    },
+    {
+      "id": "D6",
+      "area": "finalization and user-facing explanation",
+      "priority": "separate future trusted-diagnostic UX fix",
+      "observed": "All48 finalization paths were examined. Several model final_render outputs explain unavailable/private/current/wrong-scope evidence, but hard finalization blocks those propositions or no-claim output and coverage emits generic not_acquired/unverified/no_progress text. rw12, rw22 candidate, rw23 candidate, rw24 candidate lose useful reasons.",
+      "examples": [
+        "rw-12-baseline",
+        "rw-12-candidate",
+        "rw-14-baseline",
+        "rw-22-candidate",
+        "rw-23-candidate",
+        "rw-24-candidate"
+      ],
+      "cause": "Safety gating correctly does not accept unsupported model-authored claims, including some explanation propositions; host display lacks an independent trusted account of plan rejection, scope mismatch, skipped attempts, stale snapshot, or missing live observation.",
+      "minimum_fix": "Display deterministic trusted operational reasons and required next inputs, while retaining factual blocking and existing counts/status.",
+      "remaining_risk": "Do not restore raw model renderer text wholesale. Wrong-product/stale/private data must remain unanswerable; extra model confidence is not a remedy."
+    }
+  ],
+  "causal_limitations": [
+    "This cohort is consumed development data, not independent new accuracy acceptance.",
+    "Baseline/candidate model outputs differ even under the same model/seed; planner/schema/resolution findings are shared-host interactions, not proof that candidate core alone caused the difference.",
+    "The 20 incomplete normal observations are preserved. Their runtime failures and capture ambiguity are separate from truth judgments; no falsehood label or safety PASS is inferred from missingness.",
+    "Fixing D1/D2 does not fix every other finding or prove a new F1 increase.",
+    "Historical helper API F1 is preserved as reference and is not changed or reused as the new ordinary-CLI primary gate.",
+    "No external model API, new annotation, repaired observation, scorer invocation, or adoption decision occurred."
+  ],
+  "preservation": {
+    "raw_normal_512_files_unchanged": true,
+    "analysis_freeze_sha256": "45ad679943fcc056052503d8a9583f17c6c8c524abb27ce8b7ec3712f97ddccc",
+    "observations_inventory_verified_files": 384,
+    "reviews_inventory_verified_files": 192,
+    "original_first_score_report_sha256": "be4f58e4436fcd282eb7cfd81c8b6c030cd769a9203fe7d4123c63604c8d797e",
+    "no_rescore_or_relabel": true
+  },
+  "attachments": {
+    "candidate-finish-error-events-v1.json": "4cfa467547fbbe56deb81d2e45eb7cbba75d59d2ad0fa13ce42421d1fe62b347",
+    "candidate-wrong-shape-events-v1.json": "ad39da7e470e70e26ad1f86ebf7c4e9add78bd6317e73213160df7e8a2e7432b",
+    "fixed-source-evidence-v1.json": "1305fc773cb7c50b2bc27cda52170d178137abb484778dbcc7f208ecfea0fc64",
+    "nested-claim-shape-events-v1.json": "91e4209c35eabda46a7d245e41fddcaba8d01bc3776a6c8265258092fa973659",
+    "normal-row-diagnosis-v1.json": "3a468e08d57f0a16dd6a2e55898f255eb4ea0b41fe7c6004e9d88f593ad6f221",
+    "preservation-verification-v1.json": "a49bc97391d36d08cb6a384ccb34c10898be98bbfc48905f264251dba2c4def5",
+    "raw-inventory-v1.json": "f97bc45465845e86732b397cffe5087db506ef9441eb59741d96d13cc975cbaa",
+    "verified-structural-summary-v1.json": "32e31469537107207f2fa432ea2be3dd6e7748e3ca0394b0b8630ed43c03ea31",
+    "wire-trace-bindings-v1.json": "cc85b01c9693a9661aa56a08a3d054e6819ee410739bdee7815afa9372216df1"
+  }
+}

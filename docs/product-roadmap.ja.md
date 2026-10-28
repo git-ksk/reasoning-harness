@@ -1,5 +1,10 @@
 # 製品ロードマップ: Reason CLI / Harness Engine
 
+<!-- ordinary-cli-policy-20261026-start -->
+**次の評価方針（2026-10-26・ユーザー承認）:** [通常CLI中心の計画](engine-073-cli-evaluation-plan.ja.md)へ整理。通常CLIは実モデルによるF1/P/R・安全性・引用・非退行・効率、補助APIはモデルなしの仕様/権限/改変/再現性/互換性で確認する。旧helperモデル連携F1 0.400000は参考として保持し、API単体やCLI採用の必須スコアにしない。まず補助APIの独立オフライン確認とMistral保存ログの原因調査、必要な修正後に通常CLIだけを再測定する。Geminiの23問0.933333は参考基準内だが、最終候補の全24問と新規独立受入は未完了。Groq保留・採用判断保留。旧v2の条件/結果は不変。
+補助APIのモデルなし独立契約確認はPASS。Mistral通常の保存48出力を診断し、計画上限/IDとcandidate形状の不備を#562/#563で修正・独立確認中。新F1は未測定。
+<!-- ordinary-cli-policy-20261026-end -->
+
 <!-- real24-v2-current-start -->
 **2026-10-26 現在:** [実API比較v2と独立初回F1](cli-paired-real24-v2-20261026.ja.md)を記録。Mistral・Googleは各72jobs完走、192新観測を独立注釈し凍結採点を一度実行した。helper case F1は両社0.222222→0.400000（Precision1.000/Recall0.250）で未達。Google通常の参考23問F1は両arm0.933333、Mistral通常は15/13問と欠測集合が異なり全件改善判定不可。通常欠測22行を保持し全件F1はnull。captureの再取得/空イベント修正は限定独立PASSで、元測定へ混入させない。Groq保留、新規独立accuracy0、Engine公開・CLI採用NO_GO。
 <!-- real24-v2-current-end -->

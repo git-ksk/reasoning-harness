@@ -1,0 +1,72 @@
+{
+  "review_kind": "bounded_offline_independent_review",
+  "base_commit": "b0240bf7334b9c444bd08c1112dfe4ca5cc36c5b",
+  "engine_baseline": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+  "resolution_patch_from": "2f6f88fd1a8b721ef11bcda4b7a1fb00e5691886",
+  "resolution_patch_to": "2c4fea29ac9ae7c0447766cd0d83200ae01ea9f1",
+  "source_sha256": {
+    "crates/reasoning-harness-cli/src/main.rs": "06ce65ce44df9ebe02d722a96836339955b9752c40b8a59b017685471b9e81ac",
+    "crates/reasoning-harness-cli/src/generation_usage.rs": "439e3687143ae60863d5f5ae1fa75b27f3bdfa70fb227533113ce1f1684575ed",
+    "crates/reasoning-harness-cli/src/usage_budget.rs": "8f0bc8612a6c72d016f6c73f86e9cc09148b8c035c18a214bd6489b3ca84ebbf",
+    "crates/reasoning-harness-providers/src/mistral.rs": "d5dda905785d18b91a135a7f469d83390708ea4888c2027471bee5b2506ca22f",
+    "crates/reasoning-harness-providers/src/gemma.rs": "199378f989b1ce7b649bcc965cf0eaa9b732ed0e71c4651b33d0ea9df95d93b2",
+    "crates/reasoning-harness-providers/src/groq.rs": "82eeee29005b6fef6b678ea4be0fe4d753f5b46d4eaa7d6d33dc257144edfda1",
+    "crates/reasoning-harness-providers/src/nvidia.rs": "b36fb91588a4c9cf7bf531bf659f7a458283ae71e9f28ca28fd9338f64d18fd6"
+  },
+  "reviewer": "budget_independent_review",
+  "no_external_model_calls": true,
+  "scope": "token budget dispatch and accounting, selected provider retry boundaries and legacy core source compatibility; not a model evaluation or full runtime acceptance",
+  "pre_fix_redirect": "same-origin localhost 307 followed 200: physical requests=2, reported attempts=1",
+  "notes": [
+    "token total is measured post-response; provider must honor output maximum",
+    "only one agent independent reviewer and targeted tests; no CI or product release verdict"
+  ],
+  "reviewed_commit": "c38d87d3af1a2b576cf5e4985c765935876837b8",
+  "result": "PASS_BOUNDED_OFFLINE_BUDGET_SCOPE",
+  "controls": [
+    {
+      "name": "legacy core build with identical host and common resolution patch",
+      "result": "pass",
+      "log": "baseline-build.log"
+    },
+    {
+      "name": "independent managed session quota total and safety probes",
+      "result": "4 pass",
+      "log": "cli-test.log"
+    },
+    {
+      "name": "Google single attempt local 307 redirects, before control",
+      "result": "2 physical HTTP requests and 1 reported attempt",
+      "log": "redirect-before-control.log",
+      "setup": "final provider source with redirect policy reset to reqwest default only; retained single attempt and reqwest retry disabled"
+    },
+    {
+      "name": "Google single attempt local 307 redirect, final",
+      "result": "1 physical HTTP request, reported attempts 1 and provider failure",
+      "log": "redirect-test.log"
+    }
+  ],
+  "reviewer_findings": [
+    "generation, regeneration, plan, intent, action, final render and answer safety use generation limits",
+    "provider builder disables reqwest redirect and implicit protocol NACK retries for each of four providers",
+    "adapter-specific retries are disabled when output or total token ceilings are configured",
+    "Google empty 200 usage aggregates checked totals and missing or overflow fields remain unknown",
+    "Google HTTP errors followed by success are unknown; Mistral, Groq and Nvidia successful responses after error retries are unknown",
+    "quota and rate-limit failures retain their class and unknown usage blocks future budgeted operations"
+  ],
+  "limitations": [
+    "Total-token ceiling is provider-reported after each response and can be crossed by one request because input-token count is not known before dispatch.",
+    "Output ceiling relies on provider honoring request.max_tokens and accurate provider reports.",
+    "Google local redirect behavior was independently executed; the other provider redirect and adapter retries were code-reviewed but not independently executed by this reviewer.",
+    "No independent live model calls, F1 scoring, evaluator runtime admission, CI, release or product-wide certification.",
+    "Parent 0.6.1 build is a local reconstructed source check, not the full paired evaluation build."
+  ],
+  "evidence_sha256": {
+    "baseline-build.log": "82cc65770fe6f852f909a3b4c8b0e36491f7139844750af3c6b66e0d707f3da6",
+    "cli-test.log": "552c6722f76ae3f5068f1fcac8b400b0a42c4e0cc88196b8f033e58c2e1fdfe4",
+    "independent-cli-probes.rs": "56a2cfbd8d1b29d1ea9bbcb1d81632fbc9bf0895e29a5c27c784d8d2bb438269",
+    "independent-redirect-probe.rs": "374a32106efeebfde851dc80986d06812834ee55fb743e585e56025bc2f32f99",
+    "redirect-before-control.log": "e436f492bf79275d8a1ea9b4db13111ae7bc2db91c4ac3a64ce4604598f2e8b8",
+    "redirect-test.log": "d43e3ae5fafd5ff2922ea2e8d14d5655589fa86679a889b64fcafa23d6de7b75"
+  }
+}

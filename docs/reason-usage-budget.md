@@ -32,7 +32,9 @@ reason "TASK" \
 
 Equivalent `reason-config-v1` fields are `run.max_model_calls`, `run.max_output_tokens`, and `run.max_total_tokens`.
 
-`max_model_calls` is checked before another logical model operation. `max_output_tokens` also caps each next model request to the remaining output-token allowance. `max_total_tokens` is enforced after each measurable provider response because input-token totals are provider-reported rather than guessed. If a configured token ceiling cannot be verified because the provider omitted usage, Reason fails closed with `usage_budget_unmeasurable`. Exhaustion uses `usage_budget_exceeded`. Both are typed operational failures, not semantic uncertainty.
+`max_model_calls` is checked before another logical model operation. With `max_output_tokens`, Reason caps each provider request, including structured-output fallbacks, to the remaining cumulative output allowance. If a configured token ceiling cannot be verified because usage is missing, Reason stops before a further request with `usage_budget_unmeasurable`; an exhausted allowance yields `usage_budget_exceeded`. Both are typed operational failures, not semantic uncertainty.
+
+When either token ceiling is configured, Reason disables adapter-internal HTTP retries for that run, so a rate limit or transient error can end the operation sooner. The existing schema compatibility fallbacks remain possible when usage is known and allowance remains. Model clients also disable implicit HTTP redirects and transport-level retries; their explicit adapter retry policies still apply when no token ceiling is configured. The output cap relies on the provider honoring the request limit. `max_total_tokens` is checked after each measurable response: provider input tokens are unknown before dispatch, so a single response can exceed the total ceiling. This is not a pre-dispatch hard bound on total usage or currency cost.
 
 Existing resolution/investigation limits remain the hard bounds for resolver/action work (`max_resolution_attempts` and configured investigation target/round/action limits).
 
