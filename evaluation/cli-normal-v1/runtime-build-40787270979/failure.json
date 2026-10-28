@@ -1,0 +1,15 @@
+{
+  "run_id": 40787270979,
+  "source_commit": "a7de5a4fd40d0ddcec3edff62352e827dd795c5d",
+  "result": "FAILED_ARCHIVE_PRIVATE_OWNER",
+  "build_and_all_offline_controls": "PASS",
+  "parent_proof": "PASS",
+  "final_normal_proof": "NOT_PRODUCED",
+  "model_calls": 0,
+  "formal_runtime_approved": false,
+  "artifact_id": 12859124927,
+  "GitHub_declared_zip_sha256": "740e1f6b60c6293395628a2447b15d45ddd7c9e4e204df552985177371cfe3ae",
+  "artifact_zip_downloaded_or_independently_verified": false,
+  "failure": "PermissionError reading ordinary-integration/summary.json on host after root container created private files",
+  "repair": "chown controls to runner before host proof; no chmod or byte changes"
+}

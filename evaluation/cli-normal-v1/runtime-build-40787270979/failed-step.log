@@ -1,0 +1,27 @@
+offline-runtime	Archive exact image and offline identity without granting execution	﻿2026-10-28T23:33:23.6394217Z ##[group]Run set -euo pipefail
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:23.6394448Z ^[[36;1mset -euo pipefail^[[0m
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:23.6394675Z ^[[36;1mdocker save paired-runtime | gzip > target/paired-artifact/runtime-image.tar.gz^[[0m
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:23.6394973Z ^[[36;1mimage_id=$(docker image inspect paired-runtime --format '{{.Id}}')^[[0m
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:23.6395268Z ^[[36;1mstage=target/paired-runtime/repo/evaluation/cli-repair-paired-v1^[[0m
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:23.6396231Z ^[[36;1mpython3 "$stage/normal_v1/runtime_proof.py" --repo . --prepared target/paired-runtime --bin-dir target/paired-build/build/bin --controls target/paired-controls --image-id "$image_id" --image-archive target/paired-artifact/runtime-image.tar.gz --output target/paired-artifact/runtime-proof.json^[[0m
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:23.6396947Z ^[[36;1mcp target/paired-build/build/bin/identity.json target/paired-artifact/identity.json^[[0m
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:23.6397286Z ^[[36;1mcp target/paired-runtime/preparation.json target/paired-artifact/preparation.json^[[0m
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:23.6397650Z ^[[36;1msudo tar -czf target/paired-artifact/offline-controls.tar.gz -C target/paired-controls .^[[0m
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:23.6414249Z shell: /usr/bin/bash -e {0}
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:23.6414403Z ##[endgroup]
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:36.9549681Z {"state": "BUILT_OFFLINE_NOT_EXECUTION_ADMISSION", "runtime_image_id": "sha256:f39bc62843088088344430f90cdd8201a7722b3ec06d6e19b2e3a9a753e8703f", "API_execution_admitted": false}
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:37.0063009Z Traceback (most recent call last):
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:37.0063743Z   File "/home/runner/work/reasoning-harness/reasoning-harness/target/paired-runtime/repo/evaluation/cli-repair-paired-v1/normal_v1/runtime_proof.py", line 31, in <module>
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:37.0064403Z     if __name__=='__main__':main()
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:37.0064635Z                             ^^^^^^
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:37.0065040Z   File "/home/runner/work/reasoning-harness/reasoning-harness/target/paired-runtime/repo/evaluation/cli-repair-paired-v1/normal_v1/runtime_proof.py", line 22, in main
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:37.0066082Z     integration_path=a.controls/'ordinary-integration/summary.json';integration=json.loads(integration_path.read_bytes())
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:37.0066648Z                                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:37.0067048Z   File "/usr/lib/python3.12/pathlib.py", line 1021, in read_bytes
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:37.0067372Z     with self.open(mode='rb') as f:
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:37.0067596Z          ^^^^^^^^^^^^^^^^^^^^
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:37.0067843Z   File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:37.0068171Z     return io.open(self, mode, buffering, encoding, errors, newline)
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:37.0068477Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:37.0068911Z PermissionError: [Errno 13] Permission denied: 'target/paired-controls/ordinary-integration/summary.json'
+offline-runtime	Archive exact image and offline identity without granting execution	2026-10-28T23:33:37.0197155Z ##[error]Process completed with exit code 1.

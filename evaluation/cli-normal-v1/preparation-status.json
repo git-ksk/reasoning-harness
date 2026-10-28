@@ -122,8 +122,12 @@
       "run_id": 40787270979,
       "source": "a7de5a4fd40d0ddcec3edff62352e827dd795c5d",
       "check_provider_readiness": false,
-      "status": "IN_PROGRESS",
-      "model_generations": 0
+      "status": "FAILED_ARCHIVE_PRIVATE_OWNER",
+      "model_generations": 0,
+      "all_build_and_offline_controls_passed": true,
+      "formal_runtime_proof_complete": false,
+      "failure": "host PermissionError on root-owned mode0600 ordinary-integration/summary.json",
+      "repair": "transfer controls ownership to runner before host proof; preserve private modes and bytes"
     }
   },
   "prospective_common_CLI_host": "dbad2dc25d3487819206582f1fad778d9af75da1",
