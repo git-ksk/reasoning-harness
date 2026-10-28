@@ -32,15 +32,17 @@ class FixtureHandler(BaseHTTPRequestHandler):
         request=json.loads(self.rfile.read(int(self.headers['Content-Length'])))
         self.requests.append(request)
         n=len(self.requests)
-        if n>5:
+        if n>7:
             value={'message':'quota exhausted in inert fixture'}
             status=429
         else:
             sequence=[
                 {'claims':[{'id':'c1','statement':'Engineering value needs evidence.','proposed_state':'unknown'}],'inferences':[]},
-                {'targets':[{'id':'target-1','question':'What is the engineering value?'}]},
+                {'targets':[{'id':'target-1','question':'What is the engineering value?'},{'id':'target-2','question':'What was the engineering measurement?'}]},
                 {'action':'acquire','target_id':'target-1','capability_id':'independent-v2-source-0'},
                 {'claims':[{'id':'c1','statement':'Engineering value is four.','proposed_state':'supported','evidence_ids':['snapshot:engineering-01:0'],'proposition':{'key':'unit.value','value':'4'}}],'inferences':[]},
+                {'action':'acquire','target_id':'target-2','capability_id':'independent-v2-source-0'},
+                {'action':'stop'},
                 {'text':'Engineering value is four.','factual_claims':[{'mode':'grounded','proposition':{'key':'unit.value','value':'4'}}]},
             ]
             value={'model':'fixture-model','choices':[{'message':{'content':json.dumps(sequence[n-1])},'finish_reason':'stop'}],
@@ -67,7 +69,7 @@ def main():
         f=corpus_root/f'source{n}.txt';f.write_text(text);digest=sha(f)
         sources.append({'source_id':f's{n}','quote':text,'normalized_path':str(f),'start_byte':0,'end_byte':len(text.encode()),
             'source_version':'sha256:'+digest,'url':f'https://example.invalid/engineering/{n}','locator':'engineering-only',
-            'retrieved_at_unix_seconds':100,'scope':{'product':'engineering'},'reference_facts':{'unit.value':'4'},
+            'retrieved_at_unix_seconds':100,'scope':{'product':'engineering'},'reference_facts':{'unit.value':'4','unit.other':'present'},
             'raw_sha256':digest,'document_id':f'd{n}','context_summary':'Inert fixture only','origin_group':'engineering','synthetic_mutation':False})
     cases=[{'id':f'engineering-{n:02}','question':'What is the engineering value?',
             'helper_question':'Unused fixture helper','source_ids':['s0','s1'],
@@ -109,18 +111,41 @@ def main():
             try:run_lane.AuditedRunner(plan,lane,protocol)
             except FileExistsError:pass
             else:raise AssertionError('existing lane must not restart')
+        first=lane/jobs[0]['id']
+        envelope=json.loads((first/'actual-cli.stdout').read_text())['result']
+        acquisitions=[json.loads(x) for x in (first/'resolver.jsonl').read_text().splitlines()]
+        assert len(acquisitions)==2
+        assert [x['request']['request']['id'] for x in acquisitions]==[
+            'investigation:target-1:independent-v2-source-0','investigation:target-2:independent-v2-source-0']
+        assert acquisitions[0]['response']['contribution']['evidence']==acquisitions[1]['response']['contribution']['evidence']
+        capabilities=json.loads((first/'config.json').read_text())['resolution']['investigation']['capabilities']
+        assert len(capabilities[0]['supported_fact_keys'])>=2
+        attempts=[a for round in envelope['resolution_rounds'] for a in round['attempts']]
+        assert len(attempts)==2 and attempts[0]['status']=='applied_evidence'
+        assert attempts[0]['admitted_evidence_ids']==['snapshot:engineering-01:0']
+        assert attempts[1]['status']=='no_result' and attempts[1]['admitted_evidence_ids']==[]
+        assert attempts[1]['cost']['calls']==1 and attempts[1]['cost']['added_tokens']>0
+        assert attempts[1]['admission_policy_id'] and attempts[1]['adapter_name']=='investigation_external_command_v1'
+        trace=json.loads((first/'trace.json').read_text())
+        admission=[e for e in trace['events'] if e['kind']=='evidence_admission']
+        assert [(e['target_id'],e['admitted_evidence_ids']) for e in admission]==[
+            ('target-1',['snapshot:engineering-01:0']),('target-2',[])]
+        before=next(e['outcome']['artifact'] for e in trace['events'] if e['kind']=='grounding_state' and e.get('phase')=='post_investigation_grounding')
+        after=envelope['resolution_rounds'][1]['final_artifact']
+        for field in ['evidence','claims','verification_receipts']:
+            assert len(before[field])==1 and before[field]==after[field]
         assert result['complete'] is False and len(result['rows'])==3,result
         assert result['rows'][0]['complete'] is True,result['rows'][0]
         assert result['rows'][1]['complete'] is False,result['rows'][1]
         assert result['rows'][1]['outcome']['failure_class']=='quota',result['rows'][1]
         assert result['rows'][2]['admission']['allowed'] is False,result['rows'][2]
-        assert len(FixtureHandler.requests)==6, len(FixtureHandler.requests)
+        assert len(FixtureHandler.requests)==8, len(FixtureHandler.requests)
         assert (lane/'event-000002.json').is_file() and (lane/'state.json').is_file()
         state=json.loads((lane/'state.json').read_text())
         assert state['guard']['latch']=='typed_quota' and not state['guard']['inflight'],state
         assert state['charged_reservations']==2*(24000+4096),state
         first=lane/jobs[0]['id'];events=[json.loads(x) for x in (first/'model-journal.jsonl').read_text().splitlines()]
-        assert sum(e.get('kind')=='model_response' for e in events)==5
+        assert sum(e.get('kind')=='model_response' for e in events)==7
         command=[sys.executable,str(HERE.parent/'collect_checked.py'),'--corpus-dir',str(corpus_root),
                  '--provider','mistral','--lane',str(lane),'--output',str(root/'observations')]
         collected=subprocess.run(command,capture_output=True,env={'PATH':os.defpath,'LANG':'C.UTF-8'},timeout=60)
@@ -133,7 +158,9 @@ def main():
         report={'scope':'SYNTHETIC_LOOPBACK_ONLY_NOT_REAL_ADMISSION','fixture_plan_jobs':3,'complete':1,'failed':1,'suppressed':1,
                 'loopback_requests':len(FixtureHandler.requests),'external_provider_requests':0,'models_used':False,
                 'precredential_guard_stubbed_for_fixture':True,'real_receipt_admission_tested':False,'f1_measured':False,
-                'durable_restart_refused':True,'collected_observations':index['observations'],'binding_failures':index['binding_failures']}
+                'durable_restart_refused':True,'collected_observations':index['observations'],'binding_failures':index['binding_failures'],
+                'distinct_targets_same_snapshot_reads':2,'repeat_status':'no_result','new_evidence_on_repeat':0,
+                'repeat_call_cost_retained':True,'nonempty_claim_receipt_preserved':True}
         dump(root/'summary.json',report);print(json.dumps(report))
     finally:
         server.shutdown();server.server_close();thread.join()

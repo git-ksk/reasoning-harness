@@ -27,6 +27,9 @@ The API records and applies authorized caller reviews; it does not discover gene
 
 ## Pre-execution repair, 2026-10-28
 
+The successor CLI in [PR567](https://github.com/git-ksk/reasoning-harness/pull/567) is pinned at `dbad2dc`. Bounded independent source review, both Engine Linux builds and an actual duplicate-acquisition loopback passed. The prospective evaluation profile pins that host, but product CI still waits for macOS runners and final runtime/image admission remains incomplete. No live execution is approved.
+
+
 Prioritize [Issue566](https://github.com/git-ksk/reasoning-harness/issues/566). Independent operational review reproduced identical snapshot reacquisition being marked malformed by the existing core in14/48 saved Mistral and2/48 Google ordinary payloads. The prospective runner correctly stops. Preserve scoring and failure classification; investigate a successor common CLI that recognizes only an exact currently admitted snapshot under the current admission policy as no progress. An earlier raw resolver emission alone does not prove admission. Preserve real calls/costs and reject changed content, unknown metadata or denied authority.
 
 Order: successor CLI repair and boundary controls, independent review/CI, rebuild the same host with both Engine arms, independently accept a new runtime/image/proof, then execute48 Mistral jobs and measure F1. The source-only PASS for preparation3086778 and local Docker controls do not approve a new live run. Historical raw/F1, published cores and freezes remain immutable.

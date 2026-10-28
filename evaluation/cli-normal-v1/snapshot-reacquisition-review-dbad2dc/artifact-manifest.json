@@ -1,0 +1,15 @@
+{
+  "identity": "independent-cli-snapshot-source-evidence-manifest-v1",
+  "reviewer": "/root/real24_operational_review",
+  "source_commit": "dbad2dc25d3487819206582f1fad778d9af75da1",
+  "scope": "bounded source evidence only; not a runtime admission manifest",
+  "files": {
+    "independent-source-tests.stderr": "115bb5074ecde0f0d7db008664b16043fbd680ffb7db663fd8f75504beb6c5c6",
+    "independent-source-tests.stdout": "0fba5f296aaaca9d29843a0941c77f29eb1d7517743f9b442c98158df43e6eef",
+    "independent_controls.rs": "b6ef5ed218f72156c9b56d513ee63f5df01767e05260a39d41eb210d773104f9",
+    "intake.json": "71709e0a1fc312d2aa780c03bb60114e2466647b17dd37e3c9e21c2e5db43a9c",
+    "probe-results.json": "b007989504d20c21e21535dae443799e1bb0d86feedd338991153a9888671422",
+    "review.json": "4fb916890a79bfb70528e56be2a177061407d4ec52142fe72aa3d24c0e9f9db8",
+    "test-execution.json": "d3122896e565b321e12853131cdcc10535b100443bb318c9e59cb6490c8f7b0f"
+  }
+}

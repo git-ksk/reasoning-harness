@@ -10,7 +10,7 @@ REPO=HERE.parents[2]
 sys.path.insert(1,str(HERE.parent))
 
 def checked_binaries(identity,bin_dir):
-    require(identity.get('host_commit')=='c38d87d3af1a2b576cf5e4985c765935876837b8','development_host_changed')
+    require(identity.get('host_commit')=='dbad2dc25d3487819206582f1fad778d9af75da1','development_host_changed')
     expected={'baseline':'4abee90f0501f0d8fc09b453a0b45c942fbed69e','candidate':'ab3c6322921c8c738ec35bd018345917b5afa538'}
     require(set(identity.get('arms',{}))==set(expected),'development_arm_inventory_changed')
     for arm,pin in expected.items():

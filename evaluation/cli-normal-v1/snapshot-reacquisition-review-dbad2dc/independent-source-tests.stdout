@@ -1,0 +1,24 @@
+
+running 8 tests
+test snapshot_reacquisition_tests::empty_and_new_batches_keep_existing_behavior ... ok
+test snapshot_reacquisition_tests::newer_retrieval_does_not_refresh_original_observation_clock ... ok
+test snapshot_reacquisition_tests::first_admission_then_identical_snapshot_is_no_result_with_actual_cost ... ok
+INDEPENDENT_SNAPSHOT_CONTROL {"calls":1,"case":"inner_failure_or_disallowed_contribution","cost_microusd":4,"error_kind":"Timeout","mode":0}
+INDEPENDENT_SNAPSHOT_CONTROL {"calls":1,"case":"inner_failure_or_disallowed_contribution","cost_microusd":4,"error_kind":"PolicyDenied","mode":1}
+INDEPENDENT_SNAPSHOT_CONTROL {"case":"source_revoked","cost_kept":true,"not_suppressed":true}
+INDEPENDENT_SNAPSHOT_CONTROL {"calls":1,"case":"inner_failure_or_disallowed_contribution","cost_microusd":4,"error_kind":"PolicyDenied","mode":2}
+INDEPENDENT_SNAPSHOT_CONTROL {"case":"currently_fresh_but_different_effective_interval","cost_kept":true,"not_suppressed":true}
+test snapshot_reacquisition_tests::independent_cached_evidence_cannot_hide_inner_error_or_revision_and_cost_is_kept ... ok
+test snapshot_reacquisition_tests::mixed_or_duplicate_batch_and_ambiguous_existing_ids_are_not_suppressed ... ok
+INDEPENDENT_SNAPSHOT_CONTROL {"case":"minimum_authority_raised","cost_kept":true,"not_suppressed":true}
+INDEPENDENT_SNAPSHOT_CONTROL {"case":"new_required_scope","cost_kept":true,"not_suppressed":true}
+INDEPENDENT_SNAPSHOT_CONTROL {"case":"existing_metadata_temporal_different","not_suppressed":true}
+INDEPENDENT_SNAPSHOT_CONTROL {"case":"existing_metadata_provenance_different","not_suppressed":true}
+test snapshot_reacquisition_tests::independent_policy_revocation_and_full_metadata_difference_cannot_become_noop ... ok
+test snapshot_reacquisition_tests::changed_raw_or_no_admission_stays_on_original_rejection_path ... ok
+INDEPENDENT_SNAPSHOT_CONTROL {"artifact_bytes_unchanged":true,"case":"nonempty_actual_run_path","cost_microusd_each":4,"existing_claims":1,"existing_receipts":1,"final_verdict":"accept","initial_verdict":"accept","mixed_unresolved_claim":false,"new_admissions":0,"new_receipts_by_attempt":0,"replay_equal":true,"resolver_calls_each":1}
+INDEPENDENT_SNAPSHOT_CONTROL {"artifact_bytes_unchanged":true,"case":"nonempty_actual_run_path","cost_microusd_each":4,"existing_claims":2,"existing_receipts":1,"final_verdict":"unknown","initial_verdict":"unknown","mixed_unresolved_claim":true,"new_admissions":0,"new_receipts_by_attempt":0,"replay_equal":true,"resolver_calls_each":1}
+test snapshot_reacquisition_tests::independent_nonempty_claims_and_receipts_are_identical_after_noop_and_replay ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 253 filtered out; finished in 0.01s
+

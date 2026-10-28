@@ -33,6 +33,9 @@
 
 ## 2026-10-28 の実行前追加修正
 
+#566の後継CLIは[PR567](https://github.com/git-ksk/reasoning-harness/pull/567)の`dbad2dc`に固定し、ソース限定の独立確認と両EngineのLinux build・実重複取得loopbackを通過した。現在の評価profileはこのhostを事前指定するが、製品CIのmacOS runner割当と最終runtime/image受入は未完了で、実行許可ではない。
+
+
 [Issue566](https://github.com/git-ksk/reasoning-harness/issues/566)を優先する。独立operational reviewで、同じ固定snapshotの再取得が既存coreでmalformed扱いとなり、新runnerが停止する経路をMistral14/48・Google2/48の保存済み通常payloadで再現した。採点・エラー分類を緩めず、現在保持する証拠と現在のadmission方針で完全同一と確認できる再取得だけを、共通CLIの新しい版でno-progressとして扱う。外部resolverの発行履歴だけでは採用済みと判断しない。実resolver呼出し・費用を保持し、別内容・不明なmetadata・権限拒否は停止させる。
 
 順序は、CLI後継修正・境界テスト → 別担当レビューとCI → 共通hostを両Engineで再ビルド → 新runtime/image/proofの独立受入 → Mistral48jobs・新F1。準備版3086778のsource-only PASSやローカルDocker成功は、新しい実行の許可ではない。旧raw・旧F1・公開core・過去の凍結条件は変更しない。
