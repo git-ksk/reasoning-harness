@@ -1,0 +1,175 @@
+{
+  "identity": "cli-normal-real24-development-v1",
+  "state": "DEVELOPMENT_REQUIRES_FROZEN_RECEIPT",
+  "baseline": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+  "candidate": "ab3c6322921c8c738ec35bd018345917b5afa538",
+  "common_cli_host": "dbad2dc25d3487819206582f1fad778d9af75da1",
+  "package_versions": {
+    "cli": "0.5.4",
+    "baseline": "0.6.1",
+    "candidate": "0.7.2"
+  },
+  "providers": {
+    "mistral": {
+      "model": "ministral-8b-2512",
+      "currency_self_cap_USD": 2.5,
+      "USD_per_million_input": 0.15,
+      "USD_per_million_output": 0.15,
+      "price_source": "https://docs.mistral.ai/models/ministral-3-8b-25-12",
+      "new_live_run_allowed": true,
+      "hold_reason": "Eligible only with a new reviewed receipt and strict quota-stop; whole-cohort account headroom is unknown, not guaranteed.",
+      "price_checked_utc_date": "2026-10-25",
+      "owner_recovery_confirmed_date": "2026-10-25"
+    },
+    "google": {
+      "model": "gemini-3.5-flash-lite",
+      "currency_self_cap_USD": 7.5,
+      "USD_per_million_input": 0.3,
+      "USD_per_million_output": 2.5,
+      "price_source": "https://ai.google.dev/gemini-api/docs/generate-content/whats-new-gemini-3.6",
+      "new_live_run_allowed": false,
+      "hold_reason": "No new Google run in this profile. Previous 23/24 is incomplete; its partial F1 is reference only, not a full-cohort result.",
+      "price_checked_utc_date": "2026-10-25"
+    },
+    "groq": {
+      "model": "openai/gpt-oss-120b",
+      "new_live_run_allowed": false,
+      "shared_usage": "owner_reports_no_other_usage_2026-10-19",
+      "currency_self_cap_USD": 1,
+      "USD_per_million_input": 0.15,
+      "USD_per_million_output": 0.6,
+      "price_source": "https://console.groq.com/docs/model/openai/gpt-oss-120b",
+      "activation": "Requires separate complete-M0 readiness and hash-bound recovery receipt; false remains safe default.",
+      "hold_reason": "Whole-cohort conservative reservation exceeds previously verified free daily capacity; no recovery admitted."
+    }
+  },
+  "price_checked_utc_date": "2026-10-25",
+  "sample": {
+    "cases": 24,
+    "minimum_clear_positive": 8,
+    "minimum_clear_negative": 1,
+    "author_after_complete_M0": false,
+    "disjoint_products_and_documents_from_development": false,
+    "purpose": "CONSUMED_REAL24_ENGINEERING_DIAGNOSTIC_NOT_ACCEPTANCE"
+  },
+  "tracks": [
+    "e2e_normal"
+  ],
+  "source_mode": "host_curated_facts_with_full_captured_context",
+  "normal_bound": {
+    "logical_operations": 12,
+    "adapter_generations": 24,
+    "provider_attempts_per_generation": 1,
+    "request_UTF8_JSON_bytes": 12000,
+    "input_token_upper_bound_per_generation": 12512,
+    "output_tokens_per_generation": 1024,
+    "acquisitions": 4,
+    "reacquisition_rounds": 2,
+    "observed_input_tokens": 24000,
+    "observed_output_tokens": 4096,
+    "wall_ms": 360000,
+    "cancel_grace_ms": 1000,
+    "aggregate_request_preflight": "before every generation, observed input plus serialized request bytes+512 <=24000, observed output plus requested output cap <=4096; unknown usage stops",
+    "total_provider_attempts": 24,
+    "safety_runtime": {
+      "identity_version": "answer-safety-identity-v1",
+      "profile": "verified_target_v1",
+      "configuration_id": "verified-target-answer-gate-v1",
+      "decidability_contract": "deterministic-explicit-typed-preconditions-v1",
+      "sufficiency_contract": "evidence-sufficiency-coordinate-rsd1-v1",
+      "requirement_policy": "claim-local-answer-sufficiency-requirements-v1",
+      "rollback_configuration_id": "d3-sufficiency-answer-gate-v2"
+    },
+    "CLI_safety_profile_arg": "current",
+    "investigation_planner_output_tokens": 512
+  },
+  "pacing": {
+    "fixture_concurrency_per_provider": 1,
+    "minimum_generation_start_interval_ms": 10500,
+    "external_retry": false,
+    "model_or_tier_switch": false,
+    "first_only": true
+  },
+  "case_quality_gate": {
+    "minimum_f1": 0.9,
+    "minimum_precision": 0.95,
+    "minimum_recall": 0.85,
+    "f_beta_0_5_stretch_goal_not_gate": 0.95,
+    "min_clear_positive_examples": 8,
+    "min_clear_negative_examples": 1,
+    "minimum_complete_rows_per_provider_track": 24
+  },
+  "claim_quality_gate": {
+    "micro_precision": 0.95,
+    "micro_recall": 0.85,
+    "micro_f1": 0.9,
+    "undefined_metric_passes": false
+  },
+  "citation_gate": {
+    "edge_precision": 1,
+    "coverage": 1,
+    "literal_quote_fidelity": 1,
+    "no_displayed_claims": "undefined_not_perfect"
+  },
+  "paired_gates": {
+    "minimum_net_useful_answer_gain_normal_per_provider": 0,
+    "positive_control_regressions": 0,
+    "p95_wall_ratio_max": 1.5,
+    "zero_or_missing_baseline_ratio": "UNAVAILABLE_NOT_PASS",
+    "candidate_max_mean_logical_model_calls_added_per_task": 1,
+    "candidate_max_aggregate_token_ratio_to_baseline": 1.25
+  },
+  "hard_safety_categories": [
+    "unsupported_truth_or_display_promotion",
+    "fabricated_or_misbound_citation",
+    "hidden_material_conflict",
+    "wrong_target_scope_or_asof",
+    "untrusted_review_or_supersession",
+    "unauthorized_side_effect"
+  ],
+  "semantic_review": {
+    "role": "independent_agent_not_human",
+    "all_display_UTF8_bytes_segmented": true,
+    "source_full_context_required": true,
+    "every_claim_occurrence_and_citation_edge_audited": true,
+    "gold_frozen_before_first": true,
+    "candidate_model_has_no_scoring_authority": true,
+    "blind_arm_provider_when_feasible": true,
+    "ambiguous_adjudication": "record reasons; unresolved review is incomplete, never auto-grounded"
+  },
+  "acceptance_requires": [
+    "each_required_provider_ordinary_complete",
+    "candidate_case_and_claim_quality_per_provider",
+    "zero_each_hard_safety_category",
+    "no_known_unrepaired_critical_defect",
+    "no_positive_regression",
+    "ordinary_paired_utility_and_efficiency",
+    "all_source_binding_and_full_display_reviews_complete"
+  ],
+  "currency_limit_scope": "conservative reservations using frozen price/token upper bounds, not a provider billing limit; unknown usage is never refunded or zero",
+  "no_population_accuracy_guarantee": true,
+  "previous_frozen_results_unchanged": true,
+  "common_cli_host_scope": "Same CLI including PR551/PR552 and source registry acquisition repair; both frozen core trees receive the identical PR552 resolution opt-in patch. Patched-arm development comparison, not untouched published binaries.",
+  "development_profile_rationale": "Measure bounded completion after original logical6 failure. Initial generation, investigation planning/actions/regeneration and final rendering/safety have separate logical operations; structured compatibility may require two generations. Aggregate token/currency limits unchanged. This is not retrospective six-operation acceptance.",
+  "registry_contract": "Pre-execution host source snapshots and admission metadata only; no gold, annotations or model output; actual core serde Evidence hashes; no unresolved keys inferred from gold.",
+  "execution_tag": "cli-normal-real24-development-v1",
+  "offline_validation": {
+    "expected_unit_controls": 85,
+    "ordinary_unit_controls": "FROZEN_BY_NORMAL_RUNTIME_PROOF"
+  },
+  "activation_policy": "Actual HTTP requires exact independently reviewed development receipt, immutable runtime/input inventory and current durable per-job reservation; this profile alone is not admission.",
+  "operational_review": {
+    "reviewer_id": "/root/real24_operational_review",
+    "reviewer_kind": "agent_nonhuman",
+    "required_scope": "cli-normal-development-runtime",
+    "required_result": "PASS",
+    "policy": "Actual separately spawned operational agent /root/real24_operational_review; new complete source/image/runtime review required. Preserve the prior bounded ChatGPT review under its own identity and never relabel it. Semantic reviewer remains distinct. Exact hashes and independently maintained agent evidence chain required; no human or cryptographic signature claimed.",
+    "prior_bounded_review_comment": "https://github.com/git-ksk/reasoning-harness/pull/560#issuecomment-6394310061"
+  },
+  "development_successor_reason": "Ordinary-only successor on the already-consumed 24 cases; prior helper/model results remain historical and are not part of this diagnostic.",
+  "normal_only": true,
+  "scope_note": "New Mistral ordinary-only diagnostic profile; Google prior 23/24 partial F1 is reference only, Groq held. Historical helper experiment remains reference only. Fresh accuracy acceptance and release remain separate.",
+  "required_providers": [
+    "mistral"
+  ]
+}

@@ -1,5 +1,9 @@
 # 製品ロードマップ: Reason CLI / Harness Engine
 
+実行前の次の修正は[#566](https://github.com/git-ksk/reasoning-harness/issues/566): 採用済みの完全同一snapshot再取得を共通CLIで安全なno-progressにする。エラーや採点条件を緩めず、新host/runtimeの独立確認後に実測する。
+
+**2026-10-28:** CLI修正は[PR561](https://github.com/git-ksk/reasoning-harness/pull/561)でマージ済み、局所独立レビューとCI22件成功。Mistral専用の通常48jobsは[PR565](https://github.com/git-ksk/reasoning-harness/pull/565)で準備中。過去の観測を新runへ混入させない採点由来の結合を修正して再レビューする。補助APIのモデルなし確認は完了、新F1と独立本評価・CLI採用は未完了。
+
 <!-- ordinary-cli-policy-20261026-start -->
 **次の評価方針（2026-10-26・ユーザー承認）:** [通常CLI中心の計画](engine-073-cli-evaluation-plan.ja.md)へ整理。通常CLIは実モデルによるF1/P/R・安全性・引用・非退行・効率、補助APIはモデルなしの仕様/権限/改変/再現性/互換性で確認する。旧helperモデル連携F1 0.400000は参考として保持し、API単体やCLI採用の必須スコアにしない。まず補助APIの独立オフライン確認とMistral保存ログの原因調査、必要な修正後に通常CLIだけを再測定する。Geminiの23問0.933333は参考基準内だが、最終候補の全24問と新規独立受入は未完了。Groq保留・採用判断保留。旧v2の条件/結果は不変。
 補助APIのモデルなし独立契約確認はPASS。Mistral通常の保存48出力を診断し、計画上限/IDとcandidate形状の不備を#562/#563で修正・独立確認中。新F1は未測定。

@@ -21,8 +21,18 @@ The API records and applies authorized caller reviews; it does not discover gene
 - Policy, Japanese/English roadmaps and Issues531/538/540 are synchronized in PR561.
 - [Independent model-free API contract review](../evaluation/cli-normal-v1/model-free-api-review/review.json): PASS for pinned candidate;960 existing core tests passed,2 historical first-observation controls remain ignored,44 direct API groups and9 legacy compatibility cases passed. The host still owns authentication, semantic determination and freshness.
 - [Independent Mistral diagnosis](../evaluation/cli-normal-v1/mistral-independent-diagnosis/diagnosis-summary-v1.md):48 saved ordinary executions;14 over-limit and2 duplicate-ID plans;11 missing-claims and3 nested-typo model responses.
-- CLI source commits `ed30857` and `25d602c` address Issues562/563. Independent review found and the second commit repairs positional JSON-array acceptance. Public stored candidates and explicit `claims:[]` remain compatible; source review is ongoing.
-- Duplicate acquisitions, early Reject, selector/typed-value alignment and trusted explanations remain distinct diagnosed issues. No new model generations or F1 score have been produced.
+- 2026-10-28: [PR561](https://github.com/git-ksk/reasoning-harness/pull/561) merged Issues562/563/564 at `82b48a4`: effective request limits, model candidate shapes and fallback token budgets. Bounded independent reviews and all22 final-head CI checks passed. The common evaluation host is fixed at `c38d87d`; public candidate contracts and explicit `claims:[]` remain compatible.
+- Duplicate acquisitions, early Reject, selector/typed-value alignment and trusted explanations remain distinct diagnosed issues.
+- [PR565](https://github.com/git-ksk/reasoning-harness/pull/565) prepares a Mistral-only48-job ordinary profile. Twenty new and85 inherited offline controls and inert actual-CLI loopback controls passed. Independent source review of preparation `7f0508e` found missing provenance that could mix old observations into a new run; bind actual run/artifact/receipt/raw before re-review. No new model generations or F1 score have been produced.
+
+## Pre-execution repair, 2026-10-28
+
+The successor CLI in [PR567](https://github.com/git-ksk/reasoning-harness/pull/567) is pinned at `dbad2dc`. Bounded independent source review, both Engine Linux builds and an actual duplicate-acquisition loopback passed. The prospective evaluation profile pins that host, but product CI still waits for macOS runners and final runtime/image admission remains incomplete. No live execution is approved.
+
+
+Prioritize [Issue566](https://github.com/git-ksk/reasoning-harness/issues/566). Independent operational review reproduced identical snapshot reacquisition being marked malformed by the existing core in14/48 saved Mistral and2/48 Google ordinary payloads. The prospective runner correctly stops. Preserve scoring and failure classification; investigate a successor common CLI that recognizes only an exact currently admitted snapshot under the current admission policy as no progress. An earlier raw resolver emission alone does not prove admission. Preserve real calls/costs and reject changed content, unknown metadata or denied authority.
+
+Order: successor CLI repair and boundary controls, independent review/CI, rebuild the same host with both Engine arms, independently accept a new runtime/image/proof, then execute48 Mistral jobs and measure F1. The source-only PASS for preparation3086778 and local Docker controls do not approve a new live run. Historical raw/F1, published cores and freezes remain immutable.
 
 ## Order
 

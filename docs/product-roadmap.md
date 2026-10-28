@@ -1,5 +1,9 @@
 # Product roadmap: Reason CLI and Harness Engine
 
+Next pre-execution repair: [#566](https://github.com/git-ksk/reasoning-harness/issues/566), safe no-progress for exact admitted snapshot reacquisition in a successor common CLI. Preserve failure/scoring gates and independently accept the rebuilt host/runtime before measurement.
+
+**2026-10-28:** CLI repairs merged in [PR561](https://github.com/git-ksk/reasoning-harness/pull/561) after bounded independent reviews and22 green CI checks. [PR565](https://github.com/git-ksk/reasoning-harness/pull/565) prepares48 ordinary Mistral jobs. Bind scoring to the actual run/artifact/raw before re-review so historical observations cannot enter the new measurement. Model-free API verification is complete; new F1, fresh acceptance and CLI adoption remain incomplete.
+
 <!-- ordinary-cli-policy-20261026-start -->
 **Next policy (2026-10-26, user approved):** Follow the [ordinary CLI plan](engine-073-cli-evaluation-plan.md). Real-model ordinary F1/P/R, safety, citations, non-regression and efficiency drive CLI evaluation; auxiliary APIs receive model-free contract/authority/tampering/replay/compatibility checks. Retain the old0.400000 model-assisted helper F1 as a reference, not an API-unit or independent CLI adoption gate. First check APIs offline and diagnose saved Mistral outputs, repair reproduced defects, then run an ordinary-only comparison. Gemini0.933333 on23 tasks is encouraging but full final-candidate and fresh independent acceptance remain incomplete. Groq held; adoption pending. Historical v2 conditions/results remain immutable.
 Model-free auxiliary API contract review passed. Independent diagnosis of48 saved Mistral ordinary runs led to CLI request-limit/identity and candidate-shape repairs for Issues562/563, pending bounded review. No new F1 yet.

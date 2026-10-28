@@ -1,0 +1,7 @@
+FROM python:3.13-slim-bookworm
+# gh is used only by the post-execution authenticated artifact readback.
+# The model execution container receives no GitHub token.
+RUN apt-get update && apt-get install -y --no-install-recommends libssl3 libgcc-s1 ca-certificates gh && rm -rf /var/lib/apt/lists/*
+COPY root/ /
+ENV PYTHONDONTWRITEBYTECODE=1
+WORKDIR /repo

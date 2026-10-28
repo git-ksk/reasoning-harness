@@ -1,0 +1,349 @@
+{
+  "identity": "7f0508e-previous-evidence-completeness-clarification-v1",
+  "at_utc": "2026-10-28T00:18:14.883282+00:00",
+  "observations_and_reviews": 48,
+  "review_hash_matches": 48,
+  "complete_pair_counts": {
+    "baseline": 15,
+    "candidate": 13
+  },
+  "interpretation": "The 20 incomplete observations are rejected by existing completeness gates; the provenance defect permits old completed observations to be mixed with or mistaken for new-run evidence, not a false complete 48-row pass on old evidence alone.",
+  "rows": [
+    {
+      "row_id": "09156135cba4c4d015668e03",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "0f514df826777fb35ff1ee7b",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "0f9441faed9dae4e4488a56c",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "185a37ba3386dc4d01313124",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "1cb5e00a740cc6209250d25e",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "1d2ec2a3a5f269be7dc30d82",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "1fd88b35ede4b34a74a6e661",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "21b6f183bd7e35f9ebf2101a",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "228ad2d5c62f33db3630aace",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "2b876a263dfbbc1a06f3e819",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "2eb1fd450fd8545abbbed1c9",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "415d93b713ab1641abb771d5",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "434088ec1814baa013b5aad5",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "4a38e1e68c83806ad742c788",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "4ffe797373e8c216582951f4",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "559d5166276e0b727df3d7fa",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "5cb393a65fea047803decacd",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "5e16780de57588e683079922",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "6000d280481d31069c119276",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "651d8635312f5a3084c0deca",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "6e6607308637f170ff557f79",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "6e8719767a8a21bbf08927f3",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "724d2b023b7153704d50a03c",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "78fe53bbae4f92dc47abd8ed",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "7a58b8e3cd036667f639acc3",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "7a8774b9cabeb8651adfc8bb",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "7b86a44af9312d19d1e03813",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "7f5ad33fbfa26a56a6fc46c9",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "8a97274a04bc1acf4d02b3c9",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "8b6818f388c255220b208a4a",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "a3ad4a2e364cc50d7638776f",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "a7add3551a2cc50e8de3d690",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "b46ec8d69f5c70f164b7ac3b",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "b4b91cf06142cdfc26519745",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "b59ec027a3e23d9cd76894b6",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "bb85130dc8a04ef70e67e99b",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "c083ae85fcc94ed57d690fea",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "c51edcf475cd70480810c23f",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "ca5bedb1270b03996d199ba2",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "ce2b9f0c145939d7233ac110",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "d99914ed62fb1f26f8983c3e",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "e1b9db5d0b343f3d63925f65",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "e6453759a1c363574b0755fd",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "e65cbf69a95999a1e7b6312b",
+      "arm": "baseline",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "e9462ee8f071f09ea7a2ab0d",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    },
+    {
+      "row_id": "ed87db8590cdbf2807e3790b",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "f5fa141ef06ec0daa493c443",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": true,
+      "review_complete": true
+    },
+    {
+      "row_id": "fc421d94d8a0f4051dd594f4",
+      "arm": "candidate",
+      "canonical_observation_sha_matches_review": true,
+      "observation_complete": false,
+      "review_complete": false
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+name: cli-normal-real24-development
+
+on:
+  push:
+    tags:
+      - cli-normal-real24-development-v1
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  real-model-evaluation:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        provider: [mistral]
+    concurrency:
+      group: reasoning-harness-mistral-live
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # upstream v7 tag verified 2026-10-26
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen admission and prepare the exact seen24 input before credentials
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVALUATION_PROVIDER: ${{ matrix.provider }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/results /tmp/runtime /tmp/frozen
+          test "$GITHUB_RUN_ATTEMPT" = 1
+          # One-shot guard: no branch=tag filtering (can omit historical tag uses),
+          # and the Actions API caps unbounded search at 1000 even when total_count is larger.
+          # The hash-pinned collector checks the repository's full push history in monthly windows.
+          python3 - <<'PY'
+          import hashlib,json,os,shutil,subprocess,sys
+          from pathlib import Path
+          sys.path.insert(0,'evaluation/cli-normal-v1/runtime')
+          source=Path('evaluation/cli-normal-real24-development-v1')
+          receipt=json.loads((source/'receipt.json').read_bytes())
+          if not (receipt['identity']=='cli-normal-v1-development-freeze-v1' and receipt['state']=='DEVELOPMENT_FROZEN'): raise ValueError('workflow_integrity_check_failed')
+          if not (receipt['execution_tag']==os.environ['GITHUB_REF_NAME']=='cli-normal-real24-development-v1'): raise ValueError('workflow_integrity_check_failed')
+          if not (receipt['required_provider_readiness'][os.environ['EVALUATION_PROVIDER']]['new_live_run_allowed'] is True): raise ValueError('workflow_integrity_check_failed')
+          if not (receipt['execution_workflow_sha256']==hashlib.sha256(Path('.github/workflows/cli-normal-real24-development.yml').read_bytes()).hexdigest()): raise ValueError('workflow_integrity_check_failed')
+          tag_gate=Path('evaluation/cli-normal-v1/runtime/tag_admission.py')
+          if not (hashlib.sha256(tag_gate.read_bytes()).hexdigest()==receipt['files']['evaluation/cli-repair-paired-v1/normal_v1/tag_admission.py']): raise ValueError('workflow_integrity_check_failed')
+          subprocess.run(['python3',str(tag_gate),'--repo',os.environ['GITHUB_REPOSITORY'],
+                          '--tag',os.environ['GITHUB_REF_NAME'],'--source-sha',os.environ['GITHUB_SHA'],
+                          '--run-id',os.environ['GITHUB_RUN_ID'],
+                          '--output','/tmp/results/run-reservation.json'],check=True)
+          shutil.copyfile(source/'receipt.json','/tmp/frozen/development.json')
+          shutil.copyfile(source/'receipt.json','/tmp/results/development-receipt.json')
+          identity={'schema':'cli-normal-execution-identity-v1','repository':os.environ['GITHUB_REPOSITORY'],
+              'execution_tag':os.environ['GITHUB_REF_NAME'],'run_id':int(os.environ['GITHUB_RUN_ID']),
+              'run_attempt':int(os.environ['GITHUB_RUN_ATTEMPT']),'source_sha':os.environ['GITHUB_SHA'],
+              'receipt_sha256':hashlib.sha256(Path('/tmp/results/development-receipt.json').read_bytes()).hexdigest(),
+              'reservation_sha256':hashlib.sha256(Path('/tmp/results/run-reservation.json').read_bytes()).hexdigest()}
+          with open('/tmp/results/execution-identity.json','x') as f:json.dump(identity,f,sort_keys=True,indent=2);f.write('\n')
+          shutil.copytree(source/'development-review','/tmp/frozen/development-review')
+          # The authenticated Mistral metadata GET record are hash-bound before either provider gets credentials.
+          shutil.copytree(source/'provider-readiness','/tmp/frozen/provider-readiness')
+          artifact=receipt['runtime_artifact_id']
+          with open('/tmp/runtime.zip','wb') as stream:
+              subprocess.run(['gh','api',f'repos/{os.environ["GITHUB_REPOSITORY"]}/actions/artifacts/{artifact}/zip'],stdout=stream,check=True)
+          PY
+          # Trust checkout-side review and actual archive bytes before any downloaded code.
+          python3 evaluation/cli-normal-v1/verify_runtime_archive.py --artifact-zip /tmp/runtime.zip --output /tmp/runtime --review evaluation/cli-normal-real24-development-v1/development-review/review.json --receipt evaluation/cli-normal-real24-development-v1/receipt.json
+          artifact_root=/tmp/runtime
+          test -n "$artifact_root"
+          docker load -i "$artifact_root/runtime-image.tar.gz"
+          image_id=$(docker image inspect paired-runtime --format '{{.Id}}')
+          python3 evaluation/cli-normal-v1/verify_runtime_archive.py --loaded-proof "$artifact_root/runtime-proof.json" --actual-image-id "$image_id" --review evaluation/cli-normal-real24-development-v1/development-review/review.json --receipt evaluation/cli-normal-real24-development-v1/receipt.json
+          PAIRED_RUNTIME_IMAGE="$image_id"
+          echo "PAIRED_RUNTIME_IMAGE=$image_id" >> "$GITHUB_ENV"
+          docker run --pull=never --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v "$artifact_root:/image:ro" "$PAIRED_RUNTIME_IMAGE" python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/verify_development.py --receipt /frozen/development.json --provider "$EVALUATION_PROVIDER" --image-archive /image/runtime-image.tar.gz --actual-image-id "$image_id"
+          git archive 6165de77c1544a7fe58fc1e675e7cb3a8ec7cc98 evaluation/engine073-realworld-independent-v1-input | tar -x -C /tmp/frozen
+          mv /tmp/frozen/evaluation/engine073-realworld-independent-v1-input /tmp/frozen/corpus
+          rm -rf /tmp/frozen/evaluation
+          docker run --pull=never --rm --read-only --tmpfs /tmp -v /tmp/frozen:/frozen "$PAIRED_RUNTIME_IMAGE" python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/prepare_consumed_sources.py --corpus-dir /frozen/corpus --M1-sha256 597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3
+          sudo chmod -R a-w /tmp/frozen
+          docker run --pull=never --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/results:/output "$PAIRED_RUNTIME_IMAGE" python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/make_development_plan.py --receipt /frozen/development.json --corpus-dir /frozen/corpus --provider "$EVALUATION_PROVIDER" --output /output/plan.json
+      - name: Execute the first real-model paired development cohort
+        env:
+          MISTRAL_API_KEY: ${{ matrix.provider == 'mistral' && secrets.MISTRAL_API_KEY || '' }}
+          EVALUATION_PROVIDER: ${{ matrix.provider }}
+        run: |
+          set -euo pipefail
+          case "$EVALUATION_PROVIDER" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            *) exit 1 ;;
+          esac
+          name=cli-normal-real24-$EVALUATION_PROVIDER-$GITHUB_RUN_ID
+          trap 'docker rm -f "$name" >/dev/null 2>&1 || true' EXIT INT TERM
+          timeout --signal=INT --kill-after=5s 340m docker run --pull=never --name "$name" --read-only --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/results:/output -e MISTRAL_API_KEY "$PAIRED_RUNTIME_IMAGE" python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/run_lane.py --plan /output/plan.json --output /output/lane --protocol /repo/evaluation/cli-repair-paired-v1/normal_v1/protocol.json
+      - name: Stop the contained process tree before collection
+        if: always()
+        run: docker rm -f cli-normal-real24-${{ matrix.provider }}-${{ github.run_id }} >/dev/null 2>&1 || true
+      # Semantic observations are reconstructed only after authenticated
+      # readback of this exact run's uploaded artifact and raw lane.
+      - name: Preserve private raw modes and transfer ownership to the uploader
+        if: always()
+        run: sudo chown -R "$(id -u):$(id -g)" /tmp/results
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # upstream v7 tag verified 2026-10-26
+        if: always()
+        with:
+          name: cli-normal-real24-${{ matrix.provider }}-${{ github.run_id }}
+          path: /tmp/results/
+          if-no-files-found: error
+          retention-days: 30

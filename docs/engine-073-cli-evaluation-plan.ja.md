@@ -27,9 +27,18 @@
 - 計画・日英ロードマップ・#531/#538/#540を同期済み（PR561）。
 - [補助APIのモデルなし独立確認](../evaluation/cli-normal-v1/model-free-api-review/review.json)はPASS。既存core960成功/歴史的skip2、独立直接44グループ、旧API互換9ケース。対象source不変・外部model0。hostの実認証や一般的な意味同値判断までAPIが代行するとはしない。
 - [Mistral保存48通常出力の独立診断](../evaluation/cli-normal-v1/mistral-independent-diagnosis/diagnosis-summary-v1.md)を完了。計画上限超過14・ID重複2と、candidate claims欠落11応答・内部誤キー3応答を確認した。
-- #562/#563のCLI修正を`ed30857`・`25d602c`で固定し、独立確認中。独立レビューで見つかった配列形式の誤受理も修正した。max_targetsとID一意性を実要求へ渡し、model-only schema/decodeを一致させて不正形状を既存fallbackへ戻す。公開core型やclaims:[]の正当な保留は変えない。
+- 2026-10-28: #562/#563/#564のCLI修正は[PR561](https://github.com/git-ksk/reasoning-harness/pull/561)でマージ済み（`82b48a4`）。要求上限・candidate形状・再出力前の予算判定を修正し、局所独立レビューと最終headのCI22件が成功。共通評価hostは`c38d87d`に固定。公開core型やclaims:[]の正当な保留は維持する。
 - 同じ資料の再取得による停止、Rejectによる取得短絡、selector/説明不足は別の残件として保持する。2修正だけで全問題が解消したとは判断しない。
-- 新しいモデル生成・F1はまだ0。次の通常専用profileとruntime/receiptの準備が残る。
+- [PR565](https://github.com/git-ksk/reasoning-harness/pull/565)でMistral専用48jobsの通常profileを準備中。新規20・継承85のoffline controlsと無害な実CLI loopbackは成功したが、準備版`7f0508e`の独立source reviewで、旧観測を新runへ混入できる採点由来の欠落を確認した。実run/artifact/receipt/rawの結合を修正してから再レビューする。新しいモデル生成・F1はまだ0。
+
+## 2026-10-28 の実行前追加修正
+
+#566の後継CLIは[PR567](https://github.com/git-ksk/reasoning-harness/pull/567)の`dbad2dc`に固定し、ソース限定の独立確認と両EngineのLinux build・実重複取得loopbackを通過した。現在の評価profileはこのhostを事前指定するが、製品CIのmacOS runner割当と最終runtime/image受入は未完了で、実行許可ではない。
+
+
+[Issue566](https://github.com/git-ksk/reasoning-harness/issues/566)を優先する。独立operational reviewで、同じ固定snapshotの再取得が既存coreでmalformed扱いとなり、新runnerが停止する経路をMistral14/48・Google2/48の保存済み通常payloadで再現した。採点・エラー分類を緩めず、現在保持する証拠と現在のadmission方針で完全同一と確認できる再取得だけを、共通CLIの新しい版でno-progressとして扱う。外部resolverの発行履歴だけでは採用済みと判断しない。実resolver呼出し・費用を保持し、別内容・不明なmetadata・権限拒否は停止させる。
+
+順序は、CLI後継修正・境界テスト → 別担当レビューとCI → 共通hostを両Engineで再ビルド → 新runtime/image/proofの独立受入 → Mistral48jobs・新F1。準備版3086778のsource-only PASSやローカルDocker成功は、新しい実行の許可ではない。旧raw・旧F1・公開core・過去の凍結条件は変更しない。
 
 ## 作業順序
 

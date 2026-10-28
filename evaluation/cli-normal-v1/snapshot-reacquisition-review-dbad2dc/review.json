@@ -1,0 +1,92 @@
+{
+  "identity": "independent-cli-snapshot-reacquisition-source-review-v1",
+  "reviewer": "/root/real24_operational_review",
+  "reviewer_kind": "agent_nonhuman",
+  "reviewed_at_utc": "2026-10-28T15:38:15.213899+00:00",
+  "source_commit": "dbad2dc25d3487819206582f1fad778d9af75da1",
+  "base_commit": "82b48a46c6ee5714e250387941b8d7267b2bb0cb",
+  "result": "PASS_BOUNDED_SOURCE_ONLY",
+  "scope": "CLI admitted snapshot reacquisition decorator; exact source and model-free actual call-path tests",
+  "formal_verdict_issued": false,
+  "verdict_stage": "BOUNDED_SOURCE_ONLY",
+  "not_formal_operational_verdict": true,
+  "eligible_for_live_execution": false,
+  "blocking_findings": [],
+  "source_files_sha256": {
+    "crates/reasoning-harness-cli/src/main.rs": "4805d31149018d76e1294ce9cbfde171f5054a53b3bcac0a794c58e601fd3222",
+    "crates/reasoning-harness-cli/src/snapshot_reacquisition_tests.rs": "8c703a4b71b73a8b1ad3911d328160c74b676e900c7d1f6cd5dd4bce58a246c2",
+    "docs/cli-admitted-snapshot-reacquisition.md": "09d4e31c43cfe5210c33fcc2f35c42a3f88ca1a3040d800cd54c39ca40381170"
+  },
+  "public_core_or_frozen_baseline_changes": false,
+  "independently_executed_tests": {
+    "author_snapshot_controls": 5,
+    "independently_authored_test_groups": 3,
+    "passed": 8,
+    "failed": 0,
+    "other_CLI_tests_built_but_filtered": 253,
+    "actual_runtime_image_reviewed": false,
+    "frozen_baseline_binary_independently_built_in_this_review": false
+  },
+  "nonempty_authority_controls": [
+    {
+      "artifact_bytes_unchanged": true,
+      "case": "nonempty_actual_run_path",
+      "cost_microusd_each": 4,
+      "existing_claims": 1,
+      "existing_receipts": 1,
+      "final_verdict": "accept",
+      "initial_verdict": "accept",
+      "mixed_unresolved_claim": false,
+      "new_admissions": 0,
+      "new_receipts_by_attempt": 0,
+      "replay_equal": true,
+      "resolver_calls_each": 1
+    },
+    {
+      "artifact_bytes_unchanged": true,
+      "case": "nonempty_actual_run_path",
+      "cost_microusd_each": 4,
+      "existing_claims": 2,
+      "existing_receipts": 1,
+      "final_verdict": "unknown",
+      "initial_verdict": "unknown",
+      "mixed_unresolved_claim": true,
+      "new_admissions": 0,
+      "new_receipts_by_attempt": 0,
+      "replay_equal": true,
+      "resolver_calls_each": 1
+    }
+  ],
+  "confirmed_boundaries": [
+    "The real resolver executes once before comparison; NoResult conversion preserves adapter name/config_id and the exact output cost.",
+    "Only a nonempty valid batch with unique IDs and exactly one existing Evidence per ID can be considered.",
+    "Every record is re-admitted through the current resolver/request/ExternalEvidenceAdmissionPolicy before complete normalized Evidence equality.",
+    "Changed or revoked source authority, higher minimum rank, different effective interval, different provenance/scope, future retrieval, malformed/mixed/duplicate/empty/new batches are not silently suppressed.",
+    "Later valid retrieval does not change the original observed/effective age; normalized admitted equality is distinct from raw retrieval-clock equality.",
+    "CandidateRevision and HumanReviewRequired remain PolicyDenied, and an inner Timeout cannot be hidden by cached evidence.",
+    "Actual run_investigation_resolution with nonempty existing claims/receipts preserves the entire artifact byte-for-byte and the existing Accept or Unknown verdict; each new attempt has zero admitted IDs and zero new verification receipts.",
+    "Repeat execution remains an idempotent source read and still consumes one resolver call and fixture-reported cost; no refund or new source/claim authority is asserted."
+  ],
+  "limits": [
+    "This is source review plus local native macOS Rust controls, not the exact future Linux image or both final arm binaries.",
+    "Existing normal coverage/materialization may use previously admitted facts through unchanged gates; the NoResult action itself grants no new admission.",
+    "A future source/image/proof/receipt must be independently reviewed before real provider requests; this result cannot authorize that workflow.",
+    "No model accuracy/F1, CLI adoption, publication or release conclusion is made."
+  ],
+  "preservation": {
+    "author_worktree_modified_by_reviewer": false,
+    "old_observations_or_scores_changed": false,
+    "public_core_or_baseline_source_modified": false,
+    "model_requests": 0,
+    "provider_credentials_supplied": 0,
+    "tag_operations": 0
+  },
+  "evidence": {
+    "intake.json": "71709e0a1fc312d2aa780c03bb60114e2466647b17dd37e3c9e21c2e5db43a9c",
+    "independent_controls.rs": "b6ef5ed218f72156c9b56d513ee63f5df01767e05260a39d41eb210d773104f9",
+    "independent-source-tests.stdout": "0fba5f296aaaca9d29843a0941c77f29eb1d7517743f9b442c98158df43e6eef",
+    "independent-source-tests.stderr": "115bb5074ecde0f0d7db008664b16043fbd680ffb7db663fd8f75504beb6c5c6",
+    "test-execution.json": "d3122896e565b321e12853131cdcc10535b100443bb318c9e59cb6490c8f7b0f",
+    "probe-results.json": "b007989504d20c21e21535dae443799e1bb0d86feedd338991153a9888671422"
+  }
+}

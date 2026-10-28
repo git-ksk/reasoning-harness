@@ -1,0 +1,533 @@
+{
+  "old_actions_run": 40248051474,
+  "new_scorer_id_matches_old": [
+    {
+      "file": "09156135cba4c4d015668e03.json",
+      "case": "rw-19",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "0f514df826777fb35ff1ee7b.json",
+      "case": "rw-10",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "0f9441faed9dae4e4488a56c.json",
+      "case": "rw-14",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "185a37ba3386dc4d01313124.json",
+      "case": "rw-03",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "1cb5e00a740cc6209250d25e.json",
+      "case": "rw-20",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "1d2ec2a3a5f269be7dc30d82.json",
+      "case": "rw-08",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "1fd88b35ede4b34a74a6e661.json",
+      "case": "rw-19",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "21b6f183bd7e35f9ebf2101a.json",
+      "case": "rw-20",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "228ad2d5c62f33db3630aace.json",
+      "case": "rw-16",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "2b876a263dfbbc1a06f3e819.json",
+      "case": "rw-21",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "2eb1fd450fd8545abbbed1c9.json",
+      "case": "rw-08",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "415d93b713ab1641abb771d5.json",
+      "case": "rw-24",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "434088ec1814baa013b5aad5.json",
+      "case": "rw-09",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "4a38e1e68c83806ad742c788.json",
+      "case": "rw-13",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "4ffe797373e8c216582951f4.json",
+      "case": "rw-23",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "559d5166276e0b727df3d7fa.json",
+      "case": "rw-09",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "5cb393a65fea047803decacd.json",
+      "case": "rw-23",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "5e16780de57588e683079922.json",
+      "case": "rw-21",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "6000d280481d31069c119276.json",
+      "case": "rw-01",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "651d8635312f5a3084c0deca.json",
+      "case": "rw-22",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "6e6607308637f170ff557f79.json",
+      "case": "rw-07",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "6e8719767a8a21bbf08927f3.json",
+      "case": "rw-02",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "724d2b023b7153704d50a03c.json",
+      "case": "rw-05",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "78fe53bbae4f92dc47abd8ed.json",
+      "case": "rw-16",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "7a58b8e3cd036667f639acc3.json",
+      "case": "rw-14",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "7a8774b9cabeb8651adfc8bb.json",
+      "case": "rw-12",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "7b86a44af9312d19d1e03813.json",
+      "case": "rw-05",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "7f5ad33fbfa26a56a6fc46c9.json",
+      "case": "rw-17",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "8a97274a04bc1acf4d02b3c9.json",
+      "case": "rw-13",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "8b6818f388c255220b208a4a.json",
+      "case": "rw-10",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "a3ad4a2e364cc50d7638776f.json",
+      "case": "rw-07",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "a7add3551a2cc50e8de3d690.json",
+      "case": "rw-11",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "b46ec8d69f5c70f164b7ac3b.json",
+      "case": "rw-15",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "b4b91cf06142cdfc26519745.json",
+      "case": "rw-22",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "b59ec027a3e23d9cd76894b6.json",
+      "case": "rw-15",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "bb85130dc8a04ef70e67e99b.json",
+      "case": "rw-02",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "c083ae85fcc94ed57d690fea.json",
+      "case": "rw-17",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "c51edcf475cd70480810c23f.json",
+      "case": "rw-03",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "ca5bedb1270b03996d199ba2.json",
+      "case": "rw-01",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "ce2b9f0c145939d7233ac110.json",
+      "case": "rw-04",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "d99914ed62fb1f26f8983c3e.json",
+      "case": "rw-12",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "e1b9db5d0b343f3d63925f65.json",
+      "case": "rw-18",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "e6453759a1c363574b0755fd.json",
+      "case": "rw-06",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "e65cbf69a95999a1e7b6312b.json",
+      "case": "rw-06",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "e9462ee8f071f09ea7a2ab0d.json",
+      "case": "rw-04",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "ed87db8590cdbf2807e3790b.json",
+      "case": "rw-24",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "f5fa141ef06ec0daa493c443.json",
+      "case": "rw-11",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    },
+    {
+      "file": "fc421d94d8a0f4051dd594f4.json",
+      "case": "rw-18",
+      "arm": "candidate",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false
+    }
+  ]
+}

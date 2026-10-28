@@ -1,0 +1,118 @@
+{
+  "tests_passed": 8,
+  "tests_failed": 0,
+  "nonempty_actual_call_path_controls": [
+    {
+      "artifact_bytes_unchanged": true,
+      "case": "nonempty_actual_run_path",
+      "cost_microusd_each": 4,
+      "existing_claims": 1,
+      "existing_receipts": 1,
+      "final_verdict": "accept",
+      "initial_verdict": "accept",
+      "mixed_unresolved_claim": false,
+      "new_admissions": 0,
+      "new_receipts_by_attempt": 0,
+      "replay_equal": true,
+      "resolver_calls_each": 1
+    },
+    {
+      "artifact_bytes_unchanged": true,
+      "case": "nonempty_actual_run_path",
+      "cost_microusd_each": 4,
+      "existing_claims": 2,
+      "existing_receipts": 1,
+      "final_verdict": "unknown",
+      "initial_verdict": "unknown",
+      "mixed_unresolved_claim": true,
+      "new_admissions": 0,
+      "new_receipts_by_attempt": 0,
+      "replay_equal": true,
+      "resolver_calls_each": 1
+    }
+  ],
+  "additional_independent_results": [
+    {
+      "calls": 1,
+      "case": "inner_failure_or_disallowed_contribution",
+      "cost_microusd": 4,
+      "error_kind": "Timeout",
+      "mode": 0
+    },
+    {
+      "calls": 1,
+      "case": "inner_failure_or_disallowed_contribution",
+      "cost_microusd": 4,
+      "error_kind": "PolicyDenied",
+      "mode": 1
+    },
+    {
+      "case": "source_revoked",
+      "cost_kept": true,
+      "not_suppressed": true
+    },
+    {
+      "calls": 1,
+      "case": "inner_failure_or_disallowed_contribution",
+      "cost_microusd": 4,
+      "error_kind": "PolicyDenied",
+      "mode": 2
+    },
+    {
+      "case": "currently_fresh_but_different_effective_interval",
+      "cost_kept": true,
+      "not_suppressed": true
+    },
+    {
+      "case": "minimum_authority_raised",
+      "cost_kept": true,
+      "not_suppressed": true
+    },
+    {
+      "case": "new_required_scope",
+      "cost_kept": true,
+      "not_suppressed": true
+    },
+    {
+      "case": "existing_metadata_temporal_different",
+      "not_suppressed": true
+    },
+    {
+      "case": "existing_metadata_provenance_different",
+      "not_suppressed": true
+    },
+    {
+      "artifact_bytes_unchanged": true,
+      "case": "nonempty_actual_run_path",
+      "cost_microusd_each": 4,
+      "existing_claims": 1,
+      "existing_receipts": 1,
+      "final_verdict": "accept",
+      "initial_verdict": "accept",
+      "mixed_unresolved_claim": false,
+      "new_admissions": 0,
+      "new_receipts_by_attempt": 0,
+      "replay_equal": true,
+      "resolver_calls_each": 1
+    },
+    {
+      "artifact_bytes_unchanged": true,
+      "case": "nonempty_actual_run_path",
+      "cost_microusd_each": 4,
+      "existing_claims": 2,
+      "existing_receipts": 1,
+      "final_verdict": "unknown",
+      "initial_verdict": "unknown",
+      "mixed_unresolved_claim": true,
+      "new_admissions": 0,
+      "new_receipts_by_attempt": 0,
+      "replay_equal": true,
+      "resolver_calls_each": 1
+    }
+  ],
+  "test_executable_sha256": "96b462a7bf7120395aa3164b7a889d90e5ed3e80fb98039326d8ddff52342875",
+  "test_executable": "/private/tmp/reason-snapshot-review-ez65st9c/target-isolated/debug/deps/reason-07e6bf223dacba77",
+  "external_provider_requests": 0,
+  "model_requests": 0,
+  "new_F1_calculations": 0
+}

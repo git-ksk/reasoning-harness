@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "reasoning-harness-cli",
+    "--bin",
+    "reason",
+    "--jobs",
+    "2",
+    "snapshot_reacquisition_tests",
+    "--",
+    "--nocapture"
+  ],
+  "cwd": "/private/tmp/reason-snapshot-review-ez65st9c/source",
+  "CARGO_TARGET_DIR": "/private/tmp/reason-snapshot-review-ez65st9c/target-isolated",
+  "returncode": 0,
+  "credentials_forwarded": false,
+  "model_HTTP_requests": 0,
+  "expected_tests": 8
+}
