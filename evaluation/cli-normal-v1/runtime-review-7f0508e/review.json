@@ -1,0 +1,72 @@
+{
+  "identity": "independent-normal-runtime-source-review-v1",
+  "source_commit": "7f0508eb55bb3f5240556ffc3c8d50cbcd7f9bb5",
+  "source_scope": "source-only; no image/proof/admission verdict",
+  "result": "FAIL",
+  "reviewer": "/root/provider_budget_tests",
+  "reviewed_at_utc": "2026-10-28T00:16:50.394822+00:00",
+  "files": {
+    "evaluation/cli-normal-v1/runtime/score_development_first.py": {
+      "git_blob": "d0d4ba40762818f9a81692211cfb69d6876f23e2",
+      "sha256": "0307d21159e9b6b18059b213883092df57c46df4d7fb02784900c1f8c20d8f28"
+    },
+    "evaluation/cli-normal-v1/runtime/scorer.py": {
+      "git_blob": "aaf56e8296c2207478db15d98cbda765532206b8",
+      "sha256": "8cb6389dcaad7fe1ce3425b10e152619dd2af6bbdd009101ee081346deca4ab5"
+    },
+    "evaluation/cli-normal-v1/runtime/development.py": {
+      "git_blob": "8f4ac91879b9961fac6f793bb0d519807bda20af",
+      "sha256": "36fd4ff0f90fd4b7d624d41e18476b58abf2848d1236cdf3a5ac2c3755377245"
+    },
+    "evaluation/cli-normal-v1/runtime/protocol.json": {
+      "git_blob": "2343218730a3366ef56912038bf0b5fe97b94387",
+      "sha256": "d9f9bdb1cde7a15a10dac5a54577085123ee5c22eb36cae51f2744a3c79571b9"
+    },
+    ".github/workflows/cli-normal-real24-development.yml": {
+      "git_blob": "40c26080aba202d7df72624c079852bd6efb5c18",
+      "sha256": "2edd83ee5a43d80a105081a350e9f0b7d5be60244ab4358eb26418143eceff10"
+    },
+    "evaluation/cli-repair-paired-v1/collect.py": {
+      "git_blob": "6da8389cfb6fd0ac76f7091b5a891c2ae2f70ddf",
+      "sha256": "3ba36e441f4c11e4d9e26a5985b7249115fb0e8698fdf80ee69e70c0cf7e67e0"
+    }
+  },
+  "controls": {
+    "normal_unittest": "12/12 PASS fresh prepared snapshot",
+    "inherited_unittest": "85/85 PASS fresh prepared snapshot",
+    "actual_image_reviewed": false,
+    "external_requests": 0,
+    "credential_use": false,
+    "tag_created": false,
+    "old_results_modified": false,
+    "old_results_rescored": false
+  },
+  "blocking_finding": {
+    "id": "observation-provenance-not-bound-to-execution",
+    "severity": "release_and_live_execution_blocker",
+    "old_actions_run": 40248051474,
+    "old_observation_directory": "target/private-evaluation-pending/cli-repair-paired-real24-development-v2/merged-observations-v1",
+    "old_review_directory": "target/private-evaluation-pending/cli-repair-paired-real24-development-v2/semantic-review-v1/reviews",
+    "matching_old_ordinary_pairs": 48,
+    "matching_new_scorer_ids": 48,
+    "same_required_semantic_reviewer": 48,
+    "pairs_without_run_or_receipt_identity": 48,
+    "example": {
+      "file": "e65cbf69a95999a1e7b6312b.json",
+      "case": "rw-06",
+      "arm": "baseline",
+      "same_computed_id": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "observation_has_run_id": false,
+      "observation_sha256": "78a75a3801e8cfb28eea5546d7b2bfd86f0c86566fdbe2c093d311ccdf284cfc",
+      "review_sha256": "af31e25b3716b07a1b13309b3c445b0555c6c58cbdb06b41a3d88cd1d06c7b42"
+    },
+    "cause": "the new scorer derives the same opaque row ID from consumed M1/provider/case/track/arm as v2; observations carry no execution receipt or GitHub run identity; scorer checks a caller-provided freeze/inventory but does not verify its observations belong to the new GitHub artifact, lane, run reservation, and sealed receipt",
+    "impact": "the old 48 ordinary observations and same-identity reviews can be admitted under an unrelated new receipt if listed in an analysis freeze; the code does not mechanically establish that reported metrics belong to the new run",
+    "required_fix": "Bind frozen artifact metadata and ZIP bytes to authenticated GitHub workflow run/tag/head/attempt, reservation, receipt, lane plan/state and raw/observation inventory; bind each review and first-score freeze to that same execution; reject old, mixed, absent, and forged-source material with offline tests. Preserve all old runs, reviews and scores unchanged."
+  },
+  "history": "This record is append-only evidence for this source commit; later revisions require a new independent review and must not overwrite this record."
+}

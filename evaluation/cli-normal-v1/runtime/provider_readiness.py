@@ -30,11 +30,11 @@ def verify(review_path, proof_path):
     require_operational_review_identity(protocol,review,
         {'source_commit':proof['source_commit'],'runtime_proof_sha256':digest(proof_path)})
     for key in ['source_commit','paired_host_identity_sha256','runtime_image_id','runtime_image_archive_sha256']:
-        assert review[key] == proof[key]
+        if review[key] != proof[key]:raise ValueError('review_proof_mismatch:'+key)
     files = {str(p.relative_to(REPO)): digest(p) for p in REPO.rglob('*')
              if p.is_file() and '__pycache__' not in p.parts}
-    assert files == proof['runtime_files']
-    assert review['reviewed_runtime_files_sha256'] == hashlib.sha256(json.dumps(files,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+    if files != proof['runtime_files']:raise ValueError('runtime_inventory_changed')
+    if review['reviewed_runtime_files_sha256'] != hashlib.sha256(json.dumps(files,sort_keys=True,separators=(',',':')).encode()).hexdigest():raise ValueError('runtime_review_digest_changed')
     return protocol, proof
 
 def main():
@@ -50,11 +50,11 @@ def main():
     protocol, proof = verify(args.review, args.runtime_proof)
     if args.verify_only:
         from image_identity import verify_loaded_image
-        assert args.image_archive is not None and args.actual_image_id is not None
+        if args.image_archive is None or args.actual_image_id is None:raise ValueError('image_verification_inputs_required')
         verify_loaded_image(args.image_archive,proof['runtime_image_archive_sha256'],proof['runtime_image_id'],args.actual_image_id)
         print('Exact operational review and runtime verified; no provider request.')
         return
-    assert args.output is not None
+    if args.output is None:raise ValueError('readiness_output_required')
     args.output.parent.mkdir(parents=True,exist_ok=True)
     # Reserve the exclusive record before reading credentials or opening HTTP.
     with args.output.open('x') as output:

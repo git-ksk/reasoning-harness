@@ -137,6 +137,14 @@ class OrdinaryAdmission(unittest.TestCase):
         self.assertEqual(p['case_quality_gate']['minimum_recall'],.85)
         self.assertNotIn('helper_bound',p)
 
+    def test_prepared_runtime_contains_inherited_proof_driver_and_normal_dockerfile(self):
+        proof=HERE.parent/'runtime_proof.py'
+        dockerfile=HERE/'Dockerfile.runtime'
+        self.assertTrue(proof.is_file())
+        self.assertIn('BUILT_OFFLINE_NOT_EXECUTION_ADMISSION',proof.read_text())
+        self.assertTrue(dockerfile.is_file())
+        self.assertIn('ca-certificates gh',dockerfile.read_text())
+
     def test_missing_pair_is_incomplete_never_f1_or_false_regression(self):
         planned=[];rows=[]
         for i in range(24):

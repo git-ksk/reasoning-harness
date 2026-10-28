@@ -112,11 +112,12 @@ def main():
         assert result['complete'] is False and len(result['rows'])==3,result
         assert result['rows'][0]['complete'] is True,result['rows'][0]
         assert result['rows'][1]['complete'] is False,result['rows'][1]
+        assert result['rows'][1]['outcome']['failure_class']=='quota',result['rows'][1]
         assert result['rows'][2]['admission']['allowed'] is False,result['rows'][2]
         assert len(FixtureHandler.requests)==6, len(FixtureHandler.requests)
         assert (lane/'event-000002.json').is_file() and (lane/'state.json').is_file()
         state=json.loads((lane/'state.json').read_text())
-        assert state['guard']['latch'] and not state['guard']['inflight'],state
+        assert state['guard']['latch']=='typed_quota' and not state['guard']['inflight'],state
         assert state['charged_reservations']==2*(24000+4096),state
         first=lane/jobs[0]['id'];events=[json.loads(x) for x in (first/'model-journal.jsonl').read_text().splitlines()]
         assert sum(e.get('kind')=='model_response' for e in events)==5

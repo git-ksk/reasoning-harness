@@ -43,17 +43,24 @@ jobs:
           sys.path.insert(0,'evaluation/cli-normal-v1/runtime')
           source=Path('evaluation/cli-normal-real24-development-v1')
           receipt=json.loads((source/'receipt.json').read_bytes())
-          assert receipt['identity']=='cli-normal-v1-development-freeze-v1' and receipt['state']=='DEVELOPMENT_FROZEN'
-          assert receipt['execution_tag']==os.environ['GITHUB_REF_NAME']=='cli-normal-real24-development-v1'
-          assert receipt['required_provider_readiness'][os.environ['EVALUATION_PROVIDER']]['new_live_run_allowed'] is True
-          assert receipt['execution_workflow_sha256']==hashlib.sha256(Path('.github/workflows/cli-normal-real24-development.yml').read_bytes()).hexdigest()
+          if not (receipt['identity']=='cli-normal-v1-development-freeze-v1' and receipt['state']=='DEVELOPMENT_FROZEN'): raise ValueError('workflow_integrity_check_failed')
+          if not (receipt['execution_tag']==os.environ['GITHUB_REF_NAME']=='cli-normal-real24-development-v1'): raise ValueError('workflow_integrity_check_failed')
+          if not (receipt['required_provider_readiness'][os.environ['EVALUATION_PROVIDER']]['new_live_run_allowed'] is True): raise ValueError('workflow_integrity_check_failed')
+          if not (receipt['execution_workflow_sha256']==hashlib.sha256(Path('.github/workflows/cli-normal-real24-development.yml').read_bytes()).hexdigest()): raise ValueError('workflow_integrity_check_failed')
           tag_gate=Path('evaluation/cli-normal-v1/runtime/tag_admission.py')
-          assert hashlib.sha256(tag_gate.read_bytes()).hexdigest()==receipt['files']['evaluation/cli-repair-paired-v1/normal_v1/tag_admission.py']
+          if not (hashlib.sha256(tag_gate.read_bytes()).hexdigest()==receipt['files']['evaluation/cli-repair-paired-v1/normal_v1/tag_admission.py']): raise ValueError('workflow_integrity_check_failed')
           subprocess.run(['python3',str(tag_gate),'--repo',os.environ['GITHUB_REPOSITORY'],
                           '--tag',os.environ['GITHUB_REF_NAME'],'--source-sha',os.environ['GITHUB_SHA'],
                           '--run-id',os.environ['GITHUB_RUN_ID'],
                           '--output','/tmp/results/run-reservation.json'],check=True)
           shutil.copyfile(source/'receipt.json','/tmp/frozen/development.json')
+          shutil.copyfile(source/'receipt.json','/tmp/results/development-receipt.json')
+          identity={'schema':'cli-normal-execution-identity-v1','repository':os.environ['GITHUB_REPOSITORY'],
+              'execution_tag':os.environ['GITHUB_REF_NAME'],'run_id':int(os.environ['GITHUB_RUN_ID']),
+              'run_attempt':int(os.environ['GITHUB_RUN_ATTEMPT']),'source_sha':os.environ['GITHUB_SHA'],
+              'receipt_sha256':hashlib.sha256(Path('/tmp/results/development-receipt.json').read_bytes()).hexdigest(),
+              'reservation_sha256':hashlib.sha256(Path('/tmp/results/run-reservation.json').read_bytes()).hexdigest()}
+          with open('/tmp/results/execution-identity.json','x') as f:json.dump(identity,f,sort_keys=True,indent=2);f.write('\n')
           shutil.copytree(source/'development-review','/tmp/frozen/development-review')
           # The authenticated Mistral metadata GET record are hash-bound before either provider gets credentials.
           shutil.copytree(source/'provider-readiness','/tmp/frozen/provider-readiness')
@@ -89,13 +96,8 @@ jobs:
       - name: Stop the contained process tree before collection
         if: always()
         run: docker rm -f cli-normal-real24-${{ matrix.provider }}-${{ github.run_id }} >/dev/null 2>&1 || true
-      - name: Capture actual output and all incomplete rows
-        if: always()
-        env:
-          EVALUATION_PROVIDER: ${{ matrix.provider }}
-        run: |
-          set -euo pipefail
-          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/results:/output paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/collect_checked.py --corpus-dir /frozen/corpus --provider "$EVALUATION_PROVIDER" --lane /output/lane --output /output/observations
+      # Semantic observations are reconstructed only after authenticated
+      # readback of this exact run's uploaded artifact and raw lane.
       - name: Preserve private raw modes and transfer ownership to the uploader
         if: always()
         run: sudo chown -R "$(id -u):$(id -g)" /tmp/results

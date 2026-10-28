@@ -26,7 +26,7 @@ class FixedSourceRedirect(urllib.request.HTTPRedirectHandler):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--corpus-dir',type=Path,required=True);p.add_argument('--M1-sha256',required=True);a=p.parse_args();root=a.corpus_dir.resolve()
-    assert a.M1_sha256==INPUT_M1 and hashlib.sha256((root/'manifest.json').read_bytes()).hexdigest()==INPUT_M1
+    if not (a.M1_sha256==INPUT_M1 and hashlib.sha256((root/'manifest.json').read_bytes()).hexdigest()==INPUT_M1):raise ValueError('consumed_manifest_changed')
     corpus=json.loads((root/'corpus.json').read_text())
     for doc in corpus['documents'].values():
         raw=(root/doc['raw_path']).resolve();text=(root/doc['normalized_path']).resolve()

@@ -21,8 +21,9 @@ The API records and applies authorized caller reviews; it does not discover gene
 - Policy, Japanese/English roadmaps and Issues531/538/540 are synchronized in PR561.
 - [Independent model-free API contract review](../evaluation/cli-normal-v1/model-free-api-review/review.json): PASS for pinned candidate;960 existing core tests passed,2 historical first-observation controls remain ignored,44 direct API groups and9 legacy compatibility cases passed. The host still owns authentication, semantic determination and freshness.
 - [Independent Mistral diagnosis](../evaluation/cli-normal-v1/mistral-independent-diagnosis/diagnosis-summary-v1.md):48 saved ordinary executions;14 over-limit and2 duplicate-ID plans;11 missing-claims and3 nested-typo model responses.
-- CLI source commits `ed30857` and `25d602c` address Issues562/563. Independent review found and the second commit repairs positional JSON-array acceptance. Public stored candidates and explicit `claims:[]` remain compatible; source review is ongoing.
-- Duplicate acquisitions, early Reject, selector/typed-value alignment and trusted explanations remain distinct diagnosed issues. No new model generations or F1 score have been produced.
+- 2026-10-28: [PR561](https://github.com/git-ksk/reasoning-harness/pull/561) merged Issues562/563/564 at `82b48a4`: effective request limits, model candidate shapes and fallback token budgets. Bounded independent reviews and all22 final-head CI checks passed. The common evaluation host is fixed at `c38d87d`; public candidate contracts and explicit `claims:[]` remain compatible.
+- Duplicate acquisitions, early Reject, selector/typed-value alignment and trusted explanations remain distinct diagnosed issues.
+- [PR565](https://github.com/git-ksk/reasoning-harness/pull/565) prepares a Mistral-only48-job ordinary profile. Twelve new and85 inherited offline controls and inert actual-CLI loopback controls passed. Independent source review of preparation `7f0508e` found missing provenance that could mix old observations into a new run; bind actual run/artifact/receipt/raw before re-review. No new model generations or F1 score have been produced.
 
 ## Order
 

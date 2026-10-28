@@ -41,7 +41,7 @@
       "provider_unit": "170 passed, 1 ignored",
       "workspace_clippy": "PASS --all-targets -D warnings",
       "independent_legacy_core_compile": "PASS limited offline source reconstruction",
-      "CI": "PENDING exact final PR head"
+      "CI": "22 PASS at e7ac326664dca1a5ae005fef34daf25d71bd9b32; PR561 merged 82b48a46c6ee5714e250387941b8d7267b2bb0cb"
     },
     "remaining_diagnostic_findings": [
       "duplicate immutable acquisition handled as operational failure",
@@ -69,5 +69,28 @@
   "new_normal_F1": null,
   "old_v1_v2_artifacts_modified": false,
   "Groq": "HELD",
-  "Google": "Historical 23/24 candidate result is incomplete; no new Google call in Mistral-only development"
+  "Google": "Historical 23/24 candidate result is incomplete; no new Google call in Mistral-only development",
+  "ordinary_runtime": {
+    "draft_PR": 565,
+    "committed_preparation": "7f0508eb55bb3f5240556ffc3c8d50cbcd7f9bb5",
+    "committed_source_review": "FAIL_SOURCE_ONLY_RUN_PROVENANCE_MISSING",
+    "working_tree_repair": "SOURCE_REVIEW_AND_DOCKER_PROOF_PENDING",
+    "working_tree_normal_controls": 20,
+    "inherited_controls": 85,
+    "linux_arm64_provider_controls": 18,
+    "linux_arm64_CLI_controls": 17,
+    "real_provider_requests": 0,
+    "F1": null,
+    "formal_Docker_image_proof": false,
+    "source_review_report_sha256": "39b6354110d8c33a8c349e5b833ebabb777375cad1adda220e6a59c978a9e9a5",
+    "approval_review_block": "RESOLVED: same approval path accepted read-only artifact digest check after usage recovery",
+    "artifact_digest_spec_control": {
+      "artifact_id": 12621736415,
+      "bytes": 2655082,
+      "sha256": "1b30bdcd8a2174fb411ec53cf6ff0d5318cd7bda29576fe2a7f95dc23406ad6d",
+      "matches_GitHub_API_digest": true,
+      "old_data_rescored": false,
+      "scope": "read-only archive digest specification; not new-run acceptance"
+    }
+  }
 }
