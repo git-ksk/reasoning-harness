@@ -68,8 +68,9 @@ jobs:
           with open('/tmp/runtime.zip','wb') as stream:
               subprocess.run(['gh','api',f'repos/{os.environ["GITHUB_REPOSITORY"]}/actions/artifacts/{artifact}/zip'],stdout=stream,check=True)
           PY
-          unzip -q /tmp/runtime.zip -d /tmp/runtime
-          artifact_root=$(dirname "$(find /tmp/runtime -name runtime-proof.json -print -quit)")
+          # Trust checkout-side review and actual archive bytes before any downloaded code.
+          python3 evaluation/cli-normal-v1/verify_runtime_archive.py --artifact-zip /tmp/runtime.zip --output /tmp/runtime --review evaluation/cli-normal-real24-development-v1/development-review/review.json --receipt evaluation/cli-normal-real24-development-v1/receipt.json
+          artifact_root=/tmp/runtime
           test -n "$artifact_root"
           docker load -i "$artifact_root/runtime-image.tar.gz"
           image_id=$(docker image inspect paired-runtime --format '{{.Id}}')

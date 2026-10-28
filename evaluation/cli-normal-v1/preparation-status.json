@@ -105,7 +105,13 @@
         "result": "PASS_BOUNDED_SOURCE_ONLY",
         "review_sha256": "b4cd9ab3e1fd8b91befe18d33e2c0a21f11d5620ad50b3c3db54920acea3983f"
       }
-    ]
+    ],
+    "host_archive_boundary": {
+      "status": "REPAIRED_PENDING_INDEPENDENT_REVIEW",
+      "scope": "checkout code verifies final independent review, proof, trusted receipt/reference, host verifier hash, and actual image archive bytes before any docker load/run",
+      "controls": "modified image cannot reach Docker sentinel in readiness or execution; optimized Python checked",
+      "model_calls": 0
+    }
   },
   "prospective_common_CLI_host": "dbad2dc25d3487819206582f1fad778d9af75da1",
   "issue566": {

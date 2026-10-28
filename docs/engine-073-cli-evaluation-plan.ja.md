@@ -29,7 +29,7 @@
 - [Mistral保存48通常出力の独立診断](../evaluation/cli-normal-v1/mistral-independent-diagnosis/diagnosis-summary-v1.md)を完了。計画上限超過14・ID重複2と、candidate claims欠落11応答・内部誤キー3応答を確認した。
 - 2026-10-28: #562/#563/#564のCLI修正は[PR561](https://github.com/git-ksk/reasoning-harness/pull/561)でマージ済み（`82b48a4`）。要求上限・candidate形状・再出力前の予算判定を修正し、局所独立レビューと最終headのCI22件が成功。共通評価hostは`c38d87d`に固定。公開core型やclaims:[]の正当な保留は維持する。
 - 同じ資料の再取得による停止、Rejectによる取得短絡、selector/説明不足は別の残件として保持する。2修正だけで全問題が解消したとは判断しない。
-- [PR565](https://github.com/git-ksk/reasoning-harness/pull/565)でMistral専用48jobsの通常profileを準備中。新規12・継承85のoffline controlsと無害な実CLI loopbackは成功したが、準備版`7f0508e`の独立source reviewで、旧観測を新runへ混入できる採点由来の欠落を確認した。実run/artifact/receipt/rawの結合を修正してから再レビューする。新しいモデル生成・F1はまだ0。
+- [PR565](https://github.com/git-ksk/reasoning-harness/pull/565)でMistral専用48jobsの通常profileを準備中。新規20・継承85のoffline controlsと無害な実CLI loopbackは成功したが、準備版`7f0508e`の独立source reviewで、旧観測を新runへ混入できる採点由来の欠落を確認した。実run/artifact/receipt/rawの結合を修正してから再レビューする。新しいモデル生成・F1はまだ0。
 
 ## 2026-10-28 の実行前追加修正
 

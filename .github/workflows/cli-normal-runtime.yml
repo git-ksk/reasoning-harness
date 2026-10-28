@@ -29,6 +29,7 @@ jobs:
       - name: Verify pinned Git objects and prepare isolated runtime sources
         run: |
           set -euo pipefail
+          python3 -B -m unittest discover -s evaluation/cli-normal-v1 -p 'test_runtime_archive.py' -v
           git cat-file -e 6165de77c1544a7fe58fc1e675e7cb3a8ec7cc98^{commit}
           git cat-file -e 73bbd18173b4dfcd6664a26241de0385f2eb2e3e^{commit}
           git cat-file -e 4abee90f0501f0d8fc09b453a0b45c942fbed69e^{commit}
@@ -115,8 +116,9 @@ jobs:
           with open('/tmp/runtime.zip','wb') as stream:
               subprocess.run(['gh','api',f'repos/{os.environ["GITHUB_REPOSITORY"]}/actions/artifacts/{reference["runtime_artifact_id"]}/zip'],stdout=stream,check=True)
           PY
-          unzip -q /tmp/runtime.zip -d /tmp/runtime
-          artifact_root=$(dirname "$(find /tmp/runtime -name runtime-proof.json -print -quit)")
+          # Trust checkout-side review and actual archive bytes before any downloaded code.
+          python3 evaluation/cli-normal-v1/verify_runtime_archive.py --artifact-zip /tmp/runtime.zip --output /tmp/runtime --review evaluation/cli-normal-real24-development-v1/development-review/review.json --reference evaluation/cli-normal-real24-development-v1/runtime-reference.json
+          artifact_root=/tmp/runtime
           docker load -i "$artifact_root/runtime-image.tar.gz"
           cp "$artifact_root/runtime-proof.json" /tmp/review/runtime-proof.json
           image_id=$(docker image inspect paired-runtime --format '{{.Id}}')

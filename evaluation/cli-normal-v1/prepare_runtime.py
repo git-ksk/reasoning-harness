@@ -13,6 +13,9 @@ def main():
     repo=a.repo.resolve();output=a.output.resolve()
     subprocess.run([sys.executable,str(repo/'evaluation/cli-repair-paired-v1/prepare.py'),'--repo',str(repo),'--output',str(output)],check=True)
     prepared=output/'repo';manifest_path=output/'preparation.json';manifest=json.loads(manifest_path.read_text())
+    host_gate=prepared/'evaluation/cli-normal-v1/verify_runtime_archive.py'
+    host_gate.parent.mkdir(parents=True,exist_ok=True)
+    shutil.copyfile(repo/'evaluation/cli-normal-v1/verify_runtime_archive.py',host_gate)
     base=prepared/'evaluation/cli-repair-paired-v1';normal=base/'normal_v1';normal.mkdir()
     # The inherited prepare overlay omits its host-side proof driver. Copy the
     # exact source explicitly: normal_v1/runtime_proof.py invokes this file.
