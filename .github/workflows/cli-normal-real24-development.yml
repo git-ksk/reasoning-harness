@@ -74,13 +74,16 @@ jobs:
           test -n "$artifact_root"
           docker load -i "$artifact_root/runtime-image.tar.gz"
           image_id=$(docker image inspect paired-runtime --format '{{.Id}}')
-          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v "$artifact_root:/image:ro" paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/verify_development.py --receipt /frozen/development.json --provider "$EVALUATION_PROVIDER" --image-archive /image/runtime-image.tar.gz --actual-image-id "$image_id"
+          python3 evaluation/cli-normal-v1/verify_runtime_archive.py --loaded-proof "$artifact_root/runtime-proof.json" --actual-image-id "$image_id" --review evaluation/cli-normal-real24-development-v1/development-review/review.json --receipt evaluation/cli-normal-real24-development-v1/receipt.json
+          PAIRED_RUNTIME_IMAGE="$image_id"
+          echo "PAIRED_RUNTIME_IMAGE=$image_id" >> "$GITHUB_ENV"
+          docker run --pull=never --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v "$artifact_root:/image:ro" "$PAIRED_RUNTIME_IMAGE" python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/verify_development.py --receipt /frozen/development.json --provider "$EVALUATION_PROVIDER" --image-archive /image/runtime-image.tar.gz --actual-image-id "$image_id"
           git archive 6165de77c1544a7fe58fc1e675e7cb3a8ec7cc98 evaluation/engine073-realworld-independent-v1-input | tar -x -C /tmp/frozen
           mv /tmp/frozen/evaluation/engine073-realworld-independent-v1-input /tmp/frozen/corpus
           rm -rf /tmp/frozen/evaluation
-          docker run --rm --read-only --tmpfs /tmp -v /tmp/frozen:/frozen paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/prepare_consumed_sources.py --corpus-dir /frozen/corpus --M1-sha256 597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3
+          docker run --pull=never --rm --read-only --tmpfs /tmp -v /tmp/frozen:/frozen "$PAIRED_RUNTIME_IMAGE" python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/prepare_consumed_sources.py --corpus-dir /frozen/corpus --M1-sha256 597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3
           sudo chmod -R a-w /tmp/frozen
-          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/results:/output paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/make_development_plan.py --receipt /frozen/development.json --corpus-dir /frozen/corpus --provider "$EVALUATION_PROVIDER" --output /output/plan.json
+          docker run --pull=never --rm --read-only --network none --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/results:/output "$PAIRED_RUNTIME_IMAGE" python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/make_development_plan.py --receipt /frozen/development.json --corpus-dir /frozen/corpus --provider "$EVALUATION_PROVIDER" --output /output/plan.json
       - name: Execute the first real-model paired development cohort
         env:
           MISTRAL_API_KEY: ${{ matrix.provider == 'mistral' && secrets.MISTRAL_API_KEY || '' }}
@@ -93,7 +96,7 @@ jobs:
           esac
           name=cli-normal-real24-$EVALUATION_PROVIDER-$GITHUB_RUN_ID
           trap 'docker rm -f "$name" >/dev/null 2>&1 || true' EXIT INT TERM
-          timeout --signal=INT --kill-after=5s 340m docker run --name "$name" --read-only --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/results:/output -e MISTRAL_API_KEY paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/run_lane.py --plan /output/plan.json --output /output/lane --protocol /repo/evaluation/cli-repair-paired-v1/normal_v1/protocol.json
+          timeout --signal=INT --kill-after=5s 340m docker run --pull=never --name "$name" --read-only --tmpfs /tmp -v /tmp/frozen:/frozen:ro -v /tmp/results:/output -e MISTRAL_API_KEY "$PAIRED_RUNTIME_IMAGE" python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/run_lane.py --plan /output/plan.json --output /output/lane --protocol /repo/evaluation/cli-repair-paired-v1/normal_v1/protocol.json
       - name: Stop the contained process tree before collection
         if: always()
         run: docker rm -f cli-normal-real24-${{ matrix.provider }}-${{ github.run_id }} >/dev/null 2>&1 || true

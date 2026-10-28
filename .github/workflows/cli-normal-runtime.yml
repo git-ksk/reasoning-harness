@@ -122,7 +122,10 @@ jobs:
           docker load -i "$artifact_root/runtime-image.tar.gz"
           cp "$artifact_root/runtime-proof.json" /tmp/review/runtime-proof.json
           image_id=$(docker image inspect paired-runtime --format '{{.Id}}')
-          docker run --rm --read-only --network none --tmpfs /tmp -v /tmp/review:/review:ro -v "$artifact_root:/image:ro" paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/provider_readiness.py --provider "$EVALUATION_PROVIDER" --review /review/review.json --runtime-proof /review/runtime-proof.json --image-archive /image/runtime-image.tar.gz --actual-image-id "$image_id" --verify-only
+          python3 evaluation/cli-normal-v1/verify_runtime_archive.py --loaded-proof "$artifact_root/runtime-proof.json" --actual-image-id "$image_id" --review evaluation/cli-normal-real24-development-v1/development-review/review.json --reference evaluation/cli-normal-real24-development-v1/runtime-reference.json
+          PAIRED_RUNTIME_IMAGE="$image_id"
+          echo "PAIRED_RUNTIME_IMAGE=$image_id" >> "$GITHUB_ENV"
+          docker run --pull=never --rm --read-only --network none --tmpfs /tmp -v /tmp/review:/review:ro -v "$artifact_root:/image:ro" "$PAIRED_RUNTIME_IMAGE" python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/provider_readiness.py --provider "$EVALUATION_PROVIDER" --review /review/review.json --runtime-proof /review/runtime-proof.json --image-archive /image/runtime-image.tar.gz --actual-image-id "$image_id" --verify-only
       - name: Single metadata GET with no generation or retry
         env:
           MISTRAL_API_KEY: ${{ matrix.provider == 'mistral' && secrets.MISTRAL_API_KEY || '' }}
@@ -131,7 +134,7 @@ jobs:
           set -euo pipefail
           name=cli-normal-metadata-$EVALUATION_PROVIDER-$GITHUB_RUN_ID
           trap 'docker rm -f "$name" >/dev/null 2>&1 || true' EXIT INT TERM
-          timeout --signal=INT --kill-after=5s 60s docker run --name "$name" --rm --read-only --tmpfs /tmp -v /tmp/review:/review:ro -v /tmp/readiness:/output -e MISTRAL_API_KEY paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/provider_readiness.py --provider "$EVALUATION_PROVIDER" --review /review/review.json --runtime-proof /review/runtime-proof.json --output /output/readiness.json
+          timeout --signal=INT --kill-after=5s 60s docker run --pull=never --name "$name" --rm --read-only --tmpfs /tmp -v /tmp/review:/review:ro -v /tmp/readiness:/output -e MISTRAL_API_KEY "$PAIRED_RUNTIME_IMAGE" python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v1/provider_readiness.py --provider "$EVALUATION_PROVIDER" --review /review/review.json --runtime-proof /review/runtime-proof.json --output /output/readiness.json
       - name: Stop metadata container before collection
         if: always()
         run: docker rm -f cli-normal-metadata-${{ matrix.provider }}-${{ github.run_id }} >/dev/null 2>&1 || true

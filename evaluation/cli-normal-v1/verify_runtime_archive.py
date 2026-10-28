@@ -116,21 +116,45 @@ def extract_verified(zip_path, output, review_path, reference=None, receipt=None
     return proof
 
 
+def verify_loaded(proof_path, actual_id, review_path, reference=None, receipt=None):
+    review = verify_review(review_path, reference, receipt)
+    require(sha(proof_path) == review['runtime_proof_sha256'], 'runtime_proof_changed')
+    proof = json.loads(proof_path.read_bytes())
+    for key in BOUND_FIELDS:
+        require(proof.get(key) == review[key], 'proof_review_mismatch:' + key)
+    ids = proof.get('archive_verified_image_ids')
+    require(isinstance(ids, list) and 1 <= len(ids) <= 2
+            and all(isinstance(item, str) and re.fullmatch('sha256:[0-9a-f]{64}', item) for item in ids)
+            and len(set(ids)) == len(ids), 'invalid_archive_image_ids')
+    require(proof['runtime_image_id'] in ids and actual_id in ids,
+            'loaded_image_not_in_reviewed_archive')
+    return proof
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--artifact-zip', type=Path, required=True)
-    parser.add_argument('--output', type=Path, required=True)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--artifact-zip', type=Path)
+    mode.add_argument('--loaded-proof', type=Path)
+    parser.add_argument('--actual-image-id')
+    parser.add_argument('--output', type=Path)
     parser.add_argument('--review', type=Path, required=True)
     binding = parser.add_mutually_exclusive_group(required=True)
     binding.add_argument('--reference', type=Path)
     binding.add_argument('--receipt', type=Path)
     args = parser.parse_args()
     read = lambda path: json.loads(path.read_bytes()) if path else None
-    proof = extract_verified(args.artifact_zip, args.output, args.review,
-                             read(args.reference), read(args.receipt))
-    print(json.dumps({'host_archive_verification': 'PASS',
+    if args.artifact_zip:
+        require(args.output is not None and args.actual_image_id is None, 'archive_mode_arguments_invalid')
+        proof = extract_verified(args.artifact_zip, args.output, args.review,
+                                 read(args.reference), read(args.receipt))
+    else:
+        require(args.actual_image_id is not None and args.output is None, 'loaded_mode_arguments_invalid')
+        proof = verify_loaded(args.loaded_proof, args.actual_image_id, args.review,
+                              read(args.reference), read(args.receipt))
+    print(json.dumps({'host_runtime_verification': 'PASS',
                       'runtime_image_id': proof['runtime_image_id'],
-                      'docker_started': False, 'provider_requests': 0}))
+                      'downloaded_code_started_by_verifier': False, 'provider_requests': 0}))
 
 
 if __name__ == '__main__':

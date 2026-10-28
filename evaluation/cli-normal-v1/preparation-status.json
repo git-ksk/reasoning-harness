@@ -109,7 +109,7 @@
     "host_archive_boundary": {
       "status": "REPAIRED_PENDING_INDEPENDENT_REVIEW",
       "scope": "checkout code verifies final independent review, proof, trusted receipt/reference, host verifier hash, and actual image archive bytes before any docker load/run",
-      "controls": "modified image cannot reach Docker sentinel in readiness or execution; optimized Python checked",
+      "controls": "3 host-boundary controls PASS: substituted archive or unapproved loaded ID cannot start container; both workflows use verified immutable ID with --pull=never; optimized Python checked",
       "model_calls": 0
     }
   },

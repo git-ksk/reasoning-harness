@@ -24,6 +24,7 @@ class HostArchiveBoundary(unittest.TestCase):
         self.files = {gate.SCRIPT_KEY: gate.sha(Path(gate.__file__))}
         self.proof = {'source_commit': 'a' * 40, 'paired_host_identity_sha256': 'b' * 64,
                       'runtime_image_id': 'sha256:' + 'c' * 64,
+                      'archive_verified_image_ids': ['sha256:' + 'c' * 64, 'sha256:' + 'd' * 64],
                       'runtime_image_archive_sha256': hashlib.sha256(self.image).hexdigest(),
                       'runtime_files': self.files, 'normal_only': True,
                       'profile': 'cli-normal-real24-development-v1',
@@ -111,6 +112,35 @@ class HostArchiveBoundary(unittest.TestCase):
             workflow = (repo / '.github/workflows' / name).read_text()
             self.assertLess(workflow.index('verify_runtime_archive.py --artifact-zip'), workflow.index('docker load'))
             self.assertNotIn('unzip -q /tmp/runtime.zip', workflow)
+
+    def test_loaded_tag_must_resolve_to_a_reviewed_immutable_id_before_run(self):
+        reference_path = self.root / 'reference.json'; reference_path.write_text(json.dumps(self.reference))
+        proof_path = self.root / 'runtime-proof.json'; proof_path.write_bytes(self.proof_bytes)
+        fake_bin = self.root / 'bin'; fake_bin.mkdir()
+        sentinel = self.root / 'untrusted-container-started'
+        docker = fake_bin / 'docker'
+        docker.write_text('#!/bin/sh\ntouch ' + shlex.quote(str(sentinel)) + '\n'); docker.chmod(0o755)
+        for image_id in ['sha256:' + 'e' * 64] + self.proof['archive_verified_image_ids']:
+            args = [sys.executable, str(Path(gate.__file__)), '--loaded-proof', str(proof_path),
+                    '--actual-image-id', image_id, '--review', str(self.review_path),
+                    '--reference', str(reference_path)]
+            result = subprocess.run(['/bin/sh', '-c', shlex.join(args) + ' && docker run --pull=never ' + shlex.quote(image_id)],
+                                    capture_output=True, env={**os.environ, 'PATH': str(fake_bin) + ':' + os.defpath, 'PYTHONOPTIMIZE': '1'})
+            admitted = image_id in self.proof['archive_verified_image_ids']
+            self.assertEqual(result.returncode == 0, admitted)
+            self.assertEqual(sentinel.exists(), admitted)
+            if sentinel.exists(): sentinel.unlink()
+        repo = Path(gate.__file__).resolve().parents[2]
+        for name in ('cli-normal-runtime.yml', 'cli-normal-real24-development.yml'):
+            workflow = (repo / '.github/workflows' / name).read_text()
+            if name == 'cli-normal-runtime.yml':
+                workflow = workflow[workflow.index('  provider-metadata-readiness:'):]
+            self.assertLess(workflow.index('--loaded-proof'), workflow.index('docker run'))
+            self.assertNotIn('paired-runtime python3', workflow)
+            for line in workflow.splitlines():
+                if 'docker run' in line:
+                    self.assertIn('--pull=never', line)
+                    self.assertIn('"$PAIRED_RUNTIME_IMAGE"', line)
 
 
 if __name__ == '__main__':
