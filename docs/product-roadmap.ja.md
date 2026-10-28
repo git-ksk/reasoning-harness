@@ -1,5 +1,7 @@
 # 製品ロードマップ: Reason CLI / Harness Engine
 
+実行前の次の修正は[#566](https://github.com/git-ksk/reasoning-harness/issues/566): 採用済みの完全同一snapshot再取得を共通CLIで安全なno-progressにする。エラーや採点条件を緩めず、新host/runtimeの独立確認後に実測する。
+
 **2026-10-28:** CLI修正は[PR561](https://github.com/git-ksk/reasoning-harness/pull/561)でマージ済み、局所独立レビューとCI22件成功。Mistral専用の通常48jobsは[PR565](https://github.com/git-ksk/reasoning-harness/pull/565)で準備中。過去の観測を新runへ混入させない採点由来の結合を修正して再レビューする。補助APIのモデルなし確認は完了、新F1と独立本評価・CLI採用は未完了。
 
 <!-- ordinary-cli-policy-20261026-start -->

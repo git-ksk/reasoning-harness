@@ -1,5 +1,7 @@
 # Product roadmap: Reason CLI and Harness Engine
 
+Next pre-execution repair: [#566](https://github.com/git-ksk/reasoning-harness/issues/566), safe no-progress for exact admitted snapshot reacquisition in a successor common CLI. Preserve failure/scoring gates and independently accept the rebuilt host/runtime before measurement.
+
 **2026-10-28:** CLI repairs merged in [PR561](https://github.com/git-ksk/reasoning-harness/pull/561) after bounded independent reviews and22 green CI checks. [PR565](https://github.com/git-ksk/reasoning-harness/pull/565) prepares48 ordinary Mistral jobs. Bind scoring to the actual run/artifact/raw before re-review so historical observations cannot enter the new measurement. Model-free API verification is complete; new F1, fresh acceptance and CLI adoption remain incomplete.
 
 <!-- ordinary-cli-policy-20261026-start -->

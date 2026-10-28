@@ -59,6 +59,7 @@
     "budget_review_sha256": "d10aed22e03783ce7d00ae0c10eaf172e72f1a6d1d362060abc90c0d90c32a0c"
   },
   "next": [
+    "repair Issue566 in a successor common CLI; independent review and rebuild both arms before runtime approval",
     "complete and independently review Mistral-only ordinary runtime",
     "freeze exact source/runtime/inputs/scorer/readiness/receipt before any model calls",
     "run Mistral ordinary consumed-set development comparison and measure new F1",
@@ -91,6 +92,7 @@
       "matches_GitHub_API_digest": true,
       "old_data_rescored": false,
       "scope": "read-only archive digest specification; not new-run acceptance"
-    }
+    },
+    "formal_operational_review": "NOT_APPROVED: identical snapshot reacquisition can stop prospective cohort; Issue566"
   }
 }

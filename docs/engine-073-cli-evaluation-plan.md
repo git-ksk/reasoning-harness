@@ -25,6 +25,12 @@ The API records and applies authorized caller reviews; it does not discover gene
 - Duplicate acquisitions, early Reject, selector/typed-value alignment and trusted explanations remain distinct diagnosed issues.
 - [PR565](https://github.com/git-ksk/reasoning-harness/pull/565) prepares a Mistral-only48-job ordinary profile. Twelve new and85 inherited offline controls and inert actual-CLI loopback controls passed. Independent source review of preparation `7f0508e` found missing provenance that could mix old observations into a new run; bind actual run/artifact/receipt/raw before re-review. No new model generations or F1 score have been produced.
 
+## Pre-execution repair, 2026-10-28
+
+Prioritize [Issue566](https://github.com/git-ksk/reasoning-harness/issues/566). Independent operational review reproduced identical snapshot reacquisition being marked malformed by the existing core in14/48 saved Mistral and2/48 Google ordinary payloads. The prospective runner correctly stops. Preserve scoring and failure classification; investigate a successor common CLI that recognizes only an exact currently admitted snapshot under the current admission policy as no progress. An earlier raw resolver emission alone does not prove admission. Preserve real calls/costs and reject changed content, unknown metadata or denied authority.
+
+Order: successor CLI repair and boundary controls, independent review/CI, rebuild the same host with both Engine arms, independently accept a new runtime/image/proof, then execute48 Mistral jobs and measure F1. The source-only PASS for preparation3086778 and local Docker controls do not approve a new live run. Historical raw/F1, published cores and freezes remain immutable.
+
 ## Order
 
 1. Synchronize this plan, both roadmaps and Issues531/538/540 first.
