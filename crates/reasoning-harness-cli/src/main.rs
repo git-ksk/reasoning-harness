@@ -18,6 +18,8 @@ mod project_trust;
 mod run_diagnostics;
 mod secure_credentials;
 mod setup;
+#[cfg(test)]
+mod snapshot_reacquisition_tests;
 mod terminal_presentation;
 mod usage_budget;
 
@@ -3051,6 +3053,8 @@ impl ResolutionPlanner for SingleRequestPlanner {
 
 struct AcquisitionOnlyResolver<'a> {
     inner: &'a dyn ResolutionResolver,
+    existing_evidence: &'a [Evidence],
+    admission: Option<&'a ExternalEvidenceAdmissionPolicy>,
 }
 
 impl ResolutionResolver for AcquisitionOnlyResolver<'_> {
@@ -3071,7 +3075,47 @@ impl ResolutionResolver for AcquisitionOnlyResolver<'_> {
         request: &ResolutionRequest,
         attempt_index: usize,
     ) -> Result<ResolutionResolverOutput, ResolutionAdapterError> {
-        let output = self.inner.resolve(request, attempt_index)?;
+        let mut output = self.inner.resolve(request, attempt_index)?;
+        if let (Some(admission), ResolutionResolverContribution::AcquiredEvidence { evidence }) =
+            (self.admission, &output.contribution)
+        {
+            let mut ids = BTreeSet::new();
+            let already_admitted = !evidence.is_empty()
+                && evidence.iter().all(|raw| {
+                    // Keep malformed and ambiguous batches on the original core path.
+                    let valid = !raw.id.trim().is_empty()
+                        && !raw.source.trim().is_empty()
+                        && !raw.observation.trim().is_empty()
+                        && raw
+                            .facts
+                            .iter()
+                            .all(|(key, value)| !key.trim().is_empty() && !value.trim().is_empty())
+                        && ids.insert(&raw.id);
+                    if !valid {
+                        return false;
+                    }
+                    let mut matching = self
+                        .existing_evidence
+                        .iter()
+                        .filter(|item| item.id == raw.id);
+                    let Some(existing) = matching.next() else {
+                        return false;
+                    };
+                    if matching.next().is_some() {
+                        return false;
+                    }
+                    // Recheck current source, authority, scope, and freshness;
+                    // compare the complete normalized Evidence including metadata.
+                    admission
+                        .admit(self.inner.name(), request, raw)
+                        .is_ok_and(|readmitted| &readmitted == existing)
+                });
+            if already_admitted {
+                // The actual resolver was called, so its cost remains unchanged.
+                // No new evidence or new verification is asserted for this target.
+                output.contribution = ResolutionResolverContribution::NoResult;
+            }
+        }
         match output.contribution {
             ResolutionResolverContribution::AcquiredEvidence { .. }
             | ResolutionResolverContribution::NoResult => Ok(output),
@@ -3097,7 +3141,12 @@ fn run_investigation_resolution(
     let pipeline = StandardGroundingPipeline;
     let planner = SingleRequestPlanner { request };
     let renderer = CanonicalFinalAnswerRenderer;
-    let acquisition = AcquisitionOnlyResolver { inner: resolver };
+    let existing_evidence = input.evidence.clone();
+    let acquisition = AcquisitionOnlyResolver {
+        inner: resolver,
+        existing_evidence: &existing_evidence,
+        admission,
+    };
     let resolver_refs: [&dyn ResolutionResolver; 1] = [&acquisition];
     let trusted_verifiers: [&dyn reasoning_harness_core::TrustedResolutionVerifier; 0] = [];
     let reject_all = RejectAllEvidenceAdmission;
@@ -12438,6 +12487,8 @@ mod candidate_json_tests {
         }
         let wrapper = AcquisitionOnlyResolver {
             inner: &RevisingResolver,
+            existing_evidence: &[],
+            admission: None,
         };
         let request = ResolutionRequest {
             id: "investigation:t:c".into(),
