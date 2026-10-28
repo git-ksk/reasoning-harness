@@ -1,0 +1,90 @@
+{
+  "identity": "independent-normal-runtime-source-review-v2",
+  "source_commit": "30867787b511068b41518cf0a257dcad124ade59",
+  "reviewer": "/root/provider_budget_tests",
+  "reviewed_at_utc": "2026-10-28T10:50:06.121090+00:00",
+  "result": "PASS_BOUNDED_SOURCE_ONLY",
+  "scope": "Prospective ordinary-only source and isolated offline controls. No runtime image, complete operational verdict, metadata readiness, real provider, F1, acceptance or release claim.",
+  "prior_review": {
+    "source_commit": "7f0508eb55bb3f5240556ffc3c8d50cbcd7f9bb5",
+    "result": "FAIL",
+    "review_sha256": "39b6354110d8c33a8c349e5b833ebabb777375cad1adda220e6a59c978a9e9a5",
+    "completeness_clarification_sha256": "3c4c30cd40c0e22dad788ec397bcb0095d0c19bd2d31ed7f06402142471421c4",
+    "preserved": true
+  },
+  "source_files": {
+    "evaluation/cli-normal-v1/runtime/provenance.py": {
+      "git_blob": "eed9303848f47b5256c1ea191288a55556169b3c",
+      "sha256": "7836921f6abd13090de44b2689fcfede0d629f57294669867f2ba79ca83ce437"
+    },
+    "evaluation/cli-normal-v1/runtime/collect_normal.py": {
+      "git_blob": "2cda50a2ea73acd5432da4581be0f48f92b2a52f",
+      "sha256": "0adcf6660e25c88b446eaab99f4107bcb65594c65fe2eafc031a9154227aa7ab"
+    },
+    "evaluation/cli-normal-v1/runtime/score_development_first.py": {
+      "git_blob": "d931918c6728deb0fa307e09f920c35ce3c99af3",
+      "sha256": "e8b8647f410c668a7e13c49674d13c8761c4ddd47e5d9ea072b44cc3a969ddce"
+    },
+    "evaluation/cli-normal-v1/runtime/test_provenance.py": {
+      "git_blob": "2ed4c554fb98ec53b90393131d37f534a8e23c2b",
+      "sha256": "9508b26b0327f47f811accd8e793254297e22989327933b7f1a19f7c7ae2959f"
+    },
+    "evaluation/cli-normal-v1/runtime/run_lane.py": {
+      "git_blob": "096341cb3adeef21b25fb98ae57526cec54ca6bb",
+      "sha256": "89a00303742716ad71e76fc63c0691fa812ea5c551d3e07fc321fe78d42c777f"
+    },
+    "evaluation/cli-normal-v1/runtime/operational_bridge.py": {
+      "git_blob": "0898daf88d36bf3fc2ba546ae7c7a5ac9831fb74",
+      "sha256": "b4d1329c6cdb23abf034a5e153d72ff320e50c5bcc76aefbd4659a7fcf167e3d"
+    },
+    "evaluation/cli-normal-v1/runtime/Dockerfile.runtime": {
+      "git_blob": "e4850ab75742bf662f6386a03e225e1593f9114c",
+      "sha256": "ebf937b25ede2435f38c00bc99d88d6954bef16c5fbcb0954d6631811c2b5673"
+    },
+    "evaluation/cli-normal-v1/prepare_runtime.py": {
+      "git_blob": "f5d0da08c448664eca5bf8304c36cb8604e5da83",
+      "sha256": "8487260e33f8003ddbf62aa3621de5113e53b320c195d4cc1d5cfd2dc34cc358"
+    },
+    "evaluation/cli-normal-v1/runtime/runtime_proof.py": {
+      "git_blob": "c4ad77b34e69251a79825a8ec0352f5d85ca5815",
+      "sha256": "db3e62b1a6c362e32efe182725b25a35918d42cb3697235f206cc819fd551669"
+    },
+    ".github/workflows/cli-normal-real24-development.yml": {
+      "git_blob": "ec45c4959437f59a7637b1786e08b8e31603c2b5",
+      "sha256": "dd21b6106509d510ff09fb47cae136465309fca416a105a24b77602c437b9020"
+    },
+    ".github/workflows/cli-normal-runtime.yml": {
+      "git_blob": "571f074797b9190bf89ead5eab4e6562cfa2f545",
+      "sha256": "6609ac62a23903d2fb8d91964916b652ea85ee6bb66f38ac94658f99df535aad"
+    }
+  },
+  "offline_controls": {
+    "normal_units": "20 passed",
+    "inherited_units": "85 passed",
+    "prepared_inventory_sha256": "0f412a034ae3c80b77575bf86ae6570fade12604f694861e6626395b616b96bb",
+    "prepared_file_count": 103,
+    "old_v2_actual_observation_relabel": "rejected: observations_not_from_exact_run_artifact",
+    "unmodified_reconstruction": "passed",
+    "impossible_suppressed_then_started_journal": "rejected by stopped-state guard and offline control",
+    "provider_model_calls": 0,
+    "credentials_used": false,
+    "tags_created": false,
+    "old_data_modified": false,
+    "old_results_rescored": false
+  },
+  "reviewed_properties": [
+    "The scorer re-fetches one authenticated GitHub Actions run and artifact and verifies repository, tag, run/attempt, head, artifact metadata and ZIP digest.",
+    "The receipt, workflow bytes, reservation, plan, ordered durable events and per-row output hashes are bound to the exact archive.",
+    "The normal collector reconstructs observations from raw lane; scoring byte-compares reconstruction and binds review and row identifiers to the execution provenance.",
+    "Old v2 data relabelled with a new row/provenance failed independent fixture test.",
+    "The 48 Mistral-only jobs, no helper, safe cessation on nested failures, no optimistic F1 on incomplete candidate rows, and output-independent persistent first-score reservation remain controlled.",
+    "The prospective Dockerfile installs gh; the runtime image identity will need separate verification."
+  ],
+  "limits": [
+    "GitHub Actions metadata and administrator history are trusted; this is not a cryptographic or human signature.",
+    "Actual authenticated new run does not exist; real metadata/artifact readback and rate/quota readiness remain unverified.",
+    "Real source-image construction, workflow, recorded non-fixture independent operational review, frozen execution receipt and exact image proof are separate required gates.",
+    "First-score exclusion depends on the operator retaining one persistent volume and does not protect against deletion or another host.",
+    "Consumed 24-case diagnostic is not fresh independent accuracy acceptance."
+  ]
+}

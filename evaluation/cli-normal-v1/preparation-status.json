@@ -75,7 +75,7 @@
     "draft_PR": 565,
     "committed_preparation": "7f0508eb55bb3f5240556ffc3c8d50cbcd7f9bb5",
     "committed_source_review": "FAIL_SOURCE_ONLY_RUN_PROVENANCE_MISSING",
-    "working_tree_repair": "HOST_UPDATED_AND_REACQUISITION_CONTROL_INTEGRATED_PENDING_FINAL_RUNTIME_REVIEW",
+    "working_tree_repair": "REPAIRED_SOURCE_BOUNDED_PASS_PENDING_FINAL_RUNTIME_REVIEW",
     "working_tree_normal_controls": 20,
     "inherited_controls": 85,
     "linux_arm64_provider_controls": 18,
@@ -93,14 +93,26 @@
       "old_data_rescored": false,
       "scope": "read-only archive digest specification; not new-run acceptance"
     },
-    "formal_operational_review": "NOT_APPROVED: identical snapshot reacquisition can stop prospective cohort; Issue566"
+    "formal_operational_review": "NOT_APPROVED: exact final runtime image/proof and independent operational review remain required",
+    "bounded_source_reviews": [
+      {
+        "commit": "30867787b511068b41518cf0a257dcad124ade59",
+        "result": "PASS_BOUNDED_SOURCE_ONLY",
+        "review_sha256": "07f6d90fb4f5f4a96b0f6b4f0bdf9dbee0978659af65fc7378e6330ebf232089"
+      },
+      {
+        "commit": "602beeebf133b3ca35140a66d1f203159f3972c1",
+        "result": "PASS_BOUNDED_SOURCE_ONLY",
+        "review_sha256": "b4cd9ab3e1fd8b91befe18d33e2c0a21f11d5620ad50b3c3db54920acea3983f"
+      }
+    ]
   },
   "prospective_common_CLI_host": "dbad2dc25d3487819206582f1fad778d9af75da1",
   "issue566": {
     "PR": 567,
     "source_review": "PASS_BOUNDED_SOURCE_ONLY",
     "review_sha256": "4fb916890a79bfb70528e56be2a177061407d4ec52142fe72aa3d24c0e9f9db8",
-    "source_CI": "15 success; 3 macOS jobs queued without assigned runner; remaining consumer jobs not yet emitted",
+    "source_CI": "15 success; macOS jobs pending. One unassigned runner cancelled for hosted capacity; only that job rerun on exact dbad2dc.",
     "source_merged": false,
     "Linux_both_arms_built": true,
     "actual_Linux_reacquisition_loopback": "PASS; two distinct targets; second NoResult; cost and nonempty claims/receipts retained; next quota stops; 3 observations no binding failure",

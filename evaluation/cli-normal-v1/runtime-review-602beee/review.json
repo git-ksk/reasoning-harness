@@ -1,0 +1,75 @@
+{
+  "identity": "independent-normal-runtime-diff-review-v1",
+  "reviewer": "/root/provider_budget_tests",
+  "reviewer_kind": "agent_nonhuman",
+  "source_commit": "602beeebf133b3ca35140a66d1f203159f3972c1",
+  "base_commit": "30867787b511068b41518cf0a257dcad124ade59",
+  "common_host_commit": "dbad2dc25d3487819206582f1fad778d9af75da1",
+  "result": "PASS_BOUNDED_SOURCE_ONLY",
+  "reviewed_at_utc": "2026-10-28T15:50:56.907991+00:00",
+  "scope": "Review of exact diff against prior bounded source PASS; offline Python unit controls and independent read-back of existing inert Linux loopback artifact. No full runtime/image/proof admission.",
+  "previous_review_sha256": "07f6d90fb4f5f4a96b0f6b4f0bdf9dbee0978659af65fc7378e6330ebf232089",
+  "files": {
+    "evaluation/cli-normal-v1/runtime/build.py": {
+      "git_blob": "25d4e5f1fcc454e4cc7edb73cd160775b9f47edb",
+      "sha256": "99db5b0da6928147020299600e5322cb0357693cf50306c01001bdfa299e4a18"
+    },
+    "evaluation/cli-normal-v1/runtime/development.py": {
+      "git_blob": "2f40ee2bf03df92d037fff530b91683388d710d0",
+      "sha256": "ac85574ef0cb7f77919633427e93ab9450539f4bd27afbe07db7dda86919c449"
+    },
+    "evaluation/cli-normal-v1/runtime/protocol.json": {
+      "git_blob": "b1ff29cb45d4b2540f1b04d90cec90dc360f6899",
+      "sha256": "721067205f4ff977cb282630a3f50cfb322e39aae8a206b0d1d3168cc8507895"
+    },
+    "evaluation/cli-normal-v1/runtime/runtime_proof.py": {
+      "git_blob": "2bf8f51a78f5386fd13d65135cfdac48749c064f",
+      "sha256": "0d33cfd78b5ce808fb26aea4e244d3628c5ae41227e455eb3fdd6f4f4787e0c4"
+    },
+    "evaluation/cli-normal-v1/runtime/preflight_normal.py": {
+      "git_blob": "68520ccf02619ecb9ac7bfc78d00040e0e20c07f",
+      "sha256": "9804940774368f9bfc32dbcecf4eebdc1f6cbeadc0ec9d421758f74a6f41a4cb"
+    }
+  },
+  "checks": {
+    "host_pin_sync_four_places": true,
+    "prepared_inherited_and_normal_protocol_equal": true,
+    "fresh_normal_units": "20/20 PASS",
+    "fresh_inherited_units": "85/85 PASS",
+    "prepared_manifest_sha256": "5f8a993c5b22c4dace7043ef2f2fbcae88457058c40f5465534481f53d7dfb38",
+    "linux_binary_identity": "both arms and all 10 binary hashes match expected host/core",
+    "loopback_summary_sha256": "8cdf4a38e0e0b542a06216555aac323ce616f57f2e35c5e9a784ab898f9c5dc8",
+    "runtime_proof_expected_summary_exact_match": true,
+    "distinct_target_same_snapshot": true,
+    "first_status": "applied_evidence",
+    "repeat_status": "no_result",
+    "repeat_admitted_count": 0,
+    "repeat_reported_calls": 1,
+    "repeat_reported_added_tokens": 93,
+    "existing_evidence_claim_receipt_counts": [
+      1,
+      1,
+      1
+    ],
+    "artifact_fields_equal_before_after": true,
+    "quota_failure": "quota",
+    "latch": "typed_quota",
+    "third_job_suppressed": true
+  },
+  "notes": [
+    "Inspected previously generated Linux fixture bytes; did not rerun the instrumented Linux loopback in this review.",
+    "README introductory common-host pin is stale and owner plans to correct it; not an execution pin.",
+    "git diff --check flags a trailing blank line in a separately authored independent raw test log; bytes and evidence hash were intentionally retained."
+  ],
+  "not_verified": [
+    "Fresh Docker runtime image and image proof for this exact source",
+    "Full formal independent operational review and execution receipt",
+    "Provider readiness and actual model/quota",
+    "New F1 and fresh real-world acceptance",
+    "CLI distribution and release"
+  ],
+  "external_provider_requests": 0,
+  "credential_use": false,
+  "tag_operations": 0,
+  "old_raw_or_frozen_scores_modified": false
+}
