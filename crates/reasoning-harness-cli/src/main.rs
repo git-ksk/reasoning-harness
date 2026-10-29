@@ -4,6 +4,7 @@ mod auth;
 mod config_commands;
 mod diagnostic_trace;
 mod doctor;
+mod final_render_compaction;
 mod generation_usage;
 mod human_presentation;
 mod interactive;
@@ -1722,6 +1723,15 @@ async fn render_final_with_adapter_inner(
                 ModelError::new(ModelErrorKind::Protocol, error.to_string()),
             )
         })?;
+    let request = final_render_compaction::compact(request, task, artifact, verdict, false)
+        .map_err(|error| {
+            generation_failure(
+                provider,
+                requested_model,
+                started,
+                ModelError::new(ModelErrorKind::Protocol, error),
+            )
+        })?;
     let first = adapter
         .generate(request)
         .await
@@ -1750,6 +1760,17 @@ async fn render_final_with_adapter_inner(
                     requested_model,
                     started,
                     ModelError::new(ModelErrorKind::Protocol, error.to_string()),
+                )
+            })?;
+            let fallback = final_render_compaction::compact(
+                fallback, task, artifact, verdict, true,
+            )
+            .map_err(|error| {
+                generation_failure(
+                    provider,
+                    requested_model,
+                    started,
+                    ModelError::new(ModelErrorKind::Protocol, error),
                 )
             })?;
             let second = adapter.generate(fallback).await.map_err(|error| {

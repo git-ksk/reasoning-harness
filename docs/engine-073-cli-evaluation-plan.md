@@ -4,6 +4,12 @@
 
 The user approved separating ordinary CLI evaluation from model-free auxiliary API contract checks. This successor plan does not alter any frozen v1/v2 inputs, labels, reports, receipts, tags or their historical verdicts. Adoption remains pending. This document alone admits no live callback or release.
 
+## First live run and next repair, 2026-10-29
+
+[PR568](https://github.com/git-ksk/reasoning-harness/pull/568) recorded actual-runtime, independent operational and genuine-receipt admission. The48-job ordinary Mistral [run40873570944](https://github.com/git-ksk/reasoning-harness/actions/runs/40873570944) stopped with2 completed,1 failed and45 suppressed jobs. Full F1 remains unavailable. The rw-02-candidate final_render request was13,365bytes against the unchanged12,000-byte pre-send bound. All8 preceding HTTP responses were200 with known usage; the ninth was never sent. Preserve the historical usage_budget_unmeasurable stop record and track its misleading diagnostic separately in #540.
+
+Prioritize the common CLI fix in [#569](https://github.com/git-ksk/reasoning-harness/issues/569). Compact only structural JSON whitespace in the verified artifact/schema for both initial and fallback requests, retaining every JSON value, user text, verdict, system, format, seed and bound. An offline replay of the saved request yields11,186bytes with identical information. After reproduction, independent review, both Engine builds and CI, freeze a distinct successor source/runtime/profile. Do not rerun the old v1. Fresh independent accuracy acceptance and CLI adoption remain incomplete.
+
 ## Scope
 
 - **Ordinary CLI:** real-model questions, investigation, acquired evidence and final display. This is the primary CLI adoption evaluation.
