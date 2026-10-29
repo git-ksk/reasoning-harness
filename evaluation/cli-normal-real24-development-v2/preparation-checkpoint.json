@@ -1,6 +1,6 @@
 {
   "identity": "ordinary-v2-preparation-checkpoint-v1",
-  "state": "ACTUAL_OFFLINE_RUNTIME_BUILD_IN_PROGRESS_NOT_LIVE_ADMISSION",
+  "state": "EXPORT_FORMAT_REPAIR_PENDING_NEW_ACTUAL_RUNTIME",
   "common_cli_host": "54eee374b40100e04fb0f8cde95912c8076dafa6",
   "common_cli_PR": 570,
   "fixed_derivation_source": "7073471d7490c64841200ae9ddaf252317c34721",
@@ -42,5 +42,15 @@
   "preparation_independent_source_review_sha256": "2a165fd1f03457e56be043135f719756216f8db8a9c72abf182d34ce9ea95149",
   "runtime_build_run_id": 40924323574,
   "runtime_build_source": "560b2ecac259e65b7123d6bcf854f7e48e992035",
-  "runtime_build_provider_metadata": false
+  "runtime_build_provider_metadata": false,
+  "failed_runtime_build_run_id": 40924323574,
+  "runtime_build_status": "FAILED_PROOF_AFTER_ALL_CONTROLS_PASSED",
+  "runtime_build_archive_graph": "runtime-failure-40924323574/archive-graph.json",
+  "prospective_export_flags": [
+    "--platform linux/amd64",
+    "--provenance=false",
+    "--sbom=false"
+  ],
+  "archive_verification_or_image_identity_gate_changed": false,
+  "next_runtime_build_run_id": null
 }

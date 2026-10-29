@@ -43,6 +43,20 @@ class DerivationControls(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'unexpected_replacement_count'):
             prepare.transform(path,data.replace(prepare.OLD_HOST.encode(),b'other'),COUNTS[path],CONFIG['common_cli_host'])
 
+    def test_runtime_export_flags_are_exact_and_host_guard_is_preserved(self):
+        source='.github/workflows/cli-normal-runtime.yml'
+        data=self.source(source)
+        rendered=prepare.transform(source,data,COUNTS[source],CONFIG['common_cli_host']).decode()
+        original=b'docker build -f "$stage/normal_v1/Dockerfile.runtime" -t paired-runtime target/paired-context'
+        expected='docker build --platform linux/amd64 --provenance=false --sbom=false -f "$stage/normal_v2/Dockerfile.runtime" -t paired-runtime target/paired-context'
+        self.assertEqual(rendered.count(expected),1)
+        self.assertEqual(rendered,(REPO/'.github/workflows/cli-normal-runtime-v2.yml').read_text())
+        self.assertLess(rendered.index('verify_runtime_archive.py --artifact-zip'),rendered.index('docker load'))
+        self.assertLess(rendered.index('--loaded-proof'),rendered.index('--verify-only'))
+        for bad in (data.replace(original,b'missing-runtime-build'),data+b'\n'+original):
+            with self.assertRaises(ValueError):
+                prepare.transform(source,bad,COUNTS[source],CONFIG['common_cli_host'])
+
     def test_v1_verdict_cannot_admit_v2(self):
         with tempfile.TemporaryDirectory() as tmp:
             path=Path(tmp)/'review.json'
