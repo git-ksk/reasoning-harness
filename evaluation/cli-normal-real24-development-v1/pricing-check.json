@@ -1,0 +1,23 @@
+{
+  "identity": "ordinary-Mistral-price-readback-v1",
+  "checked_at_utc": "2026-10-28T23:43:09Z",
+  "model": "ministral-8b-2512",
+  "tier": "standard unbatched text",
+  "USD_per_million_input": 0.15,
+  "USD_per_million_output": 0.15,
+  "cached_input_discount_assumed": false,
+  "official_sources": [
+    "https://docs.mistral.ai/models/ministral-3-8b-25-12",
+    "https://docs.mistral.ai/inference/pricing"
+  ],
+  "jobs": 48,
+  "reserved_input_tokens_per_job": 24000,
+  "reserved_output_tokens_per_job": 4096,
+  "conservative_reserved_USD": 0.2022912,
+  "currency_self_cap_USD": 2.5,
+  "quota_headroom": "UNKNOWN",
+  "billing_or_quota_guarantee": false,
+  "provider_model_calls": 0,
+  "price_matches_frozen_protocol": true,
+  "receipt_created": false
+}

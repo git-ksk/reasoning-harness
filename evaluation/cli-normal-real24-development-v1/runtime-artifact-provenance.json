@@ -1,0 +1,16 @@
+{
+  "identity": "actual-ordinary-runtime-artifact-provenance-v1",
+  "run_id": 40789024710,
+  "source_commit": "3a58f5ccb9c2a2183695bd8b783efc8b36d8e63b",
+  "artifact_id": 12861670229,
+  "ZIP_sha256": "2b98cc87a8eb7180422419917cab49aa952ad84343294085b09cf2116afc048d",
+  "runtime_proof_sha256": "8d8d60cafb99b1c26169fad822f550685d32fa8b3621072ecee691a9a5b63240",
+  "runtime_image_archive_sha256": "a37ade46d657747a2736b1cb6c454372513e616b659699a3567145c64468024f",
+  "independent_download_digest_match_reported": true,
+  "all_offline_GitHub_steps": "PASS",
+  "metadata_step": "SKIPPED",
+  "formal_operational_verdict": "PASS",
+  "model_generations": 0,
+  "new_F1": null,
+  "formal_review_sha256": "a0e5c9128083ba3bc1d5532369b4c7485b94f0ad5419799acf73d36181508ce4"
+}

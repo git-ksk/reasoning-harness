@@ -1,0 +1,16 @@
+{
+  "identity": "ordinary-pretag-readonly-history-check-v1",
+  "checked_at_utc": "2026-10-29T00:15:43.401809+00:00",
+  "tag": "cli-normal-real24-development-v1",
+  "Git_ref_exists": false,
+  "visible_prior_tag_push_runs": 0,
+  "monthly_window_counts": [
+    86,
+    679,
+    266
+  ],
+  "all_calendar_windows_complete": true,
+  "scope": "read-only preparation; fresh final history reservation still required by the actual first tag run",
+  "provider_calls": 0,
+  "tags_created": 0
+}

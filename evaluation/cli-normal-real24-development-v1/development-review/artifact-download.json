@@ -1,0 +1,11 @@
+{
+  "repository": "git-ksk/reasoning-harness",
+  "run_id": 40789024710,
+  "artifact_id": 12861670229,
+  "source_commit": "3a58f5ccb9c2a2183695bd8b783efc8b36d8e63b",
+  "API_digest": "sha256:2b98cc87a8eb7180422419917cab49aa952ad84343294085b09cf2116afc048d",
+  "local_zip_sha256": "2b98cc87a8eb7180422419917cab49aa952ad84343294085b09cf2116afc048d",
+  "size_bytes": 102860956,
+  "raw_zip": "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/cli-normal-runtime-40789024710-raw/runtime-artifact.zip",
+  "downloaded_via": "GitHub connector artifact download followed by connector file reference; URL not persisted"
+}
