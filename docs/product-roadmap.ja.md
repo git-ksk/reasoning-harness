@@ -1,6 +1,6 @@
 # 製品ロードマップ: Reason CLI / Harness Engine
 
-**2026-10-29 実モデル開始後:** [PR568](https://github.com/git-ksk/reasoning-harness/pull/568)で実runtime・独立運用確認・真正receiptの受入を記録し、Mistral通常48jobsを新tagで開始した。[初回run40873570944](https://github.com/git-ksk/reasoning-harness/actions/runs/40873570944)は2件完了・1件失敗・45件抑止。全量F1は未測定。原因は最終回答の検証済みJSONの整形空白により送信前12,000bytes上限を超えたこと（13,365bytes）。直前8件のHTTPは200でusage既知、quota枯渇の証拠ではない。[#569](https://github.com/git-ksk/reasoning-harness/issues/569)で情報を落とさない共通CLIのJSONコンパクト化を先行し、独立確認・新source/runtime/profile固定後に別の実行として測定する。offlineでは同一JSON値のまま11,186bytes。token/費用上限・旧raw/receipt/tag/停止判定は維持。診断表現は#540で追跡する。
+**2026-10-30:** 入力サイズで止まった通常CLIを[#569](https://github.com/git-ksk/reasoning-harness/issues/569) / [PR570](https://github.com/git-ksk/reasoning-harness/pull/570)で修正し、独立source確認・CI22件成功後に`d61d7b8`でマージした。実保存要求は情報を落とさず13,365→11,186bytes（fallback13,683→11,015）。同一host`54eee37`を両Engineへ適用する[通常v2準備](../evaluation/cli-normal-v2/README.md)を別に作成し、v1 source・workflow・receipt・rawは保持。次はv2の独立source確認→実runtime/image/proof受入→新readiness/receipt→Mistral48jobs・新F1。旧runは2完了/1失敗/45抑止で全量F1未測定、新モデル実行・新規独立精度受入・CLI採用は未完了。
 
 **2026-10-29:** #566は[PR567](https://github.com/git-ksk/reasoning-harness/pull/567)で修正・独立source確認・CI22件成功後にマージ済み。通常評価の[PR565](https://github.com/git-ksk/reasoning-harness/pull/565)もマージし、実run由来の採点結合と起動前のimage照合を独立source確認した。次は[実AMD64 runtime](https://github.com/git-ksk/reasoning-harness/actions/runs/40787270979)の独立受入→Mistralの新F1。モデル呼出し・新F1・新規独立精度受入は未完了。
 

@@ -1,0 +1,135 @@
+{
+  "row_id": "d6e14de26697c0b658049c65",
+  "observation_sha256": "76ad27664d3298ce022d907f18b6dcc412540268a83067ab95fcaa83ae3bbb00",
+  "gold": {
+    "id": "rw-19/e2e_normal",
+    "case_id": "rw-19",
+    "track": "e2e_normal",
+    "family": "duplicate_or_lineage",
+    "label": "positive",
+    "answerability": "full",
+    "groups": [
+      {
+        "id": "g1",
+        "required_supported_information": "Installing the SQLite Tcl extension first is helpful but not required in both paragraphs.",
+        "supporting_source_ids": [
+          "rw-19-a",
+          "rw-19-b"
+        ]
+      }
+    ],
+    "unresolved_facets": [],
+    "required_disclosures": [
+      "optional_extension_not_optional_Tcl_prerequisites"
+    ],
+    "full_source_rationale": "Both full build sections distinguish extension installation from interpreter/development-library prerequisites.",
+    "scope_time_origin_review": {
+      "product_target": "sqlite",
+      "required_scope": {
+        "product": "sqlite",
+        "release": "3.47.2"
+      },
+      "document_ids": [
+        "sqlite-1",
+        "sqlite-1"
+      ],
+      "release_refs": [
+        "version-3.47.2",
+        "version-3.47.2"
+      ],
+      "capture_commits": [
+        "262de1bebb0647eb6fa6a2b0434111c7d831a14d",
+        "262de1bebb0647eb6fa6a2b0434111c7d831a14d"
+      ],
+      "document_versions": [
+        "sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+        "sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823"
+      ],
+      "origin_groups": [
+        "upstream:sqlite/sqlite",
+        "upstream:sqlite/sqlite"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "93fa8d26674e1dd4b48ba32f6f8bbf6d1cef72abc35de6825cc7612830bba934"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-19-a": {
+      "source_id": "rw-19-a",
+      "document_id": "sqlite-1",
+      "url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/README.md",
+      "normalized_path": "normalized/sqlite-1.txt",
+      "raw_sha256": "589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+      "normalized_sha256": "a71cd6b8aaa13eb53119fb48799fdefc829ae79e0c4835a109c264a1b5cd4346",
+      "source_version": "sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+      "retrieved_at_unix_seconds": 1792409896,
+      "start_byte": 5738,
+      "end_byte": 5869,
+      "quote": "It is helpful, but is not required, to install the SQLite TCL extension (the \"tclextension-install\" target) prior to running tests.",
+      "quote_sha256": "e004238c2405ca8bbd35c1df66ccac5c18f0f587dab048a2665793bd8d4bd4e2",
+      "locator": "README.md normalized_UTF8_bytes[5738,5869)",
+      "context_summary": "SQLite3.47.2 source README: mirror/Fossil names, Unix/Windows builds, source layout and integrity-check caveats.",
+      "origin_group": "upstream:sqlite/sqlite",
+      "scope": {
+        "product": "sqlite",
+        "release": "3.47.2"
+      },
+      "reference_facts": {
+        "sqlite.build.extension_before_tests": "Helpful but not required before tests."
+      },
+      "synthetic_mutation": false
+    },
+    "rw-19-b": {
+      "source_id": "rw-19-b",
+      "document_id": "sqlite-1",
+      "url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/README.md",
+      "normalized_path": "normalized/sqlite-1.txt",
+      "raw_sha256": "589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+      "normalized_sha256": "a71cd6b8aaa13eb53119fb48799fdefc829ae79e0c4835a109c264a1b5cd4346",
+      "source_version": "sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+      "retrieved_at_unix_seconds": 1792409896,
+      "start_byte": 7326,
+      "end_byte": 7457,
+      "quote": "It is helpful, but is not required, to install the SQLite TCL extension (the \"tclextension-install\" target) prior to running tests.",
+      "quote_sha256": "e004238c2405ca8bbd35c1df66ccac5c18f0f587dab048a2665793bd8d4bd4e2",
+      "locator": "README.md normalized_UTF8_bytes[7326,7457)",
+      "context_summary": "SQLite3.47.2 source README: mirror/Fossil names, Unix/Windows builds, source layout and integrity-check caveats.",
+      "origin_group": "upstream:sqlite/sqlite",
+      "scope": {
+        "product": "sqlite",
+        "release": "3.47.2"
+      },
+      "reference_facts": {
+        "sqlite.build.extension_before_tests": "Helpful but not required before tests."
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

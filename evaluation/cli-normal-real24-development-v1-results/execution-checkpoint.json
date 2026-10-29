@@ -10,7 +10,7 @@
   "suppressed_jobs": 45,
   "cohort_complete": false,
   "full_F1": null,
-  "first_aggregate_score_started": false,
+  "first_aggregate_score_started": true,
   "original_failure_class": "usage_budget_unmeasurable",
   "actual_failure_origin": "evaluation pre-request ModelRequest bytes13365 exceeds12000 at final_render; no ninth HTTP dispatched",
   "failed_job": "rw-02-candidate",
@@ -28,5 +28,17 @@
   "failed_job_all_reported_usage_known": true,
   "old_raw_and_latch_unchanged": true,
   "automatic_model_retry": false,
-  "next": "lossless final-render JSON compaction without raising any cap; distinct prospectively reviewed successor profile only"
+  "next": "lossless final-render JSON compaction without raising any cap; distinct prospectively reviewed successor profile only",
+  "first_aggregate_score_completed": true,
+  "first_score_report_sha256": "927af78bbf1d0e990c73f5eb07ec3bd0765fb23a2fc106fef4bf2f24748fae96",
+  "independent_semantic_review_rows": 48,
+  "annotation_failures": 0,
+  "first_score_output": "first-score/report.json",
+  "analysis_freeze_sha256": "a67d4e769ee5c24be31ad20b5165efbd37e28d10182dbc66db98e51fc5a2187a",
+  "actual_answer_F1": null,
+  "completed_pairs": 1,
+  "planned_pairs": 24,
+  "quality_gate_pass": false,
+  "CLI_repair_PR": 570,
+  "CLI_repair_merged": true
 }

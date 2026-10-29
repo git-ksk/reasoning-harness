@@ -1,0 +1,211 @@
+{
+  "identity": "cli-normal-run40873570944-semantic-validation-only-v1",
+  "runtime_files_checked": 104,
+  "execution_provenance_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+  "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6",
+  "normal_scorer_sha256": "8cb6389dcaad7fe1ce3425b10e152619dd2af6bbdd009101ee081346deca4ab5",
+  "parent_scorer_sha256": "2bda9f34f4d0782cf5d1682f911b6faf357e0dfbeb8e68ea1a5d6652d620997c",
+  "arithmetic_sha256": "bc8ea0f2564d46294caefb90eee8b5074185001392388dee79afd1e087e6314c",
+  "display_binding_sha256": "c8ac4f596b0a348b7e46627e60a11523550d55e6b5ccde91c5a6be862d22db1f",
+  "reviewer": "/root/paired_evaluation_independent",
+  "rows": [
+    {
+      "row_id": "03f645949a3eddb2f955b015",
+      "valid": true
+    },
+    {
+      "row_id": "0bfef83dfd751e8eb75a4a81",
+      "valid": true
+    },
+    {
+      "row_id": "0dcfc2b552b8cb9efce73a05",
+      "valid": true
+    },
+    {
+      "row_id": "11edbef97cc2c1c51e0081fd",
+      "valid": true
+    },
+    {
+      "row_id": "234d4ecaed58b4539aa21d4d",
+      "valid": true
+    },
+    {
+      "row_id": "260211fa98e52fff31cdab03",
+      "valid": true
+    },
+    {
+      "row_id": "36b227051063ab5e71279f67",
+      "valid": true
+    },
+    {
+      "row_id": "3dac1c93074f45fe0e661977",
+      "valid": true
+    },
+    {
+      "row_id": "3db11e42f5fd09a105e1c207",
+      "valid": true
+    },
+    {
+      "row_id": "3f2211892ff4dd9bbe76ca90",
+      "valid": true
+    },
+    {
+      "row_id": "3f9ac7b2b9e7763c0423e3eb",
+      "valid": true
+    },
+    {
+      "row_id": "418902a6ad660d964d45c3a2",
+      "valid": true
+    },
+    {
+      "row_id": "420e80e0dbf6a743f2a02d6b",
+      "valid": true
+    },
+    {
+      "row_id": "47e87a9cbfcc4cc9705f5f17",
+      "valid": true
+    },
+    {
+      "row_id": "50485f0078d8de772bde4625",
+      "valid": true
+    },
+    {
+      "row_id": "570b7081e84e89452a76d827",
+      "valid": true
+    },
+    {
+      "row_id": "5803a14cd681b3f76bac44f9",
+      "valid": true
+    },
+    {
+      "row_id": "625ea2618781bf401ea1116d",
+      "valid": true
+    },
+    {
+      "row_id": "64ba0acc6cea5741e65f1131",
+      "valid": true
+    },
+    {
+      "row_id": "703d05ada8d98ab06eed9200",
+      "valid": true
+    },
+    {
+      "row_id": "8c89b8dbcb5a3ee1bee89110",
+      "valid": true
+    },
+    {
+      "row_id": "8cd0f18d0fe9c20bf72075fd",
+      "valid": true
+    },
+    {
+      "row_id": "92d2070e568614e7c7e492d3",
+      "valid": true
+    },
+    {
+      "row_id": "9691a1867e3052ff4e2bc845",
+      "valid": true
+    },
+    {
+      "row_id": "98b4ec65a562d4bd61e8b022",
+      "valid": true
+    },
+    {
+      "row_id": "9e600049ff79471b54e2c6b9",
+      "valid": true
+    },
+    {
+      "row_id": "9f5961ac16b63cf6af6e0021",
+      "valid": true
+    },
+    {
+      "row_id": "a69aa87b97f1d58bd6900b05",
+      "valid": true
+    },
+    {
+      "row_id": "a8eac350b1c1153e482fa87c",
+      "valid": true
+    },
+    {
+      "row_id": "b09ced498059f94fd9807c75",
+      "valid": true
+    },
+    {
+      "row_id": "b3b26d89f2f8cd7fae5b9da3",
+      "valid": true
+    },
+    {
+      "row_id": "b8e0660eb62b0513a32ca717",
+      "valid": true
+    },
+    {
+      "row_id": "ba265b7e3b2b7f558b94098d",
+      "valid": true
+    },
+    {
+      "row_id": "bbdd2ef633e7da29739171e7",
+      "valid": true
+    },
+    {
+      "row_id": "bce76a1c493538632acedc4d",
+      "valid": true
+    },
+    {
+      "row_id": "bd66922ab720aebe489abf25",
+      "valid": true
+    },
+    {
+      "row_id": "be091d823150799fb7f89ce3",
+      "valid": true
+    },
+    {
+      "row_id": "c03423fb4ed9889a8f5f17d2",
+      "valid": true
+    },
+    {
+      "row_id": "c40a053c33fa2b9acca0c753",
+      "valid": true
+    },
+    {
+      "row_id": "c718fba9c8098065978e1ea4",
+      "valid": true
+    },
+    {
+      "row_id": "d469450837fb5506851ddec4",
+      "valid": true
+    },
+    {
+      "row_id": "d6e14de26697c0b658049c65",
+      "valid": true
+    },
+    {
+      "row_id": "e3a44a5f479bf883ed206715",
+      "valid": true
+    },
+    {
+      "row_id": "ebb2f1c47cdd1d1e3038c7fc",
+      "valid": true
+    },
+    {
+      "row_id": "f4da70692b962b711932acdf",
+      "valid": true
+    },
+    {
+      "row_id": "f7e27887f9e174d7cc0c2f01",
+      "valid": true
+    },
+    {
+      "row_id": "f8308f49e9e6f5d0b0ac4df1",
+      "valid": true
+    },
+    {
+      "row_id": "fb81127ca9bd2d4e72d90670",
+      "valid": true
+    }
+  ],
+  "valid": true,
+  "row_arithmetic_return_values_discarded": true,
+  "aggregate_scoring_executed": false,
+  "scorer_main_called": false,
+  "network": "none",
+  "secrets_passed": false
+}

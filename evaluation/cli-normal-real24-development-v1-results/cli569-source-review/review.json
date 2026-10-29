@@ -1,0 +1,127 @@
+{
+  "identity": "independent-cli569-source-review-v1",
+  "reviewer": "/root/real24_operational_review",
+  "reviewer_kind": "agent_nonhuman",
+  "scope": "CLI final-render lossless request compaction source only",
+  "source_commit": "54eee374b40100e04fb0f8cde95912c8076dafa6",
+  "PR": 570,
+  "result": "PASS_BOUNDED_SOURCE_ONLY",
+  "formal_verdict_issued": false,
+  "verdict_stage": "BOUNDED_CLI_SOURCE_REVIEW",
+  "not_formal_operational_verdict": true,
+  "source_files_sha256": {
+    "crates/reasoning-harness-cli/src/main.rs": "9ecc5b8bd6b014410f16218f77aa0fea9f5fcfdb9a52b4cf0823390e171c8f9a",
+    "crates/reasoning-harness-cli/src/final_render_compaction.rs": "ad2067b6cbee26cfb04ee81743f18d01264f253c62ae05fe5d48bd690b6ea4ae"
+  },
+  "independent_checks": {
+    "actual_CLI_module_tests": {
+      "pass": true,
+      "tests": 4,
+      "includes_actual_first_and_fallback_adapter_path": true,
+      "private_saved_trace_test_explicitly_enabled": true,
+      "evidence": "actual-cli-helper-tests-execution.json"
+    },
+    "both_frozen_core_production_helper_probes": {
+      "baseline": {
+        "core_commit": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+        "all_core_files_match_previously_verified_frozen_core_plus_identical_PR552_patch": true,
+        "core_files": 131,
+        "unique_target": "/private/tmp/cli569-independent-v28qdw8i/target-baseline",
+        "probe_manifest_sha256": "0bdd8c649cbf958e448be0ca578b0be0651259e6377c1bfa9d3cdad9043769e4",
+        "probe_Cargo_lock_sha256": "abf7222ea81bcf86c1761460d475159cbba7893208d17102ada4362229b32ccb",
+        "result": {
+          "caller_task_contains_entire_pretty_artifact": true,
+          "external_API_calls": 0,
+          "quoted_whitespace_escapes_and_unicode_preserved": true,
+          "result": "PASS",
+          "saved_fallback": {
+            "artifact_bytes_before_after_equal": true,
+            "artifact_values_and_outside_text_equal": true,
+            "compact_ModelRequest_bytes": 5675,
+            "original_ModelRequest_bytes": 7274,
+            "other_request_fields_equal": true
+          },
+          "saved_initial": {
+            "artifact_bytes_before_after_equal": true,
+            "artifact_values_and_outside_text_equal": true,
+            "compact_ModelRequest_bytes": 5846,
+            "original_ModelRequest_bytes": 6956,
+            "other_request_fields_equal": true
+          },
+          "saved_nonempty_counts": {
+            "claims": 2,
+            "evidence": 2,
+            "receipts": 1
+          },
+          "source_original_edited": false,
+          "unexpected_template_rejections": 10
+        },
+        "returncode": 0
+      },
+      "candidate": {
+        "core_commit": "ab3c6322921c8c738ec35bd018345917b5afa538",
+        "all_core_files_match_previously_verified_frozen_core_plus_identical_PR552_patch": true,
+        "core_files": 157,
+        "unique_target": "/private/tmp/cli569-independent-v28qdw8i/target-candidate",
+        "probe_manifest_sha256": "40fa6f0a5d0cdb715797a1f7d18bc9bd05e67b4d793db1d91eb4522c545eed9e",
+        "probe_Cargo_lock_sha256": "00714fac54cfc0e08e65de6ae6d85991fe588c52ccbb12dade8d8ec401666859",
+        "result": {
+          "caller_task_contains_entire_pretty_artifact": true,
+          "external_API_calls": 0,
+          "quoted_whitespace_escapes_and_unicode_preserved": true,
+          "result": "PASS",
+          "saved_fallback": {
+            "artifact_bytes_before_after_equal": true,
+            "artifact_values_and_outside_text_equal": true,
+            "compact_ModelRequest_bytes": 11015,
+            "original_ModelRequest_bytes": 13683,
+            "other_request_fields_equal": true
+          },
+          "saved_initial": {
+            "artifact_bytes_before_after_equal": true,
+            "artifact_values_and_outside_text_equal": true,
+            "compact_ModelRequest_bytes": 11186,
+            "original_ModelRequest_bytes": 13365,
+            "other_request_fields_equal": true
+          },
+          "saved_nonempty_counts": {
+            "claims": 6,
+            "evidence": 2,
+            "receipts": 4
+          },
+          "source_original_edited": false,
+          "unexpected_template_rejections": 10
+        },
+        "returncode": 0
+      }
+    },
+    "old_raw_142_files_and_prior_RCA_review_unchanged": true
+  },
+  "conclusions": [
+    "Initial and existing single JSON fallback adapter paths both compact the builder-owned request before adapter.generate. Only the new helper and its two call sites change. Public core types, evidence admission/authority, answer verification, model choice, retry count, and output/input budget values are unchanged by this commit.",
+    "Initial compaction requires the entire task/verdict/typed-artifact prefix and suffix to equal the request. Fallback streams one builder-owned JSON schema and requires the complete remaining template to match. Request fields other than task and JSON values within the task are preserved. Internal builder-owned request scope is assumed; this helper is not a general untrusted request/schema validator.",
+    "Independent probes preserve caller text even when it contains the entire actual pretty artifact, plus marker strings, quoted whitespace, escapes and Unicode. Wrong task/artifact/verdict, altered tail and malformed/missing fallback schema prefix fail closed. Each frozen arm rejects all ten targeted negative inputs.",
+    "Saved baseline request shrinks6956 to5846 bytes (fallback7274 to5675). Saved candidate failure request shrinks13365 to11186 bytes (fallback13683 to11015). Baseline nonempty claims2/receipts1 and candidate claims6/receipts4 are byte-identical before/after; artifact values, outside text, system/schema/seed/max_tokens/preferences remain unchanged.",
+    "These results establish source/request preservation and remove the saved size blocker at unchanged caps. They do not establish identical model responses, full successor cohort completion, quality/F1 improvement or runtime/live admission."
+  ],
+  "findings": [],
+  "implementation_authorship": "Reviewer made no implementation or tracked-source edits; reviewer-authored probe is outside the source export. Production helper bytes equal exact54eee commit in all probes. Isolated Cargo target directories prevent cross-source binary reuse.",
+  "other_evidence_status": {
+    "author_CLI258_4ignored_clippy_both_core_full_host_compile": "parent-declared commands; unavailable saved author logs, not represented as independently observed",
+    "CI22_success": "parent-reported exact-head readback; separate from this packet independent execution",
+    "historical48_request_context_probe": "not used as a PASS basis; no new cohort-fit or quality guarantee"
+  },
+  "limits": {
+    "actual_new_runtime_image_reviewed": false,
+    "full_both_arm_CLI_host_rebuild_by_this_reviewer": false,
+    "core_probe_is_helper_and_actual_builder_type_compatibility": true,
+    "new_model_API_or_metadata_HTTP": 0,
+    "real_provider_credentials_supplied": false,
+    "new_tag_created": false,
+    "score_or_semantic_labels_created": false,
+    "previous_v1_run_repaired_or_resumed": false,
+    "old_formal_runtime_verdict_promoted": false
+  },
+  "next_gate": "Any v2 evaluation needs separately frozen source/host/image/proof/runtime review, new metadata/receipt/admission and its own first tag. This source-only result cannot satisfy the operational activation guard.",
+  "reviewed_at_UTC": "2026-10-29T17:31:19.317984+00:00"
+}

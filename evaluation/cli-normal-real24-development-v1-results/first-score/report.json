@@ -1,0 +1,674 @@
+{
+  "scope": "semantic independent real-source evaluation only; not release/CLI distribution",
+  "provider_tracks": {
+    "mistral/e2e_normal": {
+      "case_quality": {
+        "metric_gate_pass": false,
+        "provider": "mistral",
+        "track": "e2e_normal",
+        "arm": "candidate",
+        "blockers": [
+          "operationally_incomplete",
+          "insufficient_clear_class_samples"
+        ],
+        "rows": 24,
+        "expected_rows": 24,
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "tn": 0,
+        "ambiguous": 0,
+        "incomplete": 23,
+        "hard_violations": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f0_5_diagnostic": 1.0,
+        "f0_5_stretch_met": true,
+        "binary_denominator": 1,
+        "accepted_coverage": 0.041666666666666664,
+        "scope": "metric gate only; NEVER standalone CLI/source release approval"
+      },
+      "actual_answer_f1": null,
+      "measurement_status": "UNAVAILABLE_INCOMPLETE_NEVER_TN_OR_PERFECT",
+      "claim_micro": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f1_null_or_zero_reason": null
+      },
+      "claim_counts": {
+        "displayed_unique_claims_A": 2,
+        "grounded_claims_S": 2,
+        "required_groups_G": 1,
+        "satisfied_groups_H": 1,
+        "displayed_claim_occurrences": 5
+      },
+      "citation_counts": {
+        "edges": 6,
+        "correct_edges": 6,
+        "claims_requiring_citation": 5,
+        "correctly_cited_occurrences": 5,
+        "literal_quotes": 6,
+        "faithful_literal_quotes": 6
+      },
+      "delivered_required_coverage": 0.034482758620689655,
+      "planned_required_groups": 29,
+      "paired_utility": {
+        "net_gain": 0,
+        "regressions": 0,
+        "paired_complete_cases": 1,
+        "planned_cases": 24,
+        "incomplete_pairs": 23
+      }
+    }
+  },
+  "descriptive_by_provider_track_arm_family": {
+    "mistral/e2e_normal/baseline": {
+      "planned_rows": 24,
+      "complete_rows": 1,
+      "incomplete_rows": 23,
+      "case_counts": {
+        "tp": 1
+      },
+      "case_metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "claim_counts": {
+        "displayed_unique_claims_A": 2,
+        "grounded_claims_S": 2,
+        "required_groups_G": 1,
+        "satisfied_groups_H": 1,
+        "displayed_claim_occurrences": 5
+      },
+      "claim_micro": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f1_null_or_zero_reason": null
+      },
+      "claim_macro_f1_defined_rows": 1,
+      "claim_macro_f1": 1.0,
+      "citation_counts": {
+        "edges": 6,
+        "correct_edges": 6,
+        "claims_requiring_citation": 5,
+        "correctly_cited_occurrences": 5,
+        "literal_quotes": 6,
+        "faithful_literal_quotes": 6
+      },
+      "citation_metrics": {
+        "edge_precision": 1.0,
+        "claim_occurrence_coverage": 1.0,
+        "literal_fidelity": 1.0
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/baseline/family/compatible": {
+      "planned_rows": 3,
+      "complete_rows": 1,
+      "incomplete_rows": 2,
+      "case_counts": {
+        "tp": 1
+      },
+      "case_metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "claim_counts": {
+        "displayed_unique_claims_A": 2,
+        "grounded_claims_S": 2,
+        "required_groups_G": 1,
+        "satisfied_groups_H": 1,
+        "displayed_claim_occurrences": 5
+      },
+      "claim_micro": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f1_null_or_zero_reason": null
+      },
+      "claim_macro_f1_defined_rows": 1,
+      "claim_macro_f1": 1.0,
+      "citation_counts": {
+        "edges": 6,
+        "correct_edges": 6,
+        "claims_requiring_citation": 5,
+        "correctly_cited_occurrences": 5,
+        "literal_quotes": 6,
+        "faithful_literal_quotes": 6
+      },
+      "citation_metrics": {
+        "edge_precision": 1.0,
+        "claim_occurrence_coverage": 1.0,
+        "literal_fidelity": 1.0
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/baseline/family/conflict": {
+      "planned_rows": 3,
+      "complete_rows": 0,
+      "incomplete_rows": 3,
+      "case_counts": {},
+      "case_metrics": {
+        "precision": null,
+        "recall": null,
+        "f1": null
+      },
+      "claim_counts": {},
+      "claim_micro": {
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "f1_null_or_zero_reason": "no_required_supported_groups"
+      },
+      "claim_macro_f1_defined_rows": 0,
+      "claim_macro_f1": null,
+      "citation_counts": {},
+      "citation_metrics": {
+        "edge_precision": null,
+        "claim_occurrence_coverage": null,
+        "literal_fidelity": null
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/baseline/family/duplicate_or_lineage": {
+      "planned_rows": 3,
+      "complete_rows": 0,
+      "incomplete_rows": 3,
+      "case_counts": {},
+      "case_metrics": {
+        "precision": null,
+        "recall": null,
+        "f1": null
+      },
+      "claim_counts": {},
+      "claim_micro": {
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "f1_null_or_zero_reason": "no_required_supported_groups"
+      },
+      "claim_macro_f1_defined_rows": 0,
+      "claim_macro_f1": null,
+      "citation_counts": {},
+      "citation_metrics": {
+        "edge_precision": null,
+        "claim_occurrence_coverage": null,
+        "literal_fidelity": null
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/baseline/family/missing_or_unrelated": {
+      "planned_rows": 3,
+      "complete_rows": 0,
+      "incomplete_rows": 3,
+      "case_counts": {},
+      "case_metrics": {
+        "precision": null,
+        "recall": null,
+        "f1": null
+      },
+      "claim_counts": {},
+      "claim_micro": {
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "f1_null_or_zero_reason": "no_required_supported_groups"
+      },
+      "claim_macro_f1_defined_rows": 0,
+      "claim_macro_f1": null,
+      "citation_counts": {},
+      "citation_metrics": {
+        "edge_precision": null,
+        "claim_occurrence_coverage": null,
+        "literal_fidelity": null
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/baseline/family/revision_or_history": {
+      "planned_rows": 3,
+      "complete_rows": 0,
+      "incomplete_rows": 3,
+      "case_counts": {},
+      "case_metrics": {
+        "precision": null,
+        "recall": null,
+        "f1": null
+      },
+      "claim_counts": {},
+      "claim_micro": {
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "f1_null_or_zero_reason": "no_required_supported_groups"
+      },
+      "claim_macro_f1_defined_rows": 0,
+      "claim_macro_f1": null,
+      "citation_counts": {},
+      "citation_metrics": {
+        "edge_precision": null,
+        "claim_occurrence_coverage": null,
+        "literal_fidelity": null
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/baseline/family/scope": {
+      "planned_rows": 3,
+      "complete_rows": 0,
+      "incomplete_rows": 3,
+      "case_counts": {},
+      "case_metrics": {
+        "precision": null,
+        "recall": null,
+        "f1": null
+      },
+      "claim_counts": {},
+      "claim_micro": {
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "f1_null_or_zero_reason": "no_required_supported_groups"
+      },
+      "claim_macro_f1_defined_rows": 0,
+      "claim_macro_f1": null,
+      "citation_counts": {},
+      "citation_metrics": {
+        "edge_precision": null,
+        "claim_occurrence_coverage": null,
+        "literal_fidelity": null
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/baseline/family/untrusted_control": {
+      "planned_rows": 3,
+      "complete_rows": 0,
+      "incomplete_rows": 3,
+      "case_counts": {},
+      "case_metrics": {
+        "precision": null,
+        "recall": null,
+        "f1": null
+      },
+      "claim_counts": {},
+      "claim_micro": {
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "f1_null_or_zero_reason": "no_required_supported_groups"
+      },
+      "claim_macro_f1_defined_rows": 0,
+      "claim_macro_f1": null,
+      "citation_counts": {},
+      "citation_metrics": {
+        "edge_precision": null,
+        "claim_occurrence_coverage": null,
+        "literal_fidelity": null
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/baseline/family/wrong_target": {
+      "planned_rows": 3,
+      "complete_rows": 0,
+      "incomplete_rows": 3,
+      "case_counts": {},
+      "case_metrics": {
+        "precision": null,
+        "recall": null,
+        "f1": null
+      },
+      "claim_counts": {},
+      "claim_micro": {
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "f1_null_or_zero_reason": "no_required_supported_groups"
+      },
+      "claim_macro_f1_defined_rows": 0,
+      "claim_macro_f1": null,
+      "citation_counts": {},
+      "citation_metrics": {
+        "edge_precision": null,
+        "claim_occurrence_coverage": null,
+        "literal_fidelity": null
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/candidate": {
+      "planned_rows": 24,
+      "complete_rows": 1,
+      "incomplete_rows": 23,
+      "case_counts": {
+        "tp": 1
+      },
+      "case_metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "claim_counts": {
+        "displayed_unique_claims_A": 2,
+        "grounded_claims_S": 2,
+        "required_groups_G": 1,
+        "satisfied_groups_H": 1,
+        "displayed_claim_occurrences": 5
+      },
+      "claim_micro": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f1_null_or_zero_reason": null
+      },
+      "claim_macro_f1_defined_rows": 1,
+      "claim_macro_f1": 1.0,
+      "citation_counts": {
+        "edges": 6,
+        "correct_edges": 6,
+        "claims_requiring_citation": 5,
+        "correctly_cited_occurrences": 5,
+        "literal_quotes": 6,
+        "faithful_literal_quotes": 6
+      },
+      "citation_metrics": {
+        "edge_precision": 1.0,
+        "claim_occurrence_coverage": 1.0,
+        "literal_fidelity": 1.0
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/candidate/family/compatible": {
+      "planned_rows": 3,
+      "complete_rows": 1,
+      "incomplete_rows": 2,
+      "case_counts": {
+        "tp": 1
+      },
+      "case_metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "claim_counts": {
+        "displayed_unique_claims_A": 2,
+        "grounded_claims_S": 2,
+        "required_groups_G": 1,
+        "satisfied_groups_H": 1,
+        "displayed_claim_occurrences": 5
+      },
+      "claim_micro": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f1_null_or_zero_reason": null
+      },
+      "claim_macro_f1_defined_rows": 1,
+      "claim_macro_f1": 1.0,
+      "citation_counts": {
+        "edges": 6,
+        "correct_edges": 6,
+        "claims_requiring_citation": 5,
+        "correctly_cited_occurrences": 5,
+        "literal_quotes": 6,
+        "faithful_literal_quotes": 6
+      },
+      "citation_metrics": {
+        "edge_precision": 1.0,
+        "claim_occurrence_coverage": 1.0,
+        "literal_fidelity": 1.0
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/candidate/family/conflict": {
+      "planned_rows": 3,
+      "complete_rows": 0,
+      "incomplete_rows": 3,
+      "case_counts": {},
+      "case_metrics": {
+        "precision": null,
+        "recall": null,
+        "f1": null
+      },
+      "claim_counts": {},
+      "claim_micro": {
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "f1_null_or_zero_reason": "no_required_supported_groups"
+      },
+      "claim_macro_f1_defined_rows": 0,
+      "claim_macro_f1": null,
+      "citation_counts": {},
+      "citation_metrics": {
+        "edge_precision": null,
+        "claim_occurrence_coverage": null,
+        "literal_fidelity": null
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/candidate/family/duplicate_or_lineage": {
+      "planned_rows": 3,
+      "complete_rows": 0,
+      "incomplete_rows": 3,
+      "case_counts": {},
+      "case_metrics": {
+        "precision": null,
+        "recall": null,
+        "f1": null
+      },
+      "claim_counts": {},
+      "claim_micro": {
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "f1_null_or_zero_reason": "no_required_supported_groups"
+      },
+      "claim_macro_f1_defined_rows": 0,
+      "claim_macro_f1": null,
+      "citation_counts": {},
+      "citation_metrics": {
+        "edge_precision": null,
+        "claim_occurrence_coverage": null,
+        "literal_fidelity": null
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/candidate/family/missing_or_unrelated": {
+      "planned_rows": 3,
+      "complete_rows": 0,
+      "incomplete_rows": 3,
+      "case_counts": {},
+      "case_metrics": {
+        "precision": null,
+        "recall": null,
+        "f1": null
+      },
+      "claim_counts": {},
+      "claim_micro": {
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "f1_null_or_zero_reason": "no_required_supported_groups"
+      },
+      "claim_macro_f1_defined_rows": 0,
+      "claim_macro_f1": null,
+      "citation_counts": {},
+      "citation_metrics": {
+        "edge_precision": null,
+        "claim_occurrence_coverage": null,
+        "literal_fidelity": null
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/candidate/family/revision_or_history": {
+      "planned_rows": 3,
+      "complete_rows": 0,
+      "incomplete_rows": 3,
+      "case_counts": {},
+      "case_metrics": {
+        "precision": null,
+        "recall": null,
+        "f1": null
+      },
+      "claim_counts": {},
+      "claim_micro": {
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "f1_null_or_zero_reason": "no_required_supported_groups"
+      },
+      "claim_macro_f1_defined_rows": 0,
+      "claim_macro_f1": null,
+      "citation_counts": {},
+      "citation_metrics": {
+        "edge_precision": null,
+        "claim_occurrence_coverage": null,
+        "literal_fidelity": null
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/candidate/family/scope": {
+      "planned_rows": 3,
+      "complete_rows": 0,
+      "incomplete_rows": 3,
+      "case_counts": {},
+      "case_metrics": {
+        "precision": null,
+        "recall": null,
+        "f1": null
+      },
+      "claim_counts": {},
+      "claim_micro": {
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "f1_null_or_zero_reason": "no_required_supported_groups"
+      },
+      "claim_macro_f1_defined_rows": 0,
+      "claim_macro_f1": null,
+      "citation_counts": {},
+      "citation_metrics": {
+        "edge_precision": null,
+        "claim_occurrence_coverage": null,
+        "literal_fidelity": null
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/candidate/family/untrusted_control": {
+      "planned_rows": 3,
+      "complete_rows": 0,
+      "incomplete_rows": 3,
+      "case_counts": {},
+      "case_metrics": {
+        "precision": null,
+        "recall": null,
+        "f1": null
+      },
+      "claim_counts": {},
+      "claim_micro": {
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "f1_null_or_zero_reason": "no_required_supported_groups"
+      },
+      "claim_macro_f1_defined_rows": 0,
+      "claim_macro_f1": null,
+      "citation_counts": {},
+      "citation_metrics": {
+        "edge_precision": null,
+        "claim_occurrence_coverage": null,
+        "literal_fidelity": null
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    },
+    "mistral/e2e_normal/candidate/family/wrong_target": {
+      "planned_rows": 3,
+      "complete_rows": 0,
+      "incomplete_rows": 3,
+      "case_counts": {},
+      "case_metrics": {
+        "precision": null,
+        "recall": null,
+        "f1": null
+      },
+      "claim_counts": {},
+      "claim_micro": {
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "f1_null_or_zero_reason": "no_required_supported_groups"
+      },
+      "claim_macro_f1_defined_rows": 0,
+      "claim_macro_f1": null,
+      "citation_counts": {},
+      "citation_metrics": {
+        "edge_precision": null,
+        "claim_occurrence_coverage": null,
+        "literal_fidelity": null
+      },
+      "hard_violations_including_partial": 0,
+      "not_a_population_or_pooled_gate": true
+    }
+  },
+  "semantic_gate_pass": false,
+  "blockers": [
+    "mistral/e2e_normal:baseline_incomplete",
+    "mistral/e2e_normal:candidate_incomplete",
+    "mistral/e2e_normal:case_quality_or_completeness",
+    "mistral/e2e_normal:paired_utility"
+  ],
+  "runtime_efficiency_gate": "REQUIRED_SEPARATE_PINNED_RUNTIME_REPORT",
+  "acceptance": "NOT_ELIGIBLE_CONSUMED_DEVELOPMENT_DIAGNOSTIC",
+  "source_denominators": {
+    "cases": 24,
+    "unique_documents": 12,
+    "unique_products": 6,
+    "origin_groups": 6
+  },
+  "runtime_efficiency": {
+    "mistral": {
+      "paired_complete_cases": 1,
+      "ratios": {
+        "mean_logical_calls": 0,
+        "aggregate_total_tokens": 0.9860737458458617,
+        "p95_wall_ratio": 0.9849860380544191
+      },
+      "efficiency_gate_pass": false
+    }
+  },
+  "annotation_failures": [],
+  "semantic_review_authority": "independent agent, no human attestation",
+  "small_sample": "descriptive correlated24-task sample; no population accuracy guarantee",
+  "measurement_scope": "CONSUMED_REAL24_ENGINEERING_DIAGNOSTIC_NOT_ACCEPTANCE",
+  "deferred_providers": {
+    "google": "NO_NEW_RUN_PRIOR_23_OF_24_PARTIAL_F1_REFERENCE_ONLY",
+    "groq": "NOT_RUN_NO_F1_NO_ADOPTION_JUDGMENT"
+  },
+  "accuracy_acceptance": false,
+  "fresh_accuracy_cases": 0,
+  "declared_quality_gates_pass": false,
+  "execution_receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6",
+  "verified_run_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+  "run_id": 40873570944,
+  "artifact_id": 12896743028,
+  "source_merge_release_CLI_distribution": "SEPARATE_GATES_NOT_APPROVED_BY_THIS_REPORT"
+}

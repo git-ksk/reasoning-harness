@@ -1,0 +1,133 @@
+{
+  "row_id": "3f9ac7b2b9e7763c0423e3eb",
+  "observation_sha256": "e67a5a41cdcbff35f3536210dabc2576b81f26caef1733c95934cc7d24260ad5",
+  "gold": {
+    "id": "rw-09/e2e_normal",
+    "case_id": "rw-09",
+    "track": "e2e_normal",
+    "family": "compatible",
+    "label": "positive",
+    "answerability": "full",
+    "groups": [
+      {
+        "id": "g1",
+        "required_supported_information": "break exits an enclosing foreach or while loop.",
+        "supporting_source_ids": [
+          "rw-09-a",
+          "rw-09-b"
+        ]
+      }
+    ],
+    "unresolved_facets": [],
+    "required_disclosures": [],
+    "full_source_rationale": "The full short page establishes exactly these two loop forms.",
+    "scope_time_origin_review": {
+      "product_target": "cmake",
+      "required_scope": {
+        "product": "cmake",
+        "release": "3.31.0"
+      },
+      "document_ids": [
+        "cmake-2",
+        "cmake-2"
+      ],
+      "release_refs": [
+        "v3.31.0",
+        "v3.31.0"
+      ],
+      "capture_commits": [
+        "e22c8383b9ae4f27a78f7a8849693c03ca29c7bb",
+        "e22c8383b9ae4f27a78f7a8849693c03ca29c7bb"
+      ],
+      "document_versions": [
+        "sha256:4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114",
+        "sha256:4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114"
+      ],
+      "origin_groups": [
+        "upstream:Kitware/CMake",
+        "upstream:Kitware/CMake"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "fee14d0dbce054ae47eefa6906d8ffb873b2d4e18caaaa0f9272e36b8384a18c"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-09-a": {
+      "source_id": "rw-09-a",
+      "document_id": "cmake-2",
+      "url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/break.rst",
+      "normalized_path": "normalized/cmake-2.txt",
+      "raw_sha256": "4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114",
+      "normalized_sha256": "4f01278b55bfaa638dfcbce01bfe681af3a78434689382fd2126c15a93d5d954",
+      "source_version": "sha256:4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 12,
+      "end_byte": 58,
+      "quote": "Break from an enclosing foreach or while loop.",
+      "quote_sha256": "0beddaaa1397b770f3939509a3d3e6c3dd5168833e8eb7daf7d3cc9e4e9b7d8b",
+      "locator": "Help/command/break.rst normalized_UTF8_bytes[12,58)",
+      "context_summary": "CMake3.31.0 break command: foreach/while syntax and reference to continue.",
+      "origin_group": "upstream:Kitware/CMake",
+      "scope": {
+        "product": "cmake",
+        "release": "3.31.0"
+      },
+      "reference_facts": {
+        "cmake.break.loop_kinds": "foreach or while"
+      },
+      "synthetic_mutation": false
+    },
+    "rw-09-b": {
+      "source_id": "rw-09-b",
+      "document_id": "cmake-2",
+      "url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/break.rst",
+      "normalized_path": "normalized/cmake-2.txt",
+      "raw_sha256": "4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114",
+      "normalized_sha256": "4f01278b55bfaa638dfcbce01bfe681af3a78434689382fd2126c15a93d5d954",
+      "source_version": "sha256:4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 89,
+      "end_byte": 158,
+      "quote": "Breaks from an enclosing :command:`foreach` or :command:`while` loop.",
+      "quote_sha256": "33f3a5f0eca6b0c5796f4571db58d2d1eb10f40f2496f9ed164372bb2c8a4860",
+      "locator": "Help/command/break.rst normalized_UTF8_bytes[89,158)",
+      "context_summary": "CMake3.31.0 break command: foreach/while syntax and reference to continue.",
+      "origin_group": "upstream:Kitware/CMake",
+      "scope": {
+        "product": "cmake",
+        "release": "3.31.0"
+      },
+      "reference_facts": {
+        "cmake.break.loop_kinds": "foreach or while"
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

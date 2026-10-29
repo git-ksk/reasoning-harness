@@ -1,0 +1,141 @@
+{
+  "row_id": "9f5961ac16b63cf6af6e0021",
+  "observation_sha256": "b6a8eb2bc10322032692730293dc2770f2fab50b0eb8302d42a6bf91c3c3a272",
+  "gold": {
+    "id": "rw-02/e2e_normal",
+    "case_id": "rw-02",
+    "track": "e2e_normal",
+    "family": "conflict",
+    "label": "positive",
+    "answerability": "full",
+    "groups": [
+      {
+        "id": "g1",
+        "required_supported_information": "Transient HTTP codes include408,429,500,502,503,504; this is not all4xx.",
+        "supporting_source_ids": [
+          "rw-02-a"
+        ]
+      },
+      {
+        "id": "g2",
+        "required_supported_information": "A fully received404 is not automatically a transfer error; --fail is the documented companion for all HTTP error statuses.",
+        "supporting_source_ids": [
+          "rw-02-b"
+        ]
+      }
+    ],
+    "unresolved_facets": [],
+    "required_disclosures": [
+      "distinguish_HTTP_status_from_transfer_error"
+    ],
+    "full_source_rationale": "Apparent all-errors versus not-all-statuses conflict resolves by distinguishing transfer errors and HTTP status.",
+    "scope_time_origin_review": {
+      "product_target": "curl",
+      "required_scope": {
+        "product": "curl",
+        "release": "8.10.1"
+      },
+      "document_ids": [
+        "curl-1",
+        "curl-2"
+      ],
+      "release_refs": [
+        "curl-8_10_1",
+        "curl-8_10_1"
+      ],
+      "capture_commits": [
+        "7eb8c048470ed2cc14dca75be9c1cdae7ac8498b",
+        "7eb8c048470ed2cc14dca75be9c1cdae7ac8498b"
+      ],
+      "document_versions": [
+        "sha256:d164104079fbac52eefc1147bfb1eb152bfbb1d883e6c0f963df25a4e7a505e2",
+        "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916"
+      ],
+      "origin_groups": [
+        "upstream:curl/curl",
+        "upstream:curl/curl"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "2e0107b822486fa850f6515fef6d288436d4e5dcdcae80f83d8911931abaf951"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-02-a": {
+      "source_id": "rw-02-a",
+      "document_id": "curl-1",
+      "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry.md",
+      "normalized_path": "normalized/curl-1.txt",
+      "raw_sha256": "d164104079fbac52eefc1147bfb1eb152bfbb1d883e6c0f963df25a4e7a505e2",
+      "normalized_sha256": "1c50e9c3dcb291a16f36d31f2b6ac33d6f3a9964c26191f90a67c8648ee193ae",
+      "source_version": "sha256:d164104079fbac52eefc1147bfb1eb152bfbb1d883e6c0f963df25a4e7a505e2",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 471,
+      "end_byte": 593,
+      "quote": "Transient error means either: a timeout, an FTP 4xx response code or an HTTP 408, 429, 500, 502, 503 or 504 response code.",
+      "quote_sha256": "3ed787ca4b58c35d81cb546b62aa2891483102bbc0c8349820ae4eb1098b2620",
+      "locator": "docs/cmdline-opts/retry.md normalized_UTF8_bytes[471,593)",
+      "context_summary": "curl8.10.1 --retry manual: transient errors, zero default retries, backoff and Retry-After history.",
+      "origin_group": "upstream:curl/curl",
+      "scope": {
+        "product": "curl",
+        "release": "8.10.1"
+      },
+      "reference_facts": {
+        "curl.retry.transient": "timeout; FTP4xx; HTTP408,429,500,502,503,504"
+      },
+      "synthetic_mutation": false
+    },
+    "rw-02-b": {
+      "source_id": "rw-02-b",
+      "document_id": "curl-2",
+      "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md",
+      "normalized_path": "normalized/curl-2.txt",
+      "raw_sha256": "a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+      "normalized_sha256": "4f81c7efbe90b7701f44c8643b804258ec872e52df927cd0d04224c67f220ab1",
+      "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 1231,
+      "end_byte": 1753,
+      "quote": "By default curl does not return error for transfers with an HTTP response code that indicates an HTTP error, if the transfer was successful. For example, if a server replies 404 Not Found and the reply is fully received then that is not an error. When --retry is used then curl retries on some HTTP response codes that indicate transient HTTP errors, but that does not include most 4xx response codes such as 404. If you want to retry on all response codes that indicate HTTP errors (4xx and 5xx) then combine with --fail.",
+      "quote_sha256": "0f5d2d625064d32159494ade41fa12fea39c28a5c8af6085ef19779afcae7bd9",
+      "locator": "docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[1231,1753)",
+      "context_summary": "curl8.10.1 --retry-all-errors manual: companion option, redirected-IO cautions and HTTP-status versus transfer-error distinction.",
+      "origin_group": "upstream:curl/curl",
+      "scope": {
+        "product": "curl",
+        "release": "8.10.1"
+      },
+      "reference_facts": {
+        "curl.retry_all.http404": "A fully received HTTP404 is not by itself a transfer error; --fail changes HTTP error treatment."
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

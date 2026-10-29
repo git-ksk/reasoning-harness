@@ -1,0 +1,13 @@
+{
+  "identity": "independent-cli-normal-saved-raw-rca-artifact-manifest-v1",
+  "reviewer": "/root/real24_operational_review",
+  "scope": "RCA evidence only, not a runtime verdict or score",
+  "raw_root": "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/cli-normal-real24-40873570944-raw",
+  "raw_inventory_file": "raw-inventory-before.json",
+  "files": {
+    "independent-calculation.json": "271c4eef21102817de990c67e95b660425889913e20bb23aff7b992408cc3f05",
+    "raw-inventory-before.json": "ce3b6603cfa9eb667ea44bb6104abb2ab597acb34ab6d46794bbf688f6eea36b",
+    "reproduce_rca.py": "6b5ce7dc10cfe55fdf13e96928e5d587ce88641746670aa37fd6ba565a0e6053",
+    "review.json": "05ceb1b4636ec3e7cb97d01f9a425510581229cd6dbc2d2577e4522715578bb1"
+  }
+}

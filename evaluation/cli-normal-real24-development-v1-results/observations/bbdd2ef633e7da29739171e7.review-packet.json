@@ -1,0 +1,128 @@
+{
+  "row_id": "bbdd2ef633e7da29739171e7",
+  "observation_sha256": "d05bc45468628c7e99f6e4d644e81e97efc26a20acdba64e6472625377e09144",
+  "gold": {
+    "id": "rw-23/e2e_normal",
+    "case_id": "rw-23",
+    "track": "e2e_normal",
+    "family": "missing_or_unrelated",
+    "label": "negative",
+    "answerability": "none",
+    "groups": [],
+    "unresolved_facets": [
+      "actual_invoice_key_value"
+    ],
+    "required_disclosures": [
+      "example_not_live_database_state"
+    ],
+    "full_source_rationale": "Example foo value cannot be transferred to invoice:2026:paid.",
+    "scope_time_origin_review": {
+      "product_target": "redis",
+      "required_scope": {
+        "product": "redis",
+        "release": "7.2.5"
+      },
+      "document_ids": [
+        "redis-1",
+        "redis-2"
+      ],
+      "release_refs": [
+        "7.2.5",
+        "7.2.5"
+      ],
+      "capture_commits": [
+        "f60370ce28b946c1146dcea77c9c399d39601aaa",
+        "f60370ce28b946c1146dcea77c9c399d39601aaa"
+      ],
+      "document_versions": [
+        "sha256:b475ab7922c5ad2c42c8ccde2bc6f1a4f7f8b3ba999426fa3e6b00452362cf50",
+        "sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff"
+      ],
+      "origin_groups": [
+        "upstream:redis/redis",
+        "upstream:redis/redis"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "e84cfd71f15670a801553f668bf179f758d0330e33ae249d01a272c942486279"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-23-a": {
+      "source_id": "rw-23-a",
+      "document_id": "redis-1",
+      "url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/README.md",
+      "normalized_path": "normalized/redis-1.txt",
+      "raw_sha256": "b475ab7922c5ad2c42c8ccde2bc6f1a4f7f8b3ba999426fa3e6b00452362cf50",
+      "normalized_sha256": "031ebb8a537e0a85295f9523ec68b370e7b2510f5831be5e3fb2e25d1c431812",
+      "source_version": "sha256:b475ab7922c5ad2c42c8ccde2bc6f1a4f7f8b3ba999426fa3e6b00452362cf50",
+      "retrieved_at_unix_seconds": 1792409896,
+      "start_byte": 6131,
+      "end_byte": 6173,
+      "quote": "redis> set foo bar OK redis> get foo \"bar\"",
+      "quote_sha256": "77494620b8c1b7231d021ed0575802f149c0fe37063fb223f0d537e44bce10a6",
+      "locator": "README.md normalized_UTF8_bytes[6131,6173)",
+      "context_summary": "Redis7.2.5 quick-start/build README: allocator/platform options, command examples and descriptive internals.",
+      "origin_group": "upstream:redis/redis",
+      "scope": {
+        "product": "redis",
+        "release": "7.2.5"
+      },
+      "reference_facts": {
+        "redis.example.foo_value": "The README example sets foo to bar and reads bar."
+      },
+      "synthetic_mutation": false
+    },
+    "rw-23-b": {
+      "source_id": "rw-23-b",
+      "document_id": "redis-2",
+      "url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/SECURITY.md",
+      "normalized_path": "normalized/redis-2.txt",
+      "raw_sha256": "2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff",
+      "normalized_sha256": "5ac533f1eb991c9a4cf16ddf7b838bfd4392960c62045f015b8a1930f09460aa",
+      "source_version": "sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff",
+      "retrieved_at_unix_seconds": 1792409896,
+      "start_byte": 212,
+      "end_byte": 351,
+      "quote": "We generally backport security issues to a single previous major version, unless this is not possible or feasible with a reasonable effort.",
+      "quote_sha256": "d94777d1c35c0d09b5405a1b5670540e8a79086d36eb63009fc118e5dde0e032",
+      "locator": "SECURITY.md normalized_UTF8_bytes[212,351)",
+      "context_summary": "Redis7.2.5 repository security-policy snapshot: version table, backport/disclosure and reporting procedures.",
+      "origin_group": "upstream:redis/redis",
+      "scope": {
+        "product": "redis",
+        "release": "7.2.5"
+      },
+      "reference_facts": {
+        "redis.security.backport_policy": "Generally backports to one previous major version, subject to feasibility."
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

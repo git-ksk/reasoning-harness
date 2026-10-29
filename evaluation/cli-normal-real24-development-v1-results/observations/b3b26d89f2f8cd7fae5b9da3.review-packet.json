@@ -1,0 +1,144 @@
+{
+  "row_id": "b3b26d89f2f8cd7fae5b9da3",
+  "observation_sha256": "45ff622e1ee605bf0e5850f3a8ea7e54001a1a2005033253cb71f17480d07434",
+  "gold": {
+    "id": "rw-11/e2e_normal",
+    "case_id": "rw-11",
+    "track": "e2e_normal",
+    "family": "revision_or_history",
+    "label": "positive",
+    "answerability": "partial",
+    "groups": [
+      {
+        "id": "g1",
+        "required_supported_information": "PROPAGATE was added in3.25.",
+        "supporting_source_ids": [
+          "rw-11-a"
+        ]
+      },
+      {
+        "id": "g2",
+        "required_supported_information": "Arguments require CMP0140 NEW, so the unknown project policy prevents asserting activation from binary version alone.",
+        "supporting_source_ids": [
+          "rw-11-b"
+        ]
+      }
+    ],
+    "unresolved_facets": [
+      "actual_project_CMP0140_setting"
+    ],
+    "required_disclosures": [
+      "project_policy_unknown_not_assumed"
+    ],
+    "full_source_rationale": "Full page explicitly distinguishes availability and argument handling.",
+    "scope_time_origin_review": {
+      "product_target": "cmake",
+      "required_scope": {
+        "product": "cmake",
+        "release": "3.31.0"
+      },
+      "document_ids": [
+        "cmake-1",
+        "cmake-1"
+      ],
+      "release_refs": [
+        "v3.31.0",
+        "v3.31.0"
+      ],
+      "capture_commits": [
+        "e22c8383b9ae4f27a78f7a8849693c03ca29c7bb",
+        "e22c8383b9ae4f27a78f7a8849693c03ca29c7bb"
+      ],
+      "document_versions": [
+        "sha256:64bf74bba3708146a4c52fc2ab7e4a5ee8fd476838df9c72760f090116a6ec77",
+        "sha256:64bf74bba3708146a4c52fc2ab7e4a5ee8fd476838df9c72760f090116a6ec77"
+      ],
+      "origin_groups": [
+        "upstream:Kitware/CMake",
+        "upstream:Kitware/CMake"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "954c37eeb1157b56d65e94e2823409598c9fbce60e36f4dc84139a215dcfd499"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-11-a": {
+      "source_id": "rw-11-a",
+      "document_id": "cmake-1",
+      "url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/return.rst",
+      "normalized_path": "normalized/cmake-1.txt",
+      "raw_sha256": "64bf74bba3708146a4c52fc2ab7e4a5ee8fd476838df9c72760f090116a6ec77",
+      "normalized_sha256": "8001eb15cf83e39b849e1f8560fe7682d87f3720b16a697dfffd5903214de733",
+      "source_version": "sha256:64bf74bba3708146a4c52fc2ab7e4a5ee8fd476838df9c72760f090116a6ec77",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 917,
+      "end_byte": 1054,
+      "quote": "``PROPAGATE`` .. versionadded:: 3.25 This option sets or unsets the specified variables in the parent directory or function caller scope.",
+      "quote_sha256": "727257af1fe644ecc4662d6dc95721f697e640917026ebc19db8715dff1d743f",
+      "locator": "Help/command/return.rst normalized_UTF8_bytes[917,1054)",
+      "context_summary": "CMake3.31.0 return manual: function/file/directory contexts, CMP0140, PROPAGATE history and block examples.",
+      "origin_group": "upstream:Kitware/CMake",
+      "scope": {
+        "product": "cmake",
+        "release": "3.31.0"
+      },
+      "reference_facts": {
+        "cmake.return.propagate_added": "3.25",
+        "cmake.return.propagate_effect": "Sets or unsets named variables in parent/caller scope."
+      },
+      "synthetic_mutation": false
+    },
+    "rw-11-b": {
+      "source_id": "rw-11-b",
+      "document_id": "cmake-1",
+      "url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/return.rst",
+      "normalized_path": "normalized/cmake-1.txt",
+      "raw_sha256": "64bf74bba3708146a4c52fc2ab7e4a5ee8fd476838df9c72760f090116a6ec77",
+      "normalized_sha256": "8001eb15cf83e39b849e1f8560fe7682d87f3720b16a697dfffd5903214de733",
+      "source_version": "sha256:64bf74bba3708146a4c52fc2ab7e4a5ee8fd476838df9c72760f090116a6ec77",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 766,
+      "end_byte": 916,
+      "quote": "Policy :policy:`CMP0140` controls the behavior regarding the arguments of the command. All arguments are ignored unless that policy is set to ``NEW``.",
+      "quote_sha256": "4a4d7d73911b1e6058e2d3bdb59985adfbc3b79c99627885054740fcab9e076f",
+      "locator": "Help/command/return.rst normalized_UTF8_bytes[766,916)",
+      "context_summary": "CMake3.31.0 return manual: function/file/directory contexts, CMP0140, PROPAGATE history and block examples.",
+      "origin_group": "upstream:Kitware/CMake",
+      "scope": {
+        "product": "cmake",
+        "release": "3.31.0"
+      },
+      "reference_facts": {
+        "cmake.return.arguments_policy": "Arguments are ignored unless CMP0140 is NEW."
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

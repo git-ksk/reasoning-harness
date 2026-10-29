@@ -1,0 +1,12 @@
+{
+  "provider": "mistral",
+  "observations": 48,
+  "binding_failures": [],
+  "actual_answer_f1": null,
+  "semantic_review": "PENDING",
+  "execution_provenance_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+  "artifact_id": 12896743028,
+  "run_id": 40873570944,
+  "source": "RECONSTRUCTED_FROM_VERIFIED_ARTIFACT",
+  "previous_observations_reused": false
+}

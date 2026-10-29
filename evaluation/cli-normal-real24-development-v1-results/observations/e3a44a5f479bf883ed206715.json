@@ -1,0 +1,34 @@
+{
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "acquired_source_ids": [],
+  "admitted_source_ids": [],
+  "terminal_status": "unavailable",
+  "usage": null,
+  "unvalidated_partial_payload": {},
+  "source_route_verification": "UNAVAILABLE_DO_NOT_INFER_UNSUPPORTED_FROM_UNKNOWN",
+  "row_id": "e3a44a5f479bf883ed206715",
+  "case_id": "rw-10",
+  "provider": "mistral",
+  "track": "e2e_normal",
+  "arm": "baseline",
+  "operation": "not_run",
+  "unavailable_reason": "typed_operational_failure:usage_budget_unmeasurable",
+  "raw_file_sha256": {
+    "row.json": "e56b342e9c3af2f33898922db1387cbb2c10ea859f7aafabbfa2dd37052c5d1f"
+  },
+  "wall_ms": null,
+  "failure_partial_display_audit_required": true,
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

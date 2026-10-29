@@ -1,0 +1,90 @@
+{
+  ".github/workflows/cli-normal-real24-development.yml": {
+    "cli-normal-real24-development-v1": 7,
+    "cli-normal-real24-development.yml": 1,
+    "cli-normal-v1": 5,
+    "normal_v1": 6
+  },
+  ".github/workflows/cli-normal-runtime.yml": {
+    "cli-normal-real24-development-v1": 5,
+    "cli-normal-v1": 4,
+    "normal_v1": 7
+  },
+  "evaluation/cli-normal-v1/prepare_runtime.py": {
+    "cli-normal-real24-development-v1": 3,
+    "cli-normal-real24-development.yml": 1,
+    "cli-normal-runtime.yml": 1,
+    "cli-normal-v1": 2,
+    "normal_v1": 2
+  },
+  "evaluation/cli-normal-v1/runtime/Dockerfile.runtime": {},
+  "evaluation/cli-normal-v1/runtime/README.md": {
+    "cli-normal-real24-development-v1": 2,
+    "cli-normal-v1": 2,
+    "dbad2dc25d3487819206582f1fad778d9af75da1": 1,
+    "normal_v1": 2
+  },
+  "evaluation/cli-normal-v1/runtime/build.py": {
+    "dbad2dc25d3487819206582f1fad778d9af75da1": 1
+  },
+  "evaluation/cli-normal-v1/runtime/collect_normal.py": {},
+  "evaluation/cli-normal-v1/runtime/development.py": {
+    "cli-normal-development-runtime": 1,
+    "cli-normal-v1": 1,
+    "dbad2dc25d3487819206582f1fad778d9af75da1": 1
+  },
+  "evaluation/cli-normal-v1/runtime/make_development_plan.py": {
+    "cli-normal-real24-development-v1": 1
+  },
+  "evaluation/cli-normal-v1/runtime/operational_bridge.py": {},
+  "evaluation/cli-normal-v1/runtime/preflight_normal.py": {},
+  "evaluation/cli-normal-v1/runtime/prepare_consumed_sources.py": {},
+  "evaluation/cli-normal-v1/runtime/protocol.json": {
+    "cli-normal-development-runtime": 1,
+    "cli-normal-real24-development-v1": 2,
+    "dbad2dc25d3487819206582f1fad778d9af75da1": 1
+  },
+  "evaluation/cli-normal-v1/runtime/provenance.py": {
+    "cli-normal-real24-development-v1": 1,
+    "cli-normal-real24-development.yml": 1,
+    "cli-normal-v1": 1,
+    "normal_v1": 1
+  },
+  "evaluation/cli-normal-v1/runtime/provider_readiness.py": {},
+  "evaluation/cli-normal-v1/runtime/run_lane.py": {
+    "cli-normal-real24-development-v1": 1
+  },
+  "evaluation/cli-normal-v1/runtime/run_task.py": {
+    "cli-normal-real24-development-v1": 1
+  },
+  "evaluation/cli-normal-v1/runtime/runtime_proof.py": {
+    "cli-normal-real24-development-v1": 2,
+    "dbad2dc25d3487819206582f1fad778d9af75da1": 1,
+    "normal_v1": 1
+  },
+  "evaluation/cli-normal-v1/runtime/score_development_first.py": {
+    "cli-normal-v1": 1
+  },
+  "evaluation/cli-normal-v1/runtime/scorer.py": {},
+  "evaluation/cli-normal-v1/runtime/tag_admission.py": {
+    "cli-normal-real24-development-v1": 1,
+    "cli-normal-real24-development.yml": 1
+  },
+  "evaluation/cli-normal-v1/runtime/test_normal_admission.py": {},
+  "evaluation/cli-normal-v1/runtime/test_provenance.py": {
+    "cli-normal-v1": 1,
+    "normal_v1": 1
+  },
+  "evaluation/cli-normal-v1/runtime/verify_development.py": {},
+  "evaluation/cli-normal-v1/test_runtime_archive.py": {
+    "cli-normal-real24-development-v1": 1,
+    "cli-normal-real24-development.yml": 2,
+    "cli-normal-runtime.yml": 3,
+    "cli-normal-v1": 1
+  },
+  "evaluation/cli-normal-v1/verify_runtime_archive.py": {
+    "cli-normal-development-runtime": 1,
+    "cli-normal-real24-development-v1": 1,
+    "cli-normal-v1": 2
+  }
+}

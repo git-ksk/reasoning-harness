@@ -1,0 +1,19 @@
+{
+  "source_commit": "54eee374b40100e04fb0f8cde95912c8076dafa6",
+  "core_commit": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+  "argv": [
+    "cargo",
+    "run",
+    "--offline",
+    "--quiet",
+    "--manifest-path",
+    "/private/tmp/cli569-independent-v28qdw8i/probe-baseline/Cargo.toml",
+    "--",
+    "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/cli-normal-real24-40873570944-raw/artifact/lane/rw-01-baseline/trace.json"
+  ],
+  "returncode": 0,
+  "duration_seconds": 27.50406503677368,
+  "unique_target": "/private/tmp/cli569-independent-v28qdw8i/target-baseline",
+  "actual_core_resolution_patch": "01d9e9392d021d4c37603f5c1509efb8dc471cf5f62fe47db28c5adec5bddfd4",
+  "models_or_external_HTTP": 0
+}

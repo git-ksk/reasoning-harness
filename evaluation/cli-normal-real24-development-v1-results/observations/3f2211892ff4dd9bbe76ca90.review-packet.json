@@ -1,0 +1,144 @@
+{
+  "row_id": "3f2211892ff4dd9bbe76ca90",
+  "observation_sha256": "ef327cd0607121de9add2cfdfc39458fb683fe6f4a1c5a92af04992e76355c5e",
+  "gold": {
+    "id": "rw-17/e2e_normal",
+    "case_id": "rw-17",
+    "track": "e2e_normal",
+    "family": "conflict",
+    "label": "positive",
+    "answerability": "partial",
+    "groups": [
+      {
+        "id": "g1",
+        "required_supported_information": "README states tclsh8.6+ for almost all targets.",
+        "supporting_source_ids": [
+          "rw-17-a"
+        ]
+      },
+      {
+        "id": "g2",
+        "required_supported_information": "The specific recipe assumes9.0; this alone does not prove every target requires9.0.",
+        "supporting_source_ids": [
+          "rw-17-a",
+          "rw-17-b"
+        ]
+      }
+    ],
+    "unresolved_facets": [
+      "requirements_of_every_specific_build_target"
+    ],
+    "required_disclosures": [
+      "recipe_assumption_not_universal_requirement"
+    ],
+    "full_source_rationale": "Apparent version tension must preserve quantifier and recipe scope; exact requirements of every target are not established.",
+    "scope_time_origin_review": {
+      "product_target": "sqlite",
+      "required_scope": {
+        "product": "sqlite",
+        "release": "3.47.2"
+      },
+      "document_ids": [
+        "sqlite-1",
+        "sqlite-2"
+      ],
+      "release_refs": [
+        "version-3.47.2",
+        "version-3.47.2"
+      ],
+      "capture_commits": [
+        "262de1bebb0647eb6fa6a2b0434111c7d831a14d",
+        "262de1bebb0647eb6fa6a2b0434111c7d831a14d"
+      ],
+      "document_versions": [
+        "sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+        "sha256:72376ad8eb150197a422bdbab5299f3a643f504f36de264f035ccffe5a5d9220"
+      ],
+      "origin_groups": [
+        "upstream:sqlite/sqlite",
+        "upstream:sqlite/sqlite"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "5bddafddb28997b90e843f64fc5ca98283c8e337c3971b2c3953df2532e3bd15"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-17-a": {
+      "source_id": "rw-17-a",
+      "document_id": "sqlite-1",
+      "url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/README.md",
+      "normalized_path": "normalized/sqlite-1.txt",
+      "raw_sha256": "589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+      "normalized_sha256": "a71cd6b8aaa13eb53119fb48799fdefc829ae79e0c4835a109c264a1b5cd4346",
+      "source_version": "sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+      "retrieved_at_unix_seconds": 1792409896,
+      "start_byte": 5519,
+      "end_byte": 5602,
+      "quote": "Almost all makefile targets require a \"tclsh\" TCL interpreter version 8.6 or later.",
+      "quote_sha256": "34ad99a21839d02b61d8b14c04be7ae0ec26d75e5ae0a185b1c21e4fed1b379b",
+      "locator": "README.md normalized_UTF8_bytes[5519,5602)",
+      "context_summary": "SQLite3.47.2 source README: mirror/Fossil names, Unix/Windows builds, source layout and integrity-check caveats.",
+      "origin_group": "upstream:sqlite/sqlite",
+      "scope": {
+        "product": "sqlite",
+        "release": "3.47.2"
+      },
+      "reference_facts": {
+        "sqlite.build.tcl_general": "Almost all makefile targets require tclsh8.6 or later."
+      },
+      "synthetic_mutation": false
+    },
+    "rw-17-b": {
+      "source_id": "rw-17-b",
+      "document_id": "sqlite-2",
+      "url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/doc/compile-for-unix.md",
+      "normalized_path": "normalized/sqlite-2.txt",
+      "raw_sha256": "72376ad8eb150197a422bdbab5299f3a643f504f36de264f035ccffe5a5d9220",
+      "normalized_sha256": "93525474a6bfebdec2e38a02b5472606d99480eb9a751cb0104aa9b78d660b1f",
+      "source_version": "sha256:72376ad8eb150197a422bdbab5299f3a643f504f36de264f035ccffe5a5d9220",
+      "retrieved_at_unix_seconds": 1792409896,
+      "start_byte": 606,
+      "end_byte": 672,
+      "quote": "This document assumes you are working with <b>TCL version 9.0</b>.",
+      "quote_sha256": "421db89dd36f48a58c5b8daefddcc24a75c8389491c0ffbe4948151cad29d217",
+      "locator": "doc/compile-for-unix.md normalized_UTF8_bytes[606,672)",
+      "context_summary": "SQLite3.47.2 Unix-build recipe: tested2024-10-11, assuming Tcl9.0, configure/targets and debug instructions.",
+      "origin_group": "upstream:sqlite/sqlite",
+      "scope": {
+        "product": "sqlite",
+        "release": "3.47.2"
+      },
+      "reference_facts": {
+        "sqlite.build.recipe_tcl": "This Unix recipe assumes Tcl9.0."
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

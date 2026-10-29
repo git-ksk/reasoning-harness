@@ -1,0 +1,356 @@
+{
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": "\"curl.retry_all.requires\" = \"--retry\"\nSource \"rw-01-a\" (version \"sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916\"): \"https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md\"\nSource quotation (including its conditions; source-local; JSON string):\n\"Help: Retry all errors (with --retry)\"\nSource \"rw-01-b\" (version \"sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916\"): \"https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md\"\nSource quotation (including its conditions; source-local; JSON string):\n\"Retry on any error. This option is used together with --retry.\"\nThis is a partial answer; other unresolved claims are not established."
+    }
+  ],
+  "display_citations": [
+    {
+      "id": "context-0-fact",
+      "artifact_id": "answer",
+      "start_byte": 0,
+      "end_byte": 37,
+      "source_id": "rw-01-a",
+      "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+      "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md",
+      "locator": "docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[116,153)",
+      "literal_quote": "Help: Retry all errors (with --retry)",
+      "structured_citation_id": "context-0",
+      "attachment": "fact",
+      "captured_evidence_id": "snapshot:rw-01:0"
+    },
+    {
+      "id": "context-0-quote",
+      "artifact_id": "answer",
+      "start_byte": 337,
+      "end_byte": 376,
+      "source_id": "rw-01-a",
+      "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+      "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md",
+      "locator": "docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[116,153)",
+      "literal_quote": "Help: Retry all errors (with --retry)",
+      "structured_citation_id": "context-0",
+      "attachment": "quote",
+      "captured_evidence_id": "snapshot:rw-01:0"
+    },
+    {
+      "id": "context-1-fact",
+      "artifact_id": "answer",
+      "start_byte": 0,
+      "end_byte": 37,
+      "source_id": "rw-01-b",
+      "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+      "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md",
+      "locator": "docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[288,350)",
+      "literal_quote": "Retry on any error. This option is used together with --retry.",
+      "structured_citation_id": "context-1",
+      "attachment": "fact",
+      "captured_evidence_id": "snapshot:rw-01:1"
+    },
+    {
+      "id": "context-1-quote",
+      "artifact_id": "answer",
+      "start_byte": 676,
+      "end_byte": 740,
+      "source_id": "rw-01-b",
+      "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+      "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md",
+      "locator": "docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[288,350)",
+      "literal_quote": "Retry on any error. This option is used together with --retry.",
+      "structured_citation_id": "context-1",
+      "attachment": "quote",
+      "captured_evidence_id": "snapshot:rw-01:1"
+    }
+  ],
+  "hard_finalization": {
+    "status": "qualified_partial_answer",
+    "text": "verified partial: curl.retry_all.requires = --retry; other generated claims remain unresolved and are omitted",
+    "factual_claims": 1,
+    "covered_claims": 1,
+    "factual_claim_coverage": 1.0,
+    "uncovered_propositions": []
+  },
+  "source_context_view": {
+    "policy_id": "harness-bound-source-context-v1",
+    "hard_finalization": {
+      "status": "qualified_partial_answer",
+      "text": "verified partial: curl.retry_all.requires = --retry; other generated claims remain unresolved and are omitted",
+      "factual_claims": 1,
+      "covered_claims": 1,
+      "factual_claim_coverage": 1.0,
+      "uncovered_propositions": []
+    },
+    "selected_claims": [
+      {
+        "proposition": {
+          "key": "curl.retry_all.requires",
+          "value": "--retry"
+        },
+        "mode": "grounded"
+      }
+    ],
+    "citations": [
+      {
+        "proposition": {
+          "key": "curl.retry_all.requires",
+          "value": "--retry"
+        },
+        "evidence_id": "snapshot:rw-01:0",
+        "source_id": "rw-01-a",
+        "evidence_sha256": "4b5daa115c422529019a6bdd9e6d2b8f5a1239ac9c15c5746427e3dd783a42bf",
+        "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md",
+        "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+        "quote": "Help: Retry all errors (with --retry)",
+        "quote_sha256": "b61349f23c34374d7903c43945d1559c53d240e251a44781cce4714bca71e62c",
+        "quote_display_encoding": "json_string",
+        "fact_start_byte": 0,
+        "fact_end_byte": 37,
+        "quote_start_byte": 337,
+        "quote_end_byte": 376
+      },
+      {
+        "proposition": {
+          "key": "curl.retry_all.requires",
+          "value": "--retry"
+        },
+        "evidence_id": "snapshot:rw-01:1",
+        "source_id": "rw-01-b",
+        "evidence_sha256": "021181c99d15550ad2b9cafdddf2e394dba52aa4526428f52033dc78658bcbbc",
+        "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md",
+        "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+        "quote": "Retry on any error. This option is used together with --retry.",
+        "quote_sha256": "a08b0e9a9a5cb858ef1231ecc0f0cbfce96004b5bfe9cad08708e2a61f1c18f0",
+        "quote_display_encoding": "json_string",
+        "fact_start_byte": 0,
+        "fact_end_byte": 37,
+        "quote_start_byte": 676,
+        "quote_end_byte": 740
+      }
+    ],
+    "unresolved_inputs": [],
+    "input_reasons": {}
+  },
+  "acquisition_coverage_view": {
+    "policy_id": "harness-investigation-coverage-v1",
+    "ledger": {
+      "plan_admitted": true,
+      "targets": [
+        {
+          "target": {
+            "id": "target_curl810_retry_all_usage_standalone",
+            "question": "Does curl 8.10.1 require any additional retry options when --retry-all-errors is used alone?",
+            "expected_fact_key": "curl.retry_all.requires",
+            "origin": "model_proposed_untrusted"
+          },
+          "bindings": [
+            {
+              "evidence_id": "snapshot:rw-01:0",
+              "evidence_sha256": "4b5daa115c422529019a6bdd9e6d2b8f5a1239ac9c15c5746427e3dd783a42bf",
+              "fact_key": "curl.retry_all.requires"
+            }
+          ]
+        },
+        {
+          "target": {
+            "id": "target_curl810_retry_all_dependency_behavior",
+            "question": "What retry-related conditions or flags must be satisfied alongside --retry-all-errors in curl 8.10.1 for it to function?",
+            "expected_fact_key": "curl.retry_all.requires",
+            "origin": "model_proposed_untrusted"
+          },
+          "bindings": [
+            {
+              "evidence_id": "snapshot:rw-01:1",
+              "evidence_sha256": "021181c99d15550ad2b9cafdddf2e394dba52aa4526428f52033dc78658bcbbc",
+              "fact_key": "curl.retry_all.requires"
+            }
+          ]
+        }
+      ]
+    },
+    "base_finalization": {
+      "status": "qualified_partial_answer",
+      "text": "\"curl.retry_all.requires\" = \"--retry\"\nSource \"rw-01-a\" (version \"sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916\"): \"https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md\"\nSource quotation (including its conditions; source-local; JSON string):\n\"Help: Retry all errors (with --retry)\"\nSource \"rw-01-b\" (version \"sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916\"): \"https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md\"\nSource quotation (including its conditions; source-local; JSON string):\n\"Retry on any error. This option is used together with --retry.\"\nThis is a partial answer; other unresolved claims are not established.",
+      "factual_claims": 1,
+      "covered_claims": 1,
+      "factual_claim_coverage": 1.0,
+      "uncovered_propositions": []
+    },
+    "selected_claims": [
+      {
+        "proposition": {
+          "key": "curl.retry_all.requires",
+          "value": "--retry"
+        },
+        "mode": "grounded"
+      }
+    ],
+    "targets": [
+      {
+        "target": {
+          "id": "target_curl810_retry_all_usage_standalone",
+          "question": "Does curl 8.10.1 require any additional retry options when --retry-all-errors is used alone?",
+          "expected_fact_key": "curl.retry_all.requires",
+          "origin": "model_proposed_untrusted"
+        },
+        "disposition": "verified",
+        "verified_proposition": {
+          "key": "curl.retry_all.requires",
+          "value": "--retry"
+        }
+      },
+      {
+        "target": {
+          "id": "target_curl810_retry_all_dependency_behavior",
+          "question": "What retry-related conditions or flags must be satisfied alongside --retry-all-errors in curl 8.10.1 for it to function?",
+          "expected_fact_key": "curl.retry_all.requires",
+          "origin": "model_proposed_untrusted"
+        },
+        "disposition": "verified",
+        "verified_proposition": {
+          "key": "curl.retry_all.requires",
+          "value": "--retry"
+        }
+      }
+    ],
+    "plan_evidence_complete": true,
+    "plan_answer_complete": true,
+    "stop_reason": "targets_exhausted"
+  },
+  "acquired_source_ids": [
+    "rw-01-a",
+    "rw-01-b"
+  ],
+  "admitted_source_ids": [
+    "rw-01-a",
+    "rw-01-b"
+  ],
+  "admission_routes": {
+    "snapshot:rw-01:0": {
+      "source_id": "rw-01-a",
+      "admission_sequence": 11,
+      "metadata": {
+        "temporal": {
+          "effective_from_unix_seconds": 1792409895,
+          "effective_until_unix_seconds": 1792496295
+        },
+        "scope": {
+          "product": {
+            "kind": "values",
+            "values": [
+              "curl"
+            ]
+          },
+          "release": {
+            "kind": "values",
+            "values": [
+              "8.10.1"
+            ]
+          }
+        },
+        "provenance_class": "primary"
+      }
+    },
+    "snapshot:rw-01:1": {
+      "source_id": "rw-01-b",
+      "admission_sequence": 20,
+      "metadata": {
+        "temporal": {
+          "effective_from_unix_seconds": 1792409895,
+          "effective_until_unix_seconds": 1792496295
+        },
+        "scope": {
+          "product": {
+            "kind": "values",
+            "values": [
+              "curl"
+            ]
+          },
+          "release": {
+            "kind": "values",
+            "values": [
+              "8.10.1"
+            ]
+          }
+        },
+        "provenance_class": "primary"
+      }
+    }
+  },
+  "internal_claims": [
+    {
+      "id": "claim:retry_all_requires_retry",
+      "statement": "In curl 8.10.1, the --retry-all-errors option requires the --retry option to function and cannot be used alone by itself (evidence: snapshot:rw-01:0, snapshot:rw-01:1).",
+      "state": "assumed",
+      "evidence_ids": []
+    },
+    {
+      "id": "harness_investigation_admitted_fact_2",
+      "statement": "curl.retry_all.requires = --retry",
+      "state": "supported",
+      "proposition": {
+        "key": "curl.retry_all.requires",
+        "value": "--retry"
+      },
+      "evidence_ids": [
+        "snapshot:rw-01:0",
+        "snapshot:rw-01:1"
+      ]
+    }
+  ],
+  "verification_receipts": [
+    {
+      "id": "structured_fact_equality:harness_investigation_admitted_fact_2",
+      "verifier": "structured_fact_equality",
+      "proposition": {
+        "key": "curl.retry_all.requires",
+        "value": "--retry"
+      },
+      "claim_id": "harness_investigation_admitted_fact_2",
+      "conclusion": "supported",
+      "evidence_ids": [
+        "snapshot:rw-01:0",
+        "snapshot:rw-01:1"
+      ]
+    }
+  ],
+  "usage": {
+    "generations": 7,
+    "input_tokens": 5510,
+    "output_tokens": 809,
+    "total_tokens": 6319,
+    "provider_attempts": 7,
+    "logical_model_operations": 7
+  },
+  "terminal_status": "qualified_partial_answer",
+  "ordinary_feature_effect": "not inferred from dependency version",
+  "row_id": "11edbef97cc2c1c51e0081fd",
+  "case_id": "rw-01",
+  "provider": "mistral",
+  "track": "e2e_normal",
+  "arm": "baseline",
+  "operation": "complete",
+  "unavailable_reason": null,
+  "raw_file_sha256": {
+    "actual-cli.invocation.json": "fc818df6ef9ac2169ba12de95ca1f381b44a830a764a7c1e3dfbbe19e92020be",
+    "actual-cli.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "actual-cli.stdout": "3751ecd582306f8c77bdfcf63ab939506f36bf713cdebd949ec46d19b5439595",
+    "config.json": "701ef94fb8cb71d41bdd64d90de194cb2b8334ff3b1b65cf1748ab7a398fd537",
+    "model-journal.jsonl": "5f27518a53fa1d0608b481b4d731d32687c1ba7dcb402df154eb5377090bd596",
+    "resolver.jsonl": "ad78b6d34105347d454e11eb1f5fb30a89ff75654d352c6da16af982ab7dee52",
+    "row.json": "05e7b94b1aa4f36876519bda658b39b2a0490190bc607e49a451d13e5b6f877c",
+    "spawn.json": "3a36450e12f69bb409b4f0091b6679c2c71d3c03bb7a62bcc61f5ded12000bde",
+    "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout.json": "7a9e2250aeba4796cc755daa1b1f3fb86848f6dedc235b8b42278db0b01b113e",
+    "trace.json": "0c8db4416b28e60141c8740e58dafad4eb1d0768947aa8c87704d758077ce5db"
+  },
+  "wall_ms": 76995,
+  "failure_partial_display_audit_required": false,
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}
