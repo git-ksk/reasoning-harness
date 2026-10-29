@@ -1,0 +1,30 @@
+{
+  "charged_reservations": 28096,
+  "current_reserve": 28096,
+  "groq_state_sha256": null,
+  "guard": {
+    "events": [
+      {
+        "decision": {
+          "allowed": true,
+          "reason": null
+        },
+        "event": "admission",
+        "started_invocations": 1
+      }
+    ],
+    "inflight": false,
+    "latch": null,
+    "observed_tokens": 0,
+    "started_invocations": 1,
+    "token_budget": 1348608
+  },
+  "known_provider_attempts": 0,
+  "known_total_tokens": 0,
+  "model": "ministral-8b-2512",
+  "provider": "mistral",
+  "rows": [],
+  "schema": "engine07-durable-arm-v1",
+  "sequence": 2,
+  "unknown_usage_rows": 0
+}

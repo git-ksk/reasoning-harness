@@ -1,0 +1,32 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--pull=never",
+    "--rm",
+    "--platform",
+    "linux/amd64",
+    "--read-only",
+    "--network",
+    "none",
+    "--tmpfs",
+    "/tmp",
+    "-v",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/target/cli-normal-genuine-admission-20261029/frozen:/frozen:ro",
+    "-v",
+    "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/cli-normal-runtime-40789024710-raw/artifact/paired-artifact:/image:ro",
+    "-v",
+    "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/cli-normal-runtime-40789024710-admission-20261029:/offline",
+    "sha256:ea084e99e3a31784f3aa3b755b232cd0e7673107a79064bc434923c666ee9e69",
+    "python3",
+    "-B",
+    "/offline/admission_probe.py"
+  ],
+  "actual_image_id": "sha256:ea084e99e3a31784f3aa3b755b232cd0e7673107a79064bc434923c666ee9e69",
+  "returncode": 0,
+  "duration_seconds": 298.478059053421,
+  "network": "none",
+  "real_credentials_supplied": false,
+  "model_main_or_lane_run_authorized": false,
+  "external_HTTP_requests": 0
+}

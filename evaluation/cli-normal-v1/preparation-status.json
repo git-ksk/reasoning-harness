@@ -66,7 +66,7 @@
     "fresh independent ordinary acceptance and remaining release/adoption gates"
   ],
   "new_model_generations": 0,
-  "new_live_runtime_formally_approved": false,
+  "new_live_runtime_formally_approved": true,
   "new_normal_F1": null,
   "old_v1_v2_artifacts_modified": false,
   "Groq": "HELD",
@@ -138,7 +138,19 @@
       "formal_independent_review": "PASS",
       "model_generations": 0
     },
-    "formal_runtime_review_sha256": "a0e5c9128083ba3bc1d5532369b4c7485b94f0ad5419799acf73d36181508ce4"
+    "formal_runtime_review_sha256": "a0e5c9128083ba3bc1d5532369b4c7485b94f0ad5419799acf73d36181508ce4",
+    "genuine_admission": {
+      "result": "PASS_GENUINE_RECEIPT_PLAN_RESERVED_CALLBACK_HTTP_ZERO",
+      "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6",
+      "admission_review_sha256": "0c1a7ef83408ed40eda3d586c46cb091b34a5ebb7f9fc2cc46f55e81a43f5f65",
+      "metadata_run_id": 40793686209,
+      "metadata_requests": 1,
+      "model_generations": 0,
+      "tag_created": false,
+      "live_run_started": false,
+      "CI_merge_before_tag": "PENDING",
+      "scope": "48 consumed ordinary Mistral jobs, no accuracy acceptance"
+    }
   },
   "prospective_common_CLI_host": "dbad2dc25d3487819206582f1fad778d9af75da1",
   "issue566": {
