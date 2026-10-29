@@ -1,0 +1,26 @@
+{
+  "reviewer": "/root/real24_operational_review",
+  "scope": "preliminary v2 source-only; commit pending",
+  "repo": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness",
+  "source_inventory": {
+    ".github/workflows/cli-normal-real24-development-v2.yml": "bf6e8cd66bee15dd31a33086bc353093d1a6e46f4b2dc908039e302cf29655b1",
+    ".github/workflows/cli-normal-runtime-v2.yml": "e3b388531d751a149296ed37bacb0fdba77120154860faa9f2822ce0802d1e5e",
+    "evaluation/cli-normal-real24-development-v2/README.md": "77e2e3a54bc7df7370531de0802094dbb48edf9ee03204576db8c510427acbe0",
+    "evaluation/cli-normal-real24-development-v2/pricing-check.json": "459ad9c4842a850789f6b6c3bd0e1b9f610a47c3b5cd7d693f32d2b69e5f7455",
+    "evaluation/cli-normal-v2/README.md": "4cf3e7b3503d9188ab42e3dcd8b0dd77f870cf6c1145f3e6ee2fd61639a754cd",
+    "evaluation/cli-normal-v2/config.json": "eeefb1f7b06b1ddb5aa4e1107044971e12d7cd0d83eeb4d9ec3f19687df43de6",
+    "evaluation/cli-normal-v2/prepare_runtime.py": "1c3b3a5a78072f81114d9844cf038ef0c9a7efd78507c9d5c0f350a33a5b38f0",
+    "evaluation/cli-normal-v2/replacement-counts.json": "cd44c6bb418748dcb4e942b3a45cc93bd59ff94d03037643673f0ae0e2a58042",
+    "evaluation/cli-normal-v2/runtime/tag_admission.py": "6c5ddfde6e40761f1b3fbbb748b3bc8aa7b0bf0ec9b25b52d4c14b8ea03b54ca",
+    "evaluation/cli-normal-v2/test_prepare_runtime.py": "e762426d5d4cb3fccab54f616db4fb87b049f5fee4c800f548e1270c47907506",
+    "evaluation/cli-normal-v2/test_runtime_archive.py": "f0cbe8e7a95d8342eb406abd4dcd669bcf73386ce49844a2aa4ece2083f4cd23",
+    "evaluation/cli-normal-v2/verify_runtime_archive.py": "5cdb37a9d504903dc3ed0bdefabd4931486e994a8a4369cfc05662dd26fc3513"
+  },
+  "head_at_intake": "d61d7b893cced23fb77c2430c4553ca700d262bc",
+  "config": {
+    "source_commit": "7073471d7490c64841200ae9ddaf252317c34721",
+    "common_cli_host": "54eee374b40100e04fb0f8cde95912c8076dafa6",
+    "execution_admitted": false
+  },
+  "HTTP_model_keys_tags_score": 0
+}

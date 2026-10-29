@@ -1,0 +1,3 @@
+{"state": "DEVELOPMENT_REQUIRES_FROZEN_RECEIPT", "files": 79, "output": "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/cli-normal-v2-source-independent-20261030/prepared"}
+{"profile": "cli-normal-real24-development-v2", "runtime_files": 104, "ordinary_files": 21, "live_execution_admitted": false}
+{"state": "PREPARATION_ONLY", "profile": "cli-normal-real24-development-v2", "inventory_files": 104, "common_cli_host": "54eee374b40100e04fb0f8cde95912c8076dafa6", "live_execution_admitted": false}

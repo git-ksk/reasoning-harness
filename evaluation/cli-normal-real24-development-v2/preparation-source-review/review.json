@@ -1,0 +1,89 @@
+{
+  "identity": "independent-cli-normal-v2-source-review-v1",
+  "reviewer": "/root/real24_operational_review",
+  "reviewer_kind": "agent_nonhuman",
+  "source_commit": "560b2ecac259e65b7123d6bcf854f7e48e992035",
+  "scope": "ordinary v2 preparation derivation/workflow/admission source only",
+  "result": "PASS_BOUNDED_SOURCE_ONLY",
+  "formal_verdict_issued": false,
+  "verdict_stage": "BOUNDED_SOURCE_REVIEW_PENDING_ACTUAL_V2_AMD64_RUNTIME",
+  "not_formal_operational_verdict": true,
+  "API_execution_admitted": false,
+  "source_files_sha256": {
+    ".github/workflows/cli-normal-real24-development-v2.yml": "bf6e8cd66bee15dd31a33086bc353093d1a6e46f4b2dc908039e302cf29655b1",
+    ".github/workflows/cli-normal-runtime-v2.yml": "e3b388531d751a149296ed37bacb0fdba77120154860faa9f2822ce0802d1e5e",
+    "evaluation/cli-normal-real24-development-v2/README.md": "77e2e3a54bc7df7370531de0802094dbb48edf9ee03204576db8c510427acbe0",
+    "evaluation/cli-normal-real24-development-v2/pricing-check.json": "459ad9c4842a850789f6b6c3bd0e1b9f610a47c3b5cd7d693f32d2b69e5f7455",
+    "evaluation/cli-normal-v2/README.md": "4cf3e7b3503d9188ab42e3dcd8b0dd77f870cf6c1145f3e6ee2fd61639a754cd",
+    "evaluation/cli-normal-v2/config.json": "eeefb1f7b06b1ddb5aa4e1107044971e12d7cd0d83eeb4d9ec3f19687df43de6",
+    "evaluation/cli-normal-v2/prepare_runtime.py": "1c3b3a5a78072f81114d9844cf038ef0c9a7efd78507c9d5c0f350a33a5b38f0",
+    "evaluation/cli-normal-v2/replacement-counts.json": "cd44c6bb418748dcb4e942b3a45cc93bd59ff94d03037643673f0ae0e2a58042",
+    "evaluation/cli-normal-v2/runtime/tag_admission.py": "6c5ddfde6e40761f1b3fbbb748b3bc8aa7b0bf0ec9b25b52d4c14b8ea03b54ca",
+    "evaluation/cli-normal-v2/test_prepare_runtime.py": "e762426d5d4cb3fccab54f616db4fb87b049f5fee4c800f548e1270c47907506",
+    "evaluation/cli-normal-v2/test_runtime_archive.py": "f0cbe8e7a95d8342eb406abd4dcd669bcf73386ce49844a2aa4ece2083f4cd23",
+    "evaluation/cli-normal-v2/verify_runtime_archive.py": "5cdb37a9d504903dc3ed0bdefabd4931486e994a8a4369cfc05662dd26fc3513"
+  },
+  "derivation_base_commit": "7073471d7490c64841200ae9ddaf252317c34721",
+  "common_cli_host": "54eee374b40100e04fb0f8cde95912c8076dafa6",
+  "independent_checks": {
+    "checkout_tests": {
+      "pass": true,
+      "tests": 8
+    },
+    "prepared_normal_tests": {
+      "pass": true,
+      "tests": 20
+    },
+    "prepared_inherited_tests": {
+      "pass": true,
+      "tests": 85
+    },
+    "manual_expected_runtime_bytes": {
+      "pass": true,
+      "files": 104,
+      "basis": "Independently verified actual v1 image files, explicit literal map plus only the two declared offline workflow changes; not merely trusting the generator own output."
+    },
+    "real_v1_authorization_and_provenance_refusals": {
+      "pass": true,
+      "controls": 6,
+      "evidence": "actual-v1-chain-refusals.json",
+      "stubs_or_monkeypatches": false
+    },
+    "v1_protected_profile_receipt_workflow_paths_unchanged": [
+      "evaluation/cli-normal-v1",
+      ".github/workflows/cli-normal-runtime.yml",
+      ".github/workflows/cli-normal-real24-development.yml",
+      "evaluation/cli-normal-real24-development-v1"
+    ],
+    "original_v1_raw_142_files_unchanged": true
+  },
+  "conclusions": [
+    "Preparation reads fixed707347 Git objects into a safe temporary source tree and derives a separate v2 namespace by exact per-file occurrence counts. Checkout-derived verifier/workflow/tag files must match the staged bytes. Inherited preparation is patched only to separate Git object lookup from the immutable overlay; no mutable checkout overlay is consumed. Independent expected bytes match all104 runtime files.",
+    "v1 profile, receipt and workflows remain byte-identical to the original tag tree. v2 data/checkpoint/source do not substitute for or rewrite v1 execution/first-score evidence. The checkpoint clearly states source preparation only, actual runtime review incomplete, receipt absent and tag absent; it is not used as admission authority.",
+    "Only profile/tag/runtime paths/common host/reviewer scope and the two offline workflow test/concurrency declarations change. Full protocol comparison preserves all model/provider/budget/retry/pacing/quality/safety/sample fields. Plan remains Mistral48 normal jobs, zero helper jobs; Google/Groq remain deferred. Frozen reservation is1348608 tokens / nominal USD0.2022912, self-cap USD2.5; quota headroom remainsUNKNOWN, no provider billing or completion guarantee.",
+    "New tag and workflow path are enforced in full history first-only admission and authenticated artifact provenance. Observation IDs/reviews/first-score reservations remain bound to exact run/receipt/artifact provenance. Generic v1-version schema labels or generic artifact name remain compatibility schema/name conventions; new tag/workflow/receipt bindings prevent old run reuse.",
+    "Checkout hash gate remains before Docker load. Actual loaded ID must belong to archive-derived config/OCI IDs and all downloaded-runtime invocations use the validated immutable ID with --pull=never. New verifier bytes belong to prepared inventory and new scope cli-normal-v2-development-runtime rejects the genuine old final verdict.",
+    "Config execution_admitted=false describes preparation. Current missing reference/receipt fails before provider-secret steps; later activation requires the existing genuine final review/reference/proof/archive/identity/readiness/receipt/reservation gates. Real old v1 receipt, verdict/proof, callback credentials-free admission and saved run metadata all fail in actual v2 functions. No check was stubbed and no provider key or HTTP was used."
+  ],
+  "findings": [],
+  "preview_inventory_bound_to_exact_commit": true,
+  "actual_prepared_inventory_sha256": "e5a076eccaac8874dd1070fb2d77f36f0138686e86becb691ad94f647139be1b",
+  "preparation_sha256": "4bed1e321d5c39d374ac4d7a1e57c85f435800264c0263ab162e5b0dc6218fb2",
+  "source_authorship": "Reviewer did not author or edit implementation/tracked files. Separate author and root reports are contextual; the tests and manual derivation above were executed by this actual reviewer.",
+  "limits": {
+    "actual_new_AMD64_image_or_10_binaries_reviewed": false,
+    "new_formal_runtime_verdict_issued": false,
+    "new_true_v2_receipt_positive_admission_tested": false,
+    "external_model_API_or_metadata_HTTP": 0,
+    "provider_credentials_loaded": false,
+    "new_tag_created": false,
+    "actual_F1_or_semantic_labels_authored": false,
+    "old_formal_review_or_old_run_promoted": false,
+    "new_cohort_completion_or_quality_guarantee": false
+  },
+  "pending_required_work": [
+    "New actual AMD64 image/archive/proof for the exact committed preparation, then independent runtime/identity/all104files/tenbinaries/full offline controls review.",
+    "Only a completed new runtime verdict may bind new metadata and a genuine v2 receipt; independent HTTP-zero positive receipt/48plan/reserved-callback check remains required before first tag."
+  ],
+  "reviewed_at_UTC": "2026-10-29T17:40:21.263281+00:00"
+}

@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/cli-normal-v2",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "returncode": 0,
+  "seconds": 5.308178901672363,
+  "external_HTTP_calls": 0,
+  "credentials_supplied": false
+}

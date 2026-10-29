@@ -1,0 +1,51 @@
+{
+  "scope": "pure real admission/provenance functions, no stubs/monkeypatches; no credentials or HTTP",
+  "checks": [
+    {
+      "name": "missing actual v2 receipt",
+      "exception": "ValueError",
+      "reason": "development_receipt_missing",
+      "result": "REJECTED"
+    },
+    {
+      "name": "real v1 receipt rejected by v2",
+      "exception": "ValueError",
+      "reason": "development_not_frozen",
+      "result": "REJECTED"
+    },
+    {
+      "name": "real v1 final verdict rejected by v2 checkout gate",
+      "exception": "ValueError",
+      "reason": "final_independent_operational_review_required",
+      "result": "REJECTED"
+    },
+    {
+      "name": "real v1 verdict/proof rejected before v2 metadata HTTP",
+      "exception": "ValueError",
+      "reason": "development_full_operational_review_missing",
+      "result": "REJECTED"
+    },
+    {
+      "name": "real v1 receipt cannot open v2 callback",
+      "exception": "ValueError",
+      "reason": "development_not_frozen",
+      "result": "REJECTED"
+    },
+    {
+      "name": "actual v1 run metadata rejected by v2 provenance",
+      "exception": "ValueError",
+      "reason": "run_identity_mismatch",
+      "result": "REJECTED"
+    },
+    {
+      "new_tag": "cli-normal-real24-development-v2",
+      "new_workflow": ".github/workflows/cli-normal-real24-development-v2.yml",
+      "expected_review_scope": "cli-normal-v2-development-runtime",
+      "real_v1_verdict_sha256": "a0e5c9128083ba3bc1d5532369b4c7485b94f0ad5419799acf73d36181508ce4",
+      "real_v1_receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+    }
+  ],
+  "all_rejected": true,
+  "API_calls": 0,
+  "model_main_or_lane_run_or_scorer_called": false
+}
