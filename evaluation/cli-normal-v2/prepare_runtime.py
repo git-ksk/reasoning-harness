@@ -47,6 +47,9 @@ def transform(path, data, expected, host):
         old_group = 'group: cli-normal-runtime\n'
         require(text.count(old_group) == 1, 'workflow_concurrency_group_mismatch')
         text = text.replace(old_group, 'group: cli-normal-runtime-v2\n')
+        old_build = 'docker build -f "$stage/normal_v2/Dockerfile.runtime" -t paired-runtime target/paired-context'
+        require(text.count(old_build) == 1, 'runtime_build_export_flags_mismatch')
+        text = text.replace(old_build, 'docker build --platform linux/amd64 --provenance=false --sbom=false -f "$stage/normal_v2/Dockerfile.runtime" -t paired-runtime target/paired-context')
     return text.encode()
 
 

@@ -1,0 +1,53 @@
+{
+  "archive_sha256": "f4acb79576949968d2b76bbe8d138e020a36ef1bd2a57a212b5b83919f30a241",
+  "Docker_manifest_count": 1,
+  "config_digest": "sha256:69441eb4e3f6d00924b078ce9395eafdb1d80bc169847d2d2cdf716074c766b6",
+  "top_descriptor": {
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "digest": "sha256:2b2c016a3ff6c5674d48c0d326e7d2679d628419b6e2fd153db0ec35b430ec02",
+    "size": 856,
+    "annotations": {
+      "io.containerd.image.name": "docker.io/library/paired-runtime:latest",
+      "org.opencontainers.image.ref.name": "latest"
+    }
+  },
+  "top_blob_mediaType": "application/vnd.oci.image.index.v1+json",
+  "top_blob_has_config": false,
+  "top_blob_digest_verified": true,
+  "top_blob_size_verified": true,
+  "children": [
+    {
+      "descriptor": {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "digest": "sha256:b61d75138096f1bd53f624d91391fbf63d092c5a894733f66e5c742e7c0dbe5a",
+        "size": 1628,
+        "platform": {
+          "architecture": "amd64",
+          "os": "linux"
+        }
+      },
+      "config_digest": "sha256:69441eb4e3f6d00924b078ce9395eafdb1d80bc169847d2d2cdf716074c766b6",
+      "matches_Docker_config": true
+    },
+    {
+      "descriptor": {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "digest": "sha256:0f8e447c5b4ce2c7c1930549f491092d9876d2c1a07d5000d2f1483305f98eb0",
+        "size": 564,
+        "annotations": {
+          "vnd.docker.reference.digest": "sha256:b61d75138096f1bd53f624d91391fbf63d092c5a894733f66e5c742e7c0dbe5a",
+          "vnd.docker.reference.type": "attestation-manifest"
+        },
+        "platform": {
+          "architecture": "unknown",
+          "os": "unknown"
+        }
+      },
+      "config_digest": "sha256:0362fbeb18d0d946a1d4289f3fb846a3c55f6f41ff3decc9155af32a727db948",
+      "matches_Docker_config": false
+    }
+  ],
+  "old_parser_acceptance": false,
+  "proof_generated": false,
+  "new_model_calls": 0
+}

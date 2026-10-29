@@ -1,0 +1,34 @@
+{
+  "normal": {
+    "argv": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/cli-normal-v2-source-independent-20261030/prepared/repo/evaluation/cli-repair-paired-v1/normal_v2",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "returncode": 0,
+    "seconds": 1.204761028289795
+  },
+  "inherited": {
+    "argv": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/cli-normal-v2-source-independent-20261030/prepared/repo/evaluation/cli-repair-paired-v1",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "returncode": 0,
+    "seconds": 0.5759551525115967
+  }
+}

@@ -1,0 +1,1018 @@
+﻿2026-10-29T17:45:20.8994714Z Current runner version: '2.338.0'
+2026-10-29T17:45:20.9010285Z ##[group]Runner Image Provisioner
+2026-10-29T17:45:20.9011000Z Hosted Compute Agent
+2026-10-29T17:45:20.9011400Z Version: 20261021.618
+2026-10-29T17:45:20.9011757Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-29T17:45:20.9012311Z Build Date: 2026-10-21T00:45:21Z
+2026-10-29T17:45:20.9012699Z Worker ID: {41d22e8f-9a34-47a8-850d-7ae9bab3c939}
+2026-10-29T17:45:20.9013149Z Region: westus2
+2026-10-29T17:45:20.9013480Z Cloud: Azure
+2026-10-29T17:45:20.9013810Z ##[endgroup]
+2026-10-29T17:45:20.9014614Z ##[group]Operating System
+2026-10-29T17:45:20.9014968Z Ubuntu
+2026-10-29T17:45:20.9015331Z 26.04.1
+2026-10-29T17:45:20.9015639Z LTS
+2026-10-29T17:45:20.9015939Z ##[endgroup]
+2026-10-29T17:45:20.9016287Z ##[group]Runner Image
+2026-10-29T17:45:20.9016864Z Image: ubuntu-26.04
+2026-10-29T17:45:20.9017210Z Version: 20261025.179.1
+2026-10-29T17:45:20.9018046Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261025.179/images/ubuntu/Ubuntu2604-Readme.md
+2026-10-29T17:45:20.9018908Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261025.179
+2026-10-29T17:45:20.9019446Z ##[endgroup]
+2026-10-29T17:45:20.9020188Z ##[group]GITHUB_TOKEN Permissions
+2026-10-29T17:45:20.9021318Z Actions: read
+2026-10-29T17:45:20.9021705Z Contents: read
+2026-10-29T17:45:20.9022035Z Metadata: read
+2026-10-29T17:45:20.9022388Z ##[endgroup]
+2026-10-29T17:45:20.9023902Z Secret source: Actions
+2026-10-29T17:45:20.9024407Z Cache mode: write
+2026-10-29T17:45:20.9024857Z Prepare workflow directory
+2026-10-29T17:45:20.9214899Z Prepare all required actions
+2026-10-29T17:45:20.9244075Z Getting action download info
+2026-10-29T17:45:21.2285904Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-29T17:45:21.3037496Z Download action repository 'actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+2026-10-29T17:45:21.4391199Z Complete job name: offline-runtime
+2026-10-29T17:45:21.4880939Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-29T17:45:21.4881419Z with:
+2026-10-29T17:45:21.4881648Z   fetch-depth: 0
+2026-10-29T17:45:21.4881899Z   persist-credentials: false
+2026-10-29T17:45:21.4882185Z   repository: git-ksk/reasoning-harness
+2026-10-29T17:45:21.4884390Z   token: ***
+2026-10-29T17:45:21.4884618Z   ssh-strict: true
+2026-10-29T17:45:21.4884854Z   ssh-user: git
+2026-10-29T17:45:21.4885084Z   clean: true
+2026-10-29T17:45:21.4885327Z   sparse-checkout-cone-mode: true
+2026-10-29T17:45:21.4885609Z   fetch-tags: false
+2026-10-29T17:45:21.4885850Z   show-progress: true
+2026-10-29T17:45:21.4886088Z   lfs: false
+2026-10-29T17:45:21.4886441Z   submodules: false
+2026-10-29T17:45:21.4886686Z   set-safe-directory: true
+2026-10-29T17:45:21.4886959Z   allow-unsafe-pr-checkout: false
+2026-10-29T17:45:21.4887303Z ##[endgroup]
+2026-10-29T17:45:21.7027735Z Syncing repository: git-ksk/reasoning-harness
+2026-10-29T17:45:21.7028896Z ##[group]Getting Git version info
+2026-10-29T17:45:21.7029310Z Working directory is '/home/runner/work/reasoning-harness/reasoning-harness'
+2026-10-29T17:45:21.7029882Z [command]/usr/bin/git version
+2026-10-29T17:45:21.7044264Z git version 2.56.0
+2026-10-29T17:45:21.7055238Z ##[endgroup]
+2026-10-29T17:45:21.7062166Z Temporarily overriding HOME='/home/runner/work/_temp/9d4da3b3-4412-4227-972c-0cd7ab886b39' before making global git config changes
+2026-10-29T17:45:21.7063359Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-29T17:45:21.7065867Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/reasoning-harness/reasoning-harness
+2026-10-29T17:45:21.7119866Z Deleting the contents of '/home/runner/work/reasoning-harness/reasoning-harness'
+2026-10-29T17:45:21.7129111Z ##[group]Determining repository object format
+2026-10-29T17:45:21.7129912Z ##[endgroup]
+2026-10-29T17:45:21.7130515Z ##[group]Initializing the repository
+2026-10-29T17:45:21.7132632Z [command]/usr/bin/git init /home/runner/work/reasoning-harness/reasoning-harness
+2026-10-29T17:45:21.7231813Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-29T17:45:21.7232384Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-29T17:45:21.7232868Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-29T17:45:21.7233364Z hint: call:
+2026-10-29T17:45:21.7233696Z hint:
+2026-10-29T17:45:21.7233990Z hint: 	git config --global init.defaultBranch <name>
+2026-10-29T17:45:21.7234320Z hint:
+2026-10-29T17:45:21.7234623Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-29T17:45:21.7235103Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-29T17:45:21.7235483Z hint:
+2026-10-29T17:45:21.7235705Z hint: 	git branch -m <name>
+2026-10-29T17:45:21.7235953Z hint:
+2026-10-29T17:45:21.7236465Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-29T17:45:21.7247275Z Initialized empty Git repository in /home/runner/work/reasoning-harness/reasoning-harness/.git/
+2026-10-29T17:45:21.7254985Z [command]/usr/bin/git remote add origin https://github.com/git-ksk/reasoning-harness
+2026-10-29T17:45:21.7298677Z ##[endgroup]
+2026-10-29T17:45:21.7299100Z ##[group]Disabling automatic garbage collection
+2026-10-29T17:45:21.7301412Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-29T17:45:21.7328774Z ##[endgroup]
+2026-10-29T17:45:21.7329602Z ##[group]Setting up auth
+2026-10-29T17:45:21.7329888Z Removing SSH command configuration
+2026-10-29T17:45:21.7334064Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-29T17:45:21.7366050Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-29T17:45:21.7728295Z Removing HTTP extra header
+2026-10-29T17:45:21.7733137Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-29T17:45:21.7758291Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-29T17:45:21.7956142Z Removing includeIf entries pointing to credentials config files
+2026-10-29T17:45:21.7959348Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-29T17:45:21.7989569Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-29T17:45:21.8189321Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-1689dd3d-2090-4c21-a8ae-03047b4ac887.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-29T17:45:21.8216541Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/reasoning-harness/reasoning-harness/.git.path /home/runner/work/_temp/git-credentials-1689dd3d-2090-4c21-a8ae-03047b4ac887.config
+2026-10-29T17:45:21.8243375Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/reasoning-harness/reasoning-harness/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-1689dd3d-2090-4c21-a8ae-03047b4ac887.config
+2026-10-29T17:45:21.8269915Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-1689dd3d-2090-4c21-a8ae-03047b4ac887.config
+2026-10-29T17:45:21.8294606Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-1689dd3d-2090-4c21-a8ae-03047b4ac887.config
+2026-10-29T17:45:21.8317199Z ##[endgroup]
+2026-10-29T17:45:21.8317627Z ##[group]Fetching the repository
+2026-10-29T17:45:21.8321159Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-10-29T17:45:23.1464122Z From https://github.com/git-ksk/reasoning-harness
+2026-10-29T17:45:23.1466047Z  * [new branch]        codex/cli-repair-paired-evaluation -> origin/codex/cli-repair-paired-evaluation
+2026-10-29T17:45:23.1467995Z  * [new branch]        codex/paired-runtime-fresh-output -> origin/codex/paired-runtime-fresh-output
+2026-10-29T17:45:23.1469719Z  * [new branch]        codex/source-registry-acquisition -> origin/codex/source-registry-acquisition
+2026-10-29T17:45:23.1471322Z  * [new branch]        dependabot/cargo/libc-0.2.191 -> origin/dependabot/cargo/libc-0.2.191
+2026-10-29T17:45:23.1472944Z  * [new branch]        dependabot/cargo/schemars-1.2.3 -> origin/dependabot/cargo/schemars-1.2.3
+2026-10-29T17:45:23.1474612Z  * [new branch]        dependabot/cargo/serde_json-1.0.154 -> origin/dependabot/cargo/serde_json-1.0.154
+2026-10-29T17:45:23.1476209Z  * [new branch]        dependabot/cargo/sha2-0.11.1 -> origin/dependabot/cargo/sha2-0.11.1
+2026-10-29T17:45:23.1477893Z  * [new branch]        dependabot/cargo/tokio-1.53.3 -> origin/dependabot/cargo/tokio-1.53.3
+2026-10-29T17:45:23.1479415Z  * [new branch]        eval/cli-normal-runtime-v2 -> origin/eval/cli-normal-runtime-v2
+2026-10-29T17:45:23.1481290Z  * [new branch]        fix/engine073-retraction-safety -> origin/fix/engine073-retraction-safety
+2026-10-29T17:45:23.1482676Z  * [new branch]        main                       -> origin/main
+2026-10-29T17:45:23.1484160Z  * [new branch]        release/cli-0.5.5-engine-0.6.1 -> origin/release/cli-0.5.5-engine-0.6.1
+2026-10-29T17:45:23.1485872Z  * [new tag]           action-materialization-v1-freeze -> action-materialization-v1-freeze
+2026-10-29T17:45:23.1487821Z  * [new tag]           action-materialization-v2-freeze -> action-materialization-v2-freeze
+2026-10-29T17:45:23.1489511Z  * [new tag]           action-materialization-v3-freeze -> action-materialization-v3-freeze
+2026-10-29T17:45:23.1491335Z  * [new tag]           cli-normal-real24-development-v1 -> cli-normal-real24-development-v1
+2026-10-29T17:45:23.1492933Z  * [new tag]           cli-repair-paired-real24-development-v1 -> cli-repair-paired-real24-development-v1
+2026-10-29T17:45:23.1494664Z  * [new tag]           cli-repair-paired-real24-development-v2 -> cli-repair-paired-real24-development-v2
+2026-10-29T17:45:23.1496084Z  * [new tag]           engine-0.5-final-v1-freeze -> engine-0.5-final-v1-freeze
+2026-10-29T17:45:23.1497324Z  * [new tag]           engine-0.5-final-v2-freeze -> engine-0.5-final-v2-freeze
+2026-10-29T17:45:23.1498548Z  * [new tag]           engine-0.5-final-v3-freeze -> engine-0.5-final-v3-freeze
+2026-10-29T17:45:23.1500451Z  * [new tag]           engine-0.5.1-hardening-v1-freeze -> engine-0.5.1-hardening-v1-freeze
+2026-10-29T17:45:23.1502707Z  * [new tag]           engine-0.6-evidence-need-calibration-v1-freeze -> engine-0.6-evidence-need-calibration-v1-freeze
+2026-10-29T17:45:23.1505307Z  * [new tag]           engine-0.6-evidence-need-calibration-v2-freeze -> engine-0.6-evidence-need-calibration-v2-freeze
+2026-10-29T17:45:23.1507548Z  * [new tag]           engine-0.6-evidence-need-calibration-v3-freeze -> engine-0.6-evidence-need-calibration-v3-freeze
+2026-10-29T17:45:23.1509662Z  * [new tag]           engine-0.6-evidence-need-holdout-v1-freeze -> engine-0.6-evidence-need-holdout-v1-freeze
+2026-10-29T17:45:23.1511788Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v1-freeze -> engine-0.6-evidence-relevance-calibration-v1-freeze
+2026-10-29T17:45:23.1513914Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v10-freeze -> engine-0.6-evidence-relevance-calibration-v10-freeze
+2026-10-29T17:45:23.1516111Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v11-freeze -> engine-0.6-evidence-relevance-calibration-v11-freeze
+2026-10-29T17:45:23.1518437Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v12-freeze -> engine-0.6-evidence-relevance-calibration-v12-freeze
+2026-10-29T17:45:23.1520704Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v13-freeze -> engine-0.6-evidence-relevance-calibration-v13-freeze
+2026-10-29T17:45:23.1522811Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v14-freeze -> engine-0.6-evidence-relevance-calibration-v14-freeze
+2026-10-29T17:45:23.1525222Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v15-freeze -> engine-0.6-evidence-relevance-calibration-v15-freeze
+2026-10-29T17:45:23.1528000Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v16-freeze -> engine-0.6-evidence-relevance-calibration-v16-freeze
+2026-10-29T17:45:23.1530353Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v17-freeze -> engine-0.6-evidence-relevance-calibration-v17-freeze
+2026-10-29T17:45:23.1532645Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v18-freeze -> engine-0.6-evidence-relevance-calibration-v18-freeze
+2026-10-29T17:45:23.1534739Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v19-freeze -> engine-0.6-evidence-relevance-calibration-v19-freeze
+2026-10-29T17:45:23.1537083Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v2-freeze -> engine-0.6-evidence-relevance-calibration-v2-freeze
+2026-10-29T17:45:23.1539239Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v20-freeze -> engine-0.6-evidence-relevance-calibration-v20-freeze
+2026-10-29T17:45:23.1541334Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v21-freeze -> engine-0.6-evidence-relevance-calibration-v21-freeze
+2026-10-29T17:45:23.1543432Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v22-freeze -> engine-0.6-evidence-relevance-calibration-v22-freeze
+2026-10-29T17:45:23.1546123Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v23-freeze -> engine-0.6-evidence-relevance-calibration-v23-freeze
+2026-10-29T17:45:23.1548507Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v3-freeze -> engine-0.6-evidence-relevance-calibration-v3-freeze
+2026-10-29T17:45:23.1550587Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v4-freeze -> engine-0.6-evidence-relevance-calibration-v4-freeze
+2026-10-29T17:45:23.1552514Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v5-freeze -> engine-0.6-evidence-relevance-calibration-v5-freeze
+2026-10-29T17:45:23.1554425Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v6-freeze -> engine-0.6-evidence-relevance-calibration-v6-freeze
+2026-10-29T17:45:23.1556419Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v7-freeze -> engine-0.6-evidence-relevance-calibration-v7-freeze
+2026-10-29T17:45:23.1558372Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v8-freeze -> engine-0.6-evidence-relevance-calibration-v8-freeze
+2026-10-29T17:45:23.1560267Z  * [new tag]           engine-0.6-evidence-relevance-calibration-v9-freeze -> engine-0.6-evidence-relevance-calibration-v9-freeze
+2026-10-29T17:45:23.1562252Z  * [new tag]           engine-0.6-evidence-relevance-google-model-diagnostic-v1 -> engine-0.6-evidence-relevance-google-model-diagnostic-v1
+2026-10-29T17:45:23.1564391Z  * [new tag]           engine-0.6-evidence-relevance-google-recovery-diagnostic-v1 -> engine-0.6-evidence-relevance-google-recovery-diagnostic-v1
+2026-10-29T17:45:23.1566529Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v1-freeze -> engine-0.6-evidence-relevance-holdout-v1-freeze
+2026-10-29T17:45:23.1568304Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v10-freeze -> engine-0.6-evidence-relevance-holdout-v10-freeze
+2026-10-29T17:45:23.1570343Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v10-runner-freeze -> engine-0.6-evidence-relevance-holdout-v10-runner-freeze
+2026-10-29T17:45:23.1572764Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v11-freeze -> engine-0.6-evidence-relevance-holdout-v11-freeze
+2026-10-29T17:45:23.1575034Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v11-runner-freeze -> engine-0.6-evidence-relevance-holdout-v11-runner-freeze
+2026-10-29T17:45:23.1577291Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v12-freeze -> engine-0.6-evidence-relevance-holdout-v12-freeze
+2026-10-29T17:45:23.1579174Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v12-runner-freeze -> engine-0.6-evidence-relevance-holdout-v12-runner-freeze
+2026-10-29T17:45:23.1581168Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v2-freeze -> engine-0.6-evidence-relevance-holdout-v2-freeze
+2026-10-29T17:45:23.1582908Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v3-freeze -> engine-0.6-evidence-relevance-holdout-v3-freeze
+2026-10-29T17:45:23.1584658Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v3a-freeze -> engine-0.6-evidence-relevance-holdout-v3a-freeze
+2026-10-29T17:45:23.1586516Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v4-freeze -> engine-0.6-evidence-relevance-holdout-v4-freeze
+2026-10-29T17:45:23.1588622Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v5-freeze -> engine-0.6-evidence-relevance-holdout-v5-freeze
+2026-10-29T17:45:23.1590343Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v6-freeze -> engine-0.6-evidence-relevance-holdout-v6-freeze
+2026-10-29T17:45:23.1592062Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v7-freeze -> engine-0.6-evidence-relevance-holdout-v7-freeze
+2026-10-29T17:45:23.1593868Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v7-runner-freeze -> engine-0.6-evidence-relevance-holdout-v7-runner-freeze
+2026-10-29T17:45:23.1595679Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v8-freeze -> engine-0.6-evidence-relevance-holdout-v8-freeze
+2026-10-29T17:45:23.1597699Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v8-runner-freeze -> engine-0.6-evidence-relevance-holdout-v8-runner-freeze
+2026-10-29T17:45:23.1599681Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v9-freeze -> engine-0.6-evidence-relevance-holdout-v9-freeze
+2026-10-29T17:45:23.1601879Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v9-runner-freeze -> engine-0.6-evidence-relevance-holdout-v9-runner-freeze
+2026-10-29T17:45:23.1603980Z  * [new tag]           engine-0.6-evidence-relevance-holdout-v9-runner-freeze-v2 -> engine-0.6-evidence-relevance-holdout-v9-runner-freeze-v2
+2026-10-29T17:45:23.1606082Z  * [new tag]           engine-0.6-evidence-relevance-identity-ambiguity-diagnostic-v1 -> engine-0.6-evidence-relevance-identity-ambiguity-diagnostic-v1
+2026-10-29T17:45:23.1608541Z  * [new tag]           engine-0.6-evidence-relevance-successor-v10-development-v1-freeze -> engine-0.6-evidence-relevance-successor-v10-development-v1-freeze
+2026-10-29T17:45:23.1610780Z  * [new tag]           engine-0.6-evidence-relevance-successor-v10-development-v2-freeze -> engine-0.6-evidence-relevance-successor-v10-development-v2-freeze
+2026-10-29T17:45:23.1613020Z  * [new tag]           engine-0.6-evidence-relevance-successor-v10-development-v3-freeze -> engine-0.6-evidence-relevance-successor-v10-development-v3-freeze
+2026-10-29T17:45:23.1615247Z  * [new tag]           engine-0.6-evidence-relevance-successor-v10-development-v4-freeze -> engine-0.6-evidence-relevance-successor-v10-development-v4-freeze
+2026-10-29T17:45:23.1617616Z  * [new tag]           engine-0.6-evidence-relevance-successor-v10-semantics-freeze -> engine-0.6-evidence-relevance-successor-v10-semantics-freeze
+2026-10-29T17:45:23.1619764Z  * [new tag]           engine-0.6-evidence-relevance-successor-v11-development-v1-freeze -> engine-0.6-evidence-relevance-successor-v11-development-v1-freeze
+2026-10-29T17:45:23.1621986Z  * [new tag]           engine-0.6-evidence-relevance-successor-v11-development-v2-freeze -> engine-0.6-evidence-relevance-successor-v11-development-v2-freeze
+2026-10-29T17:45:23.1624112Z  * [new tag]           engine-0.6-evidence-relevance-successor-v11-semantics-freeze -> engine-0.6-evidence-relevance-successor-v11-semantics-freeze
+2026-10-29T17:45:23.1626251Z  * [new tag]           engine-0.6-evidence-relevance-successor-v2-semantics-freeze -> engine-0.6-evidence-relevance-successor-v2-semantics-freeze
+2026-10-29T17:45:23.1628494Z  * [new tag]           engine-0.6-evidence-relevance-successor-v3-semantics-freeze -> engine-0.6-evidence-relevance-successor-v3-semantics-freeze
+2026-10-29T17:45:23.1630526Z  * [new tag]           engine-0.6-evidence-relevance-successor-v4-semantics-freeze -> engine-0.6-evidence-relevance-successor-v4-semantics-freeze
+2026-10-29T17:45:23.1632554Z  * [new tag]           engine-0.6-evidence-relevance-successor-v5-semantics-freeze -> engine-0.6-evidence-relevance-successor-v5-semantics-freeze
+2026-10-29T17:45:23.1634571Z  * [new tag]           engine-0.6-evidence-relevance-successor-v6-semantics-freeze -> engine-0.6-evidence-relevance-successor-v6-semantics-freeze
+2026-10-29T17:45:23.1636687Z  * [new tag]           engine-0.6-evidence-relevance-successor-v7-semantics-freeze -> engine-0.6-evidence-relevance-successor-v7-semantics-freeze
+2026-10-29T17:45:23.1638683Z  * [new tag]           engine-0.6-evidence-relevance-successor-v9-semantics-freeze -> engine-0.6-evidence-relevance-successor-v9-semantics-freeze
+2026-10-29T17:45:23.1640575Z  * [new tag]           engine-0.6-evidence-relevance-v13-groq-postmortem-v1 -> engine-0.6-evidence-relevance-v13-groq-postmortem-v1
+2026-10-29T17:45:23.1642282Z  * [new tag]           engine-0.6-google-attempt-telemetry-diagnostic-v1 -> engine-0.6-google-attempt-telemetry-diagnostic-v1
+2026-10-29T17:45:23.1643823Z  * [new tag]           engine-0.6-google-full-requalification-v1 -> engine-0.6-google-full-requalification-v1
+2026-10-29T17:45:23.1645378Z  * [new tag]           engine-0.6-source-attribution-development-v1-freeze -> engine-0.6-source-attribution-development-v1-freeze
+2026-10-29T17:45:23.1647200Z  * [new tag]           engine-0.6-source-attribution-development-v2-freeze -> engine-0.6-source-attribution-development-v2-freeze
+2026-10-29T17:45:23.1648992Z  * [new tag]           engine-0.6-source-attribution-development-v3-freeze -> engine-0.6-source-attribution-development-v3-freeze
+2026-10-29T17:45:23.1650693Z  * [new tag]           engine-0.6-source-attribution-development-v4-freeze -> engine-0.6-source-attribution-development-v4-freeze
+2026-10-29T17:45:23.1652404Z  * [new tag]           engine-0.6-source-attribution-development-v5-freeze -> engine-0.6-source-attribution-development-v5-freeze
+2026-10-29T17:45:23.1654101Z  * [new tag]           engine-0.6-source-attribution-development-v6-freeze -> engine-0.6-source-attribution-development-v6-freeze
+2026-10-29T17:45:23.1655731Z  * [new tag]           engine-0.6-source-attribution-holdout-v1-freeze -> engine-0.6-source-attribution-holdout-v1-freeze
+2026-10-29T17:45:23.1657500Z  * [new tag]           engine-0.6-source-attribution-holdout-v1-runner-freeze -> engine-0.6-source-attribution-holdout-v1-runner-freeze
+2026-10-29T17:45:23.1659229Z  * [new tag]           engine-0.6-source-attribution-holdout-v2-freeze -> engine-0.6-source-attribution-holdout-v2-freeze
+2026-10-29T17:45:23.1661013Z  * [new tag]           engine-0.6-source-attribution-holdout-v2-runner-freeze -> engine-0.6-source-attribution-holdout-v2-runner-freeze
+2026-10-29T17:45:23.1662662Z  * [new tag]           engine-0.6-source-attribution-v2-mistral-smoke -> engine-0.6-source-attribution-v2-mistral-smoke
+2026-10-29T17:45:23.1664198Z  * [new tag]           engine-0.6.1-launch-independent-v1-failed-freeze -> engine-0.6.1-launch-independent-v1-failed-freeze
+2026-10-29T17:45:23.1665763Z  * [new tag]           engine-0.6.1-launch-independent-v2-corpus-freeze -> engine-0.6.1-launch-independent-v2-corpus-freeze
+2026-10-29T17:45:23.1667521Z  * [new tag]           engine-0.7-baseline-v1-spec-freeze -> engine-0.7-baseline-v1-spec-freeze
+2026-10-29T17:45:23.1668765Z  * [new tag]           engine-0.7-independent-v1-corpus-freeze -> engine-0.7-independent-v1-corpus-freeze
+2026-10-29T17:45:23.1670068Z  * [new tag]           engine-0.7-independent-v1-runner-freeze -> engine-0.7-independent-v1-runner-freeze
+2026-10-29T17:45:23.1671546Z  * [new tag]           engine-0.7-reconciliation-dev-v1-spec-freeze -> engine-0.7-reconciliation-dev-v1-spec-freeze
+2026-10-29T17:45:23.1672965Z  * [new tag]           engine-0.7-reviewer-host-dev-v1-spec-freeze -> engine-0.7-reviewer-host-dev-v1-spec-freeze
+2026-10-29T17:45:23.1674458Z  * [new tag]           engine-0.7-target-presentation-dev-v1-spec-freeze -> engine-0.7-target-presentation-dev-v1-spec-freeze
+2026-10-29T17:45:23.1675668Z  * [new tag]           engine-v0.5.0              -> engine-v0.5.0
+2026-10-29T17:45:23.1676635Z  * [new tag]           engine-v0.6.0              -> engine-v0.6.0
+2026-10-29T17:45:23.1677428Z  * [new tag]           engine-v0.6.1              -> engine-v0.6.1
+2026-10-29T17:45:23.1678217Z  * [new tag]           engine-v0.7.0              -> engine-v0.7.0
+2026-10-29T17:45:23.1679007Z  * [new tag]           engine-v0.7.1              -> engine-v0.7.1
+2026-10-29T17:45:23.1679802Z  * [new tag]           engine-v0.7.2              -> engine-v0.7.2
+2026-10-29T17:45:23.1680883Z  * [new tag]           engine07-realworld-development-v2-freeze -> engine07-realworld-development-v2-freeze
+2026-10-29T17:45:23.1682218Z  * [new tag]           engine07-realworld-development-v3-freeze -> engine07-realworld-development-v3-freeze
+2026-10-29T17:45:23.1683580Z  * [new tag]           engine073-groq-actual-adapter-readiness-v2 -> engine073-groq-actual-adapter-readiness-v2
+2026-10-29T17:45:23.1684870Z  * [new tag]           engine073-groq-readiness-20261019-v1 -> engine073-groq-readiness-20261019-v1
+2026-10-29T17:45:23.1686134Z  * [new tag]           engine073-realworld-independent-v1-freeze -> engine073-realworld-independent-v1-freeze
+2026-10-29T17:45:23.1687629Z  * [new tag]           engine073-realworld-independent-v1a-freeze -> engine073-realworld-independent-v1a-freeze
+2026-10-29T17:45:23.1688862Z  * [new tag]           engine073-realworld-m0-build-v1 -> engine073-realworld-m0-build-v1
+2026-10-29T17:45:23.1689940Z  * [new tag]           engine073-realworld-m0-build-v2 -> engine073-realworld-m0-build-v2
+2026-10-29T17:45:23.1691206Z  * [new tag]           engine073-realworld-v2-development-v1 -> engine073-realworld-v2-development-v1
+2026-10-29T17:45:23.1692395Z  * [new tag]           engine073-realworld-v2-m0-build-v1 -> engine073-realworld-v2-m0-build-v1
+2026-10-29T17:45:23.1693549Z  * [new tag]           engine073-realworld-v2-m0-refresh-v1 -> engine073-realworld-v2-m0-refresh-v1
+2026-10-29T17:45:23.1694732Z  * [new tag]           engine073-realworld-v2-m0-refresh-v2 -> engine073-realworld-v2-m0-refresh-v2
+2026-10-29T17:45:23.1695922Z  * [new tag]           issue-248-finalization-e2e-v1-freeze -> issue-248-finalization-e2e-v1-freeze
+2026-10-29T17:45:23.1697236Z  * [new tag]           issue-248-finalization-e2e-v2-freeze -> issue-248-finalization-e2e-v2-freeze
+2026-10-29T17:45:23.1698474Z  * [new tag]           mcp-identity-context-holdout-v1-freeze -> mcp-identity-context-holdout-v1-freeze
+2026-10-29T17:45:23.1699707Z  * [new tag]           mcp-identity-gate-holdout-v1-freeze -> mcp-identity-gate-holdout-v1-freeze
+2026-10-29T17:45:23.1700895Z  * [new tag]           mcp-knowledge-holdout-v1-launcher -> mcp-knowledge-holdout-v1-launcher
+2026-10-29T17:45:23.1701996Z  * [new tag]           natural-language-e2e-v1-freeze -> natural-language-e2e-v1-freeze
+2026-10-29T17:45:23.1703057Z  * [new tag]           natural-language-e2e-v10-freeze -> natural-language-e2e-v10-freeze
+2026-10-29T17:45:23.1704341Z  * [new tag]           natural-language-e2e-v11-cross-model-v1-freeze -> natural-language-e2e-v11-cross-model-v1-freeze
+2026-10-29T17:45:23.1705617Z  * [new tag]           natural-language-e2e-v11-freeze -> natural-language-e2e-v11-freeze
+2026-10-29T17:45:23.1706821Z  * [new tag]           natural-language-e2e-v12-freeze -> natural-language-e2e-v12-freeze
+2026-10-29T17:45:23.1707939Z  * [new tag]           natural-language-e2e-v12-freeze-r2 -> natural-language-e2e-v12-freeze-r2
+2026-10-29T17:45:23.1709048Z  * [new tag]           natural-language-e2e-v13-freeze -> natural-language-e2e-v13-freeze
+2026-10-29T17:45:23.1710216Z  * [new tag]           natural-language-e2e-v14-freeze -> natural-language-e2e-v14-freeze
+2026-10-29T17:45:23.1711291Z  * [new tag]           natural-language-e2e-v15-freeze -> natural-language-e2e-v15-freeze
+2026-10-29T17:45:23.1712362Z  * [new tag]           natural-language-e2e-v16-freeze -> natural-language-e2e-v16-freeze
+2026-10-29T17:45:23.1713440Z  * [new tag]           natural-language-e2e-v17-freeze -> natural-language-e2e-v17-freeze
+2026-10-29T17:45:23.1714514Z  * [new tag]           natural-language-e2e-v18-freeze -> natural-language-e2e-v18-freeze
+2026-10-29T17:45:23.1715589Z  * [new tag]           natural-language-e2e-v19-freeze -> natural-language-e2e-v19-freeze
+2026-10-29T17:45:23.1716798Z  * [new tag]           natural-language-e2e-v2-freeze -> natural-language-e2e-v2-freeze
+2026-10-29T17:45:23.1717862Z  * [new tag]           natural-language-e2e-v20-freeze -> natural-language-e2e-v20-freeze
+2026-10-29T17:45:23.1718938Z  * [new tag]           natural-language-e2e-v21-freeze -> natural-language-e2e-v21-freeze
+2026-10-29T17:45:23.1720031Z  * [new tag]           natural-language-e2e-v22-freeze -> natural-language-e2e-v22-freeze
+2026-10-29T17:45:23.1721101Z  * [new tag]           natural-language-e2e-v23-freeze -> natural-language-e2e-v23-freeze
+2026-10-29T17:45:23.1722167Z  * [new tag]           natural-language-e2e-v24-freeze -> natural-language-e2e-v24-freeze
+2026-10-29T17:45:23.1723230Z  * [new tag]           natural-language-e2e-v25-freeze -> natural-language-e2e-v25-freeze
+2026-10-29T17:45:23.1724284Z  * [new tag]           natural-language-e2e-v26-freeze -> natural-language-e2e-v26-freeze
+2026-10-29T17:45:23.1725356Z  * [new tag]           natural-language-e2e-v27-freeze -> natural-language-e2e-v27-freeze
+2026-10-29T17:45:23.1726541Z  * [new tag]           natural-language-e2e-v28-freeze -> natural-language-e2e-v28-freeze
+2026-10-29T17:45:23.1727604Z  * [new tag]           natural-language-e2e-v29-freeze -> natural-language-e2e-v29-freeze
+2026-10-29T17:45:23.1728756Z  * [new tag]           natural-language-e2e-v3-freeze -> natural-language-e2e-v3-freeze
+2026-10-29T17:45:23.1729802Z  * [new tag]           natural-language-e2e-v30-freeze -> natural-language-e2e-v30-freeze
+2026-10-29T17:45:23.1730869Z  * [new tag]           natural-language-e2e-v31-freeze -> natural-language-e2e-v31-freeze
+2026-10-29T17:45:23.1731980Z  * [new tag]           natural-language-e2e-v31-freeze-r2 -> natural-language-e2e-v31-freeze-r2
+2026-10-29T17:45:23.1733077Z  * [new tag]           natural-language-e2e-v32-freeze -> natural-language-e2e-v32-freeze
+2026-10-29T17:45:23.1734136Z  * [new tag]           natural-language-e2e-v33-freeze -> natural-language-e2e-v33-freeze
+2026-10-29T17:45:23.1735194Z  * [new tag]           natural-language-e2e-v34-freeze -> natural-language-e2e-v34-freeze
+2026-10-29T17:45:23.1736259Z  * [new tag]           natural-language-e2e-v35-freeze -> natural-language-e2e-v35-freeze
+2026-10-29T17:45:23.1737450Z  * [new tag]           natural-language-e2e-v36-freeze -> natural-language-e2e-v36-freeze
+2026-10-29T17:45:23.1738511Z  * [new tag]           natural-language-e2e-v4-freeze -> natural-language-e2e-v4-freeze
+2026-10-29T17:45:23.1739568Z  * [new tag]           natural-language-e2e-v5-freeze -> natural-language-e2e-v5-freeze
+2026-10-29T17:45:23.1740627Z  * [new tag]           natural-language-e2e-v6-freeze -> natural-language-e2e-v6-freeze
+2026-10-29T17:45:23.1741698Z  * [new tag]           natural-language-e2e-v7-freeze -> natural-language-e2e-v7-freeze
+2026-10-29T17:45:23.1742752Z  * [new tag]           natural-language-e2e-v8-freeze -> natural-language-e2e-v8-freeze
+2026-10-29T17:45:23.1743808Z  * [new tag]           natural-language-e2e-v9-freeze -> natural-language-e2e-v9-freeze
+2026-10-29T17:45:23.1744848Z  * [new tag]           planner-reliability-v1-freeze -> planner-reliability-v1-freeze
+2026-10-29T17:45:23.1745763Z  * [new tag]           reason-v0.5.0              -> reason-v0.5.0
+2026-10-29T17:45:23.1746665Z  * [new tag]           reason-v0.5.1              -> reason-v0.5.1
+2026-10-29T17:45:23.1747543Z  * [new tag]           reason-v0.5.2              -> reason-v0.5.2
+2026-10-29T17:45:23.1748322Z  * [new tag]           reason-v0.5.3              -> reason-v0.5.3
+2026-10-29T17:45:23.1749095Z  * [new tag]           reason-v0.5.4              -> reason-v0.5.4
+2026-10-29T17:45:23.1749874Z  * [new tag]           reason-v0.5.5              -> reason-v0.5.5
+2026-10-29T17:45:23.1750624Z  * [new tag]           v0.1.0                     -> v0.1.0
+2026-10-29T17:45:23.1751330Z  * [new tag]           v0.2.0                     -> v0.2.0
+2026-10-29T17:45:23.1752056Z  * [new tag]           v0.3.0                     -> v0.3.0
+2026-10-29T17:45:23.1752767Z  * [new tag]           v0.4.0                     -> v0.4.0
+2026-10-29T17:45:23.1753485Z  * [new tag]           v0.4.1                     -> v0.4.1
+2026-10-29T17:45:23.1754186Z  * [new tag]           v0.4.2                     -> v0.4.2
+2026-10-29T17:45:23.1755146Z  * [new tag]           v36-raw-safety-supplement-v1-freeze -> v36-raw-safety-supplement-v1-freeze
+2026-10-29T17:45:23.1757467Z [command]/usr/bin/git branch --list --remote origin/eval/cli-normal-runtime-v2
+2026-10-29T17:45:23.1758312Z   origin/eval/cli-normal-runtime-v2
+2026-10-29T17:45:23.1759783Z [command]/usr/bin/git rev-parse refs/remotes/origin/eval/cli-normal-runtime-v2
+2026-10-29T17:45:23.1760638Z 560b2ecac259e65b7123d6bcf854f7e48e992035
+2026-10-29T17:45:23.1762242Z ##[endgroup]
+2026-10-29T17:45:23.1763121Z ##[group]Determining the checkout info
+2026-10-29T17:45:23.1764095Z ##[endgroup]
+2026-10-29T17:45:23.1764651Z [command]/usr/bin/git sparse-checkout disable
+2026-10-29T17:45:23.1820577Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-29T17:45:23.1823622Z ##[group]Checking out the ref
+2026-10-29T17:45:23.1825139Z [command]/usr/bin/git checkout --progress --force -B eval/cli-normal-runtime-v2 refs/remotes/origin/eval/cli-normal-runtime-v2
+2026-10-29T17:45:23.3139422Z Switched to a new branch 'eval/cli-normal-runtime-v2'
+2026-10-29T17:45:23.3143103Z branch 'eval/cli-normal-runtime-v2' set up to track 'origin/eval/cli-normal-runtime-v2'.
+2026-10-29T17:45:23.3162525Z ##[endgroup]
+2026-10-29T17:45:23.3201539Z [command]/usr/bin/git log -1 --format=%H
+2026-10-29T17:45:23.3222894Z 560b2ecac259e65b7123d6bcf854f7e48e992035
+2026-10-29T17:45:23.3232695Z ##[group]Removing auth
+2026-10-29T17:45:23.3233321Z Removing SSH command configuration
+2026-10-29T17:45:23.3234150Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-29T17:45:23.3262367Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-29T17:45:23.3471627Z Removing HTTP extra header
+2026-10-29T17:45:23.3473245Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-29T17:45:23.3497868Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-29T17:45:23.3697560Z Removing includeIf entries pointing to credentials config files
+2026-10-29T17:45:23.3699074Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-29T17:45:23.3722571Z includeif.gitdir:/home/runner/work/reasoning-harness/reasoning-harness/.git.path
+2026-10-29T17:45:23.3723989Z includeif.gitdir:/home/runner/work/reasoning-harness/reasoning-harness/.git/worktrees/*.path
+2026-10-29T17:45:23.3725373Z includeif.gitdir:/github/workspace/.git.path
+2026-10-29T17:45:23.3726213Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-29T17:45:23.3728962Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/reasoning-harness/reasoning-harness/.git.path
+2026-10-29T17:45:23.3749890Z /home/runner/work/_temp/git-credentials-1689dd3d-2090-4c21-a8ae-03047b4ac887.config
+2026-10-29T17:45:23.3756868Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/reasoning-harness/reasoning-harness/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-1689dd3d\-2090\-4c21\-a8ae\-03047b4ac887\.config
+2026-10-29T17:45:23.3783894Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/reasoning-harness/reasoning-harness/.git/worktrees/*.path
+2026-10-29T17:45:23.3802276Z /home/runner/work/_temp/git-credentials-1689dd3d-2090-4c21-a8ae-03047b4ac887.config
+2026-10-29T17:45:23.3807934Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/reasoning-harness/reasoning-harness/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-1689dd3d\-2090\-4c21\-a8ae\-03047b4ac887\.config
+2026-10-29T17:45:23.3839172Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-29T17:45:23.3858229Z /github/runner_temp/git-credentials-1689dd3d-2090-4c21-a8ae-03047b4ac887.config
+2026-10-29T17:45:23.3863297Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-1689dd3d\-2090\-4c21\-a8ae\-03047b4ac887\.config
+2026-10-29T17:45:23.3889501Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-29T17:45:23.3907766Z /github/runner_temp/git-credentials-1689dd3d-2090-4c21-a8ae-03047b4ac887.config
+2026-10-29T17:45:23.3914149Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-1689dd3d\-2090\-4c21\-a8ae\-03047b4ac887\.config
+2026-10-29T17:45:23.3940976Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-29T17:45:23.4141786Z Removing credentials config '/home/runner/work/_temp/git-credentials-1689dd3d-2090-4c21-a8ae-03047b4ac887.config'
+2026-10-29T17:45:23.4148553Z ##[endgroup]
+2026-10-29T17:45:23.4318199Z ##[group]Run set -euo pipefail
+2026-10-29T17:45:23.4318878Z [36;1mset -euo pipefail[0m
+2026-10-29T17:45:23.4319708Z [36;1mpython3 -B -m unittest discover -s evaluation/cli-normal-v2 -p 'test_*.py' -v[0m
+2026-10-29T17:45:23.4320740Z [36;1mgit cat-file -e 6165de77c1544a7fe58fc1e675e7cb3a8ec7cc98^{commit}[0m
+2026-10-29T17:45:23.4321686Z [36;1mgit cat-file -e 73bbd18173b4dfcd6664a26241de0385f2eb2e3e^{commit}[0m
+2026-10-29T17:45:23.4322618Z [36;1mgit cat-file -e 4abee90f0501f0d8fc09b453a0b45c942fbed69e^{commit}[0m
+2026-10-29T17:45:23.4323554Z [36;1mgit cat-file -e ab3c6322921c8c738ec35bd018345917b5afa538^{commit}[0m
+2026-10-29T17:45:23.4324649Z [36;1mpython3 evaluation/cli-normal-v2/prepare_runtime.py --repo . --output target/paired-runtime[0m
+2026-10-29T17:45:23.4325919Z [36;1mmkdir -p target/paired-build target/paired-context target/paired-controls target/paired-artifact[0m
+2026-10-29T17:45:23.4353643Z shell: /usr/bin/bash -e {0}
+2026-10-29T17:45:23.4354256Z ##[endgroup]
+2026-10-29T17:45:23.4875970Z test_changed_or_extra_replacement_is_rejected (test_prepare_runtime.DerivationControls.test_changed_or_extra_replacement_is_rejected) ... ok
+2026-10-29T17:45:23.9683522Z test_fresh_preparation_freezes_v2_inventory_without_granting_execution (test_prepare_runtime.DerivationControls.test_fresh_preparation_freezes_v2_inventory_without_granting_execution) ... ok
+2026-10-29T17:45:23.9720702Z test_protocol_only_changes_profile_host_and_review_scope (test_prepare_runtime.DerivationControls.test_protocol_only_changes_profile_host_and_review_scope) ... ok
+2026-10-29T17:45:23.9724070Z test_v1_verdict_cannot_admit_v2 (test_prepare_runtime.DerivationControls.test_v1_verdict_cannot_admit_v2) ... ok
+2026-10-29T17:45:24.1037278Z test_workflows_inherit_conditions_and_fail_before_model_credentials (test_prepare_runtime.DerivationControls.test_workflows_inherit_conditions_and_fail_before_model_credentials) ... ok
+2026-10-29T17:45:25.2472349Z test_changed_image_cannot_reach_docker_in_either_workflow (test_runtime_archive.HostArchiveBoundary.test_changed_image_cannot_reach_docker_in_either_workflow) ... ok
+2026-10-29T17:45:25.8996856Z test_loaded_tag_must_resolve_to_a_reviewed_immutable_id_before_run (test_runtime_archive.HostArchiveBoundary.test_loaded_tag_must_resolve_to_a_reviewed_immutable_id_before_run) ... ok
+2026-10-29T17:45:25.9103707Z test_trusted_review_proof_archive_and_host_code_all_bind (test_runtime_archive.HostArchiveBoundary.test_trusted_review_proof_archive_and_host_code_all_bind) ... ok
+2026-10-29T17:45:25.9104759Z 
+2026-10-29T17:45:25.9104954Z ----------------------------------------------------------------------
+2026-10-29T17:45:25.9105383Z Ran 8 tests in 2.425s
+2026-10-29T17:45:25.9105529Z 
+2026-10-29T17:45:25.9105624Z OK
+2026-10-29T17:45:26.3186236Z {"state": "DEVELOPMENT_REQUIRES_FROZEN_RECEIPT", "files": 79, "output": "/home/runner/work/reasoning-harness/reasoning-harness/target/paired-runtime"}
+2026-10-29T17:45:26.3297102Z {"profile": "cli-normal-real24-development-v2", "runtime_files": 104, "ordinary_files": 21, "live_execution_admitted": false}
+2026-10-29T17:45:26.3860195Z {"state": "PREPARATION_ONLY", "profile": "cli-normal-real24-development-v2", "inventory_files": 104, "common_cli_host": "54eee374b40100e04fb0f8cde95912c8076dafa6", "live_execution_admitted": false}
+2026-10-29T17:45:26.3988038Z ##[group]Run set -euo pipefail
+2026-10-29T17:45:26.3988235Z [36;1mset -euo pipefail[0m
+2026-10-29T17:45:26.3988469Z [36;1mstage=target/paired-runtime/repo/evaluation/cli-repair-paired-v1[0m
+2026-10-29T17:45:26.3988741Z [36;1mdocker build -f "$stage/Dockerfile.build" -t paired-builder "$stage"[0m
+2026-10-29T17:45:26.3989363Z [36;1mdocker run --rm --cpus 2 --memory 4g -v "$PWD:/repo:ro" -v "$PWD/target/paired-runtime/repo:/prepared:ro" -v "$PWD/target/paired-build:/work" paired-builder python3 /prepared/evaluation/cli-repair-paired-v1/normal_v2/build.py --repo /repo --work-dir /work/build --fetch-dependencies[0m
+2026-10-29T17:45:26.3990114Z [36;1mpython3 "$stage/assemble_image.py" --repo target/paired-runtime/repo --bin-dir target/paired-build/build/bin --context target/paired-context[0m
+2026-10-29T17:45:26.3990554Z [36;1mdocker build -f "$stage/normal_v2/Dockerfile.runtime" -t paired-runtime target/paired-context[0m
+2026-10-29T17:45:26.4014774Z shell: /usr/bin/bash -e {0}
+2026-10-29T17:45:26.4014914Z ##[endgroup]
+2026-10-29T17:45:26.9121885Z #0 building with "default" instance using docker driver
+2026-10-29T17:45:26.9122122Z 
+2026-10-29T17:45:26.9122301Z #1 [internal] load build definition from Dockerfile.build
+2026-10-29T17:45:26.9122606Z #1 transferring dockerfile: 286B done
+2026-10-29T17:45:26.9122753Z #1 DONE 0.0s
+2026-10-29T17:45:26.9122862Z 
+2026-10-29T17:45:26.9122980Z #2 [internal] load metadata for docker.io/library/rust:1.88.0-bookworm
+2026-10-29T17:45:27.1265395Z #2 ...
+2026-10-29T17:45:27.1265526Z 
+2026-10-29T17:45:27.1265642Z #3 [auth] library/rust:pull token for registry-1.docker.io
+2026-10-29T17:45:27.1265826Z #3 DONE 0.0s
+2026-10-29T17:45:27.2764588Z 
+2026-10-29T17:45:27.2764922Z #2 [internal] load metadata for docker.io/library/rust:1.88.0-bookworm
+2026-10-29T17:45:27.7781243Z #2 DONE 1.0s
+2026-10-29T17:45:27.9630139Z 
+2026-10-29T17:45:27.9631244Z #4 [internal] load .dockerignore
+2026-10-29T17:45:27.9631807Z #4 transferring context: 2B done
+2026-10-29T17:45:27.9656976Z #4 DONE 0.0s
+2026-10-29T17:45:27.9675677Z 
+2026-10-29T17:45:27.9678873Z #5 [1/4] FROM docker.io/library/rust:1.88.0-bookworm@sha256:af306cfa71d987911a781c37b59d7d67d934f49684058f96cf72079c3626bfe0
+2026-10-29T17:45:27.9679464Z #5 resolve docker.io/library/rust:1.88.0-bookworm@sha256:af306cfa71d987911a781c37b59d7d67d934f49684058f96cf72079c3626bfe0 done
+2026-10-29T17:45:27.9680116Z #5 sha256:873a4c80287477653c01b20948fc34bb1bacf0f826bcc2ddc3bd2fe25b342d45 0B / 211.36MB 0.2s
+2026-10-29T17:45:27.9680654Z #5 sha256:94b9ed0713840a284100e368adfdffd34e6ff581cf29aac352a543e650e7ca78 4.19MB / 205.06MB 0.2s
+2026-10-29T17:45:28.1158612Z #5 sha256:94b9ed0713840a284100e368adfdffd34e6ff581cf29aac352a543e650e7ca78 57.67MB / 205.06MB 0.3s
+2026-10-29T17:45:28.1159561Z #5 sha256:37f838b71c6b82c581b7543a313255b8c99c23cc9d96c1ad6f9f5f208c942553 0B / 64.40MB 0.2s
+2026-10-29T17:45:28.1160213Z #5 sha256:c2e76af9483f2d17a3e370639403df2c53a3da1480d533116a8694cd91f15d5a 0B / 24.02MB 0.2s
+2026-10-29T17:45:28.2660271Z #5 sha256:873a4c80287477653c01b20948fc34bb1bacf0f826bcc2ddc3bd2fe25b342d45 22.02MB / 211.36MB 0.3s
+2026-10-29T17:45:28.2661229Z #5 sha256:94b9ed0713840a284100e368adfdffd34e6ff581cf29aac352a543e650e7ca78 99.61MB / 205.06MB 0.5s
+2026-10-29T17:45:28.2662352Z #5 sha256:37f838b71c6b82c581b7543a313255b8c99c23cc9d96c1ad6f9f5f208c942553 5.24MB / 64.40MB 0.3s
+2026-10-29T17:45:28.2662996Z #5 sha256:c2e76af9483f2d17a3e370639403df2c53a3da1480d533116a8694cd91f15d5a 4.19MB / 24.02MB 0.3s
+2026-10-29T17:45:28.4170300Z #5 sha256:873a4c80287477653c01b20948fc34bb1bacf0f826bcc2ddc3bd2fe25b342d45 63.96MB / 211.36MB 0.5s
+2026-10-29T17:45:28.4171549Z #5 sha256:94b9ed0713840a284100e368adfdffd34e6ff581cf29aac352a543e650e7ca78 149.95MB / 205.06MB 0.6s
+2026-10-29T17:45:28.4187670Z #5 sha256:37f838b71c6b82c581b7543a313255b8c99c23cc9d96c1ad6f9f5f208c942553 44.04MB / 64.40MB 0.5s
+2026-10-29T17:45:28.4188944Z #5 sha256:c2e76af9483f2d17a3e370639403df2c53a3da1480d533116a8694cd91f15d5a 24.02MB / 24.02MB 0.5s done
+2026-10-29T17:45:28.5663691Z #5 sha256:873a4c80287477653c01b20948fc34bb1bacf0f826bcc2ddc3bd2fe25b342d45 118.49MB / 211.36MB 0.6s
+2026-10-29T17:45:28.5664457Z #5 sha256:94b9ed0713840a284100e368adfdffd34e6ff581cf29aac352a543e650e7ca78 189.79MB / 205.06MB 0.8s
+2026-10-29T17:45:28.5665301Z #5 sha256:37f838b71c6b82c581b7543a313255b8c99c23cc9d96c1ad6f9f5f208c942553 64.40MB / 64.40MB 0.6s
+2026-10-29T17:45:28.5665899Z #5 sha256:ebed137c7c18cb1906fb8314eabc10611ddf49a281f8c1b5eab987a7137f749f 15.73MB / 48.49MB 0.2s
+2026-10-29T17:45:28.7154461Z #5 sha256:873a4c80287477653c01b20948fc34bb1bacf0f826bcc2ddc3bd2fe25b342d45 166.72MB / 211.36MB 0.8s
+2026-10-29T17:45:28.7155098Z #5 sha256:94b9ed0713840a284100e368adfdffd34e6ff581cf29aac352a543e650e7ca78 205.06MB / 205.06MB 0.9s
+2026-10-29T17:45:28.7155639Z #5 sha256:ebed137c7c18cb1906fb8314eabc10611ddf49a281f8c1b5eab987a7137f749f 48.49MB / 48.49MB 0.3s
+2026-10-29T17:45:28.8658562Z #5 sha256:873a4c80287477653c01b20948fc34bb1bacf0f826bcc2ddc3bd2fe25b342d45 203.42MB / 211.36MB 0.9s
+2026-10-29T17:45:29.0156520Z #5 sha256:37f838b71c6b82c581b7543a313255b8c99c23cc9d96c1ad6f9f5f208c942553 64.40MB / 64.40MB 1.0s done
+2026-10-29T17:45:29.3159633Z #5 sha256:ebed137c7c18cb1906fb8314eabc10611ddf49a281f8c1b5eab987a7137f749f 48.49MB / 48.49MB 0.9s done
+2026-10-29T17:45:31.1579889Z #5 sha256:873a4c80287477653c01b20948fc34bb1bacf0f826bcc2ddc3bd2fe25b342d45 211.36MB / 211.36MB 3.2s done
+2026-10-29T17:45:31.1580657Z #5 sha256:94b9ed0713840a284100e368adfdffd34e6ff581cf29aac352a543e650e7ca78 205.06MB / 205.06MB 3.2s done
+2026-10-29T17:45:31.1581687Z #5 extracting sha256:ebed137c7c18cb1906fb8314eabc10611ddf49a281f8c1b5eab987a7137f749f
+2026-10-29T17:45:31.6835875Z #5 extracting sha256:ebed137c7c18cb1906fb8314eabc10611ddf49a281f8c1b5eab987a7137f749f 0.7s done
+2026-10-29T17:45:31.6836431Z #5 DONE 3.9s
+2026-10-29T17:45:31.8345236Z 
+2026-10-29T17:45:31.8345992Z #5 [1/4] FROM docker.io/library/rust:1.88.0-bookworm@sha256:af306cfa71d987911a781c37b59d7d67d934f49684058f96cf72079c3626bfe0
+2026-10-29T17:45:31.8346782Z #5 extracting sha256:c2e76af9483f2d17a3e370639403df2c53a3da1480d533116a8694cd91f15d5a
+2026-10-29T17:45:31.9113809Z #5 extracting sha256:c2e76af9483f2d17a3e370639403df2c53a3da1480d533116a8694cd91f15d5a 0.2s done
+2026-10-29T17:45:31.9114129Z #5 DONE 4.1s
+2026-10-29T17:45:32.0616204Z 
+2026-10-29T17:45:32.0617233Z #5 [1/4] FROM docker.io/library/rust:1.88.0-bookworm@sha256:af306cfa71d987911a781c37b59d7d67d934f49684058f96cf72079c3626bfe0
+2026-10-29T17:45:32.0617871Z #5 extracting sha256:37f838b71c6b82c581b7543a313255b8c99c23cc9d96c1ad6f9f5f208c942553
+2026-10-29T17:45:32.7496700Z #5 extracting sha256:37f838b71c6b82c581b7543a313255b8c99c23cc9d96c1ad6f9f5f208c942553 0.8s done
+2026-10-29T17:45:32.7497128Z #5 DONE 5.0s
+2026-10-29T17:45:32.8998480Z 
+2026-10-29T17:45:32.8999960Z #5 [1/4] FROM docker.io/library/rust:1.88.0-bookworm@sha256:af306cfa71d987911a781c37b59d7d67d934f49684058f96cf72079c3626bfe0
+2026-10-29T17:45:32.9000790Z #5 extracting sha256:873a4c80287477653c01b20948fc34bb1bacf0f826bcc2ddc3bd2fe25b342d45
+2026-10-29T17:45:35.0492264Z #5 extracting sha256:873a4c80287477653c01b20948fc34bb1bacf0f826bcc2ddc3bd2fe25b342d45 2.3s done
+2026-10-29T17:45:35.0498176Z #5 DONE 7.3s
+2026-10-29T17:45:35.1993143Z 
+2026-10-29T17:45:35.1993691Z #5 [1/4] FROM docker.io/library/rust:1.88.0-bookworm@sha256:af306cfa71d987911a781c37b59d7d67d934f49684058f96cf72079c3626bfe0
+2026-10-29T17:45:35.1994331Z #5 extracting sha256:94b9ed0713840a284100e368adfdffd34e6ff581cf29aac352a543e650e7ca78
+2026-10-29T17:45:36.9207832Z #5 extracting sha256:94b9ed0713840a284100e368adfdffd34e6ff581cf29aac352a543e650e7ca78 1.9s done
+2026-10-29T17:45:36.9208255Z #5 DONE 9.1s
+2026-10-29T17:45:37.0996888Z 
+2026-10-29T17:45:37.0997770Z #6 [2/4] RUN apt-get update && apt-get install -y --no-install-recommends python3 ca-certificates && rm -rf /var/lib/apt/lists/*
+2026-10-29T17:45:37.3545719Z #6 0.405 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+2026-10-29T17:45:37.4639765Z #6 0.421 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+2026-10-29T17:45:37.4640534Z #6 0.428 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
+2026-10-29T17:45:37.4641023Z #6 0.465 Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8790 kB]
+2026-10-29T17:45:37.4641493Z #6 0.515 Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [6924 B]
+2026-10-29T17:45:37.6353897Z #6 0.536 Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [358 kB]
+2026-10-29T17:45:38.0230033Z #6 1.074 Fetched 9397 kB in 1s (12.5 MB/s)
+2026-10-29T17:45:38.2872779Z #6 1.074 Reading package lists...
+2026-10-29T17:45:38.5394650Z #6 1.352 Reading package lists...
+2026-10-29T17:45:38.7871944Z #6 1.708 Building dependency tree...
+2026-10-29T17:45:38.7872331Z #6 1.765 Reading state information...
+2026-10-29T17:45:38.7872753Z #6 1.838 python3 is already the newest version (3.11.2-1+b1).
+2026-10-29T17:45:38.7873062Z #6 1.838 python3 set to manually installed.
+2026-10-29T17:45:38.7873345Z #6 1.838 The following packages will be upgraded:
+2026-10-29T17:45:38.9083962Z #6 1.838   ca-certificates
+2026-10-29T17:45:38.9084321Z #6 1.874 1 upgraded, 0 newly installed, 0 to remove and 143 not upgraded.
+2026-10-29T17:45:38.9084530Z #6 1.874 Need to get 161 kB of archives.
+2026-10-29T17:45:38.9084730Z #6 1.874 After this operation, 1024 B of additional disk space will be used.
+2026-10-29T17:45:38.9085098Z #6 1.874 Get:1 http://deb.debian.org/debian-security bookworm-security/main amd64 ca-certificates all 20250419~deb12u2 [161 kB]
+2026-10-29T17:45:38.9085455Z #6 1.959 debconf: delaying package configuration, since apt-utils is not installed
+2026-10-29T17:45:39.0629364Z #6 1.977 Fetched 161 kB in 0s (3627 kB/s)
+2026-10-29T17:45:39.0629670Z #6 1.990 (Reading database ... 
+2026-10-29T17:45:39.0629869Z (Reading database ... 5%
+2026-10-29T17:45:39.0630004Z (Reading database ... 10%
+2026-10-29T17:45:39.0630129Z (Reading database ... 15%
+2026-10-29T17:45:39.0630250Z (Reading database ... 20%
+2026-10-29T17:45:39.0630371Z (Reading database ... 25%
+2026-10-29T17:45:39.0630502Z (Reading database ... 30%
+2026-10-29T17:45:39.0630620Z (Reading database ... 35%
+2026-10-29T17:45:39.0630763Z (Reading database ... 40%
+2026-10-29T17:45:39.0630916Z (Reading database ... 45%
+2026-10-29T17:45:39.0631035Z (Reading database ... 50%
+2026-10-29T17:45:39.0631152Z (Reading database ... 55%
+2026-10-29T17:45:39.0631272Z (Reading database ... 60%
+2026-10-29T17:45:39.0631397Z (Reading database ... 65%
+2026-10-29T17:45:39.0631519Z (Reading database ... 70%
+2026-10-29T17:45:39.0631638Z (Reading database ... 75%
+2026-10-29T17:45:39.0631756Z (Reading database ... 80%
+2026-10-29T17:45:39.0631873Z (Reading database ... 85%
+2026-10-29T17:45:39.0631991Z (Reading database ... 90%
+2026-10-29T17:45:39.0632106Z (Reading database ... 95%
+2026-10-29T17:45:39.0632467Z (Reading database ... 100%
+2026-10-29T17:45:39.0632700Z (Reading database ... 23250 files and directories currently installed.)
+2026-10-29T17:45:39.0632960Z #6 2.002 Preparing to unpack .../ca-certificates_20250419~deb12u2_all.deb ...
+2026-10-29T17:45:39.0633258Z #6 2.004 Unpacking ca-certificates (20250419~deb12u2) over (20230311+deb12u1) ...
+2026-10-29T17:45:39.0633489Z #6 2.114 Setting up ca-certificates (20250419~deb12u2) ...
+2026-10-29T17:45:39.2593403Z #6 2.155 debconf: unable to initialize frontend: Dialog
+2026-10-29T17:45:39.2593679Z #6 2.155 debconf: (TERM is not set, so the dialog frontend is not usable.)
+2026-10-29T17:45:39.2593898Z #6 2.155 debconf: falling back to frontend: Readline
+2026-10-29T17:45:39.2594088Z #6 2.160 debconf: unable to initialize frontend: Readline
+2026-10-29T17:45:39.2594284Z #6 2.160 debconf: (This frontend requires a controlling tty.)
+2026-10-29T17:45:39.2594473Z #6 2.160 debconf: falling back to frontend: Teletype
+2026-10-29T17:45:39.9495579Z #6 3.000 Updating certificates in /etc/ssl/certs...
+2026-10-29T17:45:40.4255593Z #6 3.476 rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+2026-10-29T17:45:40.5939257Z #6 3.480 21 added, 15 removed; done.
+2026-10-29T17:45:40.5939859Z #6 3.490 Processing triggers for ca-certificates (20250419~deb12u2) ...
+2026-10-29T17:45:40.5940082Z #6 3.494 Updating certificates in /etc/ssl/certs...
+2026-10-29T17:45:40.7522874Z #6 3.803 0 added, 0 removed; done.
+2026-10-29T17:45:40.7523206Z #6 3.803 Running hooks in /etc/ca-certificates/update.d...
+2026-10-29T17:45:40.9034329Z #6 3.804 done.
+2026-10-29T17:45:48.9887550Z #6 DONE 12.0s
+2026-10-29T17:45:49.1099793Z 
+2026-10-29T17:45:49.1100255Z #7 [3/4] RUN git config --global --add safe.directory /repo
+2026-10-29T17:45:49.1100482Z #7 DONE 0.1s
+2026-10-29T17:45:49.2108081Z 
+2026-10-29T17:45:49.2108557Z #8 [4/4] WORKDIR /repo
+2026-10-29T17:45:49.2108783Z #8 DONE 0.0s
+2026-10-29T17:45:49.2108878Z 
+2026-10-29T17:45:49.2108996Z #9 exporting to image
+2026-10-29T17:45:49.2109193Z #9 exporting layers 0.1s done
+2026-10-29T17:45:49.3049833Z #9 exporting manifest sha256:a59d513f08f41908c0f7b5316c560e36dc879ee6cf774d8337f3d0187748ed13 done
+2026-10-29T17:45:49.3050257Z #9 exporting config sha256:debc2f65c8bb75cf035f2441c8fdf5c22f151136b82709923ba69edf9302dc8b done
+2026-10-29T17:45:49.3050630Z #9 exporting attestation manifest sha256:185ac061b4634705af068551c14e730265b8b134bf86dcce6a31bf2220979a39 done
+2026-10-29T17:45:49.3051001Z #9 exporting manifest list sha256:28b6c305cf05faade142eca3ef15b4691ffff680e23c3c5de2223e2c23d14840 done
+2026-10-29T17:45:49.3051290Z #9 naming to docker.io/library/paired-builder:latest done
+2026-10-29T17:45:49.3051510Z #9 unpacking to docker.io/library/paired-builder:latest 0.0s done
+2026-10-29T17:45:49.3051688Z #9 DONE 0.2s
+2026-10-29T17:45:49.9056253Z checking file crates/reasoning-harness-core/src/resolution.rs
+2026-10-29T17:45:49.9064762Z patching file crates/reasoning-harness-core/src/resolution.rs
+2026-10-29T17:45:49.9503223Z     Updating crates.io index
+2026-10-29T17:45:50.4352120Z  Downloading crates ...
+2026-10-29T17:45:50.5438888Z   Downloaded tokio-macros v2.7.2
+2026-10-29T17:45:50.5466761Z   Downloaded futures-task v0.3.34
+2026-10-29T17:45:50.5493217Z   Downloaded windows-link v0.2.1
+2026-10-29T17:45:50.5545158Z   Downloaded quote v1.0.47
+2026-10-29T17:45:50.5580344Z   Downloaded writeable v0.6.4
+2026-10-29T17:45:50.5610194Z   Downloaded num v0.4.3
+2026-10-29T17:45:50.5628303Z   Downloaded futures-macro v0.3.34
+2026-10-29T17:45:50.5646143Z   Downloaded windows-targets v0.52.6
+2026-10-29T17:45:50.5669747Z   Downloaded num-integer v0.1.47
+2026-10-29T17:45:50.5702604Z   Downloaded num-traits v0.2.19
+2026-10-29T17:45:50.5737326Z   Downloaded is_terminal_polyfill v1.70.2
+2026-10-29T17:45:50.5755571Z   Downloaded hyper-rustls v0.27.9
+2026-10-29T17:45:50.5781807Z   Downloaded heck v0.5.0
+2026-10-29T17:45:50.5803390Z   Downloaded fs2 v0.4.3
+2026-10-29T17:45:50.5817775Z   Downloaded windows-native-keyring-store v1.1.0
+2026-10-29T17:45:50.5842504Z   Downloaded anstyle-wincon v3.0.11
+2026-10-29T17:45:50.5859365Z   Downloaded ctrlc v3.5.2
+2026-10-29T17:45:50.5890011Z   Downloaded async-recursion v1.1.1
+2026-10-29T17:45:50.5939130Z   Downloaded rustc-hash v2.1.3
+2026-10-29T17:45:50.5955199Z   Downloaded subtle v2.6.1
+2026-10-29T17:45:50.5974065Z   Downloaded cfg_aliases v0.2.2
+2026-10-29T17:45:50.5990546Z   Downloaded rand_pcg v0.10.2
+2026-10-29T17:45:50.6009801Z   Downloaded num-iter v0.1.46
+2026-10-29T17:45:50.6025824Z   Downloaded memoffset v0.9.1
+2026-10-29T17:45:50.6054618Z   Downloaded endi v1.1.1
+2026-10-29T17:45:50.6070123Z   Downloaded serde_urlencoded v0.7.1
+2026-10-29T17:45:50.6111180Z   Downloaded uds_windows v1.2.1
+2026-10-29T17:45:50.6141731Z   Downloaded tempfile v3.27.0
+2026-10-29T17:45:50.6184497Z   Downloaded zbus_names v4.3.4
+2026-10-29T17:45:50.6213246Z   Downloaded crossbeam-utils v0.8.23
+2026-10-29T17:45:50.6252167Z   Downloaded uuid v1.26.1
+2026-10-29T17:45:50.6292941Z   Downloaded zvariant v5.15.0
+2026-10-29T17:45:50.6368248Z   Downloaded http v1.5.0
+2026-10-29T17:45:50.6408826Z   Downloaded hashbrown v0.17.1
+2026-10-29T17:45:50.6463372Z   Downloaded hyper v1.11.1
+2026-10-29T17:45:50.6532696Z   Downloaded hkdf v0.13.0
+2026-10-29T17:45:50.6562621Z   Downloaded zbus v5.19.0
+2026-10-29T17:45:50.6659410Z   Downloaded quinn-proto v0.11.17
+2026-10-29T17:45:50.6727546Z   Downloaded objc2 v0.6.4
+2026-10-29T17:45:50.6827113Z   Downloaded webpki-roots v1.0.9
+2026-10-29T17:45:50.6859445Z   Downloaded winnow v1.0.4
+2026-10-29T17:45:50.6956132Z   Downloaded aho-corasick v1.1.5
+2026-10-29T17:45:50.7008212Z   Downloaded syn v2.0.119
+2026-10-29T17:45:50.7106606Z   Downloaded nix v0.31.3
+2026-10-29T17:45:50.7216431Z   Downloaded regex-syntax v0.8.11
+2026-10-29T17:45:50.7277792Z   Downloaded rustls v0.23.43
+2026-10-29T17:45:50.7389966Z   Downloaded icu_normalizer v2.3.0
+2026-10-29T17:45:50.7471284Z   Downloaded clap_builder v4.6.6
+2026-10-29T17:45:50.7534328Z   Downloaded windows_aarch64_gnullvm v0.52.6
+2026-10-29T17:45:50.7599041Z   Downloaded rustix v1.1.4
+2026-10-29T17:45:50.7865495Z   Downloaded tracing v0.1.44
+2026-10-29T17:45:50.8002221Z   Downloaded windows_i686_gnullvm v0.52.6
+2026-10-29T17:45:50.8068216Z   Downloaded windows_x86_64_gnullvm v0.52.6
+2026-10-29T17:45:50.8133767Z   Downloaded tokio v1.53.2
+2026-10-29T17:45:50.8571188Z   Downloaded icu_properties_data v2.3.0
+2026-10-29T17:45:50.8677576Z   Downloaded tower-http v0.6.11
+2026-10-29T17:45:50.8769437Z   Downloaded futures-util v0.3.34
+2026-10-29T17:45:50.8903162Z   Downloaded regex-automata v0.4.18
+2026-10-29T17:45:50.9028390Z   Downloaded memchr v2.8.3
+2026-10-29T17:45:50.9082432Z   Downloaded typenum v1.20.1
+2026-10-29T17:45:50.9117085Z   Downloaded mio v1.2.2
+2026-10-29T17:45:50.9177757Z   Downloaded hyper-util v0.1.20
+2026-10-29T17:45:50.9238697Z   Downloaded cc v1.4.4
+2026-10-29T17:45:50.9268056Z   Downloaded regex v1.13.1
+2026-10-29T17:45:50.9318805Z   Downloaded web-sys v0.3.104
+2026-10-29T17:45:51.0503271Z   Downloaded aes v0.9.2
+2026-10-29T17:45:51.0540755Z   Downloaded icu_normalizer_data v2.3.0
+2026-10-29T17:45:51.0561581Z   Downloaded icu_collections v2.3.0
+2026-10-29T17:45:51.0628827Z   Downloaded icu_locale_core v2.3.0
+2026-10-29T17:45:51.0699982Z   Downloaded windows_aarch64_msvc v0.52.6
+2026-10-29T17:45:51.0789006Z   Downloaded windows_x86_64_gnu v0.52.6
+2026-10-29T17:45:51.0931862Z   Downloaded windows_x86_64_msvc v0.52.6
+2026-10-29T17:45:51.1020596Z   Downloaded windows_i686_gnu v0.52.6
+2026-10-29T17:45:51.1169051Z   Downloaded libc v0.2.190
+2026-10-29T17:45:51.1642164Z   Downloaded windows_i686_msvc v0.52.6
+2026-10-29T17:45:51.1738927Z   Downloaded zerotrie v0.2.5
+2026-10-29T17:45:51.1777220Z   Downloaded bumpalo v3.20.3
+2026-10-29T17:45:51.1801936Z   Downloaded wasm-bindgen-macro-support v0.2.127
+2026-10-29T17:45:51.1821045Z   Downloaded zbus_macros v5.19.0
+2026-10-29T17:45:51.1836048Z   Downloaded keyring v4.2.0
+2026-10-29T17:45:51.1859198Z   Downloaded indexmap v2.14.2
+2026-10-29T17:45:51.1900480Z   Downloaded toml_edit v0.25.15+spec-1.1.0
+2026-10-29T17:45:51.1938611Z   Downloaded schemars v1.2.2
+2026-10-29T17:45:51.2120686Z   Downloaded rand v0.10.3
+2026-10-29T17:45:51.2159549Z   Downloaded serde_derive v1.0.229
+2026-10-29T17:45:51.2189502Z   Downloaded bytes v1.12.1
+2026-10-29T17:45:51.2223659Z   Downloaded toml_parser v1.1.3+spec-1.1.0
+2026-10-29T17:45:51.2249773Z   Downloaded base64 v0.22.1
+2026-10-29T17:45:51.2286767Z   Downloaded getrandom v0.4.3
+2026-10-29T17:45:51.2324195Z   Downloaded winapi v0.3.9
+2026-10-29T17:45:51.2693268Z   Downloaded quinn v0.11.11
+2026-10-29T17:45:51.2724082Z   Downloaded ryu v1.0.23
+2026-10-29T17:45:51.2756829Z   Downloaded reqwest v0.12.28
+2026-10-29T17:45:51.2806534Z   Downloaded pin-project-lite v0.2.17
+2026-10-29T17:45:51.2868275Z   Downloaded polling v3.11.0
+2026-10-29T17:45:51.2897519Z   Downloaded async-io v2.6.0
+2026-10-29T17:45:51.2926041Z   Downloaded signal-hook-registry v1.4.8
+2026-10-29T17:45:51.2938571Z   Downloaded concurrent-queue v2.5.0
+2026-10-29T17:45:51.2957229Z   Downloaded piper v0.2.5
+2026-10-29T17:45:51.2972120Z   Downloaded blocking v1.7.0
+2026-10-29T17:45:51.2984373Z   Downloaded event-listener v5.4.2
+2026-10-29T17:45:51.3001613Z   Downloaded futures-lite v2.6.1
+2026-10-29T17:45:51.3018056Z   Downloaded ordered-stream v0.2.0
+2026-10-29T17:45:51.3029974Z   Downloaded toml_datetime v1.1.1+spec-1.1.0
+2026-10-29T17:45:51.3041905Z   Downloaded ring v0.17.14
+2026-10-29T17:45:51.3426534Z   Downloaded zbus-secret-service-keyring-store v1.0.1
+2026-10-29T17:45:51.3441608Z   Downloaded autocfg v1.5.1
+2026-10-29T17:45:51.3461415Z   Downloaded tracing-attributes v0.1.31
+2026-10-29T17:45:51.3487682Z   Downloaded tracing-core v0.1.36
+2026-10-29T17:45:51.3513795Z   Downloaded security-framework v3.7.0
+2026-10-29T17:45:51.3552148Z   Downloaded cbc v0.2.1
+2026-10-29T17:45:51.3568706Z   Downloaded tokio-rustls v0.26.4
+2026-10-29T17:45:51.3589042Z   Downloaded smallvec v1.15.2
+2026-10-29T17:45:51.3605082Z   Downloaded url v2.5.8
+2026-10-29T17:45:51.3627616Z   Downloaded rustls-pki-types v1.15.1
+2026-10-29T17:45:51.3653345Z   Downloaded zcheapstr v1.1.0
+2026-10-29T17:45:51.3670330Z   Downloaded equivalent v1.0.2
+2026-10-29T17:45:51.3680758Z   Downloaded semver v1.0.28
+2026-10-29T17:45:51.3704351Z   Downloaded serde_derive_internals v0.30.0
+2026-10-29T17:45:51.3719827Z   Downloaded async-lock v3.4.2
+2026-10-29T17:45:51.3746724Z   Downloaded event-listener-strategy v0.5.4
+2026-10-29T17:45:51.3757840Z   Downloaded async-task v4.7.1
+2026-10-29T17:45:51.3783511Z   Downloaded async-process v2.5.0
+2026-10-29T17:45:51.3800991Z   Downloaded async-trait v0.1.92
+2026-10-29T17:45:51.3839011Z   Downloaded fastrand v2.5.0
+2026-10-29T17:45:51.3852985Z   Downloaded zvariant_derive v5.15.0
+2026-10-29T17:45:51.3864454Z   Downloaded zvariant_utils v4.2.0
+2026-10-29T17:45:51.3883494Z   Downloaded schemars_derive v1.2.2
+2026-10-29T17:45:51.3902537Z   Downloaded httparse v1.10.1
+2026-10-29T17:45:51.3926556Z   Downloaded log v0.4.34
+2026-10-29T17:45:51.3951093Z   Downloaded chacha20 v0.10.2
+2026-10-29T17:45:51.3974187Z   Downloaded r-efi v6.0.0
+2026-10-29T17:45:51.4023804Z   Downloaded tinyvec v1.12.0
+2026-10-29T17:45:51.4049000Z   Downloaded quinn-udp v0.5.15
+2026-10-29T17:45:51.4067740Z   Downloaded getrandom v0.2.17
+2026-10-29T17:45:51.4094812Z   Downloaded clap_complete v4.6.9
+2026-10-29T17:45:51.4124592Z   Downloaded block2 v0.6.2
+2026-10-29T17:45:51.4140897Z   Downloaded windows-sys v0.61.2
+2026-10-29T17:45:51.4704756Z   Downloaded core-foundation-sys v0.8.7
+2026-10-29T17:45:51.4736592Z   Downloaded apple-native-keyring-store v1.0.2
+2026-10-29T17:45:51.4751263Z   Downloaded num-complex v0.4.6
+2026-10-29T17:45:51.4765144Z   Downloaded num-bigint v0.4.8
+2026-10-29T17:45:51.4810000Z   Downloaded zerovec-derive v0.11.6
+2026-10-29T17:45:51.4827018Z   Downloaded utf8_iter v1.0.4
+2026-10-29T17:45:51.4837674Z   Downloaded serde_json v1.0.151
+2026-10-29T17:45:51.4907864Z   Downloaded ctutils v0.4.2
+2026-10-29T17:45:51.4926974Z   Downloaded wasi v0.11.1+wasi-snapshot-preview1
+2026-10-29T17:45:51.4942995Z   Downloaded enumflags2 v0.7.12
+2026-10-29T17:45:51.4958051Z   Downloaded rpassword v7.5.4
+2026-10-29T17:45:51.4981905Z   Downloaded httpdate v1.0.3
+2026-10-29T17:45:51.4994194Z   Downloaded ref-cast-impl v1.0.27
+2026-10-29T17:45:51.5003117Z   Downloaded ref-cast v1.0.27
+2026-10-29T17:45:51.5033185Z   Downloaded async-channel v2.5.0
+2026-10-29T17:45:51.5044959Z   Downloaded futures-io v0.3.34
+2026-10-29T17:45:51.5053881Z   Downloaded parking v2.2.1
+2026-10-29T17:45:51.5064865Z   Downloaded hex v0.4.3
+2026-10-29T17:45:51.5080633Z   Downloaded errno v0.3.14
+2026-10-29T17:45:51.5095655Z   Downloaded rtoolbox v0.0.6
+2026-10-29T17:45:51.5110944Z   Downloaded http-body-util v0.1.5
+2026-10-29T17:45:51.5130550Z   Downloaded futures-channel v0.3.34
+2026-10-29T17:45:51.5148798Z   Downloaded ipnet v2.12.1
+2026-10-29T17:45:51.5164958Z   Downloaded thiserror-impl v2.0.21
+2026-10-29T17:45:51.5178970Z   Downloaded windows-sys v0.52.0
+2026-10-29T17:45:51.5745822Z   Downloaded thiserror v2.0.21
+2026-10-29T17:45:51.5812752Z   Downloaded anstyle-parse v1.0.0
+2026-10-29T17:45:51.5827900Z   Downloaded anstream v1.0.0
+2026-10-29T17:45:51.5846640Z   Downloaded rustls-webpki v0.103.15
+2026-10-29T17:45:51.5875268Z   Downloaded litemap v0.8.3
+2026-10-29T17:45:51.5897086Z   Downloaded icu_provider v2.3.1
+2026-10-29T17:45:51.5921863Z   Downloaded synstructure v0.13.2
+2026-10-29T17:45:51.5931222Z   Downloaded find-msvc-tools v0.1.11
+2026-10-29T17:45:51.5947277Z   Downloaded anstyle v1.0.14
+2026-10-29T17:45:51.5961559Z   Downloaded objc2-encode v4.1.0
+2026-10-29T17:45:51.5974076Z   Downloaded byteorder v1.5.0
+2026-10-29T17:45:51.5989609Z   Downloaded yoke-derive v0.8.2
+2026-10-29T17:45:51.6000514Z   Downloaded futures-core v0.3.34
+2026-10-29T17:45:51.6014243Z   Downloaded enumflags2_derive v0.7.12
+2026-10-29T17:45:51.6022299Z   Downloaded async-signal v0.2.14
+2026-10-29T17:45:51.6036152Z   Downloaded serde_repr v0.1.21
+2026-10-29T17:45:51.6056709Z   Downloaded proc-macro-crate v3.5.0
+2026-10-29T17:45:51.6069999Z   Downloaded dyn-clone v1.0.20
+2026-10-29T17:45:51.6086125Z   Downloaded atomic-waker v1.1.2
+2026-10-29T17:45:51.6098415Z   Downloaded try-lock v0.2.5
+2026-10-29T17:45:51.6107456Z   Downloaded winapi-i686-pc-windows-gnu v0.4.0
+2026-10-29T17:45:51.7372923Z   Downloaded winapi-x86_64-pc-windows-gnu v0.4.0
+2026-10-29T17:45:51.8673638Z   Downloaded want v0.3.1
+2026-10-29T17:45:51.8681702Z   Downloaded rand_core v0.10.1
+2026-10-29T17:45:51.8697311Z   Downloaded tinyvec_macros v0.1.1
+2026-10-29T17:45:51.8705588Z   Downloaded anstyle-query v1.1.5
+2026-10-29T17:45:51.8716688Z   Downloaded once_cell_polyfill v1.70.2
+2026-10-29T17:45:51.8726624Z   Downloaded utf8parse v0.2.2
+2026-10-29T17:45:51.8735547Z   Downloaded clap_lex v1.1.0
+2026-10-29T17:45:51.8745887Z   Downloaded strsim v0.11.1
+2026-10-29T17:45:51.8758589Z   Downloaded core-foundation v0.10.1
+2026-10-29T17:45:51.8780387Z   Downloaded http-body v1.1.0
+2026-10-29T17:45:51.8790612Z   Downloaded linux-raw-sys v0.12.1
+2026-10-29T17:45:51.9328640Z   Downloaded stable_deref_trait v1.2.1
+2026-10-29T17:45:51.9336134Z   Downloaded zerofrom v0.1.8
+2026-10-29T17:45:51.9345005Z   Downloaded wasm-bindgen-shared v0.2.127
+2026-10-29T17:45:51.9354969Z   Downloaded serde_core v1.0.229
+2026-10-29T17:45:51.9379727Z   Downloaded idna_adapter v1.2.2
+2026-10-29T17:45:51.9388494Z   Downloaded wasm-bindgen-macro v0.2.127
+2026-10-29T17:45:51.9397021Z   Downloaded lru-slab v0.1.2
+2026-10-29T17:45:51.9404466Z   Downloaded shlex v2.0.1
+2026-10-29T17:45:51.9416773Z   Downloaded security-framework-sys v2.17.0
+2026-10-29T17:45:51.9438642Z   Downloaded cipher v0.5.2
+2026-10-29T17:45:51.9461209Z   Downloaded clap_derive v4.6.4
+2026-10-29T17:45:51.9485504Z   Downloaded clap v4.6.6
+2026-10-29T17:45:51.9582093Z   Downloaded keyring-core v1.0.0
+2026-10-29T17:45:51.9599586Z   Downloaded block-padding v0.4.2
+2026-10-29T17:45:51.9607907Z   Downloaded inout v0.2.2
+2026-10-29T17:45:51.9620091Z   Downloaded displaydoc v0.2.7
+2026-10-29T17:45:51.9639879Z   Downloaded icu_properties v2.3.0
+2026-10-29T17:45:51.9667533Z   Downloaded bitflags v2.13.1
+2026-10-29T17:45:51.9724877Z   Downloaded cpubits v0.1.1
+2026-10-29T17:45:51.9725120Z   Downloaded tower v0.5.3
+2026-10-29T17:45:51.9820014Z   Downloaded js-sys v0.3.104
+2026-10-29T17:45:51.9845856Z   Downloaded cfg-if v1.0.4
+2026-10-29T17:45:51.9858532Z   Downloaded dispatch2 v0.3.1
+2026-10-29T17:45:51.9881343Z   Downloaded hmac v0.13.0
+2026-10-29T17:45:51.9901478Z   Downloaded untrusted v0.9.0
+2026-10-29T17:45:51.9918100Z   Downloaded form_urlencoded v1.2.2
+2026-10-29T17:45:51.9925012Z   Downloaded sha2 v0.11.0
+2026-10-29T17:45:51.9962374Z   Downloaded colorchoice v1.0.5
+2026-10-29T17:45:51.9970935Z   Downloaded rustversion v1.0.23
+2026-10-29T17:45:51.9999568Z   Downloaded zeroize v1.9.0
+2026-10-29T17:45:52.0013493Z   Downloaded zmij v1.0.23
+2026-10-29T17:45:52.0030285Z   Downloaded async-broadcast v0.7.2
+2026-10-29T17:45:52.0046025Z   Downloaded async-executor v1.14.0
+2026-10-29T17:45:52.0063640Z   Downloaded hermit-abi v0.5.3
+2026-10-29T17:45:52.0072711Z   Downloaded tower-layer v0.3.3
+2026-10-29T17:45:52.0081938Z   Downloaded block-buffer v0.12.1
+2026-10-29T17:45:52.0093029Z   Downloaded digest v0.11.3
+2026-10-29T17:45:52.0115231Z   Downloaded syn v3.0.4
+2026-10-29T17:45:52.0211078Z   Downloaded secret-service v5.2.0
+2026-10-29T17:45:52.0234442Z   Downloaded potential_utf v0.1.6
+2026-10-29T17:45:52.0244859Z   Downloaded zerovec v0.11.8
+2026-10-29T17:45:52.0300734Z   Downloaded idna v1.1.0
+2026-10-29T17:45:52.0330683Z   Downloaded percent-encoding v2.3.2
+2026-10-29T17:45:52.0338881Z   Downloaded slab v0.4.12
+2026-10-29T17:45:52.0351339Z   Downloaded once_cell v1.21.4
+2026-10-29T17:45:52.0375291Z   Downloaded wasm-bindgen v0.2.127
+2026-10-29T17:45:52.0400194Z   Downloaded serde v1.0.229
+2026-10-29T17:45:52.0432151Z   Downloaded crypto-common v0.2.2
+2026-10-29T17:45:52.0442770Z   Downloaded num-rational v0.4.2
+2026-10-29T17:45:52.0454056Z   Downloaded sync_wrapper v1.0.2
+2026-10-29T17:45:52.0461764Z   Downloaded tower-service v0.3.3
+2026-10-29T17:45:52.0469611Z   Downloaded tinystr v0.8.4
+2026-10-29T17:45:52.0488856Z   Downloaded zerofrom-derive v0.1.7
+2026-10-29T17:45:52.0498496Z   Downloaded wasm-bindgen-futures v0.4.77
+2026-10-29T17:45:52.0506855Z   Downloaded itoa v1.0.18
+2026-10-29T17:45:52.0520463Z   Downloaded cmov v0.5.4
+2026-10-29T17:45:52.0537204Z   Downloaded web-time v1.1.0
+2026-10-29T17:45:52.0552658Z   Downloaded const-oid v0.10.2
+2026-10-29T17:45:52.0574279Z   Downloaded proc-macro2 v1.0.107
+2026-10-29T17:45:52.0601552Z   Downloaded yoke v0.8.3
+2026-10-29T17:45:52.0618421Z   Downloaded cpufeatures v0.3.1
+2026-10-29T17:45:52.0632309Z   Downloaded hybrid-array v0.4.14
+2026-10-29T17:45:52.0652772Z   Downloaded socket2 v0.6.5
+2026-10-29T17:45:52.0669008Z   Downloaded unicode-ident v1.0.24
+2026-10-29T17:46:40.5052056Z built baseline
+2026-10-29T17:46:40.7737745Z checking file crates/reasoning-harness-core/src/resolution.rs
+2026-10-29T17:46:40.7745737Z patching file crates/reasoning-harness-core/src/resolution.rs
+2026-10-29T17:47:29.5787485Z built candidate
+2026-10-29T17:47:33.0438317Z #0 building with "default" instance using docker driver
+2026-10-29T17:47:33.0438631Z 
+2026-10-29T17:47:33.0438734Z #1 [internal] load build definition from Dockerfile.runtime
+2026-10-29T17:47:33.0439006Z #1 transferring dockerfile: 399B done
+2026-10-29T17:47:33.0439217Z #1 DONE 0.0s
+2026-10-29T17:47:33.0439315Z 
+2026-10-29T17:47:33.0439499Z #2 [internal] load metadata for docker.io/library/python:3.13-slim-bookworm
+2026-10-29T17:47:33.2474327Z #2 ...
+2026-10-29T17:47:33.2474431Z 
+2026-10-29T17:47:33.2474536Z #3 [auth] library/python:pull token for registry-1.docker.io
+2026-10-29T17:47:33.2474717Z #3 DONE 0.0s
+2026-10-29T17:47:33.3978667Z 
+2026-10-29T17:47:33.3978958Z #2 [internal] load metadata for docker.io/library/python:3.13-slim-bookworm
+2026-10-29T17:47:33.7913723Z #2 DONE 0.9s
+2026-10-29T17:47:33.9098316Z 
+2026-10-29T17:47:33.9099118Z #4 [internal] load .dockerignore
+2026-10-29T17:47:33.9099838Z #4 transferring context: 2B done
+2026-10-29T17:47:33.9100366Z #4 DONE 0.0s
+2026-10-29T17:47:33.9100598Z 
+2026-10-29T17:47:33.9101168Z #5 [1/4] FROM docker.io/library/python:3.13-slim-bookworm@sha256:281d39ff02e3b389401586134ff9e6572954687822a58055ec07a60ded4e0b7f
+2026-10-29T17:47:33.9102652Z #5 resolve docker.io/library/python:3.13-slim-bookworm@sha256:281d39ff02e3b389401586134ff9e6572954687822a58055ec07a60ded4e0b7f done
+2026-10-29T17:47:33.9107524Z #5 sha256:7e143ada11afde237a069ca6ba1887c691cf44e992e77da323c9139f47b8acd2 251B / 251B 0.1s done
+2026-10-29T17:47:34.0145145Z #5 sha256:2ed7a1a27c6d053227e15859d704914451dfa1f77792489b54ecc64103fe9db7 0B / 12.61MB 0.2s
+2026-10-29T17:47:34.0147463Z #5 sha256:6826f8529239b0ebfe5dd429a795c8c4989724db6ae9059fa9f03dda8c31f8f5 0B / 3.34MB 0.2s
+2026-10-29T17:47:34.0148195Z #5 sha256:3c5439d0ae62993af4cc4e21b8c777297e81bc40e200d4633c85a3e0f977a3bc 0B / 28.25MB 0.2s
+2026-10-29T17:47:34.1307155Z #5 sha256:6826f8529239b0ebfe5dd429a795c8c4989724db6ae9059fa9f03dda8c31f8f5 3.34MB / 3.34MB 0.3s
+2026-10-29T17:47:34.1307728Z #5 sha256:3c5439d0ae62993af4cc4e21b8c777297e81bc40e200d4633c85a3e0f977a3bc 2.10MB / 28.25MB 0.3s
+2026-10-29T17:47:34.2803302Z #5 ...
+2026-10-29T17:47:34.2803441Z 
+2026-10-29T17:47:34.2803501Z #6 [internal] load build context
+2026-10-29T17:47:34.2803681Z #6 transferring context: 167.50MB 0.3s done
+2026-10-29T17:47:34.2803839Z #6 DONE 0.3s
+2026-10-29T17:47:34.2803905Z 
+2026-10-29T17:47:34.2804592Z #5 [1/4] FROM docker.io/library/python:3.13-slim-bookworm@sha256:281d39ff02e3b389401586134ff9e6572954687822a58055ec07a60ded4e0b7f
+2026-10-29T17:47:34.2804980Z #5 sha256:2ed7a1a27c6d053227e15859d704914451dfa1f77792489b54ecc64103fe9db7 12.61MB / 12.61MB 0.3s done
+2026-10-29T17:47:34.2805320Z #5 sha256:6826f8529239b0ebfe5dd429a795c8c4989724db6ae9059fa9f03dda8c31f8f5 3.34MB / 3.34MB 0.3s done
+2026-10-29T17:47:34.2805649Z #5 sha256:3c5439d0ae62993af4cc4e21b8c777297e81bc40e200d4633c85a3e0f977a3bc 28.25MB / 28.25MB 0.5s
+2026-10-29T17:47:34.4846687Z #5 sha256:3c5439d0ae62993af4cc4e21b8c777297e81bc40e200d4633c85a3e0f977a3bc 28.25MB / 28.25MB 0.5s done
+2026-10-29T17:47:34.4847514Z #5 extracting sha256:3c5439d0ae62993af4cc4e21b8c777297e81bc40e200d4633c85a3e0f977a3bc
+2026-10-29T17:47:34.7886155Z #5 extracting sha256:3c5439d0ae62993af4cc4e21b8c777297e81bc40e200d4633c85a3e0f977a3bc 0.5s done
+2026-10-29T17:47:34.7886588Z #5 DONE 1.0s
+2026-10-29T17:47:34.9972222Z 
+2026-10-29T17:47:34.9973156Z #5 [1/4] FROM docker.io/library/python:3.13-slim-bookworm@sha256:281d39ff02e3b389401586134ff9e6572954687822a58055ec07a60ded4e0b7f
+2026-10-29T17:47:34.9973687Z #5 extracting sha256:6826f8529239b0ebfe5dd429a795c8c4989724db6ae9059fa9f03dda8c31f8f5 0.1s done
+2026-10-29T17:47:34.9974082Z #5 extracting sha256:2ed7a1a27c6d053227e15859d704914451dfa1f77792489b54ecc64103fe9db7
+2026-10-29T17:47:35.0527527Z #5 extracting sha256:2ed7a1a27c6d053227e15859d704914451dfa1f77792489b54ecc64103fe9db7 0.2s done
+2026-10-29T17:47:35.0527900Z #5 DONE 1.3s
+2026-10-29T17:47:35.1927381Z 
+2026-10-29T17:47:35.1928017Z #5 [1/4] FROM docker.io/library/python:3.13-slim-bookworm@sha256:281d39ff02e3b389401586134ff9e6572954687822a58055ec07a60ded4e0b7f
+2026-10-29T17:47:35.1928429Z #5 extracting sha256:7e143ada11afde237a069ca6ba1887c691cf44e992e77da323c9139f47b8acd2 done
+2026-10-29T17:47:35.1928689Z #5 DONE 1.3s
+2026-10-29T17:47:35.1928757Z 
+2026-10-29T17:47:35.1929011Z #7 [2/4] RUN apt-get update && apt-get install -y --no-install-recommends libssl3 libgcc-s1 ca-certificates gh && rm -rf /var/lib/apt/lists/*
+2026-10-29T17:47:35.1929385Z #7 0.135 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+2026-10-29T17:47:35.3022285Z #7 0.151 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+2026-10-29T17:47:35.3023391Z #7 0.157 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
+2026-10-29T17:47:35.3023882Z #7 0.192 Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8790 kB]
+2026-10-29T17:47:35.3024367Z #7 0.245 Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [6924 B]
+2026-10-29T17:47:35.4657476Z #7 0.258 Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [358 kB]
+2026-10-29T17:47:35.8859857Z #7 0.828 Fetched 9397 kB in 1s (13.4 MB/s)
+2026-10-29T17:47:36.1271410Z #7 0.828 Reading package lists...
+2026-10-29T17:47:36.3810204Z #7 1.084 Reading package lists...
+2026-10-29T17:47:36.5192440Z #7 1.333 Building dependency tree...
+2026-10-29T17:47:36.5192744Z #7 1.387 Reading state information...
+2026-10-29T17:47:36.5193181Z #7 1.462 libssl3 is already the newest version (3.0.22-1~deb12u2).
+2026-10-29T17:47:36.5193559Z #7 1.462 libgcc-s1 is already the newest version (12.2.0-14+deb12u1).
+2026-10-29T17:47:36.5193853Z #7 1.462 libgcc-s1 set to manually installed.
+2026-10-29T17:47:36.5194157Z #7 1.462 ca-certificates is already the newest version (20250419~deb12u2).
+2026-10-29T17:47:36.5194472Z #7 1.462 The following NEW packages will be installed:
+2026-10-29T17:47:36.6707974Z #7 1.462   gh
+2026-10-29T17:47:36.6708318Z #7 1.514 0 upgraded, 1 newly installed, 0 to remove and 1 not upgraded.
+2026-10-29T17:47:36.6708632Z #7 1.514 Need to get 7261 kB of archives.
+2026-10-29T17:47:36.6708942Z #7 1.514 After this operation, 40.3 MB of additional disk space will be used.
+2026-10-29T17:47:36.6709436Z #7 1.514 Get:1 http://deb.debian.org/debian bookworm/main amd64 gh amd64 2.23.0+dfsg1-1 [7261 kB]
+2026-10-29T17:47:36.6710177Z #7 1.613 debconf: delaying package configuration, since apt-utils is not installed
+2026-10-29T17:47:36.8523815Z #7 1.630 Fetched 7261 kB in 0s (79.6 MB/s)
+2026-10-29T17:47:36.8524224Z #7 1.639 Selecting previously unselected package gh.
+2026-10-29T17:47:36.8524521Z #7 1.639 (Reading database ... 
+2026-10-29T17:47:36.8524740Z (Reading database ... 5%
+2026-10-29T17:47:36.8524946Z (Reading database ... 10%
+2026-10-29T17:47:36.8525151Z (Reading database ... 15%
+2026-10-29T17:47:36.8525358Z (Reading database ... 20%
+2026-10-29T17:47:36.8525557Z (Reading database ... 25%
+2026-10-29T17:47:36.8525753Z (Reading database ... 30%
+2026-10-29T17:47:36.8525946Z (Reading database ... 35%
+2026-10-29T17:47:36.8526142Z (Reading database ... 40%
+2026-10-29T17:47:36.8526434Z (Reading database ... 45%
+2026-10-29T17:47:36.8526668Z (Reading database ... 50%
+2026-10-29T17:47:36.8526860Z (Reading database ... 55%
+2026-10-29T17:47:36.8527049Z (Reading database ... 60%
+2026-10-29T17:47:36.8527243Z (Reading database ... 65%
+2026-10-29T17:47:36.8527438Z (Reading database ... 70%
+2026-10-29T17:47:36.8527646Z (Reading database ... 75%
+2026-10-29T17:47:36.8527841Z (Reading database ... 80%
+2026-10-29T17:47:36.8528036Z (Reading database ... 85%
+2026-10-29T17:47:36.8528228Z (Reading database ... 90%
+2026-10-29T17:47:36.8528420Z (Reading database ... 95%
+2026-10-29T17:47:36.8528617Z (Reading database ... 100%
+2026-10-29T17:47:36.8528900Z (Reading database ... 6645 files and directories currently installed.)
+2026-10-29T17:47:36.8529418Z #7 1.644 Preparing to unpack .../gh_2.23.0+dfsg1-1_amd64.deb ...
+2026-10-29T17:47:36.8529724Z #7 1.645 Unpacking gh (2.23.0+dfsg1-1) ...
+2026-10-29T17:47:36.9789629Z #7 1.921 Setting up gh (2.23.0+dfsg1-1) ...
+2026-10-29T17:47:39.1503866Z #7 DONE 4.1s
+2026-10-29T17:47:39.3011294Z 
+2026-10-29T17:47:39.3011825Z #8 [3/4] COPY root/ /
+2026-10-29T17:47:40.0286907Z #8 DONE 0.9s
+2026-10-29T17:47:40.1886754Z 
+2026-10-29T17:47:40.1897186Z #9 [4/4] WORKDIR /repo
+2026-10-29T17:47:40.1897632Z #9 DONE 0.0s
+2026-10-29T17:47:40.1897779Z 
+2026-10-29T17:47:40.1897901Z #10 exporting to image
+2026-10-29T17:47:40.1898126Z #10 exporting layers
+2026-10-29T17:47:44.2443645Z #10 exporting layers 4.2s done
+2026-10-29T17:47:44.4111290Z #10 exporting manifest sha256:b61d75138096f1bd53f624d91391fbf63d092c5a894733f66e5c742e7c0dbe5a done
+2026-10-29T17:47:44.4111776Z #10 exporting config sha256:69441eb4e3f6d00924b078ce9395eafdb1d80bc169847d2d2cdf716074c766b6 done
+2026-10-29T17:47:44.4112138Z #10 exporting attestation manifest sha256:0f8e447c5b4ce2c7c1930549f491092d9876d2c1a07d5000d2f1483305f98eb0 done
+2026-10-29T17:47:44.4112507Z #10 exporting manifest list sha256:2b2c016a3ff6c5674d48c0d326e7d2679d628419b6e2fd153db0ec35b430ec02 done
+2026-10-29T17:47:44.4112791Z #10 naming to docker.io/library/paired-runtime:latest done
+2026-10-29T17:47:44.4113630Z #10 unpacking to docker.io/library/paired-runtime:latest
+2026-10-29T17:47:44.7913569Z #10 unpacking to docker.io/library/paired-runtime:latest 0.5s done
+2026-10-29T17:47:44.8184721Z #10 DONE 4.8s
+2026-10-29T17:47:44.8269026Z ##[group]Run set -euo pipefail
+2026-10-29T17:47:44.8269231Z [36;1mset -euo pipefail[0m
+2026-10-29T17:47:44.8269633Z [36;1mdocker run --rm --read-only --network none --tmpfs /tmp paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/image_inventory.py > target/paired-controls/image-inventory.json[0m
+2026-10-29T17:47:44.8270038Z [36;1mpython3 - <<'PY'[0m
+2026-10-29T17:47:44.8270171Z [36;1mimport json[0m
+2026-10-29T17:47:44.8270296Z [36;1mfrom pathlib import Path[0m
+2026-10-29T17:47:44.8270525Z [36;1mactual=json.loads(Path('target/paired-controls/image-inventory.json').read_bytes())[0m
+2026-10-29T17:47:44.8270840Z [36;1mprepared=json.loads(Path('target/paired-runtime/preparation.json').read_bytes())[0m
+2026-10-29T17:47:44.8271180Z [36;1mif not (actual['runtime_files']==prepared['files']): raise ValueError('workflow_integrity_check_failed')[0m
+2026-10-29T17:47:44.8271445Z [36;1mPY[0m
+2026-10-29T17:47:44.8271856Z [36;1mdocker run --rm --read-only --network none --tmpfs /tmp paired-runtime python3 -B -m unittest discover -s /repo/evaluation/cli-repair-paired-v1 -p 'test_*.py' > target/paired-controls/unit.log 2>&1[0m
+2026-10-29T17:47:44.8272550Z [36;1mdocker run --rm --read-only --network none --tmpfs /tmp paired-runtime python3 -B -m unittest discover -s /repo/evaluation/cli-repair-paired-v1/normal_v2 -p 'test_*.py' > target/paired-controls/ordinary-unit.log 2>&1[0m
+2026-10-29T17:47:44.8273297Z [36;1mdocker run --rm --read-only --network none --tmpfs /tmp -v "$PWD/target/paired-controls:/output" paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/preflight.py --bin-dir /eval/bin --output /output/provider[0m
+2026-10-29T17:47:44.8274045Z [36;1mdocker run --rm --read-only --network none --tmpfs /tmp -v "$PWD/target/paired-controls:/output" paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/preflight_cli.py --bin-dir /eval/bin --output /output/cli[0m
+2026-10-29T17:47:44.8274837Z [36;1mdocker run --rm --read-only --network none --tmpfs /tmp -v "$PWD/target/paired-controls:/output" paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/normal_v2/preflight_normal.py --bin-dir /eval/bin --output /output/ordinary-integration[0m
+2026-10-29T17:47:44.8275621Z [36;1mdocker run --rm --read-only --network none --tmpfs /tmp -v "$PWD/target/paired-controls:/output" paired-runtime python3 -B /repo/evaluation/cli-repair-paired-v1/verify_containment.py --output /output/containment[0m
+2026-10-29T17:47:44.8276744Z [36;1mdocker run --rm -i --read-only --network none --tmpfs /tmp -e PYTHONPATH=/repo/evaluation/cli-repair-paired-v1 -v "$PWD/target/paired-controls:/output" paired-runtime python3 -B - --corpus /output/cli/baseline-google-acquisition/corpus.json --output /output/registry-parity.json < evaluation/cli-repair-paired-v1/verify_registry_parity.py[0m
+2026-10-29T17:47:44.8301205Z shell: /usr/bin/bash -e {0}
+2026-10-29T17:47:44.8301342Z ##[endgroup]
+2026-10-29T17:47:57.3474418Z {"all_pass": true, "loopback_controls": 18, "external_provider_requests": 0, "accuracy_cases": 0}
+2026-10-29T17:51:26.4896431Z {"all_pass": true, "actual_CLI_normal_and_budget_controls": 12, "paired_helper_controls": 3, "actual_acquisition_binding_controls": 2, "external_provider_requests": 0, "accuracy_cases": 0}
+2026-10-29T17:52:52.2942387Z {"scope": "SYNTHETIC_LOOPBACK_ONLY_NOT_REAL_ADMISSION", "fixture_plan_jobs": 3, "complete": 1, "failed": 1, "suppressed": 1, "loopback_requests": 8, "external_provider_requests": 0, "models_used": false, "precredential_guard_stubbed_for_fixture": true, "real_receipt_admission_tested": false, "f1_measured": false, "durable_restart_refused": true, "collected_observations": 3, "binding_failures": [], "distinct_targets_same_snapshot_reads": 2, "repeat_status": "no_result", "new_evidence_on_repeat": 0, "repeat_call_cost_retained": true, "nonempty_claim_receipt_preserved": true}
+2026-10-29T17:52:58.5567692Z {"all_pass": true, "controls": ["normal_candidate_helper_share_durable_reservations", "quota_stops_following_callbacks_without_refund", "unknown-usage_stops_following_callbacks_without_refund", "timeout-soft", "timeout-hard", "parent_sigterm_after_child_ready_contains_child", "restart_refuses_new_spawn"], "external_provider_requests": 0, "new_accuracy_cases": 0, "scheduler_sha256": "a412d7a9b851f23b6378496cd78a52f06e3076b05f93abd31acd3917ff2688f9", "original_fixture_sha256": "b1a7359548f545bd49dc7275166024bf3bbf40e2d0c5e83c55f39fb9512a77a2", "fixture_sha256": "f921edcda19fd8e764482d0075932ab7b7edd6c0c5a2854ec6cfef96a3398215", "fixture_change": "readiness marker after installed signal handler", "inherited_suite_note": "Original 120ms startup / early SIGTERM controls failed before child readiness on this Linux runtime; original failure log retained. These controls wait for readiness or allow 2s startup."}
+2026-10-29T17:52:58.7743751Z {"pass": true, "sources": 2, "identical_output": true, "input_sha256": "b5708ebd25a9241b8bf119934dc72e1c296db1b43916071183792653d7941926", "registry_sha256": "070235b4539d4e5c6b2cb64ced90d35aaec69baa67b1929a9ea74aeaff3646d8", "external_provider_requests": 0, "new_accuracy_cases": 0}
+2026-10-29T17:52:58.8078367Z ##[group]Run set -euo pipefail
+2026-10-29T17:52:58.8078561Z [36;1mset -euo pipefail[0m
+2026-10-29T17:52:58.8078780Z [36;1m# Containers keep private modes; transfer ownership before host proof reads.[0m
+2026-10-29T17:52:58.8079043Z [36;1msudo chown -R "$(id -u):$(id -g)" target/paired-controls[0m
+2026-10-29T17:52:58.8079308Z [36;1mdocker save paired-runtime | gzip > target/paired-artifact/runtime-image.tar.gz[0m
+2026-10-29T17:52:58.8079583Z [36;1mimage_id=$(docker image inspect paired-runtime --format '{{.Id}}')[0m
+2026-10-29T17:52:58.8079841Z [36;1mstage=target/paired-runtime/repo/evaluation/cli-repair-paired-v1[0m
+2026-10-29T17:52:58.8080484Z [36;1mpython3 "$stage/normal_v2/runtime_proof.py" --repo . --prepared target/paired-runtime --bin-dir target/paired-build/build/bin --controls target/paired-controls --image-id "$image_id" --image-archive target/paired-artifact/runtime-image.tar.gz --output target/paired-artifact/runtime-proof.json[0m
+2026-10-29T17:52:58.8081181Z [36;1mcp target/paired-build/build/bin/identity.json target/paired-artifact/identity.json[0m
+2026-10-29T17:52:58.8081502Z [36;1mcp target/paired-runtime/preparation.json target/paired-artifact/preparation.json[0m
+2026-10-29T17:52:58.8081830Z [36;1msudo tar -czf target/paired-artifact/offline-controls.tar.gz -C target/paired-controls .[0m
+2026-10-29T17:52:58.8105363Z shell: /usr/bin/bash -e {0}
+2026-10-29T17:52:58.8105501Z ##[endgroup]
+2026-10-29T17:53:01.4561790Z Traceback (most recent call last):
+2026-10-29T17:53:01.4562965Z   File "/home/runner/work/reasoning-harness/reasoning-harness/target/paired-runtime/repo/evaluation/cli-repair-paired-v1/runtime_proof.py", line 111, in <module>
+2026-10-29T17:53:01.4563350Z     main()
+2026-10-29T17:53:01.4563453Z     ~~~~^^
+2026-10-29T17:53:01.4563755Z   File "/home/runner/work/reasoning-harness/reasoning-harness/target/paired-runtime/repo/evaluation/cli-repair-paired-v1/runtime_proof.py", line 85, in main
+2026-10-29T17:53:01.4564133Z     assert image_manifest['config']['digest'] == config_id
+2026-10-29T17:53:01.4564309Z            ~~~~~~~~~~~~~~^^^^^^^^^^
+2026-10-29T17:53:01.4564456Z KeyError: 'config'
+2026-10-29T17:53:01.4939064Z Traceback (most recent call last):
+2026-10-29T17:53:01.4942296Z   File "/home/runner/work/reasoning-harness/reasoning-harness/target/paired-runtime/repo/evaluation/cli-repair-paired-v1/normal_v2/runtime_proof.py", line 31, in <module>
+2026-10-29T17:53:01.4942895Z     if __name__=='__main__':main()
+2026-10-29T17:53:01.4943097Z                             ~~~~^^
+2026-10-29T17:53:01.4943645Z   File "/home/runner/work/reasoning-harness/reasoning-harness/target/paired-runtime/repo/evaluation/cli-repair-paired-v1/normal_v2/runtime_proof.py", line 16, in main
+2026-10-29T17:53:01.4945337Z     subprocess.run([sys.executable,str(PARENT/'runtime_proof.py'),'--repo',str(a.repo),'--prepared',str(a.prepared),'--bin-dir',str(a.bin_dir),'--controls',str(a.controls),'--image-id',a.image_id,'--image-archive',str(a.image_archive),'--output',str(base)],check=True,env={**__import__('os').environ,'PYTHONOPTIMIZE':'0'})
+2026-10-29T17:53:01.4946635Z     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-29T17:53:01.4947185Z   File "/usr/lib/python3.14/subprocess.py", line 578, in run
+2026-10-29T17:53:01.4947487Z     raise CalledProcessError(retcode, process.args,
+2026-10-29T17:53:01.4947767Z                              output=stdout, stderr=stderr)
+2026-10-29T17:53:01.4949823Z subprocess.CalledProcessError: Command '['/usr/bin/python3', '/home/runner/work/reasoning-harness/reasoning-harness/target/paired-runtime/repo/evaluation/cli-repair-paired-v1/runtime_proof.py', '--repo', '.', '--prepared', 'target/paired-runtime', '--bin-dir', 'target/paired-build/build/bin', '--controls', 'target/paired-controls', '--image-id', 'sha256:2b2c016a3ff6c5674d48c0d326e7d2679d628419b6e2fd153db0ec35b430ec02', '--image-archive', 'target/paired-artifact/runtime-image.tar.gz', '--output', 'target/paired-controls/ordinary-base-runtime-proof.json']' returned non-zero exit status 1.
+2026-10-29T17:53:01.5059382Z ##[error]Process completed with exit code 1.
+2026-10-29T17:53:01.5120847Z ##[group]Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+2026-10-29T17:53:01.5121170Z with:
+2026-10-29T17:53:01.5121439Z   name: cli-normal-runtime-560b2ecac259e65b7123d6bcf854f7e48e992035
+2026-10-29T17:53:01.5121860Z   path: target/paired-artifact/
+target/paired-controls/unit.log
+target/paired-controls/ordinary-unit.log
+
+2026-10-29T17:53:01.5122188Z   if-no-files-found: error
+2026-10-29T17:53:01.5122423Z   retention-days: 14
+2026-10-29T17:53:01.5122641Z   compression-level: 6
+2026-10-29T17:53:01.5122846Z   overwrite: false
+2026-10-29T17:53:01.5162993Z   include-hidden-files: false
+2026-10-29T17:53:01.5163185Z   archive: true
+2026-10-29T17:53:01.5163304Z ##[endgroup]
+2026-10-29T17:53:01.6066825Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-29T17:53:01.6068539Z The least common ancestor is /home/runner/work/reasoning-harness/reasoning-harness/target. This will be the root directory of the artifact
+2026-10-29T17:53:01.6069316Z With the provided path, there will be 3 files uploaded
+2026-10-29T17:53:01.6073660Z Artifact name is valid!
+2026-10-29T17:53:01.6073965Z Root directory input is valid!
+2026-10-29T17:53:01.9726070Z Uploading artifact: cli-normal-runtime-560b2ecac259e65b7123d6bcf854f7e48e992035.zip
+2026-10-29T17:53:01.9748518Z Beginning upload of artifact content to blob storage
+2026-10-29T17:53:03.1887296Z Uploaded bytes 8388608
+2026-10-29T17:53:03.2023556Z Uploaded bytes 16777216
+2026-10-29T17:53:03.5031031Z Uploaded bytes 25165824
+2026-10-29T17:53:03.5112065Z Uploaded bytes 33554432
+2026-10-29T17:53:03.6270155Z Uploaded bytes 41943040
+2026-10-29T17:53:03.6502748Z Uploaded bytes 50331648
+2026-10-29T17:53:03.8342986Z Uploaded bytes 58720256
+2026-10-29T17:53:03.8988152Z Uploaded bytes 67108864
+2026-10-29T17:53:03.9155919Z Uploaded bytes 75497472
+2026-10-29T17:53:03.9948477Z Uploaded bytes 83886080
+2026-10-29T17:53:04.1660346Z Uploaded bytes 92274688
+2026-10-29T17:53:04.2663227Z Uploaded bytes 100663296
+2026-10-29T17:53:04.4559528Z Uploaded bytes 103456114
+2026-10-29T17:53:04.5261795Z Finished uploading artifact content to blob storage!
+2026-10-29T17:53:04.5263773Z SHA256 digest of uploaded artifact is e61f4af601fea388bc3df5100eb896e59dbb0d2c43b6cd1736d01f0c9e8d9252
+2026-10-29T17:53:04.5264949Z Finalizing artifact upload
+2026-10-29T17:53:05.1771824Z Artifact cli-normal-runtime-560b2ecac259e65b7123d6bcf854f7e48e992035 successfully finalized. Artifact ID 12919099944
+2026-10-29T17:53:05.1773066Z Artifact cli-normal-runtime-560b2ecac259e65b7123d6bcf854f7e48e992035 has been successfully uploaded! Final size is 103456114 bytes. Artifact ID is 12919099944
+2026-10-29T17:53:05.1774202Z Artifact download URL: https://github.com/git-ksk/reasoning-harness/actions/runs/40924323574/artifacts/12919099944
+2026-10-29T17:53:05.2021909Z Post job cleanup.
+2026-10-29T17:53:05.2597963Z [command]/usr/bin/git version
+2026-10-29T17:53:05.2627020Z git version 2.56.0
+2026-10-29T17:53:05.2708117Z Temporarily overriding HOME='/home/runner/work/_temp/04907867-fb9d-447f-b716-c809acddff1f' before making global git config changes
+2026-10-29T17:53:05.2708735Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-29T17:53:05.2709315Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/reasoning-harness/reasoning-harness
+2026-10-29T17:53:05.2710028Z Removing SSH command configuration
+2026-10-29T17:53:05.2710396Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-29T17:53:05.2730962Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-29T17:53:05.3015914Z Removing HTTP extra header
+2026-10-29T17:53:05.3021306Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-29T17:53:05.3079272Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-29T17:53:05.3314801Z Removing includeIf entries pointing to credentials config files
+2026-10-29T17:53:05.3319873Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-29T17:53:05.3347046Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-29T17:53:05.3683515Z Cleaning up orphan processes

@@ -1,0 +1,16 @@
+{
+  "run_id": 40924323574,
+  "source_commit": "560b2ecac259e65b7123d6bcf854f7e48e992035",
+  "artifact_id": 12919099944,
+  "artifact_ZIP_sha256": "e61f4af601fea388bc3df5100eb896e59dbb0d2c43b6cd1736d01f0c9e8d9252",
+  "build_success": true,
+  "all_actual_offline_controls_success": true,
+  "runtime_proof_created": false,
+  "failure": "inherited runtime_proof.py config KeyError on BuildKit attestation OCI index",
+  "runtime_image_id": "sha256:2b2c016a3ff6c5674d48c0d326e7d2679d628419b6e2fd153db0ec35b430ec02",
+  "runner_image": "ubuntu-26.04",
+  "runner_image_version": "20261025.179.1",
+  "metadata_skipped": true,
+  "model_calls": 0,
+  "retry_same_run": false
+}

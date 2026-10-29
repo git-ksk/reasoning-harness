@@ -6,6 +6,8 @@ The generator derives its normal runtime from the exact v1 source commit `707347
 
 The offline workflow job is available without provider credentials. The metadata and real-model jobs retain the v1 conditional routing and require a fresh v2 formal review, runtime reference or receipt and other credential-before-admission gates; none is present. The config records that execution is not admitted; it is not a workflow switch. The new profile and generated artifacts do not grant permission to call a model. A prior v1 verdict is not a v2 verdict. Before any live execution, independently verify the exact final source, binary builds, runtime image and workflow; issue a separately bound final v2 operational verdict; verify current provider readiness and pricing; freeze a new v2 receipt; and ensure the execution tag has never previously been used. CLI change, CI, release and independent accuracy evaluation remain separate gates.
 
+The v2 runtime image build explicitly requests `linux/amd64` and disables BuildKit provenance and SBOM attestations. The inherited archive verifier did not rely on those Docker-generated attestations; the sealed runtime source inventory, ten ELF binary hashes, archive/config digests and independent proof boundaries remain in force. These build flags do not guarantee an archive format: the next offline build must pass the existing archive parser and independently verify the actual loaded Docker image ID before any runtime admission.
+
 To prepare an unused output directory without credentials, network, provider calls, tags or scores:
 
 ```sh

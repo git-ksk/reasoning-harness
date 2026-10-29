@@ -43,7 +43,7 @@ jobs:
           docker build -f "$stage/Dockerfile.build" -t paired-builder "$stage"
           docker run --rm --cpus 2 --memory 4g -v "$PWD:/repo:ro" -v "$PWD/target/paired-runtime/repo:/prepared:ro" -v "$PWD/target/paired-build:/work" paired-builder python3 /prepared/evaluation/cli-repair-paired-v1/normal_v2/build.py --repo /repo --work-dir /work/build --fetch-dependencies
           python3 "$stage/assemble_image.py" --repo target/paired-runtime/repo --bin-dir target/paired-build/build/bin --context target/paired-context
-          docker build -f "$stage/normal_v2/Dockerfile.runtime" -t paired-runtime target/paired-context
+          docker build --platform linux/amd64 --provenance=false --sbom=false -f "$stage/normal_v2/Dockerfile.runtime" -t paired-runtime target/paired-context
       - name: Verify actual CLI and provider paths without external networking
         run: |
           set -euo pipefail

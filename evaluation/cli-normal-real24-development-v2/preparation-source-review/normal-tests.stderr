@@ -1,0 +1,27 @@
+test_callback_accepts_exact_reserved_scope_and_rejects_interrupted_state (test_normal_admission.OrdinaryAdmission.test_callback_accepts_exact_reserved_scope_and_rejects_interrupted_state) ... ok
+test_callback_refuses_helper_and_unreserved_live_request (test_normal_admission.OrdinaryAdmission.test_callback_refuses_helper_and_unreserved_live_request) ... ok
+test_complete48_plan_is_ordinary_only_with_exact_reservation (test_normal_admission.OrdinaryAdmission.test_complete48_plan_is_ordinary_only_with_exact_reservation) ... ok
+test_missing_pair_is_incomplete_never_f1_or_false_regression (test_normal_admission.OrdinaryAdmission.test_missing_pair_is_incomplete_never_f1_or_false_regression) ... ok
+test_nested_failure_latches_actual_scheduler_before_second_job (test_normal_admission.OrdinaryAdmission.test_nested_failure_latches_actual_scheduler_before_second_job) ... ok
+test_nested_operational_failures_keep_usage_and_fail_closed (test_normal_admission.OrdinaryAdmission.test_nested_operational_failures_keep_usage_and_fail_closed) ... ok
+test_normal_nonfailure_outcomes_are_not_reclassified (test_normal_admission.OrdinaryAdmission.test_normal_nonfailure_outcomes_are_not_reclassified) ... ok
+test_prepared_runtime_contains_inherited_proof_driver_and_normal_dockerfile (test_normal_admission.OrdinaryAdmission.test_prepared_runtime_contains_inherited_proof_driver_and_normal_dockerfile) ... ok
+test_profile_has_fixed_mistral_and_no_helper_or_other_live_provider (test_normal_admission.OrdinaryAdmission.test_profile_has_fixed_mistral_and_no_helper_or_other_live_provider) ... ok
+test_receipt_and_independent_review_fail_closed (test_normal_admission.OrdinaryAdmission.test_receipt_and_independent_review_fail_closed) ... ok
+test_source_redirect_rejects_foreign_target_before_request_construction (test_normal_admission.OrdinaryAdmission.test_source_redirect_rejects_foreign_target_before_request_construction) ... ok
+test_tag_history_rejects_cross_head_duplicate_and_rerun (test_normal_admission.OrdinaryAdmission.test_tag_history_rejects_cross_head_duplicate_and_rerun) ... ok
+test_tampered_or_helper_plan_is_rejected_before_scheduler (test_normal_admission.OrdinaryAdmission.test_tampered_or_helper_plan_is_rejected_before_scheduler) ... ok
+test_archive_rejects_unsafe_or_duplicate_and_accepts_normal (test_provenance.ArtifactProvenance.test_archive_rejects_unsafe_or_duplicate_and_accepts_normal) ... /opt/homebrew/Cellar/python@3.14/3.14.8/Frameworks/Python.framework/Versions/3.14/lib/python3.14/zipfile/__init__.py:1755: UserWarning: Duplicate name: 'same'
+  return self._open_to_write(zinfo, force_zip64=force_zip64)
+ok
+test_end_to_end_readback_uses_one_fixed_artifact_and_receipt (test_provenance.ArtifactProvenance.test_end_to_end_readback_uses_one_fixed_artifact_and_receipt) ... ok
+test_first_score_reservation_is_atomic_and_not_output_scoped (test_provenance.ArtifactProvenance.test_first_score_reservation_is_atomic_and_not_output_scoped) ... ok
+test_github_metadata_requires_one_exact_run_and_artifact (test_provenance.ArtifactProvenance.test_github_metadata_requires_one_exact_run_and_artifact) ... ok
+test_metadata_checks_survive_python_optimized_mode (test_provenance.ArtifactProvenance.test_metadata_checks_survive_python_optimized_mode) ... ok
+test_new_id_binds_run_and_rejects_relabelled_old_observation (test_provenance.ArtifactProvenance.test_new_id_binds_run_and_rejects_relabelled_old_observation) ... ok
+test_run_artifact_receipt_lane_binding_rejects_tampering (test_provenance.ArtifactProvenance.test_run_artifact_receipt_lane_binding_rejects_tampering) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.899s
+
+OK

@@ -10,7 +10,7 @@
 
 [旧run40873570944](https://github.com/git-ksk/reasoning-harness/actions/runs/40873570944)は2完了・1失敗・45抑止で保持し、全量F1は未測定。直前8件のHTTPは全200・usage既知、第9HTTPは送信前サイズ上限で未送信だった。元のusage_budget_unmeasurable記録は修正せず、診断を#540で別に追う。
 
-次は[通常v2準備](../evaluation/cli-normal-v2/README.md)。固定v1 treeから変更箇所数・前後hashを照合して別identity/tag/workflow/normal_v2を導出し、両Engineの共通hostを`54eee37`へ固定する。予算・model・tier・pacing・停止条件は同一。v2の独立source確認と実AMD64 runtime/image/proof受入、新metadata/readiness、真正receipt・48件plan/callback確認後に、別の初回実モデル測定を行う。既知24問は開発診断であり、新規独立精度受入・CLI採用は別途必要。
+[通常v2準備](../evaluation/cli-normal-v2/README.md)は[PR571](https://github.com/git-ksk/reasoning-harness/pull/571)で独立source確認・CI5件成功後にマージし、[実runtime構築run40924323574](https://github.com/git-ksk/reasoning-harness/actions/runs/40924323574)はビルド・全offline controls成功後、BuildKit attestation付きindexに未対応のproof作成で停止。既存の照合境界は維持し、runtime出力を明示AMD64・補助attestationなしへ固定して別sourceで再構築する。固定v1 treeから変更箇所数・前後hashを照合して別identity/tag/workflow/normal_v2を導出し、両Engineの共通hostを`54eee37`へ固定する。予算・model・tier・pacing・停止条件は同一。v2の独立source確認と実AMD64 runtime/image/proof受入、新metadata/readiness、真正receipt・48件plan/callback確認後に、別の初回実モデル測定を行う。既知24問は開発診断であり、新規独立精度受入・CLI採用は別途必要。
 
 ## 評価対象
 
