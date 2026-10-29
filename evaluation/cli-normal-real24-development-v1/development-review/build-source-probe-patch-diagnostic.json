@@ -1,0 +1,81 @@
+{
+  "initial_probe_status": "patch_mismatch_with_local_default_git_abbreviation",
+  "expected_identity_patch_sha256": "01d9e9392d021d4c37603f5c1509efb8dc471cf5f62fe47db28c5adec5bddfd4",
+  "local_diff_variants": {
+    "None": {
+      "sha256": "f0cbea7b4ca7f2d265468d1dab7fb0155fb2dc06bd393178eacbe10627c42c39",
+      "size": 3424,
+      "first_lines": [
+        "diff --git a/crates/reasoning-harness-core/src/resolution.rs b/crates/reasoning-harness-core/src/resolution.rs",
+        "index c1e9e9b..8992f68 100644",
+        "--- a/crates/reasoning-harness-core/src/resolution.rs"
+      ]
+    },
+    "7": {
+      "sha256": "f0cbea7b4ca7f2d265468d1dab7fb0155fb2dc06bd393178eacbe10627c42c39",
+      "size": 3424,
+      "first_lines": [
+        "diff --git a/crates/reasoning-harness-core/src/resolution.rs b/crates/reasoning-harness-core/src/resolution.rs",
+        "index c1e9e9b..8992f68 100644",
+        "--- a/crates/reasoning-harness-core/src/resolution.rs"
+      ]
+    },
+    "8": {
+      "sha256": "01d9e9392d021d4c37603f5c1509efb8dc471cf5f62fe47db28c5adec5bddfd4",
+      "size": 3426,
+      "first_lines": [
+        "diff --git a/crates/reasoning-harness-core/src/resolution.rs b/crates/reasoning-harness-core/src/resolution.rs",
+        "index c1e9e9b7..8992f68c 100644",
+        "--- a/crates/reasoning-harness-core/src/resolution.rs"
+      ]
+    },
+    "9": {
+      "sha256": "520fa40344af956aa7714c18a29d43ca6c80590aa2111fe4f69bc06cf580e826",
+      "size": 3428,
+      "first_lines": [
+        "diff --git a/crates/reasoning-harness-core/src/resolution.rs b/crates/reasoning-harness-core/src/resolution.rs",
+        "index c1e9e9b7d..8992f68c0 100644",
+        "--- a/crates/reasoning-harness-core/src/resolution.rs"
+      ]
+    },
+    "10": {
+      "sha256": "cedc233526254089614a1a2c3a2123140c185da62c92288a9e753fd6a6c903b0",
+      "size": 3430,
+      "first_lines": [
+        "diff --git a/crates/reasoning-harness-core/src/resolution.rs b/crates/reasoning-harness-core/src/resolution.rs",
+        "index c1e9e9b7d5..8992f68c02 100644",
+        "--- a/crates/reasoning-harness-core/src/resolution.rs"
+      ]
+    },
+    "11": {
+      "sha256": "3232ec2fb9c8636028d535c1108ad1db00e6ade04db1283004c459e1ad7c352e",
+      "size": 3432,
+      "first_lines": [
+        "diff --git a/crates/reasoning-harness-core/src/resolution.rs b/crates/reasoning-harness-core/src/resolution.rs",
+        "index c1e9e9b7d55..8992f68c024 100644",
+        "--- a/crates/reasoning-harness-core/src/resolution.rs"
+      ]
+    },
+    "12": {
+      "sha256": "181b1cc2e6fcc7926f61c10971d5b665c11d5aca3d3bb9ffac7b6aa1878e3e66",
+      "size": 3434,
+      "first_lines": [
+        "diff --git a/crates/reasoning-harness-core/src/resolution.rs b/crates/reasoning-harness-core/src/resolution.rs",
+        "index c1e9e9b7d55b..8992f68c0241 100644",
+        "--- a/crates/reasoning-harness-core/src/resolution.rs"
+      ]
+    },
+    "40": {
+      "sha256": "7e541d1b688c61f7f29f525663a1b7030c3e50471b0557ff88d5afb3964f6f89",
+      "size": 3490,
+      "first_lines": [
+        "diff --git a/crates/reasoning-harness-core/src/resolution.rs b/crates/reasoning-harness-core/src/resolution.rs",
+        "index c1e9e9b7d55b394a1da708139f6338cebb2df250..8992f68c0241b03abaf628ff08425ec5988176f6 100644",
+        "--- a/crates/reasoning-harness-core/src/resolution.rs"
+      ]
+    }
+  },
+  "matching_abbreviation": [
+    8
+  ]
+}

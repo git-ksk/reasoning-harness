@@ -1,0 +1,13 @@
+diff --git a/.github/workflows/cli-normal-runtime.yml b/.github/workflows/cli-normal-runtime.yml
+index 7a5043c..aaa93b2 100644
+--- a/.github/workflows/cli-normal-runtime.yml
++++ b/.github/workflows/cli-normal-runtime.yml
+@@ -65,6 +65,8 @@ jobs:
+       - name: Archive exact image and offline identity without granting execution
+         run: |
+           set -euo pipefail
++          # Containers keep private modes; transfer ownership before host proof reads.
++          sudo chown -R "$(id -u):$(id -g)" target/paired-controls
+           docker save paired-runtime | gzip > target/paired-artifact/runtime-image.tar.gz
+           image_id=$(docker image inspect paired-runtime --format '{{.Id}}')
+           stage=target/paired-runtime/repo/evaluation/cli-repair-paired-v1

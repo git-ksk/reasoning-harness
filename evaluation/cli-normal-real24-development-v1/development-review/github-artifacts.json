@@ -1,0 +1,23 @@
+{
+  "artifacts": [
+    {
+      "id": 12861670229,
+      "name": "cli-normal-runtime-3a58f5ccb9c2a2183695bd8b783efc8b36d8e63b",
+      "size_in_bytes": 102860956,
+      "url": "https://api.github.com/repos/git-ksk/reasoning-harness/actions/artifacts/12861670229",
+      "archive_download_url": "https://api.github.com/repos/git-ksk/reasoning-harness/actions/artifacts/12861670229/zip",
+      "expired": false,
+      "created_at": "2026-10-28T23:49:30Z",
+      "expires_at": "2026-11-11T23:49:26Z",
+      "updated_at": "2026-10-28T23:49:30Z",
+      "digest": "sha256:2b98cc87a8eb7180422419917cab49aa952ad84343294085b09cf2116afc048d",
+      "workflow_run": {
+        "id": 40789024710,
+        "repository_id": 1350699633,
+        "head_repository_id": 1350699633,
+        "head_branch": "eval/cli-normal-runtime-admission-v1",
+        "head_sha": "3a58f5ccb9c2a2183695bd8b783efc8b36d8e63b"
+      }
+    }
+  ]
+}

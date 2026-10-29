@@ -29,11 +29,11 @@
 - [Mistral保存48通常出力の独立診断](../evaluation/cli-normal-v1/mistral-independent-diagnosis/diagnosis-summary-v1.md)を完了。計画上限超過14・ID重複2と、candidate claims欠落11応答・内部誤キー3応答を確認した。
 - 2026-10-28: #562/#563/#564のCLI修正は[PR561](https://github.com/git-ksk/reasoning-harness/pull/561)でマージ済み（`82b48a4`）。要求上限・candidate形状・再出力前の予算判定を修正し、局所独立レビューと最終headのCI22件が成功。共通評価hostは`c38d87d`に固定。公開core型やclaims:[]の正当な保留は維持する。
 - 同じ資料の再取得による停止、Rejectによる取得短絡、selector/説明不足は別の残件として保持する。2修正だけで全問題が解消したとは判断しない。
-- [PR565](https://github.com/git-ksk/reasoning-harness/pull/565)でMistral専用48jobsの通常profileを準備中。新規20・継承85のoffline controlsと無害な実CLI loopbackは成功したが、準備版`7f0508e`の独立source reviewで、旧観測を新runへ混入できる採点由来の欠落を確認した。実run/artifact/receipt/rawの結合を修正してから再レビューする。新しいモデル生成・F1はまだ0。
+- [PR565](https://github.com/git-ksk/reasoning-harness/pull/565)は2026-10-29に`a7de5a4`でマージ済み。Mistral専用48jobsの通常profileに、実run/artifact/receipt/rawと採点の結合、およびダウンロードimageを起動する前のhost側照合を追加した。最終`4bab9cd`の独立source限定レビューはPASS（host境界3・通常20・継承85）。初期`7f0508e`のFAILと修正過程はそのまま保存する。実AMD64 image/proofを[offline run40787270979](https://github.com/git-ksk/reasoning-harness/actions/runs/40787270979)で確認中で、正式運用承認・新しいモデル生成・F1はまだ未完了。
 
 ## 2026-10-28 の実行前追加修正
 
-#566の後継CLIは[PR567](https://github.com/git-ksk/reasoning-harness/pull/567)の`dbad2dc`に固定し、ソース限定の独立確認と両EngineのLinux build・実重複取得loopbackを通過した。現在の評価profileはこのhostを事前指定するが、製品CIのmacOS runner割当と最終runtime/image受入は未完了で、実行許可ではない。
+#566の後継CLIは[PR567](https://github.com/git-ksk/reasoning-harness/pull/567)の`dbad2dc`に固定し、ソース限定の独立確認と両EngineのLinux build・実重複取得loopbackを通過した。CI22件すべて成功後、`41fbd17`でマージし#566をcloseした。macOSのキャンセルはrunner未割当による容量不足で、該当jobだけ再実行した。最終runtime/image受入と実モデル評価は別の未完了項目として残す。
 
 
 [Issue566](https://github.com/git-ksk/reasoning-harness/issues/566)を優先する。独立operational reviewで、同じ固定snapshotの再取得が既存coreでmalformed扱いとなり、新runnerが停止する経路をMistral14/48・Google2/48の保存済み通常payloadで再現した。採点・エラー分類を緩めず、現在保持する証拠と現在のadmission方針で完全同一と確認できる再取得だけを、共通CLIの新しい版でno-progressとして扱う。外部resolverの発行履歴だけでは採用済みと判断しない。実resolver呼出し・費用を保持し、別内容・不明なmetadata・権限拒否は停止させる。

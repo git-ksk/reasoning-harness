@@ -1,0 +1,77 @@
+{
+  "jobs": [
+    {
+      "id": 123169323096,
+      "name": "offline-runtime",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 40789024710,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Verify pinned Git objects and prepare isolated runtime sources",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Build both patched Engine hosts with identical instrumentation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Verify actual CLI and provider paths without external networking",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Archive exact image and offline identity without granting execution",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        }
+      ]
+    },
+    {
+      "id": 123169324773,
+      "name": "provider-metadata-readiness",
+      "status": "completed",
+      "conclusion": "skipped",
+      "run_id": 40789024710,
+      "logs_url": null,
+      "steps": null
+    }
+  ]
+}

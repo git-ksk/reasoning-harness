@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/cli-normal-v1/verify_runtime_archive.py", line 161, in <module>
+    main()
+    ~~~~^^
+  File "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/cli-normal-v1/verify_runtime_archive.py", line 153, in main
+    proof = verify_loaded(args.loaded_proof, args.actual_image_id, args.review,
+                          read(args.reference), read(args.receipt))
+  File "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/cli-normal-v1/verify_runtime_archive.py", line 129, in verify_loaded
+    require(proof['runtime_image_id'] in ids and actual_id in ids,
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            'loaded_image_not_in_reviewed_archive')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/cli-normal-v1/verify_runtime_archive.py", line 21, in require
+    raise ValueError(message)
+ValueError: loaded_image_not_in_reviewed_archive

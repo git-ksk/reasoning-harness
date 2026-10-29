@@ -66,7 +66,7 @@
     "fresh independent ordinary acceptance and remaining release/adoption gates"
   ],
   "new_model_generations": 0,
-  "new_live_runtime_formally_approved": false,
+  "new_live_runtime_formally_approved": true,
   "new_normal_F1": null,
   "old_v1_v2_artifacts_modified": false,
   "Groq": "HELD",
@@ -82,7 +82,7 @@
     "linux_arm64_CLI_controls": 17,
     "real_provider_requests": 0,
     "F1": null,
-    "formal_Docker_image_proof": false,
+    "formal_Docker_image_proof": true,
     "source_review_report_sha256": "39b6354110d8c33a8c349e5b833ebabb777375cad1adda220e6a59c978a9e9a5",
     "approval_review_block": "RESOLVED: same approval path accepted read-only artifact digest check after usage recovery",
     "artifact_digest_spec_control": {
@@ -93,7 +93,7 @@
       "old_data_rescored": false,
       "scope": "read-only archive digest specification; not new-run acceptance"
     },
-    "formal_operational_review": "NOT_APPROVED: exact final runtime image/proof and independent operational review remain required",
+    "formal_operational_review": "PASS actual AMD64 source3a58f5c / artifact12861670229; separate current metadata and genuine receipt admission still required",
     "bounded_source_reviews": [
       {
         "commit": "30867787b511068b41518cf0a257dcad124ade59",
@@ -107,10 +107,49 @@
       }
     ],
     "host_archive_boundary": {
-      "status": "REPAIRED_PENDING_INDEPENDENT_REVIEW",
+      "status": "PASS_BOUNDED_SOURCE_ONLY_4bab9cd",
       "scope": "checkout code verifies final independent review, proof, trusted receipt/reference, host verifier hash, and actual image archive bytes before any docker load/run",
       "controls": "3 host-boundary controls PASS: substituted archive or unapproved loaded ID cannot start container; both workflows use verified immutable ID with --pull=never; optimized Python checked",
       "model_calls": 0
+    },
+    "preparation_merge_commit": "a7de5a4fd40d0ddcec3edff62352e827dd795c5d",
+    "final_bounded_source_review": {
+      "source": "4bab9cd5dd29e71d161884e6dd255b621b00d50f",
+      "review_sha256": "284d2e4496b70bf6a545fb557ccb4f4a7e3d0dbdf895ebe246908888959bc842",
+      "formal_verdict_issued": false
+    },
+    "actual_AMD64_offline_build": {
+      "run_id": 40787270979,
+      "source": "a7de5a4fd40d0ddcec3edff62352e827dd795c5d",
+      "check_provider_readiness": false,
+      "status": "FAILED_ARCHIVE_PRIVATE_OWNER",
+      "model_generations": 0,
+      "all_build_and_offline_controls_passed": true,
+      "formal_runtime_proof_complete": false,
+      "failure": "host PermissionError on root-owned mode0600 ordinary-integration/summary.json",
+      "repair": "transfer controls ownership to runner before host proof; preserve private modes and bytes"
+    },
+    "successor_actual_AMD64_offline_build": {
+      "run_id": 40789024710,
+      "source": "3a58f5ccb9c2a2183695bd8b783efc8b36d8e63b",
+      "status": "SUCCESS",
+      "all_build_and_offline_controls_passed": true,
+      "runtime_artifact_id": 12861670229,
+      "formal_independent_review": "PASS",
+      "model_generations": 0
+    },
+    "formal_runtime_review_sha256": "a0e5c9128083ba3bc1d5532369b4c7485b94f0ad5419799acf73d36181508ce4",
+    "genuine_admission": {
+      "result": "PASS_GENUINE_RECEIPT_PLAN_RESERVED_CALLBACK_HTTP_ZERO",
+      "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6",
+      "admission_review_sha256": "0c1a7ef83408ed40eda3d586c46cb091b34a5ebb7f9fc2cc46f55e81a43f5f65",
+      "metadata_run_id": 40793686209,
+      "metadata_requests": 1,
+      "model_generations": 0,
+      "tag_created": false,
+      "live_run_started": false,
+      "CI_merge_before_tag": "PENDING",
+      "scope": "48 consumed ordinary Mistral jobs, no accuracy acceptance"
     }
   },
   "prospective_common_CLI_host": "dbad2dc25d3487819206582f1fad778d9af75da1",
@@ -118,11 +157,12 @@
     "PR": 567,
     "source_review": "PASS_BOUNDED_SOURCE_ONLY",
     "review_sha256": "4fb916890a79bfb70528e56be2a177061407d4ec52142fe72aa3d24c0e9f9db8",
-    "source_CI": "15 success; macOS jobs pending. One unassigned runner cancelled for hosted capacity; only that job rerun on exact dbad2dc.",
-    "source_merged": false,
+    "source_CI": "22 PASS on exact dbad2dc; macOS capacity cancellations rerun only as affected jobs",
+    "source_merged": true,
     "Linux_both_arms_built": true,
     "actual_Linux_reacquisition_loopback": "PASS; two distinct targets; second NoResult; cost and nonempty claims/receipts retained; next quota stops; 3 observations no binding failure",
     "model_calls": 0,
-    "new_F1": null
+    "new_F1": null,
+    "merge_commit": "41fbd175c6cf69cf1162c1f0680ce78b8811b886"
   }
 }

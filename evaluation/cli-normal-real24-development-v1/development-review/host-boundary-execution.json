@@ -1,0 +1,17 @@
+{
+  "source_commit": "3a58f5ccb9c2a2183695bd8b783efc8b36d8e63b",
+  "argv": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_runtime_archive"
+  ],
+  "returncode": 0,
+  "duration_seconds": 2.2190239429473877,
+  "tests": 3,
+  "sanitized_environment": true,
+  "actual_Docker_invocations": 0,
+  "provider_requests": 0
+}

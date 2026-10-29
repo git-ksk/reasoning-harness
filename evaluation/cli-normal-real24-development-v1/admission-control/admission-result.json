@@ -1,0 +1,109 @@
+{
+  "actual_image_id": "sha256:ea084e99e3a31784f3aa3b755b232cd0e7673107a79064bc434923c666ee9e69",
+  "actual_live_lane_created": false,
+  "actual_plan_jobs": 48,
+  "archive_derived_aliases": [
+    "sha256:439ae3f468db41f242c2f272a0a9f9afebdb46d811e5311c724307302a5550e6",
+    "sha256:ea084e99e3a31784f3aa3b755b232cd0e7673107a79064bc434923c666ee9e69"
+  ],
+  "check_stubs_or_monkeypatches": false,
+  "checked_at_unix_seconds": 1793234466,
+  "checked_receipt": "PASS",
+  "counterbalanced_order_verified": true,
+  "external_HTTP_requests": 0,
+  "formal_runtime_verdict_changed": false,
+  "frozen_nominal_USD_reservation": "0.2022912",
+  "full_cohort_completion_guaranteed": false,
+  "genuine_frozen_inputs_unchanged": true,
+  "helper_jobs": 0,
+  "model": "ministral-8b-2512",
+  "model_generations": 0,
+  "negative_controls": [
+    {
+      "exception_type": "ValueError",
+      "name": "genuine receipt without reservation",
+      "reason": "callback_not_reserved_inflight",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "helper prohibited",
+      "reason": "ordinary_only",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "Google prohibited",
+      "reason": "provider_not_admitted",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "wrong current arm",
+      "reason": "callback_wrong_current_job",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "argv must be byte exact",
+      "reason": "callback_argv_mismatch",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "reservation charge changed",
+      "reason": "callback_durable_charge_mismatch",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "reservation bound changed",
+      "reason": "callback_reservation_mismatch",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "inflight lost",
+      "reason": "callback_not_reserved_inflight",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "quota latch active",
+      "reason": "callback_not_reserved_inflight",
+      "rejected": true
+    },
+    {
+      "exception_type": "FileExistsError",
+      "name": "offline ledger restart is refused",
+      "reason": "FileExistsError",
+      "rejected": true
+    }
+  ],
+  "normal_jobs": 48,
+  "offline_ledger_is_unexecuted_reserved_only": true,
+  "paired_main_called": false,
+  "plan_sha256": "ac68534757f1b0ae85a33221b1c4d630b8910a4705dfdd2014d75ece9c2b852b",
+  "positive_reserved_callback": {
+    "accepted": true,
+    "arm": "baseline",
+    "charged_reservations": 28096,
+    "current_job": "rw-01-baseline",
+    "current_reserve": 28096,
+    "durable_sequence": 2,
+    "inflight": true,
+    "rows": 0
+  },
+  "provider_credentials_loaded": false,
+  "providers": [
+    "mistral"
+  ],
+  "quota_headroom": "UNKNOWN",
+  "readiness_valid_until_unix_seconds": 1793319805,
+  "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6",
+  "result": "PASS_GENUINE_RECEIPT_PLAN_RESERVED_CALLBACK_HTTP_ZERO",
+  "reviewer": "/root/real24_operational_review",
+  "reviewer_kind": "agent_nonhuman",
+  "runner_run_or_process_called": false,
+  "token_reservation": 1348608
+}

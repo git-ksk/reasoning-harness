@@ -1,0 +1,81 @@
+{
+  "actual_image_id": "sha256:ea084e99e3a31784f3aa3b755b232cd0e7673107a79064bc434923c666ee9e69",
+  "identity_sha256": "6748068d1fa0119c39110e9d96a8d060b380520ddb23ba3ae9dafcf72cfdb726",
+  "host_commit": "dbad2dc25d3487819206582f1fad778d9af75da1",
+  "actual_binaries": {
+    "reason-baseline": {
+      "format": "ELF64 little endian",
+      "machine": "x86_64",
+      "sha256": "7195bcf9465289f9c84f67791a4b06b2ff5f0355e67c428310748477379fbdac",
+      "size_bytes": 46151592
+    },
+    "adviser-baseline": {
+      "format": "ELF64 little endian",
+      "machine": "x86_64",
+      "sha256": "3b9542116991fa727a4e4ee0e7fbe271aa58a88fa8a29fdca23916d518c0f67d",
+      "size_bytes": 14157264
+    },
+    "source-host-baseline": {
+      "format": "ELF64 little endian",
+      "machine": "x86_64",
+      "sha256": "e229cb339c115f34bafd331f42f4d46c827bf0f29d69ff12f75c3e679b3e7358",
+      "size_bytes": 5444792
+    },
+    "audit-probe-baseline": {
+      "format": "ELF64 little endian",
+      "machine": "x86_64",
+      "sha256": "674fe8a73deb43ef2cea1389550952186f618bdfdbad3f5ae53e34a755a2c101",
+      "size_bytes": 12094176
+    },
+    "registry-baseline": {
+      "format": "ELF64 little endian",
+      "machine": "x86_64",
+      "sha256": "91d900332ca43c8df90a9e66a6620e3d7d63e6587ae3b17c8724a09fc2334c10",
+      "size_bytes": 4736704
+    },
+    "reason-candidate": {
+      "format": "ELF64 little endian",
+      "machine": "x86_64",
+      "sha256": "2ba4cd06796943ebd0f6711af7b0c728d72c9638db38389368f855ccf4747eca",
+      "size_bytes": 46137720
+    },
+    "adviser-candidate": {
+      "format": "ELF64 little endian",
+      "machine": "x86_64",
+      "sha256": "2d7e37d052593430b2a65b681c8e92c546e72349c469c01689f476c1a94e890f",
+      "size_bytes": 14174824
+    },
+    "source-host-candidate": {
+      "format": "ELF64 little endian",
+      "machine": "x86_64",
+      "sha256": "2a04fe384c9877c567e723dd0fa2b7eefe1aae8001aee54062f48150e606a081",
+      "size_bytes": 5904536
+    },
+    "audit-probe-candidate": {
+      "format": "ELF64 little endian",
+      "machine": "x86_64",
+      "sha256": "3139f0125af146c40bde6cb2d1cc63f031165462aeddc87282cfaa52fa9db629",
+      "size_bytes": 12115768
+    },
+    "registry-candidate": {
+      "format": "ELF64 little endian",
+      "machine": "x86_64",
+      "sha256": "6dae5e8b3859e860d1fc9bace025ca0d028d925296326d6499d992dbe6ef9bbe",
+      "size_bytes": 4736680
+    }
+  },
+  "all_10_binary_hashes_equal_identity": true,
+  "all_binary_files_equal_actual_image_inventory": true,
+  "copied_runtime_files_equal_proof": true,
+  "copy_started_container_process": false,
+  "source_claims_scope": "same CLI/provider host and PR552 recovery opt-in patch on both historical core trees; not untouched distribution binaries",
+  "core_commits": {
+    "baseline": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+    "candidate": "ab3c6322921c8c738ec35bd018345917b5afa538"
+  },
+  "common_patches": {
+    "baseline": "01d9e9392d021d4c37603f5c1509efb8dc471cf5f62fe47db28c5adec5bddfd4",
+    "candidate": "01d9e9392d021d4c37603f5c1509efb8dc471cf5f62fe47db28c5adec5bddfd4"
+  },
+  "credential_or_provider_calls": 0
+}

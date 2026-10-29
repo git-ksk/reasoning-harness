@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "repository": "git-ksk/reasoning-harness",
+  "repository_id": 1350699633,
+  "run_id": 40789024710,
+  "head_sha": "3a58f5ccb9c2a2183695bd8b783efc8b36d8e63b",
+  "run_attempt": 1,
+  "event": "workflow_dispatch",
+  "workflow_path": ".github/workflows/cli-normal-runtime.yml",
+  "offline_job": "success",
+  "metadata_job": "skipped",
+  "unique_artifact_id": 12861670229,
+  "actual_ZIP_sha256": "2b98cc87a8eb7180422419917cab49aa952ad84343294085b09cf2116afc048d",
+  "actual_ZIP_size": 102860956,
+  "API_digest_and_size_match": true
+}

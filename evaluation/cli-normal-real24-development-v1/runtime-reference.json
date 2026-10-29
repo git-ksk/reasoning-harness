@@ -1,0 +1,14 @@
+{
+  "source_commit": "3a58f5ccb9c2a2183695bd8b783efc8b36d8e63b",
+  "paired_host_identity_sha256": "6748068d1fa0119c39110e9d96a8d060b380520ddb23ba3ae9dafcf72cfdb726",
+  "runtime_image_id": "sha256:439ae3f468db41f242c2f272a0a9f9afebdb46d811e5311c724307302a5550e6",
+  "runtime_image_archive_sha256": "a37ade46d657747a2736b1cb6c454372513e616b659699a3567145c64468024f",
+  "identity": "cli-normal-reviewed-runtime-reference-v1",
+  "runtime_run_id": 40789024710,
+  "runtime_artifact_id": 12861670229,
+  "runtime_artifact_ZIP_sha256": "2b98cc87a8eb7180422419917cab49aa952ad84343294085b09cf2116afc048d",
+  "runtime_proof_sha256": "8d8d60cafb99b1c26169fad822f550685d32fa8b3621072ecee691a9a5b63240",
+  "operational_review_sha256": "a0e5c9128083ba3bc1d5532369b4c7485b94f0ad5419799acf73d36181508ce4",
+  "operational_manifest_sha256": "516aa78b1f4c8b084d61081207403fb1a1f6bfcea663f64e55086b601c2a6edb",
+  "archive_verifier_sha256": "9383af203cb719d8412556e25b9d6f7b5893fd8f42d7d2ea711869d9dccb3cf3"
+}

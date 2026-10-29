@@ -1,0 +1,154 @@
+{
+  "identity": "independent-cli-normal-operational-review-v1",
+  "reviewer": "/root/real24_operational_review",
+  "reviewer_kind": "agent_nonhuman",
+  "scope": "cli-normal-development-runtime",
+  "result": "PASS",
+  "formal_verdict_issued": true,
+  "verdict_stage": "FINAL_INDEPENDENT_OPERATIONAL_REVIEW",
+  "not_formal_operational_verdict": false,
+  "synthetic_offline_integration_input_only": false,
+  "reviewed_at_utc": "2026-10-29T00:14:14.448094+00:00",
+  "source_commit": "3a58f5ccb9c2a2183695bd8b783efc8b36d8e63b",
+  "runtime_proof_sha256": "8d8d60cafb99b1c26169fad822f550685d32fa8b3621072ecee691a9a5b63240",
+  "paired_host_identity_sha256": "6748068d1fa0119c39110e9d96a8d060b380520ddb23ba3ae9dafcf72cfdb726",
+  "runtime_image_id": "sha256:439ae3f468db41f242c2f272a0a9f9afebdb46d811e5311c724307302a5550e6",
+  "runtime_image_archive_sha256": "a37ade46d657747a2736b1cb6c454372513e616b659699a3567145c64468024f",
+  "reviewed_runtime_files_sha256": "459233f8a81cbd3507e95d824a57719c71cb52f91f89d9006157b447801c447e",
+  "runtime_files_count": 104,
+  "runtime_artifact_id": 12861670229,
+  "runtime_build_run_id": 40789024710,
+  "runtime_artifact_ZIP_sha256": "2b98cc87a8eb7180422419917cab49aa952ad84343294085b09cf2116afc048d",
+  "actual_loaded_image_id": "sha256:ea084e99e3a31784f3aa3b755b232cd0e7673107a79064bc434923c666ee9e69",
+  "archive_verified_image_ids": [
+    "sha256:439ae3f468db41f242c2f272a0a9f9afebdb46d811e5311c724307302a5550e6",
+    "sha256:ea084e99e3a31784f3aa3b755b232cd0e7673107a79064bc434923c666ee9e69"
+  ],
+  "runtime_platform": "linux/amd64",
+  "normal_only": true,
+  "helper_model_jobs": 0,
+  "required_providers": [
+    "mistral"
+  ],
+  "model": "ministral-8b-2512",
+  "common_cli_host": "dbad2dc25d3487819206582f1fad778d9af75da1",
+  "baseline_core": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+  "candidate_core": "ab3c6322921c8c738ec35bd018345917b5afa538",
+  "execution_tag": "cli-normal-real24-development-v1",
+  "independent_authorship": "This separately spawned agent /root/real24_operational_review independently acquired the GitHub artifact, read the source, inspected archive bytes and actual image, checked all ten binary bytes and reran the required offline controls. Implementation authors did not author or replace this verdict. No human attestation or cryptographic actor signature is claimed.",
+  "checks": [
+    {
+      "name": "GitHub artifact provenance",
+      "result": "PASS",
+      "evidence": [
+        "github-run.json",
+        "github-artifacts.json",
+        "github-jobs.json",
+        "artifact-download.json",
+        "raw-artifact-inventory.json"
+      ],
+      "detail": "Completed successful workflow_dispatch attempt1 at exact source 3a58f5c; metadata job skipped; unique expected artifact ID/name/head/repository and actual ZIP SHA equal the API digest."
+    },
+    {
+      "name": "archive proof source and image identities",
+      "result": "PASS",
+      "evidence": [
+        "pre-runtime-integrity.json",
+        "final-source-delta.diff"
+      ],
+      "detail": "Independent preparation, uploaded preparation, runtime proof and actual image all contain the same 104 file hashes. Every archive blob digest, config/OCI link and layer graph checked; canonical/config 439ae3... and OCI ea084e... both derived from actual archive bytes. Only runtime delta from merged reviewed source is ownership transfer before host proof reads; modes and bytes are preserved."
+    },
+    {
+      "name": "actual binaries and build source",
+      "result": "PASS",
+      "evidence": [
+        "actual-image-execution.json",
+        "actual-image-inventory.json",
+        "actual-binary-verification.json",
+        "independent-build-source-bindings.json"
+      ],
+      "detail": "Actual loaded Linux AMD64 image has all 104 reviewed files and exactly ten x86_64 ELF binaries plus identity.json. Every binary hash matches identity. Frozen core original inventories and common host main checked against Git objects; identical common resolution patch applied independently and final source hashes reproduced. Reviewer did not rebuild binaries."
+    },
+    {
+      "name": "precredential archive and immutable loaded ID",
+      "result": "PASS",
+      "evidence": [
+        "host-boundary-execution.json",
+        "host-boundary.stderr"
+      ],
+      "detail": "Three independent current-source controls pass, including optimized Python fail-closed checks. Unreviewed archive rejected before Docker load; unreviewed loaded ID rejected before run; config and OCI aliases admitted. Both workflows use actual validated immutable ID and --pull=never before and with credentials."
+    },
+    {
+      "name": "actual image offline controls",
+      "result": "PASS",
+      "evidence": [
+        "offline-controls-verification.json",
+        "independent-controls-execution.json",
+        "registry-correct-stdin-execution.json"
+      ],
+      "detail": "Actual image independently passes inherited85, ordinary20, provider18, CLI17, containment7, registry parity and eight-call ordinary integration. All five own control summaries are byte-identical to native AMD64 CI artifacts. Local replay executes AMD64 image under emulation on an ARM64 Docker engine; native CI artifact verified separately."
+    },
+    {
+      "name": "ordinary accounting and stop transition",
+      "result": "PASS",
+      "evidence": [
+        "normal_integration-summary.json",
+        "containment-summary.json",
+        "normal-unit.stderr"
+      ],
+      "detail": "One synthetic completed row, one typed quota failure and one following suppressed row. Distinct targets reacquire the same snapshot; repeat is no_result with call/token cost retained, no new evidence and unchanged nonempty claim/receipt. Durable reservations remain charged and restart is refused. These fixtures explicitly stub true final-receipt admission."
+    },
+    {
+      "name": "metadata verify-only and actual host binding",
+      "result": "PASS",
+      "evidence": [
+        "final-binding-execution.json"
+      ],
+      "detail": "Before publication this exact verdict body and actual archive/proof are exercised by the actual immutable image metadata verify-only and checkout host archive/loaded-ID gates, including both archive-derived aliases. No credential, metadata HTTP or generation is used."
+    }
+  ],
+  "reviewed_operational_scope": {
+    "sample": "Already consumed original real24 M1; diagnostic only",
+    "M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+    "planned_jobs": 48,
+    "tracks": [
+      "e2e_normal"
+    ],
+    "arm_order": "counterbalanced baseline/candidate per original case order",
+    "reservation_per_job_tokens": 28096,
+    "total_reservation_tokens": 1348608,
+    "frozen_rate_nominal_USD_reservation": "0.2022912",
+    "currency_self_cap_USD": 2.5,
+    "quota_headroom": "UNKNOWN",
+    "full_cohort_completion_guaranteed": false,
+    "strict_stop_after_any_operational_failure": true,
+    "per_HTTP_audit_and_unknown_usage_stop": true,
+    "first_only_tag_and_durable_no_restart": true,
+    "observation_run_artifact_receipt_provenance_and_first_scoring_freeze": true
+  },
+  "findings": [],
+  "prior_source_and_runtime_results_not_promoted": true,
+  "pending_before_any_paid_generation": [
+    "Root binds this exact final verdict and manifest into a new runtime reference.",
+    "New one-request zero-generation metadata evidence bound to this source/proof/review, then a new exact receipt with 24-hour readiness validity.",
+    "Separate independent HTTP-zero check of genuine checked_receipt, actual 48-job plan and positive durably reserved callback, then a single first-tag activation under the frozen workflow."
+  ],
+  "limits": {
+    "API_execution_admitted_by_this_verdict_alone": false,
+    "provider_credentials_supplied": false,
+    "external_model_HTTP_requests": 0,
+    "metadata_HTTP_requests": 0,
+    "new_tag_created": false,
+    "true_post_metadata_receipt_positive_admission_already_tested": false,
+    "actual_case_scoring_or_new_F1": false,
+    "accuracy_acceptance": false,
+    "fresh_accuracy_cases": 0,
+    "adoption_GO": false,
+    "release_or_published_CLI_approval": false,
+    "quota_verified": false,
+    "old_failed_run_or_frozen_experiment_modified": false,
+    "failed_build_40787270979_promoted": false
+  },
+  "evidence_location": "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/cli-normal-runtime-40789024710-independent",
+  "raw_artifact_and_binary_location": "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/cli-normal-runtime-40789024710-raw"
+}

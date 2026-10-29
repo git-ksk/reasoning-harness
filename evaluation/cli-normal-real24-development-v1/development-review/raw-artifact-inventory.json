@@ -1,0 +1,30 @@
+{
+  "paired-artifact/identity.json": {
+    "size": 855768,
+    "sha256": "6748068d1fa0119c39110e9d96a8d060b380520ddb23ba3ae9dafcf72cfdb726"
+  },
+  "paired-artifact/offline-controls.tar.gz": {
+    "size": 139176,
+    "sha256": "b12c179c94026628eb163cfd7b28b22eae719b2b4c517cdd08a7314a0c8fdf61"
+  },
+  "paired-artifact/preparation.json": {
+    "size": 40707,
+    "sha256": "61c0ac9d1044d8474faeae3c3a75b8348c729fc42b926d2ea6a3a5456aca932d"
+  },
+  "paired-artifact/runtime-image.tar.gz": {
+    "size": 103078392,
+    "sha256": "a37ade46d657747a2736b1cb6c454372513e616b659699a3567145c64468024f"
+  },
+  "paired-artifact/runtime-proof.json": {
+    "size": 16205,
+    "sha256": "8d8d60cafb99b1c26169fad822f550685d32fa8b3621072ecee691a9a5b63240"
+  },
+  "paired-controls/unit.log": {
+    "size": 184,
+    "sha256": "39310d73f94e1ab02ca632b57ae2c034a2aa9247e4bdf4778b427d9be0f76a8a"
+  },
+  "paired-controls/ordinary-unit.log": {
+    "size": 268,
+    "sha256": "245a2b4367d5eb52d0494fa7edf447acda8b346d58e265bd3501fd1596472e98"
+  }
+}

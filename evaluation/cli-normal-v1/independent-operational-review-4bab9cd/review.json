@@ -1,0 +1,144 @@
+{
+  "identity": "independent-cli-normal-source-review-v1",
+  "reviewer": "/root/real24_operational_review",
+  "reviewer_kind": "agent_nonhuman",
+  "source_commit": "4bab9cd5dd29e71d161884e6dd255b621b00d50f",
+  "reviewed_at_utc": "2026-10-28T23:22:52.656734+00:00",
+  "scope": "cli-normal-development-source-only",
+  "result": "PASS_BOUNDED_SOURCE_ONLY",
+  "formal_verdict_issued": false,
+  "verdict_stage": "BOUNDED_SOURCE_ONLY_PENDING_ACTUAL_AMD64_RUNTIME",
+  "not_formal_operational_verdict": true,
+  "synthetic_offline_integration_input_only": false,
+  "API_execution_admitted": false,
+  "metadata_execution_admitted": false,
+  "tag_execution_admitted": false,
+  "authorship": "Independently read and executed by the actual separately spawned agent /root/real24_operational_review. No implementation or tracked-source edits by this reviewer; no human or cryptographic identity attestation.",
+  "source_files_sha256": {
+    ".github/workflows/cli-normal-runtime.yml": "c05b85aa58a2e8933edaef2ce2f796edcbae549ceb87ad7d494c3e5dde9987d7",
+    ".github/workflows/cli-normal-real24-development.yml": "6cf2172c4692c0f5cbc7c9342243526e1fb01614f5b9a6056a206e187627e865",
+    "evaluation/cli-normal-v1/prepare_runtime.py": "56f1fc32fa68408d85e1cce541fdb6e6b94a6183031c7380a2fbbd3e8e827508",
+    "evaluation/cli-normal-v1/verify_runtime_archive.py": "9383af203cb719d8412556e25b9d6f7b5893fd8f42d7d2ea711869d9dccb3cf3",
+    "evaluation/cli-normal-v1/test_runtime_archive.py": "92467fbb96ce330a6df080f21e4ee36a48d3b62caf92158174032f1a46df90d7",
+    "evaluation/cli-normal-v1/runtime/Dockerfile.runtime": "ebf937b25ede2435f38c00bc99d88d6954bef16c5fbcb0954d6631811c2b5673",
+    "evaluation/cli-normal-v1/runtime/README.md": "b1870d93f1742f5fdb40b5ee63bdeda90da1b77553c1c190dae1060afd679851",
+    "evaluation/cli-normal-v1/runtime/build.py": "99db5b0da6928147020299600e5322cb0357693cf50306c01001bdfa299e4a18",
+    "evaluation/cli-normal-v1/runtime/collect_normal.py": "0adcf6660e25c88b446eaab99f4107bcb65594c65fe2eafc031a9154227aa7ab",
+    "evaluation/cli-normal-v1/runtime/development.py": "ac85574ef0cb7f77919633427e93ab9450539f4bd27afbe07db7dda86919c449",
+    "evaluation/cli-normal-v1/runtime/make_development_plan.py": "116cf6609cf1c03c80d84a36efcc7e55910349de3c646cb04a89f6e95cfd2ba0",
+    "evaluation/cli-normal-v1/runtime/operational_bridge.py": "b4d1329c6cdb23abf034a5e153d72ff320e50c5bcc76aefbd4659a7fcf167e3d",
+    "evaluation/cli-normal-v1/runtime/preflight_normal.py": "9804940774368f9bfc32dbcecf4eebdc1f6cbeadc0ec9d421758f74a6f41a4cb",
+    "evaluation/cli-normal-v1/runtime/prepare_consumed_sources.py": "1dde0111d99fd5d0dbf46218e16eef1b42bb8e5cf39e96f1b2e8c2b9c3d82375",
+    "evaluation/cli-normal-v1/runtime/protocol.json": "721067205f4ff977cb282630a3f50cfb322e39aae8a206b0d1d3168cc8507895",
+    "evaluation/cli-normal-v1/runtime/provenance.py": "7836921f6abd13090de44b2689fcfede0d629f57294669867f2ba79ca83ce437",
+    "evaluation/cli-normal-v1/runtime/provider_readiness.py": "3af72dee4a1bb6dccedc540ed278cc25a2f46e75da71efbdea9fa83131ac601b",
+    "evaluation/cli-normal-v1/runtime/run_lane.py": "89a00303742716ad71e76fc63c0691fa812ea5c551d3e07fc321fe78d42c777f",
+    "evaluation/cli-normal-v1/runtime/run_task.py": "8bf146ee4165e2170dfee4ad926763c3d2f5c4726e288446d3efe7f7ff63c6ca",
+    "evaluation/cli-normal-v1/runtime/runtime_proof.py": "0d33cfd78b5ce808fb26aea4e244d3628c5ae41227e455eb3fdd6f4f4787e0c4",
+    "evaluation/cli-normal-v1/runtime/score_development_first.py": "e8b8647f410c668a7e13c49674d13c8761c4ddd47e5d9ea072b44cc3a969ddce",
+    "evaluation/cli-normal-v1/runtime/scorer.py": "8cb6389dcaad7fe1ce3425b10e152619dd2af6bbdd009101ee081346deca4ab5",
+    "evaluation/cli-normal-v1/runtime/tag_admission.py": "88f6cc23de4ff6bba916cc1244c9b9e7757bb884da195aaeff10d65a8c8d9270",
+    "evaluation/cli-normal-v1/runtime/test_normal_admission.py": "cb44900b695bec6cddab432db7da2a638ffc19393ef43c4d7493fa6fd1995bfe",
+    "evaluation/cli-normal-v1/runtime/test_provenance.py": "9508b26b0327f47f811accd8e793254297e22989327933b7f1a19f7c7ae2959f",
+    "evaluation/cli-normal-v1/runtime/verify_development.py": "7a390520f54f48567a32920e00264a73316bb44d457571b46975e510b57c0007"
+  },
+  "prepared_inventory": {
+    "file_count": 104,
+    "ordinary_overlay_file_count": 21,
+    "files_sha256": "19104c46f528dddb30827cc1be99011bc74aab53a106831c5a0ea82cc49e8997",
+    "preparation_sha256": "09541709bbd1b07d4cbe374a7cab65ecca5e983e2de38e3232f8f1bc94db7c6c",
+    "actual_image_inventory_verified": false
+  },
+  "independent_checks": [
+    {
+      "name": "checkout_host_archive_and_loaded_ID_controls",
+      "result": "PASS",
+      "tests": 3,
+      "execution": "hostgate-unit-execution.json",
+      "notes": "Exact 4bab source export. Sanitized environment. Mock Docker only. Changed archive bytes rejected before load; wrong loaded ID rejected before run under Python optimization; both reviewed OCI/config aliases accepted."
+    },
+    {
+      "name": "prepared_normal_unit_controls",
+      "result": "PASS",
+      "tests": 20,
+      "execution": "prepared-unit-execution.json",
+      "notes": "Fresh exact 4bab materialization; positive/negative plan and durable callback scope tests use explicit inert receipt stubs, so this is not genuine receipt admission."
+    },
+    {
+      "name": "prepared_inherited_unit_controls",
+      "result": "PASS",
+      "tests": 85,
+      "execution": "prepared-unit-execution.json"
+    },
+    {
+      "name": "prepared_inventory",
+      "result": "PASS",
+      "files": 104,
+      "notes": "Every materialized file hash equals preparation.json. This is source preparation, not a claim about the future AMD64 image."
+    }
+  ],
+  "source_review_conclusions": [
+    "Both secret-backed workflows authenticate independent final review identity/result/scope/four status fields and reference-or-receipt bindings in checkout code before Docker load. The exact proof bytes, source/host identity/image/archive SHA, runtime inventory digest and checkout host-gate bytes are bound.",
+    "ZIP handling admits one fixed proof/image pair, rejects traversal/symlinks/duplicate names/encrypted entries, bounds input sizes and hashes actual extracted archive bytes before renaming the image into its loadable path. Downloaded code cannot self-authorize its archive.",
+    "After load, checkout code rechecks proof digest and reviewed bindings, validates one or two unique SHA IDs, requires canonical ID membership and actual loaded ID membership. The validated SHA is persisted to GITHUB_ENV; every later downloaded-runtime launch uses that immutable ID with --pull=never, before credentials and with credentials.",
+    "Normal-only policy and generated/validated plan admit Mistral ministral-8b-2512 only, 24 consumed cases x two counterbalanced arms = 48 ordinary jobs, no helper job and no Google/Groq activation. Each durable reservation is 28096 tokens; total reservation is 1348608. Frozen rate assumptions reserve USD 0.2022912 inside the USD 2.5 self-cap; this is not a provider billing guarantee.",
+    "Callback admission rechecks exact receipt/runtime/binaries/corpus/model/argv/plan and currently durable inflight reservation before normal callback work. Aggregate per-HTTP audit, single provider attempt, unknown-usage stop, nested failure detection, strict next-job latch, timeout/cancellation and restart refusal remain connected to the inherited durable scheduler.",
+    "The common CLI dbad2dc pin is applied identically in build/protocol/identity checks. The independently reviewed product resolver no-op preserves current policy admission, normalized evidence equality, existing nonempty claims/receipts and call/token cost. New normal integration source requires distinct-target repeated snapshot no_result behavior; actual compiled AMD64 execution remains pending.",
+    "Run/ZIP/receipt/raw-lane provenance and fresh observation IDs prevent substitution of old v2 observations. Semantic review is a separate actor with exact observation/provenance binding. Scoring reconstructs from the authenticated run artifact, uses only 48 normal rows and a persistent exclusive first-score reservation; missing pairs remain incomplete.",
+    "Provider readiness requires a new final review before one metadata GET, and actual status/model/source/proof/review-bound report with exactly one request, zero generations and a 24-hour expiry before receipt admission. Whole-account quota headroom remains UNKNOWN. This source-only result cannot satisfy the activation guards."
+  ],
+  "resolved_source_findings": [
+    {
+      "finding": "unreviewed-image-verifies-itself-before-receiving-provider-secret",
+      "prior_finding": "target/private-evaluation-pending/cli-normal-evaluation-v1/independent-operational-review-bf39d97/source-blocking-finding.json",
+      "resolution": "e1b checkout hash gate retained and independently retested in 4bab"
+    },
+    {
+      "finding": "mutable-loaded-tag-not-host-bound-to-reviewed-image-IDs",
+      "resolution": "4bab host loaded-proof membership plus immutable ID/--pull=never launch"
+    }
+  ],
+  "additional_source_blockers_found": [],
+  "retained_prior_evidence": {
+    "bf39_precredential_finding": {
+      "path": "target/private-evaluation-pending/cli-normal-evaluation-v1/independent-operational-review-bf39d97/source-blocking-finding.json",
+      "sha256": "f75b1c9a84a2a4030c4b73347af836ccab95fa9da3688ac453809453d136ec1d",
+      "scope_not_promoted": true
+    },
+    "e1b_hostgate_execution": {
+      "path": "target/private-evaluation-pending/cli-normal-evaluation-v1/independent-operational-review-e1b2309/hostgate-unit-execution.json",
+      "sha256": "9ed719e0e816d992fb44c4f3baf395e47c931fdddaace2512aacf27f19e950d4",
+      "scope_not_promoted": true
+    },
+    "common_cli_source_review": {
+      "path": "target/private-evaluation-pending/cli-normal-evaluation-v1/snapshot-reacquisition-review-dbad2dc/review.json",
+      "sha256": "4fb916890a79bfb70528e56be2a177061407d4ec52142fe72aa3d24c0e9f9db8",
+      "scope_not_promoted": true
+    },
+    "common_cli_source_manifest": {
+      "path": "target/private-evaluation-pending/cli-normal-evaluation-v1/snapshot-reacquisition-review-dbad2dc/artifact-manifest.json",
+      "sha256": "391d5e6aae2b78f2617276a4375a34da418c10059ae5c4bde8c8949fdc0bccb9",
+      "scope_not_promoted": true
+    }
+  },
+  "pending_required_work": [
+    "Obtain the new actual GitHub AMD64 runtime artifact/proof for this source and independently verify raw artifact, archive identity graph, every prepared file and all ten binary hashes/identity against the actual loaded image.",
+    "Verify actual AMD64 offline controls: inherited 85 units, ordinary 20 units, provider 18, CLI 17, containment 7, registry parity and normal saved/inert integration; exercise exact-image metadata verify-only with zero HTTP and credentials.",
+    "Only after that complete runtime review may this actor issue a separate final runtime verdict. Root must then obtain new metadata and freeze the true receipt; independently check genuine checked_receipt, 48-job plan and positive reserved callback with HTTP zero before any first tag."
+  ],
+  "limits": {
+    "actual_AMD64_image_reviewed": false,
+    "actual_archive_reviewed": false,
+    "all_10_actual_binaries_reviewed": false,
+    "true_final_receipt_positive_admission_tested": false,
+    "model_API_calls": 0,
+    "metadata_HTTP_calls": 0,
+    "credentials_supplied": false,
+    "tags_created": 0,
+    "actual_F1_calculated": false,
+    "old_frozen_data_or_reviews_modified": false,
+    "population_accuracy_claim": false,
+    "adoption_GO": false,
+    "quota_headroom": "UNKNOWN"
+  }
+}

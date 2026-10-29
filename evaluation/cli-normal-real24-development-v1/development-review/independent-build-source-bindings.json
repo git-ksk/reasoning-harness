@@ -1,0 +1,32 @@
+{
+  "result": "PASS",
+  "host_commit": "dbad2dc25d3487819206582f1fad778d9af75da1",
+  "arms": {
+    "baseline": {
+      "core_commit": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+      "original_core_files_verified": 131,
+      "unchanged_host_source_files_verified": 2760,
+      "common_patch_sha256": "01d9e9392d021d4c37603f5c1509efb8dc471cf5f62fe47db28c5adec5bddfd4",
+      "patch_result_reproduced": true,
+      "only_core_change": "src/resolution.rs",
+      "main_sha256": "4805d31149018d76e1294ce9cbfde171f5054a53b3bcac0a794c58e601fd3222",
+      "candidate_engine07_flag": false
+    },
+    "candidate": {
+      "core_commit": "ab3c6322921c8c738ec35bd018345917b5afa538",
+      "original_core_files_verified": 157,
+      "unchanged_host_source_files_verified": 2786,
+      "common_patch_sha256": "01d9e9392d021d4c37603f5c1509efb8dc471cf5f62fe47db28c5adec5bddfd4",
+      "patch_result_reproduced": true,
+      "only_core_change": "src/resolution.rs",
+      "main_sha256": "4805d31149018d76e1294ce9cbfde171f5054a53b3bcac0a794c58e601fd3222",
+      "candidate_engine07_flag": true
+    }
+  },
+  "recompiled_by_reviewer": false,
+  "audit_registry_builder_match_known_prepared_source": true,
+  "initial_auxiliary_probe_corrections": [
+    "Local Git default seven-character index abbreviations differ from GitHub eight-character diff headers; exact eight-character patch SHA and final source reproduced.",
+    "Inherited audit/registry/build modules are materialized from the pinned preparation archive; they are not standalone files in the current checkout. Compared against independently materialized and actual-image-equal preparation."
+  ]
+}

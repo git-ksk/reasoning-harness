@@ -1,0 +1,27 @@
+{
+  "actual_image_id": "sha256:ea084e99e3a31784f3aa3b755b232cd0e7673107a79064bc434923c666ee9e69",
+  "argv": [
+    "docker",
+    "run",
+    "--pull=never",
+    "--rm",
+    "--platform",
+    "linux/amd64",
+    "--read-only",
+    "--network",
+    "none",
+    "--tmpfs",
+    "/tmp",
+    "sha256:ea084e99e3a31784f3aa3b755b232cd0e7673107a79064bc434923c666ee9e69",
+    "python3",
+    "-B",
+    "/repo/evaluation/cli-repair-paired-v1/image_inventory.py"
+  ],
+  "returncode": 0,
+  "duration_seconds": 9.85229206085205,
+  "network": "none",
+  "pull": "never",
+  "credentials_supplied": false,
+  "actual_runtime_files": 104,
+  "runtime_inventory_matches_reviewed_source_and_proof": true
+}
