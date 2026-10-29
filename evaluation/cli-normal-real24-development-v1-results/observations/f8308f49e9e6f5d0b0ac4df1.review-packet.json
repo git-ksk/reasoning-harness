@@ -1,0 +1,139 @@
+{
+  "row_id": "f8308f49e9e6f5d0b0ac4df1",
+  "observation_sha256": "f480144db93cd92057c6749c2f972d98df9b638a82eedaa43028cc5236a44a29",
+  "gold": {
+    "id": "rw-06/e2e_normal",
+    "case_id": "rw-06",
+    "track": "e2e_normal",
+    "family": "scope",
+    "label": "positive",
+    "answerability": "full",
+    "groups": [
+      {
+        "id": "g1",
+        "required_supported_information": "Tracked files are omitted by default because exclude rules do not apply to them.",
+        "supporting_source_ids": [
+          "rw-06-a"
+        ]
+      },
+      {
+        "id": "g2",
+        "required_supported_information": "--no-index avoids consulting the index for this diagnostic.",
+        "supporting_source_ids": [
+          "rw-06-b"
+        ]
+      }
+    ],
+    "unresolved_facets": [],
+    "required_disclosures": [],
+    "full_source_rationale": "Description and option definition jointly answer the diagnostic question.",
+    "scope_time_origin_review": {
+      "product_target": "git",
+      "required_scope": {
+        "product": "git",
+        "release": "2.47.0"
+      },
+      "document_ids": [
+        "git-1",
+        "git-1"
+      ],
+      "release_refs": [
+        "v2.47.0",
+        "v2.47.0"
+      ],
+      "capture_commits": [
+        "777489f9e09c8d0dd6b12f9d90de6376330577a2",
+        "777489f9e09c8d0dd6b12f9d90de6376330577a2"
+      ],
+      "document_versions": [
+        "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+        "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3"
+      ],
+      "origin_groups": [
+        "upstream:git/git",
+        "upstream:git/git"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "14a762ab2d2c38ffd9f637b9d95e760c7813c263630f19f2a81ac98f69f29511"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-06-a": {
+      "source_id": "rw-06-a",
+      "document_id": "git-1",
+      "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt",
+      "normalized_path": "normalized/git-1.txt",
+      "raw_sha256": "ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+      "normalized_sha256": "e8e0d6f98750a23deb1df77609e15a30be0206d60c24a2a6ec547b1191fa60b9",
+      "source_version": "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 446,
+      "end_byte": 559,
+      "quote": "By default, tracked files are not shown at all since they are not subject to exclude rules; but see `--no-index'.",
+      "quote_sha256": "1e7ea5c05052a1beb5be2993c520eb58de7c111937470de3a6fda2c4e1d5f812",
+      "locator": "Documentation/git-check-ignore.txt normalized_UTF8_bytes[446,559)",
+      "context_summary": "Git2.47.0 check-ignore manual: default/index options, ignore output and exit statuses.",
+      "origin_group": "upstream:git/git",
+      "scope": {
+        "product": "git",
+        "release": "2.47.0"
+      },
+      "reference_facts": {
+        "git.check_ignore.tracked_default": "Tracked files are not shown by default."
+      },
+      "synthetic_mutation": false
+    },
+    "rw-06-b": {
+      "source_id": "rw-06-b",
+      "document_id": "git-1",
+      "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt",
+      "normalized_path": "normalized/git-1.txt",
+      "raw_sha256": "ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+      "normalized_sha256": "e8e0d6f98750a23deb1df77609e15a30be0206d60c24a2a6ec547b1191fa60b9",
+      "source_version": "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 1611,
+      "end_byte": 1904,
+      "quote": "--no-index:: Don't look in the index when undertaking the checks. This can be used to debug why a path became tracked by e.g. `git add .` and was not ignored by the rules as expected by the user or when developing patterns including negation to match a path previously added with `git add -f`.",
+      "quote_sha256": "a22529e31e85dfed67495c43fdbf5cb47617de92e8008aa3c388a245ce6f85c1",
+      "locator": "Documentation/git-check-ignore.txt normalized_UTF8_bytes[1611,1904)",
+      "context_summary": "Git2.47.0 check-ignore manual: default/index options, ignore output and exit statuses.",
+      "origin_group": "upstream:git/git",
+      "scope": {
+        "product": "git",
+        "release": "2.47.0"
+      },
+      "reference_facts": {
+        "git.check_ignore.no_index": "Does not look in the index; useful for debugging why a tracked path was not ignored."
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

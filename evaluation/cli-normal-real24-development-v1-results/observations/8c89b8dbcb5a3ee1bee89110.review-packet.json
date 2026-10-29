@@ -1,0 +1,141 @@
+{
+  "row_id": "8c89b8dbcb5a3ee1bee89110",
+  "observation_sha256": "97110f95733a6ddac1be14e9594f56dea97b1911274b0ba2c677255cef0c8d00",
+  "gold": {
+    "id": "rw-13/e2e_normal",
+    "case_id": "rw-13",
+    "track": "e2e_normal",
+    "family": "conflict",
+    "label": "positive",
+    "answerability": "full",
+    "groups": [
+      {
+        "id": "g1",
+        "required_supported_information": "NONE continues regardless of verification result.",
+        "supporting_source_ids": [
+          "rw-13-a"
+        ]
+      },
+      {
+        "id": "g2",
+        "required_supported_information": "PEER terminates on failure in the stated non-anonymous/default-verifier context.",
+        "supporting_source_ids": [
+          "rw-13-b"
+        ]
+      }
+    ],
+    "unresolved_facets": [],
+    "required_disclosures": [
+      "verification_mode_and_default_callback_scope"
+    ],
+    "full_source_rationale": "The full page provides callback qualifications; apparent conflict is mode-specific.",
+    "scope_time_origin_review": {
+      "product_target": "openssl",
+      "required_scope": {
+        "product": "openssl",
+        "release": "3.0.15"
+      },
+      "document_ids": [
+        "openssl-2",
+        "openssl-2"
+      ],
+      "release_refs": [
+        "openssl-3.0.15",
+        "openssl-3.0.15"
+      ],
+      "capture_commits": [
+        "c523121f902fde2929909dc7f76b13ceb4961efe",
+        "c523121f902fde2929909dc7f76b13ceb4961efe"
+      ],
+      "document_versions": [
+        "sha256:aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde",
+        "sha256:aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde"
+      ],
+      "origin_groups": [
+        "upstream:openssl/openssl",
+        "upstream:openssl/openssl"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "4f8220234ad5f89486f79400c558a3d322152b14c0af39df3185f806b653be4c"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-13-a": {
+      "source_id": "rw-13-a",
+      "document_id": "openssl-2",
+      "url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_CTX_set_verify.pod",
+      "normalized_path": "normalized/openssl-2.txt",
+      "raw_sha256": "aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde",
+      "normalized_sha256": "f198d501a38886a26eb08b6b74973008b6af9111e925be1409333cc76dd8bde1",
+      "source_version": "sha256:aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde",
+      "retrieved_at_unix_seconds": 1792409988,
+      "start_byte": 3797,
+      "end_byte": 4139,
+      "quote": "B<Client mode:> if not using an anonymous cipher (by default disabled), the server will send a certificate which will be checked. The result of the certificate verification process can be checked after the TLS/SSL handshake using the L<SSL_get_verify_result(3)> function. The handshake will be continued regardless of the verification result.",
+      "quote_sha256": "dc5b01f3a69de8ef489ef0b94b36bad9ade89c148ae1730a33990b6851c2791c",
+      "locator": "doc/man3/SSL_CTX_set_verify.pod normalized_UTF8_bytes[3797,4139)",
+      "context_summary": "OpenSSL3.0.15 verification flags and callbacks: preserve client/server and built-in/custom verification contexts.",
+      "origin_group": "upstream:openssl/openssl",
+      "scope": {
+        "product": "openssl",
+        "release": "3.0.15"
+      },
+      "reference_facts": {
+        "openssl.client.none_failure": "SSL_VERIFY_NONE client handshake continues regardless of verification result."
+      },
+      "synthetic_mutation": false
+    },
+    "rw-13-b": {
+      "source_id": "rw-13-b",
+      "document_id": "openssl-2",
+      "url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_CTX_set_verify.pod",
+      "normalized_path": "normalized/openssl-2.txt",
+      "raw_sha256": "aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde",
+      "normalized_sha256": "f198d501a38886a26eb08b6b74973008b6af9111e925be1409333cc76dd8bde1",
+      "source_version": "sha256:aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde",
+      "retrieved_at_unix_seconds": 1792409988,
+      "start_byte": 4585,
+      "end_byte": 4892,
+      "quote": "B<Client mode:> the server certificate is verified. If the verification process fails, the TLS/SSL handshake is immediately terminated with an alert message containing the reason for the verification failure. If no server certificate is sent, because an anonymous cipher is used, SSL_VERIFY_PEER is ignored.",
+      "quote_sha256": "5616128453947b5a3f180fe1b16a31aa9ce32f2aa8a7b283b640bebb1d751c5e",
+      "locator": "doc/man3/SSL_CTX_set_verify.pod normalized_UTF8_bytes[4585,4892)",
+      "context_summary": "OpenSSL3.0.15 verification flags and callbacks: preserve client/server and built-in/custom verification contexts.",
+      "origin_group": "upstream:openssl/openssl",
+      "scope": {
+        "product": "openssl",
+        "release": "3.0.15"
+      },
+      "reference_facts": {
+        "openssl.client.peer_failure": "SSL_VERIFY_PEER terminates handshake on verification failure; ignored for anonymous cipher."
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

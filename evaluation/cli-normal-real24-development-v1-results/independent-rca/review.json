@@ -1,0 +1,92 @@
+{
+  "identity": "independent-cli-normal-saved-raw-rca-v1",
+  "reviewer": "/root/real24_operational_review",
+  "reviewer_kind": "agent_nonhuman",
+  "scope": "read-only RCA of immutable first normal v1 run; no successor runtime approval or semantic scoring",
+  "result": "CONFIRMED_SAVED_RAW_RCA_ONLY",
+  "formal_verdict_issued": false,
+  "not_formal_operational_verdict": true,
+  "run_id": 40873570944,
+  "artifact_id": 12896743028,
+  "artifact_ZIP_sha256": "9100a6d26d9ab115ed6ceeac9d53de96753e1f0479e78a899cc26a87f86c4459",
+  "runtime_source_commit": "3a58f5ccb9c2a2183695bd8b783efc8b36d8e63b",
+  "execution_commit": "7073471d7490c64841200ae9ddaf252317c34721",
+  "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6",
+  "findings": [
+    "The saved artifact is internally bound to the expected failed first-tag run; every one of its 139 extracted file bytes equals the hash-verified ZIP. Planned48 yields 2 operationally complete, 1 failed and 45 suppressed. No suppressed row has spawn/model output.",
+    "rw-02-candidate has eight instrumented HTTP requests/responses, all status200, with complete consistent usage and one provider_attempt per response. Its ninth trace ModelRequest is final_render and is refused before generation reservation increment/provider entry/wire dispatch. The refused saved ModelRequest serializes to13365 bytes, exceeding the fixed12000 request cap.",
+    "The failure is a local pre-request size refusal, not an observed ninth HTTP or missing usage in one of the eight successful HTTP responses. Frozen audit code returns Protocol with a generic ModelError default provider_attempts=1. CLI record_failure adds that attempt and unknown failure usage; its budget check can then surface usage_budget_unmeasurable/provider_attempts9. Trace retains protocol/evaluation pre-request bound exceeded. These are distinct diagnostic layers; canonical state is preserved.",
+    "Independent token-aware removal of JSON structural whitespace inside only the Verified reasoning artifact changes saved ModelRequest bytes13365 to11186. Quoted string bytes, token spellings/order, all JSON values, prefix/suffix text and all other request fields stay unchanged. Original aggregate input reservation20178 already fit24000; compact reservation17999 fits the same cap. Observed output3118 plus requested978 equals4096. Only the per-request byte cap is exceeded among these recorded numerical bounds.",
+    "Compaction is a saved-request representation diagnostic only. It does not establish that the model would return the same answer, that later requests fit, that a successor completes48, or that answer quality improves.",
+    "The collector restored48 observations without binding failures, with operations complete2/incomplete1/not_run45. Restored observation count is not operational cohort completion or semantic completeness. Observation index actual_answer_f1 and checkpoint full_F1 remain null; semantic review is pending and checkpoint says first aggregate scoring has not started."
+  ],
+  "recorded_HTTP_totals": {
+    "rw-01-baseline": 7,
+    "rw-01-candidate": 7,
+    "rw-02-candidate": 8,
+    "total": 22,
+    "rw-02-candidate_ninth_HTTP": 0
+  },
+  "saved_request_diagnostic": {
+    "original_request_bytes": 13365,
+    "compact_request_bytes": 11186,
+    "original_input_reservation": 20178,
+    "compact_input_reservation": 17999,
+    "input_cap": 24000,
+    "output_reservation": 4096,
+    "output_cap": 4096,
+    "per_request_byte_cap": 12000,
+    "original_request_sha256": "7750dcc63dbf06fb9b25a11e050bfb15c404216fdd06cae535b1a64f604f84c0",
+    "diagnostic_compact_request_sha256": "a0809845d608320c9d29b81082d8d20037fccbc8f695ece86e3511cf55a800e4"
+  },
+  "canonical_state_preserved": {
+    "canonical_failed_outcome": {
+      "failure_class": "usage_budget_unmeasurable",
+      "provider_attempts": 9,
+      "tokens": null
+    },
+    "canonical_summary_unknown_usage_rows": 1,
+    "canonical_known_tokens": 12550,
+    "canonical_known_attempts": 14,
+    "canonical_reservation_charge": 84288,
+    "canonical_latch": "typed_operational_failure:usage_budget_unmeasurable"
+  },
+  "full_F1": null,
+  "semantic_labels_or_new_scores_authored": false,
+  "observation_provenance_binding": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+  "frozen_source_evidence": {
+    "crates/reasoning-harness-core/src/generation.rs": {
+      "source_commit": "ab3c6322921c8c738ec35bd018345917b5afa538",
+      "sha256": "67c7074ca168e773601726790e52f33c7ece15c75088d62c3f3e5254b6aca019"
+    },
+    "crates/reasoning-harness-core/src/model.rs": {
+      "source_commit": "ab3c6322921c8c738ec35bd018345917b5afa538",
+      "sha256": "0257e0fa6fc998a106ecb5b5412bad389efc187e9cf00eee09377e0201d30148"
+    },
+    "crates/reasoning-harness-cli/src/usage_budget.rs": {
+      "source_commit": "dbad2dc25d3487819206582f1fad778d9af75da1",
+      "sha256": "8f0bc8612a6c72d016f6c73f86e9cc09148b8c035c18a214bd6489b3ca84ebbf"
+    },
+    "evaluation/cli-repair-paired-v1/audit.rs": {
+      "sha256": "60c76a723c72a26e5fb79c03b07e2a5c33f376025d33f569462ce37284fd3c54",
+      "source_commit": "3a58f5ccb9c2a2183695bd8b783efc8b36d8e63b"
+    }
+  },
+  "raw_files_before_after_equal": true,
+  "raw_files_count": 142,
+  "raw_file_inventory_sha256": "ce3b6603cfa9eb667ea44bb6104abb2ab597acb34ab6d46794bbf688f6eea36b",
+  "prospective_boundary": "Any product lossless compaction or diagnostic change belongs to a separately pinned successor source/image/profile/receipt/first-tag review. This RCA does not authorize it and does not repair, relabel, rescore, resume or retry the v1 run. Existing formal runtime review is not reissued or extended.",
+  "limitations": [
+    "HTTP count is supported by the bound instrumented wire journal and source path; no independent provider invoice/remote request-ID attestation or whole-account traffic claim.",
+    "No answer correctness/semantic label is inferred from HTTP200, operational completion or artifact reconstruction."
+  ],
+  "new_actions": {
+    "external_API_or_model_calls": 0,
+    "credentials_read_or_loaded": false,
+    "tag_created": false,
+    "model_or_scorer_executed": false,
+    "tracked_source_edited": false,
+    "old_raw_or_receipt_or_formal_verdict_changed": false
+  },
+  "reviewed_at_UTC": "2026-10-29T13:38:02.754098+00:00"
+}

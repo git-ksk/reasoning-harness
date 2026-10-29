@@ -1,0 +1,38 @@
+{
+  "identity": "ordinary-v2-preparation-checkpoint-v1",
+  "state": "SOURCE_PREPARATION_ONLY_NOT_LIVE_ADMISSION",
+  "common_cli_host": "54eee374b40100e04fb0f8cde95912c8076dafa6",
+  "common_cli_PR": 570,
+  "fixed_derivation_source": "7073471d7490c64841200ae9ddaf252317c34721",
+  "prepared_runtime_inventory_files": 104,
+  "v2_checkout_controls_passed": 8,
+  "generated_normal_controls_passed": 20,
+  "inherited_controls_passed": 85,
+  "inherited_controls_evidence": "author run; actual image controls pending",
+  "previous_v1_run": 40873570944,
+  "previous_v1_complete_failed_suppressed": [
+    2,
+    1,
+    45
+  ],
+  "prior_v1_raw_receipt_tag_unchanged": true,
+  "prior_v1_full_F1": null,
+  "new_v2_model_calls": 0,
+  "new_v2_F1": null,
+  "actual_runtime_independent_review_complete": false,
+  "new_v2_receipt_frozen": false,
+  "new_v2_execution_tag_created": false,
+  "next": [
+    "independent v2 source review",
+    "merge preparation",
+    "build actual AMD64 image and proof",
+    "independent actual runtime admission",
+    "fresh metadata/readiness and genuine receipt",
+    "distinct first Mistral48-job run",
+    "independent semantic review and first F1"
+  ],
+  "common_cli_PR_merged": true,
+  "common_cli_merge_commit": "d61d7b893cced23fb77c2430c4553ca700d262bc",
+  "common_cli_independent_source_review_sha256": "017125d2890810ed9bc068a4ae362fe2062f74deaa5c6d0f538ae9a34abcc8f6",
+  "common_cli_exact_head_CI_successes": 22
+}

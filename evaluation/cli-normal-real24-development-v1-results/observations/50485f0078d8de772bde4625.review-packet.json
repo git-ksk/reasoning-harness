@@ -1,0 +1,133 @@
+{
+  "row_id": "50485f0078d8de772bde4625",
+  "observation_sha256": "6e86b54a4424f9a666634063d2a2aa91d586244dc4e0ecd8670eefb447ad0858",
+  "gold": {
+    "id": "rw-05/e2e_normal",
+    "case_id": "rw-05",
+    "track": "e2e_normal",
+    "family": "compatible",
+    "label": "positive",
+    "answerability": "full",
+    "groups": [
+      {
+        "id": "g1",
+        "required_supported_information": "With -z output is path,NUL,attribute,NUL,info,NUL instead of the ordinary text delimiters.",
+        "supporting_source_ids": [
+          "rw-05-a",
+          "rw-05-b"
+        ]
+      }
+    ],
+    "unresolved_facets": [],
+    "required_disclosures": [],
+    "full_source_rationale": "The entire relevant output grammar is included.",
+    "scope_time_origin_review": {
+      "product_target": "git",
+      "required_scope": {
+        "product": "git",
+        "release": "2.47.0"
+      },
+      "document_ids": [
+        "git-2",
+        "git-2"
+      ],
+      "release_refs": [
+        "v2.47.0",
+        "v2.47.0"
+      ],
+      "capture_commits": [
+        "777489f9e09c8d0dd6b12f9d90de6376330577a2",
+        "777489f9e09c8d0dd6b12f9d90de6376330577a2"
+      ],
+      "document_versions": [
+        "sha256:7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa",
+        "sha256:7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa"
+      ],
+      "origin_groups": [
+        "upstream:git/git",
+        "upstream:git/git"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "8c61131138fc74a27520af2691bb7d0ec56210c2c66f980080a8f50e1c476e12"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-05-a": {
+      "source_id": "rw-05-a",
+      "document_id": "git-2",
+      "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-attr.txt",
+      "normalized_path": "normalized/git-2.txt",
+      "raw_sha256": "7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa",
+      "normalized_sha256": "4d8c0aec74ffbce5eef0cf9275087b6d902592dc7866fa9d7893212e76ba7733",
+      "source_version": "sha256:7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 1392,
+      "end_byte": 1569,
+      "quote": "The output is of the form: <path> COLON SP <attribute> COLON SP <info> LF unless `-z` is in effect, in which case NUL is used as delimiter: <path> NUL <attribute> NUL <info> NUL",
+      "quote_sha256": "0753113daaeff4a6ab90601ac36e917669a6affbc47bcbf4f12d30718fc7d499",
+      "locator": "Documentation/git-check-attr.txt normalized_UTF8_bytes[1392,1569)",
+      "context_summary": "Git2.47.0 check-attr manual: per-path attribute states, text/NUL output and illustrative .gitattributes examples.",
+      "origin_group": "upstream:git/git",
+      "scope": {
+        "product": "git",
+        "release": "2.47.0"
+      },
+      "reference_facts": {
+        "git.check_attr.nul_output": "With -z: path NUL attribute NUL info NUL."
+      },
+      "synthetic_mutation": false
+    },
+    "rw-05-b": {
+      "source_id": "rw-05-b",
+      "document_id": "git-2",
+      "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-attr.txt",
+      "normalized_path": "normalized/git-2.txt",
+      "raw_sha256": "7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa",
+      "normalized_sha256": "4d8c0aec74ffbce5eef0cf9275087b6d902592dc7866fa9d7893212e76ba7733",
+      "source_version": "sha256:7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 1392,
+      "end_byte": 1569,
+      "quote": "The output is of the form: <path> COLON SP <attribute> COLON SP <info> LF unless `-z` is in effect, in which case NUL is used as delimiter: <path> NUL <attribute> NUL <info> NUL",
+      "quote_sha256": "0753113daaeff4a6ab90601ac36e917669a6affbc47bcbf4f12d30718fc7d499",
+      "locator": "Documentation/git-check-attr.txt normalized_UTF8_bytes[1392,1569)",
+      "context_summary": "Git2.47.0 check-attr manual: per-path attribute states, text/NUL output and illustrative .gitattributes examples.",
+      "origin_group": "upstream:git/git",
+      "scope": {
+        "product": "git",
+        "release": "2.47.0"
+      },
+      "reference_facts": {
+        "git.check_attr.nul_output": "With -z: path NUL attribute NUL info NUL."
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

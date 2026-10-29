@@ -1,0 +1,324 @@
+{
+  "identity": "cli-normal-run40873570944-independent-semantic-review-v1",
+  "reviewer": "/root/paired_evaluation_independent",
+  "run_id": 40873570944,
+  "artifact_id": 12896743028,
+  "execution_provenance_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+  "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6",
+  "old_annotations_read_or_copied": false,
+  "source_context": "All 12 normalized full documents were read, including the complete curl retry-all-errors conditions; normalized/raw bytes and frozen corpus files are independently hash checked. Source text was treated only as inert evidence.",
+  "complete_rows_reviewed": [
+    "11edbef97cc2c1c51e0081fd",
+    "9e600049ff79471b54e2c6b9"
+  ],
+  "complete_rows_result": "Both fresh displays answer the companion-option question, with source-local exact quotations. Same publisher/document is not independent corroboration. Generic partial wording remains visible.",
+  "empty_rows_result": "45 not_run and 1 incomplete retain empty answer/citations; no attempted accept, no semantic withholding, no useful answer, no known displayed hard violation. This is not a full-cohort safety success.",
+  "partial_failure_audit": {
+    "row_id": "c03423fb4ed9889a8f5f17d2",
+    "operation": "incomplete",
+    "payload_read_completely": true,
+    "failure_class": "usage_budget_unmeasurable",
+    "result_trust": "no_new_final_result",
+    "captured_answer_bytes": 0,
+    "diagnostic_review": "Unvalidated coverage describes the transient-error proposition and an unresolved HTTP404 target. The first matches the saved curl manual; the second is not asserted as established. The payload is operational diagnostics, not a final answer, so it contributes no displayed claims or safety/utility credit. No statement that all failed-path facts are fully bound is made.",
+    "safety_scope": "captured empty answer plus this retained diagnostic payload only"
+  },
+  "limitations": [
+    "Only one question has a complete two-arm answer pair.",
+    "No full-cohort model quality or improvement estimate follows from this stopped run.",
+    "Independent agent judgment, not human attestation or a fresh acceptance set.",
+    "Review complete means the captured inventory was annotated; operation remains separate."
+  ],
+  "row_inventory": [
+    {
+      "row_id": "03f645949a3eddb2f955b015",
+      "operation": "not_run",
+      "observation_sha256": "763b62d73001c91e84453f816b9d8bea4ebec0431bdaaf7bca2d4e66ca9686f9",
+      "review_sha256": "4f912f354cdaddf61578027d80f58ca1d0c927972e80895a4200e603a0d72976"
+    },
+    {
+      "row_id": "0bfef83dfd751e8eb75a4a81",
+      "operation": "not_run",
+      "observation_sha256": "46f98357ed10755fc9c83984d56a3315cf62786493457e4c5efe0b4504946900",
+      "review_sha256": "8ade358bb03401e59f94ae9c29009ae39d35f7bfdf9be23976cc81cbed4beaa9"
+    },
+    {
+      "row_id": "0dcfc2b552b8cb9efce73a05",
+      "operation": "not_run",
+      "observation_sha256": "21dedb4bf3186f96562f4a786133a41ed8a14fba854f656c16537ef72bff0ded",
+      "review_sha256": "85c95d5286647c5c1f56f5dbb13bfe86f6d956f5d00112709a2965e3c65c3a7b"
+    },
+    {
+      "row_id": "11edbef97cc2c1c51e0081fd",
+      "operation": "complete",
+      "observation_sha256": "85d1e3189fd989f5c3173208fb10bd484e0d0fc99c416f921d7cf0442c882cda",
+      "review_sha256": "ae788afe6407e29b460f6a7fee1d484b15a078414bf5eaba30b17f6102ece69e"
+    },
+    {
+      "row_id": "234d4ecaed58b4539aa21d4d",
+      "operation": "not_run",
+      "observation_sha256": "710aab8ed5d3976fe8751f90143182190df8ed2963e0ebbea282ad072fbe3a4d",
+      "review_sha256": "c805f48d22a0d7e407d772a12a95a72294bb0b49e9c0fd775f6226e9a02c65dc"
+    },
+    {
+      "row_id": "260211fa98e52fff31cdab03",
+      "operation": "not_run",
+      "observation_sha256": "778309204688c7ca80f915b6994c153ee798d3232bd12968397c7598322d3164",
+      "review_sha256": "5653ce90925e865584a45ac5e3ccd1779353ca3e89785d47aa997e8c18902144"
+    },
+    {
+      "row_id": "36b227051063ab5e71279f67",
+      "operation": "not_run",
+      "observation_sha256": "7ff2c90f3623b8022f0ec4f8f1e0649337e0d20940e8f422d5ecc289a44cca26",
+      "review_sha256": "62101f79c500f5407ecf02016ab6b72dde5c99de90dbbeae97d52446bddace98"
+    },
+    {
+      "row_id": "3dac1c93074f45fe0e661977",
+      "operation": "not_run",
+      "observation_sha256": "838fcd499e6783303ac548d82cc79c716a7417e02e312da8e165170ec1386c72",
+      "review_sha256": "212094b6ad289338d5c4d18dd2e06a74acda92481e8159c687f21be6fb3e65ee"
+    },
+    {
+      "row_id": "3db11e42f5fd09a105e1c207",
+      "operation": "not_run",
+      "observation_sha256": "02e47dfb62f1e69b57c66f86c74c1aad1900a146e7b2e1c62b7df0f54fd80e67",
+      "review_sha256": "347f748f1cf77fe90fda31cbb8448d59eec16814e8be79aded08a6f835f29f82"
+    },
+    {
+      "row_id": "3f2211892ff4dd9bbe76ca90",
+      "operation": "not_run",
+      "observation_sha256": "ef327cd0607121de9add2cfdfc39458fb683fe6f4a1c5a92af04992e76355c5e",
+      "review_sha256": "5b5d4482683ab5503217069cc3b8d5cbd287fd9fa14a1cf6f68037fb64aa1597"
+    },
+    {
+      "row_id": "3f9ac7b2b9e7763c0423e3eb",
+      "operation": "not_run",
+      "observation_sha256": "e67a5a41cdcbff35f3536210dabc2576b81f26caef1733c95934cc7d24260ad5",
+      "review_sha256": "867b925f0d2e33356aca50c3a5ecd8ead13dc279909bfc4e204e526dbf15d24b"
+    },
+    {
+      "row_id": "418902a6ad660d964d45c3a2",
+      "operation": "not_run",
+      "observation_sha256": "88fde3b35a23bf2060d1f1543fd041d3d2b9c0e4808b426a8aedd6f4db132e55",
+      "review_sha256": "aee9e9e1f7f941d4656d03a79811822d91dc1b289840b78cccea2da6fc96489d"
+    },
+    {
+      "row_id": "420e80e0dbf6a743f2a02d6b",
+      "operation": "not_run",
+      "observation_sha256": "dc87bf9ef30756b3c7bb2d9bc47505e11cdda16b170c1780ea5088511e91d0cd",
+      "review_sha256": "2801c8e8e5a88010c45d94f6f416ae4f34c5999b8e9880660c620c41462e0b25"
+    },
+    {
+      "row_id": "47e87a9cbfcc4cc9705f5f17",
+      "operation": "not_run",
+      "observation_sha256": "dea2f0e9351722b057811805b0746a01f901a4d88e1dd72840272358097082b9",
+      "review_sha256": "1054acfce27054c79e70ca98287f4a021d8d7210651ac8ae24655e8134aeb159"
+    },
+    {
+      "row_id": "50485f0078d8de772bde4625",
+      "operation": "not_run",
+      "observation_sha256": "6e86b54a4424f9a666634063d2a2aa91d586244dc4e0ecd8670eefb447ad0858",
+      "review_sha256": "a4a4228d1bebdcc2ecbaef657073bd869e20a07aa1fae56f2f4ebbf8431fbf4b"
+    },
+    {
+      "row_id": "570b7081e84e89452a76d827",
+      "operation": "not_run",
+      "observation_sha256": "6769a14df3580c9f23786764b6fb1da97ceac835b6bc4d222b2703cd85fd9834",
+      "review_sha256": "9fec4c2927fb02edd780bd90a4997f93b84fc7c295a826a9df385fd220039c59"
+    },
+    {
+      "row_id": "5803a14cd681b3f76bac44f9",
+      "operation": "not_run",
+      "observation_sha256": "529e5c4f21b7f142fcb52c6c0e5986897301bce68d0d75dc9c9a7c5332f6c01c",
+      "review_sha256": "f8c482435aba5eb5263ccb380f39a7f1698b853a0d2d2e8e2b97f74ce3b81fef"
+    },
+    {
+      "row_id": "625ea2618781bf401ea1116d",
+      "operation": "not_run",
+      "observation_sha256": "3c8f3fcdd10fd1b32bb1037bdbb0e90242d5fd8cc4faceb3d3629662daa89a25",
+      "review_sha256": "08b1705f7ca7963a08bb8c839826d30041d8174db65207fd61b16185d293d3ab"
+    },
+    {
+      "row_id": "64ba0acc6cea5741e65f1131",
+      "operation": "not_run",
+      "observation_sha256": "2376777dd64e9097b558650ff239589d5f6b018f11de2198faf7e54cf1a110bc",
+      "review_sha256": "a959814748b3446116e176b9933d1786b069007d591f55907a01c01375621fc2"
+    },
+    {
+      "row_id": "703d05ada8d98ab06eed9200",
+      "operation": "not_run",
+      "observation_sha256": "7949ad316b1a1a0a7bd970cd87e2294fb5ba470f867f3a355fa6c046a28e0bc6",
+      "review_sha256": "4ca7c17e657fc7dcdbe46d37b7f8745865d15fc23d0c62c7292557d45c4cfa66"
+    },
+    {
+      "row_id": "8c89b8dbcb5a3ee1bee89110",
+      "operation": "not_run",
+      "observation_sha256": "97110f95733a6ddac1be14e9594f56dea97b1911274b0ba2c677255cef0c8d00",
+      "review_sha256": "f48c9f89b821e60a87b496c316b8ecc6f9de5ed974440d0ccb85483f008f363b"
+    },
+    {
+      "row_id": "8cd0f18d0fe9c20bf72075fd",
+      "operation": "not_run",
+      "observation_sha256": "5870d29c1cfd0cac659da9211d36ffc1d485e652ee31b1db11d2c9a1c7022725",
+      "review_sha256": "84e41a1d3b20cd07ab1a45edd16e6203004cb0b46f1f54e9daaa4ca174f036a4"
+    },
+    {
+      "row_id": "92d2070e568614e7c7e492d3",
+      "operation": "not_run",
+      "observation_sha256": "a44031532f82978212c8e77ca2368b0bb3b7329a5a2cdf7beba4b9db05acca3f",
+      "review_sha256": "e6edd654cd8ce11cf5a39c8f59db19d7efe2ec8667712ced6ed21885bd080d94"
+    },
+    {
+      "row_id": "9691a1867e3052ff4e2bc845",
+      "operation": "not_run",
+      "observation_sha256": "5160b7649f3049205c20711ffd24b70edee5e7218c3730a00a49e656d1892836",
+      "review_sha256": "9a3e476f389c9fdcf7d71084b427e04386e2023e417f900b503e3c1f3cf9b017"
+    },
+    {
+      "row_id": "98b4ec65a562d4bd61e8b022",
+      "operation": "not_run",
+      "observation_sha256": "e8d06dec4cd4cad622adfec4c0f44acf51a137847a9bb5a59faec11403efafa3",
+      "review_sha256": "488e9eebb74e1b46e9c0d7ed9e22be99161e8db0a89ded92b00d3fe5627cef0f"
+    },
+    {
+      "row_id": "9e600049ff79471b54e2c6b9",
+      "operation": "complete",
+      "observation_sha256": "cbbd07639da59b6154864eccb772bfb938adfceeae4d238369bbf88c170d8b92",
+      "review_sha256": "cfe2add0b4b42f2a8a8b41171827b6fc801a3c40cf9785dd30c937a2be07c35e"
+    },
+    {
+      "row_id": "9f5961ac16b63cf6af6e0021",
+      "operation": "not_run",
+      "observation_sha256": "b6a8eb2bc10322032692730293dc2770f2fab50b0eb8302d42a6bf91c3c3a272",
+      "review_sha256": "c4af69c9227aca55f329dbb61c03023e7e78470661e1a3bb064b37832266b11f"
+    },
+    {
+      "row_id": "a69aa87b97f1d58bd6900b05",
+      "operation": "not_run",
+      "observation_sha256": "c990ef680f3d58ca966b9f20d8eb286286d9e168203cdc24958a9bc6d0063cf8",
+      "review_sha256": "df5b6856d5f77246c05d5014ad7fe5c2c789d695d79dd53627c0bf956b233281"
+    },
+    {
+      "row_id": "a8eac350b1c1153e482fa87c",
+      "operation": "not_run",
+      "observation_sha256": "d79c803f5309c977254cebef5997a862ee4f827d412075459ea35dd4bf9e1243",
+      "review_sha256": "5cace64579f3014d83f64acd83d40b64b6bba8ad3b9912b5e5ff29032e72aaef"
+    },
+    {
+      "row_id": "b09ced498059f94fd9807c75",
+      "operation": "not_run",
+      "observation_sha256": "3c5c2347c3a6d669dca1d080bfa69fed9c4ca493f8b0769160603a9f42343e2b",
+      "review_sha256": "6d09295152920694950bf245099ed5d51034034867585634cefae09d5c88179e"
+    },
+    {
+      "row_id": "b3b26d89f2f8cd7fae5b9da3",
+      "operation": "not_run",
+      "observation_sha256": "45ff622e1ee605bf0e5850f3a8ea7e54001a1a2005033253cb71f17480d07434",
+      "review_sha256": "eac161e0aa9b28dbadf6f5cdd2da9577fba6bb53c5d90bb2e905bccd46411991"
+    },
+    {
+      "row_id": "b8e0660eb62b0513a32ca717",
+      "operation": "not_run",
+      "observation_sha256": "fcef479e950ad529ff46d272696ef0d961b374cf628f7e3d45e4eab56deb30ee",
+      "review_sha256": "160b025841d98e427269e3361f593fcd04d1f7c895f723be799c1128542aef8f"
+    },
+    {
+      "row_id": "ba265b7e3b2b7f558b94098d",
+      "operation": "not_run",
+      "observation_sha256": "b87e5c1146964549c664f5181e0a16b2bcb29d1d784ff4765742a1c98f6e7483",
+      "review_sha256": "92534beabb957db71f25106ba53a5163286087da84b30c1ecd7a65f73c735583"
+    },
+    {
+      "row_id": "bbdd2ef633e7da29739171e7",
+      "operation": "not_run",
+      "observation_sha256": "d05bc45468628c7e99f6e4d644e81e97efc26a20acdba64e6472625377e09144",
+      "review_sha256": "f7d764bf61692af13ff6eb42af830d35c423420b88b433e194a462f98c5a84f6"
+    },
+    {
+      "row_id": "bce76a1c493538632acedc4d",
+      "operation": "not_run",
+      "observation_sha256": "d1db5ba06c419412224ac007051fa2599522667d7d205c40bb935740713be6c9",
+      "review_sha256": "5d5d14ad088ef8229c20dfebf0ef4b82e0ecdc5d7e9c61296db1ec0a798e5112"
+    },
+    {
+      "row_id": "bd66922ab720aebe489abf25",
+      "operation": "not_run",
+      "observation_sha256": "8746ec23a72efac4a2deeb1bb6a74ba3da1717e3ddf1beb13ff4ef5e62fa6a6b",
+      "review_sha256": "e08b83353ee7eb9f7fa58d14b648fbebcc26a1ab50e0044fac7de236de6a005e"
+    },
+    {
+      "row_id": "be091d823150799fb7f89ce3",
+      "operation": "not_run",
+      "observation_sha256": "ef764a9ad1b318a300a41549a28faf15c91960d9606faa038fc34ba73a8dedd7",
+      "review_sha256": "7102383e39b2e7506d66c69e1eba17a8fba8883de49b2cd6c31ef0e608b1169d"
+    },
+    {
+      "row_id": "c03423fb4ed9889a8f5f17d2",
+      "operation": "incomplete",
+      "observation_sha256": "b276bbf1f2a5df755716eb332eb8f40b8df4839a958fddfd0f37bf1e09e19553",
+      "review_sha256": "0340c730b174853e2665cb6ba13bdab58d9f51ede158fca43bdc1527743e07b3"
+    },
+    {
+      "row_id": "c40a053c33fa2b9acca0c753",
+      "operation": "not_run",
+      "observation_sha256": "e6c2274b63d0c61feff66db96cf4289ea4df3e51cfc267645799579cc8d19ea2",
+      "review_sha256": "dd981dccfde430d8546eabdbac80729b44cd48f0e1d469c62beccf2f853dc86f"
+    },
+    {
+      "row_id": "c718fba9c8098065978e1ea4",
+      "operation": "not_run",
+      "observation_sha256": "3951175bf776c0c9f84a6a3979f1151c24daabf078904113d6cc7593e4d947a7",
+      "review_sha256": "603c15996d09821b97688406524f4e78550b76cd226d2bed23a8669b1af1b3a9"
+    },
+    {
+      "row_id": "d469450837fb5506851ddec4",
+      "operation": "not_run",
+      "observation_sha256": "763846b097df506173267023d802d450cec6b5ef861444c4db1d9c3a29506f1d",
+      "review_sha256": "b13f03c0257db70658ea513778f33c86ae2c0156313195d54578aca6d67098f4"
+    },
+    {
+      "row_id": "d6e14de26697c0b658049c65",
+      "operation": "not_run",
+      "observation_sha256": "76ad27664d3298ce022d907f18b6dcc412540268a83067ab95fcaa83ae3bbb00",
+      "review_sha256": "964c4280e922f4384f040a6b3062bfbce6e2c58550a3994770e7ade9f9e70ae0"
+    },
+    {
+      "row_id": "e3a44a5f479bf883ed206715",
+      "operation": "not_run",
+      "observation_sha256": "32388f3aebf50297843ae962b3b6c4721e0734ef4a3ce7178b04d2bd61fa6fc0",
+      "review_sha256": "7ae520cd1ceb7d2be4659ec7ece2646d9daa158933d4b0bec74cd940f70d8dfe"
+    },
+    {
+      "row_id": "ebb2f1c47cdd1d1e3038c7fc",
+      "operation": "not_run",
+      "observation_sha256": "c021933b41f7618a3389202dee3eb5677ad46ffad24f1be571cbcdec00a1d623",
+      "review_sha256": "252eea9c53a841106875c570d124775bff985d6826b6d0c57a21c5d055871a8b"
+    },
+    {
+      "row_id": "f4da70692b962b711932acdf",
+      "operation": "not_run",
+      "observation_sha256": "23c7f4cf08b5be643da0397a00d8033306f5ff835e203a2aa0b3543fb1c0e02f",
+      "review_sha256": "b1434dbb9a8160f1fe925e5340c5d9c07570cbaf0dcc116a7b0a5256c374aa75"
+    },
+    {
+      "row_id": "f7e27887f9e174d7cc0c2f01",
+      "operation": "not_run",
+      "observation_sha256": "b7580ce685174bf30464438a5003c92214cc733bba3e9c4e25453585ea784b1c",
+      "review_sha256": "472d8dcd0d5bf104f68d1b896daf8e994d3f910d33946556a54bc33ff9532ecb"
+    },
+    {
+      "row_id": "f8308f49e9e6f5d0b0ac4df1",
+      "operation": "not_run",
+      "observation_sha256": "f480144db93cd92057c6749c2f972d98df9b638a82eedaa43028cc5236a44a29",
+      "review_sha256": "32c409d749bbad22d4d47f94f6d55e1d6630307518dd921e0cd66c1d8f64dcbc"
+    },
+    {
+      "row_id": "fb81127ca9bd2d4e72d90670",
+      "operation": "not_run",
+      "observation_sha256": "d72a9ae5d86ffa339223d8e8b2ec5c2b614deba8c97ad24a35516f4275048cf5",
+      "review_sha256": "338210dc065e85c705532d6a2d8fba002995b6c7ae40ec79612aa3734c9a42e7"
+    }
+  ],
+  "aggregate_scoring_executed": false,
+  "provider_API_calls": 0
+}

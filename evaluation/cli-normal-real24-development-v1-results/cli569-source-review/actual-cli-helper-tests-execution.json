@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "cargo",
+    "test",
+    "--offline",
+    "--locked",
+    "-p",
+    "reasoning-harness-cli",
+    "--bin",
+    "reason",
+    "final_render_compaction::tests",
+    "--",
+    "--include-ignored",
+    "--nocapture"
+  ],
+  "returncode": 0,
+  "duration_seconds": 72.48985505104065,
+  "unique_target": "/private/tmp/cli569-independent-v28qdw8i/target-cli-unmodified-source",
+  "source": "/private/tmp/cli569-independent-v28qdw8i/source",
+  "private_saved_trace_explicitly_enabled": true,
+  "model_API_calls": 0
+}

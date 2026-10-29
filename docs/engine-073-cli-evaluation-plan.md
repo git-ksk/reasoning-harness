@@ -4,11 +4,13 @@
 
 The user approved separating ordinary CLI evaluation from model-free auxiliary API contract checks. This successor plan does not alter any frozen v1/v2 inputs, labels, reports, receipts, tags or their historical verdicts. Adoption remains pending. This document alone admits no live callback or release.
 
-## First live run and next repair, 2026-10-29
+## Remeasurement preparation after the size repair, 2026-10-30
 
-[PR568](https://github.com/git-ksk/reasoning-harness/pull/568) recorded actual-runtime, independent operational and genuine-receipt admission. The48-job ordinary Mistral [run40873570944](https://github.com/git-ksk/reasoning-harness/actions/runs/40873570944) stopped with2 completed,1 failed and45 suppressed jobs. Full F1 remains unavailable. The rw-02-candidate final_render request was13,365bytes against the unchanged12,000-byte pre-send bound. All8 preceding HTTP responses were200 with known usage; the ninth was never sent. Preserve the historical usage_budget_unmeasurable stop record and track its misleading diagnostic separately in #540.
+[#569](https://github.com/git-ksk/reasoning-harness/issues/569) / [PR570](https://github.com/git-ksk/reasoning-harness/pull/570) merged at `d61d7b8` after bounded independent source review and22 passing CI checks. The common CLI compacts builder-owned JSON for both initial and fallback final requests. The saved request shrinks13,365→11,186bytes and fallback13,683→11,015, preserving every JSON value, user text, authority/conditions, format, seed and bound. Public cores are unchanged.
 
-Prioritize the common CLI fix in [#569](https://github.com/git-ksk/reasoning-harness/issues/569). Compact only structural JSON whitespace in the verified artifact/schema for both initial and fallback requests, retaining every JSON value, user text, verdict, system, format, seed and bound. An offline replay of the saved request yields11,186bytes with identical information. After reproduction, independent review, both Engine builds and CI, freeze a distinct successor source/runtime/profile. Do not rerun the old v1. Fresh independent accuracy acceptance and CLI adoption remain incomplete.
+Preserve [run40873570944](https://github.com/git-ksk/reasoning-harness/actions/runs/40873570944) with2 complete,1 failed and45 suppressed; full F1 is unavailable. All8 preceding HTTP responses were200 with known usage, and the ninth request was refused before dispatch by the size bound. Keep the historical usage_budget_unmeasurable record and track diagnostics separately in #540.
+
+Next is the distinct [ordinary v2 preparation](../evaluation/cli-normal-v2/README.md). Derive separate identities/tag/workflows/normal_v2 from the pinned v1 tree with exact replacement counts and before/after hashes, fixing the common CLI host to `54eee37` for both arms. Budgets, model, tier, pacing and stops remain identical. Independently review v2 source, admit the actual AMD64 runtime/image/proof, obtain fresh metadata/readiness, and verify the genuine receipt/48-job plan/callback before a distinct first real-model measurement. The consumed24 tasks remain development diagnostics; fresh independent accuracy acceptance and CLI adoption are separate.
 
 ## Scope
 

@@ -1,0 +1,259 @@
+{
+  "artifact_id": 12896743028,
+  "run_id": 40873570944,
+  "ZIP_sha256": "9100a6d26d9ab115ed6ceeac9d53de96753e1f0479e78a899cc26a87f86c4459",
+  "artifact_file_count": 139,
+  "all_extracted_members_match_ZIP": true,
+  "cohort": {
+    "complete": 2,
+    "failed": 1,
+    "suppressed": 45
+  },
+  "journals": {
+    "rw-01-baseline": {
+      "kind_counts": {
+        "model_request": 7,
+        "wire_request": 7,
+        "wire_http_response": 7,
+        "model_response": 7
+      },
+      "HTTP_statuses": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "known_usage": [
+        {
+          "generation": 1,
+          "input_tokens": 302,
+          "output_tokens": 148,
+          "total_tokens": 450
+        },
+        {
+          "generation": 2,
+          "input_tokens": 461,
+          "output_tokens": 153,
+          "total_tokens": 614
+        },
+        {
+          "generation": 3,
+          "input_tokens": 520,
+          "output_tokens": 47,
+          "total_tokens": 567
+        },
+        {
+          "generation": 4,
+          "input_tokens": 783,
+          "output_tokens": 152,
+          "total_tokens": 935
+        },
+        {
+          "generation": 5,
+          "input_tokens": 529,
+          "output_tokens": 46,
+          "total_tokens": 575
+        },
+        {
+          "generation": 6,
+          "input_tokens": 1239,
+          "output_tokens": 166,
+          "total_tokens": 1405
+        },
+        {
+          "generation": 7,
+          "input_tokens": 1676,
+          "output_tokens": 97,
+          "total_tokens": 1773
+        }
+      ],
+      "input_tokens": 5510,
+      "output_tokens": 809
+    },
+    "rw-01-candidate": {
+      "kind_counts": {
+        "model_request": 7,
+        "wire_request": 7,
+        "wire_http_response": 7,
+        "model_response": 7
+      },
+      "HTTP_statuses": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "known_usage": [
+        {
+          "generation": 1,
+          "input_tokens": 302,
+          "output_tokens": 71,
+          "total_tokens": 373
+        },
+        {
+          "generation": 2,
+          "input_tokens": 461,
+          "output_tokens": 147,
+          "total_tokens": 608
+        },
+        {
+          "generation": 3,
+          "input_tokens": 514,
+          "output_tokens": 45,
+          "total_tokens": 559
+        },
+        {
+          "generation": 4,
+          "input_tokens": 783,
+          "output_tokens": 162,
+          "total_tokens": 945
+        },
+        {
+          "generation": 5,
+          "input_tokens": 523,
+          "output_tokens": 45,
+          "total_tokens": 568
+        },
+        {
+          "generation": 6,
+          "input_tokens": 1239,
+          "output_tokens": 167,
+          "total_tokens": 1406
+        },
+        {
+          "generation": 7,
+          "input_tokens": 1676,
+          "output_tokens": 96,
+          "total_tokens": 1772
+        }
+      ],
+      "input_tokens": 5498,
+      "output_tokens": 733
+    },
+    "rw-02-candidate": {
+      "kind_counts": {
+        "model_request": 8,
+        "wire_request": 8,
+        "wire_http_response": 8,
+        "model_response": 8,
+        "pre_request_refusal": 1
+      },
+      "HTTP_statuses": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "known_usage": [
+        {
+          "generation": 1,
+          "input_tokens": 325,
+          "output_tokens": 283,
+          "total_tokens": 608
+        },
+        {
+          "generation": 2,
+          "input_tokens": 432,
+          "output_tokens": 172,
+          "total_tokens": 604
+        },
+        {
+          "generation": 3,
+          "input_tokens": 398,
+          "output_tokens": 32,
+          "total_tokens": 430
+        },
+        {
+          "generation": 4,
+          "input_tokens": 935,
+          "output_tokens": 1024,
+          "total_tokens": 1959
+        },
+        {
+          "generation": 5,
+          "input_tokens": 1540,
+          "output_tokens": 703,
+          "total_tokens": 2243
+        },
+        {
+          "generation": 6,
+          "input_tokens": 560,
+          "output_tokens": 45,
+          "total_tokens": 605
+        },
+        {
+          "generation": 7,
+          "input_tokens": 1444,
+          "output_tokens": 849,
+          "total_tokens": 2293
+        },
+        {
+          "generation": 8,
+          "input_tokens": 667,
+          "output_tokens": 10,
+          "total_tokens": 677
+        }
+      ],
+      "input_tokens": 6301,
+      "output_tokens": 3118
+    }
+  },
+  "actual_instrumented_HTTP_total": 22,
+  "failed_job": "rw-02-candidate",
+  "failure_phase": "final_render",
+  "failed_job_HTTP": 8,
+  "ninth_wire_dispatches": 0,
+  "refusal": {
+    "completed_or_reserved_generations": 8,
+    "kind": "pre_request_refusal",
+    "model": "ministral-8b-2512",
+    "provider": "mistral",
+    "request_bytes": 13365
+  },
+  "original_request_bytes": 13365,
+  "original_input_reservation": 20178,
+  "compact_request_bytes": 11186,
+  "compact_input_reservation": 17999,
+  "input_cap": 24000,
+  "output_reservation": 4096,
+  "output_cap": 4096,
+  "per_request_byte_cap": 12000,
+  "only_structural_JSON_whitespace_removed": true,
+  "artifact_values_equal": true,
+  "outside_artifact_and_other_request_fields_unchanged": true,
+  "original_request_sha256": "7750dcc63dbf06fb9b25a11e050bfb15c404216fdd06cae535b1a64f604f84c0",
+  "diagnostic_compact_request_sha256": "a0809845d608320c9d29b81082d8d20037fccbc8f695ece86e3511cf55a800e4",
+  "canonical_failed_outcome": {
+    "failure_class": "usage_budget_unmeasurable",
+    "provider_attempts": 9,
+    "tokens": null
+  },
+  "canonical_summary_unknown_usage_rows": 1,
+  "canonical_known_tokens": 12550,
+  "canonical_known_attempts": 14,
+  "canonical_reservation_charge": 84288,
+  "canonical_latch": "typed_operational_failure:usage_budget_unmeasurable",
+  "observation_operations": {
+    "not_run": 45,
+    "incomplete": 1,
+    "complete": 2
+  },
+  "restored_observations": 48,
+  "observation_index_sha256": "a100352429cc6d6f6e18557eccf80406056db82ba7ef9176189be42cb6f2bda9",
+  "observation_provenance_binding": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+  "full_F1": null,
+  "first_aggregate_score_started": false,
+  "external_HTTP_added": 0,
+  "model_or_scorer_executed": false,
+  "counterfactual_completion_or_quality_claim": false
+}

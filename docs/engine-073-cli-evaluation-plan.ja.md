@@ -4,11 +4,13 @@
 
 ユーザーの指示により、次回以降は通常CLIの実モデル評価と、補助APIのモデルなし契約検証を分ける。これは次回計画であり、旧v2の採点条件・結果・入力・凍結receiptを書き換えない。現時点の採用判断は保留。新しい実API実行やリリースをこの文書だけで許可しない。
 
-## 2026-10-29 初回実行と次の修正
+## 2026-10-30 入力サイズ修正後の再測定準備
 
-[PR568](https://github.com/git-ksk/reasoning-harness/pull/568)で実runtime・独立運用確認・真正receiptの受入を記録した。Mistral通常の[初回run40873570944](https://github.com/git-ksk/reasoning-harness/actions/runs/40873570944)は48件中2件完了・1件失敗・45件抑止で停止し、全量F1は未測定。rw-02-candidateのfinal_render要求13,365bytesが送信前上限12,000bytesを超えた。直前8件のHTTPは全200・usage既知で、9件目は未送信。既存のusage_budget_unmeasurableという停止記録は変更せず、診断表現を#540で別に追う。
+[#569](https://github.com/git-ksk/reasoning-harness/issues/569) / [PR570](https://github.com/git-ksk/reasoning-harness/pull/570)は独立source確認・CI22件成功後に`d61d7b8`でマージ済み。共通CLIの通常・JSON fallbackでbuilder由来JSONの整形空白だけを削減する。実保存要求は13,365→11,186bytes、fallback13,683→11,015で、全JSON値・利用者本文・権限/条件・出力形式・seed・上限を維持した。公開Coreは変更しない。
 
-次は[#569](https://github.com/git-ksk/reasoning-harness/issues/569)の共通CLI修正。通常・JSON fallbackの検証済みartifact/schemaの整形空白だけを詰め、JSON全値、利用者の本文、verdict、system、出力形式、seed、上限を維持する。実保存要求では情報同一で11,186bytesに収まることをoffline確認済み。局所再現・独立レビュー・両Engineビルド・CI後に、新しいsource/runtime/profileを別に凍結する。旧v1を再実行しない。新規独立精度受入とCLI採用は引き続き未完了。
+[旧run40873570944](https://github.com/git-ksk/reasoning-harness/actions/runs/40873570944)は2完了・1失敗・45抑止で保持し、全量F1は未測定。直前8件のHTTPは全200・usage既知、第9HTTPは送信前サイズ上限で未送信だった。元のusage_budget_unmeasurable記録は修正せず、診断を#540で別に追う。
+
+次は[通常v2準備](../evaluation/cli-normal-v2/README.md)。固定v1 treeから変更箇所数・前後hashを照合して別identity/tag/workflow/normal_v2を導出し、両Engineの共通hostを`54eee37`へ固定する。予算・model・tier・pacing・停止条件は同一。v2の独立source確認と実AMD64 runtime/image/proof受入、新metadata/readiness、真正receipt・48件plan/callback確認後に、別の初回実モデル測定を行う。既知24問は開発診断であり、新規独立精度受入・CLI採用は別途必要。
 
 ## 評価対象
 

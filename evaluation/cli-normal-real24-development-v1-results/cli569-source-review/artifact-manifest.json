@@ -1,0 +1,22 @@
+{
+  "identity": "independent-cli569-source-review-artifact-manifest-v1",
+  "reviewer": "/root/real24_operational_review",
+  "source_commit": "54eee374b40100e04fb0f8cde95912c8076dafa6",
+  "scope": "bounded source evidence only, not runtime/live admission",
+  "files": {
+    "actual-cli-helper-tests-execution.json": "d2b304fdc66473f1a357947061f169a505840fd1c403491712c69f2e73cfd5f8",
+    "actual-cli-helper-tests.stderr": "34d9cd465c9bf34e1328cc0da65c560c560715065b304bd643c7ef160b1d84f4",
+    "actual-cli-helper-tests.stdout": "7096b98b56b385a20796f1e478cb5afe3661a41723a631129e19bd7195200be3",
+    "baseline-probe-execution.json": "2cd65b08ddccfa42fde5e65e0424de2bf59d359b3fd320b47124e0e8194a8ff4",
+    "baseline-probe.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "baseline-probe.stdout": "526ef5a3355c22ee8c7b0ee5c644e5007e890ff373fd346ec10f1dd485e726c7",
+    "baseline-setup.json": "1e2480a715a9febf87a07ddf98bfe9ae46086f3bbff633fcfbdfb4a0180e3924",
+    "candidate-probe-execution.json": "b068ec2eb160017418b8bdc64f60518b6e421aefa033794b6c0232e344195b36",
+    "candidate-probe.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "candidate-probe.stdout": "169e0f59a5df2126cbe5b352a751b9be5a00f9180d10a6b8768bbab695f26e90",
+    "candidate-setup.json": "f2b46ccb12a4f2849ac0ac21893ee6db279963e0c54c84ba59722388c7683a77",
+    "independent_probe.rs": "a284108ef7778c13442387f5aef9eb2fb1810832b9af1b8c48486a748571069a",
+    "intake.json": "e496225be222b426edf9287fb0c8b7a9662ba22c9fe96dd6809b31b4a34c312f",
+    "review.json": "017125d2890810ed9bc068a4ae362fe2062f74deaa5c6d0f538ae9a34abcc8f6"
+  }
+}

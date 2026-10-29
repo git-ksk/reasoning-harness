@@ -1,0 +1,139 @@
+{
+  "row_id": "bce76a1c493538632acedc4d",
+  "observation_sha256": "d1db5ba06c419412224ac007051fa2599522667d7d205c40bb935740713be6c9",
+  "gold": {
+    "id": "rw-03/e2e_normal",
+    "case_id": "rw-03",
+    "track": "e2e_normal",
+    "family": "revision_or_history",
+    "label": "positive",
+    "answerability": "full",
+    "groups": [
+      {
+        "id": "g1",
+        "required_supported_information": "--retry was added in7.12.3.",
+        "supporting_source_ids": [
+          "rw-03-a"
+        ]
+      },
+      {
+        "id": "g2",
+        "required_supported_information": "--retry-all-errors was added in7.71.0.",
+        "supporting_source_ids": [
+          "rw-03-b"
+        ]
+      }
+    ],
+    "unresolved_facets": [],
+    "required_disclosures": [],
+    "full_source_rationale": "Both exact Added annotations are present in pinned8.10.1 documentation.",
+    "scope_time_origin_review": {
+      "product_target": "curl",
+      "required_scope": {
+        "product": "curl",
+        "release": "8.10.1"
+      },
+      "document_ids": [
+        "curl-1",
+        "curl-2"
+      ],
+      "release_refs": [
+        "curl-8_10_1",
+        "curl-8_10_1"
+      ],
+      "capture_commits": [
+        "7eb8c048470ed2cc14dca75be9c1cdae7ac8498b",
+        "7eb8c048470ed2cc14dca75be9c1cdae7ac8498b"
+      ],
+      "document_versions": [
+        "sha256:d164104079fbac52eefc1147bfb1eb152bfbb1d883e6c0f963df25a4e7a505e2",
+        "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916"
+      ],
+      "origin_groups": [
+        "upstream:curl/curl",
+        "upstream:curl/curl"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "bd0e71a51928ca3c659eafcdcb7769eee4ff7088719529e7a8e94bcdb71ba937"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-03-a": {
+      "source_id": "rw-03-a",
+      "document_id": "curl-1",
+      "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry.md",
+      "normalized_path": "normalized/curl-1.txt",
+      "raw_sha256": "d164104079fbac52eefc1147bfb1eb152bfbb1d883e6c0f963df25a4e7a505e2",
+      "normalized_sha256": "1c50e9c3dcb291a16f36d31f2b6ac33d6f3a9964c26191f90a67c8648ee193ae",
+      "source_version": "sha256:d164104079fbac52eefc1147bfb1eb152bfbb1d883e6c0f963df25a4e7a505e2",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 93,
+      "end_byte": 129,
+      "quote": "Long: retry Arg: <num> Added: 7.12.3",
+      "quote_sha256": "6a245d18da169808dacc39cd15261647f599ae9a97d93226f8760fcf201f6b42",
+      "locator": "docs/cmdline-opts/retry.md normalized_UTF8_bytes[93,129)",
+      "context_summary": "curl8.10.1 --retry manual: transient errors, zero default retries, backoff and Retry-After history.",
+      "origin_group": "upstream:curl/curl",
+      "scope": {
+        "product": "curl",
+        "release": "8.10.1"
+      },
+      "reference_facts": {
+        "curl.retry.introduced": "7.12.3"
+      },
+      "synthetic_mutation": false
+    },
+    "rw-03-b": {
+      "source_id": "rw-03-b",
+      "document_id": "curl-2",
+      "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md",
+      "normalized_path": "normalized/curl-2.txt",
+      "raw_sha256": "a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+      "normalized_sha256": "4f81c7efbe90b7701f44c8643b804258ec872e52df927cd0d04224c67f220ab1",
+      "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 93,
+      "end_byte": 167,
+      "quote": "Long: retry-all-errors Help: Retry all errors (with --retry) Added: 7.71.0",
+      "quote_sha256": "e4ea8a7aad0f6b72cf3e10ba427112446b5f2cd598f8c24b6cb2aaa03e4cb880",
+      "locator": "docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[93,167)",
+      "context_summary": "curl8.10.1 --retry-all-errors manual: companion option, redirected-IO cautions and HTTP-status versus transfer-error distinction.",
+      "origin_group": "upstream:curl/curl",
+      "scope": {
+        "product": "curl",
+        "release": "8.10.1"
+      },
+      "reference_facts": {
+        "curl.retry_all.introduced": "7.71.0"
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

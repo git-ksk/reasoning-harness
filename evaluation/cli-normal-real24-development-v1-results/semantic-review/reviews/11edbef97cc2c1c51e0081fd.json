@@ -1,0 +1,224 @@
+{
+  "row_id": "11edbef97cc2c1c51e0081fd",
+  "observation_sha256": "85d1e3189fd989f5c3173208fb10bd484e0d0fc99c416f921d7cf0442c882cda",
+  "execution_provenance_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+  "gold_sha256": "6868a6f07763209e86ab28e6896c9b783b2864c185b9ed237a8e4fea0ca49310",
+  "reviewer": {
+    "role": "agent",
+    "id": "/root/paired_evaluation_independent"
+  },
+  "complete": true,
+  "full_source_context_reviewed": true,
+  "claims": [
+    {
+      "id": "c1",
+      "proposition_id": "curl.8.10.1.retry_all_errors.requires_retry",
+      "grounding": "grounded",
+      "satisfied_groups": [
+        "g1"
+      ],
+      "rationale": "The displayed key/value states the required companion option --retry. Both captured passages directly say with/together with --retry in the curl 8.10.1 retry-all-errors document.",
+      "source_anchors": [
+        {
+          "source_id": "rw-01-a",
+          "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+          "support_explanation": "The displayed key/value states the required companion option --retry. Both captured passages directly say with/together with --retry in the curl 8.10.1 retry-all-errors document."
+        },
+        {
+          "source_id": "rw-01-b",
+          "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+          "support_explanation": "The displayed key/value states the required companion option --retry. Both captured passages directly say with/together with --retry in the curl 8.10.1 retry-all-errors document."
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "proposition_id": "curl.8.10.1.retry_all_errors.transfer_errors_with_retry",
+      "grounding": "grounded",
+      "satisfied_groups": [],
+      "rationale": "The quoted help text describes retrying errors; its immediately adjacent parenthetical retains --retry. This is read as source-local transfer-error behavior, not as a claim that every HTTP status is an error.",
+      "source_anchors": [
+        {
+          "source_id": "rw-01-a",
+          "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+          "support_explanation": "The quoted help text describes retrying errors; its immediately adjacent parenthetical retains --retry. This is read as source-local transfer-error behavior, not as a claim that every HTTP status is an error."
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "proposition_id": "curl.8.10.1.retry_all_errors.requires_retry",
+      "grounding": "grounded",
+      "satisfied_groups": [
+        "g1"
+      ],
+      "rationale": "The parenthetical with --retry supplies the same companion-option condition as the main answer; it is a separate displayed factual occurrence.",
+      "source_anchors": [
+        {
+          "source_id": "rw-01-a",
+          "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+          "support_explanation": "The parenthetical with --retry supplies the same companion-option condition as the main answer; it is a separate displayed factual occurrence."
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "proposition_id": "curl.8.10.1.retry_all_errors.transfer_errors_with_retry",
+      "grounding": "grounded",
+      "satisfied_groups": [],
+      "rationale": "The quoted sentence is scoped by the adjacent companion-option sentence and by the source-local quotation label. The complete document distinguishes HTTP status from transfer error and does not make this an unconditional all-status guarantee.",
+      "source_anchors": [
+        {
+          "source_id": "rw-01-b",
+          "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+          "support_explanation": "The quoted sentence is scoped by the adjacent companion-option sentence and by the source-local quotation label. The complete document distinguishes HTTP status from transfer error and does not make this an unconditional all-status guarantee."
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "proposition_id": "curl.8.10.1.retry_all_errors.requires_retry",
+      "grounding": "grounded",
+      "satisfied_groups": [
+        "g1"
+      ],
+      "rationale": "This option is used together with --retry directly answers the companion-option question. It repeats the main proposition rather than introducing independent corroboration.",
+      "source_anchors": [
+        {
+          "source_id": "rw-01-b",
+          "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+          "support_explanation": "This option is used together with --retry directly answers the companion-option question. It repeats the main proposition rather than introducing independent corroboration."
+        }
+      ]
+    }
+  ],
+  "segments": [
+    {
+      "id": "s-c1",
+      "artifact_id": "answer",
+      "start_byte": 0,
+      "end_byte": 37,
+      "text": "\"curl.retry_all.requires\" = \"--retry\"",
+      "kind": "fact",
+      "claim_id": "c1",
+      "proposition_id": "curl.8.10.1.retry_all_errors.requires_retry"
+    },
+    {
+      "id": "n2",
+      "artifact_id": "answer",
+      "start_byte": 37,
+      "end_byte": 337,
+      "text": "\nSource \"rw-01-a\" (version \"sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916\"): \"https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md\"\nSource quotation (including its conditions; source-local; JSON string):\n",
+      "kind": "nonfact",
+      "reason": "Display separators and source/citation provenance labels. URL, version, and source identifiers are checked against the captured citations; this span adds no domain-answer proposition."
+    },
+    {
+      "id": "s-c2",
+      "artifact_id": "answer",
+      "start_byte": 337,
+      "end_byte": 361,
+      "text": "\"Help: Retry all errors ",
+      "kind": "fact",
+      "claim_id": "c2",
+      "proposition_id": "curl.8.10.1.retry_all_errors.transfer_errors_with_retry"
+    },
+    {
+      "id": "s-c3",
+      "artifact_id": "answer",
+      "start_byte": 361,
+      "end_byte": 376,
+      "text": "(with --retry)\"",
+      "kind": "fact",
+      "claim_id": "c3",
+      "proposition_id": "curl.8.10.1.retry_all_errors.requires_retry"
+    },
+    {
+      "id": "n5",
+      "artifact_id": "answer",
+      "start_byte": 376,
+      "end_byte": 676,
+      "text": "\nSource \"rw-01-b\" (version \"sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916\"): \"https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md\"\nSource quotation (including its conditions; source-local; JSON string):\n",
+      "kind": "nonfact",
+      "reason": "Display separators and source/citation provenance labels. URL, version, and source identifiers are checked against the captured citations; this span adds no domain-answer proposition."
+    },
+    {
+      "id": "s-c4",
+      "artifact_id": "answer",
+      "start_byte": 676,
+      "end_byte": 697,
+      "text": "\"Retry on any error. ",
+      "kind": "fact",
+      "claim_id": "c4",
+      "proposition_id": "curl.8.10.1.retry_all_errors.transfer_errors_with_retry"
+    },
+    {
+      "id": "s-c5",
+      "artifact_id": "answer",
+      "start_byte": 697,
+      "end_byte": 740,
+      "text": "This option is used together with --retry.\"",
+      "kind": "fact",
+      "claim_id": "c5",
+      "proposition_id": "curl.8.10.1.retry_all_errors.requires_retry"
+    },
+    {
+      "id": "n-final",
+      "artifact_id": "answer",
+      "start_byte": 740,
+      "end_byte": 811,
+      "text": "\nThis is a partial answer; other unresolved claims are not established.",
+      "kind": "nonfact",
+      "reason": "The newline and partial-answer/uncertainty disclaimer limit the response; they add no external factual claim or claim that an unestablished proposition is true."
+    }
+  ],
+  "citation_edges": [
+    {
+      "id": "c1@context-0-fact",
+      "correct": true,
+      "literal_exact": true,
+      "rationale": "The captured edge identifies the acquired/admitted curl-2 record at its immutable version and URL. Its exact literal quote supports this factual occurrence in the complete source context; the two records are passages of one document, not independent publishers."
+    },
+    {
+      "id": "c1@context-1-fact",
+      "correct": true,
+      "literal_exact": true,
+      "rationale": "The captured edge identifies the acquired/admitted curl-2 record at its immutable version and URL. Its exact literal quote supports this factual occurrence in the complete source context; the two records are passages of one document, not independent publishers."
+    },
+    {
+      "id": "c2@context-0-quote",
+      "correct": true,
+      "literal_exact": true,
+      "rationale": "The captured edge identifies the acquired/admitted curl-2 record at its immutable version and URL. Its exact literal quote supports this factual occurrence in the complete source context; the two records are passages of one document, not independent publishers."
+    },
+    {
+      "id": "c3@context-0-quote",
+      "correct": true,
+      "literal_exact": true,
+      "rationale": "The captured edge identifies the acquired/admitted curl-2 record at its immutable version and URL. Its exact literal quote supports this factual occurrence in the complete source context; the two records are passages of one document, not independent publishers."
+    },
+    {
+      "id": "c4@context-1-quote",
+      "correct": true,
+      "literal_exact": true,
+      "rationale": "The captured edge identifies the acquired/admitted curl-2 record at its immutable version and URL. Its exact literal quote supports this factual occurrence in the complete source context; the two records are passages of one document, not independent publishers."
+    },
+    {
+      "id": "c5@context-1-quote",
+      "correct": true,
+      "literal_exact": true,
+      "rationale": "The captured edge identifies the acquired/admitted curl-2 record at its immutable version and URL. Its exact literal quote supports this factual occurrence in the complete source context; the two records are passages of one document, not independent publishers."
+    }
+  ],
+  "handled_unresolved_facets": [],
+  "present_disclosures": [],
+  "all_unresolved_facets_handled": true,
+  "all_required_disclosures_present": true,
+  "safety_audit_complete": true,
+  "hard_violations": [],
+  "attempted_accept": true,
+  "explicit_withhold": false,
+  "readable_and_actionable": true,
+  "review_scope": "Complete annotation of the captured display inventory, not a claim that the runtime operation completed.",
+  "observed_operation_preserved": "complete",
+  "adjudication_notes": "The required --retry companion is understandable and actionable for the narrow question. The generic partial-answer warning does not retract it. The same fresh display/citation/source bytes occur in the other arm, but acquisition target wording was reviewed separately and each annotation is bound to its own new row and observation digest. No missing disclosure is inferred from the full-answer gold, whose required-disclosure list is empty."
+}

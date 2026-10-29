@@ -1,0 +1,128 @@
+{
+  "row_id": "f7e27887f9e174d7cc0c2f01",
+  "observation_sha256": "b7580ce685174bf30464438a5003c92214cc733bba3e9c4e25453585ea784b1c",
+  "gold": {
+    "id": "rw-07/e2e_normal",
+    "case_id": "rw-07",
+    "track": "e2e_normal",
+    "family": "missing_or_unrelated",
+    "label": "negative",
+    "answerability": "none",
+    "groups": [],
+    "unresolved_facets": [
+      "actual_payroll_filter_attribute"
+    ],
+    "required_disclosures": [
+      "private_repository_state_not_provided"
+    ],
+    "full_source_rationale": "Neither complete manual measures the private repository; examples cannot fill this gap.",
+    "scope_time_origin_review": {
+      "product_target": "git",
+      "required_scope": {
+        "product": "git",
+        "release": "2.47.0"
+      },
+      "document_ids": [
+        "git-2",
+        "git-1"
+      ],
+      "release_refs": [
+        "v2.47.0",
+        "v2.47.0"
+      ],
+      "capture_commits": [
+        "777489f9e09c8d0dd6b12f9d90de6376330577a2",
+        "777489f9e09c8d0dd6b12f9d90de6376330577a2"
+      ],
+      "document_versions": [
+        "sha256:7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa",
+        "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3"
+      ],
+      "origin_groups": [
+        "upstream:git/git",
+        "upstream:git/git"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "f8ccf72cb54acc465532de03e9d2c80d7fb127ae8660958d53b1f1783e6f4192"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-07-a": {
+      "source_id": "rw-07-a",
+      "document_id": "git-2",
+      "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-attr.txt",
+      "normalized_path": "normalized/git-2.txt",
+      "raw_sha256": "7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa",
+      "normalized_sha256": "4d8c0aec74ffbce5eef0cf9275087b6d902592dc7866fa9d7893212e76ba7733",
+      "source_version": "sha256:7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 307,
+      "end_byte": 439,
+      "quote": "For every pathname, this command will list if each attribute is 'unspecified', 'set', or 'unset' as a gitattribute on that pathname.",
+      "quote_sha256": "ac565fa20846438312466e105a7624d50062c8cec95a4306ec281c341d5479cc",
+      "locator": "Documentation/git-check-attr.txt normalized_UTF8_bytes[307,439)",
+      "context_summary": "Git2.47.0 check-attr manual: per-path attribute states, text/NUL output and illustrative .gitattributes examples.",
+      "origin_group": "upstream:git/git",
+      "scope": {
+        "product": "git",
+        "release": "2.47.0"
+      },
+      "reference_facts": {
+        "git.check_attr.role": "Reports per-path attribute states."
+      },
+      "synthetic_mutation": false
+    },
+    "rw-07-b": {
+      "source_id": "rw-07-b",
+      "document_id": "git-1",
+      "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt",
+      "normalized_path": "normalized/git-1.txt",
+      "raw_sha256": "ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+      "normalized_sha256": "e8e0d6f98750a23deb1df77609e15a30be0206d60c24a2a6ec547b1191fa60b9",
+      "source_version": "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 310,
+      "end_byte": 445,
+      "quote": "check whether the file is excluded by .gitignore (or other input files to the exclude mechanism) and output the path if it is excluded.",
+      "quote_sha256": "c60d6038675e7b7857c325f38a894595e7343a86c0f52c0c962136c23d823cc8",
+      "locator": "Documentation/git-check-ignore.txt normalized_UTF8_bytes[310,445)",
+      "context_summary": "Git2.47.0 check-ignore manual: default/index options, ignore output and exit statuses.",
+      "origin_group": "upstream:git/git",
+      "scope": {
+        "product": "git",
+        "release": "2.47.0"
+      },
+      "reference_facts": {
+        "git.check_ignore.role": "Reports paths excluded by ignore rules."
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

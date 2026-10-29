@@ -1,0 +1,128 @@
+{
+  "row_id": "234d4ecaed58b4539aa21d4d",
+  "observation_sha256": "710aab8ed5d3976fe8751f90143182190df8ed2963e0ebbea282ad072fbe3a4d",
+  "gold": {
+    "id": "rw-18/e2e_normal",
+    "case_id": "rw-18",
+    "track": "e2e_normal",
+    "family": "wrong_target",
+    "label": "negative",
+    "answerability": "none",
+    "groups": [],
+    "unresolved_facets": [
+      "actual_official_Fossil_identifier"
+    ],
+    "required_disclosures": [
+      "Git_SHA_not_Fossil_ID"
+    ],
+    "full_source_rationale": "Full README gives where to find the value but does not provide this snapshot value.",
+    "scope_time_origin_review": {
+      "product_target": "sqlite",
+      "required_scope": {
+        "product": "sqlite",
+        "release": "3.47.2"
+      },
+      "document_ids": [
+        "sqlite-1",
+        "sqlite-2"
+      ],
+      "release_refs": [
+        "version-3.47.2",
+        "version-3.47.2"
+      ],
+      "capture_commits": [
+        "262de1bebb0647eb6fa6a2b0434111c7d831a14d",
+        "262de1bebb0647eb6fa6a2b0434111c7d831a14d"
+      ],
+      "document_versions": [
+        "sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+        "sha256:72376ad8eb150197a422bdbab5299f3a643f504f36de264f035ccffe5a5d9220"
+      ],
+      "origin_groups": [
+        "upstream:sqlite/sqlite",
+        "upstream:sqlite/sqlite"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "13db2e7924fc324e9f0a681993139f7b7bcd026314d6a8b6c260ea0fae564e17"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-18-a": {
+      "source_id": "rw-18-a",
+      "document_id": "sqlite-1",
+      "url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/README.md",
+      "normalized_path": "normalized/sqlite-1.txt",
+      "raw_sha256": "589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+      "normalized_sha256": "a71cd6b8aaa13eb53119fb48799fdefc829ae79e0c4835a109c264a1b5cd4346",
+      "source_version": "sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+      "retrieved_at_unix_seconds": 1792409896,
+      "start_byte": 784,
+      "end_byte": 1301,
+      "quote": "If you are reading this on GitHub or some other Git repository or service, then you are looking at a mirror. The names of check-ins and other artifacts in a Git mirror are different from the official names for those objects. The official names for check-ins are found in a footer on the check-in comment for authorized mirrors. The official check-in name can also be seen in the `manifest.uuid` file in the root of the tree. Always use the official name, not the Git-name, when communicating about an SQLite check-in.",
+      "quote_sha256": "4e199351963fca2779a1052acf834b47dde0f18aea5684a3d6cc16ddb768ecbb",
+      "locator": "README.md normalized_UTF8_bytes[784,1301)",
+      "context_summary": "SQLite3.47.2 source README: mirror/Fossil names, Unix/Windows builds, source layout and integrity-check caveats.",
+      "origin_group": "upstream:sqlite/sqlite",
+      "scope": {
+        "product": "sqlite",
+        "release": "3.47.2"
+      },
+      "reference_facts": {
+        "sqlite.names.git_vs_fossil": "Git mirror artifact names differ from official Fossil names; manifest.uuid contains the official name."
+      },
+      "synthetic_mutation": false
+    },
+    "rw-18-b": {
+      "source_id": "rw-18-b",
+      "document_id": "sqlite-2",
+      "url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/doc/compile-for-unix.md",
+      "normalized_path": "normalized/sqlite-2.txt",
+      "raw_sha256": "72376ad8eb150197a422bdbab5299f3a643f504f36de264f035ccffe5a5d9220",
+      "normalized_sha256": "93525474a6bfebdec2e38a02b5472606d99480eb9a751cb0104aa9b78d660b1f",
+      "source_version": "sha256:72376ad8eb150197a422bdbab5299f3a643f504f36de264f035ccffe5a5d9220",
+      "retrieved_at_unix_seconds": 1792409896,
+      "start_byte": 1013,
+      "end_byte": 1110,
+      "quote": "Download the SQLite source tree and unpack it. CD into the toplevel directory of the source tree.",
+      "quote_sha256": "995cbd3a13559fa7c0b2e5663adee5b3f4bbebc0d99a138e79f8a5af9c403b3f",
+      "locator": "doc/compile-for-unix.md normalized_UTF8_bytes[1013,1110)",
+      "context_summary": "SQLite3.47.2 Unix-build recipe: tested2024-10-11, assuming Tcl9.0, configure/targets and debug instructions.",
+      "origin_group": "upstream:sqlite/sqlite",
+      "scope": {
+        "product": "sqlite",
+        "release": "3.47.2"
+      },
+      "reference_facts": {
+        "sqlite.build.unpack": "Download/unpack the source tree before configuring."
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

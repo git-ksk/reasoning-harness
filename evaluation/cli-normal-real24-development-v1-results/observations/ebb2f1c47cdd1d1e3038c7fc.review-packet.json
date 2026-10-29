@@ -1,0 +1,128 @@
+{
+  "row_id": "ebb2f1c47cdd1d1e3038c7fc",
+  "observation_sha256": "c021933b41f7618a3389202dee3eb5677ad46ffad24f1be571cbcdec00a1d623",
+  "gold": {
+    "id": "rw-22/e2e_normal",
+    "case_id": "rw-22",
+    "track": "e2e_normal",
+    "family": "revision_or_history",
+    "label": "negative",
+    "answerability": "none",
+    "groups": [],
+    "unresolved_facets": [
+      "actual_2026_security_support_matrix"
+    ],
+    "required_disclosures": [
+      "historical_table_not_current_support"
+    ],
+    "full_source_rationale": "Do not infer support status of omitted versions or update the table from model memory.",
+    "scope_time_origin_review": {
+      "product_target": "redis",
+      "required_scope": {
+        "product": "redis",
+        "release": "current-2026-10-19"
+      },
+      "document_ids": [
+        "redis-2",
+        "redis-2"
+      ],
+      "release_refs": [
+        "7.2.5",
+        "7.2.5"
+      ],
+      "capture_commits": [
+        "f60370ce28b946c1146dcea77c9c399d39601aaa",
+        "f60370ce28b946c1146dcea77c9c399d39601aaa"
+      ],
+      "document_versions": [
+        "sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff",
+        "sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff"
+      ],
+      "origin_groups": [
+        "upstream:redis/redis",
+        "upstream:redis/redis"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "8fc25b1029173e009c95ae4f353f8965e38fa0f2ce2ec50f6003699773034971"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-22-a": {
+      "source_id": "rw-22-a",
+      "document_id": "redis-2",
+      "url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/SECURITY.md",
+      "normalized_path": "normalized/redis-2.txt",
+      "raw_sha256": "2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff",
+      "normalized_sha256": "5ac533f1eb991c9a4cf16ddf7b838bfd4392960c62045f015b8a1930f09460aa",
+      "source_version": "sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff",
+      "retrieved_at_unix_seconds": 1792409896,
+      "start_byte": 352,
+      "end_byte": 517,
+      "quote": "| Version | Supported | | ------- | ------------------ | | 7.0.x | :white_check_mark: | | 6.2.x | :white_check_mark: | | 6.0.x | :white_check_mark: | | < 6.0 | :x: |",
+      "quote_sha256": "ddfafe6e6dfcbd6746d03e6ec7ac6bd7cd007ca7b6e3022f113d8f1843bf1117",
+      "locator": "SECURITY.md normalized_UTF8_bytes[352,517)",
+      "context_summary": "Redis7.2.5 repository security-policy snapshot: version table, backport/disclosure and reporting procedures.",
+      "origin_group": "upstream:redis/redis",
+      "scope": {
+        "product": "redis",
+        "release": "7.2.5"
+      },
+      "reference_facts": {
+        "redis.security.captured_table": "The captured table marks7.0.x,6.2.x,6.0.x supported and<6.0 unsupported."
+      },
+      "synthetic_mutation": false
+    },
+    "rw-22-b": {
+      "source_id": "rw-22-b",
+      "document_id": "redis-2",
+      "url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/SECURITY.md",
+      "normalized_path": "normalized/redis-2.txt",
+      "raw_sha256": "2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff",
+      "normalized_sha256": "5ac533f1eb991c9a4cf16ddf7b838bfd4392960c62045f015b8a1930f09460aa",
+      "source_version": "sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff",
+      "retrieved_at_unix_seconds": 1792409896,
+      "start_byte": 40,
+      "end_byte": 211,
+      "quote": "Redis is generally backwards compatible with very few exceptions, so we recommend users to always use the latest version to experience stability, performance and security.",
+      "quote_sha256": "d55c5678bd9272a081e98f9eeb6bbcf52f4977ee7d0376c087501572d60b68a9",
+      "locator": "SECURITY.md normalized_UTF8_bytes[40,211)",
+      "context_summary": "Redis7.2.5 repository security-policy snapshot: version table, backport/disclosure and reporting procedures.",
+      "origin_group": "upstream:redis/redis",
+      "scope": {
+        "product": "redis",
+        "release": "7.2.5"
+      },
+      "reference_facts": {
+        "redis.security.captured_recommendation": "Recommends always using latest version."
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "acquired_source_ids": [],
+  "admitted_source_ids": [],
+  "terminal_status": "unavailable",
+  "usage": null,
+  "unvalidated_partial_payload": {
+    "schema_version": "reason-cli-output-v1",
+    "command": "ask",
+    "cli_version": "0.5.4",
+    "contracts": {
+      "artifact": "reasoning-artifact-v1",
+      "candidate": "reasoning-candidate-v1",
+      "config": "reason-config-v1"
+    },
+    "result": {
+      "status": "failed",
+      "failure": {
+        "failure_class": "usage_budget_unmeasurable",
+        "message": "provider did not report output-token usage required by the configured cumulative output-token ceiling"
+      },
+      "remediation": {
+        "what_failed": "configured provider usage budget",
+        "task_execution": "stopped_before_next_model_call",
+        "result_trust": "no_new_final_result",
+        "next_command": "reason config list"
+      },
+      "partial_diagnostics": {
+        "complete": false,
+        "usage_is_lower_bound": false,
+        "usage": {
+          "run": {
+            "tracked_from_session_start": true,
+            "model_calls": 8,
+            "provider_attempts": 9,
+            "resolution_calls": 2,
+            "resolution_added_tokens": 456,
+            "resolution_elapsed_ms": 366
+          },
+          "budget": {
+            "max_model_calls": 12,
+            "max_output_tokens": 4096,
+            "max_total_tokens": 28096
+          }
+        },
+        "trace_written": true,
+        "pending_adapter_generations": 0,
+        "acquisition_coverage": {
+          "policy_id": "harness-investigation-coverage-v1",
+          "ledger": {
+            "plan_admitted": true,
+            "targets": [
+              {
+                "target": {
+                  "id": "curl8_10_1_transient_error_criteria",
+                  "question": "What specific HTTP status codes or error conditions are classified as transient errors in curl 8.10.1 when using the --retry option?",
+                  "expected_fact_key": "curl.retry.transient",
+                  "origin": "model_proposed_untrusted"
+                },
+                "bindings": [
+                  {
+                    "evidence_id": "snapshot:rw-02:0",
+                    "evidence_sha256": "eb8a4540434077ff9904ce2b211836c50ce21bd4d698a0c9d5826992f8d1642e",
+                    "fact_key": "curl.retry.transient"
+                  }
+                ]
+              },
+              {
+                "target": {
+                  "id": "curl8_10_1_http404_retry_behavior",
+                  "question": "How does curl 8.10.1 handle a fully received HTTP 404 response under --retry-all-errors without --fail, and does it differ from other HTTP 4xx responses?",
+                  "expected_fact_key": "curl.retry_all.http404",
+                  "origin": "model_proposed_untrusted"
+                },
+                "bindings": [
+                  {
+                    "evidence_id": "snapshot:rw-02:1",
+                    "evidence_sha256": "0c8164528d8886f381238aa0688786e6bf035dc428e3d30085cd588ed0c99ea6",
+                    "fact_key": "curl.retry_all.http404"
+                  }
+                ]
+              }
+            ]
+          },
+          "targets": [
+            {
+              "target": {
+                "id": "curl8_10_1_transient_error_criteria",
+                "question": "What specific HTTP status codes or error conditions are classified as transient errors in curl 8.10.1 when using the --retry option?",
+                "expected_fact_key": "curl.retry.transient",
+                "origin": "model_proposed_untrusted"
+              },
+              "disposition": "verified",
+              "verified_proposition": {
+                "key": "curl.retry.transient",
+                "value": "timeout; FTP4xx; HTTP408,429,500,502,503,504"
+              }
+            },
+            {
+              "target": {
+                "id": "curl8_10_1_http404_retry_behavior",
+                "question": "How does curl 8.10.1 handle a fully received HTTP 404 response under --retry-all-errors without --fail, and does it differ from other HTTP 4xx responses?",
+                "expected_fact_key": "curl.retry_all.http404",
+                "origin": "model_proposed_untrusted"
+              },
+              "disposition": "conflicting_or_blocked",
+              "verified_proposition": null
+            }
+          ],
+          "stop_reason": "planner_stop"
+        }
+      }
+    }
+  },
+  "source_route_verification": "UNAVAILABLE_DO_NOT_INFER_UNSUPPORTED_FROM_UNKNOWN",
+  "row_id": "c03423fb4ed9889a8f5f17d2",
+  "case_id": "rw-02",
+  "provider": "mistral",
+  "track": "e2e_normal",
+  "arm": "candidate",
+  "operation": "incomplete",
+  "unavailable_reason": "usage_budget_unmeasurable",
+  "raw_file_sha256": {
+    "actual-cli.invocation.json": "b32e49180dcf4cdc6dbb3f5e5ae99971eb777bd6bf32e1c9fec68f35cc3f31dd",
+    "actual-cli.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "actual-cli.stdout": "d2df0e3ce82dd4a417d592d823dd37e85cb3072535ab941a3bc02410445de1a0",
+    "config.json": "87e84c01427063df44fe37f751e6c222dd617322dbc0bb39e78559ec4d4b7ffb",
+    "model-journal.jsonl": "e54091a4f38b3596da900ecc5b11d40cfa3a8a99afc1b555ba5f628973c7228d",
+    "resolver.jsonl": "fa502f4a4c9e54bd6356419ee3bc679cd563cc78f137e54fed2cd9497500b4a2",
+    "row.json": "0745060fc3973e21ddd823df2a9aa611648500b8f3071d4397fc9ddb49c4800a",
+    "spawn.json": "4dd8fc6396de89a8da6bc914a5b66870e324a6d373bf8d9771ccadf87e8d4789",
+    "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout.json": "ddb192368dd240f2c3fc96dd2ec9992c3438f2491d6c39bf9e1123ade4df5893",
+    "trace.json": "d890d3e3cb34510ce56a09c87cd04f0dfaac1319772487e1692ceac118ff40d4"
+  },
+  "wall_ms": 85820,
+  "failure_partial_display_audit_required": true,
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

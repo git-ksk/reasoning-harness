@@ -1,0 +1,9 @@
+
+running 4 tests
+test final_render_compaction::tests::unexpected_template_fails_closed ... ok
+test final_render_compaction::tests::both_requests_preserve_values_and_hostile_marker_text ... ok
+test final_render_compaction::tests::actual_adapter_path_compacts_first_and_fallback ... ok
+test final_render_compaction::tests::saved_live_request_when_supplied ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 258 filtered out; finished in 0.01s
+

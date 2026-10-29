@@ -1,0 +1,128 @@
+{
+  "row_id": "0bfef83dfd751e8eb75a4a81",
+  "observation_sha256": "46f98357ed10755fc9c83984d56a3315cf62786493457e4c5efe0b4504946900",
+  "gold": {
+    "id": "rw-12/e2e_normal",
+    "case_id": "rw-12",
+    "track": "e2e_normal",
+    "family": "wrong_target",
+    "label": "negative",
+    "answerability": "none",
+    "groups": [],
+    "unresolved_facets": [
+      "actual_peer_certificate_presentation_and_validity"
+    ],
+    "required_disclosures": [
+      "wrong_product_and_missing_connection_evidence"
+    ],
+    "full_source_rationale": "Correctly bound CMake material cannot establish an OpenSSL peer state.",
+    "scope_time_origin_review": {
+      "product_target": "openssl",
+      "required_scope": {
+        "product": "openssl",
+        "release": "3.0.15"
+      },
+      "document_ids": [
+        "cmake-2",
+        "cmake-1"
+      ],
+      "release_refs": [
+        "v3.31.0",
+        "v3.31.0"
+      ],
+      "capture_commits": [
+        "e22c8383b9ae4f27a78f7a8849693c03ca29c7bb",
+        "e22c8383b9ae4f27a78f7a8849693c03ca29c7bb"
+      ],
+      "document_versions": [
+        "sha256:4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114",
+        "sha256:64bf74bba3708146a4c52fc2ab7e4a5ee8fd476838df9c72760f090116a6ec77"
+      ],
+      "origin_groups": [
+        "upstream:Kitware/CMake",
+        "upstream:Kitware/CMake"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "e3792d49f0cb4237faba4a992d6f578121b723c3272ae7b36a8c8b37f05b2bad"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-12-a": {
+      "source_id": "rw-12-a",
+      "document_id": "cmake-2",
+      "url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/break.rst",
+      "normalized_path": "normalized/cmake-2.txt",
+      "raw_sha256": "4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114",
+      "normalized_sha256": "4f01278b55bfaa638dfcbce01bfe681af3a78434689382fd2126c15a93d5d954",
+      "source_version": "sha256:4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 12,
+      "end_byte": 58,
+      "quote": "Break from an enclosing foreach or while loop.",
+      "quote_sha256": "0beddaaa1397b770f3939509a3d3e6c3dd5168833e8eb7daf7d3cc9e4e9b7d8b",
+      "locator": "Help/command/break.rst normalized_UTF8_bytes[12,58)",
+      "context_summary": "CMake3.31.0 break command: foreach/while syntax and reference to continue.",
+      "origin_group": "upstream:Kitware/CMake",
+      "scope": {
+        "product": "cmake",
+        "release": "3.31.0"
+      },
+      "reference_facts": {
+        "cmake.break.loop_kinds": "foreach or while"
+      },
+      "synthetic_mutation": false
+    },
+    "rw-12-b": {
+      "source_id": "rw-12-b",
+      "document_id": "cmake-1",
+      "url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/return.rst",
+      "normalized_path": "normalized/cmake-1.txt",
+      "raw_sha256": "64bf74bba3708146a4c52fc2ab7e4a5ee8fd476838df9c72760f090116a6ec77",
+      "normalized_sha256": "8001eb15cf83e39b849e1f8560fe7682d87f3720b16a697dfffd5903214de733",
+      "source_version": "sha256:64bf74bba3708146a4c52fc2ab7e4a5ee8fd476838df9c72760f090116a6ec77",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 14,
+      "end_byte": 56,
+      "quote": "Return from a file, directory or function.",
+      "quote_sha256": "1103610dc8e69b683f914280c629fb7f0c6c4754ad8f4524a06dc588590d18cd",
+      "locator": "Help/command/return.rst normalized_UTF8_bytes[14,56)",
+      "context_summary": "CMake3.31.0 return manual: function/file/directory contexts, CMP0140, PROPAGATE history and block examples.",
+      "origin_group": "upstream:Kitware/CMake",
+      "scope": {
+        "product": "cmake",
+        "release": "3.31.0"
+      },
+      "reference_facts": {
+        "cmake.return.role": "Returns from a file, directory or function."
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

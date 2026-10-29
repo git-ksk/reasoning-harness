@@ -1,0 +1,128 @@
+{
+  "row_id": "bd66922ab720aebe489abf25",
+  "observation_sha256": "8746ec23a72efac4a2deeb1bb6a74ba3da1717e3ddf1beb13ff4ef5e62fa6a6b",
+  "gold": {
+    "id": "rw-14/e2e_normal",
+    "case_id": "rw-14",
+    "track": "e2e_normal",
+    "family": "missing_or_unrelated",
+    "label": "negative",
+    "answerability": "none",
+    "groups": [],
+    "unresolved_facets": [
+      "actual_peer_certificate_and_verification"
+    ],
+    "required_disclosures": [
+      "OK_code_alone_insufficient"
+    ],
+    "full_source_rationale": "A disjunction about possible meanings cannot establish which happened on this connection.",
+    "scope_time_origin_review": {
+      "product_target": "openssl",
+      "required_scope": {
+        "product": "openssl",
+        "release": "3.0.15"
+      },
+      "document_ids": [
+        "openssl-1",
+        "openssl-1"
+      ],
+      "release_refs": [
+        "openssl-3.0.15",
+        "openssl-3.0.15"
+      ],
+      "capture_commits": [
+        "c523121f902fde2929909dc7f76b13ceb4961efe",
+        "c523121f902fde2929909dc7f76b13ceb4961efe"
+      ],
+      "document_versions": [
+        "sha256:4f7c46dd3228e880870cdf8d70cf4dabd0ade3ffea98bf480e0cfc251dc05569",
+        "sha256:4f7c46dd3228e880870cdf8d70cf4dabd0ade3ffea98bf480e0cfc251dc05569"
+      ],
+      "origin_groups": [
+        "upstream:openssl/openssl",
+        "upstream:openssl/openssl"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "7f570abbd47de1922695b3e1dc1cd34128c4fc67cf0df1441aaae94d07cc8d81"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-14-a": {
+      "source_id": "rw-14-a",
+      "document_id": "openssl-1",
+      "url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_get_verify_result.pod",
+      "normalized_path": "normalized/openssl-1.txt",
+      "raw_sha256": "4f7c46dd3228e880870cdf8d70cf4dabd0ade3ffea98bf480e0cfc251dc05569",
+      "normalized_sha256": "0ae74a50767139b2fc7a5b280a6bcd6220317c96ec64a11207c745cd3d1fa8dd",
+      "source_version": "sha256:4f7c46dd3228e880870cdf8d70cf4dabd0ade3ffea98bf480e0cfc251dc05569",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 1059,
+      "end_byte": 1221,
+      "quote": "If no peer certificate was presented, the returned result code is X509_V_OK. This is because no verification error occurred, it does however not indicate success.",
+      "quote_sha256": "59fdcd6cd798f378601107af76e8030046b4edc115bc83f326e26561153ecb0b",
+      "locator": "doc/man3/SSL_get_verify_result.pod normalized_UTF8_bytes[1059,1221)",
+      "context_summary": "OpenSSL3.0.15 SSL_get_verify_result: last verification error, session reuse and absent-peer-certificate caveat.",
+      "origin_group": "upstream:openssl/openssl",
+      "scope": {
+        "product": "openssl",
+        "release": "3.0.15"
+      },
+      "reference_facts": {
+        "openssl.verify_result.no_certificate": "No peer certificate can produce X509_V_OK; that does not indicate success."
+      },
+      "synthetic_mutation": false
+    },
+    "rw-14-b": {
+      "source_id": "rw-14-b",
+      "document_id": "openssl-1",
+      "url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_get_verify_result.pod",
+      "normalized_path": "normalized/openssl-1.txt",
+      "raw_sha256": "4f7c46dd3228e880870cdf8d70cf4dabd0ade3ffea98bf480e0cfc251dc05569",
+      "normalized_sha256": "0ae74a50767139b2fc7a5b280a6bcd6220317c96ec64a11207c745cd3d1fa8dd",
+      "source_version": "sha256:4f7c46dd3228e880870cdf8d70cf4dabd0ade3ffea98bf480e0cfc251dc05569",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 1406,
+      "end_byte": 1470,
+      "quote": "The verification succeeded or no peer certificate was presented.",
+      "quote_sha256": "2361027ec32815ddb914fff33a8832e4be87955e3087e5d34f7994d45b6c2efe",
+      "locator": "doc/man3/SSL_get_verify_result.pod normalized_UTF8_bytes[1406,1470)",
+      "context_summary": "OpenSSL3.0.15 SSL_get_verify_result: last verification error, session reuse and absent-peer-certificate caveat.",
+      "origin_group": "upstream:openssl/openssl",
+      "scope": {
+        "product": "openssl",
+        "release": "3.0.15"
+      },
+      "reference_facts": {
+        "openssl.verify_result.ok_alternatives": "Verification succeeded OR no peer certificate was presented."
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

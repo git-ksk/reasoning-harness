@@ -1,0 +1,19 @@
+{
+  "identity": "cli-normal-run40873570944-final-nonscoring-check-v1",
+  "reviewer": "/root/paired_evaluation_independent",
+  "reviews": 48,
+  "observation_files": 98,
+  "preserved_operations": {
+    "not_run": 45,
+    "incomplete": 1,
+    "complete": 2
+  },
+  "runtime_files_checked": 104,
+  "frozen_validation_all_rows_valid": true,
+  "source_corpus_inventory_unchanged": true,
+  "observation_binding_all_rows_unchanged": true,
+  "runtime_image_local_id": "sha256:ea084e99e3a31784f3aa3b755b232cd0e7673107a79064bc434923c666ee9e69",
+  "metadata_and_model_API_calls": 0,
+  "aggregate_scoring_calls": 0,
+  "old_annotations_used": false
+}

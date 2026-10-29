@@ -1,0 +1,13 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "result": "sandbox Docker socket access denied; container never started"
+    },
+    {
+      "attempt": 2,
+      "result": "Docker bind source /private/tmp not shared with Colima; container never started"
+    }
+  ],
+  "semantic_validation_executed_in_failed_attempts": false
+}

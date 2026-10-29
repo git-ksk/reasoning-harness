@@ -1,0 +1,2642 @@
+[
+  {
+    "id": "rw-01",
+    "family": "compatible",
+    "row_id": "11edbef97cc2c1c51e0081fd",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "accept",
+    "complete": true,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "11edbef97cc2c1c51e0081fd",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "compatible",
+      "answerability": "full",
+      "observation_sha256": "165b58005266dac169bd0afb84af594b6aad1445cf536065e9987a05eb6dd2c9",
+      "operation": "complete",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": true,
+      "blockers": [],
+      "counts": {
+        "displayed_unique_claims_A": 2,
+        "grounded_claims_S": 2,
+        "required_groups_G": 1,
+        "satisfied_groups_H": 1,
+        "displayed_claim_occurrences": 5
+      },
+      "matched_groups": [
+        "g1"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "f1_null_or_zero_reason": null,
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": true
+    },
+    "citation_counts": {
+      "edges": 6,
+      "correct_edges": 6,
+      "claims_requiring_citation": 5,
+      "correctly_cited_occurrences": 5,
+      "literal_quotes": 6,
+      "faithful_literal_quotes": 6
+    },
+    "complete_useful_answer": true,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-01",
+    "family": "compatible",
+    "row_id": "9e600049ff79471b54e2c6b9",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "accept",
+    "complete": true,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "9e600049ff79471b54e2c6b9",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "compatible",
+      "answerability": "full",
+      "observation_sha256": "165b58005266dac169bd0afb84af594b6aad1445cf536065e9987a05eb6dd2c9",
+      "operation": "complete",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": true,
+      "blockers": [],
+      "counts": {
+        "displayed_unique_claims_A": 2,
+        "grounded_claims_S": 2,
+        "required_groups_G": 1,
+        "satisfied_groups_H": 1,
+        "displayed_claim_occurrences": 5
+      },
+      "matched_groups": [
+        "g1"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "f1_null_or_zero_reason": null,
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": true
+    },
+    "citation_counts": {
+      "edges": 6,
+      "correct_edges": 6,
+      "claims_requiring_citation": 5,
+      "correctly_cited_occurrences": 5,
+      "literal_quotes": 6,
+      "faithful_literal_quotes": 6
+    },
+    "complete_useful_answer": true,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-02",
+    "family": "conflict",
+    "row_id": "9f5961ac16b63cf6af6e0021",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "9f5961ac16b63cf6af6e0021",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "conflict",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-02",
+    "family": "conflict",
+    "row_id": "c03423fb4ed9889a8f5f17d2",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "c03423fb4ed9889a8f5f17d2",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "conflict",
+      "answerability": "full",
+      "observation_sha256": "8d505f1ee51ed9dc174ad956abd9773995d5fcc0f191c09ae4964f295b5a7295",
+      "operation": "incomplete",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_incomplete"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-03",
+    "family": "revision_or_history",
+    "row_id": "bce76a1c493538632acedc4d",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "bce76a1c493538632acedc4d",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "revision_or_history",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-03",
+    "family": "revision_or_history",
+    "row_id": "a8eac350b1c1153e482fa87c",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "a8eac350b1c1153e482fa87c",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "revision_or_history",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-04",
+    "family": "untrusted_control",
+    "row_id": "36b227051063ab5e71279f67",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "36b227051063ab5e71279f67",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "untrusted_control",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 1,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-04",
+    "family": "untrusted_control",
+    "row_id": "92d2070e568614e7c7e492d3",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "92d2070e568614e7c7e492d3",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "untrusted_control",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 1,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-05",
+    "family": "compatible",
+    "row_id": "ba265b7e3b2b7f558b94098d",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "ba265b7e3b2b7f558b94098d",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "compatible",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 1,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-05",
+    "family": "compatible",
+    "row_id": "50485f0078d8de772bde4625",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "50485f0078d8de772bde4625",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "compatible",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 1,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-06",
+    "family": "scope",
+    "row_id": "418902a6ad660d964d45c3a2",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "418902a6ad660d964d45c3a2",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "scope",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-06",
+    "family": "scope",
+    "row_id": "f8308f49e9e6f5d0b0ac4df1",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "f8308f49e9e6f5d0b0ac4df1",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "scope",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-07",
+    "family": "missing_or_unrelated",
+    "row_id": "f7e27887f9e174d7cc0c2f01",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "negative",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "f7e27887f9e174d7cc0c2f01",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "missing_or_unrelated",
+      "answerability": "none",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 0,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-07",
+    "family": "missing_or_unrelated",
+    "row_id": "f4da70692b962b711932acdf",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "negative",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "f4da70692b962b711932acdf",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "missing_or_unrelated",
+      "answerability": "none",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 0,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-08",
+    "family": "duplicate_or_lineage",
+    "row_id": "3dac1c93074f45fe0e661977",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "3dac1c93074f45fe0e661977",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "duplicate_or_lineage",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 3,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-08",
+    "family": "duplicate_or_lineage",
+    "row_id": "570b7081e84e89452a76d827",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "570b7081e84e89452a76d827",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "duplicate_or_lineage",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 3,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-09",
+    "family": "compatible",
+    "row_id": "3f9ac7b2b9e7763c0423e3eb",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "3f9ac7b2b9e7763c0423e3eb",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "compatible",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 1,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-09",
+    "family": "compatible",
+    "row_id": "47e87a9cbfcc4cc9705f5f17",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "47e87a9cbfcc4cc9705f5f17",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "compatible",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 1,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-10",
+    "family": "scope",
+    "row_id": "e3a44a5f479bf883ed206715",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "e3a44a5f479bf883ed206715",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "scope",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-10",
+    "family": "scope",
+    "row_id": "0dcfc2b552b8cb9efce73a05",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "0dcfc2b552b8cb9efce73a05",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "scope",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-11",
+    "family": "revision_or_history",
+    "row_id": "b3b26d89f2f8cd7fae5b9da3",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "b3b26d89f2f8cd7fae5b9da3",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "revision_or_history",
+      "answerability": "partial",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-11",
+    "family": "revision_or_history",
+    "row_id": "64ba0acc6cea5741e65f1131",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "64ba0acc6cea5741e65f1131",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "revision_or_history",
+      "answerability": "partial",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-12",
+    "family": "wrong_target",
+    "row_id": "0bfef83dfd751e8eb75a4a81",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "negative",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "0bfef83dfd751e8eb75a4a81",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "wrong_target",
+      "answerability": "none",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 0,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-12",
+    "family": "wrong_target",
+    "row_id": "420e80e0dbf6a743f2a02d6b",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "negative",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "420e80e0dbf6a743f2a02d6b",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "wrong_target",
+      "answerability": "none",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 0,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-13",
+    "family": "conflict",
+    "row_id": "8c89b8dbcb5a3ee1bee89110",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "8c89b8dbcb5a3ee1bee89110",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "conflict",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-13",
+    "family": "conflict",
+    "row_id": "5803a14cd681b3f76bac44f9",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "5803a14cd681b3f76bac44f9",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "conflict",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-14",
+    "family": "missing_or_unrelated",
+    "row_id": "98b4ec65a562d4bd61e8b022",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "negative",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "98b4ec65a562d4bd61e8b022",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "missing_or_unrelated",
+      "answerability": "none",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 0,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-14",
+    "family": "missing_or_unrelated",
+    "row_id": "bd66922ab720aebe489abf25",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "negative",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "bd66922ab720aebe489abf25",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "missing_or_unrelated",
+      "answerability": "none",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 0,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-15",
+    "family": "duplicate_or_lineage",
+    "row_id": "be091d823150799fb7f89ce3",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "be091d823150799fb7f89ce3",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "duplicate_or_lineage",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 1,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-15",
+    "family": "duplicate_or_lineage",
+    "row_id": "3db11e42f5fd09a105e1c207",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "3db11e42f5fd09a105e1c207",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "duplicate_or_lineage",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 1,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-16",
+    "family": "untrusted_control",
+    "row_id": "c718fba9c8098065978e1ea4",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "c718fba9c8098065978e1ea4",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "untrusted_control",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-16",
+    "family": "untrusted_control",
+    "row_id": "625ea2618781bf401ea1116d",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "625ea2618781bf401ea1116d",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "untrusted_control",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-17",
+    "family": "conflict",
+    "row_id": "8cd0f18d0fe9c20bf72075fd",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "8cd0f18d0fe9c20bf72075fd",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "conflict",
+      "answerability": "partial",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-17",
+    "family": "conflict",
+    "row_id": "3f2211892ff4dd9bbe76ca90",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "3f2211892ff4dd9bbe76ca90",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "conflict",
+      "answerability": "partial",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-18",
+    "family": "wrong_target",
+    "row_id": "fb81127ca9bd2d4e72d90670",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "negative",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "fb81127ca9bd2d4e72d90670",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "wrong_target",
+      "answerability": "none",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 0,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-18",
+    "family": "wrong_target",
+    "row_id": "234d4ecaed58b4539aa21d4d",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "negative",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "234d4ecaed58b4539aa21d4d",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "wrong_target",
+      "answerability": "none",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 0,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-19",
+    "family": "duplicate_or_lineage",
+    "row_id": "d6e14de26697c0b658049c65",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "d6e14de26697c0b658049c65",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "duplicate_or_lineage",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 1,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-19",
+    "family": "duplicate_or_lineage",
+    "row_id": "9691a1867e3052ff4e2bc845",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "9691a1867e3052ff4e2bc845",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "duplicate_or_lineage",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 1,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-20",
+    "family": "untrusted_control",
+    "row_id": "c40a053c33fa2b9acca0c753",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "c40a053c33fa2b9acca0c753",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "untrusted_control",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-20",
+    "family": "untrusted_control",
+    "row_id": "a69aa87b97f1d58bd6900b05",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "a69aa87b97f1d58bd6900b05",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "untrusted_control",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-21",
+    "family": "scope",
+    "row_id": "260211fa98e52fff31cdab03",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "260211fa98e52fff31cdab03",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "scope",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-21",
+    "family": "scope",
+    "row_id": "d469450837fb5506851ddec4",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "positive",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "d469450837fb5506851ddec4",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "scope",
+      "answerability": "full",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 2,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-22",
+    "family": "revision_or_history",
+    "row_id": "b09ced498059f94fd9807c75",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "negative",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "b09ced498059f94fd9807c75",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "revision_or_history",
+      "answerability": "none",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 0,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-22",
+    "family": "revision_or_history",
+    "row_id": "ebb2f1c47cdd1d1e3038c7fc",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "negative",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "ebb2f1c47cdd1d1e3038c7fc",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "revision_or_history",
+      "answerability": "none",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 0,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-23",
+    "family": "missing_or_unrelated",
+    "row_id": "b8e0660eb62b0513a32ca717",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "negative",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "b8e0660eb62b0513a32ca717",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "missing_or_unrelated",
+      "answerability": "none",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 0,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-23",
+    "family": "missing_or_unrelated",
+    "row_id": "bbdd2ef633e7da29739171e7",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "negative",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "bbdd2ef633e7da29739171e7",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "missing_or_unrelated",
+      "answerability": "none",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 0,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-24",
+    "family": "wrong_target",
+    "row_id": "03f645949a3eddb2f955b015",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "baseline",
+    "expected": "negative",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "03f645949a3eddb2f955b015",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "baseline",
+      "family": "wrong_target",
+      "answerability": "none",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 0,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  },
+  {
+    "id": "rw-24",
+    "family": "wrong_target",
+    "row_id": "703d05ada8d98ab06eed9200",
+    "provider": "mistral",
+    "track": "e2e_normal",
+    "arm": "candidate",
+    "expected": "negative",
+    "decision": "abstain",
+    "complete": false,
+    "hard_violations": [],
+    "claim_metrics": {
+      "id": "703d05ada8d98ab06eed9200",
+      "provider": "mistral",
+      "track": "e2e_normal",
+      "arm": "candidate",
+      "family": "wrong_target",
+      "answerability": "none",
+      "observation_sha256": null,
+      "operation": "not_run",
+      "review_complete": true,
+      "reviewer": {
+        "role": "agent",
+        "id": "/root/paired_evaluation_independent"
+      },
+      "semantic_metrics_available": false,
+      "blockers": [
+        "operationally_not_run"
+      ],
+      "counts": {
+        "displayed_unique_claims_A": null,
+        "grounded_claims_S": null,
+        "required_groups_G": 0,
+        "satisfied_groups_H": null,
+        "displayed_claim_occurrences": 0
+      },
+      "matched_groups": [],
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "f1_null_or_zero_reason": "unavailable_operation_or_review",
+      "known_hard_violations": {},
+      "full_display_safety_audit_complete": false
+    },
+    "citation_counts": {
+      "edges": 0,
+      "correct_edges": 0,
+      "claims_requiring_citation": 0,
+      "correctly_cited_occurrences": 0,
+      "literal_quotes": 0,
+      "faithful_literal_quotes": 0
+    },
+    "complete_useful_answer": false,
+    "correct_withhold": false
+  }
+]

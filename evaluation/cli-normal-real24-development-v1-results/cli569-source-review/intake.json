@@ -1,0 +1,18 @@
+{
+  "reviewer": "/root/real24_operational_review",
+  "reviewer_kind": "agent_nonhuman",
+  "source_commit": "54eee374b40100e04fb0f8cde95912c8076dafa6",
+  "scope": "bounded CLI source review only; no successor runtime approval",
+  "source_export": "/private/tmp/cli569-independent-v28qdw8i/source",
+  "unique_work": "/private/tmp/cli569-independent-v28qdw8i",
+  "source_archive_sha256": "66289f5054959ef90297a1f6a57bd0bc5fd51af49a419e26db590c292bca3623",
+  "core_tree": "b92f2660988220f334a74c5827e653fae7a9831d",
+  "frozen_candidate_core_tree": "535d2f1ad21457905fa43722c74510de59015695",
+  "source_files": {
+    "crates/reasoning-harness-cli/src/main.rs": "9ecc5b8bd6b014410f16218f77aa0fea9f5fcfdb9a52b4cf0823390e171c8f9a",
+    "crates/reasoning-harness-cli/src/final_render_compaction.rs": "ad2067b6cbee26cfb04ee81743f18d01264f253c62ae05fe5d48bd690b6ea4ae"
+  },
+  "trace": "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/cli-normal-real24-40873570944-raw/artifact/lane/rw-02-candidate/trace.json",
+  "provider_API_calls": 0,
+  "original_source_modified": false
+}

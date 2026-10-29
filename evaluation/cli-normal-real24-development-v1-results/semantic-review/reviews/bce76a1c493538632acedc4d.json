@@ -1,0 +1,27 @@
+{
+  "row_id": "bce76a1c493538632acedc4d",
+  "observation_sha256": "d1db5ba06c419412224ac007051fa2599522667d7d205c40bb935740713be6c9",
+  "execution_provenance_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+  "gold_sha256": "bd0e71a51928ca3c659eafcdcb7769eee4ff7088719529e7a8e94bcdb71ba937",
+  "reviewer": {
+    "role": "agent",
+    "id": "/root/paired_evaluation_independent"
+  },
+  "complete": true,
+  "full_source_context_reviewed": true,
+  "claims": [],
+  "segments": [],
+  "citation_edges": [],
+  "handled_unresolved_facets": [],
+  "present_disclosures": [],
+  "all_unresolved_facets_handled": true,
+  "all_required_disclosures_present": true,
+  "safety_audit_complete": true,
+  "hard_violations": [],
+  "attempted_accept": false,
+  "explicit_withhold": false,
+  "readable_and_actionable": false,
+  "review_scope": "Complete annotation of the captured display inventory, not a claim that the runtime operation completed.",
+  "observed_operation_preserved": "not_run",
+  "adjudication_notes": "This new row has an empty captured answer and no citation spans. There is no displayed factual claim, explicit semantic withholding, or useful answer to annotate. Empty obligation lists are vacuous bookkeeping only; nonempty disclosure/facet obligations remain unmet. Operational absence is preserved and is not converted to a completed negative or safety success."
+}

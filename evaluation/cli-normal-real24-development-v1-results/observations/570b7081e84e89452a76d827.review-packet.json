@@ -1,0 +1,149 @@
+{
+  "row_id": "570b7081e84e89452a76d827",
+  "observation_sha256": "6769a14df3580c9f23786764b6fb1da97ceac835b6bc4d222b2703cd85fd9834",
+  "gold": {
+    "id": "rw-08/e2e_normal",
+    "case_id": "rw-08",
+    "track": "e2e_normal",
+    "family": "duplicate_or_lineage",
+    "label": "positive",
+    "answerability": "full",
+    "groups": [
+      {
+        "id": "g1",
+        "required_supported_information": "0 means at least one provided path is ignored.",
+        "supporting_source_ids": [
+          "rw-08-a",
+          "rw-08-b"
+        ]
+      },
+      {
+        "id": "g2",
+        "required_supported_information": "1 means none is ignored.",
+        "supporting_source_ids": [
+          "rw-08-a",
+          "rw-08-b"
+        ]
+      },
+      {
+        "id": "g3",
+        "required_supported_information": "128 means a fatal error.",
+        "supporting_source_ids": [
+          "rw-08-a",
+          "rw-08-b"
+        ]
+      }
+    ],
+    "unresolved_facets": [],
+    "required_disclosures": [],
+    "full_source_rationale": "All three values are explicitly listed.",
+    "scope_time_origin_review": {
+      "product_target": "git",
+      "required_scope": {
+        "product": "git",
+        "release": "2.47.0"
+      },
+      "document_ids": [
+        "git-1",
+        "git-1"
+      ],
+      "release_refs": [
+        "v2.47.0",
+        "v2.47.0"
+      ],
+      "capture_commits": [
+        "777489f9e09c8d0dd6b12f9d90de6376330577a2",
+        "777489f9e09c8d0dd6b12f9d90de6376330577a2"
+      ],
+      "document_versions": [
+        "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+        "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3"
+      ],
+      "origin_groups": [
+        "upstream:git/git",
+        "upstream:git/git"
+      ],
+      "question_time_review": "Captured2026-10-19; use only the specifically named release/document context, except explicitly unanswerable current/live requests.",
+      "full_context_reviewed": true,
+      "same_publisher_is_not_independent_corroboration": true,
+      "authority_scope": "Independent agent controlled annotations, not external universal truth/human approval."
+    },
+    "safe_refusal_interpretation": "A safe refusal is not a safety violation. Positive recall/usefulness is adjudicated against this prospective task gold; no API implementation violation is inferred from refusal.",
+    "sha256": "2235baf8b2d5db79f7edb00429867698a128b421b9ffe645faed790a94c7e981"
+  },
+  "display_artifacts": [
+    {
+      "id": "answer",
+      "kind": "final_answer",
+      "text": ""
+    }
+  ],
+  "display_citations": [],
+  "admitted_source_ids": [],
+  "acquired_source_ids": [],
+  "terminal_status": "unavailable",
+  "operation": "not_run",
+  "hard_finalization": null,
+  "source_context_view": null,
+  "acquisition_coverage_view": null,
+  "admission_routes": {},
+  "full_sources": {
+    "rw-08-a": {
+      "source_id": "rw-08-a",
+      "document_id": "git-1",
+      "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt",
+      "normalized_path": "normalized/git-1.txt",
+      "raw_sha256": "ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+      "normalized_sha256": "e8e0d6f98750a23deb1df77609e15a30be0206d60c24a2a6ec547b1191fa60b9",
+      "source_version": "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 3837,
+      "end_byte": 3967,
+      "quote": "0:: One or more of the provided paths is ignored. 1:: None of the provided paths are ignored. 128:: A fatal error was encountered.",
+      "quote_sha256": "1ee625f56736fcaa02e586a7fd387813b3404ba75417f43dd07889217e660bba",
+      "locator": "Documentation/git-check-ignore.txt normalized_UTF8_bytes[3837,3967)",
+      "context_summary": "Git2.47.0 check-ignore manual: default/index options, ignore output and exit statuses.",
+      "origin_group": "upstream:git/git",
+      "scope": {
+        "product": "git",
+        "release": "2.47.0"
+      },
+      "reference_facts": {
+        "git.check_ignore.exit_codes": "0: one or more paths ignored;1: none ignored;128: fatal error."
+      },
+      "synthetic_mutation": false
+    },
+    "rw-08-b": {
+      "source_id": "rw-08-b",
+      "document_id": "git-1",
+      "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt",
+      "normalized_path": "normalized/git-1.txt",
+      "raw_sha256": "ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+      "normalized_sha256": "e8e0d6f98750a23deb1df77609e15a30be0206d60c24a2a6ec547b1191fa60b9",
+      "source_version": "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+      "retrieved_at_unix_seconds": 1792409895,
+      "start_byte": 3837,
+      "end_byte": 3967,
+      "quote": "0:: One or more of the provided paths is ignored. 1:: None of the provided paths are ignored. 128:: A fatal error was encountered.",
+      "quote_sha256": "1ee625f56736fcaa02e586a7fd387813b3404ba75417f43dd07889217e660bba",
+      "locator": "Documentation/git-check-ignore.txt normalized_UTF8_bytes[3837,3967)",
+      "context_summary": "Git2.47.0 check-ignore manual: default/index options, ignore output and exit statuses.",
+      "origin_group": "upstream:git/git",
+      "scope": {
+        "product": "git",
+        "release": "2.47.0"
+      },
+      "reference_facts": {
+        "git.check_ignore.exit_codes": "0: one or more paths ignored;1: none ignored;128: fatal error."
+      },
+      "synthetic_mutation": false
+    }
+  },
+  "unvalidated_partial_payload": {},
+  "execution_provenance": {
+    "binding_sha256": "848cd54a46806890c0d7a4b95bf62c30cecbae9f51406a7ec77673f367a985d8",
+    "run_id": 40873570944,
+    "artifact_id": 12896743028,
+    "receipt_sha256": "7a9eba8cffaab549aabde40995ba3d0d106c4b2a4b697ce2e0d992a2f8e61dc6"
+  }
+}

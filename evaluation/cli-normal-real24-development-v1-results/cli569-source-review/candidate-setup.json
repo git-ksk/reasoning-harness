@@ -1,0 +1,10 @@
+{
+  "source_commit": "54eee374b40100e04fb0f8cde95912c8076dafa6",
+  "arm": "candidate",
+  "core_commit": "ab3c6322921c8c738ec35bd018345917b5afa538",
+  "core_resolution_patch_sha256": "01d9e9392d021d4c37603f5c1509efb8dc471cf5f62fe47db28c5adec5bddfd4",
+  "source": "/private/tmp/cli569-independent-v28qdw8i/source-candidate",
+  "probe": "/private/tmp/cli569-independent-v28qdw8i/probe-candidate",
+  "target": "/private/tmp/cli569-independent-v28qdw8i/target-candidate",
+  "helper_sha256": "ad2067b6cbee26cfb04ee81743f18d01264f253c62ae05fe5d48bd690b6ea4ae"
+}
