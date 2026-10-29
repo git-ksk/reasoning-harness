@@ -4,6 +4,12 @@
 
 ユーザーの指示により、次回以降は通常CLIの実モデル評価と、補助APIのモデルなし契約検証を分ける。これは次回計画であり、旧v2の採点条件・結果・入力・凍結receiptを書き換えない。現時点の採用判断は保留。新しい実API実行やリリースをこの文書だけで許可しない。
 
+## 2026-10-29 初回実行と次の修正
+
+[PR568](https://github.com/git-ksk/reasoning-harness/pull/568)で実runtime・独立運用確認・真正receiptの受入を記録した。Mistral通常の[初回run40873570944](https://github.com/git-ksk/reasoning-harness/actions/runs/40873570944)は48件中2件完了・1件失敗・45件抑止で停止し、全量F1は未測定。rw-02-candidateのfinal_render要求13,365bytesが送信前上限12,000bytesを超えた。直前8件のHTTPは全200・usage既知で、9件目は未送信。既存のusage_budget_unmeasurableという停止記録は変更せず、診断表現を#540で別に追う。
+
+次は[#569](https://github.com/git-ksk/reasoning-harness/issues/569)の共通CLI修正。通常・JSON fallbackの検証済みartifact/schemaの整形空白だけを詰め、JSON全値、利用者の本文、verdict、system、出力形式、seed、上限を維持する。実保存要求では情報同一で11,186bytesに収まることをoffline確認済み。局所再現・独立レビュー・両Engineビルド・CI後に、新しいsource/runtime/profileを別に凍結する。旧v1を再実行しない。新規独立精度受入とCLI採用は引き続き未完了。
+
 ## 評価対象
 
 | 対象 | 方法 | 判定すること |

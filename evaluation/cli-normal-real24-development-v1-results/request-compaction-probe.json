@@ -1,0 +1,26 @@
+{
+  "original_ModelRequest_bytes": 13365,
+  "journal_refusal_bytes": 13365,
+  "compact_same_JSON_ModelRequest_bytes": 11186,
+  "artifact_JSON_values_equal": true,
+  "outside_artifact_text_unchanged": true,
+  "actual_HTTP_responses": 8,
+  "all_HTTP_statuses": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+  ],
+  "known_prefix_input_tokens": 6301,
+  "known_prefix_output_tokens": 3118,
+  "new_input_reservation": 17999,
+  "aggregate_input_limit_unchanged": 24000,
+  "output_reservation": 4096,
+  "aggregate_output_limit_unchanged": 4096,
+  "compact_fits_original_12000_bound": true,
+  "actual_additional_API_calls": 0
+}

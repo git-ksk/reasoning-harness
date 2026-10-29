@@ -1,0 +1,32 @@
+{
+  "run_id": 40873570944,
+  "execution_tag": "cli-normal-real24-development-v1",
+  "execution_commit": "7073471d7490c64841200ae9ddaf252317c34721",
+  "artifact_id": 12896743028,
+  "artifact_ZIP_sha256": "9100a6d26d9ab115ed6ceeac9d53de96753e1f0479e78a899cc26a87f86c4459",
+  "planned_jobs": 48,
+  "complete_jobs": 2,
+  "failed_jobs": 1,
+  "suppressed_jobs": 45,
+  "cohort_complete": false,
+  "full_F1": null,
+  "first_aggregate_score_started": false,
+  "original_failure_class": "usage_budget_unmeasurable",
+  "actual_failure_origin": "evaluation pre-request ModelRequest bytes13365 exceeds12000 at final_render; no ninth HTTP dispatched",
+  "failed_job": "rw-02-candidate",
+  "failed_job_completed_HTTP_responses": 8,
+  "failed_job_HTTP_statuses": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+  ],
+  "failed_job_all_reported_usage_known": true,
+  "old_raw_and_latch_unchanged": true,
+  "automatic_model_retry": false,
+  "next": "lossless final-render JSON compaction without raising any cap; distinct prospectively reviewed successor profile only"
+}
