@@ -1,6 +1,6 @@
 {
   "identity": "ordinary-v2-preparation-checkpoint-v1",
-  "state": "EXPORT_FORMAT_REPAIR_PENDING_NEW_ACTUAL_RUNTIME",
+  "state": "ACTUAL_RUNTIME_FORMAL_PASS_PENDING_FRESH_METADATA_AND_GENUINE_RECEIPT",
   "common_cli_host": "54eee374b40100e04fb0f8cde95912c8076dafa6",
   "common_cli_PR": 570,
   "fixed_derivation_source": "7073471d7490c64841200ae9ddaf252317c34721",
@@ -19,7 +19,7 @@
   "prior_v1_full_F1": null,
   "new_v2_model_calls": 0,
   "new_v2_F1": null,
-  "actual_runtime_independent_review_complete": false,
+  "actual_runtime_independent_review_complete": true,
   "new_v2_receipt_frozen": false,
   "new_v2_execution_tag_created": false,
   "next": [
@@ -40,17 +40,28 @@
   "preparation_merge_commit": "c7bde54b91ae6d4a402ffc9c94505c7048f11fe6",
   "preparation_CI_successes": 5,
   "preparation_independent_source_review_sha256": "2a165fd1f03457e56be043135f719756216f8db8a9c72abf182d34ce9ea95149",
-  "runtime_build_run_id": 40924323574,
-  "runtime_build_source": "560b2ecac259e65b7123d6bcf854f7e48e992035",
+  "runtime_build_run_id": 40928520250,
+  "runtime_build_source": "6be0fbc093ad43e48c6dd385bbbc7fe30a968700",
   "runtime_build_provider_metadata": false,
   "failed_runtime_build_run_id": 40924323574,
-  "runtime_build_status": "FAILED_PROOF_AFTER_ALL_CONTROLS_PASSED",
-  "runtime_build_archive_graph": "runtime-failure-40924323574/archive-graph.json",
+  "runtime_build_status": "ALL_STAGES_SUCCESS",
+  "runtime_build_archive_graph": "new archive passed existing proof; independent actual load/identity pending",
   "prospective_export_flags": [
     "--platform linux/amd64",
     "--provenance=false",
     "--sbom=false"
   ],
   "archive_verification_or_image_identity_gate_changed": false,
-  "next_runtime_build_run_id": null
+  "next_runtime_build_run_id": null,
+  "runtime_artifact_id": 12922047736,
+  "runtime_proof_sha256": "6f53808f5108fdbaeee6811e33378275c10b33e7f31a6d6965a9dccd3efc075b",
+  "export_fix_PR": 572,
+  "export_fix_PR_merged": true,
+  "export_fix_merge_commit": "94edd47c249223917fbb46dbee8a8dc5dc1de9e1",
+  "export_fix_CI_successes": 5,
+  "export_fix_independent_source_delta_review_sha256": "25baad19654b4caef9a83ce3a93eef1b14d7105250643c29cbadec876f231d80",
+  "actual_runtime_formal_review_sha256": "2198ab1ac86d74f285212a852dd5f260a5ff1325be4bc68c6551ffc6ca19308d",
+  "actual_runtime_formal_manifest_sha256": "685c74b3e2dc177aebf4d94399d40ed6f2caf7c5d203db1d1b1a5752689184d3",
+  "actual_runtime_loaded_image_id": "sha256:d10c338c9d3df4a276456f31cbfa6a3b71540efb2bac2910c4b6a627401932b5",
+  "new_v2_metadata_HTTP_requests": 0
 }

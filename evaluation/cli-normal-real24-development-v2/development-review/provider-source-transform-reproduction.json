@@ -1,0 +1,26 @@
+{
+  "result": "PASS",
+  "method": "Exact hash-bound builder provider source transformation only reexecuted over independent Git54 bytes; no build or model process. Static review and actual provider controls checked separately.",
+  "both_arms_equal": true,
+  "checks": {
+    "mistral.rs": {
+      "sha256": "6d3ef89c39ea61e9527719fb4435fc1ea28a00831f9ce4c282a0934c3d66fa75",
+      "rate_limit_retry_zero": true,
+      "pre_HTTP_audit": true,
+      "response_audit": true
+    },
+    "gemma.rs": {
+      "sha256": "d1c9cc10f4e96ad7b56c677cb83b51ab1bcfc5952bc996d624864a26696fe82b",
+      "rate_limit_retry_zero": true,
+      "pre_HTTP_audit": true,
+      "response_audit": true
+    },
+    "groq.rs": {
+      "sha256": "0a2d90399a081a9dca5f3e75e05d49d6e60902ad83df362dd4ce27833a03c5fc",
+      "rate_limit_retry_zero": true,
+      "pre_HTTP_audit": true,
+      "response_audit": true
+    }
+  },
+  "transformed_source_root": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/target/private-evaluation-pending/cli-normal-v2-runtime-40928520250-review-work/provider-reproduction"
+}

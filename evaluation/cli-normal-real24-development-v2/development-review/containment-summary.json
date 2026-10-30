@@ -1,0 +1,19 @@
+{
+  "all_pass": true,
+  "controls": [
+    "normal_candidate_helper_share_durable_reservations",
+    "quota_stops_following_callbacks_without_refund",
+    "unknown-usage_stops_following_callbacks_without_refund",
+    "timeout-soft",
+    "timeout-hard",
+    "parent_sigterm_after_child_ready_contains_child",
+    "restart_refuses_new_spawn"
+  ],
+  "external_provider_requests": 0,
+  "new_accuracy_cases": 0,
+  "scheduler_sha256": "a412d7a9b851f23b6378496cd78a52f06e3076b05f93abd31acd3917ff2688f9",
+  "original_fixture_sha256": "b1a7359548f545bd49dc7275166024bf3bbf40e2d0c5e83c55f39fb9512a77a2",
+  "fixture_sha256": "f921edcda19fd8e764482d0075932ab7b7edd6c0c5a2854ec6cfef96a3398215",
+  "fixture_change": "readiness marker after installed signal handler",
+  "inherited_suite_note": "Original 120ms startup / early SIGTERM controls failed before child readiness on this Linux runtime; original failure log retained. These controls wait for readiness or allow 2s startup."
+}

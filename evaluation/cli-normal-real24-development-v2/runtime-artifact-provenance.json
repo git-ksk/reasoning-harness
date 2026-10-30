@@ -1,0 +1,21 @@
+{
+  "repository": "git-ksk/reasoning-harness",
+  "runtime_run_id": 40928520250,
+  "runtime_artifact_id": 12922047736,
+  "runtime_source_commit": "6be0fbc093ad43e48c6dd385bbbc7fe30a968700",
+  "artifact_name": "cli-normal-runtime-6be0fbc093ad43e48c6dd385bbbc7fe30a968700",
+  "artifact_ZIP_sha256": "5d86ea05cc86dac793c478a4106dc05731fc99246563120af3c61c4eb0b733be",
+  "downloaded_ZIP_sha256": "5d86ea05cc86dac793c478a4106dc05731fc99246563120af3c61c4eb0b733be",
+  "runtime_proof_sha256": "6f53808f5108fdbaeee6811e33378275c10b33e7f31a6d6965a9dccd3efc075b",
+  "runtime_image_archive_sha256": "46025d421a156132bc317a6129aabd4697d29892dc71a3ba366424b98bc1d7c7",
+  "canonical_runtime_image_id": "sha256:d10c338c9d3df4a276456f31cbfa6a3b71540efb2bac2910c4b6a627401932b5",
+  "archive_verified_image_ids": [
+    "sha256:bce15f82499fe20f08bb6291ae1cdfa1744559bdd5fb495aff12218ee84ee1b0",
+    "sha256:d10c338c9d3df4a276456f31cbfa6a3b71540efb2bac2910c4b6a627401932b5"
+  ],
+  "actual_build_all_controls_proof_archive_upload_success": true,
+  "formal_independent_operational_review_pending": false,
+  "metadata_model_calls": 0,
+  "formal_review_sha256": "2198ab1ac86d74f285212a852dd5f260a5ff1325be4bc68c6551ffc6ca19308d",
+  "formal_manifest_sha256": "685c74b3e2dc177aebf4d94399d40ed6f2caf7c5d203db1d1b1a5752689184d3"
+}

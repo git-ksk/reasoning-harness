@@ -1,0 +1,21 @@
+{
+  "raw_root": "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/cli-normal-v2-runtime-40928520250-raw",
+  "all_original_raw_files_unchanged": true,
+  "file_count": 10,
+  "files_sha256": {
+    "artifact/paired-artifact/identity.json": "37b306614a57fc7fecaeaa57225f0086f5454339dcf6e144ee6659b6386cec34",
+    "artifact/paired-artifact/offline-controls.tar.gz": "39bb23679155629a0f2a541f60d3878758da8cae77a812d2acea9c6938a20dec",
+    "artifact/paired-artifact/preparation.json": "b6f560048f8359ca059275eeb8c0cdc97c67878cbed6bf54956a2c256721ab13",
+    "artifact/paired-artifact/runtime-image.tar.gz": "46025d421a156132bc317a6129aabd4697d29892dc71a3ba366424b98bc1d7c7",
+    "artifact/paired-artifact/runtime-proof.json": "6f53808f5108fdbaeee6811e33378275c10b33e7f31a6d6965a9dccd3efc075b",
+    "artifact/paired-controls/ordinary-unit.log": "c0a375328bf7fc3db0fe279c9ce079885b0bdc6c58f97b954d32ec82efe41d93",
+    "artifact/paired-controls/unit.log": "afe897b90962a2b1604f606b99c673932391d541be2b8dc36cdccec5efb29cc1",
+    "artifact.json": "b5f5c34806bcd492285b88f04e2191de5cb57b6d61692d8cc461691975257267",
+    "artifact.zip": "5d86ea05cc86dac793c478a4106dc05731fc99246563120af3c61c4eb0b733be",
+    "run.json": "6ec978b413c970a269d80c3b811c5443050c441f3ffbbc5dc5016f05008c83a6"
+  },
+  "current_model_HTTP": 0,
+  "current_metadata_HTTP": 0,
+  "tag_created": false,
+  "score_run": false
+}
