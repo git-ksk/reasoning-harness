@@ -1,0 +1,5 @@
+{
+  "USD": "0.2022912",
+  "refunded": false,
+  "scope": "conservative reservations using frozen price/token upper bounds, not a provider billing limit; unknown usage is never refunded or zero"
+}
