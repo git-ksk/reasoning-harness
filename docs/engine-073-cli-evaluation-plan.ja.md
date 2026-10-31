@@ -1,5 +1,7 @@
 # 通常CLI中心の評価計画 — 2026-10-26
 
+**2026-10-31の次工程:** 通常v2実行は不正なモデル本文によって2完了/1失敗/45抑止で停止し、全量F1は未測定。[結果と独立RCA](../evaluation/cli-normal-real24-development-v2-results/README.md)を固定した。[次期測定契約](cli-model-output-measurement.md)に従い、モデル本文失敗の型付き診断と品質invalid集計を先に接続する。旧結果を変更せず、新しい独立runtime受入・receiptの後に通常48件を実測する。
+
 日本語 | [English](engine-073-cli-evaluation-plan.md)
 
 ユーザーの指示により、次回以降は通常CLIの実モデル評価と、補助APIのモデルなし契約検証を分ける。これは次回計画であり、旧v2の採点条件・結果・入力・凍結receiptを書き換えない。現時点の採用判断は保留。新しい実API実行やリリースをこの文書だけで許可しない。

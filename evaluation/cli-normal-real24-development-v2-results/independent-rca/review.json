@@ -1,0 +1,47 @@
+{
+  "identity": "independent-cli-normal-v2-run41061954114-rca-v1",
+  "reviewer": "/root/real24_operational_review",
+  "reviewer_kind": "agent_nonhuman",
+  "scope": "read-only saved-raw operational RCA and prospective measurement-policy judgment; no runtime/admission/semantic approval",
+  "result": "RCA_CONFIRMED_PROSPECTIVE_MEASUREMENT_POLICY_REDESIGN_RECOMMENDED",
+  "run_id": 41061954114,
+  "artifact_id": 12980216364,
+  "ZIP_sha256": "b082244ee61bdef92461c08157ca09b6feda0619f3b6b627d882024641a6d30f",
+  "receipt_sha256": "03b86be2bd888280e8b626ade6b638f801c4525faec164752bab71b0ac361741",
+  "runtime_source_commit": "6be0fbc093ad43e48c6dd385bbbc7fe30a968700",
+  "CLI_host": "54eee374b40100e04fb0f8cde95912c8076dafa6",
+  "actual_execution_source_sha": "dcf95657c6d61c40ab21f921ced441085236c50c",
+  "observed_counts": {
+    "complete": 2,
+    "failed": 1,
+    "suppressed": 45
+  },
+  "usage": {
+    "tokens": 20293,
+    "actual_HTTP_attempts": 20,
+    "unknown_usage_rows": 0,
+    "charged_reservations": 84288
+  },
+  "cause": "Local model candidate decode failure after the pre-existing single fallback; known protocol generation_failure plus unallowlisted operational_terminal yields UNKNOWN and frozen strict-stop latch. All6 failed-job HTTP responses200/knownusage; normal final render still produced a structurally audited blocked diagnostic frame.",
+  "current_v2_stop_conforms_to_frozen_contract": true,
+  "new_policy_recommendation": "Continue separately typed, fully accounted, safely observable model-content failures as measurable quality outcomes in a new explicit profile. Preserve strict stop for real operational/accounting/safety/provenance failures. Update collector and scoring semantics together, not bridge alone.",
+  "negative_case_TN_risk": "Frozen metrics.py awards TN to every complete negative nonaccept; merely marking malformed-output rows complete/abstain would falsely credit success. New invalid/error outcome and full-denominator error/coverage reporting are required.",
+  "quality_judgment_not_inferred_from_internal_error": "Judge actual final display with full independent source/citation review; valid final recovery can be credited, pure error/diagnostic output cannot become automatic correct_withhold.",
+  "policy_file": "policy-judgment.md",
+  "frozen_scorer_full_F1_eligibility": "Unavailable under unchanged complete-cohort rules; no scorer or arithmetic was run here.",
+  "raw141_files_before_after_unchanged": true,
+  "formal_runtime_and_admission_verdicts_unchanged": true,
+  "limits": {
+    "implementation_changed": false,
+    "new_model_or_provider_or_metadata_HTTP": 0,
+    "credentials_read": false,
+    "new_tag_or_resume_or_retry": false,
+    "observations_or_semantic_annotations_created_or_modified": false,
+    "score_or_F1_recomputed": false,
+    "old_case_reclassified": false,
+    "new_formal_runtime_PASS_issued": false,
+    "semantic_quality_PASS": false,
+    "adoption_GO": false
+  },
+  "checked_at_utc": "2026-10-30T13:38:46.977933+00:00"
+}
