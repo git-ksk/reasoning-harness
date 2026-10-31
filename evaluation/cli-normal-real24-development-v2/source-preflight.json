@@ -1,0 +1,72 @@
+{
+  "identity": "ordinary-v2-consumed-source-readback-v1",
+  "checked_at_UTC": "2026-10-30T12:51:03.968270+00:00",
+  "consumed_M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+  "fresh_public_capture_downloads": 12,
+  "full_sources_verified": 12,
+  "documents": {
+    "curl-1": {
+      "raw_sha256": "d164104079fbac52eefc1147bfb1eb152bfbb1d883e6c0f963df25a4e7a505e2",
+      "normalized_sha256": "1c50e9c3dcb291a16f36d31f2b6ac33d6f3a9964c26191f90a67c8648ee193ae",
+      "raw_matches_frozen": true
+    },
+    "curl-2": {
+      "raw_sha256": "a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+      "normalized_sha256": "4f81c7efbe90b7701f44c8643b804258ec872e52df927cd0d04224c67f220ab1",
+      "raw_matches_frozen": true
+    },
+    "git-1": {
+      "raw_sha256": "ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+      "normalized_sha256": "e8e0d6f98750a23deb1df77609e15a30be0206d60c24a2a6ec547b1191fa60b9",
+      "raw_matches_frozen": true
+    },
+    "git-2": {
+      "raw_sha256": "7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa",
+      "normalized_sha256": "4d8c0aec74ffbce5eef0cf9275087b6d902592dc7866fa9d7893212e76ba7733",
+      "raw_matches_frozen": true
+    },
+    "cmake-1": {
+      "raw_sha256": "64bf74bba3708146a4c52fc2ab7e4a5ee8fd476838df9c72760f090116a6ec77",
+      "normalized_sha256": "8001eb15cf83e39b849e1f8560fe7682d87f3720b16a697dfffd5903214de733",
+      "raw_matches_frozen": true
+    },
+    "cmake-2": {
+      "raw_sha256": "4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114",
+      "normalized_sha256": "4f01278b55bfaa638dfcbce01bfe681af3a78434689382fd2126c15a93d5d954",
+      "raw_matches_frozen": true
+    },
+    "openssl-1": {
+      "raw_sha256": "4f7c46dd3228e880870cdf8d70cf4dabd0ade3ffea98bf480e0cfc251dc05569",
+      "normalized_sha256": "0ae74a50767139b2fc7a5b280a6bcd6220317c96ec64a11207c745cd3d1fa8dd",
+      "raw_matches_frozen": true
+    },
+    "sqlite-1": {
+      "raw_sha256": "589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+      "normalized_sha256": "a71cd6b8aaa13eb53119fb48799fdefc829ae79e0c4835a109c264a1b5cd4346",
+      "raw_matches_frozen": true
+    },
+    "sqlite-2": {
+      "raw_sha256": "72376ad8eb150197a422bdbab5299f3a643f504f36de264f035ccffe5a5d9220",
+      "normalized_sha256": "93525474a6bfebdec2e38a02b5472606d99480eb9a751cb0104aa9b78d660b1f",
+      "raw_matches_frozen": true
+    },
+    "redis-1": {
+      "raw_sha256": "b475ab7922c5ad2c42c8ccde2bc6f1a4f7f8b3ba999426fa3e6b00452362cf50",
+      "normalized_sha256": "031ebb8a537e0a85295f9523ec68b370e7b2510f5831be5e3fb2e25d1c431812",
+      "raw_matches_frozen": true
+    },
+    "redis-2": {
+      "raw_sha256": "2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff",
+      "normalized_sha256": "5ac533f1eb991c9a4cf16ddf7b838bfd4392960c62045f015b8a1930f09460aa",
+      "raw_matches_frozen": true
+    },
+    "openssl-2": {
+      "raw_sha256": "aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde",
+      "normalized_sha256": "f198d501a38886a26eb08b6b74973008b6af9111e925be1409333cc76dd8bde1",
+      "raw_matches_frozen": true
+    }
+  },
+  "model_provider_calls": 0,
+  "provider_credentials_passed": false,
+  "quality_or_new_accuracy_acceptance": false
+}

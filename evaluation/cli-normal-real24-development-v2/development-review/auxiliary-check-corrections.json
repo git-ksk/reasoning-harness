@@ -1,0 +1,22 @@
+{
+  "implementation_modified": false,
+  "raw_modified": false,
+  "corrections": [
+    {
+      "check": "preload rootfs layer link",
+      "initial_result": "Auxiliary assumption that compressed descriptor digest equals rootfs diff_id rejected before load.",
+      "correction": "Verified compressed descriptor bytes and decompressed gzip bytes independently against each declared diff_id; archive parser unchanged."
+    },
+    {
+      "check": "actual binary map",
+      "initial_result": "Reviewer probe raised KeyError reading nonexistent top-level identity.binaries after successful stopped-container copy.",
+      "correction": "Used actual arms.*.binaries map, verified all ten exact hashes and ELF architecture; no runtime source changed."
+    },
+    {
+      "check": "control-summary shape",
+      "initial_result": "Reviewer aggregate verifier assumed every controls entry is a mapping; containment entries are names.",
+      "correction": "Verified containment all_pass and7 entries using actual schema; all five own/native summaries byte-identical. No controls were rerun or changed for this auxiliary assertion."
+    }
+  ],
+  "prior_approval_review_failure": "Previous turn Docker action was not executed because automatic approval review hit usage limit. Current resumed authorization succeeded; exact load and offline inspection completed."
+}

@@ -1,0 +1,14 @@
+test_changed_or_extra_replacement_is_rejected (test_prepare_runtime.DerivationControls.test_changed_or_extra_replacement_is_rejected) ... ok
+test_fresh_preparation_freezes_v2_inventory_without_granting_execution (test_prepare_runtime.DerivationControls.test_fresh_preparation_freezes_v2_inventory_without_granting_execution) ... ok
+test_protocol_only_changes_profile_host_and_review_scope (test_prepare_runtime.DerivationControls.test_protocol_only_changes_profile_host_and_review_scope) ... ok
+test_runtime_export_flags_are_exact_and_host_guard_is_preserved (test_prepare_runtime.DerivationControls.test_runtime_export_flags_are_exact_and_host_guard_is_preserved) ... ok
+test_v1_verdict_cannot_admit_v2 (test_prepare_runtime.DerivationControls.test_v1_verdict_cannot_admit_v2) ... ok
+test_workflows_inherit_conditions_and_fail_before_model_credentials (test_prepare_runtime.DerivationControls.test_workflows_inherit_conditions_and_fail_before_model_credentials) ... ok
+test_changed_image_cannot_reach_docker_in_either_workflow (test_runtime_archive.HostArchiveBoundary.test_changed_image_cannot_reach_docker_in_either_workflow) ... ok
+test_loaded_tag_must_resolve_to_a_reviewed_immutable_id_before_run (test_runtime_archive.HostArchiveBoundary.test_loaded_tag_must_resolve_to_a_reviewed_immutable_id_before_run) ... ok
+test_trusted_review_proof_archive_and_host_code_all_bind (test_runtime_archive.HostArchiveBoundary.test_trusted_review_proof_archive_and_host_code_all_bind) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 3.337s
+
+OK
