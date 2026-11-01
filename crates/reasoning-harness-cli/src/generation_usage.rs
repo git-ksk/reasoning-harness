@@ -55,6 +55,7 @@ impl<'a> RecordingAdapter<'a> {
                 if let Some((class, message)) = &observed.denied {
                     failure.failure_class = class;
                     failure.message = message.clone();
+                    failure.clear_model_output_diagnostic();
                 }
                 failure.provider_attempts = observed.attempts;
                 failure.usage = (observed.attempts > 0
