@@ -1,5 +1,6 @@
 """Prospective v3 ordinary-CLI measurement contracts. No live/runtime admission."""
 import hashlib
+import os
 import json
 import re
 from pathlib import Path
@@ -76,3 +77,23 @@ def unsigned(value, name):
 def positive(value, name):
     require(type(value) is int and value > 0, name)
     return value
+
+
+def exclusive_durable_claim(path, claim):
+    """Receipt-bound O_EXCL replay barrier. No unlock on crash or scoring error."""
+    path = Path(path)
+    require(path.parent.is_dir() and not path.parent.is_symlink(),
+            "claim_ledger_parent_not_trusted")
+    data = canonical(claim) + b"\n"
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
+    finally:
+        dirfd = os.open(path.parent, os.O_RDONLY)
+        try:
+            os.fsync(dirfd)
+        finally:
+            os.close(dirfd)

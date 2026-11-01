@@ -61,21 +61,22 @@ def diagnostics(result):
 
 
 def audit_trace(trace, events, provider, model):
-    """Cross-check the actual CLI trace requests/responses with normalized HTTP.
+    """Bind logical CLI calls to individually metered HTTP attempts.
 
-    Reject extra/unpaired model calls, duplicate trace identities and
-    unknown usage before a parse failure can be considered measured.
+    Provider response usage can aggregate several successful attempts. No
+    inference from an attempt count without matching raw provider usage is
+    permitted. An independent provider-journal attestor must authenticate
+    these normalized HTTP records before any live use.
     """
     require(
         trace.get("contract") == "reason-natural-diagnostic-trace-v1"
-        and trace.get("provider") == provider
-        and trace.get("model") == model,
+        and trace.get("provider") == provider and trace.get("model") == model,
         "trace_provider_or_contract_mismatch",
     )
     ordered = trace["events"]
     require(bool(ordered), "empty_diagnostic_trace")
     pending = {}
-    responses = []
+    completed = []
     failures = []
     for index, item in enumerate(ordered):
         require(type(item) is dict and item.get("sequence") == index,
@@ -97,22 +98,42 @@ def audit_trace(trace, events, provider, model):
             require(key in pending and pending[key] is False,
                     "unpaired_or_repeated_trace_response")
             pending[key] = True
-            if kind == "model_response":
-                usage = item.get("response", {}).get("usage")
-                require(type(usage) is dict, "missing_trace_usage")
-                require(item["response"].get("provider_attempts") == 1,
-                        "unmeasurable_internal_provider_retries")
-                responses.append(usage)
-            else:
+            completed.append((key, item))
+            if kind == "model_failure":
                 failures.append(item.get("failure_class"))
     require(pending and all(pending.values()), "pending_model_call")
-    require(len(responses) == len(events), "trace_http_attempt_count_mismatch")
-    for trace_usage, http in zip(responses, events):
-        for key in ("input_tokens", "output_tokens", "total_tokens"):
-            require(type(trace_usage.get(key)) is int and trace_usage[key] == http[key],
-                    "trace_http_token_mismatch")
+    grouped = {}
+    group_order = []
+    for http in events:
+        key = (http["correlation_id"], http["logical_attempt"])
+        if key not in grouped:
+            grouped[key] = []
+            group_order.append(key)
+        grouped[key].append(http)
+    require([key for key, _ in completed] == group_order,
+            "trace_http_logical_order_mismatch")
+    for key, item in completed:
+        batch = grouped[key]
+        if item["kind"] == "model_failure":
+            # A provider failure is never eligible to continue even if an
+            # independently captured HTTP response reported 2xx earlier.
+            continue
+        response = item.get("response")
+        require(type(response) is dict, "missing_trace_response")
+        usage = response.get("usage")
+        require(type(usage) is dict, "missing_trace_usage")
+        require(
+            type(response.get("provider_attempts")) is int
+            and response["provider_attempts"] == len(batch),
+            "trace_http_attempt_count_mismatch",
+        )
+        for field in ("input_tokens", "output_tokens", "total_tokens"):
+            require(
+                type(usage.get(field)) is int
+                and usage[field] == sum(http[field] for http in batch),
+                "trace_http_token_mismatch",
+            )
     return failures
-
 
 def audit_http(events, trace, result, provider, model):
     """Bind normalized immutable HTTP attempts to the CLI's actually reported usage.
@@ -127,10 +148,14 @@ def audit_http(events, trace, result, provider, model):
     for attempt in events:
         strict_keys(
             attempt,
-            {"request_id", "provider", "model", "http_status", "input_tokens", "output_tokens", "total_tokens"},
-            {"request_id", "provider", "model", "http_status", "input_tokens", "output_tokens", "total_tokens"},
+            {"request_id", "correlation_id", "logical_attempt", "provider", "model",
+             "http_status", "input_tokens", "output_tokens", "total_tokens"},
+            {"request_id", "correlation_id", "logical_attempt", "provider", "model",
+             "http_status", "input_tokens", "output_tokens", "total_tokens"},
             "http_attempt",
         )
+        safe_id(attempt["correlation_id"], "http_correlation_id")
+        positive(attempt["logical_attempt"], "http_logical_attempt")
         request_id = safe_id(attempt["request_id"], "http_request_id")
         require(request_id not in seen, "duplicate_http_request")
         seen.add(request_id)

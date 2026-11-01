@@ -7,7 +7,7 @@ from pathlib import Path
 from annotate import build_packet, read_observations, validate_gold, validate_review
 from contracts import (
     PACKET_ID, REVIEW_ID, SCORE_ID, digest, exclusive_json, keyed_digest,
-    read_json, require, sha_field, strict_keys,
+    read_json, require, sha_field, strict_keys, exclusive_durable_claim,
 )
 
 
@@ -248,8 +248,24 @@ def score(observations, packets, gold_file, reviews, receipt_file, output):
             "efficiency_and_non_regression",
         ],
     })
+    # An output-folder-only lock can be bypassed by changing --output. A
+    # genuine receipt must irrevocably freeze its one durable score-ledger
+    # directory. This gate is also used for synthetic offline evidence.
+    receipt = read_json(receipt_file)
+    ledger_value = receipt.get("score_ledger_dir") if type(receipt) is dict else None
+    require(type(ledger_value) is str, "receipt_score_ledger_missing")
+    ledger = Path(ledger_value)
+    require(ledger.is_absolute() and ledger.is_dir()
+            and ledger.resolve() == ledger and not ledger.is_symlink(),
+            "receipt_score_ledger_not_canonical")
     output = Path(output)
-    output.mkdir()  # Exclusive: a second scorer call must fail, never overwrite.
+    exclusive_durable_claim(ledger / (index["receipt_sha256"] + ".first-score.claim.json"), {
+        "contract": SCORE_ID, "receipt_sha256": index["receipt_sha256"],
+        "observation_index_sha256": result["observation_index_sha256"],
+        "review_manifest_sha256": result["review_manifest_sha256"],
+        "output": str(output.resolve()), "replay_allowed": False,
+    })
+    output.mkdir()  # Create-only: no overwrites or relabeling.
     exclusive_json(output / "first-score-started.json", {
         "receipt_sha256": index["receipt_sha256"],
         "review_manifest_sha256": result["review_manifest_sha256"],

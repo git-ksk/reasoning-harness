@@ -29,13 +29,15 @@ The gold file is a **new** `reason-cli-normal-v3-gold-v1` record with the *same*
 
 An **independent reviewer** must inspect the original full-source context and complete displayed bytes, including unsafe assertions, citations, quotes and incomplete/fallback outputs, then create one `<job_id>.review.json` per observation. Each review uses `reason-cli-normal-v3-independent-review-v1` and fields `job_id`, `observation_sha256`, `gold_sha256`, `reviewer` (`role`, `id`, `independent_of_execution=true`, `full_source_context_reviewed=true`), `decision` (`answer|withhold|invalid`), `correct_groups`, `incorrect_assertions`, `hard_violations`, `citation_checks` (`id, supported, literal_exact`), `segments` (a complete contiguous UTF-8 byte inventory of the displayed answer, each span labeled `fact` or `nonfact` and listing attached citation IDs), `readable_and_actionable`, `safety_audit_complete=true`, and `notes`. Each `fact` span should represent one independently adjudicated factual assertion, even when several assertions share one sentence or citation. The validator rejects gaps, overlaps, malformed byte boundaries, citations unattached to factual spans and incomplete citation audits. No gold, observation, source or terminal field can be replaced by a review.
 
+The independently authenticated receipt must bind a canonical absolute `score_ledger_dir` ahead of the prospective first-score; do not reuse a historical receipt or casually redirect the ledger.
+
 The reviewer also freezes a `review-index.json` with contract `reason-cli-normal-v3-review-index-v1`, exact receipt hash, observation index hash, packet index hash, the *original* executor ID, and `reviews: {job_id: sha256(review_file_bytes)}`. This freezing/independence must be externally established by the upcoming runtime admission; a self-declared Boolean is not an independent attestation.
 
 ```bash
 python3 "$DIR/score.py" --observations /private/v3/observations --packets /private/v3/packets --gold /private/v3/gold.json --reviews /private/v3/reviews --receipt /private/v3/receipt.json --output /private/v3/first-score
 ```
 
-**All three stages use exclusive create-only output directories.** They refuse to overwrite files *within the same output directory*. **This is NOT a durable, receipt-wide first-score replay lock:** a different output directory could still be used for a second scoring run. Before any genuine v3 first score, stage ③ must integrate a trusted, persistent receipt-bound score reservation/claim and reject changed output paths, alternative ledgers or replay. Until then even a synthetically successful score is not an accepted first score. Keep private source/packet materials out of public repository and issue comments. Only status summaries and reviewed, non-secret metadata should be published.
+**All three stages use exclusive create-only output directories.** The prospective first scorer also holds a durable O_EXCL claim keyed to the receipt SHA-256 in the score-ledger directory frozen inside that receipt, rejecting another output path for the same receipt. This remains **engineering-only** until a separately authenticated receipt, authoritative ledger and real runtime/image acceptance are proven; an untrusted receipt cannot self-certify an authoritative lock. Keep private source/packet materials out of public repository and issue comments. Only status summaries and reviewed, non-secret metadata should be published.
 
 ## Immutable scoring rules
 
@@ -52,3 +54,60 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s evaluation/cli-repair-
 ```
 
 The **20-test** suite exercises all six typed phases, provider protocol discrimination, fallback recovery, 429/non-2xx operational stop, unknown/changed usage, missing trace, partial-success trace refusal, forged terminal display, wrong-request case identity, full-display factual-byte review, citation gaps across multiple assertions, changed source/citation bytes, case/gold binding, invalid negative/positive scoring, unsafe priority, 24-case denominator, receipt/packet/review tampering, and same-output-directory first-score replay rejection. These tests are **synthetic only** and cannot substitute for the independent real-runtime acceptance gate.
+
+## Stage ③: prospective dry-run scheduler verification
+
+This directory additionally contains **`offline_lane.py`**, a versioned
+integration of the actual preserved durable POSIX subprocess runner with the
+ordinary-CLI nested-error bridge. Its only execution contract is
+`SYNTHETIC_V3_HTTP_ZERO_CONTROL_NOT_MODEL_EXECUTION`, which enforces
+`mistral` / `fixture-model`, the pinned inert fixture-driver SHA256, 24 fixed
+cases × alternating 2 Engine arms, frozen fixture-file SHA256 entries, frozen
+Python executable, a synthetic receipt that explicitly disallows real model
+calls, and an exclusive filesystem receipt-bound run ledger. No live
+credential callback is ever called; known credential-like environment fields
+are stripped from the child.
+
+The offline subprocess fixture emits precomputed fake CLI JSON and trace plus
+fake normalized HTTP records. **Fake HTTP200s are NOT provider communications,
+billable tokens, or an independent HTTP provenance proof.** A typed fully
+metered local decode failure with **no actual displayed assertion** becomes
+`quality_invalid` while the durable runner accounts for the charge and
+advances. This is *observed* not quality-pass. Actual non-2xx/quota/usage
+unknown, a prior operational bridge failure, any unapproved extra retry,
+budget reservation breach, missing/corrupt fixture, or displayed
+unreviewed assertion latches the whole arm and suppresses all subsequent
+spawns. A displayed factual assertion is conservatively held because a
+retrospective semantic reviewer cannot attest it before the next paid call.
+
+The code does not relax frozen real 48-job budgets, retry/pacing/schema, or
+run credentials. It **does not authorize** the paid-model adapter or an
+unadmitted image; wiring a genuine provider journal, stage-③ real-execution
+pre-advance attestation with trusted signatures, complete full-display safety
+validation, authoritative receipt/run identity and independent source/image
+acceptance remains a separate blocker before live use. The synthetic O_EXCL
+ledger is a replay regression control, not an external distributed lock.
+
+The prospective first scorer now also requires that a **new genuine receipt**
+contain a canonical absolute `score_ledger_dir` directory. It creates and
+fsyncs a receipt-SHA-bound O_EXCL first-score claim before writing any output,
+preventing an alternative output path from scoring the same receipt twice.
+This replay guarantee assumes an *independently authenticated and frozen
+receipt*, a trusted persistent filesystem and a single authoritative ledger.
+The test suite exercises alternate-path refusal, but a future stage-④
+independent verifier must validate these trust anchors. Historical v1/v2
+receipts/score outputs are not migrated or changed.
+
+Run all inert integration and existing scorer tests on the checked-out source:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover \
+  -s evaluation/cli-repair-paired-v1/normal_v3 -p 'test_*.py' -v
+```
+
+The suite includes a full 48-job actual subprocess-runner pass in which a
+metered fake initial JSON error continues; quota, unreviewed display,
+unknown usage, unapproved internal provider retry, corrupted capture, and
+aggregate reservation breach all suppress the following 47 jobs. No new
+Mistral, Google or Groq generation, v3 freeze/tag, real billing or new F1
+occurs from these tests.
