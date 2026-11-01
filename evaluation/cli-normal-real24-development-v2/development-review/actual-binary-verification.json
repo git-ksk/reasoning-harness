@@ -1,0 +1,72 @@
+{
+  "actual_loaded_image_id": "sha256:d10c338c9d3df4a276456f31cbfa6a3b71540efb2bac2910c4b6a627401932b5",
+  "archive_verified_image_ids": [
+    "sha256:bce15f82499fe20f08bb6291ae1cdfa1744559bdd5fb495aff12218ee84ee1b0",
+    "sha256:d10c338c9d3df4a276456f31cbfa6a3b71540efb2bac2910c4b6a627401932b5"
+  ],
+  "runtime_files_count": 104,
+  "identity_sha256": "37b306614a57fc7fecaeaa57225f0086f5454339dcf6e144ee6659b6386cec34",
+  "binaries": {
+    "registry-baseline": {
+      "sha256": "91d900332ca43c8df90a9e66a6620e3d7d63e6587ae3b17c8724a09fc2334c10",
+      "bytes": 4736704,
+      "class": "ELF64",
+      "machine": "x86_64"
+    },
+    "audit-probe-candidate": {
+      "sha256": "3139f0125af146c40bde6cb2d1cc63f031165462aeddc87282cfaa52fa9db629",
+      "bytes": 12115768,
+      "class": "ELF64",
+      "machine": "x86_64"
+    },
+    "audit-probe-baseline": {
+      "sha256": "674fe8a73deb43ef2cea1389550952186f618bdfdbad3f5ae53e34a755a2c101",
+      "bytes": 12094176,
+      "class": "ELF64",
+      "machine": "x86_64"
+    },
+    "registry-candidate": {
+      "sha256": "6dae5e8b3859e860d1fc9bace025ca0d028d925296326d6499d992dbe6ef9bbe",
+      "bytes": 4736680,
+      "class": "ELF64",
+      "machine": "x86_64"
+    },
+    "adviser-baseline": {
+      "sha256": "3b9542116991fa727a4e4ee0e7fbe271aa58a88fa8a29fdca23916d518c0f67d",
+      "bytes": 14157264,
+      "class": "ELF64",
+      "machine": "x86_64"
+    },
+    "source-host-baseline": {
+      "sha256": "e229cb339c115f34bafd331f42f4d46c827bf0f29d69ff12f75c3e679b3e7358",
+      "bytes": 5444792,
+      "class": "ELF64",
+      "machine": "x86_64"
+    },
+    "reason-candidate": {
+      "sha256": "4526975b843315e7ed719479c2e6a2a0cebf1340bbd6fa7604ab8266ec022b7e",
+      "bytes": 46252896,
+      "class": "ELF64",
+      "machine": "x86_64"
+    },
+    "adviser-candidate": {
+      "sha256": "2d7e37d052593430b2a65b681c8e92c546e72349c469c01689f476c1a94e890f",
+      "bytes": 14174824,
+      "class": "ELF64",
+      "machine": "x86_64"
+    },
+    "source-host-candidate": {
+      "sha256": "2a04fe384c9877c567e723dd0fa2b7eefe1aae8001aee54062f48150e606a081",
+      "bytes": 5904536,
+      "class": "ELF64",
+      "machine": "x86_64"
+    },
+    "reason-baseline": {
+      "sha256": "d42e854455852ae1d231ef660412367f4584ecb2c9c1c550992efc4c4804ade3",
+      "bytes": 46273424,
+      "class": "ELF64",
+      "machine": "x86_64"
+    }
+  },
+  "copied_from_stopped_container": true
+}

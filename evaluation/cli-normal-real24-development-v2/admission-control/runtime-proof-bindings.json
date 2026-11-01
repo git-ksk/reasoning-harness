@@ -1,0 +1,20 @@
+{
+  "actual_genuine_receipt_hostgate_argv": [
+    "python3",
+    "-B",
+    "evaluation/cli-normal-v2/verify_runtime_archive.py",
+    "--loaded-proof",
+    "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/cli-normal-v2-runtime-40928520250-raw/artifact/paired-artifact/runtime-proof.json",
+    "--actual-image-id",
+    "sha256:d10c338c9d3df4a276456f31cbfa6a3b71540efb2bac2910c4b6a627401932b5",
+    "--review",
+    "target/ordinary-v2-genuine-admission-20261030/frozen/development-review/review.json",
+    "--receipt",
+    "target/ordinary-v2-genuine-admission-20261030/frozen/development.json"
+  ],
+  "returncode": 0,
+  "receipt_review_proof_all_exact_bound_fields_equal": true,
+  "actual_and_public_proof_bytes_equal": true,
+  "receipt_runtime104files_equal_proof": true,
+  "new_external_HTTP": 0
+}

@@ -1,0 +1,6 @@
+{
+  "previous_packet": "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/cli-normal-v2-runtime-40928520250-independent",
+  "continued_packet": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/target/private-evaluation-pending/cli-normal-v2-runtime-40928520250-independent",
+  "heavy_work": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/target/private-evaluation-pending/cli-normal-v2-runtime-40928520250-review-work",
+  "reason": "Current permitted workspace; original evidence bytes retained and copied exactly."
+}

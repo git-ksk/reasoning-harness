@@ -1,0 +1,18 @@
+{
+  "provider": "mistral",
+  "model": "ministral-8b-2512",
+  "source_commit": "6be0fbc093ad43e48c6dd385bbbc7fe30a968700",
+  "runtime_proof_sha256": "6f53808f5108fdbaeee6811e33378275c10b33e7f31a6d6965a9dccd3efc075b",
+  "operational_review_sha256": "2198ab1ac86d74f285212a852dd5f260a5ff1325be4bc68c6551ffc6ca19308d",
+  "checked_at_unix_seconds": 1793365131,
+  "valid_until_unix_seconds": 1793451531,
+  "model_generations": 0,
+  "maximum_metadata_requests": 1,
+  "metadata_requests_attempted": 1,
+  "authentication_and_model_available": true,
+  "quota_headroom": "UNKNOWN",
+  "full_cohort_completion_guaranteed": false,
+  "http_status": 200,
+  "response_rate_limits": {},
+  "error_class": null
+}

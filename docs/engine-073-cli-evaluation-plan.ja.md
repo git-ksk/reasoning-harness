@@ -1,5 +1,7 @@
 # 通常CLI中心の評価計画 — 2026-10-26
 
+**2026-10-31の次工程:** 通常v2実行は不正なモデル本文によって2完了/1失敗/45抑止で停止し、全量F1は未測定。[結果と独立RCA](../evaluation/cli-normal-real24-development-v2-results/README.md)を固定した。[次期測定契約](cli-model-output-measurement.md)に従い、モデル本文失敗の型付き診断と品質invalid集計を先に接続する。旧結果を変更せず、新しい独立runtime受入・receiptの後に通常48件を実測する。
+
 日本語 | [English](engine-073-cli-evaluation-plan.md)
 
 ユーザーの指示により、次回以降は通常CLIの実モデル評価と、補助APIのモデルなし契約検証を分ける。これは次回計画であり、旧v2の採点条件・結果・入力・凍結receiptを書き換えない。現時点の採用判断は保留。新しい実API実行やリリースをこの文書だけで許可しない。
@@ -10,7 +12,7 @@
 
 [旧run40873570944](https://github.com/git-ksk/reasoning-harness/actions/runs/40873570944)は2完了・1失敗・45抑止で保持し、全量F1は未測定。直前8件のHTTPは全200・usage既知、第9HTTPは送信前サイズ上限で未送信だった。元のusage_budget_unmeasurable記録は修正せず、診断を#540で別に追う。
 
-[通常v2準備](../evaluation/cli-normal-v2/README.md)は[PR571](https://github.com/git-ksk/reasoning-harness/pull/571)で独立source確認・CI5件成功後にマージし、[実runtime構築run40924323574](https://github.com/git-ksk/reasoning-harness/actions/runs/40924323574)はビルド・全offline controls成功後、BuildKit attestation付きindexに未対応のproof作成で停止。既存の照合境界は維持し、runtime出力を明示AMD64・補助attestationなしへ固定して別sourceで再構築する。固定v1 treeから変更箇所数・前後hashを照合して別identity/tag/workflow/normal_v2を導出し、両Engineの共通hostを`54eee37`へ固定する。予算・model・tier・pacing・停止条件は同一。v2の独立source確認と実AMD64 runtime/image/proof受入、新metadata/readiness、真正receipt・48件plan/callback確認後に、別の初回実モデル測定を行う。既知24問は開発診断であり、新規独立精度受入・CLI採用は別途必要。
+[通常v2準備](../evaluation/cli-normal-v2/README.md)は[PR571](https://github.com/git-ksk/reasoning-harness/pull/571)で独立source確認・CI5件成功後にマージし、最初の[run40924323574](https://github.com/git-ksk/reasoning-harness/actions/runs/40924323574)はproof作成で停止した記録を保持し、出力形式だけの修正[PR572](https://github.com/git-ksk/reasoning-harness/pull/572)を独立確認・CI5件成功後にマージ済み。新しい[run40928520250](https://github.com/git-ksk/reasoning-harness/actions/runs/40928520250)は両Engineビルド・全offline controls・既存proof・archiveまで成功し、実イメージの正式独立確認はPASS。新Mistral接続確認は1GET/200/生成0、真正receipt03b86beの48件plan・予約callbackも独立HTTP0確認PASS。実行条件を固定し、評価記録PRのCIと並行して通常48件を起動する。固定v1 treeから変更箇所数・前後hashを照合して別identity/tag/workflow/normal_v2を導出し、両Engineの共通hostを`54eee37`へ固定する。予算・model・tier・pacing・停止条件は同一。v2の独立source確認と実AMD64 runtime/image/proof受入、新metadata/readiness、真正receipt・48件plan/callback確認後に、別の初回実モデル測定を行う。既知24問は開発診断であり、新規独立精度受入・CLI採用は別途必要。
 
 ## 評価対象
 

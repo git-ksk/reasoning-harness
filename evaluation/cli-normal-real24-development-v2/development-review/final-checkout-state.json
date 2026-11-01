@@ -1,0 +1,8 @@
+{
+  "checked_at_utc": "2026-10-30T12:54:19.471005+00:00",
+  "HEAD": "94edd47c249223917fbb46dbee8a8dc5dc1de9e1",
+  "git_status_porcelain": " M evaluation/cli-normal-real24-development-v2/preparation-checkpoint.json\n M evaluation/cli-normal-real24-development-v2/pricing-check.json\n?? evaluation/cli-normal-real24-development-v2/pretag-history-check.json\n?? evaluation/cli-normal-real24-development-v2/runtime-artifact-provenance.json\n?? evaluation/cli-normal-real24-development-v2/runtime-proof.json\n?? evaluation/cli-normal-real24-development-v2/scoring-environment.json\n?? evaluation/cli-normal-real24-development-v2/source-preflight.json\n?? evaluation/engine073-complete-M0-independent-review-v1/\n?? evaluation/engine073-groq-readiness-independent-review-v1/\n?? evaluation/engine073-realworld-M1-v1/\n?? evaluation/engine073-realworld-operational-v1a/\n",
+  "tracked_files_modified_by_reviewer": false,
+  "output_only": "managed target/private-evaluation-pending/cli-normal-v2-runtime-40928520250-independent and -review-work",
+  "root_owned_preparation_changes": "status entries outside target are implementation/root changes and left untouched"
+}

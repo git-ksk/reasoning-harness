@@ -1,0 +1,28 @@
+{
+  "identity": "ordinary-v2-pretag-visible-history-check-v1",
+  "checked_at_UTC": "2026-10-30T12:46:33.686709+00:00",
+  "repository": "git-ksk/reasoning-harness",
+  "tag": "cli-normal-real24-development-v2",
+  "date_windows": [
+    {
+      "start": "2026-08-29",
+      "end": "2026-08-31",
+      "runs": 86
+    },
+    {
+      "start": "2026-09-01",
+      "end": "2026-09-30",
+      "runs": 679
+    },
+    {
+      "start": "2026-10-01",
+      "end": "2026-10-30",
+      "runs": 278
+    }
+  ],
+  "tag_push_runs_found": 0,
+  "repository_push_runs": 1043,
+  "run_ids_sha256": "522830a26108877fa56a9552436f56696e706b4156b4718006f30d4326b9e2fd",
+  "tag_creation_or_model_admission": false,
+  "limitations": "Visible GitHub history only; actual first-run guard repeats after tag push; administrative deletion is outside this check."
+}

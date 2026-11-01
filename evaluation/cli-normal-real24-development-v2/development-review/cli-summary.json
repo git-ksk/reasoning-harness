@@ -1,0 +1,262 @@
+{
+  "all_pass": true,
+  "controls": [
+    {
+      "arm": "baseline",
+      "provider": "mistral",
+      "mode": "success",
+      "pass": true,
+      "loopback_requests": 2,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 2,
+        "input_tokens": 24,
+        "output_tokens": 16,
+        "total_tokens": 40,
+        "provider_attempts": 2
+      }
+    },
+    {
+      "arm": "baseline",
+      "provider": "mistral",
+      "mode": "budget-stop",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 1,
+        "input_tokens": 12,
+        "output_tokens": 8,
+        "total_tokens": 20,
+        "provider_attempts": 1
+      }
+    },
+    {
+      "arm": "baseline",
+      "provider": "google",
+      "mode": "success",
+      "pass": true,
+      "loopback_requests": 2,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 2,
+        "input_tokens": 24,
+        "output_tokens": 16,
+        "total_tokens": 40,
+        "provider_attempts": 2
+      }
+    },
+    {
+      "arm": "baseline",
+      "provider": "google",
+      "mode": "budget-stop",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 1,
+        "input_tokens": 12,
+        "output_tokens": 8,
+        "total_tokens": 20,
+        "provider_attempts": 1
+      }
+    },
+    {
+      "arm": "baseline",
+      "provider": "groq",
+      "mode": "success",
+      "pass": true,
+      "loopback_requests": 2,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 2,
+        "input_tokens": 24,
+        "output_tokens": 16,
+        "total_tokens": 40,
+        "provider_attempts": 2
+      }
+    },
+    {
+      "arm": "baseline",
+      "provider": "groq",
+      "mode": "budget-stop",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 1,
+        "input_tokens": 12,
+        "output_tokens": 8,
+        "total_tokens": 20,
+        "provider_attempts": 1
+      }
+    },
+    {
+      "arm": "candidate",
+      "provider": "mistral",
+      "mode": "success",
+      "pass": true,
+      "loopback_requests": 2,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 2,
+        "input_tokens": 24,
+        "output_tokens": 16,
+        "total_tokens": 40,
+        "provider_attempts": 2
+      }
+    },
+    {
+      "arm": "candidate",
+      "provider": "mistral",
+      "mode": "budget-stop",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 1,
+        "input_tokens": 12,
+        "output_tokens": 8,
+        "total_tokens": 20,
+        "provider_attempts": 1
+      }
+    },
+    {
+      "arm": "candidate",
+      "provider": "google",
+      "mode": "success",
+      "pass": true,
+      "loopback_requests": 2,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 2,
+        "input_tokens": 24,
+        "output_tokens": 16,
+        "total_tokens": 40,
+        "provider_attempts": 2
+      }
+    },
+    {
+      "arm": "candidate",
+      "provider": "google",
+      "mode": "budget-stop",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 1,
+        "input_tokens": 12,
+        "output_tokens": 8,
+        "total_tokens": 20,
+        "provider_attempts": 1
+      }
+    },
+    {
+      "arm": "candidate",
+      "provider": "groq",
+      "mode": "success",
+      "pass": true,
+      "loopback_requests": 2,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 2,
+        "input_tokens": 24,
+        "output_tokens": 16,
+        "total_tokens": 40,
+        "provider_attempts": 2
+      }
+    },
+    {
+      "arm": "candidate",
+      "provider": "groq",
+      "mode": "budget-stop",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 1,
+        "input_tokens": 12,
+        "output_tokens": 8,
+        "total_tokens": 20,
+        "provider_attempts": 1
+      }
+    },
+    {
+      "arm": "baseline",
+      "provider": "google",
+      "mode": "acquisition",
+      "pass": true,
+      "loopback_requests": 5,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 5,
+        "input_tokens": 60,
+        "output_tokens": 40,
+        "total_tokens": 100,
+        "provider_attempts": 5
+      }
+    },
+    {
+      "arm": "candidate",
+      "provider": "google",
+      "mode": "acquisition",
+      "pass": true,
+      "loopback_requests": 5,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 5,
+        "input_tokens": 60,
+        "output_tokens": 40,
+        "total_tokens": 100,
+        "provider_attempts": 5
+      }
+    },
+    {
+      "arm": "paired",
+      "provider": "mistral",
+      "mode": "helper",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 1,
+        "input_tokens": 12,
+        "output_tokens": 8,
+        "total_tokens": 20,
+        "provider_attempts": 1
+      }
+    },
+    {
+      "arm": "paired",
+      "provider": "google",
+      "mode": "helper",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 1,
+        "input_tokens": 12,
+        "output_tokens": 8,
+        "total_tokens": 20,
+        "provider_attempts": 1
+      }
+    },
+    {
+      "arm": "paired",
+      "provider": "groq",
+      "mode": "helper",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0,
+      "usage": {
+        "generations": 1,
+        "input_tokens": 12,
+        "output_tokens": 8,
+        "total_tokens": 20,
+        "provider_attempts": 1
+      }
+    }
+  ],
+  "accuracy_cases": 0,
+  "external_provider_requests": 0
+}

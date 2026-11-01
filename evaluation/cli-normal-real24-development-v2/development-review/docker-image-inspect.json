@@ -1,0 +1,53 @@
+{
+  "Id": "sha256:d10c338c9d3df4a276456f31cbfa6a3b71540efb2bac2910c4b6a627401932b5",
+  "RepoTags": [
+    "paired-runtime:latest"
+  ],
+  "RepoDigests": [
+    "paired-runtime@sha256:d10c338c9d3df4a276456f31cbfa6a3b71540efb2bac2910c4b6a627401932b5"
+  ],
+  "Comment": "buildkit.dockerfile.v0",
+  "Created": "2026-10-29T18:15:23.400700516Z",
+  "Config": {
+    "Env": [
+      "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "LANG=C.UTF-8",
+      "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+      "PYTHON_VERSION=3.13.18",
+      "PYTHON_SHA256=abb0102e6d4ae027509bcb82327d9dd85515b44a3ba8ad538cfc5e9847029f68",
+      "PYTHONDONTWRITEBYTECODE=1"
+    ],
+    "Cmd": [
+      "python3"
+    ],
+    "WorkingDir": "/repo"
+  },
+  "Architecture": "amd64",
+  "Os": "linux",
+  "Size": 104199914,
+  "RootFS": {
+    "Type": "layers",
+    "Layers": [
+      "sha256:44a87794b739d471ec360bec56cc0ceac640d06bbf579ee7d9061a0b88d09818",
+      "sha256:b06a5b1a9275f6ebda79d70a0fbe0a3800928d33c95b78893a4e1ab8e324cfaa",
+      "sha256:ce67d611a4fc6fe7be94f3b8040a92ae510f8839838a54b5d6bdc3bd8afef0fc",
+      "sha256:22edd123e053adb55a4ebd663d2d70d19f950d0df0fd3e7e20b5d52627f3739c",
+      "sha256:b1f57c5eec0ecf61c5b0528d9f16ca087a4fbb31dd59aa6e023cc2bda9100e61",
+      "sha256:f39d682cacfad5aebb4712e39b85b767b72d7bb2b33d197f8b69899e448f52ce",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+    ]
+  },
+  "Metadata": {
+    "LastTagTime": "2026-10-30T12:43:57.816762802Z"
+  },
+  "Descriptor": {
+    "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+    "digest": "sha256:d10c338c9d3df4a276456f31cbfa6a3b71540efb2bac2910c4b6a627401932b5",
+    "size": 1686,
+    "annotations": {
+      "config.digest": "sha256:bce15f82499fe20f08bb6291ae1cdfa1744559bdd5fb495aff12218ee84ee1b0",
+      "io.containerd.image.name": "docker.io/library/paired-runtime:latest",
+      "org.opencontainers.image.ref.name": "latest"
+    }
+  }
+}

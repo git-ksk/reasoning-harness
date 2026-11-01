@@ -1,0 +1,54 @@
+{
+  "source_commit": "6be0fbc093ad43e48c6dd385bbbc7fe30a968700",
+  "reviewer": "/root/real24_operational_review",
+  "actual_source_inventory_verified": true,
+  "ordinary_only": {
+    "planned_jobs": 48,
+    "tracks": [
+      "e2e_normal"
+    ],
+    "providers": [
+      "mistral"
+    ],
+    "model": "ministral-8b-2512",
+    "helper_model_jobs": 0,
+    "google_and_groq_deferred": true
+  },
+  "reviewed_paths": [
+    "normal_v2/development.py",
+    "normal_v2/make_development_plan.py",
+    "normal_v2/run_task.py",
+    "normal_v2/run_lane.py",
+    "normal_v2/operational_bridge.py",
+    "audit.rs",
+    "normal_v2/provenance.py",
+    "normal_v2/collect_normal.py",
+    "normal_v2/score_development_first.py",
+    "normal_v2/tag_admission.py",
+    "evaluation/cli-normal-v2/verify_runtime_archive.py",
+    "both v2 workflows"
+  ],
+  "invariants": {
+    "receipt_verdict_manifest_runtime_binary_readiness_bound_before_generation": true,
+    "true_receipt_positive_check_deferred_until_genuine_readiness": true,
+    "exact48_counterbalanced_jobs_and_per_job28096_durable_reservation": true,
+    "per_HTTP_serialized_request_plus512_and_output_reservation": true,
+    "unknown_usage_no_refund_and_stop": true,
+    "typed_nested_operational_failure_stops_following_jobs": true,
+    "first_attempt_unique_tag_full_monthly_history_and_no_durable_restart": true,
+    "process_group_timeout_cancel_raw_preservation": true,
+    "actual_provenance_reconstructs_48_rows_from_uploaded_raw_and_checks_journal": true,
+    "run_receipt_bound_persistent_first_score_freeze": true,
+    "old_observations_or_passes_not_accepted_by_new_scope": true
+  },
+  "limits": {
+    "visible_GitHub_history_not_admin_deletion_proof": true,
+    "local_first_score_mount_not_proof_against_deletion_or_another_host": true,
+    "no_API_admission_from_profile_or_review_alone": true,
+    "no_cohort_completion_or_request_fit_guarantee": true,
+    "frozen_prices_nominal_reservation_not_provider_billing_limit": true,
+    "whole_account_quota_headroom": "UNKNOWN",
+    "prior_pre_request_refusal_may_surface_as_unknown_usage_with_default_attempt_one": "fail-closed behavior preserved; actual wire count requires journal; old RCA remains unchanged",
+    "no_new_f1": true
+  }
+}

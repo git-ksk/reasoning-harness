@@ -1,0 +1,14 @@
+{
+  "identity": "ordinary-first-score-environment-v2",
+  "repository": "git-ksk/reasoning-harness",
+  "runtime_source": "6be0fbc093ad43e48c6dd385bbbc7fe30a968700",
+  "score_mount": "/score-reservations",
+  "persistent_Docker_volume": "reasoning-harness-ordinary-score-reservations-v1",
+  "same_volume_for_all_real_score_attempts": true,
+  "delete_or_output_directory_hop_to_rescore": false,
+  "v1_first_score_already_preserved": true,
+  "v2_first_score_started": false,
+  "model_credentials_in_scoring_environment": false,
+  "GitHub_operations": "authenticated GET readback only after model execution; no GH token in model containers",
+  "GitHub_credential_scope": "existing CLI credential scope is not asserted to be read-only; invoked operations are GET only"
+}

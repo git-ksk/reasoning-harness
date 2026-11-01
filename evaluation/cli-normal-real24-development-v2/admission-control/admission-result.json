@@ -1,0 +1,189 @@
+{
+  "actual_image_id": "sha256:d10c338c9d3df4a276456f31cbfa6a3b71540efb2bac2910c4b6a627401932b5",
+  "actual_live_lane_created": false,
+  "actual_plan_jobs": 48,
+  "archive_derived_aliases": [
+    "sha256:bce15f82499fe20f08bb6291ae1cdfa1744559bdd5fb495aff12218ee84ee1b0",
+    "sha256:d10c338c9d3df4a276456f31cbfa6a3b71540efb2bac2910c4b6a627401932b5"
+  ],
+  "check_stubs_or_monkeypatches": false,
+  "checked_at_unix_seconds": 1793366000,
+  "checked_receipt": "PASS",
+  "counterbalanced_order_verified": true,
+  "external_HTTP_requests": 0,
+  "formal_runtime_verdict_changed": false,
+  "frozen_nominal_USD_reservation": "0.2022912",
+  "full_cohort_completion_guaranteed": false,
+  "genuine_frozen_inputs_unchanged": true,
+  "helper_jobs": 0,
+  "model": "ministral-8b-2512",
+  "model_generations": 0,
+  "negative_controls": [
+    {
+      "exception_type": "ValueError",
+      "name": "genuine receipt without reservation",
+      "reason": "callback_not_reserved_inflight",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "helper prohibited",
+      "reason": "ordinary_only",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "Google prohibited",
+      "reason": "provider_not_admitted",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "wrong current arm",
+      "reason": "callback_wrong_current_job",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "argv must be byte exact",
+      "reason": "callback_argv_mismatch",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "reservation charge changed",
+      "reason": "callback_durable_charge_mismatch",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "reservation bound changed",
+      "reason": "callback_reservation_mismatch",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "inflight lost",
+      "reason": "callback_not_reserved_inflight",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "quota latch active",
+      "reason": "callback_not_reserved_inflight",
+      "rejected": true
+    },
+    {
+      "exception_type": "FileExistsError",
+      "name": "offline ledger restart is refused",
+      "reason": "FileExistsError",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "genuine old v1 receipt cannot admit v2",
+      "reason": "development_not_frozen",
+      "rejected": true
+    },
+    {
+      "exception_type": "RuntimeError",
+      "name": "second in-flight reservation is refused",
+      "reason": "serialize all normal/helper invocations",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "expired genuine-schema readiness",
+      "reason": "provider_readiness_expired",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "receipt cannot extend metadata report expiry",
+      "reason": "provider_metadata_expired_or_forged",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "metadata request count must be exactly one",
+      "reason": "provider_metadata_not_successfully_admitted",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "receipt cannot change sealed runtime inventory",
+      "reason": "development_runtime_changed",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "receipt cannot select another archive",
+      "reason": "review_not_for_runtime:runtime_image_archive_sha256",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "receipt cannot replace formal status with provisional",
+      "reason": "development_rejects_provisional_or_synthetic_review",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "missing plan job",
+      "reason": "complete48 normal plan required",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "reordered arm jobs",
+      "reason": "frozen callback paths identity or order changed",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "changed plan model",
+      "reason": "model swap",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "changed aggregate bound",
+      "reason": "unproven callback aggregate cap",
+      "rejected": true
+    },
+    {
+      "exception_type": "ValueError",
+      "name": "helper contract inserted",
+      "reason": "frozen job identity changed",
+      "rejected": true
+    }
+  ],
+  "new_profile_identity": "cli-normal-v2-development-freeze-v1",
+  "normal_jobs": 48,
+  "offline_ledger_is_unexecuted_reserved_only": true,
+  "paired_main_called": false,
+  "plan_sha256": "0d3289183d5ab49eefa499772edb84818c51b3e6e593d03b26d1db34f6cb8940",
+  "positive_reserved_callback": {
+    "accepted": true,
+    "arm": "baseline",
+    "charged_reservations": 28096,
+    "current_job": "rw-01-baseline",
+    "current_reserve": 28096,
+    "durable_sequence": 2,
+    "inflight": true,
+    "rows": 0
+  },
+  "provider_credentials_loaded": false,
+  "providers": [
+    "mistral"
+  ],
+  "quota_headroom": "UNKNOWN",
+  "readiness_valid_until_unix_seconds": 1793451531,
+  "receipt_sha256": "03b86be2bd888280e8b626ade6b638f801c4525faec164752bab71b0ac361741",
+  "result": "PASS_GENUINE_RECEIPT_PLAN_RESERVED_CALLBACK_HTTP_ZERO",
+  "reviewer": "/root/real24_operational_review",
+  "reviewer_kind": "agent_nonhuman",
+  "runner_run_or_process_called": false,
+  "runtime_source_commit": "6be0fbc093ad43e48c6dd385bbbc7fe30a968700",
+  "token_reservation": 1348608
+}

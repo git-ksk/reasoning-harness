@@ -1,0 +1,45 @@
+{
+  "result": "PASS",
+  "own_controls": {
+    "provider": {
+      "count": 18,
+      "all_pass": true,
+      "native_GitHub_AMD64_summary_byte_identical": true,
+      "summary_sha256": "b561c7a233d87931490600e096493cbec9b83df2bd4921dc99caa77934ce0f41"
+    },
+    "cli": {
+      "count": 17,
+      "all_pass": true,
+      "native_GitHub_AMD64_summary_byte_identical": true,
+      "summary_sha256": "7800a0ae88a6259c18f54b48b701c51fd70a0221718e3a2ebcb461d1c01714d7"
+    },
+    "containment": {
+      "count": 7,
+      "all_pass": true,
+      "native_GitHub_AMD64_summary_byte_identical": true,
+      "summary_sha256": "66b90ba1c8ac1adec8d70047bf1df744968720d499ad327b116748b7334addc3"
+    },
+    "ordinary-integration": {
+      "native_GitHub_AMD64_summary_byte_identical": true,
+      "summary_sha256": "8cdf4a38e0e0b542a06216555aac323ce616f57f2e35c5e9a784ab898f9c5dc8"
+    },
+    "registry": {
+      "native_GitHub_AMD64_summary_byte_identical": true,
+      "summary_sha256": "e09bab93c86d9fd9fde6086fa73bc0ca9a81624ace1d351798a48f2556ae1f5b"
+    }
+  },
+  "own_units": {
+    "inherited-unit": 85,
+    "normal-unit": 20
+  },
+  "checkout_controls": 9,
+  "actual_image_inventory_equal_native": true,
+  "own_engine_host": "ARM64 Docker host emulating exact linux/amd64 image; native GitHub AMD64 execution evidence separately hash verified",
+  "actual_image_id": "sha256:d10c338c9d3df4a276456f31cbfa6a3b71540efb2bac2910c4b6a627401932b5",
+  "all_executions_network_none_read_only_pull_never": true,
+  "fixture_credentials": "inert loopback only; no real credential",
+  "real_provider_requests": 0,
+  "metadata_HTTP": 0,
+  "generation_or_semantic_score_cases_added": 0,
+  "genuine_post_metadata_receipt_positive_admission": "PENDING_SEPARATE_CHECK"
+}

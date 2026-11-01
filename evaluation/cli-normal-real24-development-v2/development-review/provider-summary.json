@@ -1,0 +1,151 @@
+{
+  "controls": [
+    {
+      "arm": "baseline",
+      "provider": "mistral",
+      "mode": "ok",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "baseline",
+      "provider": "mistral",
+      "mode": "oversize",
+      "pass": true,
+      "loopback_requests": 0,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "baseline",
+      "provider": "mistral",
+      "mode": "missing-usage",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "baseline",
+      "provider": "google",
+      "mode": "ok",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "baseline",
+      "provider": "google",
+      "mode": "oversize",
+      "pass": true,
+      "loopback_requests": 0,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "baseline",
+      "provider": "google",
+      "mode": "missing-usage",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "baseline",
+      "provider": "groq",
+      "mode": "ok",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "baseline",
+      "provider": "groq",
+      "mode": "oversize",
+      "pass": true,
+      "loopback_requests": 0,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "baseline",
+      "provider": "groq",
+      "mode": "missing-usage",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "candidate",
+      "provider": "mistral",
+      "mode": "ok",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "candidate",
+      "provider": "mistral",
+      "mode": "oversize",
+      "pass": true,
+      "loopback_requests": 0,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "candidate",
+      "provider": "mistral",
+      "mode": "missing-usage",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "candidate",
+      "provider": "google",
+      "mode": "ok",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "candidate",
+      "provider": "google",
+      "mode": "oversize",
+      "pass": true,
+      "loopback_requests": 0,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "candidate",
+      "provider": "google",
+      "mode": "missing-usage",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "candidate",
+      "provider": "groq",
+      "mode": "ok",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "candidate",
+      "provider": "groq",
+      "mode": "oversize",
+      "pass": true,
+      "loopback_requests": 0,
+      "external_provider_requests": 0
+    },
+    {
+      "arm": "candidate",
+      "provider": "groq",
+      "mode": "missing-usage",
+      "pass": true,
+      "loopback_requests": 1,
+      "external_provider_requests": 0
+    }
+  ],
+  "all_pass": true,
+  "external_provider_requests": 0,
+  "accuracy_cases": 0
+}

@@ -1,0 +1,11 @@
+{
+  "run_id": 41059434254,
+  "artifact_id": 12977688368,
+  "metadata_workflow_head": "1414e59d38f203c103c776ace778a9dafd920f15",
+  "artifact_ZIP_sha256": "5c64646805e0fd3c42eacc8185bd263822705fde20ddcc957846e100cae18a0f",
+  "readiness_record_sha256": "3a8f0d115e47dd45095c8b177f03c01717dc5f9c93455f32ae7335a096c78e2d",
+  "artifact_name": "cli-normal-readiness-mistral-41059434254",
+  "one_GET_confirmed": true,
+  "model_generations": 0,
+  "quota_headroom": "UNKNOWN"
+}

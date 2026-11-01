@@ -1,0 +1,27 @@
+{
+  "source_commit": "6be0fbc093ad43e48c6dd385bbbc7fe30a968700",
+  "source_files_verified": {
+    "evaluation/cli-normal-v2/verify_runtime_archive.py": "5cdb37a9d504903dc3ed0bdefabd4931486e994a8a4369cfc05662dd26fc3513",
+    "evaluation/cli-normal-v2/test_prepare_runtime.py": "9eaac3b899b4f51c5c3799bdb1fd433c8e6ce873367e86aae16b2f49d1033fa0",
+    "evaluation/cli-normal-v2/prepare_runtime.py": "397605b3efe32c5d3dcb9b955246f50ae0fc22a2c3202ebeb3fe6ab1fd7fe87c",
+    "evaluation/cli-normal-v2/test_runtime_archive.py": "f0cbe8e7a95d8342eb406abd4dcd669bcf73386ce49844a2aa4ece2083f4cd23",
+    ".github/workflows/cli-normal-runtime-v2.yml": "5d1734ffa242536fe36a16272b492b3c002499938cbd0f8caeb19dd2263f0a46",
+    ".github/workflows/cli-normal-real24-development-v2.yml": "bf6e8cd66bee15dd31a33086bc353093d1a6e46f4b2dc908039e302cf29655b1"
+  },
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "evaluation/cli-normal-v2",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "returncode": 0,
+  "observed_count": 9,
+  "optimized_fail_closed_mock_docker_controls": true,
+  "real_provider_keys": false
+}

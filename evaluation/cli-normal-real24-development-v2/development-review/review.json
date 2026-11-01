@@ -1,0 +1,162 @@
+{
+  "identity": "independent-cli-normal-v2-operational-review-v1",
+  "reviewer": "/root/real24_operational_review",
+  "reviewer_kind": "agent_nonhuman",
+  "scope": "cli-normal-v2-development-runtime",
+  "result": "PASS",
+  "formal_verdict_issued": true,
+  "verdict_stage": "FINAL_INDEPENDENT_OPERATIONAL_REVIEW",
+  "not_formal_operational_verdict": false,
+  "synthetic_offline_integration_input_only": false,
+  "reviewed_at_utc": "2026-10-30T12:53:41.811307+00:00",
+  "source_commit": "6be0fbc093ad43e48c6dd385bbbc7fe30a968700",
+  "runtime_proof_sha256": "6f53808f5108fdbaeee6811e33378275c10b33e7f31a6d6965a9dccd3efc075b",
+  "paired_host_identity_sha256": "37b306614a57fc7fecaeaa57225f0086f5454339dcf6e144ee6659b6386cec34",
+  "runtime_image_id": "sha256:d10c338c9d3df4a276456f31cbfa6a3b71540efb2bac2910c4b6a627401932b5",
+  "runtime_image_archive_sha256": "46025d421a156132bc317a6129aabd4697d29892dc71a3ba366424b98bc1d7c7",
+  "reviewed_runtime_files_sha256": "446bd4f99c851b42515c7858d817255ddb38ace56375e78d9c6cda17b4ca08a1",
+  "runtime_files_count": 104,
+  "runtime_artifact_id": 12922047736,
+  "runtime_build_run_id": 40928520250,
+  "runtime_artifact_ZIP_sha256": "5d86ea05cc86dac793c478a4106dc05731fc99246563120af3c61c4eb0b733be",
+  "actual_loaded_image_id": "sha256:d10c338c9d3df4a276456f31cbfa6a3b71540efb2bac2910c4b6a627401932b5",
+  "archive_verified_image_ids": [
+    "sha256:bce15f82499fe20f08bb6291ae1cdfa1744559bdd5fb495aff12218ee84ee1b0",
+    "sha256:d10c338c9d3df4a276456f31cbfa6a3b71540efb2bac2910c4b6a627401932b5"
+  ],
+  "runtime_platform": "linux/amd64",
+  "normal_only": true,
+  "helper_model_jobs": 0,
+  "required_providers": [
+    "mistral"
+  ],
+  "model": "ministral-8b-2512",
+  "common_cli_host": "54eee374b40100e04fb0f8cde95912c8076dafa6",
+  "baseline_core": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+  "candidate_core": "ab3c6322921c8c738ec35bd018345917b5afa538",
+  "execution_tag": "cli-normal-real24-development-v2",
+  "future_receipt_identity": "cli-normal-v2-development-freeze-v1",
+  "independent_authorship": "Actual separately spawned agent /root/real24_operational_review performed this read-only source/archive/image review and independent offline execution. Implementation authors did not author or replace this verdict. Root supplied authenticated raw GitHub download, which reviewer checked against saved API digest and local bytes. No human attestation or cryptographic actor signature is claimed.",
+  "checks": [
+    {
+      "name": "Authenticated artifact bytes",
+      "result": "PASS",
+      "evidence": [
+        "raw-intake.json"
+      ],
+      "detail": "Root-acquired authenticated GitHub run/artifact JSON identifies successful workflow_dispatch attempt1 at exact source6be, artifact12922047736; reviewer independently checked official ZIP digest, source/run/repository bindings and every extracted member. No reviewer credential or GitHub HTTP used. Metadata job skip is root-reported; offline source branch separation and zero-provider native controls verified."
+    },
+    {
+      "name": "Archive source and full byte graph",
+      "result": "PASS",
+      "evidence": [
+        "preload-integrity.json"
+      ],
+      "detail": "Independent preparation, uploaded preparation, runtime proof and actual image agree on all104 file hashes. Flat manifest/config graph, all9 blob hashes and seven gzip-layer decompressed diff_ids checked. Unchanged archive parser accepts both archive-derived config/manifest IDs. No universal flat-export guarantee is claimed."
+    },
+    {
+      "name": "Actual image and ten binaries",
+      "result": "PASS",
+      "evidence": [
+        "actual-binary-verification.json"
+      ],
+      "detail": "Loaded immutable ID equals canonical d10c338; exact linux/amd64 image contains all104 reviewed files and exactly10 x86_64 ELF binaries plus identical identity.json. Each binary hash matches its own frozen arm. Hashes copied from a stopped container and independently inspected; binaries were not rebuilt by reviewer."
+    },
+    {
+      "name": "Build source and instrumentation",
+      "result": "PASS",
+      "evidence": [
+        "independent-build-source-bindings.json"
+      ],
+      "detail": "Common CLI host54eee, both frozen original core inventories131/157, identical PR552 patch SHA and patched resolution bytes reproduced from Git. Every other production host file checked unchanged outside declared instrumentation. Provider source transform reproduced from independently exported host bytes; audit/build/registry files equal actual image. Build-source inventory remains an artifact attestation, not an independent reproducible-build claim."
+    },
+    {
+      "name": "Precredential and immutable ID controls",
+      "result": "PASS",
+      "evidence": [
+        "host-boundary-execution.json"
+      ],
+      "detail": "Nine current checkout controls pass, including actual -O fail-closed mock-Docker tests. Altered archive cannot reach load and unrelated image ID cannot reach run; both archive-derived aliases pass. Current workflow/gate bytes equal exact6be source; downloaded-runtime executions use validated immutable ID with --pull=never."
+    },
+    {
+      "name": "Actual image offline controls",
+      "result": "PASS",
+      "evidence": [
+        "offline-controls-verification.json"
+      ],
+      "detail": "Independent executions pass inherited85, normal20, provider18, CLI17, containment7, registry parity and ordinary eight-call integration. All five independent summary files are byte-identical to native GitHub AMD64 summaries. Local Docker ARM64 host emulates exact AMD64 image; native CI evidence is checked separately."
+    },
+    {
+      "name": "Accounting stop and no-progress transitions",
+      "result": "PASS",
+      "evidence": [
+        "normal_integration-summary.json"
+      ],
+      "detail": "Synthetic complete1/quota-failed1/suppressed1, eight numeric-loopback requests, retained durable charges and restart refusal. Same snapshot across distinct targets yields no_result on repeat with call cost retained, zero new evidence and unchanged nonempty claim/receipt. True final-receipt gate is explicitly stubbed only inside this fixture; genuine receipt positive check remains later."
+    },
+    {
+      "name": "Admission provenance and first score boundaries",
+      "result": "PASS",
+      "evidence": [
+        "source-operational-boundaries.json"
+      ],
+      "detail": "Read complete current normal admission/callback/lane/bridge, audit, tag history, collection/provenance and first-score source. Only48 counterbalanced normal Mistral jobs, no helper generation or alternative model/provider. Per-job durable reservation precedes spawn; per-HTTP audit and unknown/typed failure stops persist. Collection reconstructs the exact authenticated new run artifact; semantic actor remains separate and first-score reservation is persistent and run/receipt bound."
+    }
+  ],
+  "final_exact_body_validation": {
+    "publication_condition": "This unchanged private final body is published as review.json only after actual metadata --verify-only and checkout archive/loaded-ID gates all pass. Evidence is sealed in artifact-manifest.json.",
+    "evidence": "final-binding-execution.json",
+    "provider": "mistral",
+    "metadata_HTTP_requests": 0
+  },
+  "reviewed_operational_scope": {
+    "sample": "Already consumed original real24 M1; engineering diagnostic only",
+    "M1_sha256": "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3",
+    "planned_jobs": 48,
+    "tracks": [
+      "e2e_normal"
+    ],
+    "arm_order": "counterbalanced baseline/candidate by frozen original case order",
+    "reservation_per_job_tokens": 28096,
+    "total_reservation_tokens": 1348608,
+    "frozen_rate_nominal_USD_reservation": "0.2022912",
+    "currency_self_cap_USD": 2.5,
+    "quota_headroom": "UNKNOWN",
+    "full_cohort_completion_guaranteed": false,
+    "strict_stop_after_any_operational_failure": true,
+    "per_HTTP_audit_and_unknown_usage_stop": true,
+    "first_only_tag_and_durable_no_restart": true,
+    "observation_run_artifact_receipt_provenance_and_first_scoring_freeze": true
+  },
+  "findings": [],
+  "prior_source_and_runtime_results_not_promoted": true,
+  "pending_before_any_paid_generation": [
+    "Root binds these exact final review/manifest bytes into new runtime-reference.",
+    "New single-request zero-generation Mistral metadata record bound to this source/proof/review and new receipt with24-hour validity.",
+    "Separate independent HTTP-zero check of genuine checked_receipt, exact48-job plan, actual archive aliases and positive durably reserved callback.",
+    "A single first-tag activation through the unchanged frozen workflow; strict unknown/quota/timeout/cancellation stop."
+  ],
+  "limits": {
+    "API_execution_admitted_by_this_verdict_alone": false,
+    "provider_credentials_supplied": false,
+    "external_model_HTTP_requests": 0,
+    "metadata_HTTP_requests": 0,
+    "new_tag_created": false,
+    "true_post_metadata_receipt_positive_admission_already_tested": false,
+    "actual_case_scoring_or_new_F1": false,
+    "accuracy_acceptance": false,
+    "fresh_accuracy_cases": 0,
+    "adoption_GO": false,
+    "release_or_published_CLI_approval": false,
+    "quota_verified": false,
+    "new_cohort_all_requests_fit_or_quality_guaranteed": false,
+    "frozen_prices_are_nominal_not_billing_limit": true,
+    "old_failed_run_or_frozen_experiment_modified": false,
+    "failed_offline_run40924323574_promoted": false,
+    "pre_request_refusal_surface_attempt_count": "Default CLI error may include an attempt without a wire request; journal is required for actual HTTP count. This fail-closed surface limitation is preserved from old RCA.",
+    "history_and_score_reservations": "Visible GitHub history and local persistent score mount do not prove absence of administrative deletion or another host."
+  },
+  "evidence_location": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/target/private-evaluation-pending/cli-normal-v2-runtime-40928520250-independent",
+  "raw_artifact_location": "/Users/sawadakousuke/x-code/reasoning-harness/target/private-evaluation-pending/cli-normal-v2-runtime-40928520250-raw",
+  "heavy_source_binary_control_location": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/target/private-evaluation-pending/cli-normal-v2-runtime-40928520250-review-work"
+}

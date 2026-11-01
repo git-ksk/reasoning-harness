@@ -1,6 +1,6 @@
 {
   "identity": "ordinary-Mistral-price-readback-v2",
-  "checked_at_utc": "2026-10-29T17:26:32.378116+00:00",
+  "checked_at_utc": "2026-10-30T12:43:47.310656+00:00",
   "model": "ministral-8b-2512",
   "tier": "standard unbatched text",
   "USD_per_million_input": 0.15,
@@ -27,5 +27,6 @@
     "refund_applied": false,
     "canonical_unknown_usage_preserved": true
   },
-  "prior_v1_plus_new_full_reservation_USD": 0.2149344
+  "prior_v1_plus_new_full_reservation_USD": 0.2149344,
+  "published_rates_unchanged": true
 }
