@@ -43,6 +43,16 @@ def score_case(observation, review, gold):
         # Negative invalid/error is neither TN nor fabricated FP.
     citation_checks = review["citation_checks"]
     citation_ok = all(c["supported"] and c["literal_exact"] for c in citation_checks)
+    checks = {c["id"]: c for c in citation_checks}
+    fact_segments = [
+        seg for seg in review["segments"] if seg["kind"] == "fact"
+    ] if decision == "answer" else []
+    supported_cited_claims = sum(
+        bool(seg["citation_ids"])
+        and all(checks[cid]["supported"] and checks[cid]["literal_exact"]
+                for cid in seg["citation_ids"])
+        for seg in fact_segments
+    )
     groups = len(gold["required_groups"])
     return {
         "job_id": observation["job_id"],
@@ -64,7 +74,14 @@ def score_case(observation, review, gold):
         "citation_passed_count": sum(c["supported"] and c["literal_exact"] for c in citation_checks),
         "citation_ok": citation_ok,
         "citation_evaluable": decision == "answer",
+        "factual_claims": len(fact_segments),
+        "supported_cited_claims": supported_cited_claims,
         "valid_semantic_outcome": not (invalid or operational or unsafe),
+        "valid_answer": decision == "answer" and not (invalid or operational or unsafe),
+        "recovered_local_decode": (
+            decision in ("answer", "withhold") and not (operational or unsafe)
+            and observation["measurement_state"] == "local_decode_observed"
+        ),
         "task_success": bool(tp or tn) and not unsafe and not operational,
     }
 
@@ -85,11 +102,18 @@ def report(rows, gold):
             cause for r in arm_rows if r["quality_invalid"]
             for cause in (r["source_failure_class"] or ["unusable_answer"])
         )
+        recovered_by_class = Counter(
+            cause for r in arm_rows if r["recovered_local_decode"]
+            for cause in r["source_failure_class"]
+        )
         cited = [r for r in arm_rows if r["citation_evaluable"]]
         citations_all = sum(r["citation_count"] for r in cited)
         citations_ok = sum(r["citation_passed_count"] for r in cited)
-        # A cited answer with zero citation edges never satisfies coverage.
-        citation_coverage = (sum(bool(r["citation_count"]) for r in cited) / len(cited)) if cited else None
+        # Coverage is per annotated displayed fact, not one citation per
+        # answer. A single cited fact cannot certify an uncited second fact.
+        total_facts = sum(r["factual_claims"] for r in cited)
+        covered_facts = sum(r["supported_cited_claims"] for r in cited)
+        citation_coverage = covered_facts / total_facts if total_facts else None
         citation_fidelity = (citations_ok / citations_all) if citations_all else None
         thresholds = (
             complete and invalid == 0 and totals["hard_violations"] == 0
@@ -113,11 +137,16 @@ def report(rows, gold):
             "quality_invalid": invalid,
             "invalid_rate": invalid / 24 if complete else None,
             "invalid_by_class": dict(sorted(by_class.items())),
+            "recovered_local_decode_rows": sum(r["recovered_local_decode"] for r in arm_rows),
+            "recovered_by_class": dict(sorted(recovered_by_class.items())),
             "operational_error_rows": sum(r["operational_error"] for r in arm_rows),
             "hard_violations": totals["hard_violations"],
             "citation_coverage": citation_coverage,
             "citation_fidelity": citation_fidelity,
             "valid_answer_coverage": (
+                sum(r["valid_answer"] for r in arm_rows) / 24 if complete else None
+            ),
+            "valid_finalization_coverage": (
                 sum(r["valid_semantic_outcome"] for r in arm_rows) / 24 if complete else None
             ),
             "task_success_rate": sum(r["task_success"] for r in arm_rows) / 24 if complete else None,

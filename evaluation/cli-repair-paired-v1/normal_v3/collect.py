@@ -210,23 +210,47 @@ def collect_row(job, root, provider, model, receipt_sha256, executor_id):
             type(config) is dict and config.get("provider") == provider and config.get("model") == model,
             "cli_model_identity_mismatch",
         )
-    # A captured case must correspond to the fixed source question, not just
-    # an arbitrary output from another model job.
-    if failed:
-        requests = [
-            item for item in trace.get("events", [])
-            if type(item) is dict and item.get("kind") == "model_request"
-        ]
-        require(
-            requests and type(requests[0].get("request")) is dict
-            and type(requests[0]["request"].get("task")) is str
-            and question in requests[0]["request"]["task"],
-            "unbound_failed_job_question",
-        )
-    else:
+    # Both the failed and successful model request must be bound to the
+    # frozen question. A plausible CLI result for case B is insufficient if
+    # the actual model request trace belongs to case A.
+    requests = [
+        item for item in trace.get("events", [])
+        if type(item) is dict and item.get("kind") == "model_request"
+    ]
+    require(
+        requests and type(requests[0].get("request")) is dict
+        and type(requests[0]["request"].get("task")) is str
+        and question in requests[0]["request"]["task"],
+        "unbound_failed_job_question" if failed else "unbound_job_question",
+    )
+    if not failed:
         require(result.get("task") == question, "cli_case_question_mismatch")
     marks = diagnostics(result)
     accounted = audit_http(http, trace, result, provider, model)
+    # The physical CLI's finalization trace is the authoritative output
+    # transition. A standalone CLI JSON/capture pair cannot invent a clean
+    # or different displayed final result.
+    if not failed:
+        require(trace.get("completion_status") == "completed",
+                "successful_cli_trace_not_completed")
+        final_states = [
+            item.get("result") for item in trace["events"]
+            if item.get("kind") == "finalization_state"
+        ]
+        require(bool(final_states) and type(final_states[-1]) is dict,
+                "missing_finalization_trace")
+        trace_final = final_states[-1]
+        cli_final = result["finalization"]
+        require(
+            trace_final.get("status") == cli_final.get("status")
+            and (trace_final.get("text") or "") == (cli_final.get("text") or "")
+            and trace_final.get("uncovered_propositions")
+                == cli_final.get("uncovered_propositions"),
+            "trace_finalization_mismatch",
+        )
+    else:
+        require(trace.get("completion_status") == "partial",
+                "failed_cli_trace_not_partial")
     require(type(capture) is dict and type(sources) is dict, "invalid_capture_or_sources")
     artifacts = capture.get("display_artifacts")
     require(

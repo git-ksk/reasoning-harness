@@ -46,7 +46,7 @@ def demo_fixture(root, *, phase=None, label="positive", text="", status="require
             "output_contract": "reason-natural-output-v6",
             "configuration": {"provider": "mistral", "model": "fixture-model"},
             "usage": {"run": usage},
-            "finalization": {"text": text, "status": status},
+            "finalization": {"text": text, "status": status, "uncovered_propositions": []},
         }
     )
     if not is_initial:
@@ -73,6 +73,12 @@ def demo_fixture(root, *, phase=None, label="positive", text="", status="require
             "response": {"provider_attempts": 1,
                          "usage": {"input_tokens": 2, "output_tokens": 3, "total_tokens": 5}},
         })
+    if not is_initial:
+        events.append({
+            "sequence": len(events), "kind": "finalization_state",
+            "phase": "finalization", "round": 1, "stage": "answer_safety",
+            "result": {"text": text, "status": status, "uncovered_propositions": []},
+        })
     trace = {
         "contract": "reason-natural-diagnostic-trace-v1", "provider": "mistral",
         "model": "fixture-model", "completion_status": "partial" if is_initial else "completed",
@@ -80,7 +86,7 @@ def demo_fixture(root, *, phase=None, label="positive", text="", status="require
     }
     citations = (
         [{"id": "cit-1", "source_id": "s1", "source_version": "synthetic", "start_byte": 0, "end_byte": 6}]
-        if text else []
+        if text and status == "grounded_answer" else []
     )
     capture = {
         "display_artifacts": [{"id": "answer", "kind": "final_answer", "text": text}],
@@ -133,6 +139,16 @@ def review_of(obs, gold, *, decision="invalid", groups=None, violations=None):
             for c in obs["display_citations"]
         ],
         "readable_and_actionable": decision == "answer",
+        "segments": (
+            [{"kind": "fact", "start_byte": 0,
+              "end_byte": len(obs["display_artifacts"][0]["text"].encode("utf-8")),
+              "citation_ids": [c["id"] for c in obs["display_citations"]]}]
+            if decision == "answer" else
+            [{"kind": "nonfact", "start_byte": 0,
+              "end_byte": len(obs["display_artifacts"][0]["text"].encode("utf-8")),
+              "citation_ids": []}]
+            if obs["display_artifacts"][0]["text"] else []
+        ),
         "safety_audit_complete": True,
         "notes": "Independent synthetic source-level and display review, not model inference.",
     }
@@ -192,13 +208,14 @@ class V3Measurement(unittest.TestCase):
             scored = score.score_case(row, review, annotate.read_json(gold_file)["cases"][0])
             self.assertEqual(scored["tp"], 1)
             self.assertFalse(scored["quality_invalid"])
+        self.assertTrue(scored["recovered_local_decode"])
 
     def test_missing_or_changed_http_trace_display_fails_closed(self):
         cases = [
             ("http.json", lambda a: a[0].update(total_tokens=99), "inconsistent_http_usage"),
             ("http.json", lambda a: a[0].update(http_status=429), None),
             ("http.json", lambda a: a[0].pop("input_tokens"), "http_attempt_missing_keys"),
-            ("trace.json", lambda a: a["events"].pop(), "pending_model_call"),
+            ("trace.json", lambda a: (a["events"].pop(-2), a["events"][-1].update(sequence=len(a["events"])-1)), "pending_model_call"),
             ("trace.json", lambda a: a["events"][1]["response"]["usage"].update(output_tokens=7), "trace_http_token_mismatch"),
             ("trace.json", lambda a: a.update(model="wrong-model"), "trace_provider_or_contract_mismatch"),
             ("capture.json", lambda a: a["display_artifacts"][0].update(text="forged"), "display_or_terminal_mismatch"),
@@ -238,7 +255,7 @@ class V3Measurement(unittest.TestCase):
                "measurement_state": "local_decode_observed",
                "diagnostics": [{"failure_class": "protocol", "phase": "investigation_plan"}]}
         review = {"decision": "invalid", "correct_groups": [], "incorrect_assertions": 0,
-                  "hard_violations": [], "citation_checks": []}
+                  "hard_violations": [], "citation_checks": [], "segments": []}
         item = score.score_case(obs, review, positive)
         self.assertEqual((item["fn"], item["claim_fn"], item["tp"]), (1, 2, 0))
         obs["case_id"] = "negative"
@@ -320,6 +337,10 @@ class V3Measurement(unittest.TestCase):
                     "incorrect_assertions": 0, "hard_violations": [],
                     "citation_checks": [{"id": "citation", "supported": True, "literal_exact": True}]
                     if n < 12 else [],
+                    "segments": [
+                        {"kind": "fact", "start_byte": 0, "end_byte": 1,
+                         "citation_ids": ["citation"]}
+                    ] if n < 12 else [],
                 }
                 rows.append(score.score_case(observation, review, gold[cid]))
         result = score.report(rows, gold)
@@ -329,6 +350,8 @@ class V3Measurement(unittest.TestCase):
         self.assertEqual(candidate["case_confusion"]["TN"], 11)
         self.assertEqual(candidate["case_confusion"]["FP"], 0)
         self.assertEqual(candidate["invalid_rate"], 1/24)
+        self.assertEqual(candidate["valid_answer_coverage"], 12/24)
+        self.assertEqual(candidate["valid_finalization_coverage"], 23/24)
         self.assertEqual(candidate["case_metrics"]["f1"], 1.0)
         self.assertFalse(candidate["semantic_thresholds_met"])
         self.assertFalse(result["all_semantic_thresholds_met"])
@@ -358,6 +381,17 @@ class V3Measurement(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "gold_case_question_mismatch"):
                 annotate.make_packets(observed, gold_file, Path(d) / "packets")
 
+    def test_success_trace_request_must_match_case_question(self):
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold_file, receipt, job = demo_fixture(
+                d, text="Answer is 4", status="grounded_answer"
+            )
+            trace = collect.read_json(job / "trace.json")
+            trace["events"][0]["request"]["task"] = "Another unrelated question"
+            self.rewrite(plan, job, "trace.json", trace)
+            with self.assertRaisesRegex(ValueError, "unbound_job_question"):
+                collect.collect(plan, lane, Path(d) / "obs")
+
     def test_cross_source_citation_version_and_range_mismatch_rejected(self):
         for change, expected in [
             (lambda x: x["display_citations"][0].update(source_version="forged"),
@@ -368,7 +402,7 @@ class V3Measurement(unittest.TestCase):
              "citation_outside_admitted_sources"),
         ]:
             with tempfile.TemporaryDirectory() as d:
-                plan, lane, gold_file, receipt, job = demo_fixture(d, text="Answer is 4")
+                plan, lane, gold_file, receipt, job = demo_fixture(d, text="Answer is 4", status="grounded_answer")
                 capture = collect.read_json(job / "capture.json")
                 change(capture)
                 self.rewrite(plan, job, "capture.json", capture)
@@ -431,7 +465,9 @@ class V3Measurement(unittest.TestCase):
                             "correct_groups": ["g"] if i < 12 and not (i == 10 and arm == "candidate") else [],
                             "incorrect_assertions": 0, "hard_violations": [],
                             "citation_checks": [{"id": "c", "supported": True, "literal_exact": True}]
-                            if i < 12 else []}
+                            if i < 12 else [],
+                            "segments": [{"kind": "fact", "start_byte": 0, "end_byte": 1, "citation_ids": ["c"]}]
+                            if i < 12 and not (i == 10 and arm == "candidate") else []}
                 rows.append(score.score_case(row, reviewer, gold[f"c{i}"]))
         result = score.report(rows, gold)
         self.assertTrue(result["arms"]["baseline"]["observation_complete"])
@@ -538,9 +574,87 @@ class V3Measurement(unittest.TestCase):
             self.assertEqual(result["arms"]["candidate"]["case_confusion"]["TN"], 11)
             self.assertEqual(result["arms"]["candidate"]["case_metrics"]["f1"], 1.0)
             self.assertEqual(result["arms"]["candidate"]["invalid_rate"], 1/24)
+            self.assertEqual(result["arms"]["candidate"]["valid_answer_coverage"], 12/24)
+            self.assertEqual(result["arms"]["candidate"]["valid_finalization_coverage"], 23/24)
+            self.assertEqual(result["arms"]["candidate"]["recovered_local_decode_rows"], 0)
             self.assertFalse(result["arms"]["candidate"]["semantic_thresholds_met"])
             self.assertFalse(result["quality_go"])
             self.assertEqual(annotate.read_json(out / "report.json")["contract"], contracts.SCORE_ID)
+
+    def test_forged_final_display_against_actual_trace_is_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(d, text="Answer is 4", status="grounded_answer")
+            trace = collect.read_json(job / "trace.json")
+            trace["events"][-1]["result"]["text"] = "A different actual trace answer"
+            self.rewrite(plan, job, "trace.json", trace)
+            with self.assertRaisesRegex(ValueError, "trace_finalization_mismatch"):
+                collect.collect(plan, lane, Path(d) / "obs")
+
+    def test_partial_trace_is_not_a_completed_final_answer(self):
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(d, text="Answer is 4", status="grounded_answer")
+            trace = collect.read_json(job / "trace.json")
+            trace["completion_status"] = "partial"
+            self.rewrite(plan, job, "trace.json", trace)
+            with self.assertRaisesRegex(ValueError, "successful_cli_trace_not_completed"):
+                collect.collect(plan, lane, Path(d) / "obs")
+
+    def test_independent_factual_span_coverage_cannot_be_inflated(self):
+        gold = {"case_id": "p", "question": "q", "label": "positive", "required_groups": ["g1", "g2"]}
+        observation = {
+            "job_id": "p-baseline", "case_id": "p", "arm": "baseline",
+            "measurement_state": "normal_observed", "diagnostics": [],
+        }
+        review = {
+            "decision": "answer", "correct_groups": ["g1", "g2"],
+            "incorrect_assertions": 0, "hard_violations": [],
+            "citation_checks": [{"id": "c", "supported": True, "literal_exact": True}],
+            "segments": [
+                {"kind": "fact", "start_byte": 0, "end_byte": 6, "citation_ids": ["c"]},
+                {"kind": "fact", "start_byte": 6, "end_byte": 12, "citation_ids": []},
+            ],
+        }
+        scored = score.score_case(observation, review, gold)
+        self.assertEqual(scored["factual_claims"], 2)
+        self.assertEqual(scored["supported_cited_claims"], 1)
+        rows = []
+        corpus = {}
+        for n in range(24):
+            cid = "case-" + str(n)
+            corpus[cid] = {"case_id": cid, "question": "q", "label": "positive" if n < 12 else "negative",
+                           "required_groups": ["g1"] if n < 12 else []}
+            for arm in ("baseline", "candidate"):
+                row = dict(scored)
+                row.update(job_id=arm+"-"+cid, case_id=cid, arm=arm)
+                if n >= 12:
+                    row.update(tp=0, fn=0, tn=1, claim_tp=0, claim_fn=0,
+                               claim_denominator=0, factual_claims=0, supported_cited_claims=0,
+                               citation_count=0, citation_passed_count=0, citation_evaluable=False)
+                rows.append(row)
+        result = score.report(rows, corpus)
+        self.assertEqual(result["arms"]["candidate"]["citation_coverage"], 0.5)
+        self.assertFalse(result["arms"]["candidate"]["semantic_thresholds_met"])
+
+    def test_review_must_cover_every_display_byte_and_citation(self):
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold_file, receipt, job = demo_fixture(
+                d, text="Answer is 4", status="grounded_answer"
+            )
+            observations = Path(d) / "obs"
+            row = collect.collect(plan, lane, observations)[0]
+            gold = annotate.read_json(gold_file)["cases"][0]
+            obs_hash = contracts.digest((observations / "case-01-baseline.json").read_bytes())
+            review = review_of({**row, "_sha": obs_hash}, gold, decision="answer", groups=["g1"])
+            review["segments"] = [
+                {"kind": "fact", "start_byte": 0, "end_byte": 6, "citation_ids": ["cit-1"]}
+            ]
+            with self.assertRaisesRegex(ValueError, "display_segments_incomplete"):
+                annotate.validate_review(review, row, obs_hash, gold, "fixture-executor")
+            review["segments"][0]["end_byte"] = len("Answer is 4".encode())
+            annotate.validate_review(review, row, obs_hash, gold, "fixture-executor")
+            review["segments"][0]["citation_ids"] = []
+            with self.assertRaisesRegex(ValueError, "orphan_display_citation"):
+                annotate.validate_review(review, row, obs_hash, gold, "fixture-executor")
 
     @staticmethod
     def rewrite(plan, job, filename, value):

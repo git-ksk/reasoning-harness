@@ -128,13 +128,13 @@ def validate_review(review, observation, obs_hash, gold, executor_id):
             "contract", "job_id", "observation_sha256", "gold_sha256",
             "reviewer", "decision", "correct_groups", "incorrect_assertions",
             "hard_violations", "citation_checks", "readable_and_actionable",
-            "safety_audit_complete", "notes",
+            "safety_audit_complete", "notes", "segments",
         },
         {
             "contract", "job_id", "observation_sha256", "gold_sha256",
             "reviewer", "decision", "correct_groups", "incorrect_assertions",
             "hard_violations", "citation_checks", "readable_and_actionable",
-            "safety_audit_complete", "notes",
+            "safety_audit_complete", "notes", "segments",
         },
         "review",
     )
@@ -183,6 +183,57 @@ def validate_review(review, observation, obs_hash, gold, executor_id):
     require(sorted(checks) == sorted(ids) and len(checks) == len(set(checks)),
             "incomplete_or_duplicate_citation_audit")
     display = observation["display_artifacts"][0]["text"]
+    # Independent review inventories every *byte* of the actual exposed
+    # answer. Each fact span must explicitly attach its citation IDs (or
+    # remain uncovered). One good citation cannot launder other uncited facts.
+    raw_bytes = display.encode("utf-8")
+    segments = review["segments"]
+    require(type(segments) is list, "missing_display_segment_inventory")
+    cursor = 0
+    audited_citations = set()
+    for segment in segments:
+        strict_keys(segment,
+                    {"kind", "start_byte", "end_byte", "citation_ids"},
+                    {"kind", "start_byte", "end_byte", "citation_ids"},
+                    "display_segment")
+        start, end = segment["start_byte"], segment["end_byte"]
+        require(type(start) is int and type(end) is int
+                and start == cursor and end > start and end <= len(raw_bytes),
+                "display_segments_incomplete")
+        # Require UTF-8 character boundaries; do not hide partial-byte spans.
+        try:
+            raw_bytes[start:end].decode("utf-8")
+        except UnicodeDecodeError as exc:
+            raise ValueError("display_segment_invalid_utf8_boundary") from exc
+        require(segment["kind"] in ("fact", "nonfact"), "unknown_segment_kind")
+        refs = segment["citation_ids"]
+        require(type(refs) is list
+                and all(type(cid) is str for cid in refs)
+                and len(refs) == len(set(refs)), "invalid_segment_citation_ids")
+        if segment["kind"] == "nonfact":
+            require(not refs, "citation_claimed_by_nonfact")
+        for cid in refs:
+            citations = [
+                c for c in observation["display_citations"] if c.get("id") == cid
+            ]
+            require(len(citations) == 1 and segment["kind"] == "fact",
+                    "unknown_segment_citation")
+            c = citations[0]
+            require(start < c["end_byte"] and c["start_byte"] < end,
+                    "citation_not_attached_to_fact_bytes")
+            audited_citations.add(cid)
+        cursor = end
+    require(cursor == len(raw_bytes), "display_segments_incomplete")
+    require(audited_citations == set(ids), "orphan_display_citation")
+    if review["decision"] == "answer":
+        require(any(s["kind"] == "fact" for s in segments),
+                "answer_without_factual_inventory")
+    if groups:
+        require(any(s["kind"] == "fact" for s in segments),
+                "group_credit_without_fact")
+    if review["decision"] == "withhold":
+        require(review["incorrect_assertions"] == 0,
+                "incorrect_assertion_promoted_to_withhold")
     state = observation["measurement_state"]
     if state == "operational_stop":
         require(review["decision"] == "invalid", "operational_stop_cannot_be_graded")
