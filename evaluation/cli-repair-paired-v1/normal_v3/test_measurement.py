@@ -410,6 +410,21 @@ class V3Measurement(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "gold_case_question_mismatch"):
                 annotate.make_packets(observed, gold_file, Path(d) / "packets")
 
+    def test_provider_unsupported_capability_cannot_be_local_quality_invalid(self):
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(
+                d, phase="initial_candidate"
+            )
+            trace = collect.read_json(job / "trace.json")
+            rejected = trace["events"][1]
+            rejected.pop("response")
+            rejected["kind"] = "model_failure"
+            rejected["failure_class"] = "unsupported_capability"
+            self.rewrite(plan, job, "trace.json", trace)
+            row = collect.collect(plan, lane, Path(d) / "obs")[0]
+            self.assertEqual(row["measurement_state"], "operational_stop")
+            self.assertEqual(row["accounted_usage"]["provider_attempts"], 2)
+
     def test_two_http_attempts_under_single_model_response_accounted(self):
         with tempfile.TemporaryDirectory() as d:
             plan, lane, gold, receipt, job = demo_fixture(

@@ -188,7 +188,10 @@ def audit_http(events, trace, result, provider, model):
     # correlation with the provider's audit journal before ANY continuation.
     require(trace.get("completion_status") in ("completed", "partial"), "invalid_trace_completion")
     failures = audit_trace(trace, events, provider, model)
-    bound["trace_noncapability_failure"] = any(x != "unsupported_capability" for x in failures)
+    # Any adapter-reported model failure is operational. In particular a
+    # provider capability refusal (even if a later fallback succeeded) cannot
+    # be rebranded as a locally failed JSON/DTO decode for continuation.
+    bound["trace_operational_failure"] = bool(failures)
     return bound
 
 
@@ -326,7 +329,7 @@ def collect_row(job, root, provider, model, receipt_sha256, executor_id):
             "citation_outside_actual_display",
         )
     unsafe = any(not 200 <= item["http_status"] < 300 for item in http)
-    uncertain = accounted.pop("trace_noncapability_failure") or any(
+    uncertain = accounted.pop("trace_operational_failure") or any(
         x["failure_class"] != "protocol" or not x["local_decode"] for x in marks
     )
     status = (
