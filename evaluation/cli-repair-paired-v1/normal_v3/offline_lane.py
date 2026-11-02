@@ -23,7 +23,10 @@ from guard import Outcome, FailureClass
 import current_bridge
 scheduler.outcome_from_normal = current_bridge.outcome_from_normal
 from collect import collect_row
-from contracts import FILES, digest, require, safe_id, exclusive_durable_claim, _open_trusted_directory
+from contracts import (
+    FILES, digest, require, safe_id, sha_field, exclusive_durable_claim,
+    _open_trusted_directory,
+)
 
 INERT_PURPOSE = "SYNTHETIC_V3_HTTP_ZERO_CONTROL_NOT_MODEL_EXECUTION"
 # Independently inspected Python fixture: reads five local JSON files, prints
@@ -80,6 +83,12 @@ def verify_inert_plan(plan, receipt, fixture_executable):
             and set(plan["questions"]) == set(ids)
             and all(type(q) is str and q for q in plan["questions"].values()),
             "inert_question_inventory")
+    frozen_requests = plan.get("frozen_request_bindings")
+    require(type(frozen_requests) is dict
+            and set(frozen_requests) == {job["id"] for job in jobs},
+            "inert_request_binding_inventory")
+    for value in frozen_requests.values():
+        sha_field(value, "inert_invalid_frozen_request_binding")
 
 
 class OfflineV3Runner(scheduler.OperationalRunner):
@@ -134,6 +143,7 @@ class OfflineV3Runner(scheduler.OperationalRunner):
         observation = collect_row(
             {"job_id": job["id"], "case_id": case_id,
              "arm": job["arm"], "question": self.plan["questions"][case_id],
+             "frozen_request_binding_sha256": self.plan["frozen_request_bindings"][job["id"]],
              "files": files},
             self.output, self.plan["provider"], self.plan["model"],
             self.receipt_sha256, "v3-offline-fixture",

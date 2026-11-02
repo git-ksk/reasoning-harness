@@ -5,8 +5,8 @@ from pathlib import Path
 
 from contracts import (
     FILES, OBS_ID, PHASES, PLAN_ID, canonical, digest, exclusive_json,
-    keyed_digest, positive, read_json, require, safe_id, sha_field, strict_keys, unsigned,
-    private_new_directory,
+    frozen_request_digest, keyed_digest, positive, read_json, require, safe_id,
+    sha_field, strict_keys, unsigned, private_new_directory,
 )
 
 OUTPUT_CONTRACTS = frozenset((
@@ -101,6 +101,10 @@ def audit_trace(trace, events, provider, model):
         )
         key = (item["correlation_id"], item["attempt"])
         if kind == "model_request":
+            # v3 runs one CLI generation at a time; no later request may be
+            # physically sent ahead of the first frozen request.
+            require(not any(opened is False for opened in pending.values()),
+                    "overlapping_trace_model_requests")
             require(
                 item["attempt"] == last_attempt.get(item["correlation_id"], 0) + 1,
                 "noncanonical_adapter_attempt",
@@ -280,19 +284,32 @@ def collect_row(job, root, provider, model, receipt_sha256, executor_id):
             exposure["renderer_text_exposed"] is False,
             "unexpected_renderer_text_exposure",
         )
-    # Both the failed and successful model request must be bound to the
-    # frozen question. A plausible CLI result for case B is insufficient if
-    # the actual model request trace belongs to case A.
+    # The externally frozen plan binds *both* the exact case question and
+    # complete first model request: substring matching cannot distinguish
+    # overlapping prompts or a failed invocation for another case.
+    # A self-authored plan is not a signature; real-run trust is owned by
+    # #580/#581 and MUST be verified before execution/continuation.
     requests = [
         item for item in trace.get("events", [])
         if type(item) is dict and item.get("kind") == "model_request"
     ]
     require(
-        requests and type(requests[0].get("request")) is dict
-        and type(requests[0]["request"].get("task")) is str
-        and question in requests[0]["request"]["task"],
-        "unbound_failed_job_question" if failed else "unbound_job_question",
+        bool(requests) and type(requests[0].get("request")) is dict
+        and type(requests[0]["request"].get("task")) is str,
+        "invalid_first_model_request",
     )
+    sha_field(job["frozen_request_binding_sha256"], "missing_frozen_request_binding")
+    # Unlike the redacted diagnostic request, this hash was recorded by the
+    # Rust adapter *before* sanitization. Both proofs must be frozen together.
+    sha_field(requests[0].get("request_sha256"), "missing_raw_request_digest")
+    binding = frozen_request_digest(
+        job_id=job_id, case_id=job["case_id"], arm=job["arm"],
+        question=question, request=requests[0]["request"],
+        request_sha256=requests[0]["request_sha256"],
+        provider=provider, model=model, receipt_sha256=receipt_sha256,
+    )
+    require(binding == job["frozen_request_binding_sha256"],
+            "unbound_model_request_hash")
     if not failed:
         require(result.get("task") == question, "cli_case_question_mismatch")
     marks = diagnostics(result)
@@ -402,6 +419,7 @@ def collect_row(job, root, provider, model, receipt_sha256, executor_id):
         "job_id": job_id,
         "case_id": job["case_id"],
         "question": question,
+        "frozen_request_binding_sha256": binding,
         "arm": job["arm"],
         "provider": provider,
         "model": model,
@@ -434,15 +452,23 @@ def collect(plan_path, lane_path, destination):
     rows = manifest["rows"]
     require(type(rows) is list and rows, "empty_capture_plan")
     seen = set()
-    captured = []
+    seen_jobs = set()
+    # Validate every manifest identity before reading captures or creating
+    # private output files: two cases must never alias the same job directory.
     for job in rows:
-        strict_keys(job, {"job_id", "case_id", "arm", "question", "files"},
-                    {"job_id", "case_id", "arm", "question", "files"}, "plan_job")
+        strict_keys(job, {"job_id", "case_id", "arm", "question", "frozen_request_binding_sha256", "files"},
+                    {"job_id", "case_id", "arm", "question", "frozen_request_binding_sha256", "files"}, "plan_job")
+        job_id = safe_id(job["job_id"], "invalid_job_id")
+        require(job_id not in seen_jobs, "duplicate_job_id")
+        seen_jobs.add(job_id)
         safe_id(job["case_id"], "bad_case")
         require(job["arm"] in ("baseline", "candidate"), "bad_arm")
         identity = (job["case_id"], job["arm"])
         require(identity not in seen, "duplicate_case_arm")
         seen.add(identity)
+        sha_field(job["frozen_request_binding_sha256"], "missing_frozen_request_binding")
+    captured = []
+    for job in rows:
         captured.append(collect_row(job, Path(lane_path), manifest["provider"], manifest["model"], manifest["receipt_sha256"], manifest["executor_id"]))
     destination = Path(destination)
     private_new_directory(destination)  # Exclusive 0700, no reused measurements

@@ -16,6 +16,7 @@ use reasoning_harness_core::{
 };
 use serde::Serialize;
 use serde_json::Value;
+use sha2::{Digest, Sha256};
 
 pub const NATURAL_DIAGNOSTIC_TRACE_CONTRACT_ID: &str = "reason-natural-diagnostic-trace-v1";
 
@@ -174,6 +175,9 @@ enum DiagnosticEvent {
         model: String,
         structured_mode: &'static str,
         request: Value,
+        // Digest of the original ModelRequest before redacting diagnostic text.
+        // This does NOT authenticate the request without an external journal.
+        request_sha256: String,
     },
     ModelResponse {
         sequence: usize,
@@ -345,7 +349,18 @@ impl DiagnosticTraceRecorder {
         request: &ModelRequest,
     ) {
         let structured_mode = Self::structured_mode(&request.output_format);
-        let request = sanitized_value(request);
+        // Serialize before diagnostic redaction: different sensitive text and
+        // trailing newlines can otherwise collapse to identical trace content.
+        // A serialization failure must stop the call rather than invent proof.
+        let raw =
+            serde_json::to_value(request).expect("model request must serialize before generation");
+        let raw_bytes =
+            serde_json::to_vec(&raw).expect("JSON model request must serialize before generation");
+        let request_sha256 = Sha256::digest(raw_bytes)
+            .iter()
+            .map(|byte| format!("{byte:02x}"))
+            .collect::<String>();
+        let request = sanitize_value(raw);
         let sequence = self.sequence();
         self.events.push(DiagnosticEvent::ModelRequest {
             sequence,
@@ -357,6 +372,7 @@ impl DiagnosticTraceRecorder {
             model: model.to_string(),
             structured_mode,
             request,
+            request_sha256,
         });
     }
 
@@ -763,6 +779,73 @@ ignored prose"#.into(),
             .map(|event| event["structured_mode"].as_str().unwrap())
             .collect::<Vec<_>>();
         assert_eq!(modes, vec!["json_schema", "json_object", "text"]);
+    }
+
+    #[test]
+    fn original_request_digest_distinguishes_redacted_secret_lines() {
+        let mut recorder = DiagnosticTraceRecorder::new("fixture", "model", None);
+        let phase = DiagnosticPhase::new("initial_candidate", None);
+        for (attempt, secret) in ["Authorization: one", "Authorization: two"]
+            .into_iter()
+            .enumerate()
+        {
+            let correlation = recorder.next_correlation_id(phase);
+            recorder.record_model_request(
+                &correlation,
+                phase,
+                (attempt + 1) as u32,
+                "fixture",
+                "model",
+                &ModelRequest {
+                    task: secret.into(),
+                    system: None,
+                    output_format: ModelOutputFormat::JsonObject,
+                    max_tokens: Some(32),
+                    random_seed: None,
+                    reasoning_preference: None,
+                },
+            );
+        }
+        let events = serde_json::to_value(&recorder).unwrap()["events"]
+            .as_array()
+            .unwrap()
+            .clone();
+        assert_eq!(events[0]["request"], events[1]["request"]);
+        let first = events[0]["request_sha256"].as_str().unwrap();
+        let second = events[1]["request_sha256"].as_str().unwrap();
+        assert_eq!(first.len(), 64);
+        assert_eq!(second.len(), 64);
+        assert_ne!(first, second);
+    }
+
+    #[test]
+    fn original_request_digest_matches_python_canonical_unicode_fixture() {
+        let mut recorder = DiagnosticTraceRecorder::new("fixture", "model", None);
+        let phase = DiagnosticPhase::new("initial_candidate", None);
+        let correlation = recorder.next_correlation_id(phase);
+        recorder.record_model_request(
+            &correlation,
+            phase,
+            1,
+            "fixture",
+            "model",
+            &ModelRequest {
+                task: "日本語 Ω é".into(),
+                system: Some("Line1\nLine2".into()),
+                output_format: ModelOutputFormat::JsonSchema {
+                    name: "schema".into(),
+                    schema: serde_json::json!({"z": ["漢字", "Ω"], "a": 2}),
+                },
+                max_tokens: Some(32),
+                random_seed: Some(11),
+                reasoning_preference: None,
+            },
+        );
+        let value = serde_json::to_value(&recorder).unwrap();
+        assert_eq!(
+            value["events"][0]["request_sha256"],
+            "5bdc0ab1140673227cfb0d3e548bfede430664cdb5da6148f1e597e54b013bd6"
+        );
     }
 
     #[tokio::test]
