@@ -5,10 +5,7 @@ key custody, conflict declarations and real runtime admission remain external.
 No signing keys, enrollment CLI, provider calls or self-enrollment are supplied.
 """
 import json
-import os
 import re
-import subprocess
-import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -17,8 +14,10 @@ from contracts import canonical, digest, require, safe_id, sha_field, strict_key
 POLICY = "reason-cli-normal-v3-review-policy-v1"
 ATTESTATION = "reason-cli-normal-v3-review-attestation-v1"
 DOMAIN = (ATTESTATION + "\0").encode("ascii")
-# RFC 8410 SubjectPublicKeyInfo, id-Ed25519 with absent parameters; raw key follows.
-ED25519_SPKI = bytes.fromhex("302a300506032b6570032100")
+PINNED_PYNACL = "1.6.2"
+IDENTITY = bytes.fromhex("01" + "00" * 31)
+# Libsodium's documented main-subgroup check: (L - 1)P + P == identity.
+L_MINUS_ONE = bytes.fromhex("ecd3f55c1a631258d69cf7a2def9de14" + "00" * 15 + "10")
 PAYLOAD_FIELDS = {
     "contract", "evaluation_id", "policy_sha256", "receipt_sha256",
     "observation_index_sha256", "packet_index_sha256", "gold_sha256",
@@ -32,6 +31,33 @@ def _hex(value, size, reason):
     require(type(value) is str and re.fullmatch("[0-9a-f]{" + str(size * 2) + "}", value)
             is not None, reason)
     return bytes.fromhex(value)
+
+
+def _backend():
+    try:
+        import nacl
+        from nacl import bindings, exceptions, signing
+    except ImportError as error:
+        raise ValueError("pynacl_backend_required") from error
+    require(nacl.__version__ == PINNED_PYNACL, "unadmitted_pynacl_version")
+    return bindings, exceptions, signing
+
+
+def _validate_public_point(public_key):
+    """Reject noncanonical, small-order and mixed-order enrolled public keys.
+
+    Uses only libsodium arithmetic. Its documented subgroup workaround also
+    covers older 1.0.20 builds where is_valid_point alone was insufficient.
+    """
+    require(type(public_key) is bytes and len(public_key) == 32, "invalid_ed25519_public_key")
+    bindings, exceptions, _ = _backend()
+    require(bindings.crypto_core_ed25519_is_valid_point(public_key), "invalid_ed25519_public_key")
+    try:
+        multiple = bindings.crypto_scalarmult_ed25519_noclamp(L_MINUS_ONE, public_key)
+        subgroup = bindings.crypto_core_ed25519_add(multiple, public_key)
+    except (ValueError, exceptions.CryptoError) as error:
+        raise ValueError("invalid_ed25519_public_key") from error
+    require(subgroup == IDENTITY, "invalid_ed25519_public_key")
 
 
 def validate_policy(raw):
@@ -73,6 +99,7 @@ def validate_policy(raw):
         require(kid not in keys and key["subject_id"] in subjects,
                 "unknown_or_duplicate_review_key")
         public = _hex(key["public_key_hex"], 32, "invalid_ed25519_public_key")
+        _validate_public_point(public)
         require(public not in public_keys, "reused_review_public_key")
         require(type(key["revoked"]) is bool, "invalid_key_revocation")
         keys[kid] = key
@@ -82,41 +109,23 @@ def validate_policy(raw):
 
 @dataclass(frozen=True)
 class ReviewAuthentication:
-    """Admitted host injects policy bytes and pinned verifier, not document paths.
+    """Admitted host injects policy bytes, never a selected verification program.
 
-    attestation is untrusted. policy_bytes, binary and its hash are trust roots.
+    attestation is untrusted. policy_bytes and the admitted runtime are trust roots.
     Keeping bytes immutable also prevents a policy-file swap during scoring.
     """
     policy_bytes: bytes
     attestation: bytes
-    openssl_binary: str
-    openssl_sha256: str
 
     def _verify_signature(self, public_key, signature, message):
-        binary = Path(self.openssl_binary)
-        require(binary.is_absolute() and binary.is_file(), "review_verifier_unavailable")
-        sha_field(self.openssl_sha256, "missing_review_verifier_pin")
-        require(digest(binary.read_bytes()) == self.openssl_sha256,
-                "review_verifier_pin_mismatch")
+        _validate_public_point(public_key)
+        require(type(signature) is bytes and len(signature) == 64,
+                "invalid_ed25519_signature")
+        _, exceptions, signing = _backend()
         try:
-            with tempfile.TemporaryDirectory(prefix="v3-review-verify-") as tmp:
-                root = Path(tmp)
-                for name, data in (("key.der", ED25519_SPKI + public_key),
-                                   ("signature", signature), ("message", message)):
-                    fd = os.open(root / name, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-                    with os.fdopen(fd, "wb") as stream:
-                        stream.write(data)
-                result = subprocess.run(
-                    [str(binary), "pkeyutl", "-verify", "-rawin", "-pubin",
-                     "-keyform", "DER", "-inkey", str(root / "key.der"),
-                     "-in", str(root / "message"), "-sigfile", str(root / "signature")],
-                    stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL, cwd=root,
-                    env={"OPENSSL_CONF": os.devnull}, timeout=10, check=False,
-                )
-        except (OSError, subprocess.SubprocessError) as error:
-            raise ValueError("review_signature_verification_unavailable") from error
-        require(result.returncode == 0, "invalid_review_signature")
+            signing.VerifyKey(public_key).verify(message, signature)
+        except exceptions.BadSignatureError as error:
+            raise ValueError("invalid_review_signature") from error
 
     def verify(self, *, evaluation_id, executor_id, evaluator_id, bindings, reviewers):
         aliases, keys = validate_policy(self.policy_bytes)
@@ -175,7 +184,8 @@ class ReviewAuthentication:
             "contract": ATTESTATION,
             "attestation_sha256": digest(self.attestation),
             "policy_sha256": digest(self.policy_bytes),
-            "verifier_sha256": self.openssl_sha256,
+            "verifier_backend": "PyNaCl/libsodium", "pynacl_version": PINNED_PYNACL,
+            "requirements_sha256": digest(Path(__file__).with_name("review-requirements.txt").read_bytes()),
             "key_id": key["key_id"], "subject_id": evaluator["subject_id"],
             "role": evaluator["role"], "semantic_truth_certified": False,
         }

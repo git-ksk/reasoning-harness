@@ -1,0 +1,25 @@
+test_fake_success_from_external_program_cannot_validate_signature (test_acceptance_583.ReviewAcceptance.test_fake_success_from_external_program_cannot_validate_signature) ... FAIL
+test_identity_public_key_cannot_authenticate_unsigned_attestation (test_acceptance_583.ReviewAcceptance.test_identity_public_key_cannot_authenticate_unsigned_attestation) ... FAIL
+
+======================================================================
+FAIL: test_fake_success_from_external_program_cannot_validate_signature (test_acceptance_583.ReviewAcceptance.test_fake_success_from_external_program_cannot_validate_signature)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>/evaluation/cli-repair-paired-v1/normal_v3/test_acceptance_583.py", line 55, in test_fake_success_from_external_program_cannot_validate_signature
+    with self.assertRaisesRegex(ValueError, "invalid_review_signature"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_identity_public_key_cannot_authenticate_unsigned_attestation (test_acceptance_583.ReviewAcceptance.test_identity_public_key_cannot_authenticate_unsigned_attestation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>/evaluation/cli-repair-paired-v1/normal_v3/test_acceptance_583.py", line 44, in test_identity_public_key_cannot_authenticate_unsigned_attestation
+    with self.assertRaisesRegex(ValueError, "invalid_ed25519_public_key"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.111s
+
+FAILED (failures=2)

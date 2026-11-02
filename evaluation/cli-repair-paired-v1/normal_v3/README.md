@@ -17,6 +17,9 @@ Real scoring now requires both `ScoringContext` and `ReviewAuthentication`;
 self-asserted reviewer IDs cannot authorize the first score. External identity,
 storage, runtime and provider-journal acceptance remain pending. The stage
 counts and local-only limitations below describe the earlier stage snapshots.
+The #583 acceptance correction requires the hashed wheel-only
+[`review-requirements.txt`](review-requirements.txt) in the test/runtime virtual
+environment. See [the local acceptance record](acceptance-20261103.md).
 
 This module is deliberately separate from the historical `collect.py`, `score_development_first.py` and frozen v1/v2 operational bridge. It is **not connected to the live scheduler**. That work belongs to the next #574 implementation stage, together with independent actual-runtime and image admission.
 

@@ -1,9 +1,10 @@
 # Prospective v3 authenticated semantic review — Issue #583
 
-Status: local implementation and synthetic signature/integration controls.
-Independent source review, trusted enrollment and real runtime acceptance are
-still pending. This does not close #583, admit PR #587, authorize model calls,
-publish a first real score, or approve Engine/CLI adoption.
+Status: implementing-agent source re-review and local acceptance, with the two
+original acceptance failures retained in [the acceptance record](acceptance-20261103.md).
+Separately authenticated source review, trusted enrollment and real runtime
+acceptance remain pending. This does not close #583, admit PR #587, authorize
+model calls, publish a first real score, or approve Engine/CLI adoption.
 
 ## Admission boundary
 
@@ -17,7 +18,8 @@ One enrolled evaluator signs the entire cohort's review freeze. The evaluator
 must match #580's frozen `evaluator_id`; every per-job reviewer must resolve to
 that same enrolled subject and role. An execution alias of the same subject,
 an overlapping conflict group, ambiguous aliases, a reused public key, an
-unknown key, a revoked key and an invented human role are rejected. Supporting
+unknown key, a revoked key and an invented human role are rejected. Public keys
+must be canonical non-small-order points on the prime-order subgroup. Supporting
 multiple independent signing subjects in one cohort requires a new explicitly
 admitted assignment contract; there is no implicit multi-reviewer fallback.
 
@@ -70,20 +72,27 @@ review verifier; callers must use the authenticated scorer for real scoring.
 ## Host integration
 
 An independently admitted host constructs `ReviewAuthentication` with immutable
-operator policy bytes, captured untrusted attestation bytes, an absolute
-OpenSSL executable path and its independently pinned SHA-256. It passes this as
+operator policy bytes and captured untrusted attestation bytes. It passes this as
 `score(..., authoritative_score=context, review_authentication=authentication)`.
 There is no private-key loading, signing or self-enrollment in production code.
 
-Verification uses [OpenSSL pkeyutl](https://docs.openssl.org/3.0/man1/openssl-pkeyutl/)
-with `-verify -rawin -pubin` and the
-[RFC 8410](https://www.rfc-editor.org/rfc/rfc8410.html) Ed25519 public-key encoding.
-It checks the executable hash before each verification, invokes no shell, strips
-the inherited environment, disables ambient OpenSSL configuration, uses private
-temporary files and imposes a 10-second timeout. No signature backend fallback
-exists. Missing/changed executables, process failures and invalid signatures
-fail closed. Runtime dependency/library and privileged host isolation still
-need independent admission; pinning one executable cannot prove those gates.
+Verification uses [PyNaCl 1.6.2 VerifyKey](https://pynacl.readthedocs.io/en/latest/signing/)
+in process; it never executes a caller-selected verification program. There is
+no subprocess exit code to trust, executable pathname race or signature backend
+fallback. Every enrolled key is checked with libsodium's canonical-point check
+and its [documented main-subgroup check](https://libsodium.gitbook.io/doc/advanced/point-arithmetic)
+`(L - 1)P + P == identity`, covering the older mixed-order predicate defect too.
+These are vetted library operations, not a local signature/curve implementation.
+Missing or unadmitted PyNaCl versions and invalid signatures fail closed.
+
+Install the [wheel-only dependency lock](review-requirements.txt) into a private
+virtual environment. It pins PyNaCl 1.6.2, cffi 2.1.1 and pycparser 3.12, with
+official PyPI wheel hashes and `--require-hashes`; no unpinned source build or
+global install is required. The authentication receipt records the PyNaCl
+version and dependency-lock digest. Python/native-library/source/image and
+privileged host integrity still require independent runtime admission; local
+package installation is not that admission. The unreleased `8832c74` constructor's
+executable/hash parameters are deliberately removed by this security correction.
 
 Unauthenticated `--offline-synthetic-only` scoring remains available only with
 an explicit synthetic HTTP-zero receipt; it cannot claim authenticated review.
@@ -95,14 +104,20 @@ authenticated first score.
 Run all v3 controls with the existing CI command:
 
 ```sh
-PYTHONDONTWRITEBYTECODE=1 python3 -B -m unittest discover \
+python3 -m venv /private/tmp/v3-review-acceptance
+/private/tmp/v3-review-acceptance/bin/python -m pip install \
+  -r evaluation/cli-repair-paired-v1/normal_v3/review-requirements.txt
+PYTHONDONTWRITEBYTECODE=1 /private/tmp/v3-review-acceptance/bin/python -B -m unittest discover \
   -s evaluation/cli-repair-paired-v1/normal_v3 -p 'test_*.py' -v
 ```
 
-Tests generate temporary Ed25519 keys and exercise the actual OpenSSL verifier.
+Tests generate temporary Ed25519 keys/signatures with OpenSSL and exercise the
+actual libsodium verifier, plus the independent public RFC 8032 TEST 2 vector.
 They cover signature/payload/policy/identity tampering, alias and conflict
 rejection, key revocation, full-display/source declarations, changed review
-freezes, unavailable verifiers and single-read input snapshots. The full
+freezes, missing backends and single-read input snapshots. Acceptance also
+covers unsigned identity-key forgeries, mixed-order keys, noncanonical scalars,
+host-program substitution and verification in a separate OS process. The full
 synthetic 24-case/two-arm capture→packet→review→score test now uses actual #580
 run/reservation/inflight/observation/first-score code on its fake object store,
 with all 48 canonical observation hashes and a real temporary signature. It

@@ -1,4 +1,4 @@
-"""Real temporary Ed25519 signatures over synthetic v3 data; no external calls."""
+"""Temporary OpenSSL signatures verified by libsodium; no external calls."""
 import copy
 import json
 import os
@@ -17,6 +17,8 @@ import score
 from authority import AuthorityBinding, ScoringContext
 from contracts import canonical, digest
 
+ED25519_SPKI = bytes.fromhex("302a300506032b6570032100")
+
 
 class SyntheticSigner:
     """Ephemeral test keys only. Never enrolls a production identity."""
@@ -27,14 +29,13 @@ class SyntheticSigner:
         if binary is None:
             raise AssertionError("OpenSSL with Ed25519 support required for #583 controls")
         self.binary = str(Path(binary).resolve())
-        self.binary_sha = digest(Path(self.binary).read_bytes())
         keys = []
         for name in ("reviewer", "other"):
             private = self.root / (name + ".pem")
             self.run("genpkey", "-algorithm", "ED25519", "-out", str(private))
             private.chmod(0o600)
             der = self.run("pkey", "-in", str(private), "-pubout", "-outform", "DER")
-            assert der.startswith(auth.ED25519_SPKI) and len(der) == 44
+            assert der.startswith(ED25519_SPKI) and len(der) == 44
             keys.append({"key_id": name + "-key", "subject_id": name + "-subject",
                          "public_key_hex": der[12:].hex(), "revoked": False})
         self.policy = {
@@ -76,7 +77,7 @@ class SyntheticSigner:
                 "contract": auth.ATTESTATION, "algorithm": "Ed25519",
                 "key_id": signer + "-key", "payload": payload,
                 "signature_hex": signature.read_bytes().hex(),
-            }), self.binary, self.binary_sha,
+            }),
         )
 
 
@@ -194,14 +195,14 @@ class ReviewerAuthenticationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "reused_review_public_key"):
             self.verify(self.signer.sign(self.bindings, policy=policy))
 
-    def test_verifier_missing_modified_or_timed_out_fails_closed(self):
+    def test_missing_or_unadmitted_signature_backend_fails_closed(self):
         signed = self.signer.sign(self.bindings)
-        for changed, reason in ((replace(signed, openssl_binary="/missing/openssl"), "unavailable"),
-                                (replace(signed, openssl_sha256="e" * 64), "pin_mismatch")):
-            with self.assertRaisesRegex(ValueError, reason):
-                self.verify(changed)
-        with patch.object(auth.subprocess, "run", side_effect=subprocess.TimeoutExpired("openssl", 10)):
-            with self.assertRaisesRegex(ValueError, "verification_unavailable"):
+        with patch.dict("sys.modules", {"nacl": None}):
+            with self.assertRaisesRegex(ValueError, "pynacl_backend_required"):
+                self.verify(signed)
+        import nacl
+        with patch.object(nacl, "__version__", "unapproved"):
+            with self.assertRaisesRegex(ValueError, "unadmitted_pynacl_version"):
                 self.verify(signed)
 
     def test_verifier_ignores_inherited_openssl_config(self):
@@ -211,9 +212,9 @@ class ReviewerAuthenticationTests(unittest.TestCase):
         with patch.dict(os.environ, {"OPENSSL_CONF": str(config), "OPENSSL_MODULES": "/missing/modules"}):
             self.verify(signed)
 
-    def prepared_score(self):
+    def prepared_score(self, *, text=""):
         from test_measurement import demo_fixture, review_of
-        manifest, lane, gold, receipt, _ = demo_fixture(self.root)
+        manifest, lane, gold, receipt, _ = demo_fixture(self.root, text=text)
         observations, packets, reviews = (self.root / name for name in ("obs", "packets", "reviews"))
         collect.collect(manifest, lane, observations)
         annotate.make_packets(observations, gold, packets)
