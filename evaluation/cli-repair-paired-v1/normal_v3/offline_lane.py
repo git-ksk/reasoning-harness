@@ -24,7 +24,7 @@ import current_bridge
 scheduler.outcome_from_normal = current_bridge.outcome_from_normal
 from collect import collect_row
 from contracts import (
-    FILES, digest, require, safe_id, sha_field, exclusive_durable_claim,
+    FILES, canonical, digest, require, safe_id, sha_field, exclusive_durable_claim,
     _open_trusted_directory,
 )
 
@@ -93,7 +93,7 @@ def verify_inert_plan(plan, receipt, fixture_executable):
 
 class OfflineV3Runner(scheduler.OperationalRunner):
     """Real scheduler persistence/guards; all provider attempts are simulated."""
-    def __init__(self, plan, output, receipt_file, fixture_executable):
+    def __init__(self, plan, output, receipt_file, fixture_executable, *, authority_session=None):
         receipt_file = Path(receipt_file).resolve()
         receipt = json.loads(receipt_file.read_bytes())
         verify_inert_plan(plan, receipt, fixture_executable)
@@ -111,6 +111,7 @@ class OfflineV3Runner(scheduler.OperationalRunner):
             "run_dir": str(Path(output).resolve()),
             "purpose": INERT_PURPOSE, "replay_allowed": False,
         })
+        self.authority_session = authority_session
         super().__init__(plan, output, lambda _provider: {})
         scheduler.write_new(self.output / "v3-inert-attestation.json", {
             "scope": INERT_PURPOSE, "live_run_authorized": False,
@@ -118,6 +119,34 @@ class OfflineV3Runner(scheduler.OperationalRunner):
         })
 
     def process(self, job, env, directory):
+        session = self.authority_session
+        if session is not None:
+            # External globally atomic reservation/inflight MUST be confirmed
+            # before subprocess spawn (and this inert runner has no secrets).
+            session.reserve(job["id"])
+            session.before_spawn(job["id"])
+        outcome, diagnostics = self._process_inert(job, env, directory)
+        if session is not None:
+            accepted = session.observe(
+                job["id"], tokens=outcome.tokens,
+                attempts=outcome.provider_attempts,
+                operational_failure=(
+                    self.guard.latch or
+                    (outcome.failure_class.value if outcome.failure_class else None)
+                ),
+                observation_sha256=diagnostics.get("authority_observation_sha256"),
+            )
+            if not accepted:
+                self.guard.latch = self.guard.latch or "authority_observation_halted"
+        return outcome, diagnostics
+
+    def run(self):
+        report = super().run()
+        if self.authority_session is not None and report["complete"] and report["latch"] is None:
+            self.authority_session.complete()
+        return report
+
+    def _process_inert(self, job, env, directory):
         # Only synthetic CLI input is needed. Do not propagate ANY host
         # environment variable, including unrecognized key names, proxy
         # settings, Python user-site paths or dynamic-loader injection.
@@ -148,6 +177,7 @@ class OfflineV3Runner(scheduler.OperationalRunner):
             self.output, self.plan["provider"], self.plan["model"],
             self.receipt_sha256, "v3-offline-fixture",
         )
+        diagnostics["authority_observation_sha256"] = digest(canonical(observation))
         measured = observation["accounted_usage"]
         if outcome.failure_class is None:
             require(

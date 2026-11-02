@@ -6,7 +6,7 @@ from pathlib import Path
 
 from annotate import build_packet, read_observations, validate_gold, validate_review
 from contracts import (
-    PACKET_ID, REVIEW_ID, SCORE_ID, digest, exclusive_json, keyed_digest,
+    PACKET_ID, REVIEW_ID, SCORE_ID, canonical, digest, exclusive_json, keyed_digest,
     read_json, require, sha_field, strict_keys, exclusive_durable_claim,
     private_new_directory, _open_trusted_directory,
 )
@@ -165,7 +165,8 @@ def report(rows, gold):
     }
 
 
-def score(observations, packets, gold_file, reviews, receipt_file, output):
+def score(observations, packets, gold_file, reviews, receipt_file, output,
+          *, authoritative_score=None):
     observations = Path(observations)
     packets = Path(packets)
     reviews = Path(reviews)
@@ -250,6 +251,25 @@ def score(observations, packets, gold_file, reviews, receipt_file, output):
             "efficiency_and_non_regression",
         ],
     })
+    if authoritative_score is not None:
+        # Deployment code, not caller/receipt JSON, must supply this context.
+        # This remote create-only first-score claim is the authoritative gate;
+        # the existing private filesystem claim remains defense in depth.
+        from authority import ScoringContext
+        require(isinstance(authoritative_score, ScoringContext),
+                "trusted_scoring_context_required")
+        authoritative_score.authority.claim_score(
+            authoritative_score.evaluation_id,
+            authoritative_score.plan,
+            receipt_file.read_bytes(),
+            authoritative_score.binding,
+            observation_index_sha256=result["observation_index_sha256"],
+            review_manifest_sha256=result["review_manifest_sha256"],
+            observation_hashes={
+                jid: digest(canonical(observation))
+                for jid, (observation, _hash) in rows.items()
+            },
+        )
     # An output-folder-only lock can be bypassed by changing --output. A
     # genuine receipt must irrevocably freeze its one durable score-ledger
     # directory. This gate is also used for synthetic offline evidence.

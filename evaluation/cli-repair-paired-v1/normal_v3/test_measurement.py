@@ -807,7 +807,21 @@ class V3Measurement(unittest.TestCase):
                 "packet_index_sha256": contracts.digest((packets / "packet-index.json").read_bytes()),
                 "executor_id": "fixture-executor", "reviews": review_hashes,
             }))
-            result = score.score(observations, packets, gold_file, reviews, receipt, out)
+            from authority import AuthorityBinding, ScoringContext
+            class ScoringSpy:
+                def __init__(self):
+                    self.calls = []
+                def claim_score(self, *args, **kwargs):
+                    self.calls.append((args, kwargs))
+            spy = ScoringSpy()
+            binding = AuthorityBinding("a"*64, "b"*64, "c"*64, "d"*64,
+                                       "fixture-executor", "fixture-reviewer")
+            context = ScoringContext(spy, "fixture-run", {"schema": "test"}, binding)
+            result = score.score(observations, packets, gold_file, reviews, receipt, out,
+                                 authoritative_score=context)
+            self.assertEqual(len(spy.calls), 1)
+            self.assertEqual(set(spy.calls[0][1]["observation_hashes"]),
+                             {row["job_id"] for row in capture_rows})
             self.assertTrue(result["cohort_measured"])
             self.assertTrue(result["arms"]["baseline"]["observation_complete"])
             self.assertTrue(result["arms"]["candidate"]["observation_complete"])
