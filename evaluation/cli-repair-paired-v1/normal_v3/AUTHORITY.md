@@ -78,6 +78,10 @@ matches **each exact canonical observation hash and the exact 48-job order**
 to the scoring inputs. The scorer supplies observation hashes in the ordered
 observation index's insertion order; merely matching an unordered set is
 insufficient.
+The prospective [#583 review verifier](REVIEW_AUTH.md) now additionally requires
+an operator-enrolled Ed25519 signer and freezes the exact review authentication
+receipt hash in the remote/local first-score claims. This is locally tested
+with ephemeral synthetic keys, not independently admitted real enrollment.
 Only then is `claims/<evaluation_id>/first-score.json` exclusively created,
 binding the observation index and review manifest to the original evaluator.
 Even a later local write failure cannot retry first-score. The original

@@ -11,6 +11,13 @@ The original CLI scorer remains not externally admitted by default.
 
 **Status: code/fixture implementation only; not a runtime admission, scoring acceptance, or permission to call a model.** This code is based on PR #576's private typed CLI diagnostics. It must be reviewed and tested independently before merging. The old v1/v2 raw, receipt, tag, annotation and first scores remain immutable.
 
+Prospective extensions: [#580 external authority](AUTHORITY.md) and
+[#583 authenticated review](REVIEW_AUTH.md) add operator-injected trust roots.
+Real scoring now requires both `ScoringContext` and `ReviewAuthentication`;
+self-asserted reviewer IDs cannot authorize the first score. External identity,
+storage, runtime and provider-journal acceptance remain pending. The stage
+counts and local-only limitations below describe the earlier stage snapshots.
+
 This module is deliberately separate from the historical `collect.py`, `score_development_first.py` and frozen v1/v2 operational bridge. It is **not connected to the live scheduler**. That work belongs to the next #574 implementation stage, together with independent actual-runtime and image admission.
 
 ## Inputs and data provenance

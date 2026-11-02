@@ -296,7 +296,7 @@ class TrustedAuthority:
 
     def claim_score(self, evaluation_id, plan, local_receipt, binding, *,
                     observation_index_sha256, review_manifest_sha256,
-                    observation_hashes):
+                    observation_hashes, review_authentication_sha256=None):
         receipt, authority_sha = self._receipt(evaluation_id)
         validate_frozen_receipt(
             receipt, plan, local_receipt,
@@ -401,6 +401,10 @@ class TrustedAuthority:
               and result["charged_reservation_tokens"] == charge
               and charge <= receipt["token_budget"],
               "untrusted_authority_charged_budget")
+        review_binding = {}
+        if review_authentication_sha256 is not None:
+            sha_field(review_authentication_sha256, "invalid_review_authentication_digest")
+            review_binding["review_authentication_sha256"] = review_authentication_sha256
         self._create(_key(evaluation_id, "first-score"), {
             "contract": SCORE_CLAIM, "evaluation_id": evaluation_id,
             "authority_receipt_sha256": authority_sha,
@@ -409,6 +413,7 @@ class TrustedAuthority:
             "review_manifest_sha256": review_manifest_sha256,
             "evaluator_id": binding.evaluator_id,
             "rescore_allowed": False,
+            **review_binding,
         })
 
 

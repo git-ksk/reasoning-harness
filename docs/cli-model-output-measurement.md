@@ -2,6 +2,13 @@
 
 Tracked in [Issue574](https://github.com/git-ksk/reasoning-harness/issues/574). Declared 2026-10-31, before any v3 model execution. This policy applies only to a new separately frozen profile. Historical runs, inputs, annotations, first scores, receipts and tags remain immutable. See the [stopped v2 evidence](../evaluation/cli-normal-real24-development-v2-results/README.md).
 
+2026-11-03 development: [#583 authenticated review](../evaluation/cli-repair-paired-v1/normal_v3/REVIEW_AUTH.md)
+adds a separately operator-enrolled Ed25519 policy and signed review freeze to
+the #580 scorer path. Local synthetic signatures and 48-row authority integration
+do not establish real reviewer enrollment, source/image/runtime acceptance or
+provider provenance. #580–#583 production gates remain open; no new live run,
+first real score, release or CLI adoption is admitted by this implementation.
+
 The ordinary CLI is evaluated on the answer a user receives. A fully accounted model response that fails local strict decoding is an observed quality event, distinct from a transport or accounting failure. Add private typed origin and phase diagnostics only where the adapter returned successfully and local model-response parsing failed. Phases cover initial candidate, regeneration, investigation plan/intent/action and final rendering. Request construction, provider envelopes, authorization and policy rejections are not model-output errors. A later budget, unknown-usage or transport failure must override and clear any permissive diagnostic.
 
 Continuation requires an independently reviewed new runtime, an expected typed terminal envelope, complete immutable raw/trace/display/source binding, and matching provider/model/attempt/usage records for every request. All HTTP attempts must be completed successful responses with known usage within unchanged call and aggregate limits. Unknown diagnostics, crashes, non-2xx, quota, unknown usage, timeout, cancellation, budget exhaustion, unsafe output and authority/provenance mismatch retain strict global stopping. A protocol label, diagnostic phrase or exit code alone never authorizes continuation. The private typed diagnostic does not change public Core contracts, strict schema acceptance, fallbacks, prompts or runtime limits.

@@ -816,21 +816,62 @@ class V3Measurement(unittest.TestCase):
                 "packet_index_sha256": contracts.digest((packets / "packet-index.json").read_bytes()),
                 "executor_id": "fixture-executor", "reviews": review_hashes,
             }))
-            from authority import AuthorityBinding, ScoringContext
-            class ScoringSpy:
-                def __init__(self):
-                    self.calls = []
-                def claim_score(self, *args, **kwargs):
-                    self.calls.append((args, kwargs))
-            spy = ScoringSpy()
+            from authority import AuthorityBinding, ScoringContext, TrustedAuthority, _key
+            from test_authority_580 import AuthorityTests
             binding = AuthorityBinding("a"*64, "b"*64, "c"*64, "d"*64,
                                        "fixture-executor", "fixture-reviewer")
-            context = ScoringContext(spy, "fixture-run", {"schema": "test"}, binding)
+            operational_plan = {
+                "schema": "engine07-operational-plan-v1", "provider": "mistral",
+                "model": "fixture-model", "token_budget": 100000,
+                "case_ids": [c["case_id"] for c in gold_cases],
+                "questions": {c["case_id"]: c["question"] for c in gold_cases},
+                "frozen_request_bindings": {
+                    row["job_id"]: row["frozen_request_binding_sha256"] for row in capture_rows
+                },
+                "jobs": [{"id": row["job_id"], "arm": row["arm"], "contract": "normal",
+                          "budget": {"max_generations": 3, "max_input_tokens_per_generation": 20,
+                                     "max_output_tokens_per_generation": 20,
+                                     "max_attempts_per_generation": 1}}
+                         for row in capture_rows],
+            }
+            store, _ = AuthorityTests().fixture(
+                "fixture-run", plan=operational_plan, binding=binding,
+                local_receipt=receipt.read_bytes())
+            service = TrustedAuthority(store)
+            session = service.start("fixture-run", operational_plan, receipt.read_bytes(), binding)
+            for job_id, (observation, _) in obs_rows.items():
+                session.reserve(job_id)
+                session.before_spawn(job_id)
+                self.assertTrue(session.observe(
+                    job_id, tokens=observation["accounted_usage"]["total_tokens"],
+                    attempts=observation["accounted_usage"]["provider_attempts"],
+                    observation_sha256=contracts.keyed_digest(observation)))
+            session.complete()
+            context = ScoringContext(service, "fixture-run", operational_plan, binding)
+            with self.assertRaisesRegex(ValueError, "authenticated_reviewer_required"):
+                score.score(observations, packets, gold_file, reviews, receipt, out,
+                            authoritative_score=context)
+            self.assertIsNone(store.read(_key("fixture-run", "first-score")))
+            self.assertFalse(out.exists())
+            from test_review_auth_583 import SyntheticSigner
+            signer = SyntheticSigner(root / "ephemeral-review-signing")
+            authentication = signer.sign({
+                "receipt_sha256": receipt_sha,
+                "observation_index_sha256": contracts.digest((observations / "index.json").read_bytes()),
+                "packet_index_sha256": contracts.digest((packets / "packet-index.json").read_bytes()),
+                "gold_sha256": contracts.digest(gold_file.read_bytes()),
+                "review_manifest_sha256": contracts.digest((reviews / "review-index.json").read_bytes()),
+                "execution_binding_sha256": contracts.keyed_digest(vars(binding)),
+                "plan_sha256": contracts.keyed_digest(operational_plan),
+            })
             result = score.score(observations, packets, gold_file, reviews, receipt, out,
-                                 authoritative_score=context)
-            self.assertEqual(len(spy.calls), 1)
-            self.assertEqual(set(spy.calls[0][1]["observation_hashes"]),
-                             {row["job_id"] for row in capture_rows})
+                                 authoritative_score=context, review_authentication=authentication)
+            claim = json.loads(store.read(_key("fixture-run", "first-score")))
+            self.assertEqual(claim["review_authentication_sha256"],
+                             result["review_authentication_sha256"])
+            with self.assertRaises(FileExistsError):
+                score.score(observations, packets, gold_file, reviews, receipt, root / "alternate-score",
+                            authoritative_score=context, review_authentication=authentication)
             self.assertTrue(result["cohort_measured"])
             self.assertTrue(result["arms"]["baseline"]["observation_complete"])
             self.assertTrue(result["arms"]["candidate"]["observation_complete"])
