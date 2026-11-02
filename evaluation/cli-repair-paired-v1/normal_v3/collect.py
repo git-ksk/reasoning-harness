@@ -210,6 +210,24 @@ def collect_row(job, root, provider, model, receipt_sha256, executor_id):
             type(config) is dict and config.get("provider") == provider and config.get("model") == model,
             "cli_model_identity_mismatch",
         )
+        # The Rust NaturalOutput always reports its canonical exposure policy.
+        # A caller must not silently replace or omit the renderer exposure state.
+        exposure = result.get("exposed_text")
+        require(
+            type(exposure) is dict
+            and set(exposure) == {"policy_id", "renderer_text_exposed"}
+            and exposure["policy_id"] in {
+                "harness-canonical-exposed-text-v1",
+                "harness-bound-source-context-v1",
+                "harness-investigation-coverage-v1",
+                "harness-source-and-investigation-coverage-v1",
+            },
+            "missing_cli_exposure_policy",
+        )
+        require(
+            exposure["renderer_text_exposed"] is False,
+            "unexpected_renderer_text_exposure",
+        )
     # Both the failed and successful model request must be bound to the
     # frozen question. A plausible CLI result for case B is insufficient if
     # the actual model request trace belongs to case A.
@@ -252,12 +270,18 @@ def collect_row(job, root, provider, model, receipt_sha256, executor_id):
         require(trace.get("completion_status") == "partial",
                 "failed_cli_trace_not_partial")
     require(type(capture) is dict and type(sources) is dict, "invalid_capture_or_sources")
+    require(
+        set(capture) == {"display_artifacts", "display_citations", "admitted_source_ids"},
+        "invalid_display_capture_contract",
+    )
     artifacts = capture.get("display_artifacts")
     require(
         type(artifacts) is list and len(artifacts) == 1
         and type(artifacts[0]) is dict and artifacts[0].get("id") == "answer"
+        and set(artifacts[0]) == {"id", "kind", "text"}
+        and artifacts[0].get("kind") == "final_answer"
         and type(artifacts[0].get("text")) is str,
-        "unbound_display_inventory",
+        "invalid_display_capture_contract",
     )
     display = artifacts[0]["text"]
     if failed:
@@ -285,8 +309,13 @@ def collect_row(job, root, provider, model, receipt_sha256, executor_id):
             "invalid_full_source_record",
         )
     citation_ids = set()
+    display_bytes = display.encode("utf-8")
     for cite in citations:
         require(type(cite) is dict, "invalid_citation")
+        require(
+            set(cite) == {"id", "source_id", "source_version", "start_byte", "end_byte"},
+            "invalid_citation_contract",
+        )
         source = cite.get("source_id")
         require(source in admitted and source in sources, "citation_outside_admitted_sources")
         require(
@@ -297,9 +326,14 @@ def collect_row(job, root, provider, model, receipt_sha256, executor_id):
         citation_ids.add(cite["id"])
         require(
             type(cite.get("start_byte")) is int and type(cite.get("end_byte")) is int
-            and 0 <= cite["start_byte"] < cite["end_byte"] <= len(display.encode()),
+            and 0 <= cite["start_byte"] < cite["end_byte"] <= len(display_bytes),
             "citation_outside_actual_display",
         )
+        try:
+            display_bytes[:cite["start_byte"]].decode("utf-8")
+            display_bytes[:cite["end_byte"]].decode("utf-8")
+        except UnicodeDecodeError as exc:
+            raise ValueError("citation_invalid_utf8_boundary") from exc
     unsafe = any(not 200 <= item["http_status"] < 300 for item in http)
     uncertain = accounted.pop("trace_noncapability_failure") or any(
         x["failure_class"] != "protocol" or not x["local_decode"] for x in marks
