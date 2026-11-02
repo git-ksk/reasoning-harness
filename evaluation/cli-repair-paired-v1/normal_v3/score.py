@@ -166,7 +166,7 @@ def report(rows, gold):
 
 
 def score(observations, packets, gold_file, reviews, receipt_file, output,
-          *, authoritative_score=None):
+          *, authoritative_score=None, offline_synthetic_only=False):
     observations = Path(observations)
     packets = Path(packets)
     reviews = Path(reviews)
@@ -251,6 +251,18 @@ def score(observations, packets, gold_file, reviews, receipt_file, output,
             "efficiency_and_non_regression",
         ],
     })
+    if authoritative_score is None:
+        # No external authority means no real first-score claim. The only
+        # permitted exception is an explicit, synthetic-only local diagnostic.
+        # A normal CLI invocation must fail closed even when no caller injects
+        # the ScoringContext. This cannot authorize real model evaluation.
+        require(offline_synthetic_only, "external_score_authority_required")
+        synthetic_receipt = read_json(receipt_file)
+        require(type(synthetic_receipt) is dict
+                and synthetic_receipt.get("purpose") == "synthetic-v3-HTTP-zero",
+                "offline_synthetic_receipt_required")
+    else:
+        require(not offline_synthetic_only, "conflicting_score_authority_modes")
     if authoritative_score is not None:
         # Deployment code, not caller/receipt JSON, must supply this context.
         # This remote create-only first-score claim is the authoritative gate;
@@ -303,8 +315,10 @@ def main():
     parser = argparse.ArgumentParser()
     for option in ("observations", "packets", "gold", "reviews", "receipt", "output"):
         parser.add_argument("--" + option, type=Path, required=True)
+    parser.add_argument("--offline-synthetic-only", action="store_true")
     a = parser.parse_args()
-    result = score(a.observations, a.packets, a.gold, a.reviews, a.receipt, a.output)
+    result = score(a.observations, a.packets, a.gold, a.reviews, a.receipt, a.output,
+                   offline_synthetic_only=a.offline_synthetic_only)
     print(__import__("json").dumps({
         "cohort_measured": result["cohort_measured"],
         "semantic_thresholds_met": result["all_semantic_thresholds_met"],

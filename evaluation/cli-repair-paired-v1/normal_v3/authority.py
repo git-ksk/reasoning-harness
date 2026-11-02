@@ -18,6 +18,7 @@ INFLIGHT = "reason-cli-normal-v3-authority-inflight-v1"
 OBSERVED = "reason-cli-normal-v3-authority-observed-v1"
 COMPLETE = "reason-cli-normal-v3-authority-complete-v1"
 SCORE_CLAIM = "reason-cli-normal-v3-authority-first-score-v1"
+COHORT_CLAIM = "reason-cli-normal-v3-authority-cohort-claim-v1"
 PREFIX = "reason-cli-normal-v3/authority/v1"
 RECEIPT_KEYS = {
     "contract", "evaluation_id", "plan_sha256", "legacy_receipt_sha256",
@@ -44,6 +45,43 @@ def _json_bytes(obj):
 
 def _key(evaluation_id, section):
     return f"{PREFIX}/claims/{evaluation_id}/{section}.json"
+
+
+def _cohort_sha256(receipt):
+    """Stable run cohort even when receipt IDs, local ledgers or budget change.
+
+    Operator admission must independently attest the source/image/CLI/runtime.
+    This fingerprint deliberately excludes local receipt bytes, plan/claim IDs,
+    first-request hashes (which include receipt IDs), and mutable budgets.
+    It cannot prevent maliciously changed external identities, changed bucket,
+    or abuse by a privileged issuer: those are operator admission gates.
+    """
+    return digest(canonical({
+        "source_sha256": receipt["source_sha256"],
+        "image_sha256": receipt["image_sha256"],
+        "cli_build_sha256": receipt["cli_build_sha256"],
+        "runtime_sha256": receipt["runtime_sha256"],
+        "provider": receipt["provider"], "model": receipt["model"],
+        "jobs": sorted(({
+            "job_id": j["job_id"], "case_id": j["case_id"],
+            "arm": j["arm"], "question_sha256": j["question_sha256"],
+        } for j in receipt["jobs"]), key=lambda j: j["job_id"]),
+    }))
+
+
+def _cohort_key(receipt):
+    return f"{PREFIX}/cohorts/{_cohort_sha256(receipt)}.json"
+
+
+def _cohort_record(receipt, authority_sha):
+    return {
+        "contract": COHORT_CLAIM,
+        "evaluation_id": receipt["evaluation_id"],
+        "plan_sha256": receipt["plan_sha256"],
+        "cohort_sha256": _cohort_sha256(receipt),
+        "authority_receipt_sha256": authority_sha,
+        "reissue_allowed": False,
+    }
 
 
 def _job_reserve(budget):
@@ -243,6 +281,10 @@ class TrustedAuthority:
             runtime_sha256=binding.runtime_sha256,
             executor_id=binding.executor_id, evaluator_id=binding.evaluator_id,
         )
+        # A new evaluation ID must not create a fresh spend/score authority
+        # for the exact same immutable plan. Ambiguous ACK burns this cohort.
+        self._create(_cohort_key(receipt),
+                     _cohort_record(receipt, authority_sha))
         self._create(_key(evaluation_id, "run"), {
             "contract": RUN_CLAIM, "evaluation_id": evaluation_id,
             "authority_receipt_sha256": authority_sha,
@@ -279,6 +321,7 @@ class TrustedAuthority:
             run = json.loads(run_claim)
         except (ValueError, UnicodeError) as error:
             raise AuthorityFailure("malformed_authority_run_claim") from error
+        check(canonical(run) == run_claim, "noncanonical_authority_run_claim")
         check(run == {
             "contract": RUN_CLAIM, "evaluation_id": evaluation_id,
             "authority_receipt_sha256": authority_sha,
@@ -286,6 +329,10 @@ class TrustedAuthority:
             "executor_id": receipt["executor_id"],
             "retry_allowed": False,
         }, "untrusted_authority_run_claim")
+        cohort_claim = self._store.read(_cohort_key(receipt))
+        check(type(cohort_claim) is bytes, "authority_cohort_claim_missing")
+        check(cohort_claim == canonical(_cohort_record(receipt, authority_sha)),
+              "untrusted_authority_cohort_claim")
         completed = self._store.read(_key(evaluation_id, "completed"))
         check(type(completed) is bytes, "authority_run_not_completed")
         expected = {
@@ -297,6 +344,7 @@ class TrustedAuthority:
             result = json.loads(completed)
         except (ValueError, UnicodeError) as error:
             raise AuthorityFailure("malformed_authority_completion") from error
+        check(canonical(result) == completed, "noncanonical_authority_completion")
         check(type(result) is dict and set(result) ==
               set(expected) | {"charged_reservation_tokens"}
               and all(result.get(k) == v for k, v in expected.items()),

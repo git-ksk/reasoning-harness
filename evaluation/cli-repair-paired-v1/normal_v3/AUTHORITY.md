@@ -36,8 +36,17 @@ source/image/runtime mismatch fails **before** creating a run claim.
 ## Globally atomic claims
 
 The shared GCS adapter uses `upload_from_string(..., if_generation_match=0)`
-for **every** write. Only the first claimant can create the durable
-`claims/<evaluation_id>/run.json`. A crashed run remains burned: there is
+for **every** write. The first claimant also atomically creates
+`cohorts/<stable-cohort-fingerprint>.json`, before `claims/<evaluation_id>/run.json`.
+The fingerprint binds trusted source/image/CLI/runtime, provider/model, and all
+paired case/question identities, **excluding** receipt IDs, local ledger paths,
+first-request hashes (which include receipt identity), job order and budgets.
+Consequently reissuing the same evaluation target with a new evaluation ID,
+local ledger, changed request hashes, or larger budget cannot create a new
+run **in the same immutably provisioned operator bucket**. A lost cohort-create
+ACK burns that cohort; no automatic retry. The first-score verifier requires
+both matching cohort and run claims and rejects noncanonical run/completion JSON.
+A crashed run remains burned: there is
 **no resume**, automatic retry, ID relabeling, output-path override or
 recreated claim after a lost ACK.
 
@@ -58,8 +67,11 @@ no further job may start; an abandoned/SIGKILLed run is not automatically
 recovered. The former local runner's process-group SIGINT/SIGKILL logic is
 unchanged and is not, by itself, proof of crash-descendant containment.
 
-The `score.py` function optionally receives a trusted, operator-injected
-`ScoringContext`. Before touching the local first-score output, it calls
+The `score.py` function accepts an operator-injected `ScoringContext` for
+an authoritative first score. With no context, it **fails closed by default**;
+only an explicit `--offline-synthetic-only` flag **and** a receipt marked
+`synthetic-v3-HTTP-zero` permit an unauthenticated local diagnostic score.
+This mode never admits a real-model score or release. Before touching the local first-score output, it calls
 `TrustedAuthority.claim_score`, which validates the frozen receipt and all
 48 remotely persisted run/reservation/inflight/observed entries, and
 matches **each exact canonical observation hash** to the scoring inputs.
@@ -101,8 +113,10 @@ These **cannot be asserted by a local mock or by receipt JSON**:
 - Install and pin the separately audited `google-cloud-storage` Python
   dependency in the approved runtime; it is optional/not imported by
   synthetic tests, and this commit does **not** install or configure it.
-- Enforce and audit receipt issuance uniqueness for one evaluation cohort;
-  an operator must not mint a second evaluation ID for a replayed campaign.
+- Audit independently that a privileged issuer cannot switch buckets or
+  forge source/image/runtime identities to sidestep the stable-cohort claim.
+  Changing these independently attested identities may legitimately require
+  a new admission; the authority **cannot prove true cross-bucket uniqueness**.
 
 Do **not** pass bucket configuration, signing credentials, or source material
 through GitHub issues, plan fields, fixture paths, or public artifacts.
@@ -126,3 +140,16 @@ arguments, and two real *inert* subprocess-scheduler integrations:
 48 synthetic children complete, or one unknown-usage child stops the
 remaining 47. It does **not** attest two physical hosts or external
 storage/IAM configuration.
+
+## Independent review additions (not external acceptance)
+
+- OS-process tests use two independently launched Python interpreters sharing
+  a real filesystem O_EXCL store, racing the run and first-score claims.
+  This checks process isolation of the test harness, **not GCS semantics**.
+- Real OS SIGKILL demonstration confirms that a detached grandchild survives
+  its parent's SIGKILL; the test explicitly kills that child afterward.
+  Therefore **actual host/scheduler descendant isolation remains BLOCKED**,
+  as do live billing and a shared GCS two-host deployment.
+- Counterexamples reproduced missing stable cohort deduplication and accepted
+  noncanonical run/completion evidence; both are now rejected. Local scoring
+  without authenticated authority is disabled except explicit synthetic mode.
