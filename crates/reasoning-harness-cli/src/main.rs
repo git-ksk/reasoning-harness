@@ -1246,6 +1246,7 @@ async fn run_structured_json_call_inner<T: DeserializeOwned>(
                         .saturating_add(text_response.provider_attempts),
                 ),
             )
+            .local_output_decode()
         })?;
         let usage = context
             .prior_usage
@@ -1338,6 +1339,7 @@ async fn run_structured_json_call_inner<T: DeserializeOwned>(
                             primary_attempts.saturating_add(second.provider_attempts),
                         ),
                     )
+                    .local_output_decode()
                 })?;
             if normalized {
                 eprintln!(
@@ -1401,7 +1403,8 @@ async fn run_structured_json_call_inner<T: DeserializeOwned>(
                         ),
                     )
                     .with_provider_attempts(first.provider_attempts),
-                ));
+                )
+                .local_output_decode());
             };
             let fallback = fallback_request(&request, &schema, ModelOutputFormat::JsonObject);
             let second = match adapter.generate(fallback).await {
@@ -1471,6 +1474,7 @@ async fn run_structured_json_call_inner<T: DeserializeOwned>(
                             first.provider_attempts.saturating_add(second.provider_attempts),
                         ),
                     )
+                    .local_output_decode()
                 })?;
             if normalized {
                 eprintln!(
@@ -1643,6 +1647,7 @@ async fn generate_with_adapter_inner(
                             ),
                         ),
                     )
+                    .local_output_decode()
                 })?;
             if ignored_trailing_text {
                 eprintln!(
@@ -1804,6 +1809,7 @@ async fn render_final_with_adapter_inner(
                             ),
                         ),
                     )
+                    .local_output_decode()
                 },
             )?;
             if ignored_trailing_text {
@@ -1845,6 +1851,55 @@ struct GenerationFailure {
     provider_attempts: u32,
     failure_class: &'static str,
     message: String,
+    #[serde(skip)]
+    local_model_output_decode: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    model_output_diagnostic: Option<ModelOutputDiagnostic>,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+enum ModelOutputPhase {
+    InitialCandidate,
+    CandidateRegeneration,
+    InvestigationPlan,
+    InvestigationIntent,
+    InvestigationAction,
+    FinalRender,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+enum ModelOutputOrigin {
+    LocalModelOutputDecode,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]
+struct ModelOutputDiagnostic {
+    origin: ModelOutputOrigin,
+    phase: ModelOutputPhase,
+}
+
+impl GenerationFailure {
+    fn local_output_decode(mut self) -> Self {
+        self.local_model_output_decode = true;
+        self
+    }
+
+    fn at_model_output_phase(mut self, phase: ModelOutputPhase) -> Self {
+        if self.local_model_output_decode && self.failure_class == "protocol" {
+            self.model_output_diagnostic = Some(ModelOutputDiagnostic {
+                origin: ModelOutputOrigin::LocalModelOutputDecode,
+                phase,
+            });
+        }
+        self
+    }
+
+    fn clear_model_output_diagnostic(&mut self) {
+        self.local_model_output_decode = false;
+        self.model_output_diagnostic = None;
+    }
 }
 
 fn generation_failure(
@@ -1861,6 +1916,8 @@ fn generation_failure(
         provider_attempts: error.provider_attempts,
         failure_class: model_error_class(error.kind),
         message: error.to_string(),
+        local_model_output_decode: false,
+        model_output_diagnostic: None,
     }
 }
 
@@ -3458,6 +3515,8 @@ async fn apply_natural_answer_safety(
                         provider_attempts: 0,
                         failure_class: class,
                         message,
+                        local_model_output_decode: false,
+                        model_output_diagnostic: None,
                     }))
                     .unwrap_err();
                 if failure.provider_attempts > 0 {
@@ -3772,6 +3831,7 @@ async fn run_natural_investigation(
         {
             Ok(result) => result,
             Err(failure) => {
+                let failure = failure.at_model_output_phase(ModelOutputPhase::InvestigationPlan);
                 progress.failure(&failure);
                 preserve_acquisition_progress(
                     &acquisition_coverage::Ledger::unavailable(),
@@ -3922,6 +3982,8 @@ async fn run_natural_investigation(
                     {
                         Ok(result) => result,
                         Err(failure) => {
+                            let failure = failure
+                                .at_model_output_phase(ModelOutputPhase::InvestigationIntent);
                             progress.failure(&failure);
                             state.stop(InvestigationStopReason::OperationalTerminal);
                             preserve_acquisition_progress(
@@ -3972,6 +4034,8 @@ async fn run_natural_investigation(
                     {
                         Ok(result) => result,
                         Err(failure) => {
+                            let failure = failure
+                                .at_model_output_phase(ModelOutputPhase::InvestigationAction);
                             progress.failure(&failure);
                             state.stop(InvestigationStopReason::OperationalTerminal);
                             preserve_acquisition_progress(
@@ -4184,6 +4248,8 @@ async fn run_natural_investigation(
                     };
                 }
                 Err(failure) => {
+                    let failure =
+                        failure.at_model_output_phase(ModelOutputPhase::CandidateRegeneration);
                     progress.failure(&failure);
                     state.stop(InvestigationStopReason::OperationalTerminal);
                     preserve_acquisition_progress(
@@ -4563,10 +4629,20 @@ async fn execute_natural_inner(
         )
         .await
         .map_err(|failure| {
+            let failure = failure.at_model_output_phase(ModelOutputPhase::InitialCandidate);
             progress.failure(&failure);
             // Preserve observed attempts even when generation never returned a candidate.
-            let _ = usage_tracker.record_failure(&failure);
-            CliError::new(failure.failure_class, format_generation_failure(&failure))
+            // Accounting errors supersede a successfully decoded provider body:
+            // they are operational stops, never prospective quality-invalid events.
+            match usage_tracker.record_failure(&failure) {
+                Ok(()) => {
+                    let mut error =
+                        CliError::new(failure.failure_class, format_generation_failure(&failure));
+                    error.model_output_diagnostic = failure.model_output_diagnostic;
+                    error
+                }
+                Err(accounting_error) => accounting_error,
+            }
         })?;
     progress.provider(&generation);
     usage_tracker.record_generation(&generation)?;
@@ -4830,6 +4906,7 @@ async fn execute_natural_inner(
                 answer
             }
             Err(failure) => {
+                let failure = failure.at_model_output_phase(ModelOutputPhase::FinalRender);
                 progress.failure(&failure);
                 usage_tracker.record_failure(&failure)?;
                 rendering_failure = Some(failure);
@@ -5547,6 +5624,7 @@ struct CliError {
     message: String,
     emitted: bool,
     partial_diagnostics: Option<Box<run_diagnostics::PartialRunObservation>>,
+    model_output_diagnostic: Option<ModelOutputDiagnostic>,
 }
 
 impl CliError {
@@ -5556,6 +5634,7 @@ impl CliError {
             message: message.into(),
             emitted: false,
             partial_diagnostics: None,
+            model_output_diagnostic: None,
         }
     }
 
@@ -5565,6 +5644,7 @@ impl CliError {
             message: message.into(),
             emitted: true,
             partial_diagnostics: None,
+            model_output_diagnostic: None,
         }
     }
 }
@@ -5585,6 +5665,8 @@ impl From<&str> for CliError {
 struct ProductFailure {
     failure_class: &'static str,
     message: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    model_output_diagnostic: Option<ModelOutputDiagnostic>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -5611,6 +5693,7 @@ impl ProductFailureOutput {
             failure: ProductFailure {
                 failure_class: error.failure_class,
                 message: error.message.clone(),
+                model_output_diagnostic: error.model_output_diagnostic,
             },
             remediation: product_remediation(command, error.failure_class),
             partial_diagnostics: error.partial_diagnostics.clone(),
@@ -10650,6 +10733,558 @@ mod candidate_json_tests {
     }
 
     #[test]
+    fn local_model_output_diagnostics_are_typed_phase_scoped_and_not_public_by_default() {
+        let protocol = || {
+            generation_failure(
+                "test",
+                "test-model",
+                Instant::now(),
+                ModelError::new(ModelErrorKind::Protocol, "fixture parse failure"),
+            )
+        };
+        let phases = [
+            (ModelOutputPhase::InitialCandidate, "initial_candidate"),
+            (
+                ModelOutputPhase::CandidateRegeneration,
+                "candidate_regeneration",
+            ),
+            (ModelOutputPhase::InvestigationPlan, "investigation_plan"),
+            (
+                ModelOutputPhase::InvestigationIntent,
+                "investigation_intent",
+            ),
+            (
+                ModelOutputPhase::InvestigationAction,
+                "investigation_action",
+            ),
+            (ModelOutputPhase::FinalRender, "final_render"),
+        ];
+        let clean = protocol().at_model_output_phase(ModelOutputPhase::InitialCandidate);
+        assert!(
+            serde_json::to_value(&clean)
+                .unwrap()
+                .get("model_output_diagnostic")
+                .is_none()
+        );
+        for (phase, expected) in phases {
+            let marked = protocol()
+                .local_output_decode()
+                .at_model_output_phase(phase);
+            assert_eq!(marked.model_output_diagnostic.unwrap().phase, phase);
+            let value = serde_json::to_value(&marked).unwrap();
+            assert_eq!(
+                value["model_output_diagnostic"]["origin"],
+                "local_model_output_decode"
+            );
+            assert_eq!(value["model_output_diagnostic"]["phase"], expected);
+            assert!(value.get("local_model_output_decode").is_none());
+        }
+    }
+
+    #[test]
+    fn model_output_diagnostics_reject_provider_and_operational_failures() {
+        for kind in [ModelErrorKind::Protocol, ModelErrorKind::RateLimit] {
+            let unmarked = generation_failure(
+                "test",
+                "test-model",
+                Instant::now(),
+                ModelError::new(kind, "provider failure"),
+            )
+            .at_model_output_phase(ModelOutputPhase::InvestigationPlan);
+            assert!(unmarked.model_output_diagnostic.is_none());
+        }
+        let mut later_failure = generation_failure(
+            "test",
+            "test-model",
+            Instant::now(),
+            ModelError::new(ModelErrorKind::Protocol, "local invalid JSON"),
+        )
+        .local_output_decode()
+        .at_model_output_phase(ModelOutputPhase::InvestigationPlan);
+        later_failure.failure_class = "usage_budget_unmeasurable";
+        later_failure.clear_model_output_diagnostic();
+        assert!(later_failure.model_output_diagnostic.is_none());
+        assert!(!later_failure.local_model_output_decode);
+        assert!(
+            serde_json::to_value(&later_failure)
+                .unwrap()
+                .get("model_output_diagnostic")
+                .is_none()
+        );
+    }
+
+    #[tokio::test]
+    async fn parsed_model_body_failure_is_diagnostic_only_after_fallback_and_phase_binding() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::response(r#"{"targets":"bad"}"#, 1),
+            StructuredCapabilityFallbackAdapter::response(r#"{"targets":"still-bad"}"#, 1),
+        ]);
+        let request =
+            build_investigation_plan_request("investigate", &[], Some(128), None).unwrap();
+        let unscoped = run_structured_json_call::<InvestigationPlanProposal>(
+            &adapter,
+            "test",
+            "test-model",
+            request,
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(unscoped.failure_class, "protocol");
+        assert_eq!(unscoped.provider_attempts, 2);
+        assert!(unscoped.model_output_diagnostic.is_none());
+        let scoped = unscoped.at_model_output_phase(ModelOutputPhase::InvestigationPlan);
+        assert_eq!(
+            scoped.model_output_diagnostic.unwrap().phase,
+            ModelOutputPhase::InvestigationPlan
+        );
+    }
+
+    #[tokio::test]
+    async fn candidate_and_final_render_failures_require_own_phase_after_actual_decode() {
+        let candidate_adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            metered_response(r#"{"claims":"not-an-array"}"#, 9, 3),
+            metered_response("{", 12, 4),
+        ]);
+        let candidate_failure = generate_with_adapter(
+            &candidate_adapter,
+            "test",
+            "test-model",
+            &HarnessInput::default(),
+            128,
+            None,
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(candidate_failure.failure_class, "protocol");
+        assert_eq!(candidate_failure.provider_attempts, 2);
+        assert_eq!(
+            candidate_failure.usage.as_ref().unwrap().total_tokens,
+            Some(28)
+        );
+        assert!(candidate_failure.model_output_diagnostic.is_none());
+        assert_eq!(
+            candidate_failure
+                .at_model_output_phase(ModelOutputPhase::InitialCandidate)
+                .model_output_diagnostic
+                .unwrap()
+                .phase,
+            ModelOutputPhase::InitialCandidate,
+        );
+
+        let rendering_adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            metered_response("{", 3, 2),
+            metered_response("{", 6, 1),
+        ]);
+        let artifact = ReasoningArtifact::default();
+        let rendering_failure = render_final_with_adapter(
+            &rendering_adapter,
+            FinalRenderCall {
+                provider: "test",
+                requested_model: "test-model",
+                task: "test",
+                artifact: &artifact,
+                verdict: Verdict::Unknown,
+                max_tokens: 128,
+                seed: None,
+            },
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(rendering_failure.failure_class, "protocol");
+        assert_eq!(rendering_failure.provider_attempts, 2);
+        assert_eq!(
+            rendering_failure.usage.as_ref().unwrap().total_tokens,
+            Some(12)
+        );
+        assert_eq!(
+            rendering_failure
+                .at_model_output_phase(ModelOutputPhase::FinalRender)
+                .model_output_diagnostic
+                .unwrap()
+                .phase,
+            ModelOutputPhase::FinalRender,
+        );
+    }
+
+    #[tokio::test]
+    async fn provider_failure_during_second_attempt_never_inherits_first_decode_failure() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            metered_response("{", 3, 2),
+            Err(
+                ModelError::new(ModelErrorKind::RateLimit, "provider HTTP 429")
+                    .with_provider_attempts(1),
+            ),
+        ]);
+        let failure = generate_with_adapter(
+            &adapter,
+            "test",
+            "test-model",
+            &HarnessInput::default(),
+            128,
+            None,
+        )
+        .await
+        .unwrap_err()
+        .at_model_output_phase(ModelOutputPhase::InitialCandidate);
+        assert_eq!(failure.failure_class, "rate_limit");
+        assert_eq!(failure.provider_attempts, 2);
+        assert!(failure.model_output_diagnostic.is_none());
+        assert!(failure.usage.is_none());
+    }
+
+    #[tokio::test]
+    async fn budget_denial_after_bad_first_body_never_becomes_model_output_invalid() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([metered_response(
+            r#"{"targets":"bad"}"#,
+            10,
+            15,
+        )]);
+        let request =
+            build_investigation_plan_request("investigate", &[], Some(128), None).unwrap();
+        let error = run_structured_json_call_budgeted::<InvestigationPlanProposal>(
+            &adapter,
+            "test",
+            "test-model",
+            request,
+            usage_budget::GenerationLimits {
+                output: Some(10),
+                total: None,
+            },
+        )
+        .await
+        .unwrap_err()
+        .at_model_output_phase(ModelOutputPhase::InvestigationPlan);
+        assert_eq!(error.failure_class, "usage_budget_exceeded");
+        assert!(error.model_output_diagnostic.is_none());
+        assert_eq!(adapter.requests.lock().unwrap().len(), 1);
+        assert_eq!(error.provider_attempts, 1);
+        assert_eq!(error.usage.as_ref().unwrap().total_tokens, Some(25));
+    }
+
+    #[tokio::test]
+    async fn independent_diagnostic_phases_survive_real_investigation_failure_paths() {
+        // The model adapter returns HTTP-success fixtures. Both invalid responses
+        // must fail strict decoding after the one existing fallback.
+        for (phase, replies, expected_calls) in [
+            ("investigation_plan", vec!["{", "{"], 2),
+            ("investigation_intent", vec![COVERAGE_PLAN, "{", "{"], 3),
+            (
+                "investigation_action",
+                vec![
+                    COVERAGE_PLAN,
+                    r#"{"action":"continue","target_id":"not-a-target"}"#,
+                    "{",
+                    "{",
+                ],
+                4,
+            ),
+            (
+                "candidate_regeneration",
+                vec![
+                    COVERAGE_PLAN,
+                    r#"{"action":"continue","target_id":"left"}"#,
+                    "{",
+                    "{",
+                ],
+                4,
+            ),
+        ] {
+            let (input, candidate, config) = coverage_fixture(false, false);
+            let initial_outcome = run_standard_grounding(input.clone(), candidate.clone()).unwrap();
+            let adapter = StructuredCapabilityFallbackAdapter::with_responses(
+                replies.iter().map(|text| metered_response(text, 2, 3)),
+            );
+            let calls = adapter.requests.clone();
+            let generator = LiveGenerator::Test(DiagnosticTestAdapter(Box::new(adapter)));
+            let mut usage = usage_budget::UsageTracker::new(Default::default(), None).unwrap();
+            let run = run_natural_investigation(NaturalInvestigationCall {
+                task: &input.task.clone(),
+                input,
+                candidate,
+                initial_outcome,
+                generator: &generator,
+                trace: None,
+                config: &config,
+                model: "test-model",
+                max_tokens: 512,
+                seed: None,
+                usage: &mut usage,
+                progress: &progress::ProgressReporter::new(OutputFormat::Json, false, true),
+                cancellation: &SubprocessCancellation::default(),
+                seed_coverage: None,
+                failure_context: &Arc::default(),
+            })
+            .await
+            .unwrap();
+            let json = serde_json::to_value(&run.observation).unwrap();
+            assert_eq!(
+                json["generation_failure"]["model_output_diagnostic"],
+                serde_json::json!({
+                    "origin": "local_model_output_decode",
+                    "phase": phase
+                }),
+                "{phase}"
+            );
+            assert_eq!(json["generation_failure"]["failure_class"], "protocol");
+            assert_eq!(json["generation_failure"]["provider_attempts"], 2);
+            assert_eq!(json["generation_failure"]["usage"]["total_tokens"], 10);
+            assert_eq!(calls.lock().unwrap().len(), expected_calls, "{phase}");
+            assert_eq!(
+                usage.report().run.provider_attempts,
+                expected_calls as u64,
+                "{phase}"
+            );
+            assert_eq!(
+                run.observation
+                    .telemetry
+                    .as_ref()
+                    .and_then(|t| t.stop_reason),
+                if phase == "investigation_plan" {
+                    None
+                } else {
+                    Some(InvestigationStopReason::OperationalTerminal)
+                }
+            );
+        }
+    }
+
+    #[tokio::test]
+    async fn independent_initial_candidate_diagnostic_reaches_product_failure_envelope() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            metered_response("{", 2, 3),
+            metered_response("{", 2, 3),
+        ]);
+        let error = execute_natural_inner(
+            NaturalArgs {
+                task: Some("fixture initial candidate".into()),
+                provider: Some(Provider::Google),
+                model: Some("test-model".into()),
+                no_config: true,
+                format: Some(OutputFormat::Json),
+                ..Default::default()
+            },
+            None,
+            SubprocessCancellation::default(),
+            Arc::default(),
+            |_, _| {
+                Ok(LiveGenerator::Test(DiagnosticTestAdapter(Box::new(
+                    adapter,
+                ))))
+            },
+        )
+        .await
+        .unwrap_err();
+        let json = serde_json::to_value(ProductFailureOutput::from_error("ask", &error)).unwrap();
+        assert_eq!(json["failure"]["failure_class"], "protocol");
+        assert_eq!(
+            json["failure"]["model_output_diagnostic"],
+            serde_json::json!({
+                "origin": "local_model_output_decode",
+                "phase": "initial_candidate"
+            })
+        );
+    }
+
+    #[tokio::test]
+    async fn independent_final_render_diagnostic_survives_canonical_fallback() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            metered_response(r#"{"claims":[],"inferences":[]}"#, 2, 3),
+            metered_response("{", 2, 3),
+            metered_response("{", 2, 3),
+        ]);
+        let output = execute_natural_inner(
+            NaturalArgs {
+                task: Some("fixture final render".into()),
+                provider: Some(Provider::Google),
+                model: Some("test-model".into()),
+                no_config: true,
+                format: Some(OutputFormat::Json),
+                ..Default::default()
+            },
+            None,
+            SubprocessCancellation::default(),
+            Arc::default(),
+            |_, _| {
+                Ok(LiveGenerator::Test(DiagnosticTestAdapter(Box::new(
+                    adapter,
+                ))))
+            },
+        )
+        .await
+        .unwrap();
+        let json = serde_json::to_value(&output).unwrap();
+        assert_eq!(
+            json["rendering_failure"]["model_output_diagnostic"],
+            serde_json::json!({
+                "origin": "local_model_output_decode",
+                "phase": "final_render"
+            })
+        );
+        assert_eq!(json["rendering_failure"]["provider_attempts"], 2);
+        assert_eq!(json["rendering_failure"]["usage"]["total_tokens"], 10);
+        assert_eq!(json["usage"]["run"]["provider_attempts"], 3);
+        assert!(
+            !json["exposed_text"]["renderer_text_exposed"]
+                .as_bool()
+                .unwrap()
+        );
+    }
+
+    #[tokio::test]
+    async fn independent_unknown_usage_and_budget_override_local_diagnostic() {
+        for (usage, budget, expected) in [
+            (
+                ModelUsage::default(),
+                usage_budget::UsageBudget {
+                    max_total_tokens: Some(100),
+                    ..Default::default()
+                },
+                "usage_budget_unmeasurable",
+            ),
+            (
+                ModelUsage {
+                    input_tokens: Some(12),
+                    output_tokens: Some(13),
+                    total_tokens: Some(25),
+                },
+                usage_budget::UsageBudget {
+                    max_total_tokens: Some(20),
+                    ..Default::default()
+                },
+                "usage_budget_exceeded",
+            ),
+        ] {
+            let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+                Ok(reasoning_harness_core::ModelResponse {
+                    text: "{".into(),
+                    model: "test-model".into(),
+                    usage: usage.clone(),
+                    provider_attempts: 1,
+                    finish_reason: Some("stop".into()),
+                }),
+                Ok(reasoning_harness_core::ModelResponse {
+                    text: "{".into(),
+                    model: "test-model".into(),
+                    usage: usage.clone(),
+                    provider_attempts: 1,
+                    finish_reason: Some("stop".into()),
+                }),
+            ]);
+            let failure = generate_with_adapter(
+                &adapter,
+                "test",
+                "test-model",
+                &HarnessInput::default(),
+                128,
+                None,
+            )
+            .await
+            .unwrap_err()
+            .at_model_output_phase(ModelOutputPhase::InitialCandidate);
+            assert!(failure.model_output_diagnostic.is_some());
+            let mut tracker = usage_budget::UsageTracker::new(budget, None).unwrap();
+            let accounting = tracker.record_failure(&failure).unwrap_err();
+            assert_eq!(accounting.failure_class, expected);
+            let json =
+                serde_json::to_value(ProductFailureOutput::from_error("ask", &accounting)).unwrap();
+            assert!(json["failure"].get("model_output_diagnostic").is_none());
+        }
+    }
+
+    #[tokio::test]
+    async fn independent_provider_errors_never_become_model_body_failures() {
+        for (kind, expected) in [
+            (ModelErrorKind::Credentials, "credentials"),
+            (ModelErrorKind::Transport, "transport"),
+            (ModelErrorKind::RateLimit, "rate_limit"),
+            (ModelErrorKind::Timeout, "timeout"),
+            (ModelErrorKind::Protocol, "protocol"),
+            (ModelErrorKind::ProviderUnavailable, "provider_unavailable"),
+        ] {
+            for after_parse_error in [false, true] {
+                let mut responses = Vec::new();
+                if after_parse_error {
+                    responses.push(metered_response("{", 2, 3));
+                }
+                responses.push(Err(ModelError::new(
+                    kind,
+                    "provider-side error, not local JSON",
+                )
+                .with_provider_attempts(1)));
+                let adapter = StructuredCapabilityFallbackAdapter::with_responses(responses);
+                let failure = generate_with_adapter(
+                    &adapter,
+                    "test",
+                    "test-model",
+                    &HarnessInput::default(),
+                    128,
+                    None,
+                )
+                .await
+                .unwrap_err()
+                .at_model_output_phase(ModelOutputPhase::InitialCandidate);
+                assert_eq!(failure.failure_class, expected);
+                assert!(failure.model_output_diagnostic.is_none());
+                assert_eq!(
+                    failure.provider_attempts,
+                    if after_parse_error { 2 } else { 1 }
+                );
+                assert_eq!(
+                    adapter.requests.lock().unwrap().len(),
+                    if after_parse_error { 2 } else { 1 }
+                );
+                let value = serde_json::to_value(&failure).unwrap();
+                assert!(value.get("model_output_diagnostic").is_none());
+                if after_parse_error {
+                    assert!(failure.usage.is_none());
+                }
+            }
+        }
+    }
+
+    #[tokio::test]
+    async fn independent_recovered_fallback_does_not_pollute_success_json() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            metered_response("{", 2, 3),
+            metered_response(r#"{"claims":[],"inferences":[]}"#, 4, 5),
+            metered_response(
+                r#"{"text":"No verified answer.","factual_claims":[]}"#,
+                6,
+                7,
+            ),
+        ]);
+        let requests = adapter.requests.clone();
+        let output = execute_natural_inner(
+            NaturalArgs {
+                task: Some("fixture recovered candidate".into()),
+                provider: Some(Provider::Google),
+                model: Some("test-model".into()),
+                no_config: true,
+                format: Some(OutputFormat::Json),
+                ..Default::default()
+            },
+            None,
+            SubprocessCancellation::default(),
+            Arc::default(),
+            |_, _| {
+                Ok(LiveGenerator::Test(DiagnosticTestAdapter(Box::new(
+                    adapter,
+                ))))
+            },
+        )
+        .await
+        .unwrap();
+        let json = serde_json::to_value(&output).unwrap();
+        assert!(json.get("rendering_failure").is_none());
+        assert!(json.get("model_output_diagnostic").is_none());
+        assert_eq!(json["generation"]["provider_attempts"], 2);
+        assert_eq!(json["generation"]["usage"]["total_tokens"], 14);
+        assert_eq!(json["usage"]["run"]["provider_attempts"], 3);
+        assert_eq!(json["usage"]["run"]["total_tokens"], 27);
+        assert_eq!(requests.lock().unwrap().len(), 3);
+    }
+
+    #[test]
     fn product_failure_envelope_is_machine_readable() {
         let value = serde_json::to_value(CliEnvelope {
             schema_version: CLI_OUTPUT_SCHEMA_VERSION,
@@ -10665,6 +11300,7 @@ mod candidate_json_tests {
                 failure: ProductFailure {
                     failure_class: "input",
                     message: "bad input".into(),
+                    model_output_diagnostic: None,
                 },
                 remediation: product_remediation("run", "input"),
                 partial_diagnostics: None,
@@ -14467,6 +15103,8 @@ mod candidate_json_tests {
                 provider_attempts: 1,
                 failure_class: "rate_limit",
                 message: "NVIDIA API returned HTTP 429".into(),
+                local_model_output_decode: false,
+                model_output_diagnostic: None,
             }),
         }];
         let summary = operational_summary(&cases);
@@ -14723,6 +15361,8 @@ mod candidate_json_tests {
                     provider_attempts: 1,
                     failure_class: "timeout",
                     message: "timed out".into(),
+                    local_model_output_decode: false,
+                    model_output_diagnostic: None,
                 }),
             },
         ];

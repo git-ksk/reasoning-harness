@@ -607,6 +607,8 @@ mod tests {
                 provider_attempts: 1,
                 failure_class: class,
                 message: "provider refused".into(),
+                local_model_output_decode: false,
+                model_output_diagnostic: None,
             };
             assert_eq!(
                 tracker.record_failure(&failure).unwrap_err().failure_class,
@@ -652,6 +654,8 @@ mod tests {
                 provider_attempts: 2,
                 failure_class: "rate_limit",
                 message: "fixture".into(),
+                local_model_output_decode: false,
+                model_output_diagnostic: None,
             })
             .unwrap();
         let report = tracker.report();
