@@ -53,6 +53,10 @@ def demo_fixture(root, *, phase=None, label="positive", text="", status="require
             "configuration": {"provider": "mistral", "model": "fixture-model"},
             "usage": {"run": usage},
             "finalization": {"text": text, "status": status, "uncovered_propositions": []},
+            "exposed_text": {
+                "policy_id": "harness-canonical-exposed-text-v1",
+                "renderer_text_exposed": False,
+            },
         }
     )
     if not is_initial:
@@ -825,6 +829,74 @@ class V3Measurement(unittest.TestCase):
             review["segments"][0]["citation_ids"] = []
             with self.assertRaisesRegex(ValueError, "orphan_display_citation"):
                 annotate.validate_review(review, row, obs_hash, gold, "fixture-executor")
+
+    def test_adversarial_capture_kind_and_unknown_fields_are_rejected(self):
+        for mutation in (
+            lambda capture: capture["display_artifacts"][0].update(kind="debug_log"),
+            lambda capture: capture.update(unverified_extra_display="hidden"),
+        ):
+            with self.subTest(mutation=mutation.__code__.co_firstlineno), tempfile.TemporaryDirectory() as d:
+                plan, lane, gold, receipt, job = demo_fixture(
+                    d, text="Answer is 4", status="grounded_answer"
+                )
+                capture = collect.read_json(job / "capture.json")
+                mutation(capture)
+                self.rewrite(plan, job, "capture.json", capture)
+                with self.assertRaisesRegex(ValueError, "invalid_display_capture_contract"):
+                    collect.collect(plan, lane, Path(d) / "obs")
+                self.assertFalse((Path(d) / "obs").exists())
+
+    def test_adversarial_citation_utf8_boundary_is_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(
+                d, text="あいうAnswer", status="grounded_answer"
+            )
+            capture = collect.read_json(job / "capture.json")
+            capture["display_citations"][0]["start_byte"] = 1
+            capture["display_citations"][0]["end_byte"] = 4
+            self.rewrite(plan, job, "capture.json", capture)
+            with self.assertRaisesRegex(ValueError, "citation_invalid_utf8_boundary"):
+                collect.collect(plan, lane, Path(d) / "obs")
+            self.assertFalse((Path(d) / "obs").exists())
+
+    def test_adversarial_cli_exposure_policy_cannot_hide_renderer_text(self):
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(
+                d, text="Answer is 4", status="grounded_answer"
+            )
+            cli = collect.read_json(job / "cli.json")
+            cli["result"]["exposed_text"]["renderer_text_exposed"] = True
+            self.rewrite(plan, job, "cli.json", cli)
+            with self.assertRaisesRegex(ValueError, "unexpected_renderer_text_exposure"):
+                collect.collect(plan, lane, Path(d) / "obs")
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(d)
+            cli = collect.read_json(job / "cli.json")
+            cli["result"].pop("exposed_text")
+            self.rewrite(plan, job, "cli.json", cli)
+            with self.assertRaisesRegex(ValueError, "missing_cli_exposure_policy"):
+                collect.collect(plan, lane, Path(d) / "obs")
+
+    def test_adversarial_invalid_display_claims_remain_in_citation_denominator(self):
+        observation = {
+            "job_id": "unsafe-case", "case_id": "negative", "arm": "candidate",
+            "measurement_state": "normal_observed", "diagnostics": [],
+        }
+        review = {
+            "decision": "invalid", "correct_groups": [], "incorrect_assertions": 0,
+            "hard_violations": ["unsafe displayed factual assertion"],
+            "citation_checks": [],
+            "segments": [{"kind": "fact", "start_byte": 0, "end_byte": 8,
+                          "citation_ids": []}],
+        }
+        gold = {"case_id": "negative", "question": "q", "label": "negative",
+                "required_groups": []}
+        scored = score.score_case(observation, review, gold)
+        self.assertEqual(scored["fp"], 1)
+        self.assertEqual(scored["hard_violations"], 1)
+        self.assertEqual(scored["factual_claims"], 1)
+        self.assertEqual(scored["supported_cited_claims"], 0)
+        self.assertTrue(scored["citation_evaluable"])
 
     @staticmethod
     def rewrite(plan, job, filename, value):

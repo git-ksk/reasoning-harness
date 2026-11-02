@@ -44,9 +44,10 @@ def score_case(observation, review, gold):
     citation_checks = review["citation_checks"]
     citation_ok = all(c["supported"] and c["literal_exact"] for c in citation_checks)
     checks = {c["id"]: c for c in citation_checks}
-    fact_segments = [
-        seg for seg in review["segments"] if seg["kind"] == "fact"
-    ] if decision == "answer" else []
+    # Count every factual assertion actually displayed, including those in
+    # unsafe/invalid/withheld output. Excluding non-answers can conceal
+    # uncited safety-critical facts behind a favorable coverage metric.
+    fact_segments = [seg for seg in review["segments"] if seg["kind"] == "fact"]
     supported_cited_claims = sum(
         bool(seg["citation_ids"])
         and all(checks[cid]["supported"] and checks[cid]["literal_exact"]
@@ -73,7 +74,7 @@ def score_case(observation, review, gold):
         "citation_count": len(citation_checks),
         "citation_passed_count": sum(c["supported"] and c["literal_exact"] for c in citation_checks),
         "citation_ok": citation_ok,
-        "citation_evaluable": decision == "answer",
+        "citation_evaluable": bool(fact_segments),
         "factual_claims": len(fact_segments),
         "supported_cited_claims": supported_cited_claims,
         "valid_semantic_outcome": not (invalid or operational or unsafe),
