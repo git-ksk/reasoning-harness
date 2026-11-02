@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 
 import offline_lane
-from contracts import digest
+from contracts import digest, keyed_digest
 from test_measurement import demo_fixture
 
 
@@ -57,6 +57,7 @@ def make_plan(folder, scenario=None):
     }
     ids = [f"synthetic-{i:02d}" for i in range(24)]
     jobs = []
+    frozen_requests = {}
     for i, cid in enumerate(ids):
         arms = ("baseline", "candidate") if i % 2 == 0 else ("candidate", "baseline")
         for arm in arms:
@@ -125,6 +126,12 @@ def make_plan(folder, scenario=None):
                 (fixture / "trace.json").write_text(json.dumps(trace))
             # Each fixture artifact is frozen and hashed before the process.
             artifacts[str(fixture)] = digest_fixture(fixture)
+            trace = json.loads((fixture / "trace.json").read_bytes())
+            frozen_requests[jid] = keyed_digest({
+                "question": "What is the answer?",
+                "request": next(e["request"] for e in trace["events"]
+                                if e["kind"] == "model_request"),
+            })
             jobs.append({
                 "id": jid, "arm": arm, "contract": "normal",
                 "timeout_seconds": 10, "cancel_grace_seconds": 0.3,
@@ -157,6 +164,7 @@ def make_plan(folder, scenario=None):
         "receipt_sha256": digest(receipt_file.read_bytes()),
         "case_ids": ids,
         "questions": {cid: "What is the answer?" for cid in ids},
+        "frozen_request_bindings": frozen_requests,
         "token_budget": 48 * 40,
         "artifacts": artifacts,
         "jobs": jobs,
@@ -364,6 +372,26 @@ class OfflineV3LaneTests(unittest.TestCase):
                 with self.assertRaises(FileExistsError):
                     offline_lane.OfflineV3Runner(
                         plan, Path(t) / "second-lane", receipt, str(script))
+
+    def test_inert_first_request_binding_change_latches_after_one_child(self):
+        with tempfile.TemporaryDirectory() as t:
+            plan, receipt, script, ledger = make_plan(t)
+            plan["frozen_request_bindings"]["synthetic-00-baseline"] = "0" * 64
+            report = offline_lane.OfflineV3Runner(
+                plan, Path(t) / "lane", receipt, str(script)
+            ).run()
+            self.assertEqual(len(list((Path(t) / "lane").glob("*/spawn.json"))), 1)
+            self.assertEqual(report["latch"], "interrupted_accounting")
+            self.assertTrue(all(not row["admission"]["allowed"]
+                                for row in report["rows"][1:]))
+        with tempfile.TemporaryDirectory() as t:
+            plan, receipt, script, ledger = make_plan(t)
+            del plan["frozen_request_bindings"]["synthetic-00-baseline"]
+            with self.assertRaisesRegex(ValueError, "inert_request_binding_inventory"):
+                offline_lane.OfflineV3Runner(
+                    plan, Path(t) / "lane", receipt, str(script)
+                )
+            self.assertEqual(list(ledger.glob("*")), [])
 
     def test_inert_ledger_and_provider_reject_live_swap(self):
         with tempfile.TemporaryDirectory() as t:

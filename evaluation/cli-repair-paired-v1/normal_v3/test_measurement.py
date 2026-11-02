@@ -118,7 +118,10 @@ def demo_fixture(root, *, phase=None, label="positive", text="", status="require
         "receipt_sha256": receipt_sha,
         "rows": [{
             "job_id": "case-01-baseline", "case_id": "case-01",
-            "arm": "baseline", "question": "What is the answer?", "files": hashes,
+            "arm": "baseline", "question": "What is the answer?",
+            "frozen_request_binding_sha256": contracts.keyed_digest({
+                "question": "What is the answer?", "request": events[0]["request"],
+            }), "files": hashes,
         }],
     }
     plan = root / "capture-manifest.json"
@@ -402,7 +405,7 @@ class V3Measurement(unittest.TestCase):
             trace = collect.read_json(job / "trace.json")
             trace["events"][0]["request"]["task"] = "unrelated prompt"
             self.rewrite(plan, job, "trace.json", trace)
-            with self.assertRaisesRegex(ValueError, "unbound_failed_job_question"):
+            with self.assertRaisesRegex(ValueError, "unbound_model_request_hash"):
                 collect.collect(plan, lane, Path(d) / "obs")
         with tempfile.TemporaryDirectory() as d:
             plan, lane, gold_file, receipt, job = demo_fixture(d, text="Answer is 4")
@@ -549,6 +552,44 @@ class V3Measurement(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, reason):
                     collect.collect(plan, lane, Path(d) / "obs")
 
+    def test_frozen_first_request_rejects_substring_collision_and_stale_case(self):
+        # Both examples passed the former "question in task" check.
+        for failed in (True, False):
+            with self.subTest(failed=failed), tempfile.TemporaryDirectory() as d:
+                plan, lane, gold, receipt, job = demo_fixture(
+                    d, phase="initial_candidate" if failed else None
+                )
+                trace = collect.read_json(job / "trace.json")
+                trace["events"][0]["request"]["task"] = (
+                    "Another task with a quoted decoy: What is the answer?"
+                )
+                self.rewrite(plan, job, "trace.json", trace)
+                with self.assertRaisesRegex(ValueError, "unbound_model_request_hash"):
+                    collect.collect(plan, lane, Path(d) / "obs")
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(d, phase="initial_candidate")
+            manifest = collect.read_json(plan)
+            # The shorter question appears in the unchanged request text.
+            manifest["rows"][0]["question"] = "the answer?"
+            plan.write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(ValueError, "unbound_model_request_hash"):
+                collect.collect(plan, lane, Path(d) / "obs")
+
+    def test_frozen_request_binding_mandatory_and_cannot_be_relabelled(self):
+        for mutation, expected in (
+            (lambda row: row.pop("frozen_request_binding_sha256"),
+             "plan_job_missing_keys"),
+            (lambda row: row.update(frozen_request_binding_sha256="0" * 64),
+             "unbound_model_request_hash"),
+        ):
+            with tempfile.TemporaryDirectory() as d:
+                plan, lane, gold, receipt, job = demo_fixture(d, phase="initial_candidate")
+                manifest = collect.read_json(plan)
+                mutation(manifest["rows"][0])
+                plan.write_text(json.dumps(manifest))
+                with self.assertRaisesRegex(ValueError, expected):
+                    collect.collect(plan, lane, Path(d) / "obs")
+
     def test_success_trace_request_must_match_case_question(self):
         with tempfile.TemporaryDirectory() as d:
             plan, lane, gold_file, receipt, job = demo_fixture(
@@ -557,7 +598,7 @@ class V3Measurement(unittest.TestCase):
             trace = collect.read_json(job / "trace.json")
             trace["events"][0]["request"]["task"] = "Another unrelated question"
             self.rewrite(plan, job, "trace.json", trace)
-            with self.assertRaisesRegex(ValueError, "unbound_job_question"):
+            with self.assertRaisesRegex(ValueError, "unbound_model_request_hash"):
                 collect.collect(plan, lane, Path(d) / "obs")
 
     def test_cross_source_citation_version_and_range_mismatch_rejected(self):
@@ -694,7 +735,10 @@ class V3Measurement(unittest.TestCase):
                     }
                     capture_rows.append({
                         "job_id": job_id, "case_id": cid, "arm": arm,
-                        "question": question, "files": hashes,
+                        "question": question,
+                        "frozen_request_binding_sha256": contracts.keyed_digest({
+                            "question": question, "request": trace["events"][0]["request"],
+                        }), "files": hashes,
                     })
             receipt_sha = contracts.digest(receipt.read_bytes())
             manifest = {

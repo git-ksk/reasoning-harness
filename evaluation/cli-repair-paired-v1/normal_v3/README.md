@@ -13,6 +13,18 @@ The caller must first create a new (prospective) **post-execution capture manife
 - `cli.json` is the unmodified CLI `reason-cli-output-v1` ask envelope. `trace.json` is the actual diagnostic trace. `http.json` is the **independently normalized** ordered HTTP-attempt inventory containing `request_id, provider, model, http_status, input_tokens, output_tokens, total_tokens` per attempt. Never synthesize it from the CLI's own totals.
 - `capture.json` contains `display_artifacts`, `display_citations` (byte ranges, id, source id/version), and `admitted_source_ids`, generated from an **independently verified source/admission capture**. `sources.json` supplies complete source text and version for every cited/admitted source. The v3 collector verifies referential consistency; it cannot on its own establish that external records are genuine.
 
+**Exact frozen first-request identity (#584):** Each prospective manifest
+row must contain a `frozen_request_binding_sha256` computed *before
+execution* as SHA-256 of canonical JSON
+`{"question": <frozen question>, "request": <complete expected first CLI model request>}`.
+The collector compares it to the actual first diagnostic `model_request`
+for **failed and successful** jobs; a substring match against `task` is
+not accepted. The inert scheduler similarly freezes all 48 per-job hashes in
+its plan before spawning. This prevents accidental or malicious re-use of a
+different question/request under the *same frozen manifest*, but only an
+independently attested receipt/plan (#580) can certify the manifest itself.
+It does not establish a provider-side signed request or authorize live use.
+
 Do not use the collector to convert provider protocol errors, HTTP non-2xx or unreported usage into an eligible quality failure. It checks actual model-response trace counts, token accounting, reported HTTP statuses, phase/origin, job identity, frozen question in the first traced model request **for both successful and failed jobs**, displayed answer bytes, citation ranges, source versions, and the five captured-file hashes. A successful CLI result additionally requires a completed trace with the same last traced finalization (status, displayed text and uncovered propositions), known CLI exposure policy, canonical final-answer capture kind, and UTF-8-aligned citation boundaries; a partial trace cannot be silently promoted. It retains usage on local decoding failures but **never authorizes continuation**. Missing or contradictory evidence fails closed.
 
 ## Offline three-stage workflow

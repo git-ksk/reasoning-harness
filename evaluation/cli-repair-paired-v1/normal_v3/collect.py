@@ -280,19 +280,27 @@ def collect_row(job, root, provider, model, receipt_sha256, executor_id):
             exposure["renderer_text_exposed"] is False,
             "unexpected_renderer_text_exposure",
         )
-    # Both the failed and successful model request must be bound to the
-    # frozen question. A plausible CLI result for case B is insufficient if
-    # the actual model request trace belongs to case A.
+    # The externally frozen plan binds *both* the exact case question and
+    # complete first model request: substring matching cannot distinguish
+    # overlapping prompts or a failed invocation for another case.
+    # A self-authored plan is not a signature; real-run trust is owned by
+    # #580/#581 and MUST be verified before execution/continuation.
     requests = [
         item for item in trace.get("events", [])
         if type(item) is dict and item.get("kind") == "model_request"
     ]
     require(
-        requests and type(requests[0].get("request")) is dict
-        and type(requests[0]["request"].get("task")) is str
-        and question in requests[0]["request"]["task"],
-        "unbound_failed_job_question" if failed else "unbound_job_question",
+        bool(requests) and type(requests[0].get("request")) is dict
+        and type(requests[0]["request"].get("task")) is str,
+        "invalid_first_model_request",
     )
+    sha_field(job["frozen_request_binding_sha256"], "missing_frozen_request_binding")
+    binding = keyed_digest({
+        "question": question,
+        "request": requests[0]["request"],
+    })
+    require(binding == job["frozen_request_binding_sha256"],
+            "unbound_model_request_hash")
     if not failed:
         require(result.get("task") == question, "cli_case_question_mismatch")
     marks = diagnostics(result)
@@ -402,6 +410,7 @@ def collect_row(job, root, provider, model, receipt_sha256, executor_id):
         "job_id": job_id,
         "case_id": job["case_id"],
         "question": question,
+        "frozen_request_binding_sha256": binding,
         "arm": job["arm"],
         "provider": provider,
         "model": model,
@@ -436,8 +445,8 @@ def collect(plan_path, lane_path, destination):
     seen = set()
     captured = []
     for job in rows:
-        strict_keys(job, {"job_id", "case_id", "arm", "question", "files"},
-                    {"job_id", "case_id", "arm", "question", "files"}, "plan_job")
+        strict_keys(job, {"job_id", "case_id", "arm", "question", "frozen_request_binding_sha256", "files"},
+                    {"job_id", "case_id", "arm", "question", "frozen_request_binding_sha256", "files"}, "plan_job")
         safe_id(job["case_id"], "bad_case")
         require(job["arm"] in ("baseline", "candidate"), "bad_arm")
         identity = (job["case_id"], job["arm"])
