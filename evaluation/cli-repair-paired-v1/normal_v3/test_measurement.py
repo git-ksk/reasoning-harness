@@ -1,5 +1,6 @@
 """Entirely offline prospective measurement controls; no real provider/corpus."""
 import copy
+from concurrent.futures import ThreadPoolExecutor
 import json
 import shutil
 import tempfile
@@ -19,7 +20,12 @@ def demo_fixture(root, *, phase=None, label="positive", text="", status="require
     job = lane / "case-01-baseline"
     job.mkdir(parents=True)
     receipt = root / "receipt.json"
-    receipt.write_text('{"purpose":"synthetic-v3-HTTP-zero"}\n')
+    score_ledger = (root / "score-ledger").resolve()
+    score_ledger.mkdir()
+    receipt.write_text(json.dumps({
+        "purpose": "synthetic-v3-HTTP-zero",
+        "score_ledger_dir": str(score_ledger),
+    }, sort_keys=True) + "\n")
     receipt_sha = contracts.digest(receipt.read_bytes())
     diagnostic = None
     if phase:
@@ -29,7 +35,7 @@ def demo_fixture(root, *, phase=None, label="positive", text="", status="require
         failure["model_output_diagnostic"] = diagnostic
     attempt_count = 2 if phase else 1
     usage = {
-        "tracked_from_session_start": True, "model_calls": 1,
+        "tracked_from_session_start": True, "model_calls": attempt_count,
         "provider_attempts": attempt_count,
         "input_tokens": attempt_count * 2,
         "output_tokens": attempt_count * 3,
@@ -62,7 +68,8 @@ def demo_fixture(root, *, phase=None, label="positive", text="", status="require
             result["investigation"] = {"generation_failure": failure}
     cli = {"schema_version": "reason-cli-output-v1", "command": "ask", "result": result}
     http = [
-        {"request_id": "call-" + str(i), "provider": "mistral", "model": "fixture-model",
+        {"request_id": "call-" + str(i), "correlation_id": "c1", "logical_attempt": i+1,
+         "provider": "mistral", "model": "fixture-model",
          "http_status": 200, "input_tokens": 2, "output_tokens": 3, "total_tokens": 5}
         for i in range(attempt_count)
     ]
@@ -159,6 +166,23 @@ def review_of(obs, gold, *, decision="invalid", groups=None, violations=None):
 
 
 class V3Measurement(unittest.TestCase):
+    def test_receipt_claim_concurrency_one_winner_no_double_score(self):
+        with tempfile.TemporaryDirectory() as d:
+            claim = Path(d) / ("a" * 64 + ".first-score.claim.json")
+            def reserve(index):
+                try:
+                    contracts.exclusive_durable_claim(
+                        claim, {"receipt_sha256": "a" * 64, "candidate": index}
+                    )
+                    return "created"
+                except FileExistsError:
+                    return "rejected"
+            with ThreadPoolExecutor(max_workers=8) as pool:
+                values = list(pool.map(reserve, range(16)))
+            self.assertEqual(values.count("created"), 1)
+            self.assertEqual(values.count("rejected"), 15)
+            self.assertEqual(len(list(Path(d).glob("*.first-score.claim.json"))), 1)
+
     def test_six_phases_actual_json_paths(self):
         for phase in sorted(contracts.PHASES):
             with self.subTest(phase=phase), tempfile.TemporaryDirectory() as d:
@@ -315,6 +339,11 @@ class V3Measurement(unittest.TestCase):
             self.assertFalse(result["quality_go"])
             with self.assertRaises(FileExistsError):
                 score.score(obs_dir, packet_dir, gold_file, reviews_dir, receipt, Path(d) / "score")
+            # A different output directory must NOT grant an independent
+            # second first-score for the very same immutable receipt.
+            with self.assertRaises(FileExistsError):
+                score.score(obs_dir, packet_dir, gold_file, reviews_dir, receipt, Path(d) / "score-again")
+            self.assertFalse((Path(d) / "score-again").exists())
             review_path.write_text(json.dumps({**review, "decision": "withhold"}))
             with self.assertRaisesRegex(ValueError, "modified_review_file"):
                 score.score(obs_dir, packet_dir, gold_file, reviews_dir, receipt, Path(d) / "score-tampered")
@@ -385,6 +414,141 @@ class V3Measurement(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "gold_case_question_mismatch"):
                 annotate.make_packets(observed, gold_file, Path(d) / "packets")
 
+    def test_provider_unsupported_capability_cannot_be_local_quality_invalid(self):
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(
+                d, phase="initial_candidate"
+            )
+            trace = collect.read_json(job / "trace.json")
+            rejected = trace["events"][1]
+            rejected.pop("response")
+            rejected["kind"] = "model_failure"
+            rejected["failure_class"] = "unsupported_capability"
+            self.rewrite(plan, job, "trace.json", trace)
+            row = collect.collect(plan, lane, Path(d) / "obs")[0]
+            self.assertEqual(row["measurement_state"], "operational_stop")
+            self.assertEqual(row["accounted_usage"]["provider_attempts"], 2)
+
+    def test_interleaved_http_attempts_rejected_with_full_usage(self):
+        # A1 B1 A2 is not an ordered per-call provider journal.
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(
+                d, phase="initial_candidate"
+            )
+            http = collect.read_json(job / "http.json")
+            trace = collect.read_json(job / "trace.json")
+            cli = collect.read_json(job / "cli.json")
+            again = {**http[0], "request_id": "call-reordered"}
+            http.append(again)
+            for field, increment in (
+                ("input_tokens", 2), ("output_tokens", 3),
+                ("total_tokens", 5), ("provider_attempts", 1)
+            ):
+                cli["result"]["partial_diagnostics"]["usage"]["run"][field] += increment
+            trace["events"][1]["response"]["provider_attempts"] = 2
+            trace["events"][1]["response"]["usage"] = {
+                "input_tokens": 4, "output_tokens": 6, "total_tokens": 10
+            }
+            self.rewrite(plan, job, "http.json", http)
+            self.rewrite(plan, job, "trace.json", trace)
+            self.rewrite(plan, job, "cli.json", cli)
+            with self.assertRaisesRegex(ValueError, "noncontiguous_http_attempt_group"):
+                collect.collect(plan, lane, Path(d) / "obs")
+
+    def test_unknown_trace_event_kind_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(
+                d, phase="initial_candidate"
+            )
+            trace = collect.read_json(job / "trace.json")
+            trace["events"].append({
+                "sequence": len(trace["events"]),
+                "kind": "unrecognized_operational_failure",
+            })
+            self.rewrite(plan, job, "trace.json", trace)
+            with self.assertRaisesRegex(ValueError, "unknown_trace_event_kind"):
+                collect.collect(plan, lane, Path(d) / "obs")
+
+    def test_nonmonotonic_adapter_attempt_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(
+                d, phase="initial_candidate"
+            )
+            trace = collect.read_json(job / "trace.json")
+            http = collect.read_json(job / "http.json")
+            trace["events"][2]["attempt"] = 3
+            trace["events"][3]["attempt"] = 3
+            http[1]["logical_attempt"] = 3
+            self.rewrite(plan, job, "trace.json", trace)
+            self.rewrite(plan, job, "http.json", http)
+            with self.assertRaisesRegex(ValueError, "noncanonical_adapter_attempt"):
+                collect.collect(plan, lane, Path(d) / "obs")
+
+    def test_trace_logical_call_count_must_match_cli_usage(self):
+        # Two distinct correlations represent two generations, not one.
+        # Exact token/HTTP totals alone cannot authenticate model_calls=1.
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(
+                d, phase="initial_candidate"
+            )
+            http = collect.read_json(job / "http.json")
+            trace = collect.read_json(job / "trace.json")
+            http[1]["correlation_id"] = "c2"
+            http[1]["logical_attempt"] = 1
+            for event in trace["events"][2:]:
+                event["correlation_id"] = "c2"
+                event["attempt"] = 1
+            cli = collect.read_json(job / "cli.json")
+            cli["result"]["partial_diagnostics"]["usage"]["run"]["model_calls"] = 1
+            self.rewrite(plan, job, "cli.json", cli)
+            self.rewrite(plan, job, "http.json", http)
+            self.rewrite(plan, job, "trace.json", trace)
+            with self.assertRaisesRegex(ValueError, "cli_trace_model_calls_mismatch"):
+                collect.collect(plan, lane, Path(d) / "obs")
+
+    def test_two_http_attempts_under_single_model_response_accounted(self):
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(
+                d, phase="initial_candidate"
+            )
+            trace = collect.read_json(job / "trace.json")
+            http = collect.read_json(job / "http.json")
+            # Two individually verified 2xx responses consumed in one provider
+            # adapter invocation; CLI response reports the combined usage.
+            http[1]["logical_attempt"] = 1
+            response = trace["events"][1]
+            response["response"]["provider_attempts"] = 2
+            response["response"]["usage"] = {
+                "input_tokens": 4, "output_tokens": 6, "total_tokens": 10
+            }
+            trace["events"] = trace["events"][:2]
+            cli = collect.read_json(job / "cli.json")
+            cli["result"]["partial_diagnostics"]["usage"]["run"]["model_calls"] = 1
+            self.rewrite(plan, job, "cli.json", cli)
+            self.rewrite(plan, job, "http.json", http)
+            self.rewrite(plan, job, "trace.json", trace)
+            row = collect.collect(plan, lane, Path(d) / "obs")[0]
+            self.assertEqual(row["accounted_usage"]["provider_attempts"], 2)
+            self.assertEqual(row["measurement_state"], "local_decode_observed")
+            trace["events"][1]["response"]["usage"]["total_tokens"] = 5
+            self.rewrite(plan, job, "trace.json", trace)
+            with self.assertRaisesRegex(ValueError, "trace_http_token_mismatch"):
+                collect.collect(plan, lane, Path(d) / "bad")
+
+    def test_unmatched_duplicate_or_out_of_order_http_rejected(self):
+        for mutator, reason in [
+            (lambda h: h[0].update(correlation_id="unknown"), "trace_http_logical_order_mismatch"),
+            (lambda h: h[0].update(logical_attempt=99), "trace_http_logical_order_mismatch"),
+            (lambda h: h[0].update(request_id="call-1"), "duplicate_http_request"),
+        ]:
+            with self.subTest(reason=reason), tempfile.TemporaryDirectory() as d:
+                plan, lane, gold, receipt, job = demo_fixture(d, phase="initial_candidate")
+                http = collect.read_json(job / "http.json")
+                mutator(http)
+                self.rewrite(plan, job, "http.json", http)
+                with self.assertRaisesRegex(ValueError, reason):
+                    collect.collect(plan, lane, Path(d) / "obs")
+
     def test_success_trace_request_must_match_case_question(self):
         with tempfile.TemporaryDirectory() as d:
             plan, lane, gold_file, receipt, job = demo_fixture(
@@ -436,10 +600,11 @@ class V3Measurement(unittest.TestCase):
                 "reviews": {"case-01-baseline": contracts.digest(review_path.read_bytes())},
             }
             (reviews / "review-index.json").write_text(json.dumps(frozen))
+            unchanged_receipt = receipt.read_bytes()
             receipt.write_text('{"purpose":"tampered"}')
             with self.assertRaisesRegex(ValueError, "receipt_byte_mismatch"):
                 score.score(obs_dir, packets, gold_file, reviews, receipt, Path(d) / "no-score")
-            receipt.write_text('{"purpose":"synthetic-v3-HTTP-zero"}\n')
+            receipt.write_bytes(unchanged_receipt)
             p = packets / "case-01-baseline.review-packet.json"
             packet = annotate.read_json(p)
             packet["full_sources"] = {}
@@ -486,7 +651,12 @@ class V3Measurement(unittest.TestCase):
             common_lane = root / "full-lane"
             common_lane.mkdir()
             receipt = root / "full-receipt.json"
-            receipt.write_text('{"purpose":"synthetic-v3-HTTP-zero"}\n')
+            score_ledger = root / "score-ledger"
+            score_ledger.mkdir()
+            receipt.write_text(json.dumps({
+                "purpose": "synthetic-v3-HTTP-zero",
+                "score_ledger_dir": str(score_ledger.resolve()),
+            }, sort_keys=True) + "\n")
             gold_cases = []
             capture_rows = []
             for n in range(24):
