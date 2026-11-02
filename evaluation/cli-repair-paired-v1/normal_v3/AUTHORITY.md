@@ -74,7 +74,10 @@ only an explicit `--offline-synthetic-only` flag **and** a receipt marked
 This mode never admits a real-model score or release. Before touching the local first-score output, it calls
 `TrustedAuthority.claim_score`, which validates the frozen receipt and all
 48 remotely persisted run/reservation/inflight/observed entries, and
-matches **each exact canonical observation hash** to the scoring inputs.
+matches **each exact canonical observation hash and the exact 48-job order**
+to the scoring inputs. The scorer supplies observation hashes in the ordered
+observation index's insertion order; merely matching an unordered set is
+insufficient.
 Only then is `claims/<evaluation_id>/first-score.json` exclusively created,
 binding the observation index and review manifest to the original evaluator.
 Even a later local write failure cannot retry first-score. The original

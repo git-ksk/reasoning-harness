@@ -61,6 +61,18 @@ class IndependentAuthorityReview(unittest.TestCase):
             authority.TrustedAuthority(store).start(
                 "ledger-relabel", alt_plan, alt_local, self.fixture.binding)
 
+    def test_reordered_scoring_input_rejected_even_with_all_48_hashes(self):
+        store, _ = self.fixture.fixture("reordered-score")
+        self.fixture.all_48(self.fixture.start(store, "reordered-score"))
+        hashes = {j["id"]: digest(canonical({"id": j["id"]}))
+                  for j in reversed(self.fixture.plan["jobs"])}
+        with self.assertRaisesRegex(ValueError, "observation_order"):
+            authority.TrustedAuthority(store).claim_score(
+                "reordered-score", self.fixture.plan, self.fixture.local_receipt,
+                self.fixture.binding, observation_index_sha256="1" * 64,
+                review_manifest_sha256="2" * 64, observation_hashes=hashes)
+        self.assertIsNone(store.read(authority._key("reordered-score", "first-score")))
+
     def test_noncanonical_run_and_completion_claims_are_rejected(self):
         for which in ("run", "completed"):
             with self.subTest(which=which):

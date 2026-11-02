@@ -310,6 +310,11 @@ class TrustedAuthority:
               and set(observation_hashes) == {
                   j["job_id"] for j in receipt["jobs"]
               }, "authority_scored_observation_inventory_mismatch")
+        # Preserve the index's original order through dict insertion order.
+        # A valid set of 48 hashes is insufficient if the scorer consumes a
+        # reordered index relative to the externally frozen plan.
+        check(list(observation_hashes) == [j["job_id"] for j in receipt["jobs"]],
+              "authority_scored_observation_order_mismatch")
         for value in observation_hashes.values():
             sha_field(value, "invalid_observation_sha256")
         for label, value in (("observation_index", observation_index_sha256),
