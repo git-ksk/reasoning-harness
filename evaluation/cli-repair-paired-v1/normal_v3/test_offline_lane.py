@@ -131,6 +131,8 @@ def make_plan(folder, scenario=None):
                 job_id=jid, case_id=cid, arm=arm, question="What is the answer?",
                 request=next(e["request"] for e in trace["events"]
                              if e["kind"] == "model_request"),
+                request_sha256=next(e["request_sha256"] for e in trace["events"]
+                                    if e["kind"] == "model_request"),
                 provider="mistral", model="fixture-model",
                 receipt_sha256=digest(receipt_file.read_bytes()),
             )

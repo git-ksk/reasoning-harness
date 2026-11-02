@@ -299,9 +299,13 @@ def collect_row(job, root, provider, model, receipt_sha256, executor_id):
         "invalid_first_model_request",
     )
     sha_field(job["frozen_request_binding_sha256"], "missing_frozen_request_binding")
+    # Unlike the redacted diagnostic request, this hash was recorded by the
+    # Rust adapter *before* sanitization. Both proofs must be frozen together.
+    sha_field(requests[0].get("request_sha256"), "missing_raw_request_digest")
     binding = frozen_request_digest(
         job_id=job_id, case_id=job["case_id"], arm=job["arm"],
         question=question, request=requests[0]["request"],
+        request_sha256=requests[0]["request_sha256"],
         provider=provider, model=model, receipt_sha256=receipt_sha256,
     )
     require(binding == job["frozen_request_binding_sha256"],

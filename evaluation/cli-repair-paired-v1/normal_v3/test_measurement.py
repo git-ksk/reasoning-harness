@@ -77,8 +77,10 @@ def demo_fixture(root, *, phase=None, label="positive", text="", status="require
     for i in range(attempt_count):
         identity = {"correlation_id": "c1", "attempt": i + 1,
                     "provider": "mistral", "model": "fixture-model"}
+        first_request = {"task": "What is the answer? with structured JSON"}
         events.append({"sequence": len(events), "kind": "model_request", **identity,
-                       "request": {"task": "What is the answer? with structured JSON"}})
+                       "request": first_request,
+                       "request_sha256": contracts.keyed_digest(first_request)})
         events.append({
             "sequence": len(events), "kind": "model_response", **identity,
             "response": {"provider_attempts": 1,
@@ -122,6 +124,7 @@ def demo_fixture(root, *, phase=None, label="positive", text="", status="require
             "frozen_request_binding_sha256": contracts.frozen_request_digest(
                 job_id="case-01-baseline", case_id="case-01", arm="baseline",
                 question="What is the answer?", request=events[0]["request"],
+                request_sha256=events[0]["request_sha256"],
                 provider="mistral", model="fixture-model", receipt_sha256=receipt_sha,
             ), "files": hashes,
         }],
@@ -738,6 +741,8 @@ class V3Measurement(unittest.TestCase):
                     cli["result"]["task"] = question
                     trace = collect.read_json(old_job / "trace.json")
                     trace["events"][0]["request"]["task"] = question + " structured JSON"
+                    trace["events"][0]["request_sha256"] = contracts.keyed_digest(
+                        trace["events"][0]["request"])
                     (old_job / "cli.json").write_text(json.dumps(cli))
                     (old_job / "trace.json").write_text(json.dumps(trace))
                     job_id = cid + "-" + arm
@@ -752,8 +757,10 @@ class V3Measurement(unittest.TestCase):
                         "question": question,
                         "frozen_request_binding_sha256": contracts.frozen_request_digest(
                             job_id=job_id, case_id=cid, arm=arm, question=question,
-                            request=trace["events"][0]["request"], provider="mistral",
-                            model="fixture-model", receipt_sha256=contracts.digest(receipt.read_bytes()),
+                            request=trace["events"][0]["request"],
+                            request_sha256=trace["events"][0]["request_sha256"],
+                            provider="mistral", model="fixture-model",
+                            receipt_sha256=contracts.digest(receipt.read_bytes()),
                         ), "files": hashes,
                     })
             receipt_sha = contracts.digest(receipt.read_bytes())

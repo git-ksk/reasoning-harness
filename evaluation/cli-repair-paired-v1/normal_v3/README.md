@@ -18,13 +18,21 @@ row must contain a `frozen_request_binding_sha256` computed *before
 execution* as SHA-256 of canonical JSON
 `{"job_id": <frozen job id>, "case_id": <frozen case id>,
 "arm": <frozen arm>, "question": <frozen question>,
-"request": <complete expected first CLI model request>,
+"request": <expected redacted diagnostic first request>,
+"request_sha256": <SHA-256 of original unredacted first ModelRequest>,
 "provider": <frozen provider>, "model": <frozen model>,
 "receipt_sha256": <frozen receipt SHA-256>}`.
-The encoder is the shared `contracts.frozen_request_digest` helper, with
-`ensure_ascii=False`, sorted keys and compact separators; Unicode content
-is compared exactly, without normalization. The first request must also
-precede all other physical model requests (overlapping calls fail closed).
+The shared `contracts.frozen_request_digest` encoder uses `ensure_ascii=False`,
+sorted keys, compact separators and strict finite JSON numbers. The Rust
+diagnostic adapter computes `request_sha256` **before** any field/line
+redaction as SHA-256 of the serialized `serde_json::Value` representing the
+original ModelRequest. The expected hash MUST be frozen from the original
+planned request, not reconstructed from an already redacted trace. Both the
+redacted trace request and original-request hash must match the frozen
+binding. Redaction-derived collisions (including Unicode/newline changes)
+are therefore rejected when the diagnostic trace is trustworthy. This is
+not independent proof of trace authenticity (#580/#581). The first request
+must precede all other model requests (overlaps fail closed).
 The collector compares it to the actual first diagnostic `model_request`
 for **failed and successful** jobs; a substring match against `task` is
 not accepted. The inert scheduler similarly freezes all 48 per-job hashes in

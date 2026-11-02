@@ -43,7 +43,7 @@ def sha_field(value, label):
 
 
 def frozen_request_digest(*, job_id, case_id, arm, question, request,
-                          provider, model, receipt_sha256):
+                          request_sha256, provider, model, receipt_sha256):
     """Freeze full first-request AND execution identity with one canonical encoder.
 
     This is local consistency only: an externally authenticated plan/receipt
@@ -58,9 +58,11 @@ def frozen_request_digest(*, job_id, case_id, arm, question, request,
     require(type(provider) is str and bool(provider)
             and type(model) is str and bool(model), "missing_provider_identity")
     sha_field(receipt_sha256, "missing_receipt_hash")
+    sha_field(request_sha256, "invalid_raw_request_digest")
     return keyed_digest({
         "job_id": job_id, "case_id": case_id, "arm": arm, "question": question,
-        "request": request, "provider": provider, "model": model,
+        "request": request, "request_sha256": request_sha256,
+        "provider": provider, "model": model,
         "receipt_sha256": receipt_sha256,
     })
 

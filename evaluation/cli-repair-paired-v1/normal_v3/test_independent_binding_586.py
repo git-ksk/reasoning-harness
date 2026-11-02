@@ -90,6 +90,43 @@ class IndependentFrozenBinding586(unittest.TestCase):
                 collect.collect(plan, lane, out)
             self.assertFalse(out.exists())
 
+    def test_redacted_request_collision_cannot_hide_actual_secret_change(self):
+        from contracts import frozen_request_digest
+        with tempfile.TemporaryDirectory() as temp:
+            plan, lane, _, _, job = demo_fixture(temp, phase="initial_candidate")
+            manifest = json.loads(plan.read_text())
+            trace = json.loads((job / "trace.json").read_text())
+            redacted = {"task": "[REDACTED]"}
+            original_hash = keyed_digest({"task": "Authorization: original"})
+            changed_hash = keyed_digest({"task": "Authorization: replaced"})
+            trace["events"][0]["request"] = redacted
+            trace["events"][0]["request_sha256"] = original_hash
+            replace_capture(plan, job, "trace.json", trace)
+            manifest = json.loads(plan.read_text())
+            row = manifest["rows"][0]
+            row["frozen_request_binding_sha256"] = frozen_request_digest(
+                job_id=row["job_id"], case_id=row["case_id"],
+                arm=row["arm"], question=row["question"], request=redacted,
+                request_sha256=original_hash, provider=manifest["provider"],
+                model=manifest["model"], receipt_sha256=manifest["receipt_sha256"],
+            )
+            plan.write_text(json.dumps(manifest))
+            good = collect.collect(plan, lane, Path(temp) / "good")
+            self.assertEqual(len(good), 1)
+            trace["events"][0]["request_sha256"] = changed_hash
+            replace_capture(plan, job, "trace.json", trace)
+            with self.assertRaisesRegex(ValueError, "unbound_model_request_hash"):
+                collect.collect(plan, lane, Path(temp) / "bad")
+
+    def test_missing_original_request_hash_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            plan, lane, _, _, job = demo_fixture(temp, phase="initial_candidate")
+            trace = json.loads((job / "trace.json").read_text())
+            del trace["events"][0]["request_sha256"]
+            replace_capture(plan, job, "trace.json", trace)
+            with self.assertRaisesRegex(ValueError, "missing_raw_request_digest"):
+                collect.collect(plan, lane, Path(temp) / "output")
+
     def test_frozen_receipt_identity_cannot_be_substituted(self):
         with tempfile.TemporaryDirectory() as temp:
             plan, lane, _, _, _ = demo_fixture(temp, phase="initial_candidate")
@@ -114,7 +151,8 @@ class IndependentFrozenBinding586(unittest.TestCase):
             frozen_request_digest(
                 job_id="case-01-baseline", case_id="case-01", arm="baseline",
                 question="What?", request={"task": "What?", "temperature": float("nan")},
-                provider="mistral", model="fixture-model", receipt_sha256="a" * 64,
+                request_sha256="b" * 64, provider="mistral",
+                model="fixture-model", receipt_sha256="a" * 64,
             )
 
     def test_first_request_missing_fails_closed(self):
