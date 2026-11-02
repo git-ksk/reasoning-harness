@@ -3,6 +3,8 @@ import hashlib
 import os
 import json
 import re
+import stat
+import sys
 from pathlib import Path
 
 PLAN_ID = "reason-cli-normal-v3-capture-manifest-v1"
@@ -44,11 +46,143 @@ def read_json(path):
     return json.loads(Path(path).read_bytes())
 
 
-def exclusive_json(path, value):
+def _reject_permissive_acl(fd):
+    """Inspect the opened inode, never a second pathname, for extra ACL grants.
+
+    macOS's 0700 mode does not describe inherited/explicit NFSv4 ACL grants.
+    Restrictive deny entries (including the normal home-directory deny-delete)
+    are allowed. Any allow ACE fails closed, as effective access calculation is
+    platform- and group-membership-dependent.
+    """
+    if sys.platform == "darwin":
+        import ctypes
+        import errno
+        libc = ctypes.CDLL("/usr/lib/libSystem.B.dylib", use_errno=True)
+        libc.acl_get_fd.argtypes = [ctypes.c_int]
+        libc.acl_get_fd.restype = ctypes.c_void_p
+        libc.acl_to_text.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_ssize_t)]
+        libc.acl_to_text.restype = ctypes.c_void_p
+        libc.acl_free.argtypes = [ctypes.c_void_p]
+        libc.acl_free.restype = ctypes.c_int
+        ctypes.set_errno(0)
+        acl = libc.acl_get_fd(fd)
+        if not acl:
+            require(ctypes.get_errno() == errno.ENOENT, "private_directory_acl_check_failed")
+            return
+        try:
+            length = ctypes.c_ssize_t()
+            ptr = libc.acl_to_text(acl, ctypes.byref(length))
+            require(ptr is not None, "private_directory_acl_check_failed")
+            try:
+                text = ctypes.string_at(ptr, length.value).decode("utf-8")
+                require(":allow:" not in text.lower(), "private_directory_acl_allow_unsafe")
+            finally:
+                libc.acl_free(ptr)
+        finally:
+            libc.acl_free(acl)
+    elif hasattr(os, "listxattr"):
+        # On Linux, mode bits encode the effective POSIX ACL mask, but a
+        # default ACL can be inherited by new children. Reject extra ACLs.
+        attrs = os.listxattr(fd)
+        require(not any(x.startswith("system.posix_acl_") for x in attrs),
+                "private_directory_acl_allow_unsafe")
+
+
+def _safe_directory_metadata(fd):
+    meta = os.fstat(fd)
+    mode = meta.st_mode
+    require(stat.S_ISDIR(mode) and meta.st_uid in (0, os.getuid())
+            and (mode & 0o022 == 0 or
+                 (meta.st_uid == 0 and mode & stat.S_ISVTX != 0)),
+            "private_output_parent_untrusted")
+    _reject_permissive_acl(fd)
+
+
+def _open_safe_directory_path(path, *, private_leaf=False):
+    """Walk every component with openat/NOFOLLOW, retaining its parent FD.
+
+    A symlink hidden in a middle component must not redirect a ledger or
+    output. macOS /var and /tmp are immutable root-managed system aliases;
+    accept only these two aliases by spelling out their /private targets.
+    """
+    absolute = os.path.abspath(os.fspath(path))
+    if sys.platform == "darwin":
+        for alias in ("/var", "/tmp"):
+            if absolute == alias or absolute.startswith(alias + "/"):
+                absolute = "/private" + absolute
+                break
+    parts = Path(absolute).parts
+    fd = os.open("/", os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        _safe_directory_metadata(fd)
+        for index, part in enumerate(parts[1:]):
+            child = os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
+                            dir_fd=fd)
+            os.close(fd)
+            fd = child
+            if not private_leaf or index != len(parts) - 2:
+                _safe_directory_metadata(fd)
+        return fd
+    except BaseException:
+        os.close(fd)
+        raise
+
+
+def _open_trusted_directory(path):
+    """Open a 0700 same-user private directory with safe ancestors and ACL."""
+    fd = _open_safe_directory_path(path, private_leaf=True)
+    try:
+        meta = os.fstat(fd)
+        require(stat.S_ISDIR(meta.st_mode) and meta.st_uid == os.getuid()
+                and stat.S_IMODE(meta.st_mode) == 0o700,
+                "private_directory_owner_or_mode_unsafe")
+        _reject_permissive_acl(fd)
+        return fd
+    except BaseException:
+        os.close(fd)
+        raise
+
+
+def private_new_directory(path):
+    """Create private 0700 directory in a safely walked parent, exclusively."""
     path = Path(path)
-    with path.open("x", encoding="utf-8") as stream:
-        json.dump(value, stream, ensure_ascii=False, indent=2, sort_keys=True)
-        stream.write("\n")
+    parent_fd = _open_safe_directory_path(path.parent)
+    try:
+        os.mkdir(path.name, mode=0o700, dir_fd=parent_fd)
+        output_fd = os.open(path.name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
+                            dir_fd=parent_fd)
+        try:
+            os.fchmod(output_fd, 0o700)
+            meta = os.fstat(output_fd)
+            require(meta.st_uid == os.getuid()
+                    and stat.S_IMODE(meta.st_mode) == 0o700,
+                    "private_directory_owner_or_mode_unsafe")
+            _reject_permissive_acl(output_fd)
+            os.fsync(output_fd)
+        finally:
+            os.close(output_fd)
+        os.fsync(parent_fd)
+    finally:
+        os.close(parent_fd)
+
+
+def exclusive_json(path, value):
+    """Create private 0600 JSON using parent dirfd, O_EXCL and NOFOLLOW."""
+    path = Path(path)
+    dirfd = _open_trusted_directory(path.parent)
+    try:
+        fd = os.open(path.name,
+                     os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                     0o600, dir_fd=dirfd)
+        with os.fdopen(fd, "w", encoding="utf-8") as stream:
+            os.fchmod(stream.fileno(), 0o600)
+            json.dump(value, stream, ensure_ascii=False, indent=2, sort_keys=True)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.fsync(dirfd)
+    finally:
+        os.close(dirfd)
 
 
 def strict_keys(value, allowed, required, name):
@@ -80,20 +214,19 @@ def positive(value, name):
 
 
 def exclusive_durable_claim(path, claim):
-    """Receipt-bound O_EXCL replay barrier. No unlock on crash or scoring error."""
+    """Durable receipt O_EXCL barrier in a trusted private ledger, no unlock."""
     path = Path(path)
-    require(path.parent.is_dir() and not path.parent.is_symlink(),
-            "claim_ledger_parent_not_trusted")
-    data = canonical(claim) + b"\n"
-    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    dirfd = _open_trusted_directory(path.parent)
     try:
+        data = canonical(claim) + b"\n"
+        fd = os.open(path.name,
+                     os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                     0o600, dir_fd=dirfd)
         with os.fdopen(fd, "wb") as stream:
+            os.fchmod(stream.fileno(), 0o600)
             stream.write(data)
             stream.flush()
             os.fsync(stream.fileno())
+        os.fsync(dirfd)
     finally:
-        dirfd = os.open(path.parent, os.O_RDONLY)
-        try:
-            os.fsync(dirfd)
-        finally:
-            os.close(dirfd)
+        os.close(dirfd)

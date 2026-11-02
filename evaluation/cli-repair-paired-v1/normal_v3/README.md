@@ -37,6 +37,20 @@ The reviewer also freezes a `review-index.json` with contract `reason-cli-normal
 python3 "$DIR/score.py" --observations /private/v3/observations --packets /private/v3/packets --gold /private/v3/gold.json --reviews /private/v3/reviews --receipt /private/v3/receipt.json --output /private/v3/first-score
 ```
 
+**Private artifact hardening (Issue #579):** New v3 collector,
+review packet and first-score output directories are created exclusively with
+same-user mode 0700, regardless of the caller's umask. V3 JSON evidence and
+receipt/first-score claims use exclusive O_NOFOLLOW/dirfd creation, 0600 mode,
+file fsync and parent directory fsync. The receipt-bound score ledger and inert
+run ledger must already be owned by the current process UID with mode exactly
+0700; permissive, symlinked or replaced paths fail closed. Input receipts,
+reviewer identities and upstream capture/source/HTTP evidence are **not** made
+trustworthy by filesystem permissions; an independent external run authority
+and cross-host receipts still block live admission. The scope is prospective
+v3 only; no historical v1/v2 files are migrated or overwritten.
+
+The private-path helpers check **every path component** via no-follow directory FDs, disallow untrusted writable ancestors, and reject macOS ACL *allow* entries (while tolerating restrictive deny entries). Native macOS root-managed `/var` and `/tmp` aliases are mapped to `/private/var` and `/private/tmp` for compatibility. They do not protect against processes already running as the same UID, external storage rollback, or forged receipt authorities. A failed file/directory fsync remains a failed operation; a partial claim is never silently retried.
+
 **All three stages use exclusive create-only output directories.** The prospective first scorer also holds a durable O_EXCL claim keyed to the receipt SHA-256 in the score-ledger directory frozen inside that receipt, rejecting another output path for the same receipt. This remains **engineering-only** until a separately authenticated receipt, authoritative ledger and real runtime/image acceptance are proven; an untrusted receipt cannot self-certify an authoritative lock. Keep private source/packet materials out of public repository and issue comments. Only status summaries and reviewed, non-secret metadata should be published.
 
 ## Immutable scoring rules

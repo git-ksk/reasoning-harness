@@ -39,7 +39,7 @@ def make_plan(folder, scenario=None):
     """One 48-job inert plan; no credentials, sockets, or actual provider calls."""
     root = Path(folder).resolve()
     ledger = root / "ledger"
-    ledger.mkdir()
+    ledger.mkdir(mode=0o700)
     receipt = {
         "purpose": offline_lane.INERT_PURPOSE,
         "model_calls_allowed": False,

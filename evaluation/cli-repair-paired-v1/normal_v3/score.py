@@ -8,6 +8,7 @@ from annotate import build_packet, read_observations, validate_gold, validate_re
 from contracts import (
     PACKET_ID, REVIEW_ID, SCORE_ID, digest, exclusive_json, keyed_digest,
     read_json, require, sha_field, strict_keys, exclusive_durable_claim,
+    private_new_directory, _open_trusted_directory,
 )
 
 
@@ -256,9 +257,10 @@ def score(observations, packets, gold_file, reviews, receipt_file, output):
     ledger_value = receipt.get("score_ledger_dir") if type(receipt) is dict else None
     require(type(ledger_value) is str, "receipt_score_ledger_missing")
     ledger = Path(ledger_value)
-    require(ledger.is_absolute() and ledger.is_dir()
-            and ledger.resolve() == ledger and not ledger.is_symlink(),
-            "receipt_score_ledger_not_canonical")
+    require(ledger.is_absolute() and ledger.resolve() == ledger
+            and not ledger.is_symlink(), "receipt_score_ledger_not_canonical")
+    ledger_fd = _open_trusted_directory(ledger)
+    __import__("os").close(ledger_fd)
     output = Path(output)
     exclusive_durable_claim(ledger / (index["receipt_sha256"] + ".first-score.claim.json"), {
         "contract": SCORE_ID, "receipt_sha256": index["receipt_sha256"],
@@ -266,7 +268,7 @@ def score(observations, packets, gold_file, reviews, receipt_file, output):
         "review_manifest_sha256": result["review_manifest_sha256"],
         "output": str(output.resolve()), "replay_allowed": False,
     })
-    output.mkdir()  # Create-only: no overwrites or relabeling.
+    private_new_directory(output)  # Private, create-only, no relabeling.
     exclusive_json(output / "first-score-started.json", {
         "receipt_sha256": index["receipt_sha256"],
         "review_manifest_sha256": result["review_manifest_sha256"],
