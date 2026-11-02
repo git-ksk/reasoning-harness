@@ -49,6 +49,8 @@ trustworthy by filesystem permissions; an independent external run authority
 and cross-host receipts still block live admission. The scope is prospective
 v3 only; no historical v1/v2 files are migrated or overwritten.
 
+The private-path helpers check **every path component** via no-follow directory FDs, disallow untrusted writable ancestors, and reject macOS ACL *allow* entries (while tolerating restrictive deny entries). Native macOS root-managed `/var` and `/tmp` aliases are mapped to `/private/var` and `/private/tmp` for compatibility. They do not protect against processes already running as the same UID, external storage rollback, or forged receipt authorities. A failed file/directory fsync remains a failed operation; a partial claim is never silently retried.
+
 **All three stages use exclusive create-only output directories.** The prospective first scorer also holds a durable O_EXCL claim keyed to the receipt SHA-256 in the score-ledger directory frozen inside that receipt, rejecting another output path for the same receipt. This remains **engineering-only** until a separately authenticated receipt, authoritative ledger and real runtime/image acceptance are proven; an untrusted receipt cannot self-certify an authoritative lock. Keep private source/packet materials out of public repository and issue comments. Only status summaries and reviewed, non-secret metadata should be published.
 
 ## Immutable scoring rules

@@ -4,6 +4,7 @@ import os
 import json
 import re
 import stat
+import sys
 from pathlib import Path
 
 PLAN_ID = "reason-cli-normal-v3-capture-manifest-v1"
@@ -45,18 +46,97 @@ def read_json(path):
     return json.loads(Path(path).read_bytes())
 
 
-def _open_trusted_directory(path):
-    """Open a 0700 same-user directory without following the final symlink."""
-    path = Path(path)
-    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+def _reject_permissive_acl(fd):
+    """Inspect the opened inode, never a second pathname, for extra ACL grants.
+
+    macOS's 0700 mode does not describe inherited/explicit NFSv4 ACL grants.
+    Restrictive deny entries (including the normal home-directory deny-delete)
+    are allowed. Any allow ACE fails closed, as effective access calculation is
+    platform- and group-membership-dependent.
+    """
+    if sys.platform == "darwin":
+        import ctypes
+        import errno
+        libc = ctypes.CDLL("/usr/lib/libSystem.B.dylib", use_errno=True)
+        libc.acl_get_fd.argtypes = [ctypes.c_int]
+        libc.acl_get_fd.restype = ctypes.c_void_p
+        libc.acl_to_text.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_ssize_t)]
+        libc.acl_to_text.restype = ctypes.c_void_p
+        libc.acl_free.argtypes = [ctypes.c_void_p]
+        libc.acl_free.restype = ctypes.c_int
+        ctypes.set_errno(0)
+        acl = libc.acl_get_fd(fd)
+        if not acl:
+            require(ctypes.get_errno() == errno.ENOENT, "private_directory_acl_check_failed")
+            return
+        try:
+            length = ctypes.c_ssize_t()
+            ptr = libc.acl_to_text(acl, ctypes.byref(length))
+            require(ptr is not None, "private_directory_acl_check_failed")
+            try:
+                text = ctypes.string_at(ptr, length.value).decode("utf-8")
+                require(":allow:" not in text.lower(), "private_directory_acl_allow_unsafe")
+            finally:
+                libc.acl_free(ptr)
+        finally:
+            libc.acl_free(acl)
+    elif hasattr(os, "listxattr"):
+        # On Linux, mode bits encode the effective POSIX ACL mask, but a
+        # default ACL can be inherited by new children. Reject extra ACLs.
+        attrs = os.listxattr(fd)
+        require(not any(x.startswith("system.posix_acl_") for x in attrs),
+                "private_directory_acl_allow_unsafe")
+
+
+def _safe_directory_metadata(fd):
+    meta = os.fstat(fd)
+    mode = meta.st_mode
+    require(stat.S_ISDIR(mode) and meta.st_uid in (0, os.getuid())
+            and (mode & 0o022 == 0 or
+                 (meta.st_uid == 0 and mode & stat.S_ISVTX != 0)),
+            "private_output_parent_untrusted")
+    _reject_permissive_acl(fd)
+
+
+def _open_safe_directory_path(path, *, private_leaf=False):
+    """Walk every component with openat/NOFOLLOW, retaining its parent FD.
+
+    A symlink hidden in a middle component must not redirect a ledger or
+    output. macOS /var and /tmp are immutable root-managed system aliases;
+    accept only these two aliases by spelling out their /private targets.
+    """
+    absolute = os.path.abspath(os.fspath(path))
+    if sys.platform == "darwin":
+        for alias in ("/var", "/tmp"):
+            if absolute == alias or absolute.startswith(alias + "/"):
+                absolute = "/private" + absolute
+                break
+    parts = Path(absolute).parts
+    fd = os.open("/", os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
     try:
-        metadata = os.fstat(fd)
-        require(
-            stat.S_ISDIR(metadata.st_mode)
-            and metadata.st_uid == os.getuid()
-            and stat.S_IMODE(metadata.st_mode) == 0o700,
-            "private_directory_owner_or_mode_unsafe",
-        )
+        _safe_directory_metadata(fd)
+        for index, part in enumerate(parts[1:]):
+            child = os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
+                            dir_fd=fd)
+            os.close(fd)
+            fd = child
+            if not private_leaf or index != len(parts) - 2:
+                _safe_directory_metadata(fd)
+        return fd
+    except BaseException:
+        os.close(fd)
+        raise
+
+
+def _open_trusted_directory(path):
+    """Open a 0700 same-user private directory with safe ancestors and ACL."""
+    fd = _open_safe_directory_path(path, private_leaf=True)
+    try:
+        meta = os.fstat(fd)
+        require(stat.S_ISDIR(meta.st_mode) and meta.st_uid == os.getuid()
+                and stat.S_IMODE(meta.st_mode) == 0o700,
+                "private_directory_owner_or_mode_unsafe")
+        _reject_permissive_acl(fd)
         return fd
     except BaseException:
         os.close(fd)
@@ -64,27 +144,20 @@ def _open_trusted_directory(path):
 
 
 def private_new_directory(path):
-    """Create exclusive 0700 evidence directory, regardless of process umask."""
+    """Create private 0700 directory in a safely walked parent, exclusively."""
     path = Path(path)
-    # Parent cannot be the final symlink; a parent writable by other users
-    # must be a sticky directory owned by root (e.g. /private/tmp).
-    parent_fd = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    parent_fd = _open_safe_directory_path(path.parent)
     try:
-        parent = os.fstat(parent_fd)
-        mode = parent.st_mode
-        require(
-            stat.S_ISDIR(mode)
-            and (
-                (parent.st_uid == os.getuid() and mode & 0o022 == 0)
-                or (parent.st_uid == 0 and mode & stat.S_ISVTX != 0)
-            ),
-            "private_output_parent_untrusted",
-        )
         os.mkdir(path.name, mode=0o700, dir_fd=parent_fd)
         output_fd = os.open(path.name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
                             dir_fd=parent_fd)
         try:
             os.fchmod(output_fd, 0o700)
+            meta = os.fstat(output_fd)
+            require(meta.st_uid == os.getuid()
+                    and stat.S_IMODE(meta.st_mode) == 0o700,
+                    "private_directory_owner_or_mode_unsafe")
+            _reject_permissive_acl(output_fd)
             os.fsync(output_fd)
         finally:
             os.close(output_fd)
