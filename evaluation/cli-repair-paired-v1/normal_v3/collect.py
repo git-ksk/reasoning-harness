@@ -296,8 +296,8 @@ def collect_row(job, root, provider, model, receipt_sha256, executor_id):
     )
     sha_field(job["frozen_request_binding_sha256"], "missing_frozen_request_binding")
     binding = keyed_digest({
-        "question": question,
-        "request": requests[0]["request"],
+        "case_id": job["case_id"], "arm": job["arm"],
+        "question": question, "request": requests[0]["request"],
     })
     require(binding == job["frozen_request_binding_sha256"],
             "unbound_model_request_hash")

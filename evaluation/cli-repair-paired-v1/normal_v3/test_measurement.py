@@ -120,6 +120,7 @@ def demo_fixture(root, *, phase=None, label="positive", text="", status="require
             "job_id": "case-01-baseline", "case_id": "case-01",
             "arm": "baseline", "question": "What is the answer?",
             "frozen_request_binding_sha256": contracts.keyed_digest({
+                "case_id": "case-01", "arm": "baseline",
                 "question": "What is the answer?", "request": events[0]["request"],
             }), "files": hashes,
         }],
@@ -575,6 +576,18 @@ class V3Measurement(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "unbound_model_request_hash"):
                 collect.collect(plan, lane, Path(d) / "obs")
 
+    def test_identical_question_cannot_relabel_case_or_arm(self):
+        for key, value in (("case_id", "case-02"), ("arm", "candidate")):
+            with self.subTest(field=key), tempfile.TemporaryDirectory() as d:
+                plan, lane, gold, receipt, job = demo_fixture(
+                    d, phase="initial_candidate"
+                )
+                manifest = collect.read_json(plan)
+                manifest["rows"][0][key] = value
+                plan.write_text(json.dumps(manifest))
+                with self.assertRaisesRegex(ValueError, "unbound_model_request_hash"):
+                    collect.collect(plan, lane, Path(d) / "obs")
+
     def test_frozen_request_binding_mandatory_and_cannot_be_relabelled(self):
         for mutation, expected in (
             (lambda row: row.pop("frozen_request_binding_sha256"),
@@ -737,7 +750,8 @@ class V3Measurement(unittest.TestCase):
                         "job_id": job_id, "case_id": cid, "arm": arm,
                         "question": question,
                         "frozen_request_binding_sha256": contracts.keyed_digest({
-                            "question": question, "request": trace["events"][0]["request"],
+                            "case_id": cid, "arm": arm, "question": question,
+                            "request": trace["events"][0]["request"],
                         }), "files": hashes,
                     })
             receipt_sha = contracts.digest(receipt.read_bytes())

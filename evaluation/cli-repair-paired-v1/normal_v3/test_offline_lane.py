@@ -128,7 +128,7 @@ def make_plan(folder, scenario=None):
             artifacts[str(fixture)] = digest_fixture(fixture)
             trace = json.loads((fixture / "trace.json").read_bytes())
             frozen_requests[jid] = keyed_digest({
-                "question": "What is the answer?",
+                "case_id": cid, "arm": arm, "question": "What is the answer?",
                 "request": next(e["request"] for e in trace["events"]
                                 if e["kind"] == "model_request"),
             })
