@@ -5,8 +5,8 @@ from pathlib import Path
 
 from contracts import (
     FILES, OBS_ID, PHASES, PLAN_ID, canonical, digest, exclusive_json,
-    keyed_digest, positive, read_json, require, safe_id, sha_field, strict_keys, unsigned,
-    private_new_directory,
+    frozen_request_digest, keyed_digest, positive, read_json, require, safe_id,
+    sha_field, strict_keys, unsigned, private_new_directory,
 )
 
 OUTPUT_CONTRACTS = frozenset((
@@ -101,6 +101,10 @@ def audit_trace(trace, events, provider, model):
         )
         key = (item["correlation_id"], item["attempt"])
         if kind == "model_request":
+            # v3 runs one CLI generation at a time; no later request may be
+            # physically sent ahead of the first frozen request.
+            require(not any(opened is False for opened in pending.values()),
+                    "overlapping_trace_model_requests")
             require(
                 item["attempt"] == last_attempt.get(item["correlation_id"], 0) + 1,
                 "noncanonical_adapter_attempt",
@@ -295,10 +299,11 @@ def collect_row(job, root, provider, model, receipt_sha256, executor_id):
         "invalid_first_model_request",
     )
     sha_field(job["frozen_request_binding_sha256"], "missing_frozen_request_binding")
-    binding = keyed_digest({
-        "case_id": job["case_id"], "arm": job["arm"],
-        "question": question, "request": requests[0]["request"],
-    })
+    binding = frozen_request_digest(
+        job_id=job_id, case_id=job["case_id"], arm=job["arm"],
+        question=question, request=requests[0]["request"],
+        provider=provider, model=model, receipt_sha256=receipt_sha256,
+    )
     require(binding == job["frozen_request_binding_sha256"],
             "unbound_model_request_hash")
     if not failed:
@@ -443,15 +448,23 @@ def collect(plan_path, lane_path, destination):
     rows = manifest["rows"]
     require(type(rows) is list and rows, "empty_capture_plan")
     seen = set()
-    captured = []
+    seen_jobs = set()
+    # Validate every manifest identity before reading captures or creating
+    # private output files: two cases must never alias the same job directory.
     for job in rows:
         strict_keys(job, {"job_id", "case_id", "arm", "question", "frozen_request_binding_sha256", "files"},
                     {"job_id", "case_id", "arm", "question", "frozen_request_binding_sha256", "files"}, "plan_job")
+        job_id = safe_id(job["job_id"], "invalid_job_id")
+        require(job_id not in seen_jobs, "duplicate_job_id")
+        seen_jobs.add(job_id)
         safe_id(job["case_id"], "bad_case")
         require(job["arm"] in ("baseline", "candidate"), "bad_arm")
         identity = (job["case_id"], job["arm"])
         require(identity not in seen, "duplicate_case_arm")
         seen.add(identity)
+        sha_field(job["frozen_request_binding_sha256"], "missing_frozen_request_binding")
+    captured = []
+    for job in rows:
         captured.append(collect_row(job, Path(lane_path), manifest["provider"], manifest["model"], manifest["receipt_sha256"], manifest["executor_id"]))
     destination = Path(destination)
     private_new_directory(destination)  # Exclusive 0700, no reused measurements

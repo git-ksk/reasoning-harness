@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 
 import offline_lane
-from contracts import digest, keyed_digest
+from contracts import digest, frozen_request_digest
 from test_measurement import demo_fixture
 
 
@@ -127,11 +127,13 @@ def make_plan(folder, scenario=None):
             # Each fixture artifact is frozen and hashed before the process.
             artifacts[str(fixture)] = digest_fixture(fixture)
             trace = json.loads((fixture / "trace.json").read_bytes())
-            frozen_requests[jid] = keyed_digest({
-                "case_id": cid, "arm": arm, "question": "What is the answer?",
-                "request": next(e["request"] for e in trace["events"]
-                                if e["kind"] == "model_request"),
-            })
+            frozen_requests[jid] = frozen_request_digest(
+                job_id=jid, case_id=cid, arm=arm, question="What is the answer?",
+                request=next(e["request"] for e in trace["events"]
+                             if e["kind"] == "model_request"),
+                provider="mistral", model="fixture-model",
+                receipt_sha256=digest(receipt_file.read_bytes()),
+            )
             jobs.append({
                 "id": jid, "arm": arm, "contract": "normal",
                 "timeout_seconds": 10, "cancel_grace_seconds": 0.3,

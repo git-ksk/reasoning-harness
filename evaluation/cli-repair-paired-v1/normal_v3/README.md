@@ -16,8 +16,15 @@ The caller must first create a new (prospective) **post-execution capture manife
 **Exact frozen first-request identity (#584):** Each prospective manifest
 row must contain a `frozen_request_binding_sha256` computed *before
 execution* as SHA-256 of canonical JSON
-`{"case_id": <frozen case id>, "arm": <frozen arm>,
-"question": <frozen question>, "request": <complete expected first CLI model request>}`.
+`{"job_id": <frozen job id>, "case_id": <frozen case id>,
+"arm": <frozen arm>, "question": <frozen question>,
+"request": <complete expected first CLI model request>,
+"provider": <frozen provider>, "model": <frozen model>,
+"receipt_sha256": <frozen receipt SHA-256>}`.
+The encoder is the shared `contracts.frozen_request_digest` helper, with
+`ensure_ascii=False`, sorted keys and compact separators; Unicode content
+is compared exactly, without normalization. The first request must also
+precede all other physical model requests (overlapping calls fail closed).
 The collector compares it to the actual first diagnostic `model_request`
 for **failed and successful** jobs; a substring match against `task` is
 not accepted. The inert scheduler similarly freezes all 48 per-job hashes in

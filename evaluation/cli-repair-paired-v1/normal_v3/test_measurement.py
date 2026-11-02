@@ -119,10 +119,11 @@ def demo_fixture(root, *, phase=None, label="positive", text="", status="require
         "rows": [{
             "job_id": "case-01-baseline", "case_id": "case-01",
             "arm": "baseline", "question": "What is the answer?",
-            "frozen_request_binding_sha256": contracts.keyed_digest({
-                "case_id": "case-01", "arm": "baseline",
-                "question": "What is the answer?", "request": events[0]["request"],
-            }), "files": hashes,
+            "frozen_request_binding_sha256": contracts.frozen_request_digest(
+                job_id="case-01-baseline", case_id="case-01", arm="baseline",
+                question="What is the answer?", request=events[0]["request"],
+                provider="mistral", model="fixture-model", receipt_sha256=receipt_sha,
+            ), "files": hashes,
         }],
     }
     plan = root / "capture-manifest.json"
@@ -749,10 +750,11 @@ class V3Measurement(unittest.TestCase):
                     capture_rows.append({
                         "job_id": job_id, "case_id": cid, "arm": arm,
                         "question": question,
-                        "frozen_request_binding_sha256": contracts.keyed_digest({
-                            "case_id": cid, "arm": arm, "question": question,
-                            "request": trace["events"][0]["request"],
-                        }), "files": hashes,
+                        "frozen_request_binding_sha256": contracts.frozen_request_digest(
+                            job_id=job_id, case_id=cid, arm=arm, question=question,
+                            request=trace["events"][0]["request"], provider="mistral",
+                            model="fixture-model", receipt_sha256=contracts.digest(receipt.read_bytes()),
+                        ), "files": hashes,
                     })
             receipt_sha = contracts.digest(receipt.read_bytes())
             manifest = {
