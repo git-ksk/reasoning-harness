@@ -1,5 +1,8 @@
 """Actual durable scheduler/subprocess integration with synthetic model data."""
 import json
+import os
+from concurrent.futures import ThreadPoolExecutor
+import subprocess
 import shutil
 import sys
 import tempfile
@@ -63,7 +66,7 @@ def make_plan(folder, scenario=None):
             folder.mkdir()
             plan, lane, gold, rec, source = demo_fixture(
                 folder,
-                phase=("initial_candidate" if typ in ("invalid", "inner_retry")
+                phase=("initial_candidate" if typ in ("invalid", "inner_retry", "later_429")
                        else "final_render" if typ == "rendered_decode"
                        else None),
                 text=("Unsafe unknown assertion" if typ in ("visible", "rendered_decode") else ""),
@@ -78,6 +81,9 @@ def make_plan(folder, scenario=None):
                 http[0]["output_tokens"] = None
                 (fixture / "http.json").write_text(json.dumps(http))
             if typ == "inner_retry":
+                cli = json.loads((fixture / "cli.json").read_bytes())
+                cli["result"]["partial_diagnostics"]["usage"]["run"]["model_calls"] = 1
+                (fixture / "cli.json").write_text(json.dumps(cli))
                 http = json.loads((fixture / "http.json").read_bytes())
                 http[1] = {**http[1], "logical_attempt": 1}
                 (fixture / "http.json").write_text(json.dumps(http))
@@ -87,6 +93,15 @@ def make_plan(folder, scenario=None):
                 trace["events"][1]["response"]["usage"] = {
                     "input_tokens": 4, "output_tokens": 6, "total_tokens": 10
                 }
+                (fixture / "trace.json").write_text(json.dumps(trace))
+            if typ == "later_429":
+                http = json.loads((fixture / "http.json").read_bytes())
+                http[1]["http_status"] = 429
+                (fixture / "http.json").write_text(json.dumps(http))
+                trace = json.loads((fixture / "trace.json").read_bytes())
+                trace["events"][3].pop("response")
+                trace["events"][3]["kind"] = "model_failure"
+                trace["events"][3]["failure_class"] = "rate_limit"
                 (fixture / "trace.json").write_text(json.dumps(trace))
             if typ == "quota":
                 cli = json.loads((fixture / "cli.json").read_bytes())
@@ -119,14 +134,14 @@ def make_plan(folder, scenario=None):
                     "max_output_tokens_per_generation": 10,
                     "max_attempts_per_generation": 1,
                 },
-                "argv": [sys.executable, str(script), "--provider", "mistral",
-                         "--model", "fixture-model", "--fixture", str(fixture),
-                         "--inert-no-network"],
+                "argv": [sys.executable, "-I", "-S", str(script),
+                         "--provider", "mistral", "--model", "fixture-model",
+                         "--fixture", str(fixture), "--inert-no-network"],
             })
     # Hash directories cannot be used by legacy plan validator which expects
     # ordinary files: use a sealed manifest file per fixture instead.
     for job in jobs:
-        path = Path(job["argv"][7])
+        path = Path(job["argv"][9])
         manifest = path.parent / "fixture-hashes.json"
         manifest.write_text(json.dumps({
             name: digest((path / name).read_bytes())
@@ -134,7 +149,7 @@ def make_plan(folder, scenario=None):
         }, sort_keys=True))
         artifacts.pop(str(path))
         artifacts[str(manifest)] = digest(manifest.read_bytes())
-        job["argv"][7] = str(manifest)
+        job["argv"][9] = str(manifest)
     plan = {
         "schema": "engine07-operational-plan-v1",
         "purpose": offline_lane.INERT_PURPOSE,
@@ -157,6 +172,104 @@ def digest_fixture(path):
 
 
 class OfflineV3LaneTests(unittest.TestCase):
+    def test_inherited_python_usercustomize_cannot_execute_in_pinned_child(self):
+        # Startup hooks are not part of the SHA-pinned fixture code. An
+        # inherited PYTHONUSERBASE must not activate arbitrary usercustomize.
+        with tempfile.TemporaryDirectory() as t:
+            root = Path(t)
+            env = {**os.environ, "PYTHONUSERBASE": str(root / "user-base")}
+            site = subprocess.check_output(
+                [sys.executable, "-c", "import site;print(site.getusersitepackages())"],
+                env=env, text=True,
+            ).strip()
+            Path(site).mkdir(parents=True)
+            marker = root / "unexpected-child-startup"
+            (Path(site) / "usercustomize.py").write_text(
+                "from pathlib import Path\n"
+                + f"Path({str(marker)!r}).write_text('executed')\n"
+            )
+            plan, receipt, script, ledger = make_plan(root)
+            plan["token_budget"] = 40
+            previous = os.environ.get("PYTHONUSERBASE")
+            try:
+                os.environ["PYTHONUSERBASE"] = str(root / "user-base")
+                offline_lane.OfflineV3Runner(
+                    plan, root / "lane", receipt, str(script)
+                ).run()
+            finally:
+                if previous is None:
+                    os.environ.pop("PYTHONUSERBASE", None)
+                else:
+                    os.environ["PYTHONUSERBASE"] = previous
+            self.assertFalse(marker.exists(), "unfrozen Python startup code executed")
+
+    def test_local_decode_then_later_429_stops_with_known_usage(self):
+        # First 200 model content is unparseable, but subsequent 429
+        # dominates; no later subprocess may be admitted.
+        with tempfile.TemporaryDirectory() as t:
+            plan, receipt, script, ledger = make_plan(
+                t, {"synthetic-00-baseline": "later_429"}
+            )
+            root = Path(t) / "lane"
+            report = offline_lane.OfflineV3Runner(
+                plan, root, receipt, str(script)
+            ).run()
+            self.assertEqual(len(list(root.glob("*/spawn.json"))), 1)
+            self.assertEqual(report["known_provider_attempts"], 2)
+            self.assertEqual(report["unknown_usage_rows"], 0)
+            self.assertNotEqual(report["rows"][0].get("v3_state"), "quality_invalid")
+            self.assertIsNotNone(report["latch"])
+            self.assertTrue(all(not x["admission"]["allowed"] for x in report["rows"][1:]))
+            self.assertTrue((root / "state.json").is_file())
+            self.assertTrue((root / "summary.json").is_file())
+
+    def test_same_receipt_concurrent_processes_admit_one_child(self):
+        with tempfile.TemporaryDirectory() as t:
+            root = Path(t)
+            plan, receipt, script, ledger = make_plan(t)
+            plan["token_budget"] = 40
+            plan_file = root / "run-plan.json"
+            plan_file.write_text(json.dumps(plan))
+            lane_script = str(Path(offline_lane.__file__).resolve())
+
+            def attempt(i):
+                return subprocess.run(
+                    [sys.executable, lane_script,
+                     "--plan", str(plan_file), "--receipt", str(receipt),
+                     "--fixture-executable", str(script),
+                     "--output", str(root / f"concurrent-{i}")],
+                    capture_output=True, text=True,
+                    env={"PATH": "/usr/bin:/bin"}, timeout=30,
+                )
+
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                results = list(pool.map(attempt, range(2)))
+            # Both processes exit nonzero: one was rejected by O_EXCL, the
+            # other persisted a deterministic budget suppression after row 1.
+            self.assertTrue(all(r.returncode != 0 for r in results))
+            spawned = list(root.glob("concurrent-*/*/spawn.json"))
+            self.assertEqual(len(spawned), 1)
+            self.assertEqual(len(list(ledger.glob("*.claim.json"))), 1)
+            states = list(root.glob("concurrent-*/state.json"))
+            self.assertEqual(len(states), 1)
+            self.assertEqual(json.loads(states[0].read_text())["known_provider_attempts"], 1)
+
+    def test_two_generate_calls_exceed_generation_cap_and_suppress_children(self):
+        # One adapter correlation c1 can perform two distinct generate()
+        # calls (attempts 1 and 2). max_generations=1 must stop even
+        # though provider_attempts and tokens were completely accounted.
+        with tempfile.TemporaryDirectory() as t:
+            plan, receipt, script, ledger = make_plan(
+                t, {"synthetic-00-baseline": "invalid"}
+            )
+            plan["jobs"][0]["budget"]["max_generations"] = 1
+            report = offline_lane.OfflineV3Runner(
+                plan, Path(t) / "lane", receipt, str(script)).run()
+            self.assertIsNotNone(report["latch"])
+            self.assertEqual(len(list((Path(t) / "lane").glob("*/spawn.json"))), 1)
+            self.assertTrue(all(not r["admission"]["allowed"] for r in report["rows"][1:]))
+            self.assertEqual(report["known_provider_attempts"], 2)
+
     def test_full48_inert_all_measured_including_invalid_and_new_run_forbidden(self):
         with tempfile.TemporaryDirectory() as t:
             # Third job initial-candidate decode, with 2 HTTP200 attempts and
@@ -222,7 +335,7 @@ class OfflineV3LaneTests(unittest.TestCase):
     def test_full_cohort_token_reserve_stops_before_next_spawn(self):
         with tempfile.TemporaryDirectory() as t:
             plan, receipt, script, ledger = make_plan(t)
-            plan["token_budget"] = 40  # Only one 40-token reserve fits.
+            plan["token_budget"] = 40  # Only one 80-token reserve fits.
             report = offline_lane.OfflineV3Runner(
                 plan, Path(t) / "lane", receipt, str(script)).run()
             self.assertEqual(len(list((Path(t) / "lane").glob("*/spawn.json"))), 1)
@@ -234,7 +347,7 @@ class OfflineV3LaneTests(unittest.TestCase):
         for sabotage in ("changed_capture", "missing_child_cli"):
             with self.subTest(sabotage=sabotage), tempfile.TemporaryDirectory() as t:
                 plan, receipt, script, ledger = make_plan(t)
-                first_fixture_manifest = Path(plan["jobs"][0]["argv"][7])
+                first_fixture_manifest = Path(plan["jobs"][0]["argv"][9])
                 folder = first_fixture_manifest.parent / "snapshot"
                 if sabotage == "changed_capture":
                     (folder / "capture.json").write_text('{"malicious":"changed"}')
@@ -262,7 +375,7 @@ class OfflineV3LaneTests(unittest.TestCase):
                     malicious, Path(t) / "lane", receipt, str(script))
             self.assertEqual(list(ledger.glob("*")), [])
             malicious = json.loads(json.dumps(plan))
-            malicious["jobs"][0]["argv"][5] = "paid-model"
+            malicious["jobs"][0]["argv"][7] = "paid-model"
             with self.assertRaisesRegex(ValueError, "inert_fixture_command_mismatch"):
                 offline_lane.OfflineV3Runner(
                     malicious, Path(t) / "lane", receipt, str(script))

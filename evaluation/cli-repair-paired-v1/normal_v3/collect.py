@@ -78,10 +78,18 @@ def audit_trace(trace, events, provider, model):
     pending = {}
     completed = []
     failures = []
+    last_attempt = {}
+    allowed_event_kinds = frozenset((
+        "model_request", "model_response", "model_failure",
+        "candidate_state", "grounding_state", "evidence_admission",
+        "final_render_state", "finalization_state", "acquisition_coverage",
+        "acquisition_coverage_progress", "answer_safety_state",
+    ))
     for index, item in enumerate(ordered):
         require(type(item) is dict and item.get("sequence") == index,
                 "noncanonical_trace_sequence")
         kind = item.get("kind")
+        require(kind in allowed_event_kinds, "unknown_trace_event_kind")
         if kind not in ("model_request", "model_response", "model_failure"):
             continue
         require(
@@ -92,6 +100,11 @@ def audit_trace(trace, events, provider, model):
         )
         key = (item["correlation_id"], item["attempt"])
         if kind == "model_request":
+            require(
+                item["attempt"] == last_attempt.get(item["correlation_id"], 0) + 1,
+                "noncanonical_adapter_attempt",
+            )
+            last_attempt[item["correlation_id"]] = item["attempt"]
             require(key not in pending, "duplicate_trace_request")
             pending[key] = False
         else:
@@ -104,12 +117,16 @@ def audit_trace(trace, events, provider, model):
     require(pending and all(pending.values()), "pending_model_call")
     grouped = {}
     group_order = []
+    prior_key = None
     for http in events:
         key = (http["correlation_id"], http["logical_attempt"])
+        require(key == prior_key or key not in grouped,
+                "noncontiguous_http_attempt_group")
         if key not in grouped:
             grouped[key] = []
             group_order.append(key)
         grouped[key].append(http)
+        prior_key = key
     require([key for key, _ in completed] == group_order,
             "trace_http_logical_order_mismatch")
     for key, item in completed:
@@ -184,6 +201,12 @@ def audit_http(events, trace, result, provider, model):
     for field, actual in bound.items():
         require(type(usage.get(field)) is int and usage[field] == actual, "cli_http_usage_mismatch")
     require(type(usage.get("model_calls")) is int and usage["model_calls"] > 0, "missing_logical_calls")
+    require(
+        usage["model_calls"] == sum(
+            item.get("kind") == "model_request" for item in trace["events"]
+        ),
+        "cli_trace_model_calls_mismatch",
+    )
     # Traces are retained byte-for-byte. Phase 3 must additionally establish
     # correlation with the provider's audit journal before ANY continuation.
     require(trace.get("completion_status") in ("completed", "partial"), "invalid_trace_completion")

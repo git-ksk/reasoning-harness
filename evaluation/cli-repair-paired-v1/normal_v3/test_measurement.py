@@ -35,7 +35,7 @@ def demo_fixture(root, *, phase=None, label="positive", text="", status="require
         failure["model_output_diagnostic"] = diagnostic
     attempt_count = 2 if phase else 1
     usage = {
-        "tracked_from_session_start": True, "model_calls": 1,
+        "tracked_from_session_start": True, "model_calls": attempt_count,
         "provider_attempts": attempt_count,
         "input_tokens": attempt_count * 2,
         "output_tokens": attempt_count * 3,
@@ -425,6 +425,83 @@ class V3Measurement(unittest.TestCase):
             self.assertEqual(row["measurement_state"], "operational_stop")
             self.assertEqual(row["accounted_usage"]["provider_attempts"], 2)
 
+    def test_interleaved_http_attempts_rejected_with_full_usage(self):
+        # A1 B1 A2 is not an ordered per-call provider journal.
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(
+                d, phase="initial_candidate"
+            )
+            http = collect.read_json(job / "http.json")
+            trace = collect.read_json(job / "trace.json")
+            cli = collect.read_json(job / "cli.json")
+            again = {**http[0], "request_id": "call-reordered"}
+            http.append(again)
+            for field, increment in (
+                ("input_tokens", 2), ("output_tokens", 3),
+                ("total_tokens", 5), ("provider_attempts", 1)
+            ):
+                cli["result"]["partial_diagnostics"]["usage"]["run"][field] += increment
+            trace["events"][1]["response"]["provider_attempts"] = 2
+            trace["events"][1]["response"]["usage"] = {
+                "input_tokens": 4, "output_tokens": 6, "total_tokens": 10
+            }
+            self.rewrite(plan, job, "http.json", http)
+            self.rewrite(plan, job, "trace.json", trace)
+            self.rewrite(plan, job, "cli.json", cli)
+            with self.assertRaisesRegex(ValueError, "noncontiguous_http_attempt_group"):
+                collect.collect(plan, lane, Path(d) / "obs")
+
+    def test_unknown_trace_event_kind_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(
+                d, phase="initial_candidate"
+            )
+            trace = collect.read_json(job / "trace.json")
+            trace["events"].append({
+                "sequence": len(trace["events"]),
+                "kind": "unrecognized_operational_failure",
+            })
+            self.rewrite(plan, job, "trace.json", trace)
+            with self.assertRaisesRegex(ValueError, "unknown_trace_event_kind"):
+                collect.collect(plan, lane, Path(d) / "obs")
+
+    def test_nonmonotonic_adapter_attempt_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(
+                d, phase="initial_candidate"
+            )
+            trace = collect.read_json(job / "trace.json")
+            http = collect.read_json(job / "http.json")
+            trace["events"][2]["attempt"] = 3
+            trace["events"][3]["attempt"] = 3
+            http[1]["logical_attempt"] = 3
+            self.rewrite(plan, job, "trace.json", trace)
+            self.rewrite(plan, job, "http.json", http)
+            with self.assertRaisesRegex(ValueError, "noncanonical_adapter_attempt"):
+                collect.collect(plan, lane, Path(d) / "obs")
+
+    def test_trace_logical_call_count_must_match_cli_usage(self):
+        # Two distinct correlations represent two generations, not one.
+        # Exact token/HTTP totals alone cannot authenticate model_calls=1.
+        with tempfile.TemporaryDirectory() as d:
+            plan, lane, gold, receipt, job = demo_fixture(
+                d, phase="initial_candidate"
+            )
+            http = collect.read_json(job / "http.json")
+            trace = collect.read_json(job / "trace.json")
+            http[1]["correlation_id"] = "c2"
+            http[1]["logical_attempt"] = 1
+            for event in trace["events"][2:]:
+                event["correlation_id"] = "c2"
+                event["attempt"] = 1
+            cli = collect.read_json(job / "cli.json")
+            cli["result"]["partial_diagnostics"]["usage"]["run"]["model_calls"] = 1
+            self.rewrite(plan, job, "cli.json", cli)
+            self.rewrite(plan, job, "http.json", http)
+            self.rewrite(plan, job, "trace.json", trace)
+            with self.assertRaisesRegex(ValueError, "cli_trace_model_calls_mismatch"):
+                collect.collect(plan, lane, Path(d) / "obs")
+
     def test_two_http_attempts_under_single_model_response_accounted(self):
         with tempfile.TemporaryDirectory() as d:
             plan, lane, gold, receipt, job = demo_fixture(
@@ -441,6 +518,9 @@ class V3Measurement(unittest.TestCase):
                 "input_tokens": 4, "output_tokens": 6, "total_tokens": 10
             }
             trace["events"] = trace["events"][:2]
+            cli = collect.read_json(job / "cli.json")
+            cli["result"]["partial_diagnostics"]["usage"]["run"]["model_calls"] = 1
+            self.rewrite(plan, job, "cli.json", cli)
             self.rewrite(plan, job, "http.json", http)
             self.rewrite(plan, job, "trace.json", trace)
             row = collect.collect(plan, lane, Path(d) / "obs")[0]

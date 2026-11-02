@@ -53,7 +53,7 @@ python3 "$DIR/score.py" --observations /private/v3/observations --packets /priva
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s evaluation/cli-repair-paired-v1/normal_v3 -p 'test_*.py' -v
 ```
 
-The **20-test** suite exercises all six typed phases, provider protocol discrimination, fallback recovery, 429/non-2xx operational stop, unknown/changed usage, missing trace, partial-success trace refusal, forged terminal display, wrong-request case identity, full-display factual-byte review, citation gaps across multiple assertions, changed source/citation bytes, case/gold binding, invalid negative/positive scoring, unsafe priority, 24-case denominator, receipt/packet/review tampering, and same-output-directory first-score replay rejection. These tests are **synthetic only** and cannot substitute for the independent real-runtime acceptance gate.
+The baseline **20-test** stage-② suite exercises all six typed phases, provider protocol discrimination, fallback recovery, 429/non-2xx operational stop, unknown/changed usage, missing trace, partial-success trace refusal, forged terminal display, wrong-request case identity, full-display factual-byte review, citation gaps across multiple assertions, changed source/citation bytes, case/gold binding, invalid negative/positive scoring, unsafe priority, 24-case denominator, receipt/packet/review tampering, and same-output-directory first-score replay rejection. These tests are **synthetic only** and cannot substitute for the independent real-runtime acceptance gate.
 
 ## Stage ③: prospective dry-run scheduler verification
 
@@ -65,8 +65,9 @@ ordinary-CLI nested-error bridge. Its only execution contract is
 cases × alternating 2 Engine arms, frozen fixture-file SHA256 entries, frozen
 Python executable, a synthetic receipt that explicitly disallows real model
 calls, and an exclusive filesystem receipt-bound run ledger. No live
-credential callback is ever called; known credential-like environment fields
-are stripped from the child.
+credential callback is ever called; the full inherited environment
+is removed before the child starts. The fixed fixture invocation uses Python
+`-I -S` so unfrozen user-site startup hooks cannot run.
 
 The offline subprocess fixture emits precomputed fake CLI JSON and trace plus
 fake normalized HTTP records. **Fake HTTP200s are NOT provider communications,
@@ -98,6 +99,38 @@ The test suite exercises alternate-path refusal, but a future stage-④
 independent verifier must validate these trust anchors. Historical v1/v2
 receipts/score outputs are not migrated or changed.
 
+### Independent adversarial review hardening (PR #578)
+
+The v3 collector now reconciles CLI `model_calls` with each actual
+`model_request` event (including multiple `generate()` attempts on one
+correlation), checks contiguous chronological HTTP attempt groups, rejects
+unknown trace kinds, and requires sequential per-adapter attempt identifiers.
+A response's `provider_attempts` remains a count of actual HTTP calls,
+including internal provider retries; it is **not** interchangeable with CLI
+`model_calls` or with the number of correlation IDs.
+
+The synthetic runner now invokes only the byte-pinned fixture executable via
+`python -I -S` and provides an **empty child environment**. Previously,
+inherited `PYTHONUSERBASE` could cause arbitrary `usercustomize.py` execution
+before the pinned fixture code. The offline-only counterexample uses a local
+marker file and no network call.
+
+The independent tests also cover a local decode followed by HTTP 429, two
+simultaneous OS processes competing for the exact same receipt, a strict
+per-generation attempt cap, and suppressing all subsequent spawns on error.
+The offline fixture's legitimate two `generate()` calls per adapter are
+both counted toward `max_generations`; permitted provider-internal retries
+are separately subject to `max_attempts_per_generation`.
+
+**Remaining limitations:** The ledger is only a local filesystem O_EXCL
+barrier. It is not a trusted, remote, distributed receipt authority; directory
+ownership, permissions, tampering, time-of-check/time-of-use replacement,
+process SIGKILL/crash descendant cleanup, and provider-side billed usage
+reconciliation need independently admitted host controls before live use.
+A local synthetic trace and its matching HTTP/CLI data cannot establish
+that a provider really returned a response or that all user-visible output
+was captured. No real provider credentials or requests are authorized.
+
 Run all inert integration and existing scorer tests on the checked-out source:
 
 ```bash
@@ -105,7 +138,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover \
   -s evaluation/cli-repair-paired-v1/normal_v3 -p 'test_*.py' -v
 ```
 
-The suite includes a full 48-job actual subprocess-runner pass in which a
+The 39-test independently extended suite includes a full 48-job actual subprocess-runner pass in which a
 metered fake initial JSON error continues; quota, unreviewed display,
 unknown usage, unapproved internal provider retry, corrupted capture, and
 aggregate reservation breach all suppress the following 47 jobs. No new

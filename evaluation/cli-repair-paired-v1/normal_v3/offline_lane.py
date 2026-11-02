@@ -64,14 +64,14 @@ def verify_inert_plan(plan, receipt, fixture_executable):
                     and job.get("contract") == "normal"
                     and job.get("arm") == arm, "inert_pair_order_mismatch")
             argv = job.get("argv")
-            require(type(argv) is list and len(argv) == 9
-                    and argv[:7] == [sys.executable, fixture_executable,
+            require(type(argv) is list and len(argv) == 11
+                    and argv[:9] == [sys.executable, "-I", "-S", fixture_executable,
                                      "--provider", "mistral", "--model",
                                      "fixture-model", "--fixture"]
-                    and argv[7].startswith("/")
-                    and argv[8] == "--inert-no-network"
-                    and argv[7] in plan["artifacts"], "inert_fixture_command_mismatch")
-            seen_fixture.add(argv[7])
+                    and argv[9].startswith("/")
+                    and argv[10] == "--inert-no-network"
+                    and argv[9] in plan["artifacts"], "inert_fixture_command_mismatch")
+            seen_fixture.add(argv[9])
     require(len(seen_fixture) == 48, "inert_duplicate_fixture")
     require(set(plan["artifacts"]) ==
             {sys.executable, fixture_executable} | seen_fixture,
@@ -107,14 +107,11 @@ class OfflineV3Runner(scheduler.OperationalRunner):
         })
 
     def process(self, job, env, directory):
-        # Never inherit potentially live provider authorization into a fixture.
-        env = {k: v for k, v in env.items() if not any(
-            part in k.upper() for part in (
-                "API_KEY", "TOKEN", "CREDENTIAL", "AUTHORIZATION",
-                "SECRET", "PASSWORD", "PYTHONPATH", "PYTHONHOME",
-                "PYTHONSTARTUP", "PYTHONINSPECT",
-            )
-        )}
+        # Only synthetic CLI input is needed. Do not propagate ANY host
+        # environment variable, including unrecognized key names, proxy
+        # settings, Python user-site paths or dynamic-loader injection.
+        # The pinned Python command also requires -I -S: isolated, no site.
+        env = {}
         outcome, diagnostics = super().process(job, env, directory)
         if diagnostics["termination"] is not None:
             self.guard.latch = self.guard.latch or "inert_process_terminated"
@@ -122,7 +119,7 @@ class OfflineV3Runner(scheduler.OperationalRunner):
         received = json.loads((directory / "stdout.json").read_bytes())
         require(received == json.loads((directory / "cli.json").read_bytes()),
                 "fixture_stdout_cli_mismatch")
-        fixture_path = Path(job["argv"][7])
+        fixture_path = Path(job["argv"][9])
         require(digest(fixture_path.read_bytes())
                 == self.plan["artifacts"][str(fixture_path)],
                 "fixture_changed_during_run")
@@ -156,6 +153,10 @@ class OfflineV3Runner(scheduler.OperationalRunner):
             return Outcome(FailureClass.UNKNOWN, measured["total_tokens"],
                            measured["provider_attempts"]), diagnostics
         http_attempts = json.loads((directory / "http.json").read_bytes())
+        # Every trace model_request is one CLI generation. A correlation
+        # spans repeated generate() calls on the same adapter; its attempt
+        # field distinguishes generations. Provider-internal retries are
+        # counted as physical HTTP requests within that (correlation, attempt).
         per_generation = {}
         for item in http_attempts:
             key = (item["correlation_id"], item["logical_attempt"])
