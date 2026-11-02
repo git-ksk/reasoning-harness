@@ -6,6 +6,7 @@ from pathlib import Path
 from contracts import (
     FILES, OBS_ID, PHASES, PLAN_ID, canonical, digest, exclusive_json,
     keyed_digest, positive, read_json, require, safe_id, sha_field, strict_keys, unsigned,
+    private_new_directory,
 )
 
 OUTPUT_CONTRACTS = frozenset((
@@ -444,7 +445,7 @@ def collect(plan_path, lane_path, destination):
         seen.add(identity)
         captured.append(collect_row(job, Path(lane_path), manifest["provider"], manifest["model"], manifest["receipt_sha256"], manifest["executor_id"]))
     destination = Path(destination)
-    destination.mkdir()  # Exclusive: no overwrites or reused measurements
+    private_new_directory(destination)  # Exclusive 0700, no reused measurements
     for row in captured:
         exclusive_json(destination / (row["job_id"] + ".json"), row)
     exclusive_json(destination / "index.json", {

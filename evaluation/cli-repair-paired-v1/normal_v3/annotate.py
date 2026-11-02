@@ -6,6 +6,7 @@ from pathlib import Path
 from contracts import (
     OBS_ID, PACKET_ID, REVIEW_ID, canonical, digest, exclusive_json,
     keyed_digest, read_json, require, safe_id, sha_field, strict_keys, unsigned,
+    private_new_directory,
 )
 
 
@@ -101,7 +102,7 @@ def make_packets(observations_root, gold_file, output):
         require(observation["question"] == case["question"], "gold_case_question_mismatch")
         packets.append(build_packet(observation, obs_hash, case))
     output = Path(output)
-    output.mkdir()
+    private_new_directory(output)
     for item in packets:
         exclusive_json(output / (item["job_id"] + ".review-packet.json"), item)
     exclusive_json(output / "packet-index.json", {

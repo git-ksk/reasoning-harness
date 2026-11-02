@@ -3,6 +3,7 @@ import hashlib
 import os
 import json
 import re
+import stat
 from pathlib import Path
 
 PLAN_ID = "reason-cli-normal-v3-capture-manifest-v1"
@@ -44,11 +45,71 @@ def read_json(path):
     return json.loads(Path(path).read_bytes())
 
 
-def exclusive_json(path, value):
+def _open_trusted_directory(path):
+    """Open a 0700 same-user directory without following the final symlink."""
     path = Path(path)
-    with path.open("x", encoding="utf-8") as stream:
-        json.dump(value, stream, ensure_ascii=False, indent=2, sort_keys=True)
-        stream.write("\n")
+    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        metadata = os.fstat(fd)
+        require(
+            stat.S_ISDIR(metadata.st_mode)
+            and metadata.st_uid == os.getuid()
+            and stat.S_IMODE(metadata.st_mode) == 0o700,
+            "private_directory_owner_or_mode_unsafe",
+        )
+        return fd
+    except BaseException:
+        os.close(fd)
+        raise
+
+
+def private_new_directory(path):
+    """Create exclusive 0700 evidence directory, regardless of process umask."""
+    path = Path(path)
+    # Parent cannot be the final symlink; a parent writable by other users
+    # must be a sticky directory owned by root (e.g. /private/tmp).
+    parent_fd = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        parent = os.fstat(parent_fd)
+        mode = parent.st_mode
+        require(
+            stat.S_ISDIR(mode)
+            and (
+                (parent.st_uid == os.getuid() and mode & 0o022 == 0)
+                or (parent.st_uid == 0 and mode & stat.S_ISVTX != 0)
+            ),
+            "private_output_parent_untrusted",
+        )
+        os.mkdir(path.name, mode=0o700, dir_fd=parent_fd)
+        output_fd = os.open(path.name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
+                            dir_fd=parent_fd)
+        try:
+            os.fchmod(output_fd, 0o700)
+            os.fsync(output_fd)
+        finally:
+            os.close(output_fd)
+        os.fsync(parent_fd)
+    finally:
+        os.close(parent_fd)
+
+
+def exclusive_json(path, value):
+    """Create private 0600 JSON using parent dirfd, O_EXCL and NOFOLLOW."""
+    path = Path(path)
+    dirfd = _open_trusted_directory(path.parent)
+    try:
+        fd = os.open(path.name,
+                     os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                     0o600, dir_fd=dirfd)
+        with os.fdopen(fd, "w", encoding="utf-8") as stream:
+            os.fchmod(stream.fileno(), 0o600)
+            json.dump(value, stream, ensure_ascii=False, indent=2, sort_keys=True)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.fsync(dirfd)
+    finally:
+        os.close(dirfd)
 
 
 def strict_keys(value, allowed, required, name):
@@ -80,20 +141,19 @@ def positive(value, name):
 
 
 def exclusive_durable_claim(path, claim):
-    """Receipt-bound O_EXCL replay barrier. No unlock on crash or scoring error."""
+    """Durable receipt O_EXCL barrier in a trusted private ledger, no unlock."""
     path = Path(path)
-    require(path.parent.is_dir() and not path.parent.is_symlink(),
-            "claim_ledger_parent_not_trusted")
-    data = canonical(claim) + b"\n"
-    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    dirfd = _open_trusted_directory(path.parent)
     try:
+        data = canonical(claim) + b"\n"
+        fd = os.open(path.name,
+                     os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                     0o600, dir_fd=dirfd)
         with os.fdopen(fd, "wb") as stream:
+            os.fchmod(stream.fileno(), 0o600)
             stream.write(data)
             stream.flush()
             os.fsync(stream.fileno())
+        os.fsync(dirfd)
     finally:
-        dirfd = os.open(path.parent, os.O_RDONLY)
-        try:
-            os.fsync(dirfd)
-        finally:
-            os.close(dirfd)
+        os.close(dirfd)

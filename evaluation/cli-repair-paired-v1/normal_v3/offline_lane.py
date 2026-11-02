@@ -23,7 +23,7 @@ from guard import Outcome, FailureClass
 import current_bridge
 scheduler.outcome_from_normal = current_bridge.outcome_from_normal
 from collect import collect_row
-from contracts import FILES, digest, require, safe_id
+from contracts import FILES, digest, require, safe_id, exclusive_durable_claim, _open_trusted_directory
 
 INERT_PURPOSE = "SYNTHETIC_V3_HTTP_ZERO_CONTROL_NOT_MODEL_EXECUTION"
 # Independently inspected Python fixture: reads five local JSON files, prints
@@ -91,11 +91,13 @@ class OfflineV3Runner(scheduler.OperationalRunner):
         ledger = Path(receipt["ledger_dir"])
         require(ledger.is_absolute() and ledger.is_dir()
                 and ledger.resolve() == ledger, "inert_ledger_identity")
+        ledger_fd = _open_trusted_directory(ledger)
+        __import__("os").close(ledger_fd)
         self.receipt_sha256 = plan["receipt_sha256"]
         claim = ledger / (self.receipt_sha256 + ".claim.json")
         # This is an O_EXCL durable claim before any credential retrieval,
         # even when an alternate output directory is requested.
-        scheduler.write_new(claim, {
+        exclusive_durable_claim(claim, {
             "receipt_sha256": self.receipt_sha256,
             "run_dir": str(Path(output).resolve()),
             "purpose": INERT_PURPOSE, "replay_allowed": False,

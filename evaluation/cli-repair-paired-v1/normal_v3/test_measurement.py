@@ -21,7 +21,7 @@ def demo_fixture(root, *, phase=None, label="positive", text="", status="require
     job.mkdir(parents=True)
     receipt = root / "receipt.json"
     score_ledger = (root / "score-ledger").resolve()
-    score_ledger.mkdir()
+    score_ledger.mkdir(mode=0o700)
     receipt.write_text(json.dumps({
         "purpose": "synthetic-v3-HTTP-zero",
         "score_ledger_dir": str(score_ledger),
@@ -652,7 +652,7 @@ class V3Measurement(unittest.TestCase):
             common_lane.mkdir()
             receipt = root / "full-receipt.json"
             score_ledger = root / "score-ledger"
-            score_ledger.mkdir()
+            score_ledger.mkdir(mode=0o700)
             receipt.write_text(json.dumps({
                 "purpose": "synthetic-v3-HTTP-zero",
                 "score_ledger_dir": str(score_ledger.resolve()),
