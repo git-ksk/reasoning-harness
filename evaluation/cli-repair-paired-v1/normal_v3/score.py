@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Exclusive prospective v3 score; preserves historical v1/v2 first scores."""
 import argparse
+import json
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -166,22 +167,28 @@ def report(rows, gold):
 
 
 def score(observations, packets, gold_file, reviews, receipt_file, output,
-          *, authoritative_score=None, offline_synthetic_only=False):
+          *, authoritative_score=None, offline_synthetic_only=False,
+          review_authentication=None):
     observations = Path(observations)
     packets = Path(packets)
     reviews = Path(reviews)
     gold_file = Path(gold_file)
     receipt_file = Path(receipt_file)
-    gold = read_json(gold_file)
+    gold_bytes = gold_file.read_bytes()
+    receipt_bytes = receipt_file.read_bytes()
+    index_bytes = (observations / "index.json").read_bytes()
+    packet_index_bytes = (packets / "packet-index.json").read_bytes()
+    manifest_bytes = (reviews / "review-index.json").read_bytes()
+    gold = json.loads(gold_bytes)
     by_case = validate_gold(gold)
-    index, rows = read_observations(observations)
-    require(digest(receipt_file.read_bytes()) == index["receipt_sha256"] == gold["receipt_sha256"],
+    index, rows = read_observations(observations, index_bytes=index_bytes)
+    require(digest(receipt_bytes) == index["receipt_sha256"] == gold["receipt_sha256"],
             "receipt_byte_mismatch")
-    packet_index = read_json(packets / "packet-index.json")
+    packet_index = json.loads(packet_index_bytes)
     require(
         packet_index["contract"] == PACKET_ID
-        and packet_index["observation_index_sha256"] == digest((observations / "index.json").read_bytes())
-        and packet_index["gold_sha256"] == digest(gold_file.read_bytes())
+        and packet_index["observation_index_sha256"] == digest(index_bytes)
+        and packet_index["gold_sha256"] == digest(gold_bytes)
         and packet_index["receipt_sha256"] == index["receipt_sha256"]
         and packet_index["executor_id"] == index["executor_id"]
         and packet_index.get("semantic_review") == "PENDING",
@@ -195,8 +202,9 @@ def score(observations, packets, gold_file, reviews, receipt_file, output,
     for packet in packet_index["rows"]:
         sha_field(packet["sha256"], "invalid_packet_digest")
         path = packets / (packet["job_id"] + ".review-packet.json")
-        require(digest(path.read_bytes()) == packet["sha256"], "modified_review_packet")
-        p = read_json(path)
+        packet_bytes = path.read_bytes()
+        require(digest(packet_bytes) == packet["sha256"], "modified_review_packet")
+        p = json.loads(packet_bytes)
         observation, obs_sha = rows[packet["job_id"]]
         require(observation["question"] == by_case[observation["case_id"]]["question"],
                 "scoring_question_mismatch")
@@ -204,7 +212,7 @@ def score(observations, packets, gold_file, reviews, receipt_file, output,
             p == build_packet(observation, obs_sha, by_case[observation["case_id"]]),
             "packet_observation_or_gold_mismatch",
         )
-    manifest = read_json(reviews / "review-index.json")
+    manifest = json.loads(manifest_bytes)
     strict_keys(
         manifest,
         {"contract", "receipt_sha256", "observation_index_sha256", "packet_index_sha256",
@@ -217,28 +225,30 @@ def score(observations, packets, gold_file, reviews, receipt_file, output,
         manifest["contract"] == "reason-cli-normal-v3-review-index-v1"
         and manifest["receipt_sha256"] == index["receipt_sha256"]
         and manifest["executor_id"] == index["executor_id"]
-        and manifest["observation_index_sha256"] == digest((observations / "index.json").read_bytes())
-        and manifest["packet_index_sha256"] == digest((packets / "packet-index.json").read_bytes()),
+        and manifest["observation_index_sha256"] == digest(index_bytes)
+        and manifest["packet_index_sha256"] == digest(packet_index_bytes),
         "review_freeze_binding_mismatch",
     )
     freeze = manifest["reviews"]
     require(type(freeze) is dict and set(freeze) == set(rows), "missing_or_extra_review_records")
-    graded = []
+    graded, reviewers = [], []
     for job_id, (observation, obs_sha) in rows.items():
         filename = reviews / (job_id + ".review.json")
         require(filename.is_file() and not filename.is_symlink(), "missing_review_file")
         sha_field(freeze[job_id], "invalid_review_sha")
-        require(digest(filename.read_bytes()) == freeze[job_id], "modified_review_file")
-        review = read_json(filename)
+        review_bytes = filename.read_bytes()
+        require(digest(review_bytes) == freeze[job_id], "modified_review_file")
+        review = json.loads(review_bytes)
         gold_case = by_case[observation["case_id"]]
         validate_review(review, observation, obs_sha, gold_case, manifest["executor_id"])
+        reviewers.append(review["reviewer"])
         graded.append(score_case(observation, review, gold_case))
     result = report(graded, by_case)
     result.update({
         "receipt_sha256": index["receipt_sha256"],
         "capture_manifest_sha256": index["capture_manifest_sha256"],
-        "observation_index_sha256": digest((observations / "index.json").read_bytes()),
-        "review_manifest_sha256": digest((reviews / "review-index.json").read_bytes()),
+        "observation_index_sha256": digest(index_bytes),
+        "review_manifest_sha256": digest(manifest_bytes),
         "human_attestation": False,
         "first_score_only": True,
         "quality_go": False,  # Independent runtime, non-regression, efficiency, fresh accuracy separate.
@@ -252,12 +262,13 @@ def score(observations, packets, gold_file, reviews, receipt_file, output,
         ],
     })
     if authoritative_score is None:
-        # No external authority means no real first-score claim. The only
+        # No operator-owned authority means no real first-score claim. The only
         # permitted exception is an explicit, synthetic-only local diagnostic.
         # A normal CLI invocation must fail closed even when no caller injects
         # the ScoringContext. This cannot authorize real model evaluation.
-        require(offline_synthetic_only, "external_score_authority_required")
-        synthetic_receipt = read_json(receipt_file)
+        require(offline_synthetic_only, "operator_score_authority_required")
+        require(review_authentication is None, "synthetic_score_cannot_claim_review_authentication")
+        synthetic_receipt = json.loads(receipt_bytes)
         require(type(synthetic_receipt) is dict
                 and synthetic_receipt.get("purpose") == "synthetic-v3-HTTP-zero",
                 "offline_synthetic_receipt_required")
@@ -265,18 +276,40 @@ def score(observations, packets, gold_file, reviews, receipt_file, output,
         require(not offline_synthetic_only, "conflicting_score_authority_modes")
     if authoritative_score is not None:
         # Deployment code, not caller/receipt JSON, must supply this context.
-        # This remote create-only first-score claim is the authoritative gate;
-        # the existing private filesystem claim remains defense in depth.
+        # The fixed local-profile create-only claim is the normal authority;
+        # the receipt's output-local claim remains defense in depth. An
+        # optional distributed store must be selected by the operator explicitly.
         from authority import ScoringContext
         require(isinstance(authoritative_score, ScoringContext),
                 "trusted_scoring_context_required")
+        from review_auth import ReviewAuthentication
+        require(type(review_authentication) is ReviewAuthentication,
+                "authenticated_reviewer_required")
+        require(index["executor_id"] == authoritative_score.binding.executor_id,
+                "authenticated_executor_mismatch")
+        result["review_authentication"] = review_authentication.verify(
+            evaluation_id=authoritative_score.evaluation_id,
+            executor_id=authoritative_score.binding.executor_id,
+            evaluator_id=authoritative_score.binding.evaluator_id,
+            bindings={
+                "receipt_sha256": result["receipt_sha256"],
+                "observation_index_sha256": result["observation_index_sha256"],
+                "packet_index_sha256": digest(packet_index_bytes),
+                "gold_sha256": digest(gold_bytes),
+                "review_manifest_sha256": result["review_manifest_sha256"],
+                "execution_binding_sha256": keyed_digest(vars(authoritative_score.binding)),
+                "plan_sha256": keyed_digest(authoritative_score.plan),
+            }, reviewers=reviewers,
+        )
+        result["review_authentication_sha256"] = keyed_digest(result["review_authentication"])
         authoritative_score.authority.claim_score(
             authoritative_score.evaluation_id,
             authoritative_score.plan,
-            receipt_file.read_bytes(),
+            receipt_bytes,
             authoritative_score.binding,
             observation_index_sha256=result["observation_index_sha256"],
             review_manifest_sha256=result["review_manifest_sha256"],
+            review_authentication_sha256=result["review_authentication_sha256"],
             observation_hashes={
                 jid: digest(canonical(observation))
                 for jid, (observation, _hash) in rows.items()
@@ -285,7 +318,7 @@ def score(observations, packets, gold_file, reviews, receipt_file, output,
     # An output-folder-only lock can be bypassed by changing --output. A
     # genuine receipt must irrevocably freeze its one durable score-ledger
     # directory. This gate is also used for synthetic offline evidence.
-    receipt = read_json(receipt_file)
+    receipt = json.loads(receipt_bytes)
     ledger_value = receipt.get("score_ledger_dir") if type(receipt) is dict else None
     require(type(ledger_value) is str, "receipt_score_ledger_missing")
     ledger = Path(ledger_value)
@@ -298,6 +331,7 @@ def score(observations, packets, gold_file, reviews, receipt_file, output,
         "contract": SCORE_ID, "receipt_sha256": index["receipt_sha256"],
         "observation_index_sha256": result["observation_index_sha256"],
         "review_manifest_sha256": result["review_manifest_sha256"],
+        "review_authentication_sha256": result.get("review_authentication_sha256"),
         "output": str(output.resolve()), "replay_allowed": False,
     })
     private_new_directory(output)  # Private, create-only, no relabeling.

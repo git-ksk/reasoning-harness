@@ -1,0 +1,69 @@
+{
+  "contract": "reason-cli-normal-v3-local-review-acceptance-v1",
+  "date_jst": "2026-11-03",
+  "reviewed_candidate": "8832c74e307117fd0d0c3b2443cba65e55e45d68",
+  "review_scope": "implementing-agent adversarial re-review; not independently authenticated reviewer acceptance",
+  "initial_result": "FAIL",
+  "initial_failure_count": 2,
+  "initial_raw_log_sha256": "110b031c7db6acbe265ec415dd778d45dc599e591b49e7fc2c5f5e973a8ec8a6",
+  "initial_sanitized_log_sha256": "55d0dad68f5edd813d4cd74cb7e76e3cb1a3a8ea1d1d116485e03958ef54f898",
+  "findings": [
+    {
+      "id": "identity-public-key-forgery",
+      "priority": "P1",
+      "precondition": "operator policy enrolled a weak identity public key",
+      "original": "unsigned constant signature accepted",
+      "corrected": "canonical prime-subgroup key checks and libsodium signature verification reject"
+    },
+    {
+      "id": "verifier-check-exec-path-race",
+      "priority": "P2",
+      "precondition": "verifier pathname could be replaced between digest read and execution",
+      "original": "replacement executable exit0 accepted a forged signature",
+      "corrected": "no caller-selected executable or subprocess verification path exists"
+    }
+  ],
+  "local_acceptance": "PASS_WITH_EXTERNAL_GATES_OPEN",
+  "tests": {
+    "python3.13": {
+      "tests": 118,
+      "failures": 0,
+      "errors": 0,
+      "log_sha256": "063679fbd25fd1c4be79f5e2ecebeeb588e7aa5389d0ea5365650cb723c735a2"
+    },
+    "python3.14": {
+      "tests": 118,
+      "failures": 0,
+      "errors": 0,
+      "log_sha256": "4d0aff976a2ea22ecb49fe588eb3fac72b03fd2598c1e48a96bc59294ce45cbf"
+    }
+  },
+  "dependency_tamper": {
+    "returncode": 1,
+    "hash_mismatch_rejected": true
+  },
+  "source_sha256": {
+    "evaluation/cli-repair-paired-v1/normal_v3/review_auth.py": "5c3f6007645c2cf8686a52002c7b200439f0299c256dbcf62c76a04bae76fca8",
+    "evaluation/cli-repair-paired-v1/normal_v3/review-requirements.txt": "58a1106e3b3669fca7031641376d4aaca382ba3408cac0757226e990bf85ee55",
+    "evaluation/cli-repair-paired-v1/normal_v3/test_acceptance_583.py": "88ee5ce637022341b93833386eb8779c95ef44eca9fa76e4e797ce8c1c8f2605",
+    "evaluation/cli-repair-paired-v1/normal_v3/test_review_auth_583.py": "ba9cbc967b2e30208c8e6004e271de701a8ac84bded350846463b58a34242a23",
+    "evaluation/cli-repair-paired-v1/normal_v3/score.py": "26e77673ffcb8c8b53fa22683a0e3f21f4725a6ed0ba301e44bf3f719fa812b9",
+    "evaluation/cli-repair-paired-v1/normal_v3/authority.py": "2e1dad827fa22cfa40273685955e58e89ffdbcb483758b09e84ab89334b5eded",
+    "evaluation/cli-repair-paired-v1/normal_v3/annotate.py": "6aa621ddf057384b5be53f5d090c920eb250c0df9de3256d698bc2deb90d1f89",
+    "evaluation/cli-repair-paired-v1/normal_v3/test_measurement.py": "239fb32128abc54260984a656b647400727b9d3f7e92b313acba7f3cfdc6a786",
+    ".github/workflows/ci.yml": "a16233e1cb308d971895f3b8619067c7aa2a410f9bed9160af2b2c69cb5603be"
+  },
+  "model_api_requests": 0,
+  "real_gcs_requests": 0,
+  "real_identity_enrollment": false,
+  "production_go": false,
+  "issue_583_closed": false,
+  "remaining": [
+    "independently authenticated source reviewer",
+    "trusted real reviewer enrollment and custody",
+    "580 real GCS IAM two-host and crash descendant evidence",
+    "581 trusted HTTP/billing journal",
+    "582 actual display/source/image pre-advance admission"
+  ],
+  "github_ci": "verify separately at the exact PR head; not inferred from local PASS"
+}

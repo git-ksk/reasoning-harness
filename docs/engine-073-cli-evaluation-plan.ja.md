@@ -1,5 +1,10 @@
 # 通常CLI中心の評価計画 — 2026-10-26
 
+**2026-11-03 現行方針:** [Macでのローカル実行・評価](local-execution-policy.ja.md)を基本にする。
+固定されたローカル台帳とネイティブ実行bundleで検証する。GCS・VM・KMS/IAM・複数ホスト・
+Docker imageはローカル評価の前提にしない。会計・安全性・実表示/元資料・レビュー・初回採点の
+既存条件は維持する。以下の過去計画/結果のクラウド前提は現行profileの必須条件ではない。
+
 **2026-10-31の次工程:** 通常v2実行は不正なモデル本文によって2完了/1失敗/45抑止で停止し、全量F1は未測定。[結果と独立RCA](../evaluation/cli-normal-real24-development-v2-results/README.md)を固定した。[次期測定契約](cli-model-output-measurement.md)に従い、モデル本文失敗の型付き診断と品質invalid集計を先に接続する。旧結果を変更せず、新しい独立runtime受入・receiptの後に通常48件を実測する。
 
 日本語 | [English](engine-073-cli-evaluation-plan.md)

@@ -86,7 +86,19 @@ impl ModelAdapter for DiagnosticModelAdapter<'_> {
                 );
             }
 
-            let result = self.inner.generate(request).await;
+            let raw = serde_json::to_value(&request).expect("model request must serialize");
+            let raw = serde_json::to_vec(&raw).expect("model request bytes must serialize");
+            let context = reasoning_harness_providers::http_observation::HttpObservationContext {
+                correlation_id: self.correlation_id.clone(),
+                logical_attempt: attempt,
+                request_sha256: reasoning_harness_providers::http_observation::sha256(&raw),
+            };
+            let result =
+                reasoning_harness_providers::http_observation::with_http_observation_context(
+                    context,
+                    self.inner.generate(request),
+                )
+                .await;
             {
                 let mut recorder = self
                     .recorder

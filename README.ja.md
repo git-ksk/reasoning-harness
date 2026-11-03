@@ -6,6 +6,8 @@
 
 Reasoning Harnessは、AIの出力をエビデンスと検証の境界で包むruntimeです。人が直接使うCLIが **`reason`**。AIは回答候補を作りますが、どの事実をgrounded（根拠確認済み）として出せるか、どこを条件付きにするか、何を`unknown`のまま残すかはHarness側が決めます。
 
+**Coreと通常CLIは利用者の端末でローカル実行します。** モデル生成には選択したprovider APIを使えますが、Harness用のGCS・VM・KMSを用意する必要はありません。開発・評価も[ローカル実行方針](docs/local-execution-policy.ja.md)を基本にします。
+
 > **AIはcandidate（回答候補）を作る役であって、正しさを決めるauthority（権限）ではありません。**
 
 ```text

@@ -1,3 +1,18 @@
+# Current native/local authority — Issue #580
+
+2026-11-03 user direction: Reasoning Harness runs locally. The current
+implementation and acceptance are [LocalAtomicStore](LOCAL_AUTHORITY.md) and
+[the local execution policy](../../../docs/local-execution-policy.ja.md).
+GCS, VM, KMS/IAM, remote two-host evidence and Docker are optional future
+extensions, not prerequisites for this Mac/native profile. Keep local replay,
+accounting, native-runtime/source and real review acceptance intact.
+
+The original external-backend prototype below is historical context. Its
+cloud-specific gates do not define the current local-run acceptance scope.
+
+<details>
+<summary>Historical external-backend prototype and its original limitations</summary>
+
 # Prospective v3 external receipt/run authority — Issue #580
 
 **Status: offline implementation and mock-remote acceptance only. Not independently
@@ -78,6 +93,10 @@ matches **each exact canonical observation hash and the exact 48-job order**
 to the scoring inputs. The scorer supplies observation hashes in the ordered
 observation index's insertion order; merely matching an unordered set is
 insufficient.
+The prospective [#583 review verifier](REVIEW_AUTH.md) now additionally requires
+an operator-enrolled Ed25519 signer and freezes the exact review authentication
+receipt hash in the remote/local first-score claims. This is locally tested
+with ephemeral synthetic keys, not independently admitted real enrollment.
 Only then is `claims/<evaluation_id>/first-score.json` exclusively created,
 binding the observation index and review manifest to the original evaluator.
 Even a later local write failure cannot retry first-score. The original
@@ -156,3 +175,5 @@ storage/IAM configuration.
 - Counterexamples reproduced missing stable cohort deduplication and accepted
   noncanonical run/completion evidence; both are now rejected. Local scoring
   without authenticated authority is disabled except explicit synthetic mode.
+
+</details>

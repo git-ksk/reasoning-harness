@@ -6,6 +6,8 @@
 
 Reasoning Harness is an evidence-grounded AI runtime with a native CLI called **`reason`**. The model proposes an answer; the Harness decides which factual claims are actually supported, which need qualification, and which must remain unknown.
 
+**Core and the ordinary CLI execute locally on your machine.** Generation may use your chosen provider API; a Harness-hosted GCS/VM/KMS backend is not required. Development and evaluation follow the [local execution policy (Japanese)](docs/local-execution-policy.ja.md), with a [native local evaluation authority](evaluation/cli-repair-paired-v1/normal_v3/LOCAL_AUTHORITY.md).
+
 > **The model is a candidate generator, not an authority.**
 
 ```text

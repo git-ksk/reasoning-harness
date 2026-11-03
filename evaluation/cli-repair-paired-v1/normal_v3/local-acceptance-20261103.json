@@ -1,0 +1,53 @@
+{
+  "contract": "reason-cli-normal-v3-native-local-acceptance-v1",
+  "date_jst": "2026-11-03",
+  "scope": "single-host native Mac; implementing-agent source review and local controls",
+  "baseline_commit": "c0fd6bd61c2ebee97955823147ba133fb28daadb",
+  "tests": {
+    "python3.13": {
+      "tests": 134,
+      "failures": 0,
+      "log_sha256": "bbcf0e4a7db15512f03e21c96565a56aace7dab720aeb9edc52b74155f1868d0"
+    },
+    "python3.14": {
+      "tests": 134,
+      "failures": 0,
+      "log_sha256": "4cb1582c89169b06d1a8a9ed111e594d6989b94891809cc82c6d68fc5da1a169"
+    }
+  },
+  "source_sha256": {
+    "evaluation/cli-repair-paired-v1/normal_v3/local_store.py": "4cd04446af45e74ef6f54edf0ee1b4ccb98f31fc28d6de4a1bb6774c32625c54",
+    "evaluation/cli-repair-paired-v1/normal_v3/test_local_store.py": "7b215bd1e79dba107a1d8c22e584fff9f0220e03ed7870bc9a12eaf853d83725",
+    "evaluation/cli-repair-paired-v1/normal_v3/authority.py": "df1ac98722ffe95afe98d2a8e4869f4e45b11551aecaf80a6fdb9a4dd2b41c94",
+    "evaluation/cli-repair-paired-v1/normal_v3/score.py": "d24165be5cc1fbd5bcd4c02311113bb6605de4fffed6e8b8be6dca49d36e5880",
+    "evaluation/cli-repair-paired-v1/normal_v3/test_measurement.py": "d04ae18cb225fb9d19a0de5abd3919e99ed7610271e324a5b7e546cfde705dd5",
+    "evaluation/cli-repair-paired-v1/normal_v3/review_auth.py": "5c3f6007645c2cf8686a52002c7b200439f0299c256dbcf62c76a04bae76fca8",
+    "evaluation/cli-repair-paired-v1/normal_v3/contracts.py": "fc196b02767a57510f3862d2addd34d25c8c60a7fe7468bf8f993e270b407479",
+    "evaluation/cli-repair-paired-v1/normal_v3/review-requirements.txt": "58a1106e3b3669fca7031641376d4aaca382ba3408cac0757226e990bf85ee55"
+  },
+  "native_cli": {
+    "build": "cargo run --offline --locked -p reasoning-harness-cli --bin reason -- --help",
+    "cli_binary_sha256": "8b13c489dfe8673c00bae0b3065a10570aca8ad88d7fa14a75fbc782fb505ad3",
+    "artifact_sha256": "239b632ded1ada3bba8b030847835e91ef2de12a00bde3629e135c890c7165df",
+    "offline_run_verdict": "unknown",
+    "offline_artifact_valid": true
+  },
+  "model_api_calls": 0,
+  "cloud_resource_operations": 0,
+  "gcs_sdk_required": false,
+  "new_real_f1": null,
+  "quality_go": false,
+  "remaining": [
+    "trusted native transport/HTTP usage recording (#581)",
+    "full actual display/source/native bundle and pre-advance checks (#582)",
+    "actual enrolled semantic reviewer decision (#583)",
+    "local cancellation/unknown descendant accounting (#540)"
+  ],
+  "not_claimed": [
+    "hostile same-UID/root tamper resistance",
+    "physical power-loss/host-loss recovery",
+    "distributed cross-host locking",
+    "real independent human acceptance",
+    "production release"
+  ]
+}

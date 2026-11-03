@@ -36,8 +36,11 @@ def validate_gold(gold):
     return result
 
 
-def read_observations(root):
-    index = read_json(root / "index.json")
+def read_observations(root, *, index_bytes=None):
+    # A scorer hashes and parses one byte snapshot, never two reads of a
+    # potentially changing index across authentication and semantic grading.
+    index = (__import__("json").loads(index_bytes) if index_bytes is not None
+             else read_json(root / "index.json"))
     require(index["contract"] == OBS_ID and index.get("continuation_authorized") is False,
             "unrecognized_observation_index")
     sha_field(index["receipt_sha256"], "unbound_observation_receipt")

@@ -306,6 +306,7 @@ class AuthorityTests(unittest.TestCase):
         self.all_48(self.start(store))
         service = authority.TrustedAuthority(store)
         args = dict(observation_index_sha256="1"*64, review_manifest_sha256="2"*64,
+                    review_authentication_sha256="5"*64,
                     observation_hashes={j["id"]: digest(canonical({"id": j["id"]}))
                                         for j in self.plan["jobs"]})
         service.claim_score("synthetic-run-580", self.plan, self.local_receipt,
@@ -319,6 +320,7 @@ class AuthorityTests(unittest.TestCase):
         claim = json.loads(store.read(authority._key(
             "synthetic-run-580", "first-score")))
         self.assertFalse(claim["rescore_allowed"])
+        self.assertEqual(claim["review_authentication_sha256"], "5"*64)
 
     def test_first_score_requires_all_48_authoritative_observations(self):
         store, _ = self.fixture()

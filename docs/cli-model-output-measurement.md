@@ -1,6 +1,19 @@
 # Prospective ordinary-CLI model-output measurement
 
+Current scope: [Mac/native local execution](local-execution-policy.ja.md).
+Use a fixed private local authority and native source/runtime manifests.
+GCS, VM, IAM/KMS, remote two-host controls and Docker are optional extensions.
+Existing HTTP/usage, actual display/source, signed review and first-score
+requirements remain in force.
+
 Tracked in [Issue574](https://github.com/git-ksk/reasoning-harness/issues/574). Declared 2026-10-31, before any v3 model execution. This policy applies only to a new separately frozen profile. Historical runs, inputs, annotations, first scores, receipts and tags remain immutable. See the [stopped v2 evidence](../evaluation/cli-normal-real24-development-v2-results/README.md).
+
+2026-11-03 development: [#583 authenticated review](../evaluation/cli-repair-paired-v1/normal_v3/REVIEW_AUTH.md)
+adds a separately operator-enrolled Ed25519 policy and signed review freeze to
+the #580 scorer path. Local synthetic signatures and 48-row authority integration
+do not establish real reviewer enrollment, source/image/runtime acceptance or
+provider provenance. #580–#583 production gates remain open; no new live run,
+first real score, release or CLI adoption is admitted by this implementation.
 
 The ordinary CLI is evaluated on the answer a user receives. A fully accounted model response that fails local strict decoding is an observed quality event, distinct from a transport or accounting failure. Add private typed origin and phase diagnostics only where the adapter returned successfully and local model-response parsing failed. Phases cover initial candidate, regeneration, investigation plan/intent/action and final rendering. Request construction, provider envelopes, authorization and policy rejections are not model-output errors. A later budget, unknown-usage or transport failure must override and clear any permissive diagnostic.
 

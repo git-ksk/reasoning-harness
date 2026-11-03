@@ -1,17 +1,33 @@
 # Prospective ordinary-CLI v3 collector / annotator / scorer (#574)
 
-**#580 authority extension:** See [AUTHORITY.md](AUTHORITY.md) for the
-new separately operator-selected conditional-create remote receipt authority,
-48-job reserve/inflight/observed ledger, and once-only first-score claim
-bound to full observation hashes. This is a **mock-tested, synthetic-only**
-integration; no external IAM/retention, real multi-host/SIGKILL, provider-side
-billing, runtime/source/image or independent reviewer gate has been approved.
-The original CLI scorer remains not externally admitted by default.
+**#580 local authority:** [LocalAtomicStore](LOCAL_AUTHORITY.md) uses an
+operator-selected private filesystem profile on the same Mac/host. It persists
+48-job reserve/inflight/observed records and a once-only first-score claim
+bound to full observation hashes. Native-runtime, actual provider accounting,
+display/source safety and real semantic-review acceptance remain separate.
+Earlier cloud-specific prototype notes are retained in [AUTHORITY.md](AUTHORITY.md).
 
 
 **Status: code/fixture implementation only; not a runtime admission, scoring acceptance, or permission to call a model.** This code is based on PR #576's private typed CLI diagnostics. It must be reviewed and tested independently before merging. The old v1/v2 raw, receipt, tag, annotation and first scores remain immutable.
 
-This module is deliberately separate from the historical `collect.py`, `score_development_first.py` and frozen v1/v2 operational bridge. It is **not connected to the live scheduler**. That work belongs to the next #574 implementation stage, together with independent actual-runtime and image admission.
+**Current policy (2026-11-03): [Mac/local execution](../../../docs/local-execution-policy.ja.md).**
+Use the [fixed private local authority](LOCAL_AUTHORITY.md). Core/ordinary CLI
+and local acceptance require no GCS, VM, IAM/KMS or Docker. Native execution
+still freezes source/runtime artifacts and retains accounting, safety,
+semantic-review and first-score gates.
+
+Prospective extensions: [#580 authority history](AUTHORITY.md) and
+[#583 authenticated review](REVIEW_AUTH.md) add operator-injected trust roots.
+Real scoring now requires both `ScoringContext` and `ReviewAuthentication`;
+self-asserted reviewer IDs cannot authorize the first score. Local reviewer
+enrollment, native-runtime and provider-journal acceptance remain pending. The stage
+counts and local-only limitations below describe the earlier stage snapshots.
+The #583 acceptance correction requires the hashed wheel-only
+[`review-requirements.txt`](review-requirements.txt) in the test/runtime virtual
+environment. See [the current 134-test Mac acceptance record](local-acceptance-20261103.md)
+and the preserved [earlier 118-test signature record](acceptance-20261103.md).
+
+This module is separate from the historical `collect.py`, `score_development_first.py` and frozen v1/v2 bridge. The [native Mistral HTTP journal](NATIVE_HTTP.md) now connects the real CLI transport and trace to fixed local authority records, with actual loopback subprocess controls. The complete admitted live scheduler is still pending: #574/#582 require native runtime/source review, full display/source capture and pre-advance safety. No Docker image or cloud infrastructure is required by the native profile.
 
 ## Inputs and data provenance
 
@@ -68,7 +84,7 @@ An **independent reviewer** must inspect the original full-source context and co
 
 The independently authenticated receipt must bind a canonical absolute `score_ledger_dir` ahead of the prospective first-score; do not reuse a historical receipt or casually redirect the ledger.
 
-The reviewer also freezes a `review-index.json` with contract `reason-cli-normal-v3-review-index-v1`, exact receipt hash, observation index hash, packet index hash, the *original* executor ID, and `reviews: {job_id: sha256(review_file_bytes)}`. This freezing/independence must be externally established by the upcoming runtime admission; a self-declared Boolean is not an independent attestation.
+The reviewer also freezes a `review-index.json` with contract `reason-cli-normal-v3-review-index-v1`, exact receipt hash, observation index hash, packet index hash, the *original* executor ID, and `reviews: {job_id: sha256(review_file_bytes)}`. The enrolled reviewer signature and operator-owned native profile must bind this freeze to the actual run; a self-declared Boolean does not establish independent review.
 
 ```bash
 python3 "$DIR/score.py" --observations /private/v3/observations --packets /private/v3/packets --gold /private/v3/gold.json --reviews /private/v3/reviews --receipt /private/v3/receipt.json --output /private/v3/first-score
@@ -82,13 +98,15 @@ file fsync and parent directory fsync. The receipt-bound score ledger and inert
 run ledger must already be owned by the current process UID with mode exactly
 0700; permissive, symlinked or replaced paths fail closed. Input receipts,
 reviewer identities and upstream capture/source/HTTP evidence are **not** made
-trustworthy by filesystem permissions; an independent external run authority
-and cross-host receipts still block live admission. The scope is prospective
+trustworthy by filesystem permissions alone. The current native profile uses a
+fixed operator-owned local authority plus actual HTTP/source/display capture
+and enrolled reviewer verification; cross-host/cloud deployment is not required.
+The scope is prospective
 v3 only; no historical v1/v2 files are migrated or overwritten.
 
 The private-path helpers check **every path component** via no-follow directory FDs, disallow untrusted writable ancestors, and reject macOS ACL *allow* entries (while tolerating restrictive deny entries). Native macOS root-managed `/var` and `/tmp` aliases are mapped to `/private/var` and `/private/tmp` for compatibility. They do not protect against processes already running as the same UID, external storage rollback, or forged receipt authorities. A failed file/directory fsync remains a failed operation; a partial claim is never silently retried.
 
-**All three stages use exclusive create-only output directories.** The prospective first scorer also holds a durable O_EXCL claim keyed to the receipt SHA-256 in the score-ledger directory frozen inside that receipt, rejecting another output path for the same receipt. This remains **engineering-only** until a separately authenticated receipt, authoritative ledger and real runtime/image acceptance are proven; an untrusted receipt cannot self-certify an authoritative lock. Keep private source/packet materials out of public repository and issue comments. Only status summaries and reviewed, non-secret metadata should be published.
+**All three stages use exclusive create-only output directories.** The prospective first scorer also holds a durable O_EXCL claim keyed to the receipt SHA-256 in the score-ledger directory frozen inside that receipt, rejecting another output path for the same receipt. This remains **engineering-only** until a separately authenticated receipt, authoritative local ledger and native-runtime/source/HTTP acceptance are proven; an untrusted receipt cannot self-certify an authoritative lock. Keep private source/packet materials out of public repository and issue comments. Only status summaries and reviewed, non-secret metadata should be published.
 
 ## Immutable scoring rules
 
@@ -96,7 +114,7 @@ The private-path helpers check **every path component** via no-follow directory 
 - A fully observed terminal invalid of a **positive** case contributes case FN and misses every required claim group. A **negative** terminal invalid is an error/invalid, **not TN** or correct abstention. The invalid rate uses the fixed 24-case denominator, and counts are also grouped by typed origin/phase/failure class.
 - A recovered canonical/fallback answer with a typed intermediate decode error can earn credit **only via the independent semantic review**. A failed/empty output cannot earn correct-withhold or source/claim credit. A displayed unsafe assertion overrides invalid: negative FP or positive FN, plus hard safety violation.
 - The report distinguishes TP/FP/FN/TN, case/claim P/R/F1, invalid counts/rates, recovered-local-decode rates/classes, **valid answers versus valid finalizations**, task success, **per-annotated-factual-assertion** citation coverage (including exposed facts in invalid/unsafe outputs), citation fidelity and hard safety violations. A terminal invalid blocks semantic gate even when F1 stays 1.0. Baseline and candidate are independently reported. Semantic thresholds are case **and** claim F1 ≥ 0.90, precision ≥ 0.95, recall ≥ 0.85, citation fidelity/coverage = 1, hard safety violations = 0, invalid = 0.
-- **`quality_go` is always false in this stage.** Source/image/runtime admission, durable 48-job scheduler controls, fresh receipt/tag, Mistral evaluation, non-regression/efficiency and new independent accuracy remain separate gates. No Google/Groq model calls.
+- **`quality_go` is always false in this stage.** Source/native-runtime admission, durable 48-job scheduler controls, fresh receipt/tag, Mistral evaluation, non-regression/efficiency and new independent accuracy remain separate gates. No Google/Groq model calls.
 
 ## Offline controls
 
@@ -136,7 +154,7 @@ The code does not relax frozen real 48-job budgets, retry/pacing/schema, or
 run credentials. It **does not authorize** the paid-model adapter or an
 unadmitted image; wiring a genuine provider journal, stage-③ real-execution
 pre-advance attestation with trusted signatures, complete full-display safety
-validation, authoritative receipt/run identity and independent source/image
+validation, authoritative receipt/run identity and independent source/native-runtime
 acceptance remains a separate blocker before live use. The synthetic O_EXCL
 ledger is a replay regression control, not an external distributed lock.
 
@@ -173,14 +191,11 @@ The offline fixture's legitimate two `generate()` calls per adapter are
 both counted toward `max_generations`; permitted provider-internal retries
 are separately subject to `max_attempts_per_generation`.
 
-**Remaining limitations:** The ledger is only a local filesystem O_EXCL
-barrier. It is not a trusted, remote, distributed receipt authority; directory
-ownership, permissions, tampering, time-of-check/time-of-use replacement,
-process SIGKILL/crash descendant cleanup, and provider-side billed usage
-reconciliation need independently admitted host controls before live use.
-A local synthetic trace and its matching HTTP/CLI data cannot establish
-that a provider really returned a response or that all user-visible output
-was captured. No real provider credentials or requests are authorized.
+**Current local limits:** A fixed operator-owned local authority is the native
+profile. Its same-host process/role/replay checks do not claim hostile same-UID
+or physical-host-loss protection. Actual HTTP/usage, full display/source and
+native-runtime checks plus enrolled semantic review remain before a model run.
+Shared/cloud authority and separate-host evidence are optional extensions.
 
 Run all inert integration and existing scorer tests on the checked-out source:
 

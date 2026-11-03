@@ -1,9 +1,9 @@
-"""#580: prospective v3 external run/first-score authority.
+"""#580: prospective v3 operator-owned run/first-score authority.
 
-Only an independently operator-provisioned object store is trusted. This module
-never reads a backend/ledger URI from an evaluation receipt and never authorizes
-a real provider call. Storage IAM, retention, runner isolation, HTTP evidence and
-semantic admission are separate externally verified deployment gates.
+The normal single-host backend is LocalAtomicStore. A shared/cloud backend is
+an explicit optional extension. This module never selects storage from receipt
+data and never authorizes a provider call. Native-runtime, HTTP/accounting and
+semantic-review acceptance remain separate from durable local claims.
 """
 import json
 import re
@@ -182,7 +182,7 @@ def validate_frozen_receipt(receipt, plan, local_receipt, *,
 
 
 class GCSAtomicStore:
-    """GCS strong-consistency object store, bound to an OPERATOR-selected bucket.
+    """Optional distributed extension; NOT required for Core/CLI/local evaluation.
 
     The operator must separately attest IAM: publisher writes immutable receipts;
     executor can READ receipts and CREATE claim objects only, never update/delete
@@ -227,7 +227,10 @@ class GCSAtomicStore:
 
 @dataclass(frozen=True)
 class AuthorityBinding:
-    """External identities measured by separately admitted source/image tools."""
+    """Frozen execution artifacts. A native profile pins a native bundle hash
+    in the legacy image_sha256 field; it does not require a container image.
+    Historical receipts retain their original artifact meaning.
+    """
     source_sha256: str
     image_sha256: str
     cli_build_sha256: str
@@ -238,7 +241,9 @@ class AuthorityBinding:
 
 @dataclass(frozen=True)
 class ScoringContext:
-    """Trusted, operator-injected context; never derived from a receipt URI."""
+    """Operator-injected context, normally a fixed local profile on one host.
+    Never infer the authority from an output directory or receipt URI.
+    """
     authority: object
     evaluation_id: str
     plan: dict
@@ -246,11 +251,11 @@ class ScoringContext:
 
 
 class TrustedAuthority:
-    """No host-local fallback, no receipt-selected storage, no implicit retry."""
+    """Explicit fixed storage, no receipt-selected location or implicit retry."""
     def __init__(self, store):
         check(callable(getattr(store, "read", None))
               and callable(getattr(store, "create", None)),
-              "external_atomic_store_required")
+              "operator_owned_atomic_store_required")
         self._store = store
 
     def _receipt(self, evaluation_id):
@@ -296,7 +301,7 @@ class TrustedAuthority:
 
     def claim_score(self, evaluation_id, plan, local_receipt, binding, *,
                     observation_index_sha256, review_manifest_sha256,
-                    observation_hashes):
+                    observation_hashes, review_authentication_sha256=None):
         receipt, authority_sha = self._receipt(evaluation_id)
         validate_frozen_receipt(
             receipt, plan, local_receipt,
@@ -401,6 +406,10 @@ class TrustedAuthority:
               and result["charged_reservation_tokens"] == charge
               and charge <= receipt["token_budget"],
               "untrusted_authority_charged_budget")
+        review_binding = {}
+        if review_authentication_sha256 is not None:
+            sha_field(review_authentication_sha256, "invalid_review_authentication_digest")
+            review_binding["review_authentication_sha256"] = review_authentication_sha256
         self._create(_key(evaluation_id, "first-score"), {
             "contract": SCORE_CLAIM, "evaluation_id": evaluation_id,
             "authority_receipt_sha256": authority_sha,
@@ -409,6 +418,7 @@ class TrustedAuthority:
             "review_manifest_sha256": review_manifest_sha256,
             "evaluator_id": binding.evaluator_id,
             "rescore_allowed": False,
+            **review_binding,
         })
 
 
@@ -421,6 +431,9 @@ class RunSession:
         self._inflight = None
         self._inflight_ack = False
         self._halted = False
+        self._http_binding = None
+        self._http_captured = False
+        self._http_usage = None
 
     def _write(self, suffix, data):
         try:
@@ -449,7 +462,50 @@ class RunSession:
         self._reserved += amount
         self._inflight = job_id
         self._inflight_ack = False
+        self._http_binding = None
+        self._http_captured = False
+        self._http_usage = None
         return amount
+
+    def freeze_http_capture(self, job_id, question):
+        """Opt-in native transport binding, persisted before the child starts."""
+        check(not self._halted and self._inflight == job_id and not self._inflight_ack,
+              "authority_http_binding_before_spawn_required")
+        job = self._receipt["jobs"][self._next]
+        check(type(question) is str and digest(question.encode()) == job["question_sha256"],
+              "authority_http_question_mismatch")
+        binding = {
+            "contract": "reason-cli-normal-v3-native-http-binding-v1",
+            "authority_receipt_sha256": self._sha,
+            **{k: self._receipt[k] for k in (
+                "evaluation_id", "plan_sha256", "legacy_receipt_sha256", "source_sha256",
+                "image_sha256", "cli_build_sha256", "runtime_sha256", "executor_id", "provider", "model")},
+            "job": job, "question": question,
+        }
+        self._write("http/" + job_id + "/binding", binding)
+        self._http_binding = digest(canonical(binding))
+        return binding
+
+    def acknowledge_http_capture(self, job_id, *, binding_sha256, journal_sha256,
+                                 trace_sha256, http_sha256, tokens, attempts):
+        check(not self._halted and self._inflight == job_id and self._inflight_ack
+              and self._http_binding is not None and binding_sha256 == self._http_binding
+              and not self._http_captured, "authority_http_capture_mismatch")
+        hashes = dict(binding_sha256=binding_sha256, journal_sha256=journal_sha256,
+                      trace_sha256=trace_sha256, http_sha256=http_sha256)
+        for value in hashes.values():
+            sha_field(value, "invalid_native_http_capture_hash")
+        job = self._receipt["jobs"][self._next]
+        check(type(tokens) is int and 0 <= tokens <= job["reserve_tokens"]
+              and type(attempts) is int and 1 <= attempts <= job["max_provider_attempts"],
+              "invalid_native_http_capture_usage")
+        self._write("http/" + job_id + "/capture", {
+            "contract": "reason-cli-normal-v3-native-http-capture-v1",
+            "job_id": job_id, "authority_receipt_sha256": self._sha,
+            "tokens": tokens, "attempts": attempts, **hashes,
+        })
+        self._http_captured = True
+        self._http_usage = (tokens, attempts)
 
     def before_spawn(self, job_id):
         check(not self._halted and self._inflight == job_id,
@@ -466,6 +522,12 @@ class RunSession:
                 observation_sha256=None):
         check(self._inflight == job_id and self._inflight_ack and not self._halted,
               "authority_unmatched_observation")
+        if self._http_binding is not None and not self._http_captured:
+            tokens = attempts = None
+            operational_failure = operational_failure or "native_http_capture_missing"
+        elif self._http_binding is not None and self._http_usage != (tokens, attempts):
+            tokens = attempts = None
+            operational_failure = operational_failure or "native_http_usage_mismatch"
         job = self._receipt["jobs"][self._next]
         if observation_sha256 is not None:
             sha_field(observation_sha256, "invalid_authority_observation_sha256")
