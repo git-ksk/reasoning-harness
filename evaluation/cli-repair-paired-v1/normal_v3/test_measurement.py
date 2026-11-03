@@ -341,20 +341,28 @@ class V3Measurement(unittest.TestCase):
                 "reviews": {"case-01-baseline": contracts.digest(review_path.read_bytes())},
             }
             (reviews_dir / "review-index.json").write_text(json.dumps(freeze))
-            result = score.score(obs_dir, packet_dir, gold_file, reviews_dir, receipt, Path(d) / "score")
+            with self.assertRaisesRegex(ValueError, "external_score_authority_required"):
+                score.score(obs_dir, packet_dir, gold_file, reviews_dir, receipt,
+                            Path(d) / "no-authority")
+            self.assertFalse((Path(d) / "no-authority").exists())
+            result = score.score(obs_dir, packet_dir, gold_file, reviews_dir, receipt, Path(d) / "score",
+                                 offline_synthetic_only=True)
             self.assertFalse(result["cohort_measured"])
             self.assertIsNone(result["arms"]["baseline"]["case_metrics"])
             self.assertFalse(result["quality_go"])
             with self.assertRaises(FileExistsError):
-                score.score(obs_dir, packet_dir, gold_file, reviews_dir, receipt, Path(d) / "score")
+                score.score(obs_dir, packet_dir, gold_file, reviews_dir, receipt, Path(d) / "score",
+                                 offline_synthetic_only=True)
             # A different output directory must NOT grant an independent
             # second first-score for the very same immutable receipt.
             with self.assertRaises(FileExistsError):
-                score.score(obs_dir, packet_dir, gold_file, reviews_dir, receipt, Path(d) / "score-again")
+                score.score(obs_dir, packet_dir, gold_file, reviews_dir, receipt, Path(d) / "score-again",
+                            offline_synthetic_only=True)
             self.assertFalse((Path(d) / "score-again").exists())
             review_path.write_text(json.dumps({**review, "decision": "withhold"}))
             with self.assertRaisesRegex(ValueError, "modified_review_file"):
-                score.score(obs_dir, packet_dir, gold_file, reviews_dir, receipt, Path(d) / "score-tampered")
+                score.score(obs_dir, packet_dir, gold_file, reviews_dir, receipt, Path(d) / "score-tampered",
+                            offline_synthetic_only=True)
 
     def test_full24_metrics_never_promote_negative_invalid(self):
         gold = {}
@@ -661,7 +669,7 @@ class V3Measurement(unittest.TestCase):
             unchanged_receipt = receipt.read_bytes()
             receipt.write_text('{"purpose":"tampered"}')
             with self.assertRaisesRegex(ValueError, "receipt_byte_mismatch"):
-                score.score(obs_dir, packets, gold_file, reviews, receipt, Path(d) / "no-score")
+                score.score(obs_dir, packets, gold_file, reviews, receipt, Path(d) / "no-score", offline_synthetic_only=True)
             receipt.write_bytes(unchanged_receipt)
             p = packets / "case-01-baseline.review-packet.json"
             packet = annotate.read_json(p)
@@ -674,7 +682,8 @@ class V3Measurement(unittest.TestCase):
             frozen["packet_index_sha256"] = contracts.digest(index_path.read_bytes())
             (reviews / "review-index.json").write_text(json.dumps(frozen))
             with self.assertRaisesRegex(ValueError, "packet_observation_or_gold_mismatch"):
-                score.score(obs_dir, packets, gold_file, reviews, receipt, Path(d) / "no-score-packet")
+                score.score(obs_dir, packets, gold_file, reviews, receipt, Path(d) / "no-score-packet",
+                            offline_synthetic_only=True)
 
     def test_operational_error_never_creates_full_cohort_f1(self):
         gold = {f"c{i}": {"case_id": f"c{i}", "question": "question",
@@ -807,7 +816,21 @@ class V3Measurement(unittest.TestCase):
                 "packet_index_sha256": contracts.digest((packets / "packet-index.json").read_bytes()),
                 "executor_id": "fixture-executor", "reviews": review_hashes,
             }))
-            result = score.score(observations, packets, gold_file, reviews, receipt, out)
+            from authority import AuthorityBinding, ScoringContext
+            class ScoringSpy:
+                def __init__(self):
+                    self.calls = []
+                def claim_score(self, *args, **kwargs):
+                    self.calls.append((args, kwargs))
+            spy = ScoringSpy()
+            binding = AuthorityBinding("a"*64, "b"*64, "c"*64, "d"*64,
+                                       "fixture-executor", "fixture-reviewer")
+            context = ScoringContext(spy, "fixture-run", {"schema": "test"}, binding)
+            result = score.score(observations, packets, gold_file, reviews, receipt, out,
+                                 authoritative_score=context)
+            self.assertEqual(len(spy.calls), 1)
+            self.assertEqual(set(spy.calls[0][1]["observation_hashes"]),
+                             {row["job_id"] for row in capture_rows})
             self.assertTrue(result["cohort_measured"])
             self.assertTrue(result["arms"]["baseline"]["observation_complete"])
             self.assertTrue(result["arms"]["candidate"]["observation_complete"])

@@ -6,7 +6,7 @@ from pathlib import Path
 
 from annotate import build_packet, read_observations, validate_gold, validate_review
 from contracts import (
-    PACKET_ID, REVIEW_ID, SCORE_ID, digest, exclusive_json, keyed_digest,
+    PACKET_ID, REVIEW_ID, SCORE_ID, canonical, digest, exclusive_json, keyed_digest,
     read_json, require, sha_field, strict_keys, exclusive_durable_claim,
     private_new_directory, _open_trusted_directory,
 )
@@ -165,7 +165,8 @@ def report(rows, gold):
     }
 
 
-def score(observations, packets, gold_file, reviews, receipt_file, output):
+def score(observations, packets, gold_file, reviews, receipt_file, output,
+          *, authoritative_score=None, offline_synthetic_only=False):
     observations = Path(observations)
     packets = Path(packets)
     reviews = Path(reviews)
@@ -250,6 +251,37 @@ def score(observations, packets, gold_file, reviews, receipt_file, output):
             "efficiency_and_non_regression",
         ],
     })
+    if authoritative_score is None:
+        # No external authority means no real first-score claim. The only
+        # permitted exception is an explicit, synthetic-only local diagnostic.
+        # A normal CLI invocation must fail closed even when no caller injects
+        # the ScoringContext. This cannot authorize real model evaluation.
+        require(offline_synthetic_only, "external_score_authority_required")
+        synthetic_receipt = read_json(receipt_file)
+        require(type(synthetic_receipt) is dict
+                and synthetic_receipt.get("purpose") == "synthetic-v3-HTTP-zero",
+                "offline_synthetic_receipt_required")
+    else:
+        require(not offline_synthetic_only, "conflicting_score_authority_modes")
+    if authoritative_score is not None:
+        # Deployment code, not caller/receipt JSON, must supply this context.
+        # This remote create-only first-score claim is the authoritative gate;
+        # the existing private filesystem claim remains defense in depth.
+        from authority import ScoringContext
+        require(isinstance(authoritative_score, ScoringContext),
+                "trusted_scoring_context_required")
+        authoritative_score.authority.claim_score(
+            authoritative_score.evaluation_id,
+            authoritative_score.plan,
+            receipt_file.read_bytes(),
+            authoritative_score.binding,
+            observation_index_sha256=result["observation_index_sha256"],
+            review_manifest_sha256=result["review_manifest_sha256"],
+            observation_hashes={
+                jid: digest(canonical(observation))
+                for jid, (observation, _hash) in rows.items()
+            },
+        )
     # An output-folder-only lock can be bypassed by changing --output. A
     # genuine receipt must irrevocably freeze its one durable score-ledger
     # directory. This gate is also used for synthetic offline evidence.
@@ -283,8 +315,10 @@ def main():
     parser = argparse.ArgumentParser()
     for option in ("observations", "packets", "gold", "reviews", "receipt", "output"):
         parser.add_argument("--" + option, type=Path, required=True)
+    parser.add_argument("--offline-synthetic-only", action="store_true")
     a = parser.parse_args()
-    result = score(a.observations, a.packets, a.gold, a.reviews, a.receipt, a.output)
+    result = score(a.observations, a.packets, a.gold, a.reviews, a.receipt, a.output,
+                   offline_synthetic_only=a.offline_synthetic_only)
     print(__import__("json").dumps({
         "cohort_measured": result["cohort_measured"],
         "semantic_thresholds_met": result["all_semantic_thresholds_met"],

@@ -1,5 +1,14 @@
 # Prospective ordinary-CLI v3 collector / annotator / scorer (#574)
 
+**#580 authority extension:** See [AUTHORITY.md](AUTHORITY.md) for the
+new separately operator-selected conditional-create remote receipt authority,
+48-job reserve/inflight/observed ledger, and once-only first-score claim
+bound to full observation hashes. This is a **mock-tested, synthetic-only**
+integration; no external IAM/retention, real multi-host/SIGKILL, provider-side
+billing, runtime/source/image or independent reviewer gate has been approved.
+The original CLI scorer remains not externally admitted by default.
+
+
 **Status: code/fixture implementation only; not a runtime admission, scoring acceptance, or permission to call a model.** This code is based on PR #576's private typed CLI diagnostics. It must be reviewed and tested independently before merging. The old v1/v2 raw, receipt, tag, annotation and first scores remain immutable.
 
 This module is deliberately separate from the historical `collect.py`, `score_development_first.py` and frozen v1/v2 operational bridge. It is **not connected to the live scheduler**. That work belongs to the next #574 implementation stage, together with independent actual-runtime and image admission.
