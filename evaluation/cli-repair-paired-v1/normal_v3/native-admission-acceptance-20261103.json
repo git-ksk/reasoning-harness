@@ -5,17 +5,17 @@
   "scope": "implementing-agent review and Mac native/loopback controls; no independent acceptance",
   "tests": {
     "python3.13": {
-      "passed": 169,
+      "passed": 171,
       "skipped": 0,
-      "log_sha256": "65e006f24db025cc5fb70f239880c8508ccbbd3c1b2a31b8b7a5c2f6182cb141"
+      "log_sha256": "5eec227a69a7c6bac7951821e2ec118eeaed1582eb5ed46d71a19147bc7b2e64"
     },
     "python3.14": {
-      "passed": 169,
+      "passed": 171,
       "skipped": 0,
-      "log_sha256": "e1afc8144f2ed11967bb22c164ab81a14627d911ba1525deafac8e337520d041"
+      "log_sha256": "f516c5165d950adcec0c44a11789237ef0230cfa5550efb65af10cf6a186f32c"
     }
   },
-  "new_controls": 24,
+  "new_controls": 26,
   "actual_native_control_cases": 10,
   "full_cohort_native_children": 48,
   "strict_clippy": "pass",
@@ -33,8 +33,10 @@
     "evaluation/cli-repair-paired-v1/normal_v3/review_auth.py": "5c3f6007645c2cf8686a52002c7b200439f0299c256dbcf62c76a04bae76fca8",
     "evaluation/cli-repair-paired-v1/normal_v3/contracts.py": "fc196b02767a57510f3862d2addd34d25c8c60a7fe7468bf8f993e270b407479",
     "evaluation/cli-repair-paired-v1/normal_v3/test_measurement.py": "f10990a9df2dd76bbe9bcf318c4e26605999d02413716cebc07590ba2c3cfc6e",
-    "evaluation/cli-repair-paired-v1/normal_v3/test_native_admission.py": "f5e4c6a8cb92512e93449d7602a5a9d42e3010eb63b8162ab5fc162389ea248c",
-    "evaluation/cli-repair-paired-v1/normal_v3/review-requirements.txt": "58a1106e3b3669fca7031641376d4aaca382ba3408cac0757226e990bf85ee55"
+    "evaluation/cli-repair-paired-v1/normal_v3/test_native_admission.py": "6ac5e0f2ff818fdfcea2fdafb5b6d758ede6600f962bb70d587f0215c43bf56e",
+    "evaluation/cli-repair-paired-v1/normal_v3/review-requirements.txt": "58a1106e3b3669fca7031641376d4aaca382ba3408cac0757226e990bf85ee55",
+    ".github/workflows/ci.yml": "92d11c2ce8c92e8743ab54bdbc3c7bf75c96e71b439e325c08cdd1611ee639b0",
+    "evaluation/cli-repair-paired-v1/normal_v3/ci_source_snapshot.py": "d75b436b0f0fec3859bbac141e2df65ebcc630ff2f58d7afbd334cb4b39f4cae"
   },
   "native_cli_sha256": "a4fe2ff4e3bf988466e3d7cebd482b61838af2cbb1ca8dfba9b0dd22457ae718",
   "model_api_calls": 0,
@@ -56,5 +58,9 @@
     "passed": 276,
     "existing_ignored": 4,
     "log_sha256": "6b0f8bdd8385d3a1efadad2dbb96db19e0b42d47c8b50f8683e2bdae1925dd82"
+  },
+  "private_ci_source_snapshot_control": {
+    "passed": 1,
+    "log_sha256": "8dda7a6fac69047186a98d0f2c1fba900b7cea43738f202c2026a2c57ebc3c8c"
   }
 }

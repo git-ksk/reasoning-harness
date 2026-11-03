@@ -18,6 +18,7 @@ from native_admission import ADMISSION, CATALOG, DOMAIN, capture_display, source
 from native_bundle import NativeBundle
 from native_lane import CONTROL, NativeLane, plan_first_request, private_bytes, capture_process, validate_argv
 import review_auth
+from ci_source_snapshot import prepare_snapshot
 import test_authority_580 as legacy_controls
 
 QUESTION = "What can be verified from this source?"
@@ -156,7 +157,8 @@ class NativeBundleTests(unittest.TestCase):
         file.write_text("source"); self.bundle.verify()
         extra = self.source / "crates/extra.rs"; extra.write_text("new")
         with self.assertRaisesRegex(ValueError, "inventory_changed"): self.bundle.verify()
-        extra.unlink(); self.binary.unlink(); self.binary.write_bytes(b"control-binary"); self.binary.chmod(0o700)
+        extra.unlink(); self.binary.rename(self.root / "previous-binary")
+        self.binary.write_bytes(b"control-binary"); self.binary.chmod(0o700)
         with self.assertRaisesRegex(ValueError, "artifact_changed"): self.bundle.verify()
 
     def test_symlinked_unknown_native_executable_is_rejected(self):
@@ -191,6 +193,35 @@ class PipeCaptureTests(unittest.TestCase):
                 directory=directory, environment={}, pass_fds=(), timeout=0.15)
             self.assertFalse(complete)
             self.assertEqual(json.loads((directory / "execution.json").read_bytes())["operational_failure"], "native_process_timeout")
+
+
+class SourceSnapshotTests(unittest.TestCase):
+    def test_explicit_ci_snapshot_is_private_byte_identical_and_ignores_local_state(self):
+        import shutil
+        from contracts import _open_trusted_directory
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder).resolve(); (source / "crates").mkdir(mode=0o775)
+            (source / "crates/input.rs").write_bytes(b"source bytes")
+            binary = source / "reason"; binary.write_bytes(b"native bytes"); binary.chmod(0o755)
+            for name in (".git", ".local-private", "target"):
+                (source / name).mkdir(); (source / name / "not-copied").write_bytes(b"private fixture")
+            snapshot = prepare_snapshot(source, binary)
+            try:
+                fd = _open_trusted_directory(snapshot); os.close(fd)
+                self.assertEqual((snapshot / "crates/input.rs").read_bytes(), b"source bytes")
+                self.assertEqual((snapshot / ".native-bin/reason").read_bytes(), b"native bytes")
+                self.assertEqual((snapshot / "crates").stat().st_mode & 0o777, 0o700)
+                self.assertEqual((snapshot / "crates/input.rs").stat().st_mode & 0o777, 0o600)
+                self.assertEqual((snapshot / ".native-bin/reason").stat().st_mode & 0o777, 0o700)
+                self.assertTrue(all(not (snapshot / name).exists() for name in (".git", ".local-private", "target")))
+            finally: shutil.rmtree(snapshot)
+
+    def test_source_snapshot_does_not_follow_a_symlink(self):
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder).resolve()
+            binary = source / "reason"; binary.write_bytes(b"native")
+            (source / "link").symlink_to(binary)
+            with self.assertRaises(OSError): prepare_snapshot(source, binary)
 
 
 class ScriptedServer:

@@ -5,7 +5,7 @@ review and local engineering acceptance of the
 [native admission profile](NATIVE_ADMISSION.md); no independent acceptance or
 new model-quality result is claimed.
 
-- Mac Python 3.13 and 3.14 each pass **169/169**, including **24 new controls**.
+- Mac Python 3.13 and 3.14 each pass **171/171**, including **26 new controls**.
 - Ten new actual CLI controls include prospective first-request planning,
   full 48-child loopback execution, every pre-advance record, missing-record
   first-score refusal and once-only first-score storage. Safe, fully accounted
@@ -45,6 +45,12 @@ alternate legacy reservation/scoring path from silently skipping the gate.
 Verified admission capabilities carry exact immutable execution bindings.
 Full stdout/stderr packets, source/native identities and ordered admission
 records are rechecked before advancement and first-score creation.
+
+Linux CI exposed checkout ancestry carrying extra ACL grants, which the source
+guard correctly refused. CI now explicitly prepares a private byte-identical
+source/binary snapshot without inherited checkout ACLs; production/private
+checks remain unchanged. A replacement test now retains the old inode under
+another name instead of assuming that unlink/recreate cannot reuse its number.
 
 ## What these controls do not prove
 

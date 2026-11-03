@@ -18,6 +18,10 @@ Added/removed source inputs, changed contents, replaced executables and symlink
 substitution fail closed. OS/kernel/system libraries and runtime administrators
 are trusted. Homebrew's administrator-writable runtime parent is supported;
 private evidence/source paths keep their stricter owner/mode/ACL policy.
+CI checkout ancestry can carry extra Linux ACLs. The CI-only preparation helper
+explicitly copies identical source/binary bytes to fresh private paths without
+copying checkout ACLs, Git credentials or local state, then enrolls and tests
+that selected snapshot. It does not relax production admission checks.
 
 The legacy `image_sha256` field explicitly carries the native bundle digest in
 this **new** profile. Source, binary set and runtime digests are separate. This
