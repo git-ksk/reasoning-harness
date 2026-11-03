@@ -1,6 +1,7 @@
 mod acquisition_coverage;
 mod answer_context;
 mod auth;
+mod captured_evidence;
 mod config_commands;
 mod diagnostic_trace;
 mod doctor;
@@ -410,6 +411,16 @@ struct InvestigationFileConfig {
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 enum InvestigationCapabilityFileConfig {
+    CapturedEvidence {
+        id: String,
+        read_only: bool,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        selection_priority: Option<u32>,
+        #[serde(default)]
+        supported_fact_keys: BTreeSet<String>,
+        evidence: Vec<serde_json::Value>,
+        admission: ExternalEvidenceAdmissionFileConfig,
+    },
     ExternalCommand {
         id: String,
         read_only: bool,
@@ -471,6 +482,7 @@ struct McpSessionPolicyFileConfig {
 enum InvestigationResolverConfig {
     #[cfg(test)]
     Fixture(Result<Vec<AcquiredEvidence>, ResolutionAdapterError>),
+    CapturedEvidence(captured_evidence::CapturedEvidenceResolver),
     ExternalCommand(ExternalCommandResolverConfig),
     McpReadonly(Box<McpReadOnlyResolverV3Config>),
 }
@@ -3674,6 +3686,9 @@ fn run_configured_investigation_capability(
         .clone()
         .map(ExternalEvidenceAdmissionPolicy::new);
     match &capability.resolver {
+        InvestigationResolverConfig::CapturedEvidence(resolver) => {
+            run_investigation_resolution(input, candidate, resolver, admission.as_ref(), request)
+        }
         #[cfg(test)]
         InvestigationResolverConfig::Fixture(evidence) => {
             struct Fixture<'a>(&'a Result<Vec<AcquiredEvidence>, ResolutionAdapterError>);
@@ -9861,6 +9876,40 @@ fn resolve_investigation_config(
     let mut authority_policy: Option<EvidenceAuthorityPolicy> = None;
     for capability in &configured.capabilities {
         let (descriptor, resolver, admission) = match capability {
+            InvestigationCapabilityFileConfig::CapturedEvidence {
+                id,
+                read_only,
+                selection_priority,
+                supported_fact_keys,
+                evidence,
+                admission,
+            } => {
+                let id = id.trim();
+                if id.is_empty()
+                    || !ids.insert(id.to_string())
+                    || !read_only
+                    || supported_fact_keys.iter().any(|key| key.trim().is_empty())
+                {
+                    return Err("captured evidence requires a unique nonempty id, read_only=true and nonempty fact keys".into());
+                }
+                let resolver = captured_evidence::CapturedEvidenceResolver::new(evidence)?;
+                let admission = resolve_evidence_admission_config(
+                    admission,
+                    captured_evidence::RESOLVER_ID,
+                    &format!("resolution.investigation.capabilities[{id}].admission"),
+                )?;
+                (
+                    InvestigationCapability {
+                        id: id.into(),
+                        adapter: captured_evidence::RESOLVER_ID.into(),
+                        read_only: true,
+                        selection_priority: *selection_priority,
+                        supported_fact_keys: supported_fact_keys.clone(),
+                    },
+                    InvestigationResolverConfig::CapturedEvidence(resolver),
+                    Some(admission),
+                )
+            }
             InvestigationCapabilityFileConfig::ExternalCommand {
                 id,
                 read_only,
