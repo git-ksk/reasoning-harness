@@ -50,6 +50,14 @@ does not support its Ed25519 `pkeyutl -rawin` operation. CI now explicitly selec
 the installed Homebrew OpenSSL 3 for the synthetic signer. The production
 in-process libsodium verifier and signature/security checks are unchanged.
 
+Intel CI also exposed a test-only 15-second fixture preparation wait expiring
+while enrolling/hashing the source and binaries, before either signal control
+reached its HTTP request. Preparation now has a separate 120-second bound and
+an atomic ready marker/early-exit diagnostic. The actual post-signal native
+termination bound remains five seconds. Full v3 coverage runs on Mac arm64
+and Linux; Intel runs all 19 new OS/cancellation boundaries plus the actual
+Rust fork/posix_spawn denial and existing product compatibility checks.
+
 ## Admission limits
 
 This is new native bundle **v2**, requiring a newly enrolled bundle/plan/receipt
@@ -57,7 +65,7 @@ and common CLI builds supporting the lifeline on both Engine arms. The Mac
 profile is single-process curated-source evaluation. External resolver/MCP
 stdio `program` settings are rejected before planning. Arbitrary subprocess
 workloads are not admitted. Linux controls do not prove the Mac no-fork policy.
-Mac arm64 and x86_64 CI now run the actual OS restriction and full local suite.
+Both Mac architectures run the actual OS restriction and cancellation controls.
 If macOS's deprecated sandbox API is unavailable, execution is refused.
 
 No remote provider request, cloud resource operation, real F1, quality GO,

@@ -147,8 +147,10 @@ instance.tmp._finalizer.detach()
 lane=NativeLane(session=instance.session,plan=instance.plan,bundle=instance.bundle,
  policy_bytes=instance.reviewer.policy_bytes,catalog_bytes=instance.catalog_bytes,
  output=instance.root/'lane',control_url=sys.argv[2])
-Path(sys.argv[1]).write_text(json.dumps({'root':str(instance.root),'extra_roots':[str(c.root),str(c.template.path)],'profile':instance.store.profile.to_json(),
+marker=Path(sys.argv[1]); temporary=marker.with_suffix('.tmp')
+temporary.write_text(json.dumps({'root':str(instance.root),'extra_roots':[str(c.root),str(c.template.path)],'profile':instance.store.profile.to_json(),
  'first_job':instance.plan['jobs'][0]['id']}))
+temporary.replace(marker)
 lane.run_next()
 '''
         # Only the known control module path is supplied to this isolated
@@ -158,7 +160,13 @@ lane.run_next()
             env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
         info = None; pid = None
         try:
-            wait_for(lambda: marker.exists(), 15); info = json.loads(marker.read_bytes())
+            # This is source/binary enrollment before provider work. Slow Intel
+            # CI must not consume the distinct five-second termination bound.
+            wait_for(lambda: marker.exists() or driver.poll() is not None, 120)
+            if not marker.exists():
+                _, error = driver.communicate(timeout=3)
+                self.fail("controller fixture preparation failed: " + error.decode(errors="replace")[-1500:])
+            info = json.loads(marker.read_bytes())
             root = Path(info["root"])
             self.addCleanup(shutil.rmtree, root, True)
             for extra in info["extra_roots"]: self.addCleanup(shutil.rmtree, extra, True)

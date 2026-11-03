@@ -21,14 +21,14 @@
   "new_rust_controls": 2,
   "full_cohort_native_children": 48,
   "source_sha256": {
-    ".github/workflows/cli-platform-smoke.yml": "5deb2287bc43029dd8183c77cb2969b67ff4ae80a382977510c9207e296e7b9d",
+    ".github/workflows/cli-platform-smoke.yml": "e4ebcc471f268e90b4f7db055304cec977a6eabeb4b9f278ea3b957166812870",
     "crates/reasoning-harness-cli/src/main.rs": "b911f71db5e043e05a0c6b2f2bb552f71673a4c9a0e402db2e56862abc314a0f",
     "crates/reasoning-harness-cli/src/evaluation_supervision.rs": "48f142b27a42a3026ba6fe5645cd3ec8f9269ca237c728075c0fd765fc640d50",
     "docs/local-execution-policy.ja.md": "bb752aae9b964618abada516ee4d9c1c57bd04e215aa5031bf03b1e8087285cc",
     "evaluation/cli-repair-paired-v1/normal_v3/authority.py": "ec1bcbab7545db0e2bb1cef81374a50f8aa69c750cb8923d5f0a633846c4aae8",
     "evaluation/cli-repair-paired-v1/normal_v3/native_bundle.py": "136088cacd0e3dbce742425497538f4cea8ccccaa4709491da64452c1371a81a",
     "evaluation/cli-repair-paired-v1/normal_v3/native_lane.py": "09b2ec48b4fa249f2966f625e6b26603bde40c14d3f6d0f389c3074e00666825",
-    "evaluation/cli-repair-paired-v1/normal_v3/test_native_supervision.py": "90955b5db2c63e8f82ab1ed3bc32ea306e82fba33726859be815ec8eb8e956ce",
+    "evaluation/cli-repair-paired-v1/normal_v3/test_native_supervision.py": "a7befc5948045294258cbdb06934e7507dc8c112def3c8907e4499e978f7aa8e",
     "evaluation/cli-repair-paired-v1/normal_v3/test_native_admission.py": "27d984f921c4204220c30c7e1f64546f514d5e7fabed6d8378e5370666345d65",
     "evaluation/cli-repair-paired-v1/normal_v3/PROCESS_SUPERVISION.md": "04ece0264bc069001a3826f861bb0feec0cdf11c88356d8e7e70da2116e67330",
     "evaluation/cli-repair-paired-v1/normal_v3/NATIVE_ADMISSION.md": "82cc644fe0c6f8c083fead5da2069a0ea6479a7f43ec484825fcf0d8144a4de7",
@@ -70,6 +70,25 @@
     "local_affected_controls": {
       "passed": 26,
       "log_sha256": "bec850f68daef5be54d7f7139ad231fea76d062d413cc1960a0e39e0ff8f4acb"
+    }
+  },
+  "ci_fixture_readiness_correction": {
+    "reason": "Intel source/binary enrollment exceeded a test-only 15 second setup wait before signal injection",
+    "fixture_ready_timeout_seconds": 120,
+    "post_signal_exit_timeout_seconds": 5,
+    "ready_marker": "atomic replace and early driver-exit detection",
+    "production_implementation_changed": false,
+    "mac_intel_ci": "all 19 OS/cancellation controls and Rust fork/posix_spawn denial",
+    "full_v3_ci": "Mac arm64 and Linux",
+    "local_affected_controls": {
+      "313": {
+        "passed": 19,
+        "log_sha256": "fcce7abc4c90dac3962f04b955b326293cf48b3b0a0acb90e7993ba8284bbb09"
+      },
+      "314": {
+        "passed": 19,
+        "log_sha256": "6dfa11f542a437dfb1e58ece2bb132e47130e80dcdcdb7a973ac9264229cc181"
+      }
     }
   }
 }
