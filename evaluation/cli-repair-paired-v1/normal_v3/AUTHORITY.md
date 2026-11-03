@@ -1,3 +1,18 @@
+# Current native/local authority — Issue #580
+
+2026-11-03 user direction: Reasoning Harness runs locally. The current
+implementation and acceptance are [LocalAtomicStore](LOCAL_AUTHORITY.md) and
+[the local execution policy](../../../docs/local-execution-policy.ja.md).
+GCS, VM, KMS/IAM, remote two-host evidence and Docker are optional future
+extensions, not prerequisites for this Mac/native profile. Keep local replay,
+accounting, native-runtime/source and real review acceptance intact.
+
+The original external-backend prototype below is historical context. Its
+cloud-specific gates do not define the current local-run acceptance scope.
+
+<details>
+<summary>Historical external-backend prototype and its original limitations</summary>
+
 # Prospective v3 external receipt/run authority — Issue #580
 
 **Status: offline implementation and mock-remote acceptance only. Not independently
@@ -160,3 +175,5 @@ storage/IAM configuration.
 - Counterexamples reproduced missing stable cohort deduplication and accepted
   noncanonical run/completion evidence; both are now rejected. Local scoring
   without authenticated authority is disabled except explicit synthetic mode.
+
+</details>

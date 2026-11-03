@@ -1,5 +1,11 @@
 # Prospective ordinary-CLI model-output measurement
 
+Current scope: [Mac/native local execution](local-execution-policy.ja.md).
+Use a fixed private local authority and native source/runtime manifests.
+GCS, VM, IAM/KMS, remote two-host controls and Docker are optional extensions.
+Existing HTTP/usage, actual display/source, signed review and first-score
+requirements remain in force.
+
 Tracked in [Issue574](https://github.com/git-ksk/reasoning-harness/issues/574). Declared 2026-10-31, before any v3 model execution. This policy applies only to a new separately frozen profile. Historical runs, inputs, annotations, first scores, receipts and tags remain immutable. See the [stopped v2 evidence](../evaluation/cli-normal-real24-development-v2-results/README.md).
 
 2026-11-03 development: [#583 authenticated review](../evaluation/cli-repair-paired-v1/normal_v3/REVIEW_AUTH.md)

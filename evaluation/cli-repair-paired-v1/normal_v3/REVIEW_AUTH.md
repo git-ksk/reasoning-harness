@@ -6,6 +6,12 @@ Separately authenticated source review, trusted enrollment and real runtime
 acceptance remain pending. This does not close #583, admit PR #587, authorize
 model calls, publish a first real score, or approve Engine/CLI adoption.
 
+**Current local scope:** follow the [Mac/native policy](../../../docs/local-execution-policy.ja.md)
+and [local authority](LOCAL_AUTHORITY.md). Enrollment is an operator-owned local
+key/policy registration. GCS, IAM/KMS, cloud signers and VMs are not required.
+The owner OS account is trusted; this is not a hostile same-UID/root boundary
+or automatic proof of a person’s identity.
+
 ## Admission boundary
 
 The previous reviewer fields (`id`, `role`, `independent_of_execution`,
@@ -123,8 +129,9 @@ run/reservation/inflight/observation/first-score code on its fake object store,
 with all 48 canonical observation hashes and a real temporary signature. It
 rejects unsigned scoring and alternate-output first-score replay.
 
-These tests provide no real reviewer identity, external store/IAM, provider
-billing, paid model generation, fresh accuracy or acceptance F1. #580's external
-GCS/host gates, #581's independent HTTP journal and #582's full actual
-display/source/image/pre-advance admission remain outstanding. Historical
+These tests provide no real reviewer decision, provider billing, paid model
+generation, fresh accuracy or acceptance F1. #580 local-ledger acceptance,
+#581 actual HTTP/usage evidence and #582 native display/source/runtime and
+pre-advance admission remain separate gates. GCS/remote-host acceptance is
+an optional extension rather than a local-run prerequisite. Historical
 v1/v2 observations, raw, reviews, receipts, tags and first scores are unchanged.

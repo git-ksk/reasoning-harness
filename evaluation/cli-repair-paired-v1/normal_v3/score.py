@@ -262,11 +262,11 @@ def score(observations, packets, gold_file, reviews, receipt_file, output,
         ],
     })
     if authoritative_score is None:
-        # No external authority means no real first-score claim. The only
+        # No operator-owned authority means no real first-score claim. The only
         # permitted exception is an explicit, synthetic-only local diagnostic.
         # A normal CLI invocation must fail closed even when no caller injects
         # the ScoringContext. This cannot authorize real model evaluation.
-        require(offline_synthetic_only, "external_score_authority_required")
+        require(offline_synthetic_only, "operator_score_authority_required")
         require(review_authentication is None, "synthetic_score_cannot_claim_review_authentication")
         synthetic_receipt = json.loads(receipt_bytes)
         require(type(synthetic_receipt) is dict
@@ -276,8 +276,9 @@ def score(observations, packets, gold_file, reviews, receipt_file, output,
         require(not offline_synthetic_only, "conflicting_score_authority_modes")
     if authoritative_score is not None:
         # Deployment code, not caller/receipt JSON, must supply this context.
-        # This remote create-only first-score claim is the authoritative gate;
-        # the existing private filesystem claim remains defense in depth.
+        # The fixed local-profile create-only claim is the normal authority;
+        # the receipt's output-local claim remains defense in depth. An
+        # optional distributed store must be selected by the operator explicitly.
         from authority import ScoringContext
         require(isinstance(authoritative_score, ScoringContext),
                 "trusted_scoring_context_required")

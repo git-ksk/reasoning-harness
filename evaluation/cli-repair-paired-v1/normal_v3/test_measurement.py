@@ -341,7 +341,7 @@ class V3Measurement(unittest.TestCase):
                 "reviews": {"case-01-baseline": contracts.digest(review_path.read_bytes())},
             }
             (reviews_dir / "review-index.json").write_text(json.dumps(freeze))
-            with self.assertRaisesRegex(ValueError, "external_score_authority_required"):
+            with self.assertRaisesRegex(ValueError, "operator_score_authority_required"):
                 score.score(obs_dir, packet_dir, gold_file, reviews_dir, receipt,
                             Path(d) / "no-authority")
             self.assertFalse((Path(d) / "no-authority").exists())
@@ -837,6 +837,15 @@ class V3Measurement(unittest.TestCase):
             store, _ = AuthorityTests().fixture(
                 "fixture-run", plan=operational_plan, binding=binding,
                 local_receipt=receipt.read_bytes())
+            # The native profile uses actual private local storage, not a
+            # cloud backend or a fake remote object store.
+            from local_store import initialize_local_store, LocalAtomicStore
+            from authority import PREFIX
+            profile = initialize_local_store(root / "local-authority")
+            published_receipt = store.read(f"{PREFIX}/receipts/fixture-run.json")
+            LocalAtomicStore(profile, role="issuer").create(
+                f"{PREFIX}/receipts/fixture-run.json", published_receipt)
+            store = LocalAtomicStore(profile, role="executor")
             service = TrustedAuthority(store)
             session = service.start("fixture-run", operational_plan, receipt.read_bytes(), binding)
             for job_id, (observation, _) in obs_rows.items():
@@ -847,7 +856,8 @@ class V3Measurement(unittest.TestCase):
                     attempts=observation["accounted_usage"]["provider_attempts"],
                     observation_sha256=contracts.keyed_digest(observation)))
             session.complete()
-            context = ScoringContext(service, "fixture-run", operational_plan, binding)
+            score_authority = TrustedAuthority(LocalAtomicStore(profile, role="evaluator"))
+            context = ScoringContext(score_authority, "fixture-run", operational_plan, binding)
             with self.assertRaisesRegex(ValueError, "authenticated_reviewer_required"):
                 score.score(observations, packets, gold_file, reviews, receipt, out,
                             authoritative_score=context)

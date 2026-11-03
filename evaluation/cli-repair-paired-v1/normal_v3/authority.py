@@ -1,9 +1,9 @@
-"""#580: prospective v3 external run/first-score authority.
+"""#580: prospective v3 operator-owned run/first-score authority.
 
-Only an independently operator-provisioned object store is trusted. This module
-never reads a backend/ledger URI from an evaluation receipt and never authorizes
-a real provider call. Storage IAM, retention, runner isolation, HTTP evidence and
-semantic admission are separate externally verified deployment gates.
+The normal single-host backend is LocalAtomicStore. A shared/cloud backend is
+an explicit optional extension. This module never selects storage from receipt
+data and never authorizes a provider call. Native-runtime, HTTP/accounting and
+semantic-review acceptance remain separate from durable local claims.
 """
 import json
 import re
@@ -182,7 +182,7 @@ def validate_frozen_receipt(receipt, plan, local_receipt, *,
 
 
 class GCSAtomicStore:
-    """GCS strong-consistency object store, bound to an OPERATOR-selected bucket.
+    """Optional distributed extension; NOT required for Core/CLI/local evaluation.
 
     The operator must separately attest IAM: publisher writes immutable receipts;
     executor can READ receipts and CREATE claim objects only, never update/delete
@@ -227,7 +227,10 @@ class GCSAtomicStore:
 
 @dataclass(frozen=True)
 class AuthorityBinding:
-    """External identities measured by separately admitted source/image tools."""
+    """Frozen execution artifacts. A native profile pins a native bundle hash
+    in the legacy image_sha256 field; it does not require a container image.
+    Historical receipts retain their original artifact meaning.
+    """
     source_sha256: str
     image_sha256: str
     cli_build_sha256: str
@@ -238,7 +241,9 @@ class AuthorityBinding:
 
 @dataclass(frozen=True)
 class ScoringContext:
-    """Trusted, operator-injected context; never derived from a receipt URI."""
+    """Operator-injected context, normally a fixed local profile on one host.
+    Never infer the authority from an output directory or receipt URI.
+    """
     authority: object
     evaluation_id: str
     plan: dict
@@ -246,11 +251,11 @@ class ScoringContext:
 
 
 class TrustedAuthority:
-    """No host-local fallback, no receipt-selected storage, no implicit retry."""
+    """Explicit fixed storage, no receipt-selected location or implicit retry."""
     def __init__(self, store):
         check(callable(getattr(store, "read", None))
               and callable(getattr(store, "create", None)),
-              "external_atomic_store_required")
+              "operator_owned_atomic_store_required")
         self._store = store
 
     def _receipt(self, evaluation_id):
