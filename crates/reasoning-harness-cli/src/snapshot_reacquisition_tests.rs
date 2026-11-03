@@ -157,6 +157,196 @@ fn first_admission_then_identical_snapshot_is_no_result_with_actual_cost() {
         first.final_artifact.verification_receipts
     );
 }
+
+#[test]
+fn captured_evidence_uses_same_admission_and_duplicate_rules() {
+    let resolver =
+        captured_evidence::CapturedEvidenceResolver::new(&[serde_json::to_value(raw()).unwrap()])
+            .unwrap();
+    let mut policy = config();
+    policy.resolver_name = captured_evidence::RESOLVER_ID;
+    let admission = ExternalEvidenceAdmissionPolicy::new(policy);
+    let input = HarnessInput {
+        task: "Determine value".into(),
+        ..Default::default()
+    };
+    let first = run_investigation_resolution(
+        input,
+        ReasoningCandidate::default(),
+        &resolver,
+        Some(&admission),
+        request("first"),
+    )
+    .unwrap();
+    assert_eq!(
+        first.attempts[0].status,
+        ResolutionAttemptStatus::AppliedEvidence
+    );
+    assert_eq!(
+        first.attempts[0].adapter_name,
+        captured_evidence::RESOLVER_ID
+    );
+    let second = run_investigation_resolution(
+        input_from_artifact(&first.final_artifact),
+        ReasoningCandidate::default(),
+        &resolver,
+        Some(&admission),
+        request("second"),
+    )
+    .unwrap();
+    assert_eq!(second.attempts[0].status, ResolutionAttemptStatus::NoResult);
+    assert_eq!(second.attempts[0].cost.calls, 1);
+    assert_eq!(
+        second.final_artifact.evidence,
+        first.final_artifact.evidence
+    );
+    assert_eq!(
+        second.final_artifact.verification_receipts,
+        first.final_artifact.verification_receipts
+    );
+}
+
+#[test]
+fn captured_evidence_cannot_bypass_source_time_scope_or_missing_admission() {
+    let mut variants = Vec::new();
+    let mut item = raw();
+    item.source = "unknown".into();
+    variants.push(item);
+    let mut item = raw();
+    item.acquisition_metadata.observed_at_unix_seconds = None;
+    variants.push(item);
+    let mut item = raw();
+    item.acquisition_metadata.observed_at_unix_seconds = Some(1);
+    variants.push(item);
+    let mut item = raw();
+    item.acquisition_metadata.claimed_authority_class = Some("untrusted".into());
+    variants.push(item);
+    let mut item = raw();
+    item.acquisition_metadata.scope = Some(BTreeMap::from([(
+        "region".into(),
+        ScopeCoverage::Values {
+            values: BTreeSet::from(["wrong-region".into()]),
+        },
+    )]));
+    variants.push(item);
+    for item in variants {
+        let resolver = captured_evidence::CapturedEvidenceResolver::new(&[serde_json::to_value(
+            item,
+        )
+        .unwrap()])
+        .unwrap();
+        let mut policy = config();
+        policy.resolver_name = captured_evidence::RESOLVER_ID;
+        policy.sources.get_mut("source-1").unwrap().scope = Some(BTreeMap::new());
+        let admission = ExternalEvidenceAdmissionPolicy::new(policy);
+        let result = run_investigation_resolution(
+            HarnessInput {
+                task: "Determine value".into(),
+                ..Default::default()
+            },
+            ReasoningCandidate::default(),
+            &resolver,
+            Some(&admission),
+            request("first"),
+        )
+        .unwrap();
+        assert_eq!(
+            result.attempts[0].status,
+            ResolutionAttemptStatus::RejectedUntrustedEvidence
+        );
+        assert!(result.final_artifact.evidence.is_empty());
+    }
+    let resolver =
+        captured_evidence::CapturedEvidenceResolver::new(&[serde_json::to_value(raw()).unwrap()])
+            .unwrap();
+    let result = run_investigation_resolution(
+        HarnessInput {
+            task: "Determine value".into(),
+            ..Default::default()
+        },
+        ReasoningCandidate::default(),
+        &resolver,
+        None,
+        request("first"),
+    )
+    .unwrap();
+    assert_eq!(
+        result.attempts[0].status,
+        ResolutionAttemptStatus::RejectedUntrustedEvidence
+    );
+    assert!(result.final_artifact.evidence.is_empty());
+}
+
+#[test]
+fn captured_evidence_rejects_invalid_inventory_and_noninvestigation_requests() {
+    use captured_evidence::CapturedEvidenceResolver;
+    let value = serde_json::to_value(raw()).unwrap();
+    for records in [
+        vec![],
+        vec![value.clone(), value.clone()],
+        vec![serde_json::json!({"id":"x","source":"s","observation":"x","program":"sh"})],
+        vec![serde_json::json!({"id":"x","source":"s","observation":"x".repeat(65536)})],
+    ] {
+        assert!(CapturedEvidenceResolver::new(&records).is_err());
+    }
+    let resolver = CapturedEvidenceResolver::new(&[value.clone()]).unwrap();
+    let mut changed = value;
+    changed["observation"] = "different snapshot".into();
+    let other = CapturedEvidenceResolver::new(&[changed]).unwrap();
+    assert_ne!(resolver.config_id(), other.config_id());
+    let mut wrong = request("first");
+    wrong.target = ResolutionTarget::Proposition {
+        proposition: Proposition {
+            key: "unit.value".into(),
+            value: "4".into(),
+        },
+    };
+    assert_eq!(
+        resolver.resolve(&wrong, 0).unwrap_err().kind,
+        reasoning_harness_core::ResolutionAdapterErrorKind::PolicyDenied
+    );
+}
+
+#[test]
+fn captured_evidence_config_requires_explicit_admission_and_read_only() {
+    let capability = serde_json::json!({
+        "id":"snapshot", "kind":"captured_evidence", "read_only":true,
+        "evidence":[raw()], "admission": {
+            "evaluation_time_unix_seconds":1010,
+            "authority_ranks":{"primary":20}, "minimum_authority_class":"primary",
+            "sources":{"source-1":{"authority_class":"primary","max_age_seconds":60}}
+        }
+    });
+    let config = |capability| {
+        serde_json::from_value::<CliFileConfig>(serde_json::json!({
+            "schema_version":CLI_CONFIG_CONTRACT_ID,
+            "resolution":{"investigation":{"capabilities":[capability]}}
+        }))
+    };
+    let valid = config(capability.clone()).unwrap();
+    let resolved = resolve_investigation_config(&LoadedCliConfig {
+        config: valid,
+        sources: vec![],
+    })
+    .unwrap()
+    .unwrap();
+    assert_eq!(
+        resolved.capabilities[0].descriptor.adapter,
+        captured_evidence::RESOLVER_ID
+    );
+    let mut missing = capability.clone();
+    missing.as_object_mut().unwrap().remove("admission");
+    assert!(config(missing).is_err());
+    let mut writable = capability;
+    writable["read_only"] = false.into();
+    assert!(
+        resolve_investigation_config(&LoadedCliConfig {
+            config: config(writable).unwrap(),
+            sources: vec![]
+        })
+        .is_err()
+    );
+}
 #[test]
 fn changed_raw_or_no_admission_stays_on_original_rejection_path() {
     let (input, candidate, _) = first_admission();

@@ -1,5 +1,9 @@
 # Prospective ordinary-CLI v3 collector / annotator / scorer (#574)
 
+**Next Mac evaluation:** [local paired preparation](LOCAL_PREPARATION.md) builds
+the two historical cores with one current CLI and prepares full source/config
+bindings and all 48 first requests without a model call or run claim.
+
 **#540 native supervision:** [Mac no-fork/lifeline policy](PROCESS_SUPERVISION.md)
 adds parent-loss detection, cooperative cancellation and a durable stop state.
 New native bundle v2 admits single-process Mac evaluation; external commands

@@ -46,7 +46,11 @@ def source_catalog(raw):
                 and type(source["source_version"]) is str and bool(source["source_version"]),
                 "missing_native_full_source")
     for evidence_id, binding in data["evidence_bindings"].items():
-        safe_id(evidence_id, "invalid_native_evidence_id")
+        # Evidence IDs are Engine identifiers (e.g. snapshot:rw-01:0),
+        # never filesystem names. Keep path/job identifiers separately strict.
+        require(type(evidence_id) is str and 0 < len(evidence_id) <= 512
+                and all(ord(char) >= 32 and ord(char) != 127 for char in evidence_id),
+                "invalid_native_evidence_id")
         fields = {"evidence_sha256", "source_id", "source_version"}
         strict_keys(binding, fields, fields, "native_evidence_binding")
         sha_field(binding["evidence_sha256"], "invalid_native_evidence_hash")

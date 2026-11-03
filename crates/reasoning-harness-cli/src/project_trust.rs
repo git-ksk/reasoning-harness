@@ -394,6 +394,7 @@ fn normalize_project_executables(
     if let Some(investigation) = resolution.investigation.as_mut() {
         for capability in &mut investigation.capabilities {
             match capability {
+                InvestigationCapabilityFileConfig::CapturedEvidence { .. } => {}
                 InvestigationCapabilityFileConfig::ExternalCommand { program, .. }
                 | InvestigationCapabilityFileConfig::McpReadonly { program, .. } => {
                     *program = resolve_program(project_root, program)?;
