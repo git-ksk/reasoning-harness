@@ -5,6 +5,7 @@ mod config_commands;
 mod diagnostic_trace;
 mod doctor;
 mod evaluation_http;
+mod evaluation_plan;
 mod final_render_compaction;
 mod generation_usage;
 mod human_presentation;
@@ -269,6 +270,12 @@ struct NaturalArgs {
     /// Real HTTP on numeric loopback only, for provider-free native acceptance.
     #[arg(long, hide = true, requires = "evaluation_http_journal_fd")]
     evaluation_http_loopback_url: Option<String>,
+    /// Freeze the actual first request without resolving credentials or making a provider call.
+    #[arg(long, hide = true, conflicts_with_all = ["evaluation_http_journal_fd", "diagnostic_trace", "ephemeral"])]
+    evaluation_request_plan: Option<PathBuf>,
+    /// Native evaluation: load only this explicit measured config, without user/project layers.
+    #[arg(long, hide = true, requires = "config")]
+    evaluation_isolated_config: bool,
     /// In-memory, untrusted conversation context used only by the interactive product path.
     #[arg(skip)]
     interactive_context: Vec<String>,
@@ -733,6 +740,10 @@ impl ModelAdapter for DiagnosticTestAdapter {
 }
 
 enum LiveGenerator {
+    Planning {
+        adapter: evaluation_plan::RequestPlanner,
+        provider: &'static str,
+    },
     Mistral(MistralAdapter),
     Google(GoogleAdapter),
     Groq(GroqAdapter),
@@ -783,6 +794,7 @@ impl LiveGenerator {
 
     fn set_single_provider_attempt(&mut self, enabled: bool) {
         match self {
+            Self::Planning { .. } => {}
             Self::Mistral(adapter) => adapter.set_single_attempt(enabled),
             Self::Google(adapter) => adapter.set_single_attempt(enabled),
             Self::Groq(adapter) => adapter.set_single_attempt(enabled),
@@ -794,6 +806,7 @@ impl LiveGenerator {
 
     fn adapter(&self) -> &dyn ModelAdapter {
         match self {
+            Self::Planning { adapter, .. } => adapter,
             Self::Mistral(adapter) => adapter,
             Self::Google(adapter) => adapter,
             Self::Groq(adapter) => adapter,
@@ -811,6 +824,12 @@ impl LiveGenerator {
         requested_model: &str,
     ) -> Result<(ReasoningCandidate, GenerationObservation), GenerationFailure> {
         match self {
+            Self::Planning {
+                adapter, provider, ..
+            } => {
+                generate_with_adapter(adapter, provider, requested_model, input, max_tokens, seed)
+                    .await
+            }
             Self::Mistral(adapter) => {
                 generate_with_adapter(adapter, "mistral", requested_model, input, max_tokens, seed)
                     .await
@@ -1061,6 +1080,7 @@ impl LiveGenerator {
 
     fn provider_label(&self) -> &'static str {
         match self {
+            Self::Planning { provider, .. } => provider,
             Self::Mistral(_) => "mistral",
             Self::Google(_) => "google",
             Self::Groq(_) => "groq",
@@ -4476,7 +4496,18 @@ async fn execute_natural_inner(
             "--config must be a file path; stdin config is not supported",
         ));
     }
-    let loaded_config = if args.no_config {
+    let loaded_config = if args.evaluation_isolated_config {
+        let mut loaded = LoadedCliConfig::default();
+        merge_config_file(
+            &mut loaded,
+            args.config.as_ref().ok_or_else(|| {
+                CliError::new("configuration", "explicit evaluation config required")
+            })?,
+            "explicit",
+        )
+        .map_err(|error| CliError::new("configuration", error))?;
+        loaded
+    } else if args.no_config {
         LoadedCliConfig::default()
     } else {
         load_cli_config(args.config.as_ref())
@@ -5409,6 +5440,9 @@ async fn execute_natural(
 }
 
 async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
+    if let Some(path) = args.evaluation_request_plan.clone() {
+        return evaluation_plan::write_plan(args, &path).await;
+    }
     let explicit_plain = args.plain;
     let output = execute_natural(args, None).await?;
     match output.configuration.output_format {
@@ -6582,6 +6616,8 @@ fn continuation_args(
         evaluation_http_max_attempts: None,
         evaluation_http_token_reserve: None,
         evaluation_http_loopback_url: None,
+        evaluation_request_plan: None,
+        evaluation_isolated_config: false,
         interactive_context: vec![],
         session_usage_baseline: None,
     }
@@ -7584,6 +7620,16 @@ async fn run(cli: Cli) -> Result<(), CliError> {
         resume,
     } = cli;
     let managed_resume_requested = continue_session || resume.is_some();
+    if (natural.evaluation_request_plan.is_some()
+        || natural.evaluation_isolated_config
+        || natural.evaluation_http_journal_fd.is_some())
+        && (managed_resume_requested || command.is_some() || natural.task.is_none())
+    {
+        return Err(CliError::new(
+            "configuration",
+            "request planning requires a fresh one-shot natural TASK",
+        ));
+    }
     if managed_resume_requested && natural.ephemeral {
         return Err(CliError::new(
             "input",

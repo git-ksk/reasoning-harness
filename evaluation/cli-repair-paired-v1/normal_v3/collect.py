@@ -207,9 +207,13 @@ def audit_http(events, trace, result, provider, model):
         require(type(usage.get(field)) is int and usage[field] == actual, "cli_http_usage_mismatch")
     require(type(usage.get("model_calls")) is int and usage["model_calls"] > 0, "missing_logical_calls")
     require(
-        usage["model_calls"] == sum(
-            item.get("kind") == "model_request" for item in trace["events"]
-        ),
+        # The CLI counts a generation once. Its structured-output fallback
+        # invokes generate() again under the SAME diagnostic correlation.
+        # Physical adapter/HTTP attempts are accounted separately above.
+        usage["model_calls"] == len({
+            item["correlation_id"] for item in trace["events"]
+            if item.get("kind") == "model_request"
+        }),
         "cli_trace_model_calls_mismatch",
     )
     # Traces are retained byte-for-byte. Phase 3 must additionally establish

@@ -603,7 +603,7 @@ fn sanitized_value<T: Serialize>(value: &T) -> Value {
         .unwrap_or(Value::Null)
 }
 
-fn sanitize_value(value: Value) -> Value {
+pub(crate) fn sanitize_value(value: Value) -> Value {
     match value {
         Value::Object(map) => Value::Object(
             map.into_iter()

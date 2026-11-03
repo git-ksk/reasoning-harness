@@ -27,7 +27,7 @@ The #583 acceptance correction requires the hashed wheel-only
 environment. See [the current 134-test Mac acceptance record](local-acceptance-20261103.md)
 and the preserved [earlier 118-test signature record](acceptance-20261103.md).
 
-This module is separate from the historical `collect.py`, `score_development_first.py` and frozen v1/v2 bridge. The [native Mistral HTTP journal](NATIVE_HTTP.md) now connects the real CLI transport and trace to fixed local authority records, with actual loopback subprocess controls. The complete admitted live scheduler is still pending: #574/#582 require native runtime/source review, full display/source capture and pre-advance safety. No Docker image or cloud infrastructure is required by the native profile.
+This module is separate from the historical `collect.py`, `score_development_first.py` and frozen v1/v2 bridge. The [native Mistral HTTP journal](NATIVE_HTTP.md) connects real transport/trace to fixed local authority. The [#582 native admission profile](NATIVE_ADMISSION.md) now adds prospective model-free request planning, measured native artifacts, complete stdout/stderr/source packets and enrolled pre-advance decisions; all 48 actual CLI children pass loopback controls. Real operator/source/reviewer enrollment, provider admission and semantic acceptance remain separate. No Docker image or cloud infrastructure is required.
 
 ## Inputs and data provenance
 

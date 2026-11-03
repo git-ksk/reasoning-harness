@@ -35,7 +35,7 @@ def demo_fixture(root, *, phase=None, label="positive", text="", status="require
         failure["model_output_diagnostic"] = diagnostic
     attempt_count = 2 if phase else 1
     usage = {
-        "tracked_from_session_start": True, "model_calls": attempt_count,
+        "tracked_from_session_start": True, "model_calls": 1,
         "provider_attempts": attempt_count,
         "input_tokens": attempt_count * 2,
         "output_tokens": attempt_count * 3,

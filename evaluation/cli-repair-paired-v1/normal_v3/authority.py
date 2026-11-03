@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from contracts import canonical, digest, safe_id, sha_field
 
 RECEIPT = "reason-cli-normal-v3-authority-receipt-v1"
+NATIVE_RECEIPT = "reason-cli-normal-v3-native-authority-receipt-v1"
 RUN_CLAIM = "reason-cli-normal-v3-authority-run-claim-v1"
 RESERVATION = "reason-cli-normal-v3-authority-reservation-v1"
 INFLIGHT = "reason-cli-normal-v3-authority-inflight-v1"
@@ -149,9 +150,15 @@ def freeze_jobs(plan):
 def validate_frozen_receipt(receipt, plan, local_receipt, *,
                             source_sha256, image_sha256, cli_build_sha256,
                             runtime_sha256, executor_id, evaluator_id):
-    check(type(receipt) is dict and set(receipt) == RECEIPT_KEYS,
+    native_required = type(receipt) is dict and receipt.get("contract") == NATIVE_RECEIPT
+    check(type(receipt) is dict and set(receipt) == RECEIPT_KEYS | ({"native_admission"} if native_required else set()),
           "invalid_authority_receipt_schema")
-    check(receipt["contract"] == RECEIPT, "invalid_authority_receipt_version")
+    check(receipt["contract"] in (RECEIPT, NATIVE_RECEIPT), "invalid_authority_receipt_version")
+    if native_required:
+        profile = receipt["native_admission"]
+        check(type(profile) is dict and set(profile) == {"bundle_sha256", "policy_sha256", "sources_sha256"}
+              and profile["bundle_sha256"] == image_sha256, "invalid_native_authority_profile")
+        for value in profile.values(): sha_field(value, "invalid_native_authority_profile_hash")
     safe_id(receipt["evaluation_id"], "invalid_evaluation_id")
     check(type(executor_id) is str and type(evaluator_id) is str
           and executor_id != evaluator_id, "authority_principal_separation_required")
@@ -362,6 +369,21 @@ class TrustedAuthority:
         # Every reservation, pre-spawn marker and fully known observation
         # must exist and be bound to the EXACT receipt. The completion marker
         # by itself does not establish a credible 48-job execution.
+        native_raw = self._store.read(_key(evaluation_id, "native-admission-profile"))
+        check(receipt["contract"] != NATIVE_RECEIPT or native_raw is not None,
+              "native_pre_advance_profile_required_for_score")
+        native = None
+        admission_hashes = []
+        if native_raw is not None:
+            native = json.loads(native_raw)
+            check(canonical(native) == native_raw and native.get("contract") == "reason-cli-normal-v3-native-admission-profile-v1"
+                  and native.get("authority_receipt_sha256") == authority_sha
+                  and native.get("bundle_sha256") == receipt["image_sha256"], "untrusted_native_admission_profile")
+            for name in ("policy_sha256", "sources_sha256"):
+                sha_field(native.get(name), "invalid_native_admission_profile")
+            if receipt["contract"] == NATIVE_RECEIPT:
+                check(all(native.get(k) == v for k, v in receipt["native_admission"].items()),
+                      "native_admission_receipt_profile_mismatch")
         charge = 0
         for ordinal, item in enumerate(receipt["jobs"]):
             jid = item["job_id"]
@@ -402,11 +424,28 @@ class TrustedAuthority:
                   and obs.get("observation_sha256") == observation_hashes[jid],
                   "untrusted_authority_observation")
             charge += item["reserve_tokens"]
+            if native is not None:
+                admitted_raw = self._store.read(_key(evaluation_id, "admission/" + jid))
+                check(type(admitted_raw) is bytes, "native_pre_advance_record_missing")
+                admitted = json.loads(admitted_raw)
+                check(canonical(admitted) == admitted_raw
+                      and admitted.get("contract") == "reason-cli-normal-v3-native-admission-v1"
+                      and admitted.get("job_id") == jid
+                      and admitted.get("native_profile_sha256") == digest(native_raw)
+                      and admitted.get("observation_sha256") == observation_hashes[jid]
+                      and admitted.get("authentication", {}).get("policy_sha256") == native["policy_sha256"],
+                      "untrusted_native_pre_advance_record")
+                sha_field(admitted.get("packet_sha256"), "invalid_native_packet_hash")
+                sha_field(admitted["authentication"].get("attestation_sha256"), "invalid_native_review_hash")
+                admission_hashes.append(digest(admitted_raw))
         check(type(result["charged_reservation_tokens"]) is int
               and result["charged_reservation_tokens"] == charge
               and charge <= receipt["token_budget"],
               "untrusted_authority_charged_budget")
         review_binding = {}
+        if native is not None:
+            review_binding["native_admission_profile_sha256"] = digest(native_raw)
+            review_binding["ordered_pre_advance_records_sha256"] = digest(canonical(admission_hashes))
         if review_authentication_sha256 is not None:
             sha_field(review_authentication_sha256, "invalid_review_authentication_digest")
             review_binding["review_authentication_sha256"] = review_authentication_sha256
@@ -434,6 +473,46 @@ class RunSession:
         self._http_binding = None
         self._http_captured = False
         self._http_usage = None
+        self._native_profile = None
+        self._admitted_observation = None
+
+    def enable_native_admission(self, *, bundle_sha256, policy_sha256, sources_sha256):
+        check(not self._halted and self._next == 0 and self._inflight is None
+              and self._native_profile is None, "native_admission_must_precede_reservation")
+        for value in (bundle_sha256, policy_sha256, sources_sha256):
+            sha_field(value, "invalid_native_admission_profile_hash")
+        check(bundle_sha256 == self._receipt["image_sha256"], "native_bundle_receipt_mismatch")
+        if self._receipt["contract"] == NATIVE_RECEIPT:
+            check(self._receipt["native_admission"] == dict(bundle_sha256=bundle_sha256,
+                policy_sha256=policy_sha256, sources_sha256=sources_sha256), "native_admission_receipt_profile_mismatch")
+        self._native_profile = {"contract": "reason-cli-normal-v3-native-admission-profile-v1",
+            "authority_receipt_sha256": self._sha, "bundle_sha256": bundle_sha256,
+            "policy_sha256": policy_sha256, "sources_sha256": sources_sha256}
+        self._write("native-admission-profile", self._native_profile)
+
+    def acknowledge_native_admission(self, job_id, *, packet_sha256, observation_sha256, authentication):
+        from native_admission import VerifiedAdvance
+        check(type(authentication) is VerifiedAdvance, "verified_native_admission_capability_required")
+        expected = json.loads(authentication.expected_bytes)
+        check(all(expected.get(k) == v for k, v in {
+            "evaluation_id": self._receipt["evaluation_id"], "job_id": job_id,
+            "authority_receipt_sha256": self._sha, "http_binding_sha256": self._http_binding,
+            "packet_sha256": packet_sha256, "observation_sha256": observation_sha256,
+        }.items()), "native_admission_capability_binding_mismatch")
+        authentication = authentication.authentication
+        check(not self._halted and self._native_profile is not None and self._http_captured
+              and self._inflight == job_id and self._inflight_ack
+              and self._admitted_observation is None, "native_admission_state_mismatch")
+        for value in (packet_sha256, observation_sha256, authentication.get("attestation_sha256")):
+            sha_field(value, "invalid_native_admission_hash")
+        check(authentication.get("policy_sha256") == self._native_profile["policy_sha256"]
+              and authentication.get("contract") == "reason-cli-normal-v3-pre-advance-review-v1",
+              "native_admission_policy_mismatch")
+        self._write("admission/" + job_id, {"contract": "reason-cli-normal-v3-native-admission-v1",
+            "job_id": job_id, "native_profile_sha256": digest(canonical(self._native_profile)),
+            "packet_sha256": packet_sha256, "observation_sha256": observation_sha256,
+            "authentication": authentication})
+        self._admitted_observation = observation_sha256
 
     def _write(self, suffix, data):
         try:
@@ -446,6 +525,8 @@ class RunSession:
 
     def reserve(self, job_id):
         check(not self._halted and self._inflight is None, "authority_run_halted_or_inflight")
+        check(self._receipt["contract"] != NATIVE_RECEIPT or self._native_profile is not None,
+              "native_pre_advance_profile_required_before_reservation")
         check(self._next < len(self._receipt["jobs"]), "authority_no_next_job")
         job = self._receipt["jobs"][self._next]
         check(job_id == job["job_id"], "authority_job_order_mismatch")
@@ -465,6 +546,7 @@ class RunSession:
         self._http_binding = None
         self._http_captured = False
         self._http_usage = None
+        self._admitted_observation = None
         return amount
 
     def freeze_http_capture(self, job_id, question):
@@ -528,6 +610,9 @@ class RunSession:
         elif self._http_binding is not None and self._http_usage != (tokens, attempts):
             tokens = attempts = None
             operational_failure = operational_failure or "native_http_usage_mismatch"
+        if self._native_profile is not None and (self._admitted_observation is None
+                or self._admitted_observation != observation_sha256):
+            operational_failure = operational_failure or "native_pre_advance_admission_missing"
         job = self._receipt["jobs"][self._next]
         if observation_sha256 is not None:
             sha_field(observation_sha256, "invalid_authority_observation_sha256")

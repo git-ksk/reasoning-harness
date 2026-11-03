@@ -164,7 +164,10 @@ jobs:
           cargo build --locked -p reasoning-harness-cli --bin reason
           v3_native_target_dir="${CARGO_TARGET_DIR:-$PWD/target}"
           case "$v3_native_target_dir" in /*) ;; *) v3_native_target_dir="$PWD/$v3_native_target_dir" ;; esac
-          REASON_V3_NATIVE_CLI="$v3_native_target_dir/debug/reason" PYTHONDONTWRITEBYTECODE=1 "$v3_review_python_env/bin/python" -B -m unittest discover -s evaluation/cli-repair-paired-v1/normal_v3 -p 'test_*.py' -v
+          v3_snapshot_pointer="$RUNNER_TEMP/v3-native-source-path"
+          python3 evaluation/cli-repair-paired-v1/normal_v3/ci_source_snapshot.py --source "$PWD" --binary "$v3_native_target_dir/debug/reason" --pointer "$v3_snapshot_pointer"
+          IFS= read -r v3_native_source < "$v3_snapshot_pointer"
+          REASON_V3_NATIVE_CLI="$v3_native_source/.native-bin/reason" PYTHONDONTWRITEBYTECODE=1 "$v3_review_python_env/bin/python" -B -m unittest discover -s "$v3_native_source/evaluation/cli-repair-paired-v1/normal_v3" -p 'test_*.py' -v
       - name: Validate cross-model concurrency policy
         run: python3 scripts/validate_cross_model_concurrency_policy.py
       - name: Validate Google canonical pacing policy
