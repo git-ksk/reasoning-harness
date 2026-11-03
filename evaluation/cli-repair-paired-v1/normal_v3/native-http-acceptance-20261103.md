@@ -38,6 +38,9 @@ A trailing response needs a subsequent completion marker to detect a modified
 or missing final record. Cancellation after a response but before pacing ends
 also needs to burn the call. Both controls are now part of the tested path.
 Loopback controls explicitly disable ambient proxies.
+The pacing-cancellation control now waits for the durable response record
+instead of a fixed delay. Parallel fixture paths include a process-local atomic
+sequence after a timestamp-only name collision was reproduced and corrected.
 
 ## Remaining
 

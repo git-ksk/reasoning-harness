@@ -240,7 +240,7 @@ mod tests {
         path::PathBuf,
         sync::{
             Arc,
-            atomic::{AtomicBool, Ordering},
+            atomic::{AtomicBool, AtomicU64, Ordering},
         },
         thread,
         time::{Duration, SystemTime, UNIX_EPOCH},
@@ -321,13 +321,15 @@ mod tests {
         }
     }
     fn fixture() -> (PathBuf, File, Arc<EvaluationHttpJournal>) {
+        static NEXT_FIXTURE: AtomicU64 = AtomicU64::new(0);
         let path = std::env::temp_dir().join(format!(
-            "reason-http-{}-{}",
+            "reason-http-{}-{}-{}",
             std::process::id(),
             SystemTime::now()
                 .duration_since(UNIX_EPOCH)
                 .unwrap()
-                .as_nanos()
+                .as_nanos(),
+            NEXT_FIXTURE.fetch_add(1, Ordering::Relaxed)
         ));
         let file = std::fs::OpenOptions::new()
             .read(true)
