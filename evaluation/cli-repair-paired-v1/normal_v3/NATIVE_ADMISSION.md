@@ -51,7 +51,12 @@ ambient user/project layers; configured programs must also be frozen.
 No shell, ambient loader/Python-path settings,
 stdin or implicit retry is used.
 
-Each child runs in a process group with bounded pipes and deadline. The parent
+The [#540 supervision policy](PROCESS_SUPERVISION.md) adds a required Mac
+no-fork/lifeline profile to new native bundle v2. External commands are rejected
+before planning; the Linux lifeline profile is control-only. The controller
+must persist launch identity before allowing provider work, and a killed
+controller causes its native CLI to terminate. Each child also runs in a
+process group with bounded pipes and deadline. The parent
 captures exact stdout and stderr bytes, not only `finalization.text`. Partial
 streams, overflow, a child lingering after closing streams, unknown exits,
 changed runtime, HTTP/usage inconsistency and malformed/ambiguous JSON cannot
@@ -103,8 +108,10 @@ records and scores are untouched.
 Signatures authenticate the enrolled decision, not semantic truth or human
 independence. The owner account, selected native code, operator catalog and
 runtime administrators are trust roots. File/role checks and Python capability
-types do not isolate hostile code at the same UID/root. Process-group tests do
-not prove that detached descendants terminated (#540).
+types do not isolate hostile code at the same UID/root. The new restricted Mac
+profile prevents descendant creation; arbitrary subprocess-capable runtimes
+remain outside its admission. Earlier process-group-only tests and the original
+detached-child counterexample retain their historical scope.
 
 Loopback controls use a dedicated purpose, `fixture-model`, fake key and test
 review signatures. They do not authorize provider use or establish a real
@@ -114,3 +121,5 @@ real semantic grading (#583), a new real F1, Engine release and CLI adoption
 remain distinct gates. `quality_go` remains false.
 
 See [Mac acceptance and review findings](native-admission-acceptance-20261103.md).
+The subsequent [#540 acceptance record](native-supervision-acceptance-20261103.md)
+covers new native bundle v2 and its restricted Mac process policy.

@@ -66,6 +66,26 @@ jobs:
             -- --exact --nocapture
       - name: Product CLI compatibility contract
         run: cargo test --locked -p reasoning-harness-cli --test product_cli_contract
+      - name: Mac native evaluation supervision controls
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-cli --bin reason evaluation_supervision -- --test-threads=1
+          v3_review_python_env="$RUNNER_TEMP/v3-mac-review-verifier"
+          python3 -m venv "$v3_review_python_env"
+          "$v3_review_python_env/bin/python" -m pip install -r evaluation/cli-repair-paired-v1/normal_v3/review-requirements.txt
+          v3_native_target_dir="${CARGO_TARGET_DIR:-$PWD/target}"
+          case "$v3_native_target_dir" in /*) ;; *) v3_native_target_dir="$PWD/$v3_native_target_dir" ;; esac
+          v3_snapshot_pointer="$RUNNER_TEMP/v3-mac-native-source-path"
+          python3 evaluation/cli-repair-paired-v1/normal_v3/ci_source_snapshot.py --source "$PWD" --binary "$v3_native_target_dir/debug/reason" --pointer "$v3_snapshot_pointer"
+          IFS= read -r v3_native_source < "$v3_snapshot_pointer"
+          v3_openssl_prefix="$(brew --prefix openssl@3)"
+          test -x "$v3_openssl_prefix/bin/openssl"
+          "$v3_openssl_prefix/bin/openssl" version
+          v3_test_pattern='test_*.py'
+          if test '${{ matrix.label }}' = 'macos-x86_64'; then v3_test_pattern='test_native_supervision.py'; fi
+          PATH="$v3_openssl_prefix/bin:$PATH" REASON_V3_NATIVE_CLI="$v3_native_source/.native-bin/reason" PYTHONDONTWRITEBYTECODE=1 "$v3_review_python_env/bin/python" -B -m unittest discover -s "$v3_native_source/evaluation/cli-repair-paired-v1/normal_v3" -p "$v3_test_pattern" -v
       - name: MCP product-surface contract
         run: cargo test --locked -p reasoning-harness-cli --test mcp_product_surface
       - name: Product CLI smoke

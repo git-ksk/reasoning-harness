@@ -14,7 +14,9 @@ from dataclasses import dataclass
 from contracts import canonical, digest, require, _open_safe_directory_path
 from authority import AuthorityBinding
 
-BUNDLE = "reason-cli-normal-v3-native-bundle-v1"
+BUNDLE = "reason-cli-normal-v3-native-bundle-v2"
+MAC_PROCESS_POLICY = "macos-no-fork-lifeline-v1"
+CONTROL_PROCESS_POLICY = "posix-lifeline-control-only-v1"
 SOURCE_DIRS = ("crates", "fixtures", "examples", "scripts", "evaluation/cli-repair-paired-v1/normal_v3")
 SOURCE_FILES = ("Cargo.toml", "Cargo.lock")
 IGNORED_PARTS = frozenset(("__pycache__", ".git", "target"))
@@ -122,6 +124,7 @@ class NativeBundle:
             enroll_file("runtime/" + name, path)
         require("runtime/python" in files and "runtime/verifier-lock" in files, "native_runtime_identity_missing")
         data = {"contract": BUNDLE, "scope": "single-host-native-owner-trusted",
+                "process_policy": MAC_PROCESS_POLICY if platform.system() == "Darwin" else CONTROL_PROCESS_POLICY,
                 "platform": platform.platform(), "python_version": platform.python_version(),
                 "runtime_parent_policy": "owner-and-os-runtime-administrators-trusted",
                 "source_roots": roots, "source_inventory": inventories, "files": files}
@@ -146,6 +149,9 @@ class NativeBundle:
 
     def verify(self):
         data = self.data
+        require(data.get("contract") == BUNDLE and data.get("process_policy") ==
+                (MAC_PROCESS_POLICY if platform.system() == "Darwin" else CONTROL_PROCESS_POLICY),
+                "native_process_policy_mismatch")
         require(data["platform"] == platform.platform() and data["python_version"] == platform.python_version(),
                 "native_runtime_platform_changed")
         for arm, root in data["source_roots"].items():

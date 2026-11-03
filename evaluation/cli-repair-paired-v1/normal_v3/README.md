@@ -1,5 +1,10 @@
 # Prospective ordinary-CLI v3 collector / annotator / scorer (#574)
 
+**#540 native supervision:** [Mac no-fork/lifeline policy](PROCESS_SUPERVISION.md)
+adds parent-loss detection, cooperative cancellation and a durable stop state.
+New native bundle v2 admits single-process Mac evaluation; external commands
+are rejected and Linux lifeline controls are not production containment.
+
 **#580 local authority:** [LocalAtomicStore](LOCAL_AUTHORITY.md) uses an
 operator-selected private filesystem profile on the same Mac/host. It persists
 48-job reserve/inflight/observed records and a once-only first-score claim
