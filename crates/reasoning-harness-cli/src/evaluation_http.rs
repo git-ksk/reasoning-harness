@@ -473,11 +473,27 @@ mod tests {
         let mut adapter =
             MistralAdapter::with_base_url("fixture-key", "fixture", &server.url).unwrap();
         adapter.set_http_observer(sink.clone());
-        assert!(
-            tokio::time::timeout(Duration::from_millis(200), call(&adapter, 1))
-                .await
-                .is_err()
-        );
+        {
+            let generation = call(&adapter, 1);
+            tokio::pin!(generation);
+            let response_saved = async {
+                loop {
+                    if std::fs::read_to_string(&path)
+                        .unwrap()
+                        .contains("\"kind\":\"response\"")
+                    {
+                        break;
+                    }
+                    tokio::time::sleep(Duration::from_millis(5)).await;
+                }
+            };
+            tokio::select! {
+                _ = &mut generation => panic!("call completed before the post-response cancellation control"),
+                result = tokio::time::timeout(Duration::from_secs(5), response_saved) => result.unwrap(),
+            }
+            // Drop while actual response evidence is durable and pacing is
+            // still pending, independently of host scheduling latency.
+        }
         assert!(call(&adapter, 2).await.is_err());
         assert_eq!(server.requests.lock().unwrap().len(), 1);
         assert!(std::fs::read_to_string(&path).unwrap().contains("aborted"));
