@@ -71,3 +71,6 @@ is not a mandatory gate for this single-host profile.
 
 See the [134-test Mac acceptance record](local-acceptance-20261103.md) for the
 verified local controls, native CLI smoke and remaining runtime gates.
+The subsequent [native HTTP journal](NATIVE_HTTP.md) binds actual Mistral
+transport/trace records and measured totals to this authority; it does not
+replace display/source/safety or real-review admission.

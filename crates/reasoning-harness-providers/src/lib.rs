@@ -3,6 +3,7 @@ pub mod external_admission;
 pub mod external_command;
 pub mod gemma;
 pub mod groq;
+pub mod http_observation;
 pub mod mcp_readonly;
 pub mod mcp_readonly_v2;
 pub mod mcp_readonly_v3;

@@ -4,6 +4,7 @@ mod auth;
 mod config_commands;
 mod diagnostic_trace;
 mod doctor;
+mod evaluation_http;
 mod final_render_compaction;
 mod generation_usage;
 mod human_presentation;
@@ -256,6 +257,18 @@ struct NaturalArgs {
     /// Write a diagnostic-only natural execution trace to PATH. This never changes model requests, evaluation, or product JSON output.
     #[arg(long, value_name = "PATH", hide = true)]
     diagnostic_trace: Option<PathBuf>,
+    /// Operator-provided private create-only journal FD; native evaluation only.
+    #[arg(long, hide = true, requires_all = ["diagnostic_trace", "evaluation_http_binding_sha256", "evaluation_http_max_attempts", "evaluation_http_token_reserve"])]
+    evaluation_http_journal_fd: Option<i32>,
+    #[arg(long, hide = true, requires = "evaluation_http_journal_fd")]
+    evaluation_http_binding_sha256: Option<String>,
+    #[arg(long, hide = true, requires = "evaluation_http_journal_fd")]
+    evaluation_http_max_attempts: Option<u32>,
+    #[arg(long, hide = true, requires = "evaluation_http_journal_fd")]
+    evaluation_http_token_reserve: Option<u64>,
+    /// Real HTTP on numeric loopback only, for provider-free native acceptance.
+    #[arg(long, hide = true, requires = "evaluation_http_journal_fd")]
+    evaluation_http_loopback_url: Option<String>,
     /// In-memory, untrusted conversation context used only by the interactive product path.
     #[arg(skip)]
     interactive_context: Vec<String>,
@@ -4592,6 +4605,31 @@ async fn execute_natural_inner(
     }
     let mut generator = make_generator(provider, &model)
         .map_err(|error| CliError::new(error.failure_class, error.message))?;
+    if let Some(fd) = args.evaluation_http_journal_fd {
+        let sink = evaluation_http::EvaluationHttpJournal::from_fd(
+            fd,
+            args.evaluation_http_binding_sha256.as_deref().unwrap_or(""),
+            args.evaluation_http_max_attempts.unwrap_or(0),
+            args.evaluation_http_token_reserve.unwrap_or(0),
+        )
+        .map_err(|error| CliError::new("transport", error.to_string()))?;
+        match &mut generator {
+            LiveGenerator::Mistral(adapter) => {
+                adapter.set_http_observer(Arc::new(sink));
+                if let Some(url) = &args.evaluation_http_loopback_url {
+                    adapter
+                        .set_evaluation_loopback_url(url)
+                        .map_err(|error| CliError::new("configuration", error.to_string()))?;
+                }
+            }
+            _ => {
+                return Err(CliError::new(
+                    "configuration",
+                    "evaluation HTTP journaling currently supports Mistral only",
+                ));
+            }
+        }
+    }
     generator.set_single_provider_attempt(
         usage_budget.max_output_tokens.is_some() || usage_budget.max_total_tokens.is_some(),
     );
@@ -6539,6 +6577,11 @@ fn continuation_args(
         plain: false,
         ephemeral: false,
         diagnostic_trace: None,
+        evaluation_http_journal_fd: None,
+        evaluation_http_binding_sha256: None,
+        evaluation_http_max_attempts: None,
+        evaluation_http_token_reserve: None,
+        evaluation_http_loopback_url: None,
         interactive_context: vec![],
         session_usage_baseline: None,
     }

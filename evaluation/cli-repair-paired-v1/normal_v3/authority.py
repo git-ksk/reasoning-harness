@@ -431,6 +431,9 @@ class RunSession:
         self._inflight = None
         self._inflight_ack = False
         self._halted = False
+        self._http_binding = None
+        self._http_captured = False
+        self._http_usage = None
 
     def _write(self, suffix, data):
         try:
@@ -459,7 +462,50 @@ class RunSession:
         self._reserved += amount
         self._inflight = job_id
         self._inflight_ack = False
+        self._http_binding = None
+        self._http_captured = False
+        self._http_usage = None
         return amount
+
+    def freeze_http_capture(self, job_id, question):
+        """Opt-in native transport binding, persisted before the child starts."""
+        check(not self._halted and self._inflight == job_id and not self._inflight_ack,
+              "authority_http_binding_before_spawn_required")
+        job = self._receipt["jobs"][self._next]
+        check(type(question) is str and digest(question.encode()) == job["question_sha256"],
+              "authority_http_question_mismatch")
+        binding = {
+            "contract": "reason-cli-normal-v3-native-http-binding-v1",
+            "authority_receipt_sha256": self._sha,
+            **{k: self._receipt[k] for k in (
+                "evaluation_id", "plan_sha256", "legacy_receipt_sha256", "source_sha256",
+                "image_sha256", "cli_build_sha256", "runtime_sha256", "executor_id", "provider", "model")},
+            "job": job, "question": question,
+        }
+        self._write("http/" + job_id + "/binding", binding)
+        self._http_binding = digest(canonical(binding))
+        return binding
+
+    def acknowledge_http_capture(self, job_id, *, binding_sha256, journal_sha256,
+                                 trace_sha256, http_sha256, tokens, attempts):
+        check(not self._halted and self._inflight == job_id and self._inflight_ack
+              and self._http_binding is not None and binding_sha256 == self._http_binding
+              and not self._http_captured, "authority_http_capture_mismatch")
+        hashes = dict(binding_sha256=binding_sha256, journal_sha256=journal_sha256,
+                      trace_sha256=trace_sha256, http_sha256=http_sha256)
+        for value in hashes.values():
+            sha_field(value, "invalid_native_http_capture_hash")
+        job = self._receipt["jobs"][self._next]
+        check(type(tokens) is int and 0 <= tokens <= job["reserve_tokens"]
+              and type(attempts) is int and 1 <= attempts <= job["max_provider_attempts"],
+              "invalid_native_http_capture_usage")
+        self._write("http/" + job_id + "/capture", {
+            "contract": "reason-cli-normal-v3-native-http-capture-v1",
+            "job_id": job_id, "authority_receipt_sha256": self._sha,
+            "tokens": tokens, "attempts": attempts, **hashes,
+        })
+        self._http_captured = True
+        self._http_usage = (tokens, attempts)
 
     def before_spawn(self, job_id):
         check(not self._halted and self._inflight == job_id,
@@ -476,6 +522,12 @@ class RunSession:
                 observation_sha256=None):
         check(self._inflight == job_id and self._inflight_ack and not self._halted,
               "authority_unmatched_observation")
+        if self._http_binding is not None and not self._http_captured:
+            tokens = attempts = None
+            operational_failure = operational_failure or "native_http_capture_missing"
+        elif self._http_binding is not None and self._http_usage != (tokens, attempts):
+            tokens = attempts = None
+            operational_failure = operational_failure or "native_http_usage_mismatch"
         job = self._receipt["jobs"][self._next]
         if observation_sha256 is not None:
             sha_field(observation_sha256, "invalid_authority_observation_sha256")

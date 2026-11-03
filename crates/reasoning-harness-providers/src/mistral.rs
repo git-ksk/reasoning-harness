@@ -1,6 +1,6 @@
 use std::{
     env,
-    sync::Mutex,
+    sync::{Arc, Mutex},
     time::{Duration, Instant, SystemTime},
 };
 
@@ -26,11 +26,47 @@ pub struct MistralAdapter {
     base_url: Url,
     model: String,
     single_attempt: bool,
+    http_observer: Option<Arc<dyn crate::http_observation::HttpObservationSink>>,
     execution_budget: Mutex<Option<ModelExecutionBudget>>,
     execution_telemetry: crate::network::ExecutionTelemetryCounters,
 }
 
 impl MistralAdapter {
+    /// Native evaluation opt-in. Observed calls never perform internal retries.
+    pub fn set_http_observer(
+        &mut self,
+        sink: Arc<dyn crate::http_observation::HttpObservationSink>,
+    ) {
+        self.http_observer = Some(sink);
+    }
+
+    /// Local loopback/provider-free acceptance through the real native CLI path.
+    pub fn set_evaluation_loopback_url(&mut self, url: &str) -> Result<(), ModelError> {
+        let url = Url::parse(url).map_err(|_| crate::http_observation::observation_error())?;
+        if self.http_observer.is_none()
+            || url.scheme() != "http"
+            || url.host_str() != Some("127.0.0.1")
+            || url.port().is_none()
+            || !url.username().is_empty()
+            || url.password().is_some()
+            || url.query().is_some()
+            || url.fragment().is_some()
+        {
+            return Err(crate::http_observation::observation_error());
+        }
+        // A loopback control must never send its request through an ambient
+        // HTTP proxy. Production clients retain their existing proxy policy.
+        self.client = Client::builder()
+            .no_proxy()
+            .redirect(reqwest::redirect::Policy::none())
+            .retry(reqwest::retry::never())
+            .timeout(DEFAULT_TIMEOUT)
+            .build()
+            .map_err(|_| crate::http_observation::observation_error())?;
+        self.base_url = url;
+        Ok(())
+    }
+
     /// Disable adapter-internal HTTP retries for cumulative token-budget enforcement.
     pub fn set_single_attempt(&mut self, enabled: bool) {
         self.single_attempt = enabled;
@@ -98,6 +134,7 @@ impl MistralAdapter {
             base_url,
             model,
             single_attempt: false,
+            http_observer: None,
             execution_budget: Mutex::new(None),
             execution_telemetry: crate::network::ExecutionTelemetryCounters::default(),
         })
@@ -131,6 +168,12 @@ impl MistralAdapter {
             random_seed: request.random_seed,
             temperature: 0.0,
         };
+
+        if let Some(observer) = &self.http_observer {
+            return self
+                .generate_observed(endpoint, &body, observer.clone())
+                .await;
+        }
 
         let mut rate_limit_retries = 0usize;
         let execution_budget = *self
@@ -289,6 +332,130 @@ impl MistralAdapter {
         }
 
         Ok(model_response)
+    }
+
+    async fn generate_observed(
+        &self,
+        endpoint: Url,
+        body: &ChatRequest<'_>,
+        observer: Arc<dyn crate::http_observation::HttpObservationSink>,
+    ) -> Result<ModelResponse, ModelError> {
+        use crate::http_observation::PendingHttpObservation;
+        // Freeze the exact bytes submitted to reqwest, without Authorization.
+        let bytes =
+            serde_json::to_vec(body).map_err(|_| crate::http_observation::observation_error())?;
+        let mut pending = PendingHttpObservation::begin(observer, &self.model, &bytes)?;
+        let budget = *self
+            .execution_budget
+            .lock()
+            .unwrap_or_else(|e| e.into_inner());
+        let remaining = crate::network::remaining_active_budget(Duration::ZERO, budget)?
+            .unwrap_or(DEFAULT_TIMEOUT)
+            .min(DEFAULT_TIMEOUT);
+        let started = Instant::now();
+        self.execution_telemetry.attempt_started();
+        let operation = async {
+            let mut response = self
+                .client
+                .post(endpoint)
+                .bearer_auth(&self.api_key)
+                .header(reqwest::header::CONTENT_TYPE, "application/json")
+                .body(bytes)
+                .send()
+                .await
+                .map_err(classify_transport_error)?;
+            let status = response.status();
+            let pacing = success_pacing_delay(response.headers());
+            let mut raw = Vec::new();
+            while let Some(chunk) = response.chunk().await.map_err(classify_transport_error)? {
+                if raw.len().saturating_add(chunk.len()) > 4 * 1024 * 1024 {
+                    return Err(ModelError::new(
+                        ModelErrorKind::Protocol,
+                        "Mistral evaluation response exceeds 4 MiB",
+                    ));
+                }
+                raw.extend_from_slice(&chunk);
+            }
+            let envelope: Option<Value> = serde_json::from_slice(&raw).ok();
+            let usage = ModelUsage {
+                input_tokens: envelope
+                    .as_ref()
+                    .and_then(|v| v.pointer("/usage/prompt_tokens"))
+                    .and_then(Value::as_u64),
+                output_tokens: envelope
+                    .as_ref()
+                    .and_then(|v| v.pointer("/usage/completion_tokens"))
+                    .and_then(Value::as_u64),
+                total_tokens: envelope
+                    .as_ref()
+                    .and_then(|v| v.pointer("/usage/total_tokens"))
+                    .and_then(Value::as_u64),
+            };
+            let parsed = if !status.is_success() {
+                Err(ModelError::new(
+                    classify_http_error(status, &String::from_utf8_lossy(&raw)),
+                    format!("Mistral evaluation returned HTTP {status}"),
+                ))
+            } else {
+                (|| {
+                    let response: ChatResponse = serde_json::from_slice(&raw).map_err(|_| {
+                        ModelError::new(
+                            ModelErrorKind::Protocol,
+                            "invalid Mistral evaluation response",
+                        )
+                    })?;
+                    if response.model != self.model {
+                        return Err(ModelError::new(
+                            ModelErrorKind::Protocol,
+                            "Mistral evaluation response model mismatch",
+                        ));
+                    }
+                    let choice = response.choices.into_iter().next().ok_or_else(|| {
+                        ModelError::new(
+                            ModelErrorKind::Protocol,
+                            "Mistral evaluation response contained no choices",
+                        )
+                    })?;
+                    Ok(ModelResponse {
+                        text: choice.message.content.into_text()?,
+                        model: response.model,
+                        usage: usage.clone(),
+                        provider_attempts: 1,
+                        finish_reason: choice.finish_reason,
+                    })
+                })()
+            };
+            let recorded = pending.finish(
+                status.as_u16(),
+                &raw,
+                usage,
+                parsed.as_ref().err().map(|_| "provider_error"),
+            );
+            let model_response = parsed?;
+            recorded?;
+            Ok((model_response, pacing))
+        };
+        let result = tokio::time::timeout(remaining, operation).await;
+        let active = started.elapsed();
+        self.execution_telemetry.attempt_completed(active);
+        let (response, pacing) = result
+            .map_err(|_| {
+                ModelError::new(
+                    ModelErrorKind::Timeout,
+                    "Mistral evaluation HTTP deadline exhausted",
+                )
+                .with_provider_attempts(1)
+            })?
+            .map_err(|e: ModelError| e.with_provider_attempts(1))?;
+        if let Some(delay) = pacing {
+            let delay = crate::network::bounded_wait(delay, Duration::ZERO, budget)
+                .map_err(|e| e.with_provider_attempts(1))?;
+            tokio::time::sleep(delay).await;
+            self.execution_telemetry
+                .wait_completed(crate::network::ProviderWaitKind::Pacing, delay);
+        }
+        pending.complete()?;
+        Ok(response)
     }
 }
 

@@ -1,0 +1,72 @@
+{
+  "contract": "reason-cli-normal-v3-native-http-acceptance-v1",
+  "date_jst": "2026-11-03",
+  "baseline_commit": "ac10f1eac49d7c5a422934b52eb51417ef66b851",
+  "scope": "implementing-agent source review and Mac native/loopback controls; no independent acceptance",
+  "tests": {
+    "python3.13": {
+      "passed": 145,
+      "skipped": 0,
+      "log_sha256": "22faa698cd63fd38f56f165ffa247d30df900f8141b1a0f9148c478ae7ed0183"
+    },
+    "python3.14": {
+      "passed": 145,
+      "skipped": 0,
+      "log_sha256": "cbdb0faaf57b290ba012e74dc3e4dfe886f786f869fd30349e460f1fc6c9234d"
+    }
+  },
+  "rust_cli": {
+    "passed": 276,
+    "existing_ignored": 4,
+    "log_sha256": "7f9d43ee2c8679206b7162d3c7033b99e8cd365607378cb4463ffec4d6033b35"
+  },
+  "rust_providers": {
+    "unit_passed": 170,
+    "unit_existing_ignored": 1,
+    "integration_passed": 1,
+    "integration_existing_ignored": 1,
+    "log_sha256": "40be7a191014158b81e18f5e7aa192aae6a3d0e11bcf2776843fc8e6aa61bf3f"
+  },
+  "strict_clippy": "pass",
+  "new_controls": {
+    "python": 11,
+    "actual_native_subprocess": 6,
+    "rust_transport": 4
+  },
+  "source_sha256": {
+    ".github/workflows/ci.yml": "290050a946e586be5355f9aa817065740db60eba35686b113d9f76b54ef1ff4d",
+    "crates/reasoning-harness-cli/src/main.rs": "64c6d5dd6fafd88009e2c33c10a2d33bb299e76779b31b882eb754a7ae29bd4c",
+    "crates/reasoning-harness-cli/src/diagnostic_trace.rs": "aa8431486f0bb863f46a1524150dec14e9b0b01114ed83c1d84d85e1a20330ce",
+    "crates/reasoning-harness-cli/src/evaluation_http.rs": "d4e8fcfc4ddc70e10c11141919cdc6cd9d0d2edacd913112889cddc88e820d82",
+    "crates/reasoning-harness-providers/src/lib.rs": "cb8b2709017cbd8fa914ab4d3163f84d36078da3155875251b0aa542fab10561",
+    "crates/reasoning-harness-providers/src/mistral.rs": "5e20cb1f6d32a5e68b1c5c099667168221ccd63ad8d22c1951bae9241fd25031",
+    "crates/reasoning-harness-providers/src/http_observation.rs": "ecf2accc743494bda4885227129e17b25d191c8c8ec00f35233c3478b9e1132e",
+    "evaluation/cli-repair-paired-v1/normal_v3/authority.py": "bd5fa9cb9008b226e96a81417cf1b03b0a18ab935ce3f63e2f9e24d1c14a65d8",
+    "evaluation/cli-repair-paired-v1/normal_v3/native_http.py": "2b41dec78c0c31a1aadc11003f1266095bcfea3f235e5e82b73b6128431f7dbc",
+    "evaluation/cli-repair-paired-v1/normal_v3/test_native_http.py": "43fb955a034f61b2c8d049ae4e4139ec52be374dd846b1957bc9467336cd0d9d",
+    "evaluation/cli-repair-paired-v1/normal_v3/contracts.py": "fc196b02767a57510f3862d2addd34d25c8c60a7fe7468bf8f993e270b407479",
+    "evaluation/cli-repair-paired-v1/normal_v3/collect.py": "b855a6b6206af72a14a1cd9158e5d1147b5865fb7ce82f46334aefa0b8da741f",
+    "evaluation/cli-repair-paired-v1/normal_v3/review-requirements.txt": "58a1106e3b3669fca7031641376d4aaca382ba3408cac0757226e990bf85ee55"
+  },
+  "native_cli_sha256": "f077a9f1a3079040129b3dd4b99bbb222a8b24d3e665fff2119eecacc99af74e",
+  "model_api_calls": 0,
+  "cloud_resource_operations": 0,
+  "local_http_requests": "loopback fixtures only; nonzero",
+  "quality_go": false,
+  "new_real_f1": null,
+  "remaining": [
+    "prospective source/native-bundle and first-request admission (#582)",
+    "full display/stdout/stderr/source binding and pre-advance safety (#582)",
+    "complete admitted native scheduler integration (#574/#581)",
+    "descendant and cancellation accounting (#540)",
+    "real enrolled semantic review (#583)"
+  ],
+  "not_claimed": [
+    "hostile same-UID/root isolation",
+    "provider-invoiced charge verification",
+    "other-provider journal admission",
+    "independent source or semantic acceptance",
+    "real 48-job model evaluation",
+    "Engine release or CLI adoption"
+  ]
+}
