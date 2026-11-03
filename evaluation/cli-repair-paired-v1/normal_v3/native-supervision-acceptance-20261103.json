@@ -1,0 +1,66 @@
+{
+  "contract": "reason-cli-normal-v3-native-supervision-acceptance-v1",
+  "date_jst": "2026-11-03",
+  "baseline_commit": "78903ed085477a0d6805be85ac45cf8338d8e2d7",
+  "scope": "implementing-agent review and Mac local engineering acceptance",
+  "native_bundle_contract": "reason-cli-normal-v3-native-bundle-v2",
+  "process_policy": "macos-no-fork-lifeline-v1",
+  "tests": {
+    "python3.13": {
+      "passed": 190,
+      "skipped": 0,
+      "log_sha256": "dc42c87e205af3f0617ff9924c57989015c82413b8c3966b2263577d62c2ca8d"
+    },
+    "python3.14": {
+      "passed": 190,
+      "skipped": 0,
+      "log_sha256": "aea892eaf8fbbed0a1b2365ffe1e7813a574d85b5cb71d6ef4f8d0d659338da2"
+    }
+  },
+  "new_python_controls": 19,
+  "new_rust_controls": 2,
+  "full_cohort_native_children": 48,
+  "source_sha256": {
+    ".github/workflows/cli-platform-smoke.yml": "cfd79cd8a9a0455e39c49bf3e3e7e6ff1757d1340ad408bfe86f5bb9783a7c75",
+    "crates/reasoning-harness-cli/src/main.rs": "b911f71db5e043e05a0c6b2f2bb552f71673a4c9a0e402db2e56862abc314a0f",
+    "crates/reasoning-harness-cli/src/evaluation_supervision.rs": "48f142b27a42a3026ba6fe5645cd3ec8f9269ca237c728075c0fd765fc640d50",
+    "docs/local-execution-policy.ja.md": "bb752aae9b964618abada516ee4d9c1c57bd04e215aa5031bf03b1e8087285cc",
+    "evaluation/cli-repair-paired-v1/normal_v3/authority.py": "ec1bcbab7545db0e2bb1cef81374a50f8aa69c750cb8923d5f0a633846c4aae8",
+    "evaluation/cli-repair-paired-v1/normal_v3/native_bundle.py": "136088cacd0e3dbce742425497538f4cea8ccccaa4709491da64452c1371a81a",
+    "evaluation/cli-repair-paired-v1/normal_v3/native_lane.py": "09b2ec48b4fa249f2966f625e6b26603bde40c14d3f6d0f389c3074e00666825",
+    "evaluation/cli-repair-paired-v1/normal_v3/test_native_supervision.py": "90955b5db2c63e8f82ab1ed3bc32ea306e82fba33726859be815ec8eb8e956ce",
+    "evaluation/cli-repair-paired-v1/normal_v3/test_native_admission.py": "27d984f921c4204220c30c7e1f64546f514d5e7fabed6d8378e5370666345d65",
+    "evaluation/cli-repair-paired-v1/normal_v3/PROCESS_SUPERVISION.md": "04ece0264bc069001a3826f861bb0feec0cdf11c88356d8e7e70da2116e67330",
+    "evaluation/cli-repair-paired-v1/normal_v3/NATIVE_ADMISSION.md": "82cc644fe0c6f8c083fead5da2069a0ea6479a7f43ec484825fcf0d8144a4de7",
+    "evaluation/cli-repair-paired-v1/normal_v3/README.md": "c9869326e3658a574f3efc854a589507c3d376ccb17f5e67e63368102fdf95dc"
+  },
+  "native_cli_sha256": "95726d39e335bffaecf7201bcd27f505250dc591e3029075cd8c14573ceb2dd0",
+  "model_api_calls": 0,
+  "cloud_resource_operations": 0,
+  "new_real_f1": null,
+  "quality_go": false,
+  "legacy_counterexample": {
+    "leader_exit": 0,
+    "streams_complete": true,
+    "detached_child_survived": true,
+    "control_cleanup": "explicit SIGKILL of known detached PID"
+  },
+  "not_claimed": [
+    "arbitrary external resolver or MCP stdio containment",
+    "Linux/Windows production containment",
+    "hostile same-UID/root/runtime isolation",
+    "power-loss acceptance",
+    "remote accepted-work cancellation or invoiced charges",
+    "real reviewer/source/provider enrollment",
+    "independent semantic acceptance",
+    "Engine release or CLI adoption"
+  ],
+  "rust_cli": {
+    "status": "pass",
+    "log_sha256": "77ecb3e6979fd070dc828a47d026919282c46c357a2c6c4905e26cfca9254b72"
+  },
+  "strict_workspace_clippy": {
+    "status": "pass",
+    "log_sha256": "1d5b16e963ab34a55de41fcae7df7ccbef10068874490b85d74c2002d18412c6"
+  }
+}

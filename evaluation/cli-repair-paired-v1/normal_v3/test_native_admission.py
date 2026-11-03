@@ -227,11 +227,13 @@ class SourceSnapshotTests(unittest.TestCase):
 class ScriptedServer:
     def __init__(self, mode="normal"):
         self.requests = []
+        self.release_event = threading.Event()
         owner = self
         class Handler(http.server.BaseHTTPRequestHandler):
             def do_POST(self):
                 request = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
                 owner.requests.append(request)
+                if mode == "hold": owner.release_event.wait(15)
                 schema = request.get("response_format", {}).get("json_schema", {}).get("name", "")
                 if mode == "decode": content = "not JSON"
                 elif schema == "reasoning_candidate" or (request.get("response_format", {}).get("type") == "json_object" and "candidate" in request["messages"][-1]["content"].lower()):
@@ -239,12 +241,14 @@ class ScriptedServer:
                 else: content = '{"text":"No verified answer is available.","factual_claims":[]}'
                 body = canonical({"model": "fixture-model", "choices": [{"message": {"content": content}, "finish_reason": "stop"}],
                                   "usage": {"prompt_tokens": 2, "completion_tokens": 3, "total_tokens": 5}})
-                self.send_response(200); self.send_header("Content-Length", str(len(body))); self.end_headers(); self.wfile.write(body)
+                try:
+                    self.send_response(200); self.send_header("Content-Length", str(len(body))); self.end_headers(); self.wfile.write(body)
+                except (BrokenPipeError, ConnectionResetError): pass
             def log_message(self, *args): pass
         self.server = http.server.HTTPServer(("127.0.0.1", 0), Handler)
         self.url = f"http://127.0.0.1:{self.server.server_port}/v1/"
         self.worker = threading.Thread(target=self.server.serve_forever, daemon=True); self.worker.start()
-    def close(self): self.server.shutdown(); self.server.server_close(); self.worker.join(10)
+    def close(self): self.release_event.set(); self.server.shutdown(); self.server.server_close(); self.worker.join(10)
 
 
 @unittest.skipUnless(os.environ.get("REASON_V3_NATIVE_CLI"), "set REASON_V3_NATIVE_CLI for actual 48-child controls")

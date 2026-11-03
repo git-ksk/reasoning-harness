@@ -351,6 +351,7 @@ class TrustedAuthority:
         check(cohort_claim == canonical(_cohort_record(receipt, authority_sha)),
               "untrusted_authority_cohort_claim")
         completed = self._store.read(_key(evaluation_id, "completed"))
+        check(self._store.read(_key(evaluation_id, "halted")) is None, "authority_run_explicitly_stopped")
         check(type(completed) is bytes, "authority_run_not_completed")
         expected = {
             "contract": COMPLETE, "evaluation_id": evaluation_id,
@@ -461,9 +462,20 @@ class TrustedAuthority:
         })
 
 
+def _session_serialized(method):
+    from functools import wraps
+    @wraps(method)
+    def locked(self, *args, **kwargs):
+        with self._state_lock: return method(self, *args, **kwargs)
+    return locked
+
+
 class RunSession:
     """A burned-on-start evaluation ID; never supports resume or unlock."""
     def __init__(self, store, receipt, receipt_sha):
+        import threading
+        self._state_lock = threading.RLock()
+        self._completed = False
         self._store, self._receipt, self._sha = store, receipt, receipt_sha
         self._next = 0
         self._reserved = 0
@@ -476,6 +488,7 @@ class RunSession:
         self._native_profile = None
         self._admitted_observation = None
 
+    @_session_serialized
     def enable_native_admission(self, *, bundle_sha256, policy_sha256, sources_sha256):
         check(not self._halted and self._next == 0 and self._inflight is None
               and self._native_profile is None, "native_admission_must_precede_reservation")
@@ -490,6 +503,7 @@ class RunSession:
             "policy_sha256": policy_sha256, "sources_sha256": sources_sha256}
         self._write("native-admission-profile", self._native_profile)
 
+    @_session_serialized
     def acknowledge_native_admission(self, job_id, *, packet_sha256, observation_sha256, authentication):
         from native_admission import VerifiedAdvance
         check(type(authentication) is VerifiedAdvance, "verified_native_admission_capability_required")
@@ -523,6 +537,7 @@ class RunSession:
             self._halted = True
             raise
 
+    @_session_serialized
     def reserve(self, job_id):
         check(not self._halted and self._inflight is None, "authority_run_halted_or_inflight")
         check(self._receipt["contract"] != NATIVE_RECEIPT or self._native_profile is not None,
@@ -549,6 +564,21 @@ class RunSession:
         self._admitted_observation = None
         return amount
 
+    @_session_serialized
+    def stop(self, reason):
+        """Durable operator cancellation, with all reservations retained."""
+        check(type(reason) is str and bool(reason), "authority_stop_reason_required")
+        check(not self._completed, "authority_run_already_completed")
+        if self._halted: return
+        # Latch before attempting I/O. A failed/ambiguous write must never
+        # restore permission to run or advance within this controller.
+        self._halted = True
+        self._write("halted", {"contract": "reason-cli-normal-v3-stop-v1",
+            "evaluation_id": self._receipt["evaluation_id"], "authority_receipt_sha256": self._sha,
+            "reason": reason, "inflight_job_id": self._inflight, "retry_allowed": False,
+            "charged_reservation_tokens": self._reserved})
+
+    @_session_serialized
     def freeze_http_capture(self, job_id, question):
         """Opt-in native transport binding, persisted before the child starts."""
         check(not self._halted and self._inflight == job_id and not self._inflight_ack,
@@ -568,6 +598,7 @@ class RunSession:
         self._http_binding = digest(canonical(binding))
         return binding
 
+    @_session_serialized
     def acknowledge_http_capture(self, job_id, *, binding_sha256, journal_sha256,
                                  trace_sha256, http_sha256, tokens, attempts):
         check(not self._halted and self._inflight == job_id and self._inflight_ack
@@ -589,6 +620,7 @@ class RunSession:
         self._http_captured = True
         self._http_usage = (tokens, attempts)
 
+    @_session_serialized
     def before_spawn(self, job_id):
         check(not self._halted and self._inflight == job_id,
               "authority_unreserved_spawn")
@@ -600,6 +632,7 @@ class RunSession:
         })
         self._inflight_ack = True
 
+    @_session_serialized
     def observe(self, job_id, *, tokens, attempts, operational_failure=None,
                 observation_sha256=None):
         check(self._inflight == job_id and self._inflight_ack and not self._halted,
@@ -640,6 +673,7 @@ class RunSession:
             self._halted = True
         return valid and operational_failure is None
 
+    @_session_serialized
     def complete(self):
         check(not self._halted and self._inflight is None
               and self._next == 48, "authority_incomplete_or_uncertain_run")
@@ -650,3 +684,4 @@ class RunSession:
             "job_count": 48, "unknown_usage": 0,
             "charged_reservation_tokens": self._reserved,
         })
+        self._completed = True

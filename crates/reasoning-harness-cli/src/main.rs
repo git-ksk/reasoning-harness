@@ -6,6 +6,7 @@ mod diagnostic_trace;
 mod doctor;
 mod evaluation_http;
 mod evaluation_plan;
+mod evaluation_supervision;
 mod final_render_compaction;
 mod generation_usage;
 mod human_presentation;
@@ -276,6 +277,11 @@ struct NaturalArgs {
     /// Native evaluation: load only this explicit measured config, without user/project layers.
     #[arg(long, hide = true, requires = "config")]
     evaluation_isolated_config: bool,
+    /// Native evaluation only: controller-owned private socket capability.
+    #[arg(long, hide = true)]
+    evaluation_lifeline_fd: Option<i32>,
+    #[arg(long, hide = true, requires = "evaluation_lifeline_fd")]
+    evaluation_no_fork: bool,
     /// In-memory, untrusted conversation context used only by the interactive product path.
     #[arg(skip)]
     interactive_context: Vec<String>,
@@ -6618,6 +6624,8 @@ fn continuation_args(
         evaluation_http_loopback_url: None,
         evaluation_request_plan: None,
         evaluation_isolated_config: false,
+        evaluation_lifeline_fd: None,
+        evaluation_no_fork: false,
         interactive_context: vec![],
         session_usage_baseline: None,
     }
@@ -7622,6 +7630,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
     let managed_resume_requested = continue_session || resume.is_some();
     if (natural.evaluation_request_plan.is_some()
         || natural.evaluation_isolated_config
+        || natural.evaluation_lifeline_fd.is_some()
         || natural.evaluation_http_journal_fd.is_some())
         && (managed_resume_requested || command.is_some() || natural.task.is_none())
     {
@@ -7629,6 +7638,10 @@ async fn run(cli: Cli) -> Result<(), CliError> {
             "configuration",
             "request planning requires a fresh one-shot natural TASK",
         ));
+    }
+    if let Some(fd) = natural.evaluation_lifeline_fd {
+        evaluation_supervision::install(fd, natural.evaluation_no_fork)
+            .map_err(|e| CliError::new("configuration", e))?;
     }
     if managed_resume_requested && natural.ephemeral {
         return Err(CliError::new(

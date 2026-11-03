@@ -8,8 +8,11 @@ import os
 from pathlib import Path
 import selectors
 import signal
+import socket
 import subprocess
+import threading
 import time
+import math
 
 from collect import collect_row
 from contracts import (FILES, canonical, digest, exclusive_json, frozen_request_digest,
@@ -17,6 +20,7 @@ from contracts import (FILES, canonical, digest, exclusive_json, frozen_request_
 from native_admission import ADMISSION, capture_display, source_catalog, verify_pre_advance
 from native_http import NativeHttpCapture, _unique
 from review_auth import validate_policy
+from native_bundle import MAC_PROCESS_POLICY
 
 CONTROL = "NATIVE_V3_LOOPBACK_CONTROL_NO_PROVIDER_EXECUTION"
 MAX_STREAM = 8 * 1024 * 1024
@@ -55,6 +59,17 @@ def validate_argv(argv, binary, question, bundle=None, budget=None):
     require(not any(x.startswith(("--file=", "--config=", "--resolver-command=")) for x in argv[1:-1]),
             "native_requires_canonical_path_options")
     if bundle is not None:
+        if bundle.data.get("process_policy") == MAC_PROCESS_POLICY:
+            require("--resolver-command" not in argv, "native_no_fork_external_program_rejected")
+            if "--config" in argv:
+                configured = json.loads(Path(argv[argv.index("--config") + 1]).read_bytes(), object_pairs_hook=_unique)
+                def no_program(value):
+                    if isinstance(value, dict):
+                        require("program" not in value, "native_no_fork_external_program_rejected")
+                        for child in value.values(): no_program(child)
+                    elif isinstance(value, list):
+                        for child in value: no_program(child)
+                no_program(configured)
         paths = {v["path"] for v in bundle.data["files"].values()}
         for index, flag in enumerate(argv[:-1]):
             if flag in ("--config", "--file", "--resolver-command"):
@@ -74,10 +89,12 @@ def plan_first_request(bundle, arm, argv, destination):
     validate_argv(argv, bundle.binary(arm), argv[-1], bundle)
     bundle.verify()
     isolation = ["--evaluation-isolated-config"] if "--config" in argv else []
-    result = subprocess.run(argv + isolation + ["--evaluation-request-plan", str(destination)],
-                            env={"PATH": "/usr/bin:/bin"}, stdin=subprocess.DEVNULL,
-                            capture_output=True, timeout=30, umask=0o077)
-    require(result.returncode == 0 and not result.stdout and not result.stderr, "native_request_planning_failed")
+    directory = Path(str(destination) + ".process"); private_new_directory(directory)
+    code, complete = capture_process(argv + isolation + ["--evaluation-request-plan", str(destination)],
+        directory=directory, environment={"PATH": "/usr/bin:/bin"}, pass_fds=(), timeout=30,
+        supervised=True, no_fork=bundle.data["process_policy"] == MAC_PROCESS_POLICY)
+    require(complete and code == 0 and not private_snapshot(directory / "cli.json")
+            and not private_snapshot(directory / "stderr.txt"), "native_request_planning_failed")
     bundle.verify()
     raw = private_snapshot(destination)
     planned = json.loads(raw, object_pairs_hook=_unique)
@@ -87,52 +104,129 @@ def plan_first_request(bundle, arm, argv, destination):
     return planned
 
 
-def capture_process(argv, *, directory, environment, pass_fds, timeout):
+class NativeCancelled(KeyboardInterrupt):
+    pass
+
+
+def capture_process(argv, *, directory, environment, pass_fds, timeout, cancel_grace=1,
+                    supervised=False, no_fork=False, stop_event=None):
     """Bounded complete non-TTY streams. Overflow/timeout/cancel cannot admit."""
-    process = subprocess.Popen(argv, env=environment, stdin=subprocess.DEVNULL,
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                               pass_fds=pass_fds, umask=0o077, start_new_session=True)
+    require(type(timeout) in (int, float) and math.isfinite(timeout) and 0 < timeout <= 600
+            and type(cancel_grace) in (int, float) and math.isfinite(cancel_grace) and 0 < cancel_grace <= 5,
+            "native_invalid_process_deadline")
+    parent = child = None
+    process = None
     streams = {"stdout": bytearray(), "stderr": bytearray()}
     complete = True
     reason = None
     selector = selectors.DefaultSelector()
-    for name, pipe in (("stdout", process.stdout), ("stderr", process.stderr)):
-        os.set_blocking(pipe.fileno(), False)
-        selector.register(pipe, selectors.EVENT_READ, name)
     deadline = time.monotonic() + timeout
+    handlers = {}
+    def cancelled(signum, _frame): raise NativeCancelled("native_controller_signal_" + str(signum))
+    def read_streams(wait):
+        nonlocal complete, reason
+        for key, _ in selector.select(wait):
+            raw = os.read(key.fileobj.fileno(), 65536)
+            if not raw: selector.unregister(key.fileobj); continue
+            output = streams[key.data]
+            room = MAX_STREAM - len(output)
+            output.extend(raw[:room])
+            if len(raw) > room: complete, reason = False, reason or "native_stream_overflow"
+    sent_interrupt = hard_killed = False
     try:
+        if stop_event is not None and stop_event.is_set(): raise NativeCancelled("native_cancelled_before_spawn")
+        # Install before spawn; SIGTERM must not abandon a child while we can
+        # still perform cooperative cancellation and persist partial streams.
+        if threading.current_thread() is threading.main_thread():
+            for sig in (signal.SIGINT, signal.SIGTERM):
+                handlers[sig] = signal.signal(sig, cancelled)
+        actual = list(argv)
+        inherited = tuple(pass_fds)
+        if supervised:
+            parent, child = socket.socketpair()
+            actual += ["--evaluation-lifeline-fd", str(child.fileno())]
+            if no_fork: actual += ["--evaluation-no-fork"]
+            inherited += (child.fileno(),)
+        process = subprocess.Popen(actual, env=environment, stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            pass_fds=inherited, umask=0o077, start_new_session=True)
+        if child is not None: child.close(); child = None
+        for name, pipe in (("stdout", process.stdout), ("stderr", process.stderr)):
+            os.set_blocking(pipe.fileno(), False)
+            selector.register(pipe, selectors.EVENT_READ, name)
+        if parent is not None:
+            handshake_deadline = min(deadline, time.monotonic() + 5)
+            ready = b"reason-evaluation-lifeline-v1\n"
+            received = b""
+            while len(received) < len(ready):
+                parent.settimeout(max(.001, handshake_deadline - time.monotonic()))
+                chunk = parent.recv(len(ready) - len(received))
+                require(bool(chunk), "native_lifeline_missing")
+                received += chunk
+            require(received == ready, "native_lifeline_wrong_handshake")
+        exclusive_json(Path(directory) / "supervision.json", {
+            "contract": "reason-native-process-supervision-v1", "pid": process.pid,
+            "argv": actual, "lifeline": supervised, "no_fork": no_fork,
+            "timeout_seconds": timeout, "cancel_grace_seconds": cancel_grace})
+        if stop_event is not None and stop_event.is_set(): raise NativeCancelled("native_cancelled_before_go")
+        if parent is not None: parent.sendall(b"G")
         while selector.get_map():
+            if stop_event is not None and stop_event.is_set(): raise NativeCancelled("native_cancelled")
             if time.monotonic() >= deadline:
                 complete, reason = False, "native_process_timeout"
                 break
-            for key, _ in selector.select(min(0.05, max(0, deadline - time.monotonic()))):
-                raw = os.read(key.fileobj.fileno(), 65536)
-                if not raw: selector.unregister(key.fileobj); continue
-                output = streams[key.data]
-                if len(output) + len(raw) > MAX_STREAM:
-                    complete, reason = False, "native_stream_overflow"
-                    break
-                output.extend(raw)
+            read_streams(min(0.05, max(0, deadline - time.monotonic())))
             if not complete: break
         # A child can close its streams yet remain alive. It still must exit
         # within the same wall-clock bound before any admission.
-        if complete:
-            try: process.wait(timeout=max(0.001, deadline - time.monotonic()))
-            except subprocess.TimeoutExpired: complete, reason = False, "native_process_timeout"
+        while complete and process.poll() is None:
+            if stop_event is not None and stop_event.is_set(): raise NativeCancelled("native_cancelled")
+            if time.monotonic() >= deadline:
+                complete, reason = False, "native_process_timeout"
+                break
+            time.sleep(.01)
     except BaseException:
         complete, reason = False, "native_process_interrupted"
         raise
     finally:
-        if process.poll() is None or not complete:
-            try: os.killpg(process.pid, signal.SIGKILL)
-            except ProcessLookupError: pass
-        process.wait(timeout=10)
-        selector.close(); process.stdout.close(); process.stderr.close()
-        for name, raw in streams.items():
-            private_bytes(Path(directory) / ("cli.json" if name == "stdout" else "stderr.txt"), bytes(raw))
-        exclusive_json(Path(directory) / "execution.json", {"exit_code": process.returncode,
-            "streams_complete": complete, "operational_failure": reason,
-            "stdout_sha256": digest(streams["stdout"]), "stderr_sha256": digest(streams["stderr"])})
+        # A second signal cannot skip cleanup. Restore prior handlers only
+        # after process reaping and durable output records.
+        for sig in handlers: signal.signal(sig, signal.SIG_IGN)
+        try:
+            if process is not None:
+                if process.poll() is None or not complete:
+                    try: os.killpg(process.pid, signal.SIGINT); sent_interrupt = True
+                    except ProcessLookupError: pass
+                    grace_deadline = time.monotonic() + cancel_grace
+                    while process.poll() is None and time.monotonic() < grace_deadline:
+                        read_streams(min(.05, max(0, grace_deadline - time.monotonic())))
+                    if not no_fork or process.poll() is None:
+                        try: os.killpg(process.pid, signal.SIGKILL); hard_killed = True
+                        except ProcessLookupError: pass
+                process.wait(timeout=10)
+                drain_deadline = time.monotonic() + .5
+                while selector.get_map() and time.monotonic() < drain_deadline:
+                    read_streams(.01)
+        except BaseException:
+            complete, reason = False, "native_cleanup_failed"
+            raise
+        finally:
+            # Even kill/read failures revoke the socket. The Mac native child
+            # then self-terminates; never abandon an open lifeline on error.
+            if parent is not None: parent.close()
+            if child is not None: child.close()
+            selector.close()
+            if process is not None:
+                process.stdout.close(); process.stderr.close()
+            try:
+                for name, raw in streams.items():
+                    private_bytes(Path(directory) / ("cli.json" if name == "stdout" else "stderr.txt"), bytes(raw))
+                exclusive_json(Path(directory) / "execution.json", {"exit_code": process.returncode if process else None,
+                    "streams_complete": complete, "operational_failure": reason, "sigint_sent": sent_interrupt,
+                    "sigkill_sent": hard_killed, "process_reaped": process is not None and process.returncode is not None,
+                    "stdout_sha256": digest(streams["stdout"]), "stderr_sha256": digest(streams["stderr"])})
+            finally:
+                for sig, previous in handlers.items(): signal.signal(sig, previous)
     return process.returncode, complete
 
 
@@ -190,6 +284,8 @@ class NativeLane:
                     "loopback_control_not_a_provider_admission")
             self.environment = {"PATH": "/usr/bin:/bin", "MISTRAL_API_KEY": "fixture-only-key", "NO_PROXY": "127.0.0.1"}
         else:
+            require(bundle.data.get("process_policy") == MAC_PROCESS_POLICY,
+                    "provider_execution_requires_macos_no_descendant_profile")
             require(plan.get("purpose") != CONTROL, "control_requires_explicit_loopback")
             environment = provider_environment or {}
             require(set(environment) <= {"MISTRAL_API_KEY", "REASON_CA_BUNDLE", "HTTPS_PROXY", "HTTP_PROXY", "NO_PROXY"},
@@ -203,6 +299,16 @@ class NativeLane:
         session.enable_native_admission(bundle_sha256=bundle.sha256, policy_sha256=digest(policy_bytes), sources_sha256=digest(catalog_bytes))
         self.next = 0
         self.pending = None
+        self.stop_event = threading.Event()
+
+    def cancel(self):
+        """Revoke this evaluation, including a child running on another thread.
+
+        Stop is durable and never clears or refunds a reservation. A killed
+        controller cannot call this API; the child's lifeline handles that case.
+        """
+        self.stop_event.set()
+        self.session.stop("native_controller_cancelled")
 
     def _halt(self, job_id, events, reason):
         if self.session._halted or self.session._inflight != job_id:
@@ -214,6 +320,7 @@ class NativeLane:
         self.pending = None
 
     def run_next(self):
+        require(not self.stop_event.is_set() and not self.session._halted, "native_run_cancelled_or_halted")
         require(self.pending is None and self.next < 48, "native_review_pending_or_finished")
         self.bundle.verify()
         job = self.plan["jobs"][self.next]
@@ -235,7 +342,8 @@ class NativeLane:
             self.session.before_spawn(job_id)
             self.bundle.verify()
             exit_code, complete = capture_process(argv, directory=capture.directory, environment=self.environment,
-                pass_fds=(capture.fd,), timeout=job["timeout_seconds"])
+                pass_fds=(capture.fd,), timeout=job["timeout_seconds"], cancel_grace=job.get("cancel_grace_seconds", 1),
+                supervised=True, no_fork=self.bundle.data["process_policy"] == MAC_PROCESS_POLICY, stop_event=self.stop_event)
             capture.close()
             require(complete and exit_code in (0, 1), "native_process_incomplete")
             self.bundle.verify()
@@ -257,6 +365,8 @@ class NativeLane:
                       "native_bundle_sha256": self.bundle.sha256, "invocation_sha256": digest(private_snapshot(capture.directory / "invocation.json")),
                       "stdout": stdout.decode("utf-8"), "stderr": stderr.decode("utf-8"), "exit_code": exit_code,
                       "observation": observation, "full_sources": self.catalog["sources"], "capture_files": files}
+            packet["execution_sha256"] = digest(private_snapshot(capture.directory / "execution.json"))
+            packet["supervision_sha256"] = digest(private_snapshot(capture.directory / "supervision.json"))
             exclusive_json(capture.directory / "pre-advance-packet.json", packet)
             packet_sha = digest(private_snapshot(capture.directory / "pre-advance-packet.json"))
             expected = {"contract": ADMISSION, "evaluation_id": self.session._receipt["evaluation_id"], "job_id": job_id,
@@ -284,6 +394,10 @@ class NativeLane:
                     "native_display_changed_before_advance")
             for name, value in observation["files"].items():
                 require(digest(private_snapshot(directory / name)) == value, "native_capture_changed_before_advance")
+            packet = json.loads(private_snapshot(directory / "pre-advance-packet.json"))
+            for name, field in (("execution.json", "execution_sha256"), ("supervision.json", "supervision_sha256")):
+                require(digest(private_snapshot(directory / name)) == packet[field], "native_supervision_changed_before_advance")
+            require(not self.stop_event.is_set() and not self.session._halted, "native_run_cancelled_or_halted")
             authentication = verify_pre_advance(policy_bytes=self.policy_bytes, attestation=attestation,
                 expected=expected, stdout=stdout, stderr=stderr, sources=self.catalog["sources"])
             private_bytes(directory / "pre-advance-attestation.json", attestation)
