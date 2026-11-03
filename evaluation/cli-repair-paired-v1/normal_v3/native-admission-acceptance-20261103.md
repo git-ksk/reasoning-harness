@@ -5,8 +5,8 @@ review and local engineering acceptance of the
 [native admission profile](NATIVE_ADMISSION.md); no independent acceptance or
 new model-quality result is claimed.
 
-- Mac Python 3.13 and 3.14 each pass **167/167**, including **22 new controls**.
-- Nine new actual CLI controls include prospective first-request planning,
+- Mac Python 3.13 and 3.14 each pass **169/169**, including **24 new controls**.
+- Ten new actual CLI controls include prospective first-request planning,
   full 48-child loopback execution, every pre-advance record, missing-record
   first-score refusal and once-only first-score storage. Safe, fully accounted
   local decode failures can advance only after a signed stream/source decision.
@@ -17,6 +17,9 @@ new model-quality result is claimed.
 - Source/binary/runtime content and inventory replacement, source version/
   evidence/quote mismatches, unbound facts, incomplete UTF-8 byte review,
   stream overflow and a child lingering after closing its pipes are rejected.
+- Explicit configuration planning/execution ignore an invalid ambient project
+  config; actual first-request hashes still match. Alternate `--file=...` path
+  spelling cannot bypass frozen artifact checks.
 - CLI unit tests **276 passed / 4 existing ignored**; strict Clippy,
   formatting, syntax and diff checks pass. Core contracts and historical
   v1/v2 raw/receipt/tag/first-score data are unchanged.

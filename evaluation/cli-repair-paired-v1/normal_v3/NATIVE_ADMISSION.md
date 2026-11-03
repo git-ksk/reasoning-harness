@@ -40,7 +40,11 @@ canonical source catalog. It requires a dedicated native authority receipt
 binding bundle, source-catalog and policy digests. That receipt cannot reserve
 work via the legacy session path before enabling native admission. Job argv,
 JSON/plain mode, path inputs, caps and first-request plans are checked against
-the frozen artifacts/receipt. No shell, ambient loader/Python-path settings,
+the frozen artifacts/receipt. Path options require canonical separate-token
+spelling; `--file=...` cannot skip inventory checks. Explicit measured configs
+use `--evaluation-isolated-config` in both planning and execution, without
+ambient user/project layers; configured programs must also be frozen.
+No shell, ambient loader/Python-path settings,
 stdin or implicit retry is used.
 
 Each child runs in a process group with bounded pipes and deadline. The parent

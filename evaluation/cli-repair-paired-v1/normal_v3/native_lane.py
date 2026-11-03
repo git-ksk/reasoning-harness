@@ -52,6 +52,8 @@ def validate_argv(argv, binary, question, bundle=None, budget=None):
             and "--plain" in argv and ("--no-config" in argv or "--config" in argv), "native_json_profile_required")
     require(not any(x.startswith(("--evaluation-", "--diagnostic-trace", "--continue", "--resume", "--ephemeral"))
                     for x in argv[1:-1]), "unfrozen_native_control_argument")
+    require(not any(x.startswith(("--file=", "--config=", "--resolver-command=")) for x in argv[1:-1]),
+            "native_requires_canonical_path_options")
     if bundle is not None:
         paths = {v["path"] for v in bundle.data["files"].values()}
         for index, flag in enumerate(argv[:-1]):
@@ -71,7 +73,8 @@ def plan_first_request(bundle, arm, argv, destination):
     """Uses the actual first-request builder; no key, model, response or HTTP."""
     validate_argv(argv, bundle.binary(arm), argv[-1], bundle)
     bundle.verify()
-    result = subprocess.run(argv + ["--evaluation-request-plan", str(destination)],
+    isolation = ["--evaluation-isolated-config"] if "--config" in argv else []
+    result = subprocess.run(argv + isolation + ["--evaluation-request-plan", str(destination)],
                             env={"PATH": "/usr/bin:/bin"}, stdin=subprocess.DEVNULL,
                             capture_output=True, timeout=30, umask=0o077)
     require(result.returncode == 0 and not result.stdout and not result.stderr, "native_request_planning_failed")
@@ -150,6 +153,18 @@ class NativeLane:
             question = plan["questions"][jid.rsplit("-", 1)[0]]
             validate_argv(job["argv"], bundle.binary(arm), question, bundle, job["budget"])
             for index, flag in enumerate(job["argv"][:-1]):
+                if flag == "--config":
+                    configured = json.loads(Path(job["argv"][index + 1]).read_bytes(), object_pairs_hook=_unique)
+                    def check_programs(value):
+                        if isinstance(value, dict):
+                            for key, child in value.items():
+                                if key == "program":
+                                    require(type(child) is str and any(v["path"] == child for v in bundle.data["files"].values()),
+                                            "native_config_program_not_frozen")
+                                check_programs(child)
+                        elif isinstance(value, list):
+                            for child in value: check_programs(child)
+                    check_programs(configured)
                 if flag == "--file":
                     path = job["argv"][index + 1]
                     context = self.catalog.get("context_files", {}).get(path)
@@ -210,7 +225,8 @@ class NativeLane:
         events = None
         try:
             capture = NativeHttpCapture(self.session, job_id, question, self.output / job_id)
-            argv = job["argv"] + capture.cli_arguments()
+            isolation = ["--evaluation-isolated-config"] if "--config" in job["argv"] else []
+            argv = job["argv"] + isolation + capture.cli_arguments()
             if self.control_url is not None: argv += ["--evaluation-http-loopback-url", self.control_url]
             # These exact argv/env identities are part of the packet; no
             # shell parsing, inherited loader settings, Python path or stdin.

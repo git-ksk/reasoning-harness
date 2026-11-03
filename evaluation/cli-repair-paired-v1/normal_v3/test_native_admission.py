@@ -16,7 +16,7 @@ from contracts import canonical, digest, frozen_request_digest
 from local_store import initialize_local_store, LocalAtomicStore
 from native_admission import ADMISSION, CATALOG, DOMAIN, capture_display, source_catalog, verify_pre_advance
 from native_bundle import NativeBundle
-from native_lane import CONTROL, NativeLane, plan_first_request, private_bytes, capture_process
+from native_lane import CONTROL, NativeLane, plan_first_request, private_bytes, capture_process, validate_argv
 import review_auth
 import test_authority_580 as legacy_controls
 
@@ -166,6 +166,12 @@ class NativeBundleTests(unittest.TestCase):
     def test_runtime_dependency_change_is_rejected(self):
         (self.root / "lock").write_bytes(b"changed runtime dependency")
         with self.assertRaisesRegex(ValueError, "artifact_changed"): self.bundle.verify()
+
+    def test_equals_path_spelling_cannot_skip_frozen_file_validation(self):
+        for option in ("--file=", "--config=", "--resolver-command="):
+            argv = [str(self.binary), "--no-config", "--plain", "--format", "json", option + str(self.root / "unfrozen"), "question"]
+            with self.assertRaisesRegex(ValueError, "canonical_path_options"):
+                validate_argv(argv, str(self.binary), "question", self.bundle)
 
 
 class PipeCaptureTests(unittest.TestCase):
@@ -362,6 +368,36 @@ class ActualNativeAdmissionTests(unittest.TestCase):
                            env={"PATH": "/usr/bin:/bin"}, capture_output=True, timeout=10)
         self.assertNotEqual(r.returncode, 0)
         self.assertFalse(destination.exists())
+
+    def test_explicit_evaluation_config_ignores_unfrozen_project_in_plan_and_execution(self):
+        ambient = self.root / "ambient"; ambient.mkdir(mode=0o700)
+        (ambient / ".reason").mkdir(mode=0o700)
+        (ambient / ".reason/config.json").write_text("invalid unmeasured project configuration")
+        config = self.root / "measured-config.json"
+        private_bytes(config, canonical({"schema_version": "reason-config-v1"}))
+        argv = list(self.argv); at = argv.index("--no-config"); argv[at:at+1] = ["--config", str(config)]
+        destination = self.root / "isolated-plan.json"
+        failed = subprocess.run(argv + ["--evaluation-request-plan", str(destination)], cwd=ambient,
+            env={"PATH": "/usr/bin:/bin"}, capture_output=True, timeout=10)
+        self.assertNotEqual(failed.returncode, 0); self.assertFalse(destination.exists())
+        planned = subprocess.run(argv + ["--evaluation-isolated-config", "--evaluation-request-plan", str(destination)], cwd=ambient,
+            env={"PATH": "/usr/bin:/bin"}, capture_output=True, timeout=10, umask=0o077)
+        self.assertEqual(planned.returncode, 0, planned.stderr)
+        server = ScriptedServer(); self.addCleanup(server.close)
+        fd = os.open(self.root / "isolated-journal.jsonl", os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        trace = self.root / "isolated-trace.json"
+        try:
+            result = subprocess.run(argv + ["--evaluation-isolated-config", "--diagnostic-trace", str(trace),
+                "--evaluation-http-journal-fd", str(fd), "--evaluation-http-binding-sha256", "a" * 64,
+                "--evaluation-http-max-attempts", "4", "--evaluation-http-token-reserve", "128",
+                "--evaluation-http-loopback-url", server.url], cwd=ambient,
+                env={"PATH": "/usr/bin:/bin", "MISTRAL_API_KEY": "fixture-only-key", "NO_PROXY": "127.0.0.1"},
+                pass_fds=(fd,), capture_output=True, timeout=20, umask=0o077)
+        finally: os.close(fd)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        first = next(e for e in json.loads(trace.read_bytes())["events"] if e["kind"] == "model_request")
+        self.assertEqual(first["request_sha256"], json.loads(destination.read_bytes())["request_sha256"])
+        self.assertGreater(len(server.requests), 0)
 
 
 if __name__ == "__main__": unittest.main()

@@ -273,6 +273,9 @@ struct NaturalArgs {
     /// Freeze the actual first request without resolving credentials or making a provider call.
     #[arg(long, hide = true, conflicts_with_all = ["evaluation_http_journal_fd", "diagnostic_trace", "ephemeral"])]
     evaluation_request_plan: Option<PathBuf>,
+    /// Native evaluation: load only this explicit measured config, without user/project layers.
+    #[arg(long, hide = true, requires = "config")]
+    evaluation_isolated_config: bool,
     /// In-memory, untrusted conversation context used only by the interactive product path.
     #[arg(skip)]
     interactive_context: Vec<String>,
@@ -4493,7 +4496,18 @@ async fn execute_natural_inner(
             "--config must be a file path; stdin config is not supported",
         ));
     }
-    let loaded_config = if args.no_config {
+    let loaded_config = if args.evaluation_isolated_config {
+        let mut loaded = LoadedCliConfig::default();
+        merge_config_file(
+            &mut loaded,
+            args.config.as_ref().ok_or_else(|| {
+                CliError::new("configuration", "explicit evaluation config required")
+            })?,
+            "explicit",
+        )
+        .map_err(|error| CliError::new("configuration", error))?;
+        loaded
+    } else if args.no_config {
         LoadedCliConfig::default()
     } else {
         load_cli_config(args.config.as_ref())
@@ -6603,6 +6617,7 @@ fn continuation_args(
         evaluation_http_token_reserve: None,
         evaluation_http_loopback_url: None,
         evaluation_request_plan: None,
+        evaluation_isolated_config: false,
         interactive_context: vec![],
         session_usage_baseline: None,
     }
@@ -7605,7 +7620,9 @@ async fn run(cli: Cli) -> Result<(), CliError> {
         resume,
     } = cli;
     let managed_resume_requested = continue_session || resume.is_some();
-    if natural.evaluation_request_plan.is_some()
+    if (natural.evaluation_request_plan.is_some()
+        || natural.evaluation_isolated_config
+        || natural.evaluation_http_journal_fd.is_some())
         && (managed_resume_requested || command.is_some() || natural.task.is_none())
     {
         return Err(CliError::new(
