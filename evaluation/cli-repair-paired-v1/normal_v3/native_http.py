@@ -9,11 +9,13 @@ import os
 from pathlib import Path
 
 from collect import audit_trace
+from http_limits import validate_http_limits
 from contracts import (canonical, digest, exclusive_json, frozen_request_digest,
                        private_new_directory, require, sha_field, strict_keys,
                        _open_trusted_directory, _reject_permissive_acl)
 
 JOURNAL = "reason-cli-evaluation-http-journal-v1"
+LIMITED_JOURNAL = "reason-cli-evaluation-http-journal-v2"
 
 
 def _unique(pairs):
@@ -32,6 +34,10 @@ def normalize_journal(raw, binding, trace):
             "native_http_binding_contract_mismatch")
     require(trace.get("completion_status") in ("completed", "partial"), "native_trace_completion_missing")
     job = binding["job"]
+    limits = job.get("http_limits")
+    if limits is not None:
+        validate_http_limits(limits, control=binding["model"] == "fixture-model")
+        require(limits["max_generations"] == job["max_provider_attempts"], "native_http_generation_limit_mismatch")
     expected_binding = digest(canonical(binding))
     requests = [row for row in trace.get("events", []) if row.get("kind") == "model_request"]
     require(0 < len(requests) <= job["max_provider_attempts"], "invalid_native_request_inventory")
@@ -48,26 +54,51 @@ def normalize_journal(raw, binding, trace):
     previous = "0" * 64
     pending = None
     finalizing = None
+    preflight = None
+    last_start = None
+    used_input = used_output = 0
     events, seen = [], set()
     rows = raw.splitlines()
-    require(len(rows) <= 1 + 3 * job["max_provider_attempts"], "excess_native_http_records")
+    require(len(rows) <= 1 + (4 if limits else 3) * job["max_provider_attempts"], "excess_native_http_records")
     for sequence, line in enumerate(rows):
         row = json.loads(line, object_pairs_hook=_unique)
         strict_keys(row, {"contract", "sequence", "previous_sha256", "binding_sha256", "event"},
                     {"contract", "sequence", "previous_sha256", "binding_sha256", "event"}, "native_http_row")
         require(canonical(row) == line and type(row["sequence"]) is int
                 and row["sequence"] == sequence and row["previous_sha256"] == previous
-                and row["contract"] == JOURNAL and row["binding_sha256"] == expected_binding,
+                and row["contract"] == (LIMITED_JOURNAL if limits else JOURNAL) and row["binding_sha256"] == expected_binding,
                 "native_http_chain_or_binding_mismatch")
         previous = digest(line)
         event = row["event"]
         require(type(event) is dict, "native_http_event_required")
         kind = event.get("kind")
         if sequence == 0:
-            require(event == {"kind": "binding", "max_attempts": job["max_provider_attempts"],
-                              "token_reserve": job["reserve_tokens"]}, "native_http_limits_mismatch")
+            expected_limits = {"kind": "binding", "max_attempts": job["max_provider_attempts"], "token_reserve": job["reserve_tokens"]}
+            if limits is not None: expected_limits["limits"] = limits
+            require(event == expected_limits, "native_http_limits_mismatch")
+        elif kind == "preflight":
+            fields = {"kind", "request_id", "context", "request_utf8_json_bytes", "input_reserve_tokens",
+                      "requested_output_tokens", "used_input_tokens", "used_output_tokens"}
+            strict_keys(event, fields, fields, "native_http_preflight")
+            require(limits is not None and preflight is None and pending is None and finalizing is None
+                    and len(seen) < len(requests), "native_http_preflight_order")
+            measured = requests[len(seen)]
+            require(all(type(event[k]) is int and event[k] >= 0 for k in fields - {"kind", "request_id", "context"})
+                    and event["request_utf8_json_bytes"] == measured.get("request_utf8_json_bytes")
+                    and event["requested_output_tokens"] == measured.get("requested_output_tokens")
+                    and event["request_utf8_json_bytes"] <= limits["max_request_utf8_json_bytes"]
+                    and event["input_reserve_tokens"] == event["request_utf8_json_bytes"] + limits["input_overhead_tokens"]
+                    and event["input_reserve_tokens"] <= limits["max_input_tokens_per_generation"]
+                    and 0 < event["requested_output_tokens"] <= limits["max_output_tokens_per_generation"]
+                    and event["used_input_tokens"] == used_input and event["used_output_tokens"] == used_output
+                    and used_input + event["input_reserve_tokens"] <= limits["max_input_tokens_total"]
+                    and used_output + event["requested_output_tokens"] <= limits["max_output_tokens_total"]
+                    and used_input + used_output + event["input_reserve_tokens"] + event["requested_output_tokens"] <= job["reserve_tokens"],
+                    "native_http_preflight_limits_or_trace_mismatch")
+            preflight = event
         elif kind == "request":
             fields = {"kind", "request_id", "context", "provider", "model", "wire_request_sha256"}
+            if limits is not None: fields.add("start_elapsed_ns")
             strict_keys(event, fields, fields, "native_http_request")
             require(pending is None and finalizing is None and len(seen) < len(requests), "native_http_request_order")
             context = event["context"]
@@ -81,6 +112,14 @@ def normalize_journal(raw, binding, trace):
                     and event["request_id"] == f"http-{context['correlation_id']}-{context['logical_attempt']}"
                     and event["request_id"] not in seen, "native_http_trace_request_mismatch")
             sha_field(event["wire_request_sha256"], "invalid_native_wire_hash")
+            if limits is not None:
+                require(preflight is not None and preflight["request_id"] == event["request_id"]
+                        and preflight["context"] == context, "native_http_unreserved_request")
+                start = event["start_elapsed_ns"]
+                require(type(start) is int and start >= 0
+                        and (last_start is None or start - last_start >= limits["min_generation_start_interval_ms"] * 1000000),
+                        "native_http_pacing_not_observed")
+                last_start = start
             seen.add(event["request_id"])
             pending = event
         elif kind == "response":
@@ -96,6 +135,14 @@ def normalize_journal(raw, binding, trace):
                     and all(type(v) is int and v >= 0 for v in usage.values())
                     and usage["input_tokens"] + usage["output_tokens"] == usage["total_tokens"],
                     "native_http_unknown_or_inconsistent_usage")
+            if limits is not None:
+                require(preflight is not None and usage["input_tokens"] <= preflight["input_reserve_tokens"]
+                        and usage["output_tokens"] <= preflight["requested_output_tokens"]
+                        and used_input + usage["input_tokens"] <= limits["max_input_tokens_total"]
+                        and used_output + usage["output_tokens"] <= limits["max_output_tokens_total"],
+                        "native_http_observed_limits_exceeded")
+                used_input += usage["input_tokens"]; used_output += usage["output_tokens"]
+                preflight = None
             events.append({"request_id": event["request_id"], **pending["context"],
                            "provider": binding["provider"], "model": binding["model"],
                            "http_status": event["http_status"], **usage})
@@ -108,7 +155,7 @@ def normalize_journal(raw, binding, trace):
             finalizing = None
         else:
             raise ValueError("native_http_aborted_or_unknown_event")
-    require(pending is None and finalizing is None and len(events) == len(requests), "native_http_incomplete")
+    require(preflight is None and pending is None and finalizing is None and len(events) == len(requests), "native_http_incomplete")
     require(sum(e["total_tokens"] for e in events) <= job["reserve_tokens"], "native_http_reserve_exceeded")
     require(not audit_trace(trace, events, binding["provider"], binding["model"]),
             "native_trace_operational_failure")
@@ -140,11 +187,14 @@ class NativeHttpCapture:
 
     def cli_arguments(self):
         job = self.binding["job"]
-        return ["--diagnostic-trace", str(self.directory / "trace.json"),
+        argv = ["--diagnostic-trace", str(self.directory / "trace.json"),
                 "--evaluation-http-journal-fd", str(self.fd),
                 "--evaluation-http-binding-sha256", digest(canonical(self.binding)),
                 "--evaluation-http-max-attempts", str(job["max_provider_attempts"]),
                 "--evaluation-http-token-reserve", str(job["reserve_tokens"])]
+        if "http_limits" in job:
+            argv += ["--evaluation-http-limits-json", canonical(job["http_limits"]).decode()]
+        return argv
 
     def close(self):
         if self.fd is not None:
