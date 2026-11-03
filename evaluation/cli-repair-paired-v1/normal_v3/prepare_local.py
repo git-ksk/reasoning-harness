@@ -11,7 +11,7 @@ from contracts import canonical, digest, exclusive_json, private_new_directory, 
 from local_store import initialize_local_store
 from native_admission import CATALOG, source_catalog
 from native_bundle import NativeBundle
-from native_lane import plan_first_request, private_snapshot
+from native_lane import plan_first_request, private_snapshot, private_bytes
 
 INPUT_M1 = "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3"
 PURPOSE = "CONSUMED_REAL24_ENGINEERING_DIAGNOSTIC_NOT_ACCEPTANCE"
@@ -93,6 +93,21 @@ def captured_case(corpus, case):
     return config, snapshots
 
 
+def verify_request_pairs(jobs):
+    pairs = {}
+    for job in jobs:
+        pair = pairs.setdefault(job["case_id"], {})
+        require(job["arm"] in ("baseline", "candidate") and job["arm"] not in pair,
+                "duplicate_or_unknown_preparation_arm")
+        pair[job["arm"]] = job["request"]
+    require(len(jobs) == 48 and len(pairs) == 24, "paired_preparation_inventory_incomplete")
+    for pair in pairs.values():
+        require(set(pair) == {"baseline", "candidate"}, "paired_preparation_arm_missing")
+        first, second = pair["baseline"], pair["candidate"]
+        require(first["request_sha256"] == second["request_sha256"] and first["request"] == second["request"],
+                "paired_first_request_prompt_or_schema_changed")
+
+
 def prepare(*, inputs, build, output):
     corpus, gold = checked_input(inputs)
     build = Path(build).resolve(strict=True); output = Path(output).resolve()
@@ -126,7 +141,11 @@ def prepare(*, inputs, build, output):
         require({n: digest((Path(record["source_root"]) / n).read_bytes())
                  for n in bundle.data["source_inventory"][arm]}
                 == record["source_files"], "paired_build_source_changed")
-    exclusive_json(output / "native-bundle.json", bundle.data)
+    # NativeBundle accepts exact canonical bytes; a JSON-evidence newline is
+    # inappropriate for this re-openable manifest and its byte digest.
+    private_bytes(output / "native-bundle.json", bundle.manifest_bytes)
+    bundle = NativeBundle(private_snapshot(output / "native-bundle.json"))
+    bundle.verify()
     jobs = []
     for index, case in enumerate(corpus["cases"]):
         for arm in (("baseline", "candidate") if index % 2 == 0 else ("candidate", "baseline")):
@@ -138,12 +157,14 @@ def prepare(*, inputs, build, output):
             request = plan_first_request(bundle, arm, argv, output / "requests" / (jid + ".json"))
             jobs.append({"job_id": jid, "case_id": case["id"], "arm": arm, "argv": argv, "request": request})
             print("planned " + jid, flush=True)
+    verify_request_pairs(jobs)
     exclusive_json(output / "requests.json", {"contract": "reason-cli-normal-v3-prospective-requests-v1", "jobs": jobs})
     profile = initialize_local_store(output / "authority")
     exclusive_json(output / "operator-profile.json", profile.to_json())
     status = {"contract": "reason-cli-normal-v3-local-preparation-v1", "purpose": PURPOSE,
         "input_manifest_sha256": INPUT_M1, "native_bundle_sha256": bundle.verify(),
-        "cases": 24, "jobs_planned": len(jobs), "full_documents": len(corpus["documents"]),
+        "cases": 24, "jobs_planned": len(jobs), "paired_first_requests_identical": True,
+        "full_documents": len(corpus["documents"]),
         "source_bindings": len(catalog["sources"]), "model_provider_calls": 0, "cloud_operations": 0,
         "run_claimed": False, "tokens_reserved": 0, "reviewer_enrolled": False,
         "provider_execution_authorized": False, "new_real_f1": None, "quality_go": False,

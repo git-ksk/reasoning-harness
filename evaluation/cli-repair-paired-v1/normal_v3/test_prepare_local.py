@@ -27,6 +27,19 @@ def corpus():
 
 
 class PreparationTests(unittest.TestCase):
+    def test_different_prompt_schema_or_raw_hash_blocks_paired_preparation(self):
+        jobs = [{"case_id": str(n), "arm": arm, "request": {
+            "request_sha256": "a" * 64, "request": {"task": "same", "schema": {"type": "object"}}}}
+            for n in range(24) for arm in ("baseline", "candidate")]
+        prepare_local.verify_request_pairs(jobs)
+        for mutate in (lambda x: x[0]["request"]["request"].update(task="other"),
+                       lambda x: x[0]["request"]["request"].update(schema={"type": "string"}),
+                       lambda x: x[0]["request"].update(request_sha256="b" * 64),
+                       lambda x: x[0].update(arm="candidate")):
+            changed = copy.deepcopy(jobs); mutate(changed)
+            with self.assertRaisesRegex(ValueError, "changed|duplicate"): prepare_local.verify_request_pairs(changed)
+        with self.assertRaisesRegex(ValueError, "inventory_incomplete"): prepare_local.verify_request_pairs(jobs[:-1])
+
     def test_process_free_data_matches_previous_snapshot_resolver_exactly(self):
         data = corpus(); case = data["cases"][0]
         legacy_path = Path(__file__).resolve().parent.parent / "resolver.py"
