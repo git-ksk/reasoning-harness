@@ -80,7 +80,10 @@ jobs:
           v3_snapshot_pointer="$RUNNER_TEMP/v3-mac-native-source-path"
           python3 evaluation/cli-repair-paired-v1/normal_v3/ci_source_snapshot.py --source "$PWD" --binary "$v3_native_target_dir/debug/reason" --pointer "$v3_snapshot_pointer"
           IFS= read -r v3_native_source < "$v3_snapshot_pointer"
-          REASON_V3_NATIVE_CLI="$v3_native_source/.native-bin/reason" PYTHONDONTWRITEBYTECODE=1 "$v3_review_python_env/bin/python" -B -m unittest discover -s "$v3_native_source/evaluation/cli-repair-paired-v1/normal_v3" -p 'test_*.py' -v
+          v3_openssl_prefix="$(brew --prefix openssl@3)"
+          test -x "$v3_openssl_prefix/bin/openssl"
+          "$v3_openssl_prefix/bin/openssl" version
+          PATH="$v3_openssl_prefix/bin:$PATH" REASON_V3_NATIVE_CLI="$v3_native_source/.native-bin/reason" PYTHONDONTWRITEBYTECODE=1 "$v3_review_python_env/bin/python" -B -m unittest discover -s "$v3_native_source/evaluation/cli-repair-paired-v1/normal_v3" -p 'test_*.py' -v
       - name: MCP product-surface contract
         run: cargo test --locked -p reasoning-harness-cli --test mcp_product_surface
       - name: Product CLI smoke

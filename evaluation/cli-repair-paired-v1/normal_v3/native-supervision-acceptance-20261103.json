@@ -21,7 +21,7 @@
   "new_rust_controls": 2,
   "full_cohort_native_children": 48,
   "source_sha256": {
-    ".github/workflows/cli-platform-smoke.yml": "cfd79cd8a9a0455e39c49bf3e3e7e6ff1757d1340ad408bfe86f5bb9783a7c75",
+    ".github/workflows/cli-platform-smoke.yml": "5deb2287bc43029dd8183c77cb2969b67ff4ae80a382977510c9207e296e7b9d",
     "crates/reasoning-harness-cli/src/main.rs": "b911f71db5e043e05a0c6b2f2bb552f71673a4c9a0e402db2e56862abc314a0f",
     "crates/reasoning-harness-cli/src/evaluation_supervision.rs": "48f142b27a42a3026ba6fe5645cd3ec8f9269ca237c728075c0fd765fc640d50",
     "docs/local-execution-policy.ja.md": "bb752aae9b964618abada516ee4d9c1c57bd04e215aa5031bf03b1e8087285cc",
@@ -62,5 +62,14 @@
   "strict_workspace_clippy": {
     "status": "pass",
     "log_sha256": "1d5b16e963ab34a55de41fcae7df7ccbef10068874490b85d74c2002d18412c6"
+  },
+  "ci_openssl_selection_correction": {
+    "reason": "Mac runner PATH selected OpenSSL 1.1 for synthetic Ed25519 test signer",
+    "fix": "Explicit Homebrew OpenSSL 3 PATH for Mac v3 controls only",
+    "production_verifier_unchanged": true,
+    "local_affected_controls": {
+      "passed": 26,
+      "log_sha256": "bec850f68daef5be54d7f7139ad231fea76d062d413cc1960a0e39e0ff8f4acb"
+    }
   }
 }

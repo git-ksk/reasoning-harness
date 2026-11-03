@@ -44,6 +44,12 @@ cleanup ran on graceful exit. That fixture was corrected to retain the
 operator-owned ledger across controller exit; production ledger protections
 were not weakened. The corrected control passes on both Python versions.
 
+The first Mac arm64 CI run passed the new OS/supervision controls but the
+existing external test signer selected OpenSSL 1.1 from the runner PATH, which
+does not support its Ed25519 `pkeyutl -rawin` operation. CI now explicitly selects
+the installed Homebrew OpenSSL 3 for the synthetic signer. The production
+in-process libsodium verifier and signature/security checks are unchanged.
+
 ## Admission limits
 
 This is new native bundle **v2**, requiring a newly enrolled bundle/plan/receipt
