@@ -61,6 +61,11 @@ not erase that CLI stop or claim a complete user-answer evaluation.
 
 ## Trust limits and remaining gates
 
+Subsequent [#582 native admission](NATIVE_ADMISSION.md) implements model-free
+planning, fixed native artifacts, complete streams/source packets and signed
+pre-advance decisions. The remaining-gate list below describes what HTTP
+capture alone proves; real operator enrollment and semantic acceptance remain.
+
 The operator, measured native runtime, private parent and OS account are trusted.
 A local owner/root can rewrite evidence or replace the admitted runtime; the
 hash chain and passed FD are not cryptographic authentication against that

@@ -195,9 +195,9 @@ class OfflineV3Runner(scheduler.OperationalRunner):
             return Outcome(FailureClass.UNKNOWN, measured["total_tokens"],
                            measured["provider_attempts"]), diagnostics
         http_attempts = json.loads((directory / "http.json").read_bytes())
-        # Every trace model_request is one CLI generation. A correlation
-        # spans repeated generate() calls on the same adapter; its attempt
-        # field distinguishes generations. Provider-internal retries are
+        # The frozen generation cap bounds adapter requests, including
+        # structured fallbacks. CLI logical model_calls count correlations;
+        # the attempt field distinguishes generate() calls. Internal retries are
         # counted as physical HTTP requests within that (correlation, attempt).
         per_generation = {}
         for item in http_attempts:
