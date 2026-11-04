@@ -109,6 +109,17 @@ def verify_request_pairs(jobs):
                 "paired_first_request_prompt_or_schema_changed")
 
 
+def freeze_source_catalog(path, catalog):
+    """Publish the exact bytes accepted by the runner and measured by bundle."""
+    raw = canonical(catalog)
+    source_catalog(raw)
+    private_bytes(path, raw)
+    stored = private_snapshot(path)
+    source_catalog(stored)
+    require(stored == raw, "prepared_source_catalog_changed")
+    return stored
+
+
 def prepare(*, inputs, build, output):
     corpus, gold = checked_input(inputs)
     build = Path(build).resolve(strict=True); output = Path(output).resolve()
@@ -133,7 +144,7 @@ def prepare(*, inputs, build, output):
             source = corpus["sources"][item["source"]]
             catalog["evidence_bindings"][item["id"]] = {"evidence_sha256": hash_, "source_id": item["source"],
                                                          "source_version": source["source_version"]}
-    source_catalog(canonical(catalog)); exclusive_json(output / "source-catalog.json", catalog)
+    freeze_source_catalog(output / "source-catalog.json", catalog)
     configs["sources"] = output / "source-catalog.json"
     exclusive_json(output / "gold-obligations.json", gold)
     configs["gold-obligations"] = output / "gold-obligations.json"

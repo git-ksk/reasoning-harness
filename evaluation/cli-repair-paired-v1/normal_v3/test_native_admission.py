@@ -19,6 +19,7 @@ from native_bundle import NativeBundle
 from native_lane import CONTROL, NativeLane, plan_first_request, private_bytes, capture_process, validate_argv
 import review_auth
 from ci_source_snapshot import prepare_snapshot
+from prepare_local import freeze_source_catalog
 import test_authority_580 as legacy_controls
 
 QUESTION = "What can be verified from this source?"
@@ -130,6 +131,18 @@ class SourceCaptureTests(unittest.TestCase):
             with self.assertRaises(ValueError): capture_display(changed, self.catalog)
         changed = copy.deepcopy(self.catalog); changed["sources"]["source"]["text"] = ""
         with self.assertRaises(ValueError): source_catalog(canonical(changed))
+
+    def test_published_catalog_roundtrips_into_parser_and_bundle_without_reencoding(self):
+        control = NativeBundleTests(); control.setUp(); self.addCleanup(control.doCleanups)
+        path = control.root / "source-catalog.json"
+        raw = freeze_source_catalog(path, self.catalog)
+        self.assertEqual(raw, path.read_bytes())
+        self.assertEqual(source_catalog(raw), self.catalog)
+        bundle = NativeBundle.enroll(source_roots={a: control.source for a in ("baseline", "candidate")},
+            binaries={a: control.binary for a in ("baseline", "candidate")}, configurations={"sources": path},
+            runtime_files={"python": Path(sys.executable).resolve(), "verifier-lock": control.root / "lock"})
+        self.assertEqual(bundle.data["files"]["config/sources"]["sha256"], digest(raw))
+        bundle.verify()
 
 
 class NativeBundleTests(unittest.TestCase):
@@ -259,7 +272,8 @@ class ActualNativeAdmissionTests(unittest.TestCase):
         cls.reviewer = ControlReviewer()
         cls.catalog_bytes = canonical({"contract": CATALOG, "sources": {}, "evidence_bindings": {}})
         cls.policy_path, cls.catalog_path = cls.root / "policy.json", cls.root / "sources.json"
-        private_bytes(cls.policy_path, cls.reviewer.policy_bytes); private_bytes(cls.catalog_path, cls.catalog_bytes)
+        private_bytes(cls.policy_path, cls.reviewer.policy_bytes)
+        cls.catalog_bytes = freeze_source_catalog(cls.catalog_path, json.loads(cls.catalog_bytes))
         binary = Path(os.environ["REASON_V3_NATIVE_CLI"]).resolve()
         source = Path(__file__).resolve().parents[3]
         cls.bundle = NativeBundle.enroll(source_roots={a: source for a in ("baseline", "candidate")},
