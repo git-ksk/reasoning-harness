@@ -92,6 +92,12 @@ impl ModelAdapter for DiagnosticModelAdapter<'_> {
                 correlation_id: self.correlation_id.clone(),
                 logical_attempt: attempt,
                 request_sha256: reasoning_harness_providers::http_observation::sha256(&raw),
+                budget_input: Some(
+                    reasoning_harness_providers::http_observation::HttpBudgetInput {
+                        request_utf8_json_bytes: raw.len() as u64,
+                        max_output_tokens: request.max_tokens,
+                    },
+                ),
             };
             let result =
                 reasoning_harness_providers::http_observation::with_http_observation_context(
@@ -190,6 +196,8 @@ enum DiagnosticEvent {
         // Digest of the original ModelRequest before redacting diagnostic text.
         // This does NOT authenticate the request without an external journal.
         request_sha256: String,
+        request_utf8_json_bytes: u64,
+        requested_output_tokens: Option<u32>,
     },
     ModelResponse {
         sequence: usize,
@@ -368,6 +376,8 @@ impl DiagnosticTraceRecorder {
             serde_json::to_value(request).expect("model request must serialize before generation");
         let raw_bytes =
             serde_json::to_vec(&raw).expect("JSON model request must serialize before generation");
+        let request_utf8_json_bytes = raw_bytes.len() as u64;
+        let requested_output_tokens = request.max_tokens;
         let request_sha256 = Sha256::digest(raw_bytes)
             .iter()
             .map(|byte| format!("{byte:02x}"))
@@ -385,6 +395,8 @@ impl DiagnosticTraceRecorder {
             structured_mode,
             request,
             request_sha256,
+            request_utf8_json_bytes,
+            requested_output_tokens,
         });
     }
 

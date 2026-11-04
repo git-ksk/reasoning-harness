@@ -269,6 +269,9 @@ struct NaturalArgs {
     evaluation_http_max_attempts: Option<u32>,
     #[arg(long, hide = true, requires = "evaluation_http_journal_fd")]
     evaluation_http_token_reserve: Option<u64>,
+    /// Operator-frozen per-request and aggregate limits; no credential content.
+    #[arg(long, hide = true, requires = "evaluation_http_journal_fd")]
+    evaluation_http_limits_json: Option<String>,
     /// Real HTTP on numeric loopback only, for provider-free native acceptance.
     #[arg(long, hide = true, requires = "evaluation_http_journal_fd")]
     evaluation_http_loopback_url: Option<String>,
@@ -4655,6 +4658,23 @@ async fn execute_natural_inner(
     if let (Some(path), Some(trace)) = (diagnostic_trace_path, diagnostic_trace.as_mut()) {
         trace.preserve_on_exit(path, failure_context.clone());
     }
+    let evaluation_limits = args
+        .evaluation_http_limits_json
+        .as_deref()
+        .map(|raw| {
+            evaluation_http::HttpLimits::parse(raw, args.evaluation_http_loopback_url.is_some())
+        })
+        .transpose()
+        .map_err(|error| CliError::new("configuration", error))?;
+    if args.evaluation_http_journal_fd.is_some()
+        && args.evaluation_http_loopback_url.is_none()
+        && evaluation_limits.is_none()
+    {
+        return Err(CliError::new(
+            "configuration",
+            "native provider execution requires frozen HTTP limits",
+        ));
+    }
     let mut generator = make_generator(provider, &model)
         .map_err(|error| CliError::new(error.failure_class, error.message))?;
     if let Some(fd) = args.evaluation_http_journal_fd {
@@ -4663,6 +4683,7 @@ async fn execute_natural_inner(
             args.evaluation_http_binding_sha256.as_deref().unwrap_or(""),
             args.evaluation_http_max_attempts.unwrap_or(0),
             args.evaluation_http_token_reserve.unwrap_or(0),
+            evaluation_limits.clone(),
         )
         .map_err(|error| CliError::new("transport", error.to_string()))?;
         match &mut generator {
@@ -4683,7 +4704,9 @@ async fn execute_natural_inner(
         }
     }
     generator.set_single_provider_attempt(
-        usage_budget.max_output_tokens.is_some() || usage_budget.max_total_tokens.is_some(),
+        evaluation_limits.is_some()
+            || usage_budget.max_output_tokens.is_some()
+            || usage_budget.max_total_tokens.is_some(),
     );
     let mut usage_tracker =
         usage_budget::UsageTracker::new(usage_budget, args.session_usage_baseline.clone())?;
@@ -6636,6 +6659,7 @@ fn continuation_args(
         evaluation_http_binding_sha256: None,
         evaluation_http_max_attempts: None,
         evaluation_http_token_reserve: None,
+        evaluation_http_limits_json: None,
         evaluation_http_loopback_url: None,
         evaluation_request_plan: None,
         evaluation_isolated_config: false,

@@ -141,8 +141,17 @@ def freeze_jobs(plan):
             "question_sha256": digest(questions[case_id].encode("utf-8")),
             "frozen_request_binding_sha256": bindings[job_id],
         })
+        if "http_limits" in job:
+            from http_limits import validate_http_limits
+            inventory[-1]["http_limits"] = json.loads(canonical(validate_http_limits(
+                job["http_limits"], control=plan.get("purpose") == "NATIVE_V3_LOOPBACK_CONTROL_NO_PROVIDER_EXECUTION",
+                budget=job["budget"])))
         seen.add(job_id)
     check(seen == expected, "unexpected_job_inventory")
+    for case_id in cases:
+        pair = [job.get("http_limits") for job in inventory if job["case_id"] == case_id]
+        if any(policy is not None for policy in pair):
+            check(len(pair) == 2 and pair[0] is not None and pair[0] == pair[1], "paired_http_limits_mismatch")
     # The execution order remains frozen by the entire canonical plan hash.
     return inventory
 

@@ -3,6 +3,7 @@
 `build_native_pair.py` and `prepare_local.py` prepare the consumed real24
 development comparison without a model API call. They do not authorize a paid
 run or publish an Engine version. Everything runs on this Mac.
+The prepared configs/jobs also freeze [native HTTP limits](NATIVE_LIMITS.md).
 
 The next candidate is the unchanged historical successor core `ab3c632` for
 unpublished Engine 0.7.3. Its package manifest still says 0.7.2. The control is
@@ -23,6 +24,10 @@ python3 "$DIR/prepare_local.py" --inputs /absolute/private/consumed-real24 \
 ```
 
 Use the pinned PyNaCl environment described in [REVIEW_AUTH.md](REVIEW_AUTH.md).
+For durable enrollment, invoke `prepare_local.py` from the immutable paired
+build's `source-baseline/evaluation/cli-repair-paired-v1/normal_v3` directory,
+so runtime measurements refer to that private source snapshot rather than an
+actively edited checkout. The Python environment itself remains measured too.
 The input directory must contain the original `597e1488...` manifest from
 `6165de77` and every byte listed in it, including full raw/normalized primary
 documents. Preparation performs no download and never repairs changed input.

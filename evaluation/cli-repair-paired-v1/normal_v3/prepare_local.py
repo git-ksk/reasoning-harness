@@ -12,6 +12,7 @@ from local_store import initialize_local_store
 from native_admission import CATALOG, source_catalog
 from native_bundle import NativeBundle
 from native_lane import plan_first_request, private_snapshot, private_bytes
+from http_limits import FROZEN_HTTP_LIMITS
 
 INPUT_M1 = "597e1488d07654b07e2a1e528db8b1ae934e438a8edd3f96d31cfc26dd584cd3"
 PURPOSE = "CONSUMED_REAL24_ENGINEERING_DIAGNOSTIC_NOT_ACCEPTANCE"
@@ -108,6 +109,17 @@ def verify_request_pairs(jobs):
                 "paired_first_request_prompt_or_schema_changed")
 
 
+def freeze_source_catalog(path, catalog):
+    """Publish the exact bytes accepted by the runner and measured by bundle."""
+    raw = canonical(catalog)
+    source_catalog(raw)
+    private_bytes(path, raw)
+    stored = private_snapshot(path)
+    source_catalog(stored)
+    require(stored == raw, "prepared_source_catalog_changed")
+    return stored
+
+
 def prepare(*, inputs, build, output):
     corpus, gold = checked_input(inputs)
     build = Path(build).resolve(strict=True); output = Path(output).resolve()
@@ -117,6 +129,8 @@ def prepare(*, inputs, build, output):
     private_new_directory(output / "config")
     private_new_directory(output / "requests")
     configs = {"build-proof": build / "build.json", "input-manifest": Path(inputs).resolve() / "manifest.json"}
+    exclusive_json(output / "http-limits.json", FROZEN_HTTP_LIMITS)
+    configs["http-limits"] = output / "http-limits.json"
     catalog = {"contract": CATALOG, "sources": {}, "evidence_bindings": {}}
     for sid, source in corpus["sources"].items():
         catalog["sources"][sid] = {"text": private_snapshot(Path(inputs).resolve() / source["normalized_path"]).decode(),
@@ -130,7 +144,7 @@ def prepare(*, inputs, build, output):
             source = corpus["sources"][item["source"]]
             catalog["evidence_bindings"][item["id"]] = {"evidence_sha256": hash_, "source_id": item["source"],
                                                          "source_version": source["source_version"]}
-    source_catalog(canonical(catalog)); exclusive_json(output / "source-catalog.json", catalog)
+    freeze_source_catalog(output / "source-catalog.json", catalog)
     configs["sources"] = output / "source-catalog.json"
     exclusive_json(output / "gold-obligations.json", gold)
     configs["gold-obligations"] = output / "gold-obligations.json"
@@ -155,7 +169,8 @@ def prepare(*, inputs, build, output):
                     "--max-model-calls", "12", "--max-output-tokens", "4096", "--max-total-tokens", "28096",
                     "--config", str(configs[case["id"]]), "--format", "json", case["question"]]
             request = plan_first_request(bundle, arm, argv, output / "requests" / (jid + ".json"))
-            jobs.append({"job_id": jid, "case_id": case["id"], "arm": arm, "argv": argv, "request": request})
+            jobs.append({"job_id": jid, "case_id": case["id"], "arm": arm, "argv": argv, "request": request,
+                         "http_limits": dict(FROZEN_HTTP_LIMITS), "timeout_seconds": 360, "cancel_grace_seconds": 1})
             print("planned " + jid, flush=True)
     verify_request_pairs(jobs)
     exclusive_json(output / "requests.json", {"contract": "reason-cli-normal-v3-prospective-requests-v1", "jobs": jobs})
@@ -167,9 +182,10 @@ def prepare(*, inputs, build, output):
         "full_documents": len(corpus["documents"]),
         "source_bindings": len(catalog["sources"]), "model_provider_calls": 0, "cloud_operations": 0,
         "run_claimed": False, "tokens_reserved": 0, "reviewer_enrolled": False,
+        "frozen_http_limits_sha256": digest(canonical(FROZEN_HTTP_LIMITS)),
         "provider_execution_authorized": False, "new_real_f1": None, "quality_go": False,
         "remaining": ["operator reviewer enrollment and independent source/runtime review",
-                      "freeze actual provider readiness, pacing, per-generation and aggregate accounting/budget",
+                      "accept actual provider readiness and the fixed native HTTP-limits runtime/budget",
                       "new genuine receipt, fixed plan, authority admission and one-shot tag",
                       "48 actual observations with pre-advance reviews and first semantic score"]}
     exclusive_json(output / "status.json", status)

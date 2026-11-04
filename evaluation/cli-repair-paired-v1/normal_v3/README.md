@@ -1,5 +1,10 @@
 # Prospective ordinary-CLI v3 collector / annotator / scorer (#574)
 
+**#581 pre-send controls:** [frozen native limits](NATIVE_LIMITS.md) bind request
+bytes, per-generation and separate aggregate input/output reservations, actual
+usage and cancellable pacing to the receipt and journal-v2. New provider runs
+refuse a missing policy. A plan changed during pacing cannot change spawn caps.
+
 **Next Mac evaluation:** [local paired preparation](LOCAL_PREPARATION.md) builds
 the two historical cores with one current CLI and prepares full source/config
 bindings and all 48 first requests without a model call or run claim.

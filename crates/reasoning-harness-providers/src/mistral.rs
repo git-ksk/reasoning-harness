@@ -141,6 +141,11 @@ impl MistralAdapter {
     }
 
     async fn generate_inner(&self, request: ModelRequest) -> Result<ModelResponse, ModelError> {
+        let evaluation_request = self
+            .http_observer
+            .as_ref()
+            .map(|_| crate::http_observation::measure_model_request(&request))
+            .transpose()?;
         let endpoint = self.base_url.join("chat/completions").map_err(|error| {
             ModelError::new(
                 ModelErrorKind::Protocol,
@@ -171,7 +176,12 @@ impl MistralAdapter {
 
         if let Some(observer) = &self.http_observer {
             return self
-                .generate_observed(endpoint, &body, observer.clone())
+                .generate_observed(
+                    endpoint,
+                    &body,
+                    observer.clone(),
+                    evaluation_request.as_ref().unwrap(),
+                )
                 .await;
         }
 
@@ -339,12 +349,14 @@ impl MistralAdapter {
         endpoint: Url,
         body: &ChatRequest<'_>,
         observer: Arc<dyn crate::http_observation::HttpObservationSink>,
+        measured: &(String, crate::http_observation::HttpBudgetInput),
     ) -> Result<ModelResponse, ModelError> {
         use crate::http_observation::PendingHttpObservation;
         // Freeze the exact bytes submitted to reqwest, without Authorization.
         let bytes =
             serde_json::to_vec(body).map_err(|_| crate::http_observation::observation_error())?;
-        let mut pending = PendingHttpObservation::begin(observer, &self.model, &bytes)?;
+        let mut pending =
+            PendingHttpObservation::begin(observer, &self.model, &bytes, measured).await?;
         let budget = *self
             .execution_budget
             .lock()

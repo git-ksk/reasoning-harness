@@ -21,6 +21,7 @@ from native_admission import ADMISSION, capture_display, source_catalog, verify_
 from native_http import NativeHttpCapture, _unique
 from review_auth import validate_policy
 from native_bundle import MAC_PROCESS_POLICY
+from http_limits import validate_http_limits
 
 CONTROL = "NATIVE_V3_LOOPBACK_CONTROL_NO_PROVIDER_EXECUTION"
 MAX_STREAM = 8 * 1024 * 1024
@@ -233,6 +234,7 @@ def capture_process(argv, *, directory, environment, pass_fds, timeout, cancel_g
 class NativeLane:
     def __init__(self, *, session, plan, bundle, policy_bytes, catalog_bytes, output, control_url=None, provider_environment=None):
         self.session, self.plan, self.bundle = session, json.loads(canonical(plan)), bundle
+        plan = self.plan
         self.policy_bytes, self.catalog_bytes = policy_bytes, catalog_bytes
         validate_policy(policy_bytes)
         self.catalog = source_catalog(catalog_bytes)
@@ -245,6 +247,20 @@ class NativeLane:
         for job in plan["jobs"]:
             jid, arm = job["id"], job["arm"]
             question = plan["questions"][jid.rsplit("-", 1)[0]]
+            require(control_url is not None or "http_limits" in job, "native_provider_http_limits_required")
+            if "http_limits" in job:
+                limits = validate_http_limits(job["http_limits"], control=control_url is not None, budget=job["budget"])
+                argv = job["argv"]
+                ceilings = {"--max-model-calls": 12, "--max-tokens": limits["max_output_tokens_per_generation"],
+                            "--max-output-tokens": limits["max_output_tokens_total"],
+                            "--max-total-tokens": limits["max_input_tokens_total"] + limits["max_output_tokens_total"]}
+                for flag, ceiling in ceilings.items():
+                    if control_url is None or flag in argv:
+                        require(argv.count(flag) == 1 and argv[argv.index(flag) + 1].isdigit()
+                                and 0 < int(argv[argv.index(flag) + 1]) <= ceiling, "native_http_cli_limits_mismatch")
+                require(type(job["timeout_seconds"]) in (int, float) and 0 < job["timeout_seconds"] <= 360
+                        and type(job.get("cancel_grace_seconds", 1)) in (int, float)
+                        and 0 < job.get("cancel_grace_seconds", 1) <= 1, "native_http_process_limits_mismatch")
             validate_argv(job["argv"], bundle.binary(arm), question, bundle, job["budget"])
             for index, flag in enumerate(job["argv"][:-1]):
                 if flag == "--config":
@@ -319,19 +335,44 @@ class NativeLane:
         self.session.observe(job_id, tokens=tokens, attempts=attempts, operational_failure=reason)
         self.pending = None
 
+    def _verify_plan(self):
+        try: snapshot = canonical(self.plan)
+        except (ValueError, TypeError, RuntimeError): snapshot = b""
+        if digest(snapshot) != self.session._receipt["plan_sha256"]:
+            self.session.stop("native_frozen_plan_changed")
+            raise ValueError("native_frozen_plan_changed")
+        return json.loads(snapshot)
+
     def run_next(self):
         require(not self.stop_event.is_set() and not self.session._halted, "native_run_cancelled_or_halted")
+        frozen_plan = self._verify_plan()
         require(self.pending is None and self.next < 48, "native_review_pending_or_finished")
         self.bundle.verify()
-        job = self.plan["jobs"][self.next]
+        job = frozen_plan["jobs"][self.next]
+        job_deadline = time.monotonic() + job["timeout_seconds"]
         job_id, arm = job["id"], job["arm"]
-        question = self.plan["questions"][job_id.rsplit("-", 1)[0]]
+        question = frozen_plan["questions"][job_id.rsplit("-", 1)[0]]
         validate_argv(job["argv"], self.bundle.binary(arm), question, self.bundle, job["budget"])
         self.session.reserve(job_id)
         capture = None
         events = None
         try:
             capture = NativeHttpCapture(self.session, job_id, question, self.output / job_id)
+            if "http_limits" in job:
+                # The old callback delayed every job before its first request.
+                # Keep this conservative cross-process spacing inside the same
+                # frozen wall deadline and make it cancellable before any spawn.
+                interval = job["http_limits"]["min_generation_start_interval_ms"] / 1000
+                started = time.monotonic_ns()
+                ready = time.monotonic() + interval
+                while time.monotonic() < ready:
+                    require(time.monotonic() < job_deadline, "native_job_pacing_timeout")
+                    if self.stop_event.wait(min(.05, ready - time.monotonic())):
+                        raise NativeCancelled("native_cancelled_during_job_pacing")
+                    require(not self.session._halted, "native_run_cancelled_or_halted")
+                exclusive_json(capture.directory / "pacing.json", {
+                    "contract": "reason-native-job-pacing-v1", "minimum_job_delay_ms": int(interval * 1000),
+                    "wait_elapsed_ns": time.monotonic_ns() - started})
             isolation = ["--evaluation-isolated-config"] if "--config" in job["argv"] else []
             argv = job["argv"] + isolation + capture.cli_arguments()
             if self.control_url is not None: argv += ["--evaluation-http-loopback-url", self.control_url]
@@ -339,10 +380,13 @@ class NativeLane:
             # shell parsing, inherited loader settings, Python path or stdin.
             exclusive_json(capture.directory / "invocation.json", {"argv": argv, "environment_keys": sorted(self.environment),
                 "mode": "loopback-control" if self.control_url is not None else "provider"})
+            self._verify_plan()
             self.session.before_spawn(job_id)
             self.bundle.verify()
+            timeout = job_deadline - time.monotonic() if "http_limits" in job else job["timeout_seconds"]
+            require(timeout > 0, "native_job_deadline_before_spawn")
             exit_code, complete = capture_process(argv, directory=capture.directory, environment=self.environment,
-                pass_fds=(capture.fd,), timeout=job["timeout_seconds"], cancel_grace=job.get("cancel_grace_seconds", 1),
+                pass_fds=(capture.fd,), timeout=timeout, cancel_grace=job.get("cancel_grace_seconds", 1),
                 supervised=True, no_fork=self.bundle.data["process_policy"] == MAC_PROCESS_POLICY, stop_event=self.stop_event)
             capture.close()
             require(complete and exit_code in (0, 1), "native_process_incomplete")
@@ -357,9 +401,9 @@ class NativeLane:
             exclusive_json(capture.directory / "sources.json", self.catalog["sources"])
             files = {name: digest(private_snapshot(capture.directory / name)) for name in FILES}
             row = {"job_id": job_id, "case_id": job_id.rsplit("-", 1)[0], "arm": arm, "question": question,
-                   "frozen_request_binding_sha256": self.plan["frozen_request_bindings"][job_id], "files": files}
-            observation = collect_row(row, self.output, self.plan["provider"], self.plan["model"],
-                                      self.plan["receipt_sha256"], self.session._receipt["executor_id"])
+                   "frozen_request_binding_sha256": frozen_plan["frozen_request_bindings"][job_id], "files": files}
+            observation = collect_row(row, self.output, frozen_plan["provider"], frozen_plan["model"],
+                                      frozen_plan["receipt_sha256"], self.session._receipt["executor_id"])
             require(observation["measurement_state"] != "operational_stop", "native_cli_operational_stop")
             packet = {"contract": "reason-cli-normal-v3-native-pre-advance-packet-v1", "job_id": job_id,
                       "native_bundle_sha256": self.bundle.sha256, "invocation_sha256": digest(private_snapshot(capture.directory / "invocation.json")),
@@ -367,6 +411,8 @@ class NativeLane:
                       "observation": observation, "full_sources": self.catalog["sources"], "capture_files": files}
             packet["execution_sha256"] = digest(private_snapshot(capture.directory / "execution.json"))
             packet["supervision_sha256"] = digest(private_snapshot(capture.directory / "supervision.json"))
+            if "http_limits" in job:
+                packet["pacing_sha256"] = digest(private_snapshot(capture.directory / "pacing.json"))
             exclusive_json(capture.directory / "pre-advance-packet.json", packet)
             packet_sha = digest(private_snapshot(capture.directory / "pre-advance-packet.json"))
             expected = {"contract": ADMISSION, "evaluation_id": self.session._receipt["evaluation_id"], "job_id": job_id,
@@ -388,6 +434,7 @@ class NativeLane:
         require(self.pending is not None, "native_no_pending_review")
         directory, expected, stdout, stderr, events, observation = self.pending
         try:
+            frozen_plan = self._verify_plan()
             self.bundle.verify()
             require(private_snapshot(directory / "cli.json") == stdout and private_snapshot(directory / "stderr.txt") == stderr
                     and digest(private_snapshot(directory / "pre-advance-packet.json")) == expected["packet_sha256"],
@@ -397,6 +444,9 @@ class NativeLane:
             packet = json.loads(private_snapshot(directory / "pre-advance-packet.json"))
             for name, field in (("execution.json", "execution_sha256"), ("supervision.json", "supervision_sha256")):
                 require(digest(private_snapshot(directory / name)) == packet[field], "native_supervision_changed_before_advance")
+            if "http_limits" in frozen_plan["jobs"][self.next]:
+                require(digest(private_snapshot(directory / "pacing.json")) == packet["pacing_sha256"],
+                        "native_pacing_changed_before_advance")
             require(not self.stop_event.is_set() and not self.session._halted, "native_run_cancelled_or_halted")
             authentication = verify_pre_advance(policy_bytes=self.policy_bytes, attestation=attestation,
                 expected=expected, stdout=stdout, stderr=stderr, sources=self.catalog["sources"])

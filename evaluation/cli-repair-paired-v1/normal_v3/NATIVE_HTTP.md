@@ -1,5 +1,10 @@
 # Native Mac HTTP journal — #581
 
+The [native limits profile](NATIVE_LIMITS.md) adds journal-v2 pre-send input/output
+reservation, cancellable 10.5-second start pacing, actual provider-input
+reconciliation and separate observed input/output caps. New provider execution
+requires the frozen policy; journal-v1 remains for historical/control use.
+
 The ordinary native CLI now has an explicit Mistral-only evaluation transport
 observer. Normal CLI execution keeps its existing behavior. This is a local
 engineering acceptance path; it does not authorize a model call or establish
