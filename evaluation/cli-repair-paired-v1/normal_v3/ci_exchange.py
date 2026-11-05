@@ -11,6 +11,7 @@ import lzma
 import re
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 
 from nacl.exceptions import CryptoError
@@ -129,7 +130,8 @@ class Mailbox:
     def comments(self, *, since=None):
         result = []
         for page in range(1, 21):
-            rows = self._request(f"?since={since or self.since}&per_page=100&page={page}")
+            query = urllib.parse.urlencode({"since": since or self.since, "per_page": 100, "page": page})
+            rows = self._request("?" + query)
             require(type(rows) is list and all(type(row) is dict for row in rows), "ci_mailbox_schema")
             result.extend(rows)
             if len(rows) < 100:

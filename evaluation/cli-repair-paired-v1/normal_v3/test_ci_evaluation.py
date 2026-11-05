@@ -9,6 +9,7 @@ import tempfile
 import time
 import random
 import unittest
+import urllib.parse
 from unittest.mock import patch
 
 from nacl.public import PrivateKey, SealedBox
@@ -142,6 +143,15 @@ class SignedInboxTests(unittest.TestCase):
         with patch.object(box, "comments") as read:
             with self.assertRaises(TimeoutError): box.receive("start", bytes(key), self.verify, time.monotonic() - 1)
             read.assert_not_called()
+
+    def test_poll_cursor_keeps_utc_offset_in_the_actual_github_query(self):
+        box = Mailbox(run_id=42, token="fixture-only", since="2026-11-05T00:00:00Z")
+        cursor = "2026-11-05T01:02:03+00:00"
+        with patch.object(box, "_request", return_value=[]) as get:
+            self.assertEqual(box.comments(since=cursor), [])
+        query = urllib.parse.parse_qs(get.call_args.args[0][1:])
+        self.assertEqual(query["since"], [cursor])
+        self.assertEqual(query["per_page"], ["100"])
 
     def test_fake_packet_cannot_prevent_reading_the_current_bot_packet(self):
         key = PrivateKey.generate()
