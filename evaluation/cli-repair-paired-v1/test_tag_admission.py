@@ -18,6 +18,17 @@ def history(aug=(),sep=(BASE,),octo=(CURRENT,)):
 
 class TagAdmission(unittest.TestCase):
     def check(self,x):return single_first_push(x,TAG,SHA,123)
+    def test_explicit_new_workflow_keeps_legacy_default_and_complete_history_rules(self):
+        tag='cli-normal-real24-development-v3'
+        workflow='.github/workflows/cli-normal-real24-development-v3.yml'
+        run=dict(CURRENT,head_branch=tag,path=workflow)
+        snapshot=history(octo=(run,))
+        result=single_first_push(snapshot,tag,SHA,123,expected_tag=tag,workflow_path=workflow)
+        self.assertEqual(result['run_id'],123)
+        with self.assertRaises(ValueError):self.check(snapshot)
+        with self.assertRaises(ValueError):
+            single_first_push(history(octo=(run,dict(run,id=126))),tag,SHA,123,expected_tag=tag,workflow_path=workflow)
+
     def test_realistic_complete_unfiltered_repository_history(self):
         result=self.check(history(octo=(OTHER,CURRENT)))
         self.assertEqual(result['repository_push_runs'],3)
