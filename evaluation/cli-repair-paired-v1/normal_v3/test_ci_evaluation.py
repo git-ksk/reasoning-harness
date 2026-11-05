@@ -2,13 +2,14 @@
 import base64
 import copy
 import json
+import lzma
 import os
 from pathlib import Path
 import tempfile
 import time
+import random
 import unittest
 from unittest.mock import patch
-import zlib
 
 from nacl.public import PrivateKey, SealedBox
 from nacl.signing import SigningKey
@@ -32,8 +33,8 @@ class CiphertextTests(unittest.TestCase):
         for candidate, secret in ((ciphertext[:-1] + bytes([ciphertext[-1] ^ 1]), bytes(key)),
                                   (ciphertext, bytes(PrivateKey.generate()))):
             with self.assertRaises(Exception): unseal(candidate, secret)
-        oversized = SealedBox(key.public_key).encrypt(zlib.compress(b"x" * 1025))
-        trailing = SealedBox(key.public_key).encrypt(zlib.compress(b"data") + b"trailing")
+        oversized = SealedBox(key.public_key).encrypt(ci_exchange.COMPRESSION_TAG + lzma.compress(b"x" * 1025))
+        trailing = SealedBox(key.public_key).encrypt(ci_exchange.COMPRESSION_TAG + lzma.compress(b"data") + b"trailing")
         for candidate in (oversized, trailing):
             with self.assertRaisesRegex(ValueError, "decompression"):
                 unseal(candidate, bytes(key), limit=1024)
@@ -74,7 +75,10 @@ class CiphertextTests(unittest.TestCase):
         key = PrivateKey.generate()
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder).resolve()
-            row = canonical({"sources": {"full": {"text": "source-data " * 33000}}})
+            # An incompressible full document is larger than zlib's window.
+            # Repetition across 96 source-complete files must still deduplicate.
+            source = base64.b64encode(random.Random(42).randbytes(265000)).decode()
+            row = canonical({"sources": {"full": {"text": source}}})
             files = {}
             for index in range(48):
                 for group in ("observations", "packets"):
@@ -128,7 +132,7 @@ class SignedInboxTests(unittest.TestCase):
     def test_public_garbage_does_not_consume_review_or_skip_signature(self):
         key = PrivateKey.generate()
         wrong = copy.deepcopy(self.signed); wrong["payload"]["run_id"] = 43
-        malformed = SealedBox(key.public_key).encrypt(b"not-a-zlib-stream")
+        malformed = SealedBox(key.public_key).encrypt(ci_exchange.COMPRESSION_TAG + b"not-an-xz-stream")
         comments = [{"body": item} for item in chunks(42, "start", malformed)]
         comments += [{"body": item} for value in (wrong, self.signed) for item in
                     chunks(42, "start", seal(canonical(value), bytes(key.public_key)))]

@@ -2,10 +2,10 @@
 import argparse
 import base64
 import json
+import lzma
 import os
 from pathlib import Path
 import subprocess
-import zlib
 
 from nacl.exceptions import CryptoError
 
@@ -33,7 +33,7 @@ def decode_packet(comments, run_id, stage, key, session, session_raw):
             else:
                 require(stage == "final" and value["evaluation_id"] == "ci-v3-" + str(run_id), "ci_final_session_mismatch")
             valid.append(raw)
-        except (ValueError, TypeError, KeyError, CryptoError, zlib.error):
+        except (ValueError, TypeError, KeyError, CryptoError, lzma.LZMAError):
             continue
     require(len(valid) == 1, "ci_one_authenticated_packet_required")
     return valid[0]

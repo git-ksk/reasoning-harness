@@ -5,12 +5,13 @@ protects the packet, while the existing Ed25519 verifier authenticates decisions
 """
 import base64
 import binascii
+from datetime import datetime, timedelta, timezone
 import json
+import lzma
 import re
 import time
 import urllib.error
 import urllib.request
-import zlib
 
 from nacl.exceptions import CryptoError
 from nacl.public import PrivateKey, PublicKey, SealedBox
@@ -27,20 +28,21 @@ MAX_PLAIN = 32 * 1024 * 1024
 MAX_ARCHIVE = 256 * 1024 * 1024
 CHUNK_BYTES = 48000
 MAX_CHUNKS = 64
+COMPRESSION_TAG = b"reason-cli-v3-xz-v1\0"
 
 
 def seal(raw, public_key, *, limit=MAX_PLAIN):
     require(type(raw) is bytes and len(raw) <= limit, "ci_plaintext_limit")
-    return SealedBox(PublicKey(public_key)).encrypt(zlib.compress(raw))
+    return SealedBox(PublicKey(public_key)).encrypt(COMPRESSION_TAG + lzma.compress(raw, preset=6))
 
 
 def unseal(raw, private_key, *, limit=MAX_PLAIN):
     require(type(raw) is bytes and len(raw) <= limit + 65536, "ci_ciphertext_limit")
     compressed = SealedBox(PrivateKey(private_key)).decrypt(raw)
-    decoder = zlib.decompressobj()
-    plain = decoder.decompress(compressed, limit + 1)
-    require(len(plain) <= limit and decoder.eof and not decoder.unused_data
-            and not decoder.unconsumed_tail, "ci_decompression_limit_or_trailing_bytes")
+    require(compressed.startswith(COMPRESSION_TAG), "ci_compression_version")
+    decoder = lzma.LZMADecompressor(format=lzma.FORMAT_XZ, memlimit=64 * 1024 * 1024)
+    plain = decoder.decompress(compressed[len(COMPRESSION_TAG):], max_length=limit + 1)
+    require(len(plain) <= limit and decoder.eof and not decoder.unused_data, "ci_decompression_limit_or_trailing_bytes")
     return plain
 
 
@@ -124,10 +126,10 @@ class Mailbox:
             # Ambiguous publication is never retried. The caller stops the run.
             self._request("", {"body": body})
 
-    def comments(self):
+    def comments(self, *, since=None):
         result = []
         for page in range(1, 21):
-            rows = self._request(f"?since={self.since}&per_page=100&page={page}")
+            rows = self._request(f"?since={since or self.since}&per_page=100&page={page}")
             require(type(rows) is list and all(type(row) is dict for row in rows), "ci_mailbox_schema")
             result.extend(rows)
             if len(rows) < 100:
@@ -136,8 +138,9 @@ class Mailbox:
 
     def receive(self, stage, private_key, validate, deadline, *, limit=MAX_PLAIN):
         seen = set()
+        cursor = self.since if stage == "start" else (datetime.now(timezone.utc) - timedelta(seconds=60)).isoformat(timespec="seconds")
         while time.monotonic() < deadline:
-            for raw in messages(self.comments(), self.run_id, stage, sender_id=self.sender_id):
+            for raw in messages(self.comments(since=cursor), self.run_id, stage, sender_id=self.sender_id):
                 sha = digest(raw)
                 if sha in seen:
                     continue
@@ -148,7 +151,7 @@ class Mailbox:
                     require(canonical(value) == plain, "ci_noncanonical_message")
                     validate(value)
                     return value
-                except (ValueError, TypeError, KeyError, CryptoError, zlib.error):
+                except (ValueError, TypeError, KeyError, CryptoError, lzma.LZMAError):
                     # An unauthenticated public comment cannot change authority.
                     continue
             time.sleep(min(5, max(0, deadline - time.monotonic())))

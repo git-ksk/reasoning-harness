@@ -65,6 +65,13 @@ limited to run, stage, chunk order and ciphertext digest. Private keys and provi
 credentials are excluded from archives. The terminal artifact preserves partial
 captures and the actual authority records, including failures.
 
+The versioned XZ compression uses an 8 MiB dictionary to reuse the complete
+source text across final files. Decoding bounds memory at 64 MiB and plaintext
+at 32 MiB per question or 256 MiB for final/archive data. Chunks from other
+GitHub senders are discarded before assembly. Local packet extraction also
+requires the exact session digest. Malformed ciphertext, compression or unsigned
+decisions cannot consume a pending review.
+
 The transport authenticates the registered agent's decision through the existing
 Ed25519 gate. Semantic judgment still belongs to that reviewer. The resulting
 scores describe consumed development questions. New independent accuracy and
