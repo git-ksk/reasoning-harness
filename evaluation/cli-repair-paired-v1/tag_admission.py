@@ -28,8 +28,8 @@ def windows_since(first,last):
         cursor=end+timedelta(days=1)
     return windows
 
-def single_first_push(history,tag,source_sha,run_id):
-    if tag!=TAG or not re.fullmatch(r'[0-9a-f]{40}',str(source_sha)):
+def single_first_push(history,tag,source_sha,run_id,*,expected_tag=TAG,workflow_path=WORKFLOW_PATH):
+    if tag!=expected_tag or not re.fullmatch(r'[0-9a-f]{40}',str(source_sha)):
         raise ValueError('tag_or_source_identity_changed')
     if not isinstance(history,dict):raise ValueError('history_snapshot_not_dict')
     try:
@@ -73,7 +73,7 @@ def single_first_push(history,tag,source_sha,run_id):
     if not matched:raise ValueError('tag_not_present_in_full_history')
     if any(r.get('head_sha')!=source_sha for r in matched):
         raise ValueError('tag_cross_head_replay')
-    eligible=[r for r in matched if r.get('path')==WORKFLOW_PATH]
+    eligible=[r for r in matched if r.get('path')==workflow_path]
     if len(eligible)!=1:
         raise ValueError('tag_must_have_one_development_run')
     current=eligible[0]

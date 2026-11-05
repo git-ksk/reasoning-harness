@@ -1,0 +1,95 @@
+name: cli-normal-real24-development-v3
+
+on:
+  workflow_dispatch:
+  push:
+    tags: [cli-normal-real24-development-v3]
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+concurrency:
+  group: reasoning-harness-mistral-live
+  cancel-in-progress: false
+
+jobs:
+  native-v3:
+    if: github.run_attempt == 1
+    runs-on: macos-15
+    timeout-minutes: 360
+    steps:
+      - name: Establish the whole-job deadline and private state
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          v3_root=$(mktemp -d /private/tmp/reason-v3-ci.XXXXXX)
+          echo "V3_ROOT=$v3_root" >> "$GITHUB_ENV"
+          echo "V3_JOB_STARTED_UNIX=$(date +%s)" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Install the hash-pinned reviewer verifier and cache build dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m venv "$V3_ROOT/verifier"
+          "$V3_ROOT/verifier/bin/python" -m pip install -r evaluation/cli-repair-paired-v1/normal_v3/review-requirements.txt
+          cargo fetch --locked
+      - name: Build the paired immutable native sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 "$V3_ROOT/verifier/bin/python" -B evaluation/cli-repair-paired-v1/normal_v3/build_native_pair.py \
+            --repo "$GITHUB_WORKSPACE" --cli-commit "$GITHUB_SHA" --output "$V3_ROOT/build" > "$V3_ROOT/controller.log" 2>&1
+          echo "V3_MODULE=$V3_ROOT/build/source-baseline/evaluation/cli-repair-paired-v1/normal_v3" >> "$GITHUB_ENV"
+      - name: Freeze the real24 job, source, authority and review identities
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MISTRAL_API_KEY: ${{ github.event_name == 'push' && secrets.MISTRAL_API_KEY || '' }}
+        run: |
+          set -euo pipefail
+          v3_mode=prepare
+          if test "$GITHUB_EVENT_NAME" = push; then v3_mode=live; fi
+          PYTHONDONTWRITEBYTECODE=1 "$V3_ROOT/verifier/bin/python" -B "$V3_MODULE/ci_prepare.py" \
+            --repo "$GITHUB_WORKSPACE" --root "$V3_ROOT" \
+            --operator "$GITHUB_WORKSPACE/evaluation/cli-repair-paired-v1/normal_v3/ci-operator.json" \
+            --mode "$v3_mode" >> "$V3_ROOT/controller.log" 2>&1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: native-v3-bootstrap-${{ github.run_id }}
+          path: ${{ env.V3_ROOT }}/public/bootstrap.sealed
+          if-no-files-found: error
+          retention-days: 7
+      - name: Await independent admission and run the signed paired cohort
+        if: github.event_name == 'push'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 "$V3_ROOT/verifier/bin/python" -B "$V3_MODULE/ci_run.py" run \
+            --root "$V3_ROOT" >> "$V3_ROOT/controller.log" 2>&1
+      - name: Seal complete or interrupted evidence
+        if: always() && env.V3_MODULE != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 "$V3_ROOT/verifier/bin/python" -B "$V3_MODULE/ci_run.py" archive \
+            --root "$V3_ROOT" --operator "$GITHUB_WORKSPACE/evaluation/cli-repair-paired-v1/normal_v3/ci-operator.json"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() && env.V3_MODULE != ''
+        with:
+          name: native-v3-final-${{ github.run_id }}
+          path: ${{ env.V3_ROOT }}/public/final.sealed
+          if-no-files-found: error
+          retention-days: 7
