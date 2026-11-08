@@ -29,6 +29,8 @@ from review_auth import validate_policy
 
 TAG = "cli-normal-real24-development-v3"
 WORKFLOW = ".github/workflows/cli-normal-real24-development-v3.yml"
+TAG_V4 = "cli-normal-real24-development-v4"
+WORKFLOW_V4 = ".github/workflows/cli-normal-real24-development-v4.yml"
 INPUT_COMMIT = "6165de77c1544a7fe58fc1e675e7cb3a8ec7cc98"
 INPUT_PATH = "evaluation/engine073-realworld-independent-v1-input"
 
@@ -37,24 +39,37 @@ def load(path):
     return json.loads(private_snapshot(path))
 
 
-def context(environment, mode):
+def context(environment, mode, *, shard_case_id=None):
     require(environment.get("GITHUB_REPOSITORY") == REPOSITORY
             and environment.get("GITHUB_RUN_ATTEMPT") == "1", "ci_first_attempt_required")
     source = environment.get("GITHUB_SHA", "")
     require(re.fullmatch(r"[0-9a-f]{40}", source) is not None, "ci_source_commit_required")
     run_id = environment.get("GITHUB_RUN_ID", "")
     require(run_id.isdecimal() and int(run_id) > 0, "ci_run_id_required")
+    shard = shard_case_id is not None
+    if shard:
+        require(re.fullmatch(r"rw-(?:0[1-9]|1[0-9]|2[0-4])", shard_case_id) is not None
+                and environment.get("V4_CASE_ID") == shard_case_id,
+                "ci_v4_invalid_case_shard")
+    tag = TAG_V4 if shard else TAG
     if mode == "live":
         require(environment.get("GITHUB_EVENT_NAME") == "push"
-                and environment.get("GITHUB_REF") == "refs/tags/" + TAG, "ci_live_one_shot_tag_required")
+                and environment.get("GITHUB_REF") == "refs/tags/" + tag,
+                "ci_live_one_shot_tag_required")
     else:
-        require(mode == "prepare" and environment.get("GITHUB_EVENT_NAME") == "workflow_dispatch",
+        require(mode == "prepare"
+                and environment.get("GITHUB_EVENT_NAME") == "workflow_dispatch",
                 "ci_prepare_dispatch_required")
-    started = float(environment["V3_JOB_STARTED_UNIX"])
-    require(0 <= time.time() - started < 330 * 60, "ci_job_deadline")
-    return {"repository": REPOSITORY, "source_commit": source, "run_id": int(run_id),
-            "run_attempt": 1, "mode": mode, "execution_tag": TAG if mode == "live" else None,
-            "job_deadline_unix": started + 330 * 60}
+    started = float(environment["V4_JOB_STARTED_UNIX" if shard else "V3_JOB_STARTED_UNIX"])
+    allowed = 290 * 60 if shard else 330 * 60
+    require(0 <= time.time() - started < allowed, "ci_job_deadline")
+    result = {"repository": REPOSITORY, "source_commit": source, "run_id": int(run_id),
+            "run_attempt": 1, "mode": mode,
+            "execution_tag": tag if mode == "live" else None,
+            "job_deadline_unix": started + allowed}
+    if shard:
+        result["shard_case_id"] = shard_case_id
+    return result
 
 
 def fetch(url, headers=None, maximum=4 * 1024 * 1024):
@@ -158,9 +173,12 @@ def pack_files(files):
     return result
 
 
-def prepare_ci(repo, root, operator_path, mode):
+def prepare_ci(repo, root, operator_path, mode, *, shard_case_id=None, tag_proof_path=None):
     repo, root = Path(repo).resolve(strict=True), Path(root).resolve(strict=True)
-    session = context(os.environ, mode)
+    session = context(os.environ, mode, shard_case_id=shard_case_id)
+    shard = shard_case_id is not None
+    tag = TAG_V4 if shard else TAG
+    workflow = WORKFLOW_V4 if shard else WORKFLOW
     require(load(root / "build/build.json")["cli_commit"] == session["source_commit"], "ci_build_source_mismatch")
     operator_raw = Path(operator_path).read_bytes()
     expected_operator = subprocess.check_output(["git", "show", session["source_commit"] +
@@ -173,7 +191,7 @@ def prepare_ci(repo, root, operator_path, mode):
     require(operator["model"] == MODEL and operator["fee_mode"] == "free-only"
             and operator["additional_charges_enabled"] is False, "ci_fee_conditions_required")
     private_bytes(root / "operator.json", operator_raw)
-    for name, source in (("workflow.yml", WORKFLOW), ("tag-guard.py", "evaluation/cli-repair-paired-v1/tag_admission.py")):
+    for name, source in (("workflow.yml", workflow), ("tag-guard.py", "evaluation/cli-repair-paired-v1/tag_admission.py")):
         raw = subprocess.check_output(["git", "show", session["source_commit"] + ":" + source], cwd=repo)
         require(raw == (repo / source).read_bytes(), "ci_checkout_control_changed")
         private_bytes(root / name, raw)
@@ -183,10 +201,24 @@ def prepare_ci(repo, root, operator_path, mode):
         spec = importlib.util.spec_from_file_location("v3_reviewed_tag_guard", guard_path)
         guard = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(guard)
-        history = guard.collect_history(REPOSITORY)
-        proof = guard.single_first_push(history, TAG, session["source_commit"], session["run_id"],
-                                        expected_tag=TAG, workflow_path=WORKFLOW)
-        exclusive_json(root / "tag-reservation.json", proof)
+        if shard:
+            require(tag_proof_path is not None, "v4_global_tag_proof_required")
+            import sys
+            sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "normal_v4"))
+            from tag_gate import verify_proof
+            raw = Path(tag_proof_path).read_bytes()
+            require(len(raw) <= 2 * 1024 * 1024 and
+                    digest(raw) == os.environ.get("V4_TAG_GUARD_SHA256"),
+                    "v4_tag_proof_artifact_digest_mismatch")
+            proof = json.loads(raw)
+            require(canonical(proof) == raw, "v4_tag_proof_noncanonical")
+            verify_proof(proof, os.environ)
+            private_bytes(root / "tag-reservation.json", raw)
+        else:
+            history = guard.collect_history(REPOSITORY)
+            proof = guard.single_first_push(history, tag, session["source_commit"], session["run_id"],
+                                            expected_tag=tag, workflow_path=workflow)
+            exclusive_json(root / "tag-reservation.json", proof)
         # Record the attempted read before accessing the credential or network.
         exclusive_json(root / "metadata-attempt.json", {"maximum_requests": 1, "model_generations": 0})
         readiness = metadata(os.environ.get("MISTRAL_API_KEY"))
@@ -232,12 +264,30 @@ def prepare_ci(repo, root, operator_path, mode):
     private_bytes(root / "receipt.json", receipt_raw)
     corpus, obligations = checked_input(input_root)
     cases = gold_cases(corpus, obligations)
-    plan, binding = make_plan(requests, bundle, receipt_raw, operator["executor_id"], operator["evaluator_id"], cases)
+    if shard:
+        import sys
+        from pathlib import Path as _Path
+        sys.path.insert(0, str(_Path(__file__).resolve().parents[1] / "normal_v4"))
+        from shard_contract import global_manifest, select_case, make_shard_plan
+        manifest = global_manifest(corpus, requests, session["source_commit"])
+        selection = select_case(manifest, requests, shard_case_id)
+        private_bytes(root / "global-manifest.json", canonical(manifest))
+        private_bytes(root / "shard.json", canonical(selection))
+        plan = make_shard_plan(manifest=manifest, selected=shard_case_id,
+             requests=requests, cases=cases, receipt_sha256=digest(receipt_raw),
+             provider="mistral", model=MODEL, purpose=PURPOSE, timeout_seconds=1200)
+        require(plan["shard"] == selection, "ci_v4_manifest_mismatch")
+        binding = bundle.binding(operator["executor_id"], operator["evaluator_id"])
+        cases = [case for case in cases if case["case_id"] == shard_case_id]
+        require(len(cases) == 1 and len(plan["jobs"]) == 2, "ci_v4_exact_paired_shard")
+    else:
+        plan, binding = make_plan(requests, bundle, receipt_raw, operator["executor_id"], operator["evaluator_id"], cases)
     private_bytes(root / "plan.json", canonical(plan))
     gold = {"contract": "reason-cli-normal-v3-gold-v1", "receipt_sha256": digest(receipt_raw), "cases": cases}
     validate_gold(gold)
     private_bytes(root / "gold.json", canonical(gold))
-    authority_receipt = {"contract": NATIVE_RECEIPT, "evaluation_id": "ci-v3-" + str(session["run_id"]),
+    evaluation_id = ("ci-v4-" + str(session["run_id"]) + "-" + shard_case_id) if shard else ("ci-v3-" + str(session["run_id"]))
+    authority_receipt = {"contract": NATIVE_RECEIPT, "evaluation_id": evaluation_id,
         "plan_sha256": digest(canonical(plan)), "legacy_receipt_sha256": digest(receipt_raw), **asdict(binding),
         "provider": "mistral", "model": MODEL, "token_budget": plan["token_budget"], "jobs": freeze_jobs(plan),
         "native_admission": {"bundle_sha256": bundle.sha256, "policy_sha256": digest(policy_raw),
@@ -251,6 +301,8 @@ def prepare_ci(repo, root, operator_path, mode):
     private_bytes(root / "start-request.json", canonical(approval))
     files = {name: root / name for name in ("session.json", "operator.json", "policy.json", "readiness.json", "native-bundle.json",
         "requests.json", "receipt.json", "plan.json", "gold.json", "authority-receipt.json", "start-request.json")}
+    if shard:
+        files.update({name: root / name for name in ("global-manifest.json", "shard.json")})
     for name, record in bundle.data["files"].items():
         files["bundle-files/" + name] = Path(record["path"])
     files.update({"input/" + str(p.relative_to(input_root)): p for p in input_root.rglob("*") if p.is_file()})
@@ -265,5 +317,8 @@ if __name__ == "__main__":
     parser.add_argument("--root", required=True, type=Path)
     parser.add_argument("--operator", required=True, type=Path)
     parser.add_argument("--mode", required=True, choices=("prepare", "live"))
+    parser.add_argument("--shard-case-id", default=None)
+    parser.add_argument("--tag-proof",type=Path,default=None)
     args = parser.parse_args()
-    prepare_ci(args.repo, args.root, args.operator, args.mode)
+    prepare_ci(args.repo,args.root,args.operator,args.mode,
+               shard_case_id=args.shard_case_id,tag_proof_path=args.tag_proof)

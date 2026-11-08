@@ -4,6 +4,7 @@ import base64
 import json
 import lzma
 import os
+import re
 from pathlib import Path
 import subprocess
 
@@ -26,12 +27,26 @@ def decode_packet(comments, run_id, stage, key, session, session_raw):
             raw = unseal(candidate, key, limit=MAX_ARCHIVE if stage == "final" else MAX_PLAIN)
             value = json.loads(raw)
             require(canonical(value) == raw and value["ci_session_sha256"] == digest(session_raw), "ci_packet_session_mismatch")
-            if stage.startswith("job-"):
-                expected = value["expected"]
-                require(expected["evaluation_id"] == "ci-v3-" + str(run_id)
-                        and value["packet"]["job_id"] == expected["job_id"], "ci_packet_job_mismatch")
+            shard_id = session.get("shard_case_id")
+            if shard_id:
+                require(re.fullmatch(r"rw-(?:0[1-9]|1[0-9]|2[0-4])", shard_id) is not None
+                        and stage.startswith(shard_id + "-"), "ci_v4_packet_route_mismatch")
+                evaluation_id = "ci-v4-" + str(run_id) + "-" + shard_id
+                is_job = stage.startswith(shard_id + "-job-")
+                is_final = stage == shard_id + "-final"
             else:
-                require(stage == "final" and value["evaluation_id"] == "ci-v3-" + str(run_id), "ci_final_session_mismatch")
+                evaluation_id = "ci-v3-" + str(run_id)
+                is_job = stage.startswith("job-")
+                is_final = stage == "final"
+            if is_job:
+                expected = value["expected"]
+                require(expected["evaluation_id"] == evaluation_id
+                        and value["packet"]["job_id"] == expected["job_id"]
+                        and (not shard_id or value["packet"]["job_id"].startswith(shard_id + "-")),
+                        "ci_packet_job_mismatch")
+            else:
+                require(is_final and value["evaluation_id"] == evaluation_id,
+                        "ci_final_session_mismatch")
             valid.append(raw)
         except (ValueError, TypeError, KeyError, CryptoError, lzma.LZMAError):
             continue

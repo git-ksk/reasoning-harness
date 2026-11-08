@@ -98,17 +98,53 @@ def _job_reserve(budget):
 
 
 def freeze_jobs(plan):
-    """Recompute the 24 paired-case inventory, not a caller-provided copy."""
-    check(type(plan) is dict and plan.get("schema") == "engine07-operational-plan-v1",
-          "invalid_frozen_plan")
+    """Recompute a frozen full cohort, or a new explicitly bound paired shard.
+
+    V3 remains exactly 24 questions / 48 jobs. The V4 shard requires exactly
+    one question with BOTH arms, and an independently fixed 24-case manifest.
+    A shard alone can NEVER claim the global 48-case score.
+    """
+    check(type(plan) is dict, "invalid_frozen_plan")
+    schema = plan.get("schema")
     cases, questions, jobs = (plan.get(name) for name in ("case_ids", "questions", "jobs"))
     bindings = plan.get("frozen_request_bindings")
-    check(type(cases) is list and len(cases) == 24
-          and all(type(c) is str for c in cases)
-          and len(set(cases)) == 24
-          and type(questions) is dict and set(questions) == set(cases)
-          and type(bindings) is dict
-          and type(jobs) is list and len(jobs) == 48, "invalid_paired_cohort")
+    if schema == "engine07-operational-plan-v1":
+        check(type(cases) is list and len(cases) == 24
+              and all(type(c) is str for c in cases)
+              and len(set(cases)) == 24
+              and type(questions) is dict and set(questions) == set(cases)
+              and type(bindings) is dict
+              and type(jobs) is list and len(jobs) == 48,
+              "invalid_paired_cohort")
+    elif schema == "engine07-operational-paired-shard-v1":
+        shard = plan.get("shard")
+        check(type(shard) is dict and
+              set(shard) == {"contract", "global_manifest_sha256", "case_id",
+                             "case_index", "total_cases", "case_question_sha256",
+                             "arm_order", "job_ids", "first_request_digests"}
+              and shard["contract"] == "reason-cli-real24-v4-paired-shard-v1"
+              and type(shard["case_index"]) is int and 0 <= shard["case_index"] < 24
+              and type(shard["total_cases"]) is int and shard["total_cases"] == 24,
+              "invalid_v4_global_shard_binding")
+        sha_field(shard["global_manifest_sha256"], "invalid_v4_global_manifest_digest")
+        check(type(cases) is list and len(cases) == 1 and
+              cases[0] == shard["case_id"] and
+              type(questions) is dict and set(questions) == set(cases) and
+              digest(questions[cases[0]].encode("utf-8")) == shard["case_question_sha256"]
+              and type(bindings) is dict and type(jobs) is list and len(jobs) == 2
+              and cases[0] == f"rw-{shard['case_index'] + 1:02d}"
+              and set(shard["job_ids"]) == {cases[0] + "-baseline", cases[0] + "-candidate"}
+              and len(shard["job_ids"]) == 2
+              and shard["job_ids"] == [j.get("id") for j in jobs]
+              and set(shard["arm_order"]) == {"baseline", "candidate"}
+              and len(shard["arm_order"]) == 2
+              and shard["arm_order"] == [j.get("arm") for j in jobs]
+              and set(shard["first_request_digests"]) == {"baseline", "candidate"}
+              and all(shard["first_request_digests"][j["arm"]] ==
+                      j.get("native_request_plan", {}).get("request_sha256") for j in jobs),
+              "invalid_v4_paired_shard")
+    else:
+        check(False, "invalid_frozen_plan")
     check(type(plan.get("token_budget")) is int and plan["token_budget"] > 0,
           "invalid_arm_budget")
     expected = set()
@@ -365,7 +401,7 @@ class TrustedAuthority:
         expected = {
             "contract": COMPLETE, "evaluation_id": evaluation_id,
             "authority_receipt_sha256": authority_sha,
-            "job_count": 48, "unknown_usage": 0,
+            "job_count": len(receipt["jobs"]), "unknown_usage": 0,
         }
         try:
             result = json.loads(completed)
@@ -685,12 +721,12 @@ class RunSession:
     @_session_serialized
     def complete(self):
         check(not self._halted and self._inflight is None
-              and self._next == 48, "authority_incomplete_or_uncertain_run")
+              and self._next == len(self._receipt["jobs"]), "authority_incomplete_or_uncertain_run")
         # No implicit rescore or restart; the remote record is immutable.
         self._write("completed", {
             "contract": COMPLETE, "evaluation_id": self._receipt["evaluation_id"],
             "authority_receipt_sha256": self._sha,
-            "job_count": 48, "unknown_usage": 0,
+            "job_count": len(self._receipt["jobs"]), "unknown_usage": 0,
             "charged_reservation_tokens": self._reserved,
         })
         self._completed = True
