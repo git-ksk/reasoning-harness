@@ -28,6 +28,10 @@ pub struct MistralAdapter {
     single_attempt: bool,
     http_observer: Option<Arc<dyn crate::http_observation::HttpObservationSink>>,
     execution_budget: Mutex<Option<ModelExecutionBudget>>,
+    /// Native observed requests defer a successful response's rate-limit
+    /// cooldown until the next request. Never hold a completed answer open
+    /// merely to wait for a request that may not be needed.
+    observed_next_allowed_start: Mutex<Option<Instant>>,
     execution_telemetry: crate::network::ExecutionTelemetryCounters,
 }
 
@@ -136,6 +140,7 @@ impl MistralAdapter {
             single_attempt: false,
             http_observer: None,
             execution_budget: Mutex::new(None),
+            observed_next_allowed_start: Mutex::new(None),
             execution_telemetry: crate::network::ExecutionTelemetryCounters::default(),
         })
     }
@@ -355,12 +360,32 @@ impl MistralAdapter {
         // Freeze the exact bytes submitted to reqwest, without Authorization.
         let bytes =
             serde_json::to_vec(body).map_err(|_| crate::http_observation::observation_error())?;
-        let mut pending =
-            PendingHttpObservation::begin(observer, &self.model, &bytes, measured).await?;
         let budget = *self
             .execution_budget
             .lock()
             .unwrap_or_else(|e| e.into_inner());
+
+        // A preceding successful HTTP 200 may require a cooldown before
+        // another POST. Wait *before* opening the next observed request,
+        // rather than after its predecessor's response while the predecessor
+        // is still uncommitted. The single-host native evaluation invokes
+        // observed model generations sequentially. An insufficient finite
+        // wait budget refuses the next request before any HTTP send.
+        let next_allowed = *self
+            .observed_next_allowed_start
+            .lock()
+            .unwrap_or_else(|e| e.into_inner());
+        if let Some(next_allowed) = next_allowed {
+            let requested = next_allowed.saturating_duration_since(Instant::now());
+            if !requested.is_zero() {
+                let delay = crate::network::bounded_wait(requested, Duration::ZERO, budget)?;
+                tokio::time::sleep(delay).await;
+                self.execution_telemetry
+                    .wait_completed(crate::network::ProviderWaitKind::Pacing, delay);
+            }
+        }
+        let mut pending =
+            PendingHttpObservation::begin(observer, &self.model, &bytes, measured).await?;
         let remaining = crate::network::remaining_active_budget(Duration::ZERO, budget)?
             .unwrap_or(DEFAULT_TIMEOUT)
             .min(DEFAULT_TIMEOUT);
@@ -460,11 +485,18 @@ impl MistralAdapter {
             })?
             .map_err(|e: ModelError| e.with_provider_attempts(1))?;
         if let Some(delay) = pacing {
-            let delay = crate::network::bounded_wait(delay, Duration::ZERO, budget)
-                .map_err(|e| e.with_provider_attempts(1))?;
-            tokio::time::sleep(delay).await;
-            self.execution_telemetry
-                .wait_completed(crate::network::ProviderWaitKind::Pacing, delay);
+            // Preserve the same successful-response rate-limit protection,
+            // but place it before the NEXT observed generation. Completing
+            // the current model response first avoids an HTTP200 -> aborted
+            // record solely because no final request was forthcoming.
+            let until = Instant::now() + delay;
+            let mut next = self
+                .observed_next_allowed_start
+                .lock()
+                .unwrap_or_else(|e| e.into_inner());
+            if next.is_none_or(|prior| prior < until) {
+                *next = Some(until);
+            }
         }
         pending.complete()?;
         Ok(response)
@@ -877,6 +909,111 @@ struct Usage {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test]
+    async fn observed_http200_finishes_before_cooldown_and_next_request_fails_budget() {
+        use crate::http_observation::{
+            HttpObservation, HttpObservationContext, HttpObservationSink,
+            with_http_observation_context,
+        };
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+
+        #[derive(Default)]
+        struct Journal(Mutex<Vec<&'static str>>);
+        impl HttpObservationSink for Journal {
+            fn record(&self, event: HttpObservation) -> Result<(), ModelError> {
+                let name = match event {
+                    HttpObservation::Request { .. } => "request",
+                    HttpObservation::Response { .. } => "response",
+                    HttpObservation::Aborted { .. } => "aborted",
+                    HttpObservation::Completed { .. } => "completed",
+                };
+                self.0.lock().unwrap().push(name);
+                Ok(())
+            }
+        }
+
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            let mut buffer = [0u8; 8192];
+            let _ = stream.read(&mut buffer);
+            let body = r#"{"model":"test-model","choices":[{"message":{"content":"done"},"finish_reason":"stop"}],"usage":{"prompt_tokens":4,"completion_tokens":3,"total_tokens":7}}"#;
+            write!(stream,
+                "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\nx-ratelimit-limit-tokens-minute: 50000\r\nx-ratelimit-remaining-tokens-minute: 4000\r\nx-ratelimit-tokens-query-cost: 1200\r\n\r\n{body}",
+                body.len()).unwrap();
+        });
+
+        let mut adapter = MistralAdapter::with_base_url(
+            "test-key",
+            "test-model",
+            &format!("http://{address}/v1/"),
+        )
+        .unwrap();
+        let sink = Arc::new(Journal::default());
+        adapter.set_http_observer(sink.clone());
+        adapter.configure_execution_budget(Some(ModelExecutionBudget {
+            max_active_ms: 60_000,
+            max_wait_ms: 1_000,
+            max_single_wait_ms: 1_000,
+        }));
+        let request = ModelRequest {
+            task: "source-grounded test".into(),
+            system: None,
+            output_format: ModelOutputFormat::Text,
+            max_tokens: Some(8),
+            random_seed: None,
+            reasoning_preference: None,
+        };
+        let (request_sha, input) =
+            crate::http_observation::measure_model_request(&request).unwrap();
+        let first = with_http_observation_context(
+            HttpObservationContext {
+                correlation_id: "first".into(),
+                logical_attempt: 1,
+                request_sha256: request_sha.clone(),
+                budget_input: Some(input.clone()),
+            },
+            adapter.generate(request.clone()),
+        )
+        .await
+        .unwrap();
+        assert_eq!(first.text, "done");
+        assert_eq!(
+            *sink.0.lock().unwrap(),
+            ["request", "response", "completed"]
+        );
+
+        // The next request cannot evade the server's cooldown. Its 60 s
+        // observed budget is > 1 s, so refuse BEFORE another HTTP POST or
+        // journal reservation. The first answer remains fully committed.
+        let second = with_http_observation_context(
+            HttpObservationContext {
+                correlation_id: "second".into(),
+                logical_attempt: 1,
+                request_sha256: request_sha,
+                budget_input: Some(input),
+            },
+            adapter.generate(request),
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(second.kind, ModelErrorKind::RateLimit);
+        assert_eq!(
+            *sink.0.lock().unwrap(),
+            ["request", "response", "completed"]
+        );
+        let telemetry = adapter.execution_telemetry_snapshot().unwrap();
+        assert_eq!(telemetry.provider_attempts_started, 1);
+        assert_eq!(telemetry.provider_attempts_completed, 1);
+        assert_eq!(telemetry.pacing_wait_ms, 0);
+        server.join().unwrap();
+    }
 
     #[test]
     fn default_request_timeout_supports_long_form_reasoning() {
