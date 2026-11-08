@@ -48,7 +48,7 @@ class CiphertextTests(unittest.TestCase):
         self.assertEqual(list(messages(comments, 42, "job-01")), [])
         self.assertEqual(list(messages(comments[:-1], 42, "job-00")), [])
         conflict = json.loads(comments[0]["body"][len(ci_exchange.MARKER):])
-        conflict["ciphertext"] = "A" + conflict["ciphertext"][1:]
+        conflict["ciphertext"] = ("B" if conflict["ciphertext"].startswith("A") else "A") + conflict["ciphertext"][1:]
         poisoned = comments + [{"body": ci_exchange.MARKER + canonical(conflict).decode()}]
         self.assertEqual(list(messages(poisoned, 42, "job-00")), [])
         authorized = [{**comment, "user": {"id": 123}} for comment in comments]
@@ -71,6 +71,56 @@ class CiphertextTests(unittest.TestCase):
             self.assertFalse((root / "rejected").exists())
             path.chmod(0o666)
             with self.assertRaisesRegex(ValueError, "unsafe"): pack_files({"binary": path})
+
+    def test_nested_decrypted_archive_private_under_normal_umask(self):
+        # Regression from run #42438102599: a multi-level final archive
+        # previously produced intermediate 0755 dirs with a 0022 umask.
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            original_umask = os.umask(0o022)
+            try:
+                raw = canonical({"contract": "reason-cli-normal-v3-ci-private-files-v1",
+                    "files": {
+                        "lane/job-00/result.json": base64.b64encode(b'{"ok":true}').decode(),
+                        "preparation/authority/receipt.json": base64.b64encode(b'{"source":"private"}').decode(),
+                        "session.json": base64.b64encode(b'{"mode":"prepare"}').decode(),
+                    }})
+                output = root / "extract"
+                unpack(raw, output)
+                import stat
+                for path in (output, output / "lane", output / "lane/job-00",
+                             output / "preparation", output / "preparation/authority"):
+                    self.assertEqual(stat.S_IMODE(path.stat().st_mode), 0o700, str(path))
+                self.assertEqual((output / "lane/job-00/result.json").read_bytes(), b'{"ok":true}')
+                self.assertEqual((output / "preparation/authority/receipt.json").read_bytes(),
+                                 b'{"source":"private"}')
+                self.assertEqual(stat.S_IMODE((output / "session.json").stat().st_mode), 0o600)
+            finally:
+                os.umask(original_umask)
+
+    def test_unpack_rejects_symlink_intermediate_without_external_writes(self):
+        with tempfile.TemporaryDirectory() as folder:
+            base = Path(folder)
+            outside = base / "other"; outside.mkdir(mode=0o700)
+            output = base / "extract"
+            # Existing or hostile injected intermediate symlink is not to be followed.
+            original_umask = os.umask(0o077)
+            try:
+                from ci_operator import private_new_directory
+                raw = canonical({"contract": "reason-cli-normal-v3-ci-private-files-v1",
+                    "files": {
+                        "x/a.json": base64.b64encode(b'a').decode(),
+                        "x/deep/b.json": base64.b64encode(b'b').decode(),
+                    }})
+                def inject_created_root(path):
+                    private_new_directory(path)
+                    (path / "x").symlink_to(outside, target_is_directory=True)
+                with patch("ci_operator.private_new_directory", side_effect=inject_created_root):
+                    with self.assertRaisesRegex(ValueError, "symlink_parent"):
+                        unpack(raw, output)
+                self.assertEqual(list(outside.iterdir()), [])
+            finally:
+                os.umask(original_umask)
 
     def test_full_48_source_complete_observation_and_packet_archive_roundtrips(self):
         key = PrivateKey.generate()

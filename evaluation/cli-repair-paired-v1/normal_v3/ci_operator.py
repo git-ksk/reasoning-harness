@@ -54,7 +54,21 @@ def unpack(raw, output):
     private_new_directory(output)
     for name, data in decoded.items():
         path = output / name
-        path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+        # pathlib's parents=True creates intermediate directories with
+        # the default 0777 mode, even if mode=0700 was specified for the
+        # leaf. Under the ordinary 0022 umask this yields 0755, which the
+        # trusted local-store write rejects on deep archive paths.
+        # Create each component explicitly under the fresh private root.
+        # Do not chmod preexisting entries or follow archive-controlled
+        # symlinks; private_bytes repeats the trusted-parent check.
+        parent = output
+        for component in Path(name).parts[:-1]:
+            parent = parent / component
+            if parent.is_symlink():
+                raise ValueError("ci_archive_symlink_parent")
+            parent.mkdir(mode=0o700, exist_ok=True)
+            if parent.is_symlink():
+                raise ValueError("ci_archive_symlink_parent")
         private_bytes(path, data)
 
 
