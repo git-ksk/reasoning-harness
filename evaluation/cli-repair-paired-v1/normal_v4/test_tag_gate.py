@@ -11,7 +11,7 @@ class TagGateTests(unittest.TestCase):
         return {
             "GITHUB_REPOSITORY":"git-ksk/reasoning-harness",
             "GITHUB_SHA":"a"*40,
-            "GITHUB_REF":"refs/tags/cli-normal-real24-development-v4",
+            "GITHUB_REF":"refs/tags/cli-normal-real24-development-v4-rw-01",
             "GITHUB_EVENT_NAME":"push","GITHUB_RUN_ATTEMPT":"1",
             "GITHUB_RUN_ID":"101"
         }
@@ -21,7 +21,7 @@ class TagGateTests(unittest.TestCase):
                 "checked_through_date_utc":"2026-11-08",
                 "windows":[{"start":"2026-11-01","end":"2026-11-08",
                      "pages":[{"total_count":1,"workflow_runs":[{
-                         "event":"push","head_sha":"a"*40,"head_branch":tag_gate.TAG,
+                         "event":"push","head_sha":"a"*40,"head_branch":tag_gate.TAG+"-rw-01",
                          "id":101,"created_at":"2026-11-08T10:00:00Z",
                          "path":tag_gate.WORKFLOW,"run_attempt":1}]}]}]}
 
@@ -46,6 +46,12 @@ class TagGateTests(unittest.TestCase):
         extra["windows"][0]["pages"][0]["total_count"]=2
         with self.assertRaisesRegex(ValueError,"tag_must_have_one_development_run"):
             tag_gate.make_proof(self.env(),extra)
+        wrong_case=dict(self.env(),GITHUB_REF="refs/tags/cli-normal-real24-development-v4-rw-02")
+        with self.assertRaises(ValueError):
+            tag_gate.make_proof(wrong_case,self.history())
+        wrong_case=dict(self.env(),GITHUB_REF="refs/tags/cli-normal-real24-development-v4-rw-25")
+        with self.assertRaisesRegex(ValueError,"wrong_actual_push"):
+            tag_gate.make_proof(wrong_case,self.history())
         wrong=dict(self.env(),GITHUB_RUN_ATTEMPT="2")
         with self.assertRaisesRegex(ValueError,"wrong_actual_push"):
             tag_gate.make_proof(wrong,self.history())
