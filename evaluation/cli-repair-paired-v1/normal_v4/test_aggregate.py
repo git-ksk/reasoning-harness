@@ -22,7 +22,7 @@ class AggregateTests(unittest.TestCase):
 
     def outcome(self,cid):
         return {"case_id":cid,
-                "session":{"run_id":123456,"source_commit":"a"*40},
+                "session":{"run_id":123456+int(cid[-2:]),"source_commit":"a"*40},
                 "shard":next(x for x in self.shards if x["case_id"]==cid),
                 "global_manifest":self.manifest,
                 "gold":self.all_gold[cid],
@@ -62,7 +62,7 @@ class AggregateTests(unittest.TestCase):
             def read(root,c):
                 row=self.outcome(c)
                 if c==EXPECTED_IDS[-1]:
-                    if mutation=="run":row["session"]["run_id"]=999
+                    if mutation=="run":row["session"]["run_id"]=123456+int(EXPECTED_IDS[0][-2:])
                     elif mutation=="manifest":row["global_manifest"]={"foreign":True}
                     else:row["shard"]=copy.deepcopy(self.shards[0])
                 return row

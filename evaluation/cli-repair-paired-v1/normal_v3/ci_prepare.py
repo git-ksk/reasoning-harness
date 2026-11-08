@@ -51,7 +51,7 @@ def context(environment, mode, *, shard_case_id=None):
         require(re.fullmatch(r"rw-(?:0[1-9]|1[0-9]|2[0-4])", shard_case_id) is not None
                 and environment.get("V4_CASE_ID") == shard_case_id,
                 "ci_v4_invalid_case_shard")
-    tag = TAG_V4 if shard else TAG
+    tag = (TAG_V4 + "-" + shard_case_id) if shard else TAG
     if mode == "live":
         require(environment.get("GITHUB_EVENT_NAME") == "push"
                 and environment.get("GITHUB_REF") == "refs/tags/" + tag,
@@ -177,7 +177,7 @@ def prepare_ci(repo, root, operator_path, mode, *, shard_case_id=None, tag_proof
     repo, root = Path(repo).resolve(strict=True), Path(root).resolve(strict=True)
     session = context(os.environ, mode, shard_case_id=shard_case_id)
     shard = shard_case_id is not None
-    tag = TAG_V4 if shard else TAG
+    tag = (TAG_V4 + "-" + shard_case_id) if shard else TAG
     workflow = WORKFLOW_V4 if shard else WORKFLOW
     require(load(root / "build/build.json")["cli_commit"] == session["source_commit"], "ci_build_source_mismatch")
     operator_raw = Path(operator_path).read_bytes()

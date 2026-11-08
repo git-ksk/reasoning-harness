@@ -36,7 +36,7 @@ on:
           - rw-23
           - rw-24
   push:
-    tags: [cli-normal-real24-development-v4]
+    tags: [cli-normal-real24-development-v4-rw-*]
 
 permissions:
   contents: read
@@ -79,25 +79,28 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-  paired-shards:
+  paired-shard:
     needs: tag-admission
     if: github.run_attempt == 1
     runs-on: macos-15
     timeout-minutes: 300
-    strategy:
-      max-parallel: 1
-      fail-fast: true
-      matrix:
-        case_id: ${{ fromJSON(github.event_name == 'push' && '["rw-01","rw-02","rw-03","rw-04","rw-05","rw-06","rw-07","rw-08","rw-09","rw-10","rw-11","rw-12","rw-13","rw-14","rw-15","rw-16","rw-17","rw-18","rw-19","rw-20","rw-21","rw-22","rw-23","rw-24"]' || format('["{0}"]', inputs.case_id)) }}
     env:
-      V4_CASE_ID: ${{ matrix.case_id }}
+      V4_INPUT_CASE_ID: ${{ inputs.case_id }}
     steps:
       - name: Establish private paired-shard state and bounded deadline
         shell: bash
         run: |
           set -euo pipefail
           umask 077
-          root=$(mktemp -d "/private/tmp/reason-v4-${GITHUB_RUN_ID}-${V4_CASE_ID}.XXXXXX")
+          if test "$GITHUB_EVENT_NAME" = push; then
+            id="${GITHUB_REF_NAME#cli-normal-real24-development-v4-}"
+            test "$GITHUB_REF_NAME" = "cli-normal-real24-development-v4-$id"
+          else
+            id="$V4_INPUT_CASE_ID"
+          fi
+          [[ "$id" =~ ^rw-(0[1-9]|1[0-9]|2[0-4])$ ]] || exit 12
+          echo "V4_CASE_ID=$id" >> "$GITHUB_ENV"
+          root=$(mktemp -d "/private/tmp/reason-v4-${GITHUB_RUN_ID}-${id}.XXXXXX")
           echo "V3_ROOT=$root" >> "$GITHUB_ENV"
           echo "V4_JOB_STARTED_UNIX=$(date +%s)" >> "$GITHUB_ENV"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -149,7 +152,7 @@ jobs:
           fi
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
-          name: native-v4-bootstrap-${{ matrix.case_id }}-${{ github.run_id }}
+          name: native-v4-bootstrap-${{ env.V4_CASE_ID }}-${{ github.run_id }}
           path: ${{ env.V3_ROOT }}/public/bootstrap.sealed
           if-no-files-found: error
           retention-days: 7
@@ -171,7 +174,7 @@ jobs:
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always() && env.V3_MODULE != ''
         with:
-          name: native-v4-final-${{ matrix.case_id }}-${{ github.run_id }}
+          name: native-v4-final-${{ env.V4_CASE_ID }}-${{ github.run_id }}
           path: ${{ env.V3_ROOT }}/public/final.sealed
           if-no-files-found: error
           retention-days: 7

@@ -94,7 +94,7 @@ def execute(root):
     operator, session = load(root / "operator.json"), load(root / "session.json")
     shard_id = session.get("shard_case_id")
     current = context(os.environ, "live", shard_case_id=shard_id)
-    expected_tag = TAG_V4 if shard_id else TAG
+    expected_tag = (TAG_V4 + "-" + shard_id) if shard_id else TAG
     require(all(current[k] == session[k] for k in current) and
             session["execution_tag"] == expected_tag, "ci_context_changed")
     bundle = NativeBundle(private_snapshot(root / "native-bundle.json"))

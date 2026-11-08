@@ -17,14 +17,18 @@ prepare-only workflow, or individual shard cannot be called cohort acceptance.
 
 ## Architecture
 
-1. A new single-use GitHub tag launches the tag-admission job, which checks
-   full calendar-windowed repository push history **once**, records the
-   exact first run ID, source commit and workflow, and publishes a nonsecret
-   immutable proof. Every shard validates the exact proof bytes against
-   the GitHub same-run SHA-256 output; ambiguity stops before model use.
-2. The matrix has 24 fixed, independently identified cases. GitHub
-   `max-parallel: 1` and `fail-fast: true` keep one paired native workload
-   at a time. Each case has two frozen arms, up to 1200 seconds/job, a
+1. For each frozen question, a distinct one-shot tag
+   `cli-normal-real24-development-v4-rw-NN` launches only that question's
+   baseline/candidate pair; tags for all 24 cases MUST reference the SAME
+   reviewed source commit. The tag-admission job checks full calendar-windowed
+   repository push history **once for that case run**, records the first
+   run ID, source commit and workflow, and publishes a nonsecret immutable
+   proof. The paired shard validates the exact proof bytes against GitHub
+   same-run SHA-256; ambiguity stops before model use.
+2. The exact per-case push starts ONE paired native GitHub Actions job,
+   never an unattended 24-case matrix. No second case is launched before
+   completing independent review and preserving the first pair's artifacts.
+   Each case has two frozen arms, up to 1200 seconds/arm, a
    separately sealed GH Actions bootstrap/final artifact, and a fresh
    two-job authority receipt. No one job crosses the hosted-runner 6-hour
    limit. This does not promise every provider call will succeed.
@@ -34,7 +38,8 @@ prepare-only workflow, or individual shard cannot be called cohort acceptance.
    `rw-NN-job-01`, `rw-NN-final` and signs/sends the exact
    corresponding replies. Each signed pre-advance safety decision gates
    the next physical model job; there is no implicit unattended approval.
-4. After all 24 first-score claims and 48 observations exist, the
+4. After all 24 different-run first-score claims and 48 observations exist
+   against the same pinned source SHA, the
    **offline** `aggregate.py` verifies the original source/manifest,
    bundle hashes, paired authority receipts, frozen gold, exactly two
    observations per case, independent semantic reviews and the original
@@ -57,9 +62,9 @@ through a private host; a script merely signs the reviewer's explicit
 decision and never manufactures a verdict. Credentials and source/answer
 plaintext stay on the trusted private reviewer host. Published GitHub Issue
 messages are encrypted. **Encrypted artifact retention is 7 days**, so all 24 shard artifacts must be downloaded to private reviewer storage
-and fully aggregated within that window. The configured 24 x 300-minute
-upper bound is 120 hours (five days), plus any queue delay. An overlong
-workflow must stop rather than claim a complete score with expired artifacts.
+and fully aggregated within that window. Each case is independently run and downloaded to private local storage;
+the 24-case cohort has no single long-lived GitHub runner. A failed case
+stops global scoring; no other tag is pushed to paper over that failure.
 
 ## Offline preparation and admission
 
@@ -70,9 +75,11 @@ source is ready. Provider-free read-only preparations may use Actions
 exact same full-global manifest. A prepare-only run is never accepted as a
 live first attempt and may not be promoted to a scoring receipt.
 
-A new real tag must **not** be issued until the registered independent
-reviewer is reachable for every shard and able to process three signed
-decisions per paired case within the 290-minute bound. A manual
+A case-specific real tag must **not** be issued until the registered
+independent reviewer is available to complete that case's start, two
+pre-advance signatures and final semantic review within the 290-minute bound.
+No tag for another case may be issued until the prior case is signed,
+downloaded and verified. A manual
 misconfiguration/ambiguous publication burns that shard; do not rerun
 the one-shot tag or bypass the signature. Stop and report if the 24-case
 cohort cannot be completed, rather than silently substitute synthetic
