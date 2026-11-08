@@ -47,11 +47,21 @@ def analyze(plan, job_id, execution, journal):
             "audit_invalid_timeout")
     allowed = job["budget"]["max_generations"]
     require(type(allowed) is int and allowed >= len(started), "audit_invalid_generation_ceiling")
+    argv = job.get("argv", [])
+    require(type(argv) is list and argv.count("--max-model-calls") == 1,
+            "audit_missing_actual_cli_call_ceiling")
+    position = argv.index("--max-model-calls")
+    require(position + 1 < len(argv) and type(argv[position + 1]) is str
+            and argv[position + 1].isdigit(), "audit_invalid_cli_call_ceiling")
+    cli_cap = int(argv[position + 1])
+    require(0 < cli_cap <= allowed and cli_cap >= len(started),
+            "audit_actual_cli_call_ceiling_inconsistent")
     intervals = [(after-before)/1e9 for before, after in zip(times, times[1:])]
     median_gap = statistics.median(intervals)
     # This is a hypothetical 24-request scenario, NOT a forecast of task
     # complexity, provider speed or achieved case coverage.
-    hypothetical_final_start = times[0]/1e9 + (allowed-1)*median_gap
+    hypothetical_final_start = times[0]/1e9 + (cli_cap-1)*median_gap
+    reservation_max_start = times[0]/1e9 + (allowed-1)*median_gap
     return {
         "contract": CONTRACT,
         "job_id": job_id,
@@ -59,6 +69,7 @@ def analyze(plan, job_id, execution, journal):
         "not_model_quality_failure": True,
         "job_timeout_seconds": job["timeout_seconds"],
         "allowed_generation_ceiling_not_expected_count": allowed,
+        "actual_cli_call_ceiling_not_expected_count": cli_cap,
         "recorded_request_starts": len(started),
         "http200_responses": len(received),
         "completed_attempts": len(completed),
@@ -66,9 +77,11 @@ def analyze(plan, job_id, execution, journal):
         "observed_start_seconds": [round(v/1e9, 2) for v in times],
         "observed_median_interstart_seconds": round(median_gap, 2),
         "frozen_min_interstart_seconds": job["http_limits"]["min_generation_start_interval_ms"]/1000,
-        "hypothetical_last_start_seconds_at_observed_median_if_all_allowed_attempts_used":
+        "hypothetical_last_start_seconds_if_cli_call_ceiling_reached_at_observed_median":
             round(hypothetical_final_start, 1),
         "hypothetical_last_start_exceeds_job_timeout": hypothetical_final_start >= job["timeout_seconds"],
+        "hypothetical_reservation_ceiling_last_start_seconds_not_executable_by_actual_cli":
+            round(reservation_max_start, 1),
         "cannot_infer_current_provider_quota_from_http200": True,
         "actual_case_answer_complete": False,
     }
