@@ -12,7 +12,7 @@ from nacl.public import PrivateKey
 from annotate import make_packets, read_observations, validate_gold, validate_review
 from authority import PREFIX, ScoringContext, TrustedAuthority
 from ci_exchange import APPROVAL, MAX_ARCHIVE, MAX_PLAIN, Mailbox, authenticate, seal
-from ci_prepare import TAG, context, load, pack_files
+from ci_prepare import TAG, TAG_V4, context, load, pack_files
 from collect import collect
 from contracts import PLAN_ID, canonical, digest, exclusive_json, keyed_digest, private_new_directory, require
 from local_store import LocalAtomicStore, LocalStoreProfile
@@ -23,13 +23,23 @@ from review_auth import ReviewAuthentication
 from score import score
 
 
-def drive(lane, publish, receive, deadline):
-    """Keep the actual NativeLane/session alive through all signed decisions."""
+def drive(lane, publish, receive, deadline, *, stage_prefix=""):
+    """Keep the actual NativeLane/session alive through all signed decisions.
+
+    V3 remains 48 jobs in one run. A V4 pair is exactly two jobs under its
+    own receipt, unique stage namespace and global 24-case manifest.
+    """
     observations = []
-    while lane.next < 48:
-        require(time.monotonic() + 360 <= deadline, "ci_job_deadline_before_next")
+    # Provider runs always supply the fully authenticated NativeLane plan.
+    # Keep the historical synthetic drive fixture (no plan attribute) pinned
+    # to its original 48/360 contract rather than altering its test surface.
+    jobs = lane.plan["jobs"] if hasattr(lane, "plan") else None
+    total = len(jobs) if jobs is not None else 48
+    while lane.next < total:
+        maximum = jobs[lane.next]["timeout_seconds"] if jobs is not None else 360
+        require(time.monotonic() + maximum + 60 <= deadline, "ci_job_deadline_before_next")
         packet, expected = lane.run_next()
-        stage = "job-" + str(lane.next).zfill(2)
+        stage = stage_prefix + "job-" + str(lane.next).zfill(2)
         publish(stage, canonical({"packet": packet, "expected": expected}))
         attestation = receive(stage, expected, deadline)
         require(time.monotonic() < deadline, "ci_review_arrived_after_deadline")
@@ -82,8 +92,11 @@ def final_inputs(root, lane, observations, operator, bundle, plan, binding, poli
 def execute(root):
     root = Path(root).resolve(strict=True)
     operator, session = load(root / "operator.json"), load(root / "session.json")
-    current = context(os.environ, "live")
-    require(all(current[k] == session[k] for k in current) and session["execution_tag"] == TAG, "ci_context_changed")
+    shard_id = session.get("shard_case_id")
+    current = context(os.environ, "live", shard_case_id=shard_id)
+    expected_tag = TAG_V4 if shard_id else TAG
+    require(all(current[k] == session[k] for k in current) and
+            session["execution_tag"] == expected_tag, "ci_context_changed")
     bundle = NativeBundle(private_snapshot(root / "native-bundle.json"))
     bundle.verify()
     policy = private_snapshot(root / "policy.json")
@@ -96,7 +109,8 @@ def execute(root):
     request = load(root / "start-request.json")
     def verify_start(envelope):
         authenticate(envelope, policy, operator["evaluator_id"], operator["executor_id"], APPROVAL, request)
-    approval = mailbox.receive("start", key, verify_start, deadline)
+    stage_prefix = shard_id + "-" if shard_id else ""
+    approval = mailbox.receive(stage_prefix + "start", key, verify_start, deadline)
     require(approval["payload"].get("decision") == "approve", "ci_start_denied")
     private_bytes(root / "start-approval.json", canonical(approval))
     readiness = load(root / "readiness.json")
@@ -132,10 +146,10 @@ def execute(root):
         def publish(stage, raw):
             payload = {**json.loads(raw), "ci_session_sha256": digest(private_snapshot(root / "session.json"))}
             mailbox.publish(stage, canonical(payload), recipient, limit=MAX_ARCHIVE if stage == "final" else MAX_PLAIN)
-        observations = drive(lane, publish, receive, deadline)
+        observations = drive(lane, publish, receive, deadline, stage_prefix=stage_prefix)
         final_packet, validate = final_inputs(root, lane, observations, operator, bundle, plan, binding, policy)
-        publish("final", canonical(final_packet))
-        final = mailbox.receive("final-review", key, validate, deadline, limit=MAX_ARCHIVE)
+        publish(stage_prefix + "final", canonical(final_packet))
+        final = mailbox.receive(stage_prefix + "final-review", key, validate, deadline, limit=MAX_ARCHIVE)
         require(time.monotonic() < deadline, "ci_final_review_after_deadline")
         reviews = root / "reviews"; private_new_directory(reviews)
         for jid, review in final["reviews"].items():
@@ -165,7 +179,8 @@ def archive(root, operator_path):
     files = {}
     excluded = {"session-key.bin", "bootstrap.sealed", "final.sealed"}
     for name in ("session.json", "operator.json", "policy.json", "readiness.json", "metadata-attempt.json", "native-bundle.json",
-                 "requests.json", "receipt.json", "plan.json", "gold.json", "authority-receipt.json", "start-request.json",
+                 "requests.json", "receipt.json", "plan.json", "gold.json", "global-manifest.json", "shard.json",
+                 "authority-receipt.json", "start-request.json",
                  "start-approval.json", "tag-reservation.json", "capture-manifest.json", "semantic-attestation.json", "controller.log"):
         if (root / name).is_file(): files[name] = root / name
     for name in ("lane", "observations", "packets", "reviews", "first-score", "score-ledger", "preparation/authority"):

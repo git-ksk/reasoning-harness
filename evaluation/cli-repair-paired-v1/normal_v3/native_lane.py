@@ -110,9 +110,10 @@ class NativeCancelled(KeyboardInterrupt):
 
 
 def capture_process(argv, *, directory, environment, pass_fds, timeout, cancel_grace=1,
-                    supervised=False, no_fork=False, stop_event=None):
+                    supervised=False, no_fork=False, stop_event=None, max_timeout=600):
     """Bounded complete non-TTY streams. Overflow/timeout/cancel cannot admit."""
-    require(type(timeout) in (int, float) and math.isfinite(timeout) and 0 < timeout <= 600
+    require(type(max_timeout) is int and 0 < max_timeout <= 1200
+            and type(timeout) in (int, float) and math.isfinite(timeout) and 0 < timeout <= max_timeout
             and type(cancel_grace) in (int, float) and math.isfinite(cancel_grace) and 0 < cancel_grace <= 5,
             "native_invalid_process_deadline")
     parent = child = None
@@ -258,7 +259,8 @@ class NativeLane:
                     if control_url is None or flag in argv:
                         require(argv.count(flag) == 1 and argv[argv.index(flag) + 1].isdigit()
                                 and 0 < int(argv[argv.index(flag) + 1]) <= ceiling, "native_http_cli_limits_mismatch")
-                require(type(job["timeout_seconds"]) in (int, float) and 0 < job["timeout_seconds"] <= 360
+                maximum = 1200 if plan["schema"] == "engine07-operational-paired-shard-v1" else 360
+                require(type(job["timeout_seconds"]) in (int, float) and 0 < job["timeout_seconds"] <= maximum
                         and type(job.get("cancel_grace_seconds", 1)) in (int, float)
                         and 0 < job.get("cancel_grace_seconds", 1) <= 1, "native_http_process_limits_mismatch")
             validate_argv(job["argv"], bundle.binary(arm), question, bundle, job["budget"])
@@ -346,7 +348,7 @@ class NativeLane:
     def run_next(self):
         require(not self.stop_event.is_set() and not self.session._halted, "native_run_cancelled_or_halted")
         frozen_plan = self._verify_plan()
-        require(self.pending is None and self.next < 48, "native_review_pending_or_finished")
+        require(self.pending is None and self.next < len(frozen_plan["jobs"]), "native_review_pending_or_finished")
         self.bundle.verify()
         job = frozen_plan["jobs"][self.next]
         job_deadline = time.monotonic() + job["timeout_seconds"]
@@ -387,7 +389,9 @@ class NativeLane:
             require(timeout > 0, "native_job_deadline_before_spawn")
             exit_code, complete = capture_process(argv, directory=capture.directory, environment=self.environment,
                 pass_fds=(capture.fd,), timeout=timeout, cancel_grace=job.get("cancel_grace_seconds", 1),
-                supervised=True, no_fork=self.bundle.data["process_policy"] == MAC_PROCESS_POLICY, stop_event=self.stop_event)
+                supervised=True, no_fork=self.bundle.data["process_policy"] == MAC_PROCESS_POLICY,
+                stop_event=self.stop_event,
+                max_timeout=1200 if frozen_plan["schema"] == "engine07-operational-paired-shard-v1" else 600)
             capture.close()
             require(complete and exit_code in (0, 1), "native_process_incomplete")
             self.bundle.verify()
@@ -456,7 +460,7 @@ class NativeLane:
             require(self.session.observe(expected["job_id"], tokens=sum(e["total_tokens"] for e in events), attempts=len(events),
                     observation_sha256=expected["observation_sha256"]), "native_authority_rejected_advance")
             self.next += 1; self.pending = None
-            if self.next == 48: self.session.complete()
+            if self.next == len(self.plan["jobs"]): self.session.complete()
             return observation
         except BaseException:
             self._halt(expected["job_id"], events, "native_pre_advance_review_rejected")

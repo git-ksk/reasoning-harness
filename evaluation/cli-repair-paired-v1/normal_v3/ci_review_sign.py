@@ -49,14 +49,41 @@ def start(bootstrap, decision, operator, key, key_id, policy):
     readiness = read_json(bootstrap / "readiness.json")
     plan = read_json(bootstrap / "plan.json")
     gold = read_json(bootstrap / "gold.json")
-    require(session["mode"] == "live" and session["execution_tag"] == "cli-normal-real24-development-v3",
+    shard_id = session.get("shard_case_id")
+    expected_tag = ("cli-normal-real24-development-v4" if shard_id
+                    else "cli-normal-real24-development-v3")
+    require(session["mode"] == "live" and session["execution_tag"] == expected_tag,
             "not_a_live_frozen_session")
     require(session.get("repository") == "git-ksk/reasoning-harness"
             and type(session.get("run_id")) is int and session["run_id"] > 0
             and session.get("run_attempt") == 1
             and isinstance(session.get("source_commit"), str)
             and len(session["source_commit"]) == 40, "live_ci_session_identity")
-    require(len(plan["jobs"]) == 48 and len(validate_gold(gold)) == 24, "not_frozen_48_24_cohort")
+    if shard_id:
+        require(plan["schema"] == "engine07-operational-paired-shard-v1"
+                and len(plan["jobs"]) == 2 and len(validate_gold(gold)) == 1
+                and list(validate_gold(gold)) == [shard_id]
+                and plan["shard"] == read_json(bootstrap / "shard.json")
+                and plan["shard"]["case_id"] == shard_id
+                and plan["shard"]["global_manifest_sha256"] == digest(
+                    private_snapshot(bootstrap / "global-manifest.json")),
+                "not_frozen_v4_paired_shard")
+        # Re-derive the 24-case global manifest from the actual raw corpus
+        # and all 48 pinned first model requests. A matching single SHA from
+        # unreviewed bytes is not a substitute for this full comparison.
+        import sys
+        from pathlib import Path as _Path
+        sys.path.insert(0, str(_Path(__file__).resolve().parents[1] / "normal_v4"))
+        from shard_contract import global_manifest, select_case
+        input_corpus = read_json(bootstrap / "input/corpus.json")
+        requests = read_json(bootstrap / "requests.json")["jobs"]
+        derived = global_manifest(input_corpus, requests, session["source_commit"])
+        require(derived == read_json(bootstrap / "global-manifest.json")
+                and select_case(derived, requests, shard_id) == plan["shard"],
+                "ci_v4_global_24_source_request_review_missing")
+    else:
+        require(len(plan["jobs"]) == 48 and len(validate_gold(gold)) == 24,
+                "not_frozen_48_24_cohort")
     require(request["session_sha256"] == digest(private_snapshot(bootstrap / "session.json"))
             and request["run_id"] == session["run_id"]
             and request["policy_sha256"] == digest(policy)
@@ -91,11 +118,16 @@ def job(bootstrap, packet_file, decision, operator, key, key_id, policy):
     session = read_json(bootstrap / "session.json")
     require(session.get("mode") == "live"
             and wrapper["ci_session_sha256"] == digest(private_snapshot(bootstrap / "session.json"))
-            and expected["evaluation_id"] == "ci-v3-" + str(session["run_id"])
+            and expected["evaluation_id"] == (
+                ("ci-v4-" + str(session["run_id"]) + "-" + session["shard_case_id"])
+                if session.get("shard_case_id") else ("ci-v3-" + str(session["run_id"])))
             and expected["authority_receipt_sha256"] == digest(private_snapshot(bootstrap / "authority-receipt.json"))
             and expected["native_bundle_sha256"] == digest(private_snapshot(bootstrap / "native-bundle.json")),
             "ci_job_foreign_session_or_authority")
     require(packet["job_id"] == expected["job_id"]
+            and (not session.get("shard_case_id") or
+                 packet["job_id"] in (session["shard_case_id"] + "-baseline",
+                                      session["shard_case_id"] + "-candidate"))
             and expected["packet_sha256"] == keyed_digest(packet)
             and expected["stdout_sha256"] == digest(packet["stdout"].encode("utf-8"))
             and expected["stderr_sha256"] == digest(packet["stderr"].encode("utf-8"))
@@ -131,7 +163,9 @@ def final(bootstrap, packet_file, decisions, operator, key, key_id, policy):
     session = read_json(bootstrap / "session.json")
     require(session.get("mode") == "live"
             and packet.get("ci_session_sha256") == digest(private_snapshot(bootstrap / "session.json"))
-            and packet.get("evaluation_id") == "ci-v3-" + str(session["run_id"]),
+            and packet.get("evaluation_id") == (
+                ("ci-v4-" + str(session["run_id"]) + "-" + session["shard_case_id"])
+                if session.get("shard_case_id") else ("ci-v3-" + str(session["run_id"]))),
             "ci_final_foreign_session")
     require(decisions.get("contract") == "reason-cli-v3-independent-reviewed-final-v1"
             and decisions.get("full_sources_reviewed") is True
@@ -170,8 +204,10 @@ def final(bootstrap, packet_file, decisions, operator, key, key_id, policy):
                 and len(packet_index["rows"]) == len(expected_ids),
                 "ci_final_packet_inventory_mismatch")
         reviews = decisions["reviews"]
-        require(len(observations) == len(reviews) == 48 and set(observations) == set(reviews),
-                "ci_final_48_reviews_required")
+        required = 2 if session.get("shard_case_id") else 48
+        require(len(observations) == len(reviews) == required
+                and set(observations) == set(reviews),
+                "ci_final_complete_reviews_required")
         for jid, (observed, obs_sha) in observations.items():
             case = gold[observed["case_id"]]
             validate_review(reviews[jid], observed, obs_sha, case, operator["executor_id"])
