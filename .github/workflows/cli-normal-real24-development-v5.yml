@@ -1,4 +1,4 @@
-name: cli-normal-real24-development-v4
+name: cli-normal-real24-development-v5
 
 # New prospective study. One case per isolated job, two arms per case,
 # never replay a v3 receipt, tag, run id, semantic score or private result.
@@ -36,7 +36,7 @@ on:
           - rw-23
           - rw-24
   push:
-    tags: [cli-normal-real24-development-v4-rw-*]
+    tags: [cli-normal-real24-development-v5-rw-*]
 
 permissions:
   contents: read
@@ -74,7 +74,7 @@ jobs:
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: github.event_name == 'push'
         with:
-          name: native-v4-tag-admission-${{ github.run_id }}
+          name: native-v5-tag-admission-${{ github.run_id }}
           path: ${{ runner.temp }}/v4-admission/global-tag-proof.json
           if-no-files-found: error
           retention-days: 7
@@ -93,8 +93,8 @@ jobs:
           set -euo pipefail
           umask 077
           if test "$GITHUB_EVENT_NAME" = push; then
-            id="${GITHUB_REF_NAME#cli-normal-real24-development-v4-}"
-            test "$GITHUB_REF_NAME" = "cli-normal-real24-development-v4-$id"
+            id="${GITHUB_REF_NAME#cli-normal-real24-development-v5-}"
+            test "$GITHUB_REF_NAME" = "cli-normal-real24-development-v5-$id"
           else
             id="$V4_INPUT_CASE_ID"
           fi
@@ -110,7 +110,7 @@ jobs:
       - uses: actions/download-artifact@v8
         if: github.event_name == 'push'
         with:
-          name: native-v4-tag-admission-${{ github.run_id }}
+          name: native-v5-tag-admission-${{ github.run_id }}
           path: ${{ env.V3_ROOT }}/global-tag-admission
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -152,7 +152,7 @@ jobs:
           fi
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
-          name: native-v4-bootstrap-${{ env.V4_CASE_ID }}-${{ github.run_id }}
+          name: native-v5-bootstrap-${{ env.V4_CASE_ID }}-${{ github.run_id }}
           path: ${{ env.V3_ROOT }}/public/bootstrap.sealed
           if-no-files-found: error
           retention-days: 7
@@ -174,7 +174,7 @@ jobs:
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always() && env.V3_MODULE != ''
         with:
-          name: native-v4-final-${{ env.V4_CASE_ID }}-${{ github.run_id }}
+          name: native-v5-final-${{ env.V4_CASE_ID }}-${{ github.run_id }}
           path: ${{ env.V3_ROOT }}/public/final.sealed
           if-no-files-found: error
           retention-days: 7

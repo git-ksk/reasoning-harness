@@ -12,7 +12,7 @@ from nacl.public import PrivateKey
 from annotate import make_packets, read_observations, validate_gold, validate_review
 from authority import PREFIX, ScoringContext, TrustedAuthority
 from ci_exchange import APPROVAL, MAX_ARCHIVE, MAX_PLAIN, Mailbox, authenticate, seal
-from ci_prepare import TAG, TAG_V4, context, load, pack_files
+from ci_prepare import TAG, TAG_V5, context, load, pack_files
 from collect import collect
 from contracts import PLAN_ID, canonical, digest, exclusive_json, keyed_digest, private_new_directory, require
 from local_store import LocalAtomicStore, LocalStoreProfile
@@ -94,7 +94,7 @@ def execute(root):
     operator, session = load(root / "operator.json"), load(root / "session.json")
     shard_id = session.get("shard_case_id")
     current = context(os.environ, "live", shard_case_id=shard_id)
-    expected_tag = (TAG_V4 + "-" + shard_id) if shard_id else TAG
+    expected_tag = (TAG_V5 + "-" + shard_id) if shard_id else TAG
     require(all(current[k] == session[k] for k in current) and
             session["execution_tag"] == expected_tag, "ci_context_changed")
     bundle = NativeBundle(private_snapshot(root / "native-bundle.json"))

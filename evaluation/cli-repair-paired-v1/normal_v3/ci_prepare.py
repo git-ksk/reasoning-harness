@@ -29,8 +29,8 @@ from review_auth import validate_policy
 
 TAG = "cli-normal-real24-development-v3"
 WORKFLOW = ".github/workflows/cli-normal-real24-development-v3.yml"
-TAG_V4 = "cli-normal-real24-development-v4"
-WORKFLOW_V4 = ".github/workflows/cli-normal-real24-development-v4.yml"
+TAG_V5 = "cli-normal-real24-development-v5"
+WORKFLOW_V5 = ".github/workflows/cli-normal-real24-development-v5.yml"
 INPUT_COMMIT = "6165de77c1544a7fe58fc1e675e7cb3a8ec7cc98"
 INPUT_PATH = "evaluation/engine073-realworld-independent-v1-input"
 
@@ -51,7 +51,7 @@ def context(environment, mode, *, shard_case_id=None):
         require(re.fullmatch(r"rw-(?:0[1-9]|1[0-9]|2[0-4])", shard_case_id) is not None
                 and environment.get("V4_CASE_ID") == shard_case_id,
                 "ci_v4_invalid_case_shard")
-    tag = (TAG_V4 + "-" + shard_case_id) if shard else TAG
+    tag = (TAG_V5 + "-" + shard_case_id) if shard else TAG
     if mode == "live":
         require(environment.get("GITHUB_EVENT_NAME") == "push"
                 and environment.get("GITHUB_REF") == "refs/tags/" + tag,
@@ -177,8 +177,8 @@ def prepare_ci(repo, root, operator_path, mode, *, shard_case_id=None, tag_proof
     repo, root = Path(repo).resolve(strict=True), Path(root).resolve(strict=True)
     session = context(os.environ, mode, shard_case_id=shard_case_id)
     shard = shard_case_id is not None
-    tag = (TAG_V4 + "-" + shard_case_id) if shard else TAG
-    workflow = WORKFLOW_V4 if shard else WORKFLOW
+    tag = (TAG_V5 + "-" + shard_case_id) if shard else TAG
+    workflow = WORKFLOW_V5 if shard else WORKFLOW
     require(load(root / "build/build.json")["cli_commit"] == session["source_commit"], "ci_build_source_mismatch")
     operator_raw = Path(operator_path).read_bytes()
     expected_operator = subprocess.check_output(["git", "show", session["source_commit"] +

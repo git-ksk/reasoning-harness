@@ -16,9 +16,9 @@ import tag_admission
 
 from shard_contract import canonical,sha
 
-TAG="cli-normal-real24-development-v4"
+TAG="cli-normal-real24-development-v5"
 CASES=tuple(f"rw-{i:02d}" for i in range(1,25))
-WORKFLOW=".github/workflows/cli-normal-real24-development-v4.yml"
+WORKFLOW=".github/workflows/cli-normal-real24-development-v5.yml"
 CONTRACT="reason-cli-real24-v4-one-shot-global-tag-proof-v1"
 
 
