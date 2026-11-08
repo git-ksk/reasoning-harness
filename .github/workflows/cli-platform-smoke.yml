@@ -87,6 +87,9 @@ jobs:
           v3_test_pattern='test_*.py'
           if test '${{ matrix.label }}' = 'macos-x86_64'; then v3_test_pattern='test_native_supervision.py'; fi
           PATH="$v3_openssl_prefix/bin:$PATH" REASON_V3_NATIVE_CLI="$v3_native_source/.native-bin/reason" PYTHONDONTWRITEBYTECODE=1 "$v3_review_python_env/bin/python" -B -m unittest discover -s "$v3_native_source/evaluation/cli-repair-paired-v1/normal_v3" -p "$v3_test_pattern" -v
+          if test '${{ matrix.label }}' != 'macos-x86_64'; then
+            PATH="$v3_openssl_prefix/bin:$PATH" REASON_V3_NATIVE_CLI="$v3_native_source/.native-bin/reason" PYTHONDONTWRITEBYTECODE=1 "$v3_review_python_env/bin/python" -B -m unittest discover -s "$v3_native_source/evaluation/cli-repair-paired-v1/normal_v4" -p 'test_*.py' -v
+          fi
       - name: MCP product-surface contract
         run: cargo test --locked -p reasoning-harness-cli --test mcp_product_surface
       - name: Product CLI smoke
