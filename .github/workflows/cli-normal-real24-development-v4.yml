@@ -136,11 +136,17 @@ jobs:
           set -euo pipefail
           mode=prepare
           if test "$GITHUB_EVENT_NAME" = push; then mode=live; fi
-          extra=()
+          prepare_shard() {
+            PYTHONDONTWRITEBYTECODE=1 "$V3_ROOT/verifier/bin/python" -B "$V3_MODULE/ci_prepare.py" \
+              --repo "$GITHUB_WORKSPACE" --root "$V3_ROOT" \
+              --operator "$GITHUB_WORKSPACE/evaluation/cli-repair-paired-v1/normal_v3/ci-operator.json" \
+              --mode "$mode" --shard-case-id "$V4_CASE_ID" "$@" >> "$V3_ROOT/controller.log" 2>&1
+          }
           if test "$mode" = live; then
-            extra=(--tag-proof "$V3_ROOT/global-tag-admission/global-tag-proof.json")
+            prepare_shard --tag-proof "$V3_ROOT/global-tag-admission/global-tag-proof.json"
+          else
+            prepare_shard
           fi
-          PYTHONDONTWRITEBYTECODE=1 "$V3_ROOT/verifier/bin/python" -B "$V3_MODULE/ci_prepare.py" --repo "$GITHUB_WORKSPACE" --root "$V3_ROOT" --operator "$GITHUB_WORKSPACE/evaluation/cli-repair-paired-v1/normal_v3/ci-operator.json" --mode "$mode" --shard-case-id "$V4_CASE_ID" "${extra[@]}" >> "$V3_ROOT/controller.log" 2>&1
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: native-v4-bootstrap-${{ matrix.case_id }}-${{ github.run_id }}
