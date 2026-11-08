@@ -56,8 +56,10 @@ Reviewer: separately enrolled Ed25519 key and own AI source/answer judgment
 through a private host; a script merely signs the reviewer's explicit
 decision and never manufactures a verdict. Credentials and source/answer
 plaintext stay on the trusted private reviewer host. Published GitHub Issue
-messages are encrypted. **Artifact retention is 30 days**, so old shards
-must be reviewed/retrieved before then.
+messages are encrypted. **Encrypted artifact retention is 7 days**, so all 24 shard artifacts must be downloaded to private reviewer storage
+and fully aggregated within that window. The configured 24 x 300-minute
+upper bound is 120 hours (five days), plus any queue delay. An overlong
+workflow must stop rather than claim a complete score with expired artifacts.
 
 ## Offline preparation and admission
 

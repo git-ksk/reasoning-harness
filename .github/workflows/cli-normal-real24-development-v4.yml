@@ -77,7 +77,7 @@ jobs:
           name: native-v4-tag-admission-${{ github.run_id }}
           path: ${{ runner.temp }}/v4-admission/global-tag-proof.json
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 7
 
   paired-shards:
     needs: tag-admission
@@ -146,7 +146,7 @@ jobs:
           name: native-v4-bootstrap-${{ matrix.case_id }}-${{ github.run_id }}
           path: ${{ env.V3_ROOT }}/public/bootstrap.sealed
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 7
       - name: Independently admitted two-arm Mistral execution and signed first shard score
         if: github.event_name == 'push'
         shell: bash
@@ -168,4 +168,4 @@ jobs:
           name: native-v4-final-${{ matrix.case_id }}-${{ github.run_id }}
           path: ${{ env.V3_ROOT }}/public/final.sealed
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 7
