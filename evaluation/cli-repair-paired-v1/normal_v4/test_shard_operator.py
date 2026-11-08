@@ -28,11 +28,11 @@ class ShardOperatorTests(unittest.TestCase):
              "GITHUB_RUN_ATTEMPT":"1","GITHUB_SHA":"a"*40,
              "GITHUB_RUN_ID":"54321",
              "GITHUB_EVENT_NAME":"push",
-             "GITHUB_REF":"refs/tags/cli-normal-real24-development-v4-rw-01",
+             "GITHUB_REF":"refs/tags/cli-normal-real24-development-v5-rw-01",
              "V4_CASE_ID":"rw-01",
              "V4_JOB_STARTED_UNIX":str(now)}
         valid=context(env,"live",shard_case_id="rw-01")
-        self.assertEqual(valid["execution_tag"],"cli-normal-real24-development-v4-rw-01")
+        self.assertEqual(valid["execution_tag"],"cli-normal-real24-development-v5-rw-01")
         self.assertEqual(valid["shard_case_id"],"rw-01")
         self.assertEqual(valid["job_deadline_unix"],now+290*60)
         wrong=dict(env,V4_CASE_ID="rw-02")
@@ -77,7 +77,7 @@ class ShardOperatorTests(unittest.TestCase):
         source="f"*40
         manifest=global_manifest(corpus,requests,source)
         shard=select_case(manifest,requests,"rw-01")
-        session={"mode":"live","execution_tag":"cli-normal-real24-development-v4-rw-01",
+        session={"mode":"live","execution_tag":"cli-normal-real24-development-v5-rw-01",
                  "repository":"git-ksk/reasoning-harness",
                  "run_id":101,"run_attempt":1,"source_commit":source,
                  "shard_case_id":"rw-01"}

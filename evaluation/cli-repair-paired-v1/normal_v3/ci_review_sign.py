@@ -50,7 +50,7 @@ def start(bootstrap, decision, operator, key, key_id, policy):
     plan = read_json(bootstrap / "plan.json")
     gold = read_json(bootstrap / "gold.json")
     shard_id = session.get("shard_case_id")
-    expected_tag = (("cli-normal-real24-development-v4-" + shard_id) if shard_id
+    expected_tag = (("cli-normal-real24-development-v5-" + shard_id) if shard_id
                     else "cli-normal-real24-development-v3")
     require(session["mode"] == "live" and session["execution_tag"] == expected_tag,
             "not_a_live_frozen_session")

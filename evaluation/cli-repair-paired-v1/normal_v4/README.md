@@ -1,24 +1,24 @@
-# Normal Real24 v4 — prospective 24 paired shards (Issue #574)
+# Normal Real24 v5 — prospective 24 paired shards (Issue #574)
 
 ## Scope and status
 
 This is a **new**, fail-closed development evaluation protocol. It is
-neither a continuation nor a replay of the spent v3
+neither a continuation nor a replay of the spent v3 and v4
 `cli-normal-real24-development-v3` tag / run 42438102599. No outcome from
-the terminated v3 model run counts toward the new cohort. All 24 frozen
+the terminated v3 or failed-before-generation v4 run counts toward the new cohort. All 24 frozen
 questions and their first 48 baseline/candidate requests remain prospective
-for this *new* v4 run. Any published F1 requires all **48 actual** native
+for this *new* v5 run. Any published F1 requires all **48 actual** native
 observations, two independently signed pre-advance reviews per case, 24
 independent semantic score attestations, and full-cohort evidence verification.
 
-At code authoring time the v4 tag has **not** been pushed, no v4 Mistral
+At code authoring time the v5 tag has **not** been pushed, no v5 Mistral
 requests have been sent and no new F1 exists. A successful offline test,
 prepare-only workflow, or individual shard cannot be called cohort acceptance.
 
 ## Architecture
 
 1. For each frozen question, a distinct one-shot tag
-   `cli-normal-real24-development-v4-rw-NN` launches only that question's
+   `cli-normal-real24-development-v5-rw-NN` launches only that question's
    baseline/candidate pair; tags for all 24 cases MUST reference the SAME
    reviewed source commit. The tag-admission job checks full calendar-windowed
    repository push history **once for that case run**, records the first
@@ -97,5 +97,5 @@ strict 0700/0600 permissions by the registered transport-key holder. Never
 commit or publish those plaintext directories or the signing key.
 ```sh
 python3 evaluation/cli-repair-paired-v1/normal_v4/aggregate.py \
-  --shards PRIVATE_ATTESTED_SHARDS --output PRIVATE_RESULT_DIR/v4-first-score.json
+  --shards PRIVATE_ATTESTED_SHARDS --output PRIVATE_RESULT_DIR/v5-first-score.json
 ```

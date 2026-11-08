@@ -67,7 +67,7 @@ def read_pair(base, case_id):
     require(session_bytes == raw(final / "session.json"), "v4_session_changed")
     session = json.loads(session_bytes)
     require(session["mode"] == "live"
-            and session["execution_tag"] == ("cli-normal-real24-development-v4-" + case_id)
+            and session["execution_tag"] == ("cli-normal-real24-development-v5-" + case_id)
             and session["shard_case_id"] == case_id and session["run_attempt"] == 1
             and session["repository"] == "git-ksk/reasoning-harness",
             "v4_wrong_live_shard_session")
@@ -254,7 +254,7 @@ def aggregate(root):
     require(metrics["cohort_measured"] is True,
             "v4_incomplete_global_cohort_no_f1")
     return {
-        "contract": "reason-cli-real24-v4-global-first-score-v1",
+        "contract": "reason-cli-real24-v5-global-first-score-v1",
         "case_run_ids": {row["case_id"]: row["session"]["run_id"] for row in results},
         "source_commit": next(iter(source_commits)),
         "global_manifest_sha256": sha(canonical(global_manifest_record)),
