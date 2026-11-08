@@ -28,6 +28,11 @@ class TagGateTests(unittest.TestCase):
     def test_one_history_first_tag_can_be_reused_only_by_exact_same_run(self):
         proof=tag_gate.make_proof(self.env(),self.history())
         self.assertEqual(tag_gate.verify_proof(proof,self.env()),proof)
+        self.assertEqual(proof["contract"],"reason-cli-real24-v5-one-shot-global-tag-proof-v1")
+        old=copy.deepcopy(proof)
+        old["contract"]="reason-cli-real24-v4-one-shot-global-tag-proof-v1"
+        with self.assertRaisesRegex(ValueError,"identity_changed"):
+            tag_gate.verify_proof(old,self.env())
         self.assertEqual(sha(canonical(proof)),sha(canonical(proof)))
         for key,value in (("GITHUB_SHA","b"*40),("GITHUB_RUN_ID","102")):
             bad=dict(self.env(),**{key:value})

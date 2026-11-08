@@ -254,7 +254,7 @@ def aggregate(root):
     require(metrics["cohort_measured"] is True,
             "v4_incomplete_global_cohort_no_f1")
     return {
-        "contract": "reason-cli-real24-v4-global-first-score-v1",
+        "contract": "reason-cli-real24-v5-global-first-score-v1",
         "case_run_ids": {row["case_id"]: row["session"]["run_id"] for row in results},
         "source_commit": next(iter(source_commits)),
         "global_manifest_sha256": sha(canonical(global_manifest_record)),

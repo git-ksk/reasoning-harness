@@ -19,7 +19,7 @@ from shard_contract import canonical,sha
 TAG="cli-normal-real24-development-v5"
 CASES=tuple(f"rw-{i:02d}" for i in range(1,25))
 WORKFLOW=".github/workflows/cli-normal-real24-development-v5.yml"
-CONTRACT="reason-cli-real24-v4-one-shot-global-tag-proof-v1"
+CONTRACT="reason-cli-real24-v5-one-shot-global-tag-proof-v1"
 
 
 def make_proof(environment,history):
