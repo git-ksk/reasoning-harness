@@ -155,6 +155,26 @@ def job(bootstrap, packet_file, decision, operator, key, key_id, policy):
     return signed
 
 
+def _write_private_review_packet(root, name, data):
+    """Extract nested review bytes without 0755 intermediate dirs on macOS.
+
+    Root must be a newly enrolled 0700 directory. Never follow a
+    packet-controlled symlink or chmod an existing caller-owned path.
+    """
+    path = Path(name)
+    require(str(path) == name and not path.is_absolute()
+            and ".." not in path.parts and "." not in path.parts,
+            "ci_final_unsafe_file_name")
+    target = root / path
+    directory = root
+    for part in path.parts[:-1]:
+        directory = directory / part
+        require(not directory.is_symlink(), "ci_final_symlink_parent")
+        directory.mkdir(mode=0o700, exist_ok=True)
+        require(not directory.is_symlink(), "ci_final_symlink_parent")
+    private_bytes(target, data)
+
+
 def final(bootstrap, packet_file, decisions, operator, key, key_id, policy):
     packet = read_json(packet_file)
     require(packet.get("contract") == "reason-cli-normal-v3-ci-final-request-v1"
@@ -186,9 +206,7 @@ def final(bootstrap, packet_file, decisions, operator, key, key_id, policy):
             raw = base64.b64decode(encoded, validate=True)
             total += len(raw)
             require(total <= 256 * 1024 * 1024, "ci_final_archive_size_bound")
-            target = root / name
-            target.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-            private_bytes(target, raw)
+            _write_private_review_packet(root, name, raw)
         raw_gold = private_snapshot(root / "gold.json")
         raw_index = private_snapshot(root / "observations/index.json")
         raw_packets = private_snapshot(root / "packets/packet-index.json")

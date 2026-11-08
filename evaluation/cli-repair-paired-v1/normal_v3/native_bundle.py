@@ -17,7 +17,7 @@ from authority import AuthorityBinding
 BUNDLE = "reason-cli-normal-v3-native-bundle-v2"
 MAC_PROCESS_POLICY = "macos-no-fork-lifeline-v1"
 CONTROL_PROCESS_POLICY = "posix-lifeline-control-only-v1"
-SOURCE_DIRS = ("crates", "fixtures", "examples", "scripts", "evaluation/cli-repair-paired-v1/normal_v3")
+SOURCE_DIRS = ("crates", "fixtures", "examples", "scripts", "evaluation/cli-repair-paired-v1/normal_v3", "evaluation/cli-repair-paired-v1/normal_v4")
 SOURCE_FILES = ("Cargo.toml", "Cargo.lock")
 IGNORED_PARTS = frozenset(("__pycache__", ".git", "target"))
 
