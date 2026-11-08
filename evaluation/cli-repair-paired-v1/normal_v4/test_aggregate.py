@@ -71,6 +71,33 @@ class AggregateTests(unittest.TestCase):
                     with self.assertRaises(ValueError):
                         target.aggregate(Path("/fake"))
 
+    def test_reviewer_key_cannot_be_replaced_without_original_git_operator(self):
+        import json
+        from shard_contract import canonical
+        with tempfile.TemporaryDirectory() as tmp:
+            base=Path(tmp)
+            bootstrap=base/"bootstrap"
+            final=base/"final"
+            source="evaluation/cli-repair-paired-v1/normal_v3/ci-operator.json"
+            operator={"contract":"fixture","review_policy":{"contract":"original-policy"}}
+            for arm in ("baseline","candidate"):
+                f=bootstrap/"bundle-files"/("source/"+arm)/source
+                f.parent.mkdir(parents=True,exist_ok=True)
+                f.write_bytes(canonical(operator))
+            final.mkdir()
+            (final/"operator.json").write_bytes(canonical(operator))
+            (final/"policy.json").write_bytes(canonical(operator["review_policy"]))
+            target.check_source_enrolled_operator(bootstrap,final,operator)
+            replaced=copy.deepcopy(operator)
+            replaced["review_policy"]={"contract":"evil-policy"}
+            (final/"operator.json").write_bytes(canonical(replaced))
+            (final/"policy.json").write_bytes(canonical(replaced["review_policy"]))
+            with self.assertRaisesRegex(ValueError,"changed_from_git_source"):
+                target.check_source_enrolled_operator(bootstrap,final,replaced)
+            (final/"operator.json").write_bytes(canonical(operator))
+            with self.assertRaisesRegex(ValueError,"policy_substituted"):
+                target.check_source_enrolled_operator(bootstrap,final,operator)
+
     def test_scoring_rejects_operational_stop_from_incomplete_pair(self):
         def read(root,c):
             row=self.outcome(c)

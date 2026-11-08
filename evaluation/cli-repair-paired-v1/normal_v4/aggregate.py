@@ -34,6 +34,29 @@ def obj(path):
     return json.loads(raw(path))
 
 
+def check_source_enrolled_operator(bootstrap, final, operator):
+    """Prevent reviewer policy/key substitution from an attacker-controlled archive.
+
+    The immutable native bundle's source files are independently SHA checked
+    before this function is called, and include the operator config from the
+    checked-out source commit. Review/approval must bind that actual source
+    config, not a final archive's self-declared new verification key.
+    """
+    source = "evaluation/cli-repair-paired-v1/normal_v3/ci-operator.json"
+    pinned = []
+    for arm in ("baseline","candidate"):
+        p = bootstrap / "bundle-files" / ("source/" + arm) / source
+        require(p.is_file() and not p.is_symlink(),
+                "v4_enrolled_operator_source_missing")
+        pinned.append(raw(p))
+    source_bytes = raw(final / "operator.json")
+    require(pinned[0] == pinned[1] == source_bytes
+            and canonical(operator) == source_bytes,
+            "v4_enrolled_operator_changed_from_git_source")
+    require(raw(final / "policy.json") ==
+            canonical(operator["review_policy"]), "v4_review_policy_substituted")
+
+
 def read_pair(base, case_id):
     """Verify complete original binary/source, execution and semantic bindings."""
     bootstrap = base / case_id / "bootstrap"
@@ -93,6 +116,7 @@ def read_pair(base, case_id):
     receipt_raw = raw(final / "receipt.json")
     receipt = obj(final / "authority-receipt.json")
     operator = obj(final / "operator.json")
+    check_source_enrolled_operator(bootstrap,final,operator)
     binding = AuthorityBinding(**{k: receipt[k] for k in (
         "source_sha256", "image_sha256", "cli_build_sha256",
         "runtime_sha256", "executor_id", "evaluator_id")})
