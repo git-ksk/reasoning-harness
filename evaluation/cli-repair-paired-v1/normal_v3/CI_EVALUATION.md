@@ -35,6 +35,8 @@ checks the registered independent signer and exact session/bundle/plan/receipt
 before it issues the authority receipt, claims the run or loads the model key
 into a native CLI child.
 
+The independent signer now has a dedicated offline helper: [CI_REVIEW_OPERATOR.md](CI_REVIEW_OPERATOR.md). It signs only externally reviewed decisions after checking the exact live session, start request, per-job complete stream/source partitions, and all 48 final semantic reviews. It does not grade, auto-approve, publish or invoke models.
+
 ## Review and scoring in the same job
 
 The controller publishes encrypted packets into #574 using stage names
