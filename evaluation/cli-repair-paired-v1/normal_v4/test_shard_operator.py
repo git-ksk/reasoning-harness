@@ -29,6 +29,7 @@ class ShardOperatorTests(unittest.TestCase):
              "GITHUB_RUN_ID":"54321",
              "GITHUB_EVENT_NAME":"push",
              "GITHUB_REF":"refs/tags/cli-normal-real24-development-v5-rw-01",
+             "GITHUB_WORKFLOW":"cli-normal-real24-development-v5",
              "V4_CASE_ID":"rw-01",
              "V4_JOB_STARTED_UNIX":str(now)}
         valid=context(env,"live",shard_case_id="rw-01")

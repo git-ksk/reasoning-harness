@@ -31,6 +31,14 @@ TAG = "cli-normal-real24-development-v3"
 WORKFLOW = ".github/workflows/cli-normal-real24-development-v3.yml"
 TAG_V5 = "cli-normal-real24-development-v5"
 WORKFLOW_V5 = ".github/workflows/cli-normal-real24-development-v5.yml"
+TAG_V6 = "cli-normal-real24-development-v6"
+WORKFLOW_V6 = ".github/workflows/cli-normal-real24-development-v6.yml"
+
+def cohort_tag_and_workflow(environment):
+    name=environment.get("GITHUB_WORKFLOW")
+    require(name in (TAG_V5,TAG_V6),"ci_unregistered_real24_cohort")
+    return ((TAG_V6,WORKFLOW_V6) if name==TAG_V6 else (TAG_V5,WORKFLOW_V5))
+
 INPUT_COMMIT = "6165de77c1544a7fe58fc1e675e7cb3a8ec7cc98"
 INPUT_PATH = "evaluation/engine073-realworld-independent-v1-input"
 
@@ -51,7 +59,7 @@ def context(environment, mode, *, shard_case_id=None):
         require(re.fullmatch(r"rw-(?:0[1-9]|1[0-9]|2[0-4])", shard_case_id) is not None
                 and environment.get("V4_CASE_ID") == shard_case_id,
                 "ci_v4_invalid_case_shard")
-    tag = (TAG_V5 + "-" + shard_case_id) if shard else TAG
+    tag = (cohort_tag_and_workflow(environment)[0] + "-" + shard_case_id) if shard else TAG
     if mode == "live":
         require(environment.get("GITHUB_EVENT_NAME") == "push"
                 and environment.get("GITHUB_REF") == "refs/tags/" + tag,
@@ -177,8 +185,9 @@ def prepare_ci(repo, root, operator_path, mode, *, shard_case_id=None, tag_proof
     repo, root = Path(repo).resolve(strict=True), Path(root).resolve(strict=True)
     session = context(os.environ, mode, shard_case_id=shard_case_id)
     shard = shard_case_id is not None
-    tag = (TAG_V5 + "-" + shard_case_id) if shard else TAG
-    workflow = WORKFLOW_V5 if shard else WORKFLOW
+    cohort_tag, cohort_workflow = cohort_tag_and_workflow(os.environ) if shard else (TAG, WORKFLOW)
+    tag = (cohort_tag + "-" + shard_case_id) if shard else TAG
+    workflow = cohort_workflow
     require(load(root / "build/build.json")["cli_commit"] == session["source_commit"], "ci_build_source_mismatch")
     operator_raw = Path(operator_path).read_bytes()
     expected_operator = subprocess.check_output(["git", "show", session["source_commit"] +
@@ -205,7 +214,10 @@ def prepare_ci(repo, root, operator_path, mode, *, shard_case_id=None, tag_proof
             require(tag_proof_path is not None, "v4_global_tag_proof_required")
             import sys
             sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "normal_v4"))
-            from tag_gate import verify_proof
+            if cohort_workflow == WORKFLOW_V6:
+                from tag_gate_v6 import verify_proof
+            else:
+                from tag_gate import verify_proof
             raw = Path(tag_proof_path).read_bytes()
             require(len(raw) <= 2 * 1024 * 1024 and
                     digest(raw) == os.environ.get("V4_TAG_GUARD_SHA256"),

@@ -1,0 +1,180 @@
+name: cli-normal-real24-development-v6
+
+# New prospective study. One case per isolated job, two arms per case,
+# never replay a v3 receipt, tag, run id, semantic score or private result.
+on:
+  workflow_dispatch:
+    inputs:
+      case_id:
+        description: Provider-free paired shard preparation only; no model calls
+        required: true
+        type: choice
+        default: rw-01
+        options:
+          - rw-01
+          - rw-02
+          - rw-03
+          - rw-04
+          - rw-05
+          - rw-06
+          - rw-07
+          - rw-08
+          - rw-09
+          - rw-10
+          - rw-11
+          - rw-12
+          - rw-13
+          - rw-14
+          - rw-15
+          - rw-16
+          - rw-17
+          - rw-18
+          - rw-19
+          - rw-20
+          - rw-21
+          - rw-22
+          - rw-23
+          - rw-24
+  push:
+    tags: [cli-normal-real24-development-v6-rw-*]
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+concurrency:
+  group: reasoning-harness-mistral-live
+  cancel-in-progress: false
+
+jobs:
+  tag-admission:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    outputs:
+      sha: ${{ steps.gate.outputs.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify entire GitHub push history exactly once
+        id: gate
+        if: github.event_name == 'push'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p "$RUNNER_TEMP/v4-admission"
+          sha=$(python3 evaluation/cli-repair-paired-v1/normal_v4/tag_gate_v6.py             --output "$RUNNER_TEMP/v4-admission/global-tag-proof.json")
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: github.event_name == 'push'
+        with:
+          name: native-v6-tag-admission-${{ github.run_id }}
+          path: ${{ runner.temp }}/v4-admission/global-tag-proof.json
+          if-no-files-found: error
+          retention-days: 7
+
+  paired-shard:
+    needs: tag-admission
+    if: github.run_attempt == 1
+    runs-on: macos-15
+    timeout-minutes: 300
+    env:
+      V4_INPUT_CASE_ID: ${{ inputs.case_id }}
+    steps:
+      - name: Establish private paired-shard state and bounded deadline
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          if test "$GITHUB_EVENT_NAME" = push; then
+            id="${GITHUB_REF_NAME#cli-normal-real24-development-v6-}"
+            test "$GITHUB_REF_NAME" = "cli-normal-real24-development-v6-$id"
+          else
+            id="$V4_INPUT_CASE_ID"
+          fi
+          [[ "$id" =~ ^rw-(0[1-9]|1[0-9]|2[0-4])$ ]] || exit 12
+          echo "V4_CASE_ID=$id" >> "$GITHUB_ENV"
+          root=$(mktemp -d "/private/tmp/reason-v4-${GITHUB_RUN_ID}-${id}.XXXXXX")
+          echo "V3_ROOT=$root" >> "$GITHUB_ENV"
+          echo "V4_JOB_STARTED_UNIX=$(date +%s)" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@v8
+        if: github.event_name == 'push'
+        with:
+          name: native-v6-tag-admission-${{ github.run_id }}
+          path: ${{ env.V3_ROOT }}/global-tag-admission
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Install hash-pinned independent-review verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m venv "$V3_ROOT/verifier"
+          "$V3_ROOT/verifier/bin/python" -m pip install -r evaluation/cli-repair-paired-v1/normal_v3/review-requirements.txt
+          cargo fetch --locked
+      - name: Build the paired immutable native sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 "$V3_ROOT/verifier/bin/python" -B evaluation/cli-repair-paired-v1/normal_v3/build_native_pair.py             --repo "$GITHUB_WORKSPACE" --cli-commit "$GITHUB_SHA" --output "$V3_ROOT/build" >> "$V3_ROOT/controller.log" 2>&1
+          echo "V3_MODULE=$V3_ROOT/build/source-baseline/evaluation/cli-repair-paired-v1/normal_v3" >> "$GITHUB_ENV"
+      - name: Freeze globally bound two-arm case receipt and reviewer identities
+        shell: bash
+        env:
+          V4_TAG_GUARD_SHA256: ${{ needs.tag-admission.outputs.sha }}
+          GH_TOKEN: ${{ github.token }}
+          MISTRAL_API_KEY: ${{ github.event_name == 'push' && secrets.MISTRAL_API_KEY || '' }}
+        run: |
+          set -euo pipefail
+          mode=prepare
+          if test "$GITHUB_EVENT_NAME" = push; then mode=live; fi
+          prepare_shard() {
+            PYTHONDONTWRITEBYTECODE=1 "$V3_ROOT/verifier/bin/python" -B "$V3_MODULE/ci_prepare.py" \
+              --repo "$GITHUB_WORKSPACE" --root "$V3_ROOT" \
+              --operator "$GITHUB_WORKSPACE/evaluation/cli-repair-paired-v1/normal_v3/ci-operator.json" \
+              --mode "$mode" --shard-case-id "$V4_CASE_ID" "$@" >> "$V3_ROOT/controller.log" 2>&1
+          }
+          if test "$mode" = live; then
+            prepare_shard --tag-proof "$V3_ROOT/global-tag-admission/global-tag-proof.json"
+          else
+            prepare_shard
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: native-v6-bootstrap-${{ env.V4_CASE_ID }}-${{ github.run_id }}
+          path: ${{ env.V3_ROOT }}/public/bootstrap.sealed
+          if-no-files-found: error
+          retention-days: 7
+      - name: Independently admitted two-arm Mistral execution and signed first shard score
+        if: github.event_name == 'push'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 "$V3_ROOT/verifier/bin/python" -B "$V3_MODULE/ci_run.py" run             --root "$V3_ROOT" >> "$V3_ROOT/controller.log" 2>&1
+      - name: Seal complete or interrupted private evidence
+        if: always() && env.V3_MODULE != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 "$V3_ROOT/verifier/bin/python" -B "$V3_MODULE/ci_run.py" archive             --root "$V3_ROOT" --operator "$GITHUB_WORKSPACE/evaluation/cli-repair-paired-v1/normal_v3/ci-operator.json"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() && env.V3_MODULE != ''
+        with:
+          name: native-v6-final-${{ env.V4_CASE_ID }}-${{ github.run_id }}
+          path: ${{ env.V3_ROOT }}/public/final.sealed
+          if-no-files-found: error
+          retention-days: 7
