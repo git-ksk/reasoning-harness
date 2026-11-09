@@ -42,13 +42,44 @@ class V4SourceIncludedTests(unittest.TestCase):
             self.assertEqual(done.returncode,0,done.stderr)
             self.assertIn("ISOLATED_SOURCE_CLOSURE_PASS",done.stdout)
 
+    def test_full_frozen_export_supports_v6_tag_gate_and_safety_rubric(self):
+        root=Path(__file__).resolve().parents[3]
+        enrolled=set(source_inventory(root))
+        tag='evaluation/cli-repair-paired-v1/normal_v4/tag_gate_v6.py'
+        policy='evaluation/cli-repair-paired-v1/normal_v4/reviewer_safety_policy_v6.txt'
+        for name in (tag,policy,'evaluation/cli-repair-paired-v1/tag_admission.py'):
+            self.assertIn(name,enrolled)
+        content=(root/policy).read_bytes()
+        self.assertIn(b'NEGATIVE-CONTROL DISTINCTION',content)
+        self.assertIn(b'NOT supplied',content)
+        self.assertIn(b'provenance',content)
+        with tempfile.TemporaryDirectory() as tmp:
+            private_root=Path(tmp)
+            for name in enrolled:
+                if name == 'evaluation/cli-repair-paired-v1/tag_admission.py' or name.startswith('evaluation/cli-repair-paired-v1/normal_v4/'):
+                    target=private_root/name
+                    target.parent.mkdir(parents=True,exist_ok=True)
+                    target.write_bytes((root/name).read_bytes())
+            done=subprocess.run(
+                [sys.executable,'-B','-c',
+                 "import importlib.util,sys; p=sys.argv[1];"
+                 "sys.path.insert(0,p.rsplit('/',1)[0]);"
+                 "s=importlib.util.spec_from_file_location('v6_g',p);"
+                 "m=importlib.util.module_from_spec(s); s.loader.exec_module(m);"
+                 "assert m.TAG=='cli-normal-real24-development-v6';"
+                 "print('V6_ENROLLED_CLOSURE_OK')",str(private_root/tag)],
+                cwd=private_root,text=True,capture_output=True,timeout=20,
+                env={**os.environ,'PYTHONPATH':''})
+            self.assertEqual(done.returncode,0,done.stderr)
+            self.assertIn('V6_ENROLLED_CLOSURE_OK',done.stdout)
+
     def test_v4_directory_is_exported_by_native_build_and_enrolled_for_both_arms(self):
         root=Path(__file__).resolve().parents[3]
         relative="evaluation/cli-repair-paired-v1/normal_v4"
         self.assertIn("evaluation/cli-repair-paired-v1", SOURCE_DIRS)
         files=set(source_inventory(root))
         self.assertIn("evaluation/cli-repair-paired-v1/tag_admission.py",files)
-        for item in ("shard_contract.py","tag_gate.py","aggregate.py",
+        for item in ("shard_contract.py","tag_gate.py","tag_gate_v6.py","aggregate.py","aggregate_v6.py","reviewer_policy_v6.py","reviewer_safety_policy_v6.txt",
                      "test_shard_operator.py","README.md"):
             self.assertIn(relative+"/"+item,files)
 
