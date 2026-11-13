@@ -29,18 +29,31 @@ candidate binaries' first-request planners and verify that all **8 live CLI
 request shapes match pairwise**, add `--mode preflight`. Preflight needs no API
 key, performs no inference, and prints a per-case SHA-256 inventory.
 
-No reviewer key, API token, source download or user configuration is loaded. To compare the latest CLI revision,
-rebuild and reprepare the paired CLI using
-`normal_v3/build_native_pair.py` and `normal_v3/prepare_local.py` with a
-specific committed source SHA, and pass those matching outputs.
+No reviewer key, API token, source download or user configuration is loaded. To compare a newer CLI revision without repeating all 24 case preparations,
+rebuild just the pair with `normal_v3/build_native_pair.py` at a specific
+committed source SHA, then pass the **existing** verified 48-case request
+inventory alongside the new `build.json` with `--rebind-pinned-binaries`.
+That explicit development-only switch replaces the original binary paths
+for both arms; `--mode preflight` recomputes and compares the actual new
+binary requests for every selected case. Rebinding is never permitted as
+formal acceptance or as historical first-observation reuse.
+
+For example, with the local new-build directory created for this development
+iteration:
+
+```sh
+python3 evaluation/dev-lite/run.py   --requests .local-v3-preparation-20261104/preparation-581-02/requests.json   --build .local-v3-preparation-20261104/build-dev-lite-20261113/build.json   --rebind-pinned-binaries --mode preflight
+```
+
 
 ## Optional live development diagnostic
 
 The `live` mode also runs the native provider-free preflight above before
 launching any inference. It does not rebuild the binaries: the paired build
 commit printed by `plan` must match the revision you intend to compare.
-By default the live runner refuses a pinned build older than checkout HEAD;
-`--allow-older-build` is an explicit opt-in for historical comparisons.
+By default the live runner refuses a pinned build whose executable CLI or
+provider sources differ from checkout HEAD (documentation-only changes are
+fine); `--allow-older-build` is an explicit opt-in for historical comparisons.
 
 First independently verify the real provider organization is **Free/no extra
 charges**, usable quota remains, and the keys are allowed for the fixed

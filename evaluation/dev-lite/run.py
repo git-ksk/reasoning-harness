@@ -66,7 +66,7 @@ def cases_from_string(raw):
     return cases
 
 
-def prepare(requests_path, build_path, cases, caps):
+def prepare(requests_path, build_path, cases, caps, *, rebind_binaries=False):
     """Verify local developer inputs and their distinct pinned binaries."""
     requests_path = Path(requests_path).resolve(strict=True)
     build_path = Path(build_path).resolve(strict=True)
@@ -103,11 +103,15 @@ def prepare(requests_path, build_path, cases, caps):
         for arm in (ARMS if case_index % 2 == 0 else ARMS[::-1]):
             job = pair[arm]
             argv = list(job["argv"])
-            bin_path = Path(argv[0]).resolve(strict=True)
+            prepared_bin = Path(argv[0]).resolve(strict=True)
             proof = build["arms"][arm]
-            need(bin_path == Path(proof["binary"]).resolve(strict=True),
-                 "binary_build_path_mismatch")
+            bin_path = Path(proof["binary"]).resolve(strict=True)
+            need(rebind_binaries or prepared_bin == bin_path, "binary_build_path_mismatch")
             need(sha(bin_path) == proof["binary_sha256"], "binary_hash_mismatch")
+            # Development-only rebind: reuse the exact case/config but replace
+            # both outdated binary paths with a NEW pinned common-CLI pair.
+            # Every resulting first request is then verified by native_preflight.
+            argv[0] = str(bin_path)
             need(flag(argv, "--provider") == "mistral" and
                  flag(argv, "--model") == "ministral-8b-2512" and
                  flag(argv, "--format") == "json" and "--plain" in argv,
@@ -132,6 +136,7 @@ def prepare(requests_path, build_path, cases, caps):
             frozen[str(bin_path)] = proof["binary_sha256"]
     return {"contract": CONTRACT, "classification": "DEVELOPMENT_ONLY_NOT_ACCEPTANCE",
             "quality_go": False, "source_commit": build["cli_commit"],
+            "development_binary_rebind": rebind_binaries,
             "requests_sha256": sha(requests_path), "build_sha256": sha(build_path),
             "cases": cases, "caps": caps, "jobs": selected,
             "frozen_binaries": frozen, "formal_f1": None,
@@ -178,6 +183,17 @@ def native_preflight(plan, timeout=30):
             "native_plans_verified": len(plan["jobs"]),
             "request_sha256_by_case": {c: pairs[c]["baseline"][0] for c in plan["cases"]},
             "model_api_calls": 0, "formal_f1": None, "quality_go": False}
+
+
+
+def current_cli_matches_build(commit):
+    """Ignore documentation-only commits; compare the executable CLI sources."""
+    proc = subprocess.run(
+        ["git", "diff", "--quiet", commit, "HEAD", "--",
+         "Cargo.toml", "Cargo.lock",
+         "crates/reasoning-harness-cli", "crates/reasoning-harness-providers"],
+        cwd=REPO, capture_output=True, check=False)
+    return proc.returncode == 0
 
 
 def private_file(path, data):
@@ -317,6 +333,8 @@ def main(argv=None):
     parser.add_argument("--timeout-seconds", type=int, default=360)
     parser.add_argument("--output", type=Path, help="Fresh, private output directory (outside repo)")
     parser.add_argument("--confirm-no-extra-charges", action="store_true")
+    parser.add_argument("--rebind-pinned-binaries", action="store_true",
+                        help="Use a newer pinned CLI pair with an existing case/config inventory; requires native preflight")
     parser.add_argument("--allow-older-build", action="store_true",
                         help="Explicitly compare a pinned CLI that is older than checkout HEAD")
     args = parser.parse_args(argv)
@@ -327,10 +345,12 @@ def main(argv=None):
         caps = {"model_calls": args.max_calls, "generation_tokens": args.generation_tokens,
                 "output_tokens": args.output_tokens, "total_tokens": args.total_tokens}
         cases = cases_from_string(args.cases)
-        plan = prepare(args.requests, args.build, cases, caps)
+        plan = prepare(args.requests, args.build, cases, caps,
+                       rebind_binaries=args.rebind_pinned_binaries)
         if args.mode == "plan":
             print(json.dumps({"mode": "provider_free", "classification":plan["classification"],
-                "source_commit":plan["source_commit"], "cases":cases,
+                "source_commit":plan["source_commit"],
+                "development_binary_rebind":plan["development_binary_rebind"], "cases":cases,
                 "jobs":len(plan["jobs"]), "caps_per_arm":caps,
                 "worst_case_reserved_tokens":len(plan["jobs"])*caps["total_tokens"],
                 "model_api_calls":0, "formal_f1":None, "quality_go":False},indent=2))
@@ -339,9 +359,8 @@ def main(argv=None):
         if args.mode == "preflight":
             print(json.dumps(verified, indent=2))
             return 0
-        current_head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO).decode().strip()
-        need(plan["source_commit"] == current_head or args.allow_older_build,
-             "pinned_cli_older_than_checkout_use_--allow-older-build")
+        need(current_cli_matches_build(plan["source_commit"]) or args.allow_older_build,
+             "pinned_cli_sources_differ_from_checkout_use_--allow-older-build")
         need(args.output is not None, "explicit_private_output_required")
         result = run_live(plan, args.output, confirmed=args.confirm_no_extra_charges,
                           token=os.environ.get("MISTRAL_API_KEY"),

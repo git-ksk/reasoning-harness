@@ -77,6 +77,20 @@ class DevLiteTests(unittest.TestCase):
         self.assertTrue(all("--evaluation-isolated-config" in row["argv"] for row in p["jobs"]))
         self.assertTrue(all(lite.flag(row["argv"], "--max-model-calls") == "6" for row in p["jobs"]))
 
+    def test_rebind_requires_explicit_opt_in(self):
+        data = json.loads(self.requests_path.read_text())
+        stale = self.root / "old-binary"
+        stale.write_bytes(b"old-prepared-binary")
+        for row in data["jobs"]:
+            row["argv"][0] = str(stale)
+        self.requests_path.write_text(json.dumps(data))
+        with self.assertRaisesRegex(lite.GateError, "binary_build_path_mismatch"):
+            self.prepared()
+        p = lite.prepare(self.requests_path, self.build_path,
+                         list(lite.DEFAULT_CASES), self.caps, rebind_binaries=True)
+        self.assertTrue(p["development_binary_rebind"])
+        self.assertTrue(all(Path(x["argv"][0]) == self.binaries[x["arm"]].resolve() for x in p["jobs"]))
+
     def test_reject_invalid_subset_and_cap(self):
         for cases in [[], ["rw-01"] * 4, ["rw-25", "rw-01", "rw-02", "rw-03"]]:
             with self.assertRaises(lite.GateError):
