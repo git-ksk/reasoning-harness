@@ -92,6 +92,30 @@ invalid observations separately. **No automatically claimed F1, independent
 approval, semantic acceptance, safety certification, formal quality GO,
 release decision or CLI adoption** is produced.
 
+## Provider-free side-by-side review after a live run
+
+When a local `live` execution has completed (or stopped safely), create a
+private, **unscored** review worksheet directly beside its original evidence:
+
+```sh
+python3 evaluation/dev-lite/review.py \
+  --run-dir "$HOME/.local/share/reasoning-harness/dev-lite/<existing-run-directory>"
+```
+
+The tool creates `comparison-review.md` once (0600; refuses overwrites).
+It lists baseline/candidate answers **per same question**, exposed citation
+source IDs (marked **unverified**), finalization status, observed call/token
+totals, execution time, incomplete jobs, and a manual worksheet for evidence,
+quote and abstention checks. It reads only private run bytes; **no network or
+model API is involved**. SHA-256 mismatches, missing/unsafe private permissions,
+modified question identities, inconsistent totals, and false `complete`
+status are rejected. For a stopped run, the remaining jobs stay explicitly
+**not executed / not scored**. Do not upload raw report contents publicly.
+
+The report is a practical place to add human comparison notes, not an
+automatic correctness judgment or formal F1. No oracle labels or independent
+reviewer secret are read.
+
 Before formal acceptance, freeze an accepted candidate, author **new
 independent** test questions, and apply the release quality/safety gates from
 #531. This opt-in development profile cannot replace those tests.
