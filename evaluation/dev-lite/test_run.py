@@ -160,6 +160,12 @@ class DevLiteTests(unittest.TestCase):
         self.assertNotIn("fixture-only", (output / "plan.json").read_text())
         self.assertTrue(all(x["review_status"] == "unreviewed" for x in result["result"]))
 
+    def test_malformed_cli_shapes_are_fails_closed(self):
+        for raw in (b"null", b"[]", b'{"schema_version":"reason-cli-output-v1","command":"ask","result":null}',
+                    b'{"schema_version":"reason-cli-output-v1","command":"ask","result":{"usage":[]}}'):
+            with self.assertRaises(lite.GateError):
+                lite.usage_from_cli(raw)
+
     def test_unknown_usage_halts_and_does_not_retry(self):
         output = self.root / "out"
         fake = subprocess.CompletedProcess(args=[], returncode=0,

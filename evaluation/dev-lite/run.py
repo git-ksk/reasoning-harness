@@ -18,7 +18,6 @@ import subprocess
 import sys
 import tempfile
 import time
-from uuid import uuid4
 
 DEFAULT_CASES = ("rw-01", "rw-06", "rw-07", "rw-23")
 CASE_ID = re.compile(r"rw-(?:0[1-9]|1[0-9]|2[0-4])\Z")
@@ -198,12 +197,16 @@ def json_bytes(data):
 
 def usage_from_cli(raw):
     data = json.loads(raw)
-    need(data.get("schema_version") == "reason-cli-output-v1" and
-         data.get("command") == "ask", "wrong_cli_output_envelope")
-    result = data.get("result", {})
-    used = result.get("usage", {}).get("run")
+    need(isinstance(data, dict) and data.get("schema_version") == "reason-cli-output-v1"
+         and data.get("command") == "ask", "wrong_cli_output_envelope")
+    result = data.get("result")
+    need(isinstance(result, dict), "wrong_cli_result_shape")
+    direct = result.get("usage")
+    used = direct.get("run") if isinstance(direct, dict) else None
     if used is None:
-        used = result.get("partial_diagnostics", {}).get("usage", {}).get("run")
+        partial = result.get("partial_diagnostics")
+        diagnostic = partial.get("usage") if isinstance(partial, dict) else None
+        used = diagnostic.get("run") if isinstance(diagnostic, dict) else None
     need(isinstance(used, dict) and used.get("tracked_from_session_start") is True,
          "unknown_provider_usage")
     fields = ("model_calls", "provider_attempts", "input_tokens", "output_tokens", "total_tokens")
@@ -212,7 +215,8 @@ def usage_from_cli(raw):
     need(used["provider_attempts"] > 0 and used["model_calls"] > 0 and
          used["input_tokens"] + used["output_tokens"] == used["total_tokens"],
          "inconsistent_provider_usage")
-    status = result.get("finalization", {}).get("status")
+    final = result.get("finalization")
+    status = final.get("status") if isinstance(final, dict) else None
     return {f: used[f] for f in fields}, status, result.get("status")
 
 
