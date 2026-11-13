@@ -1,0 +1,140 @@
+{
+  "contract": "reason-engine073-self-authored-synthetic-core-probe-v1",
+  "classification": "DEVELOPMENT_ONLY_NO_MODEL_NO_INDEPENDENT_HOLDOUT",
+  "candidate_target_version": "0.7.3-unpublished",
+  "source_core_commits": {
+    "baseline": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+    "candidate": "ab3c6322921c8c738ec35bd018345917b5afa538",
+    "common_cli": "988b69f086ac4a209fe93eb10cf1fa6786977567"
+  },
+  "case_count": 40,
+  "positive_cases": 20,
+  "negative_cases": 20,
+  "model_api_calls": 0,
+  "independent_24_case_final_answer_cohort": false,
+  "formal_f1": null,
+  "quality_go": false,
+  "adoption_go": false,
+  "arms": {
+    "baseline": {
+      "v17_requested_relation": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 20,
+        "fn": 20,
+        "precision_diagnostic": null,
+        "recall_diagnostic": 0.0,
+        "f1_diagnostic": 0.0,
+        "mismatched_case_ids": [
+          "p01",
+          "p02",
+          "p03",
+          "p04",
+          "p05",
+          "p06",
+          "p07",
+          "p08",
+          "p09",
+          "p10",
+          "p11",
+          "p12",
+          "p13",
+          "p14",
+          "p15",
+          "p16",
+          "p17",
+          "p18",
+          "p19",
+          "p20"
+        ]
+      },
+      "v30_relevant": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 20,
+        "fn": 20,
+        "precision_diagnostic": null,
+        "recall_diagnostic": 0.0,
+        "f1_diagnostic": 0.0,
+        "mismatched_case_ids": [
+          "p01",
+          "p02",
+          "p03",
+          "p04",
+          "p05",
+          "p06",
+          "p07",
+          "p08",
+          "p09",
+          "p10",
+          "p11",
+          "p12",
+          "p13",
+          "p14",
+          "p15",
+          "p16",
+          "p17",
+          "p18",
+          "p19",
+          "p20"
+        ]
+      }
+    },
+    "candidate": {
+      "v17_requested_relation": {
+        "tp": 16,
+        "fp": 0,
+        "tn": 20,
+        "fn": 4,
+        "precision_diagnostic": 1.0,
+        "recall_diagnostic": 0.8,
+        "f1_diagnostic": 0.8888888888888888,
+        "mismatched_case_ids": [
+          "p04",
+          "p11",
+          "p12",
+          "p15"
+        ]
+      },
+      "v30_relevant": {
+        "tp": 16,
+        "fp": 0,
+        "tn": 20,
+        "fn": 4,
+        "precision_diagnostic": 1.0,
+        "recall_diagnostic": 0.8,
+        "f1_diagnostic": 0.8888888888888888,
+        "mismatched_case_ids": [
+          "p04",
+          "p11",
+          "p12",
+          "p15"
+        ]
+      }
+    }
+  },
+  "cross_arm_changed_case_ids": [
+    "p01",
+    "p02",
+    "p03",
+    "p05",
+    "p06",
+    "p07",
+    "p08",
+    "p09",
+    "p10",
+    "p13",
+    "p14",
+    "p16",
+    "p17",
+    "p18",
+    "p19",
+    "p20"
+  ],
+  "observation_note": "Model-free v17/v30 source relevance only; not actual final-answer correctness, refusal, or utility.",
+  "file_sha256": {
+    "cases": "3cf76c1ee658a8f3359beaafefe7d5aca33f8d648441001ce9ce1b10e4f22fb3",
+    "baseline": "b7688b85e09e2db89c673513d4adda2274abac21b5ecb523bc48079f9bad0558",
+    "candidate": "04e2b90b473c5748f9149922df1b7a7b3ab98cd28442d2494a00185393bc6dc2"
+  }
+}

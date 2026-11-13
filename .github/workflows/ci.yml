@@ -30,6 +30,8 @@ jobs:
         run: cargo clippy --locked --workspace --all-targets -- -D warnings
       - name: Test lightweight development evaluation (provider-free)
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s evaluation/dev-lite -p 'test_*.py' -v
+      - name: Check Engine 0.7.3 synthetic source quality probe integrity (provider-free)
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s evaluation/engine073-development-quality-probe-v1 -p 'test_*.py' -v
       - name: Verify frozen Engine 0.7 development baseline
         run: |
           set -euo pipefail
