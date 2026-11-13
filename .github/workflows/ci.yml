@@ -28,6 +28,8 @@ jobs:
         run: cargo fmt --check
       - name: Clippy
         run: cargo clippy --locked --workspace --all-targets -- -D warnings
+      - name: Test lightweight development evaluation (provider-free)
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s evaluation/dev-lite -p 'test_*.py' -v
       - name: Verify frozen Engine 0.7 development baseline
         run: |
           set -euo pipefail
