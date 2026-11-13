@@ -1,0 +1,53 @@
+{
+  "contract": "reason-engine-073-adoption-decision-v1",
+  "evaluated_on": "2026-11-14",
+  "issue": 531,
+  "candidate_core_source": "ab3c6322921c8c738ec35bd018345917b5afa538",
+  "baseline_core_source": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+  "common_cli_source": "988b69f086ac4a209fe93eb10cf1fa6786977567",
+  "candidate_target_version": "0.7.3-unpublished",
+  "candidate_package_version": "0.7.2",
+  "classification": "engineering_diagnostic_and_adoption_readiness",
+  "official_formal_f1": null,
+  "quality_go": false,
+  "adoption_go": false,
+  "decision": "NO_GO_NOT_YET_QUALIFIED",
+  "new_model_calls": 0,
+  "core_seen_regression_tests": {
+    "executed": 80,
+    "passed": 80,
+    "failed": 0,
+    "suite": "launch_context_markers_520_521",
+    "context": "isolated QA copy of pinned candidate source; historic test fixtures restored from matching candidate git commit"
+  },
+  "offline_quality_gate_tests": {
+    "engine07_quality_gates": 10,
+    "engine073_source_gate": 10,
+    "development_lite": 21
+  },
+  "historical_v5_positive_cases": {
+    "count_per_arm": 6,
+    "clear_negative_cases": 0,
+    "baseline_task_success": 6,
+    "candidate_task_success": 6,
+    "baseline_total_tokens": 49043,
+    "candidate_total_tokens": 48233,
+    "candidate_token_reduction": 810,
+    "scope": "consumed development first scores, NOT unseen independent acceptance"
+  },
+  "blocking_gates": [
+    "fresh_independent_24_case_cohort_not_executed",
+    "negative_and_unknown_model_behavior_not_accepted",
+    "formal_precision_recall_f1_undefined",
+    "full_citation_and_safety_acceptance_missing",
+    "full_pair_efficiency_and_nonregression_missing",
+    "candidate_0_7_3_not_versioned_or_released",
+    "cli_distribution_installation_rollback_not_accepted"
+  ],
+  "references": [
+    "https://github.com/git-ksk/reasoning-harness/issues/531",
+    "https://github.com/git-ksk/reasoning-harness/issues/574#issuecomment-6857762530",
+    "evaluation/engine07-quality-gates-v1/README.md",
+    "docs/engine-073-cli-evaluation-plan.ja.md"
+  ]
+}
