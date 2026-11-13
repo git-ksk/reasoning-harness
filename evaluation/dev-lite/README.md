@@ -62,11 +62,14 @@ declaration is **not current billing/quota evidence**. Never bypass provider
 rate limits, switch tiers, or add retries.
 
 ```sh
+# Mac development example: the new build-dev-lite-20261113 pair exists locally.
+# On another Mac, point --build at its own newest pinned pair.
 # Set MISTRAL_API_KEY from a safe local secret source; never place it in Git.
 export REASON_DEV_LITE_FREE_CONFIRMED=1
 python3 evaluation/dev-lite/run.py \
   --requests .local-v3-preparation-20261104/preparation-581-02/requests.json \
-  --build .local-v3-preparation-20261104/build-581-02/build.json \
+  --build .local-v3-preparation-20261104/build-dev-lite-20261113/build.json \
+  --rebind-pinned-binaries \
   --mode live --confirm-no-extra-charges \
   --output "$HOME/.local/share/reasoning-harness/dev-lite/run-$(date -u +%Y%m%dT%H%M%SZ)"
 ```
