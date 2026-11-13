@@ -3034,3 +3034,31 @@ fn complete_property_anaphors_and_foreign_adjuncts_preserve_actual_denials() {
     }
     check(cases);
 }
+
+#[test]
+fn issue_608_source_development_cases_and_adversarial_negatives() {
+    let first: Vec<Value> = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-issue608-development-cases/initial40.json"
+    ))
+    .unwrap();
+    let adversarial: Vec<Value> = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-issue608-development-cases/adversarial46.json"
+    ))
+    .unwrap();
+    assert_eq!(
+        first
+            .iter()
+            .filter(|case| case["expected_relevant"] == true)
+            .count(),
+        20
+    );
+    assert_eq!(
+        adversarial
+            .iter()
+            .filter(|case| case["expected_relevant"] == false)
+            .count(),
+        36
+    );
+    check(first);
+    check(adversarial);
+}
