@@ -1,0 +1,129 @@
+{
+  "contract": "reason608-synthetic-p04-first-request-v1",
+  "request": {
+    "max_tokens": 512,
+    "output_format": {
+      "name": "reasoning_candidate",
+      "schema": {
+        "$defs": {
+          "EpistemicState": {
+            "enum": [
+              "known",
+              "supported",
+              "inferred",
+              "assumed",
+              "contradicted",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "ModelCandidateClaim": {
+            "additionalProperties": false,
+            "properties": {
+              "evidence_ids": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "id": {
+                "type": "string"
+              },
+              "proposed_state": {
+                "$ref": "#/$defs/EpistemicState"
+              },
+              "proposition": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/ModelCandidateProposition"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "statement": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "statement",
+              "proposed_state"
+            ],
+            "type": "object"
+          },
+          "ModelCandidateInference": {
+            "additionalProperties": false,
+            "properties": {
+              "conclusion_claim_id": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "method": {
+                "type": "string"
+              },
+              "premise_claim_ids": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "id",
+              "conclusion_claim_id",
+              "method"
+            ],
+            "type": "object"
+          },
+          "ModelCandidateProposition": {
+            "additionalProperties": false,
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "key",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "claims": {
+            "items": {
+              "$ref": "#/$defs/ModelCandidateClaim"
+            },
+            "type": "array"
+          },
+          "inferences": {
+            "items": {
+              "$ref": "#/$defs/ModelCandidateInference"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "claims"
+        ],
+        "title": "ModelCandidate",
+        "type": "object"
+      },
+      "type": "json_schema"
+    },
+    "random_seed": 49200,
+    "system": "You are a candidate generator inside a reasoning harness. Return only the requested structured candidate. Epistemic states are proposals, not verdicts. Use only evidence IDs supplied by the harness; do not invent evidence, sources, or observations. When harness evidence contains structured facts, attach a proposition only for a direct key=value claim that can be checked against those facts. If the supplied evidence cannot support a claim, propose unknown or assumed instead of fabricating support.\nReturn a candidate instance, not a JSON Schema or an example wrapper. The top-level object must include a claims array. If you cannot propose any claims, explicitly return claims: [].",
+    "task": "Task:\nWhen was Quartz Lantern launched? Give the month and year if supported; otherwise say the source does not establish a launch date.\n\nHarness-owned hypotheses:\n[]\n\nHarness-owned explicit assumptions:\n[]\n\nHarness-owned evidence requirements:\n[]\n\nHarness-owned authority policy:\n{\n  \"ranks\": {}\n}\n\nHarness-owned evidence:\n[]\n\nGenerate candidate claims and inference edges. Evaluate supplied hypotheses when present; do not alter their key/value pair. Explicit assumptions may be used as premises, but do not treat them as verified facts. Evidence qualification metadata and authority policy are context only; never claim authority over them.\n\nReturn a candidate instance, not a JSON Schema or an example wrapper. The top-level object must include a claims array. If you cannot propose any claims, explicitly return claims: []."
+  }
+}
