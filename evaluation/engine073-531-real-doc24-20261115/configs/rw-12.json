@@ -1,0 +1,246 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-12:0",
+        "evidence_sha256": "aec80b00b8b5db0595758c2a0a49c634d6516a69ac4bbdcaade21cf3edd44a03",
+        "proposition": {
+          "key": "cmake.break.loop_kinds",
+          "value": "foreach or while"
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-12-a",
+        "source_version": "sha256:4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114",
+        "url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/break.rst",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-12:1",
+        "evidence_sha256": "fc003ae5cdd09cdc65b8555f799e94b460ac02ee0c97af6216ddb9149475cccd",
+        "proposition": {
+          "key": "cmake.return.role",
+          "value": "Returns from a file, directory or function."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-12-b",
+        "source_version": "sha256:64bf74bba3708146a4c52fc2ab7e4a5ee8fd476838df9c72760f090116a6ec77",
+        "url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/return.rst",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "openssl"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.0.15"
+                ]
+              }
+            },
+            "sources": {
+              "rw-12-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "cmake"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.31.0"
+                    ]
+                  }
+                }
+              },
+              "rw-12-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "cmake"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.31.0"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "cmake"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.31.0"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "cmake.break.loop_kinds": "foreach or while"
+              },
+              "id": "snapshot:rw-12:0",
+              "observation": "{\"context_summary\": \"CMake3.31.0 break command: foreach/while syntax and reference to continue.\", \"document_id\": \"cmake-2\", \"locator\": \"Help/command/break.rst normalized_UTF8_bytes[12,58)\", \"origin_group\": \"upstream:Kitware/CMake\", \"quote\": \"Break from an enclosing foreach or while loop.\", \"scope\": {\"product\": \"cmake\", \"release\": \"3.31.0\"}, \"source_version\": \"sha256:4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/break.rst\"}",
+              "source": "rw-12-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "cmake.break.loop_kinds",
+            "openssl.connection.peer_certificate"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "openssl"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.0.15"
+                ]
+              }
+            },
+            "sources": {
+              "rw-12-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "cmake"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.31.0"
+                    ]
+                  }
+                }
+              },
+              "rw-12-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "cmake"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.31.0"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "cmake"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.31.0"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "cmake.return.role": "Returns from a file, directory or function."
+              },
+              "id": "snapshot:rw-12:1",
+              "observation": "{\"context_summary\": \"CMake3.31.0 return manual: function/file/directory contexts, CMP0140, PROPAGATE history and block examples.\", \"document_id\": \"cmake-1\", \"locator\": \"Help/command/return.rst normalized_UTF8_bytes[14,56)\", \"origin_group\": \"upstream:Kitware/CMake\", \"quote\": \"Return from a file, directory or function.\", \"scope\": {\"product\": \"cmake\", \"release\": \"3.31.0\"}, \"source_version\": \"sha256:64bf74bba3708146a4c52fc2ab7e4a5ee8fd476838df9c72760f090116a6ec77\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/return.rst\"}",
+              "source": "rw-12-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "cmake.return.role",
+            "openssl.connection.peer_certificate"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

@@ -1,0 +1,246 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-22:0",
+        "evidence_sha256": "df0507aa394de537020d3b2c959da130475e16d9ef21046cb4ea259e21c773b2",
+        "proposition": {
+          "key": "redis.security.captured_table",
+          "value": "The captured table marks7.0.x,6.2.x,6.0.x supported and<6.0 unsupported."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-22-a",
+        "source_version": "sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff",
+        "url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/SECURITY.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-22:1",
+        "evidence_sha256": "3cff7e3f3c9f887ae15028a65cb76df0bfcabbe8449e4d7417a4a9b72b91343a",
+        "proposition": {
+          "key": "redis.security.captured_recommendation",
+          "value": "Recommends always using latest version."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-22-b",
+        "source_version": "sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff",
+        "url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/SECURITY.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "redis"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "current-2026-10-19"
+                ]
+              }
+            },
+            "sources": {
+              "rw-22-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              },
+              "rw-22-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409896,
+                "retrieved_at_unix_seconds": 1792409896,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "redis.security.captured_table": "The captured table marks7.0.x,6.2.x,6.0.x supported and<6.0 unsupported."
+              },
+              "id": "snapshot:rw-22:0",
+              "observation": "{\"context_summary\": \"Redis7.2.5 repository security-policy snapshot: version table, backport/disclosure and reporting procedures.\", \"document_id\": \"redis-2\", \"locator\": \"SECURITY.md normalized_UTF8_bytes[352,517)\", \"origin_group\": \"upstream:redis/redis\", \"quote\": \"| Version | Supported | | ------- | ------------------ | | 7.0.x | :white_check_mark: | | 6.2.x | :white_check_mark: | | 6.0.x | :white_check_mark: | | < 6.0 | :x: |\", \"scope\": {\"product\": \"redis\", \"release\": \"7.2.5\"}, \"source_version\": \"sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/SECURITY.md\"}",
+              "source": "rw-22-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "redis.security.captured_table",
+            "redis.security.current_supported_versions"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "redis"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "current-2026-10-19"
+                ]
+              }
+            },
+            "sources": {
+              "rw-22-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              },
+              "rw-22-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409896,
+                "retrieved_at_unix_seconds": 1792409896,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "redis.security.captured_recommendation": "Recommends always using latest version."
+              },
+              "id": "snapshot:rw-22:1",
+              "observation": "{\"context_summary\": \"Redis7.2.5 repository security-policy snapshot: version table, backport/disclosure and reporting procedures.\", \"document_id\": \"redis-2\", \"locator\": \"SECURITY.md normalized_UTF8_bytes[40,211)\", \"origin_group\": \"upstream:redis/redis\", \"quote\": \"Redis is generally backwards compatible with very few exceptions, so we recommend users to always use the latest version to experience stability, performance and security.\", \"scope\": {\"product\": \"redis\", \"release\": \"7.2.5\"}, \"source_version\": \"sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/SECURITY.md\"}",
+              "source": "rw-22-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "redis.security.captured_recommendation",
+            "redis.security.current_supported_versions"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

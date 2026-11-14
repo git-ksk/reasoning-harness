@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Run paired *previously-consumed real upstream docs* development check, NOT formal F1.
 
-Original immutable primary-source configuration is encrypted at rest on the runner.
-No scoring gold enters the runner. No retry or recovery calls after failures.
+Upstream source snapshots and questions are public development inputs. Only model
+outputs are encrypted. No scoring gold enters the runner. No retry after failures.
 """
 import argparse
 import hashlib
@@ -16,7 +16,8 @@ import time
 
 import synthetic_v5_timed_608 as v5
 
-CORPUS_HASH = '02506cade31f5f0ddd82fd345350f05c08460d1dc3d96682b1a6f2c7f451a6a6'
+PUBLIC_MANIFEST_SHA256 = '8b910bc4ec497a4bc768cc6c68465c4d2bb8bd6886addfe985c55340265fb542'
+ORIGINAL_BUNDLE_SHA256 = '02506cade31f5f0ddd82fd345350f05c08460d1dc3d96682b1a6f2c7f451a6a6'
 TOTAL_CASES = 24
 JOBS = 48
 MAX_PRICE = JOBS * v5.TOTAL_CAP * .15 / 1_000_000
@@ -42,43 +43,71 @@ def validate_real_source(observation, cid):
     return url
 
 
-def setup(repo, root, corpus_path, build):
-    raw = corpus_path.read_bytes()
-    v5.checked(hashlib.sha256(raw).hexdigest() == CORPUS_HASH, 'real_corpus_sha256_changed')
-    data = json.loads(raw)
-    cases = data['cases']
-    v5.checked(data['classification'] == 'CONSUMED_2026_10_REAL_UPSTREAM_DOCUMENTS_DEV_ONLY_NOT_INDEPENDENT_NEW_HOLDOUT'
-               and data['model'] == v5.MODEL and len(cases)==24, 'real_corpus_classification_changed')
-    v5.checked(len(set(row['case_id'] for row in cases))==24,
+def validate_public_manifest(public_manifest, repo):
+    checked_path = (repo/'evaluation/engine073-531-real-doc24-20261115/cases.json').resolve(strict=True)
+    v5.checked(public_manifest.resolve(strict=True) == checked_path,
+               'manifest_must_be_pinned_repo_public_cases')
+    raw=checked_path.read_bytes()
+    v5.checked(hashlib.sha256(raw).hexdigest() == PUBLIC_MANIFEST_SHA256,
+               'public_manifest_sha256_changed')
+    data=json.loads(raw)
+    v5.checked(data['schema_version']=='reason-531-real-doc24-public-v1' and
+               data['classification']=='CONSUMED_2026_10_REAL_UPSTREAM_DOCUMENTS_DEV_ONLY_NOT_INDEPENDENT_NEW_HOLDOUT' and
+               data['provider']=='mistral' and data['model']==v5.MODEL and
+               data['gold_labels_included'] is False and data['formal_quality_f1'] is None and
+               data['initial_external_model_calls']==0 and
+               data['frozen_old_private_bundle_sha256']==ORIGINAL_BUNDLE_SHA256 and
+               data['source_documents_count']==12 and len(data['source_content_sha256'])==12 and
+               len(data['cases'])==24,
+               'wrong_public_manifest_contract')
+    return data
+
+
+def setup(repo, root, manifest_path, build):
+    data=validate_public_manifest(manifest_path,repo)
+    cases=data['cases']
+    v5.checked(len(set(row['case_id'] for row in cases))==TOTAL_CASES,
                'real_corpus_duplicate')
-    configs = root/'configs';configs.mkdir(mode=0o700,exist_ok=True)
-    rows = []
-    origins = set()
-    for index, row in enumerate(cases):
-        cid = row['case_id']
-        v5.checked(cid == 'rw-'+str(index+1).zfill(2), 'real_case_id_order_changed')
-        v5.checked(isinstance(row['question'],str) and len(row['question'])>20,'missing_frozen_question')
-        raw_cfg=row['config_text'].encode('utf-8')
-        v5.checked(hashlib.sha256(raw_cfg).hexdigest() == row['config_raw_sha256'],
+    config_output=root/'configs';config_output.mkdir(mode=0o700,exist_ok=True)
+    rows=[]
+    origins=set()
+    for index,row in enumerate(cases):
+        cid=row['case_id']
+        v5.checked(cid=='rw-'+str(index+1).zfill(2),'real_case_id_order_changed')
+        v5.checked(isinstance(row['question'],str) and len(row['question'])>20,
+                   'missing_frozen_question')
+        relative=f'configs/{cid}.json'
+        v5.checked(row['config_path']==relative, 'unexpected_config_path_'+cid)
+        unresolved_source=manifest_path.parent/relative
+        v5.checked(not unresolved_source.is_symlink(), 'public_config_symlink_'+cid)
+        source_path=unresolved_source.resolve(strict=True)
+        v5.checked(source_path==(repo/'evaluation/engine073-531-real-doc24-20261115'/relative).resolve(strict=True),
+                   'public_config_path_outside_repo_'+cid)
+        raw_cfg=source_path.read_bytes()
+        v5.checked(hashlib.sha256(raw_cfg).hexdigest()==row['config_raw_sha256'],
                    'original_config_bytes_changed_'+cid)
         cfg=json.loads(raw_cfg)
         v5.checked(cfg['schema_version']=='reason-config-v1', 'real_config_contract_changed')
-        capabilities=cfg['resolution']['investigation']['capabilities']
-        v5.checked(len(capabilities)==2, 'original_real_capabilities_changed')
+        caps=cfg['resolution']['investigation']['capabilities']
+        v5.checked(len(caps)==2,'original_real_capabilities_changed')
         evidence=[]
-        for cap in capabilities:
+        for cap in caps:
             v5.checked(cap['kind']=='captured_evidence' and cap['read_only'] is True,
                        'unexpected_live_source_capability')
             for record in cap['evidence']:
                 obj=json.loads(record['observation'])
                 url=validate_real_source(obj,cid)
+                v5.checked(obj['source_version']==data['source_content_sha256'].get(url),
+                           'unpinned_source_content_'+cid)
                 evidence.append(record)
                 origins.add(url)
-        v5.checked(len(evidence)==2, 'original_real_source_count_changed')
-        v5.checked(2<=len(cfg['answer_context']['sources'])<=3,'real_source_registry_changed')
-        path=configs/(cid+'.json');path.write_bytes(raw_cfg);path.chmod(0o600)
-        rows.append({'id':cid,'config':str(path),'question':row['question']})
-    v5.checked(len(origins)==12, 'real_upstream_source_count_changed')
+        v5.checked(len(evidence)==2,'original_real_source_count_changed')
+        v5.checked(2<=len(cfg['answer_context']['sources'])<=3,
+                   'real_source_registry_changed')
+        output_path=config_output/(cid+'.json')
+        output_path.write_bytes(raw_cfg);output_path.chmod(0o600)
+        rows.append({'id':cid,'config':str(output_path),'question':row['question']})
+    v5.checked(len(origins)==12,'real_upstream_source_count_changed')
     # Both arms must have exactly identical first HTTP request before ANY model
     # call. No answer key, previous output, or semantic gold is on this runner.
     hashes={}
@@ -101,7 +130,7 @@ def setup(repo, root, corpus_path, build):
                    'real_pair_mismatch_'+row['id'])
         hashes[row['id']]=plans[0]['request_sha256']
     (root/'preflight.json').write_text(serialize({
-        'corpus_sha256':CORPUS_HASH,'source_kind':'actual_pinned_upstream_repositories',
+        'public_manifest_sha256':PUBLIC_MANIFEST_SHA256,'source_kind':'public_pinned_upstream_repositories',
         'source_files':len(origins),'case_count':24,'paired_requests':48,
         'pair_equality':True,'request_hashes':hashes,'model_completions':0,
         'formal_independent_review':False}))
@@ -116,7 +145,7 @@ def measure(repo,root,rows,build,shard):
     import run as lite
     start=shard*6;stop=start+6
     subset=rows[start:stop]
-    report={'classification':'REAL_UPSTREAM_DOCUMENTS_CONSUMED_DEV_ONLY_NO_FORMAL_F1','corpus_sha256':CORPUS_HASH,'shard':shard+1,'model':v5.MODEL,'cli_commit':v5.CLI,'baseline_commit':v5.BASELINE,'candidate_commit':v5.CANDIDATE,'planned_jobs':12,'completed_jobs':0,'observations':[],'run_status':'incomplete','formal_f1':None,'quality_go':False,'adoption_go':False,'maximum_usd_all_48_by_token_cap':round(MAX_PRICE,7)}
+    report={'classification':'REAL_UPSTREAM_DOCUMENTS_CONSUMED_DEV_ONLY_NO_FORMAL_F1','public_manifest_sha256':PUBLIC_MANIFEST_SHA256,'shard':shard+1,'model':v5.MODEL,'cli_commit':v5.CLI,'baseline_commit':v5.BASELINE,'candidate_commit':v5.CANDIDATE,'planned_jobs':12,'completed_jobs':0,'observations':[],'run_status':'incomplete','formal_f1':None,'quality_go':False,'adoption_go':False,'maximum_usd_all_48_by_token_cap':round(MAX_PRICE,7)}
     rawdir=root/'raw';rawdir.mkdir(mode=0o700,exist_ok=True)
     status='complete'
     try:
@@ -169,10 +198,10 @@ def measure(repo,root,rows,build,shard):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--repo',type=Path,required=True);p.add_argument('--build',type=Path,required=True);p.add_argument('--corpus',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--mode',choices=['preflight','live'],required=True);p.add_argument('--shard',type=int,choices=[0,1,2,3],default=0)
+    p=argparse.ArgumentParser();p.add_argument('--repo',type=Path,required=True);p.add_argument('--build',type=Path,required=True);p.add_argument('--cases',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--mode',choices=['preflight','live'],required=True);p.add_argument('--shard',type=int,choices=[0,1,2,3],default=0)
     a=p.parse_args();repo=a.repo.resolve(strict=True);build=v5.build_checked(a.build);root=a.output.resolve();v5.checked(not root.exists(),'output_must_be_new');root.mkdir(mode=0o700,parents=True)
-    rows=setup(repo,root,a.corpus,build)
-    print('real_docs_12_verified=true 24/24_request_pairs_equal=true api_calls_preflight=0',flush=True)
+    rows=setup(repo,root,a.cases,build)
+    print('real_docs_12_pinned=true 24/24_request_pairs_equal=true api_calls_preflight=0',flush=True)
     if a.mode=='live':measure(repo,root,rows,build,a.shard)
     else: print('formal_f1=null model_calls=0',flush=True)
 
