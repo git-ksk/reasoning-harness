@@ -1,0 +1,79 @@
+name: engine073-mistral-minimal-post-20261114
+
+# One-shot direct API connectivity diagnosis after a timed-out Reason CLI run.
+on:
+  push:
+    branches: [eval/engine073-mistral-secret-probe-20261114]
+    paths:
+      - .github/workflows/engine073-mistral-minimal-post-20261114.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: engine073-mistral-minimal-post-20261114
+  cancel-in-progress: false
+
+jobs:
+  one-request:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Send exactly one bounded generation request; print metadata only
+        shell: bash
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          import urllib.error
+          import urllib.request
+
+          key = os.environ.get("MISTRAL_API_KEY", "")
+          if not key:
+              print("credential=missing")
+              sys.exit(2)
+          payload = {
+              "model": "ministral-8b-2512",
+              "messages": [{"role": "user", "content": "Reply exactly READY."}],
+              "max_tokens": 16,
+              "temperature": 0,
+          }
+          req = urllib.request.Request(
+              "https://api.mistral.ai/v1/chat/completions",
+              data=json.dumps(payload).encode(),
+              method="POST",
+              headers={
+                  "Authorization": "Bearer " + key,
+                  "Content-Type": "application/json",
+                  "Accept": "application/json",
+              },
+          )
+          try:
+              with urllib.request.urlopen(req, timeout=25) as response:
+                  status = response.status
+                  raw = response.read(200_000)
+          except urllib.error.HTTPError as exc:
+              print("completion_http_status=" + str(exc.code))
+              sys.exit(3)
+          except TimeoutError:
+              print("completion_transport=timeout")
+              sys.exit(4)
+          except Exception as exc:
+              print("completion_transport_error=" + type(exc).__name__)
+              sys.exit(5)
+          result = json.loads(raw)
+          usage = result.get("usage", {})
+          print("completion_http_status=" + str(status))
+          print("model=" + str(result.get("model", "unknown")))
+          print("choices_count=" + str(len(result.get("choices", []))))
+          print("prompt_tokens=" + str(usage.get("prompt_tokens", "unknown")))
+          print("completion_tokens=" + str(usage.get("completion_tokens", "unknown")))
+          print("actual_content_redacted=true")
+          print("quality_go=false")
+          if not result.get("choices"):
+              sys.exit(6)
+          PY
