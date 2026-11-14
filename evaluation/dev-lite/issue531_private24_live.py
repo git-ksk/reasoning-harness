@@ -89,19 +89,37 @@ def measure(repo,root,rows,build,shard):
                 st=time.monotonic()
                 try:
                     cp=subprocess.run(v5.argv(row,arm,build,i),cwd=repo,stdin=subprocess.DEVNULL,capture_output=True,timeout=1200,env={'PATH':os.environ.get('PATH',''),'HOME':os.environ.get('HOME',''),'MISTRAL_API_KEY':os.environ['MISTRAL_API_KEY'],'NO_COLOR':'1','NO_PROXY':'127.0.0.1','REASON_MISTRAL_RATE_LIMIT_TELEMETRY':'1'})
-                except subprocess.TimeoutExpired:
+                except subprocess.TimeoutExpired as exc:
+                    # Provider may already have accepted/charged the request.
+                    # Preserve any partial output as unscored private evidence;
+                    # never retry this effectful invocation.
+                    partial_out = exc.stdout or b''
+                    partial_err = exc.stderr or b''
+                    if isinstance(partial_out, str): partial_out = partial_out.encode()
+                    if isinstance(partial_err, str): partial_err = partial_err.encode()
+                    p=rawdir/(row['id']+'-'+arm+'.timeout.stdout.partial')
+                    p.write_bytes(partial_out);p.chmod(0o600)
+                    e=rawdir/(row['id']+'-'+arm+'.timeout.stderr.partial')
+                    e.write_bytes(partial_err);e.chmod(0o600)
+                    report['observations'].append({'id':row['id'],'arm':arm,
+                        'complete':False,'attempt_outcome':'unknown_timeout_may_have_been_billed',
+                        'elapsed_seconds':round(time.monotonic()-st,3),
+                        'partial_stdout_sha256':hashlib.sha256(partial_out).hexdigest(),
+                        'partial_stderr_sha256':hashlib.sha256(partial_err).hexdigest(),
+                        'usage':None,'do_not_retry':True})
                     status='stopped_timeout_no_retry'
                     break
                 stdout=cp.stdout
                 p=rawdir/(row['id']+'-'+arm+'.stdout.json');p.write_bytes(stdout);p.chmod(0o600)
                 e=rawdir/(row['id']+'-'+arm+'.stderr.txt');e.write_bytes(cp.stderr);e.chmod(0o600)
-                observed={'id':row['id'],'arm':arm,'exit_code':cp.returncode,'stdout_sha256':hashlib.sha256(stdout).hexdigest(),'elapsed_seconds':round(time.monotonic()-st,3),'usage':None,'answer_status':None,'cli_status':None}
+                observed={'id':row['id'],'arm':arm,'exit_code':cp.returncode,'stdout_sha256':hashlib.sha256(stdout).hexdigest(),'elapsed_seconds':round(time.monotonic()-st,3),'usage':None,'answer_status':None,'cli_status':None,'complete':False}
                 report['observations'].append(observed);report['completed_jobs']+=1
                 try:
                     usage,answer_status,cli_status=lite.usage_from_cli(stdout)
                     observed.update(usage=usage,answer_status=answer_status,cli_status=cli_status)
                     v5.checked(usage['model_calls']<=v5.MAX_CALLS and usage['total_tokens']<=v5.TOTAL_CAP,'usage_limit_exceeded')
                     v5.checked(cp.returncode==0 and cli_status!='failed','cli_failed')
+                    observed['complete']=True
                 except (ValueError,TypeError,KeyError,RuntimeError,lite.GateError):
                     status='stopped_unknown_usage_or_cli_failure_no_retry'
                     break

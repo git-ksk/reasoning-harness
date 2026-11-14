@@ -44,6 +44,17 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Run provider-free billing fail-closed tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/test_issue531_billing_gate.py
+          python3 evaluation/dev-lite/test_issue531_private24_live.py
+          if MISTRAL_BILLING_ATTESTATION_JSON= python3 evaluation/dev-lite/issue531_billing_gate.py; then
+            echo 'FATAL: missing billing attestation unexpectedly allowed' >&2
+            exit 1
+          fi
+          echo 'missing_billing_attestation_blocks_live=true'
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.88.0
