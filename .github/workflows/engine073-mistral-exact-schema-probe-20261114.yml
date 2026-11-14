@@ -1,0 +1,101 @@
+name: engine073-mistral-exact-schema-probe-20261114
+
+# Exactly one direct POST with the public synthetic p04 first request shape.
+# No CLI-level retry, no secret printed, no user/private evaluation input.
+on:
+  push:
+    branches: [eval/engine073-mistral-secret-probe-20261114]
+    paths:
+      - .github/workflows/engine073-mistral-exact-schema-probe-20261114.yml
+
+permissions:
+  contents: read
+
+jobs:
+  exact-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: POST same first JSON-schema request, once, and log sanitized status
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          import urllib.error
+          import urllib.request
+          from pathlib import Path
+
+          key=os.environ.get("MISTRAL_API_KEY", "")
+          if not key:
+              print("credential_missing=true")
+              raise SystemExit(2)
+          data=json.loads(Path("evaluation/dev-lite/synthetic_first_request_608.json").read_text())
+          assert data["contract"]=="reason608-synthetic-p04-first-request-v1"
+          request=data["request"]
+          fmt=request["output_format"]
+          assert fmt["type"]=="json_schema"
+          body={
+              "model":"ministral-8b-2512",
+              "messages":[
+                  {"role":"system","content":request["system"]},
+                  {"role":"user","content":request["task"]},
+              ],
+              "response_format":{
+                  "type":"json_schema",
+                  "json_schema":{"name":fmt["name"],"schema":fmt["schema"],"strict":True}
+              },
+              "max_tokens":request["max_tokens"],
+              "random_seed":request["random_seed"],
+              "temperature":0,
+          }
+          http=urllib.request.Request(
+              "https://api.mistral.ai/v1/chat/completions",
+              data=json.dumps(body,separators=(',',':')).encode(),
+              headers={"Content-Type":"application/json","Authorization":"Bearer "+key},
+              method="POST",
+          )
+          try:
+              with urllib.request.urlopen(http,timeout=35) as resp:
+                  raw=resp.read(300_000)
+                  status=resp.status
+                  hdr=resp.headers
+          except urllib.error.HTTPError as err:
+              raw=err.read(300_000)
+              status=err.code
+              hdr=err.headers
+          except Exception as err:
+              print("transport_error="+type(err).__name__)
+              raise SystemExit(5)
+          print("schema_probe_http_status="+str(status))
+          for h in ("retry-after","x-ratelimit-limit-tokens-minute",
+                    "x-ratelimit-remaining-tokens-minute","x-ratelimit-reset-tokens-minute",
+                    "x-ratelimit-limit-req-minute","x-ratelimit-remaining-req-minute"):
+              v=hdr.get(h)
+              if v:
+                  print("header_"+h.replace("-","_")+"="+str(v)[:64])
+          if status==200:
+              parsed=json.loads(raw)
+              usage=parsed.get("usage",{})
+              print("schema_probe_model="+str(parsed.get("model","unknown")))
+              print("prompt_tokens="+str(usage.get("prompt_tokens","unknown")))
+              print("completion_tokens="+str(usage.get("completion_tokens","unknown")))
+              print("choices_count="+str(len(parsed.get("choices",[]))))
+          else:
+              try:
+                  parsed=json.loads(raw)
+                  message=parsed.get("message") or parsed.get("detail")
+                  if isinstance(message,str):
+                      print("error_type="+message[:80].replace("\n"," "))
+              except Exception:
+                  pass
+          print("response_content_redacted=true")
+          print("model_requests_sent=1")
+          print("formal_quality_go=false")
+          PY
