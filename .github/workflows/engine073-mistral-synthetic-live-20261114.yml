@@ -1,0 +1,87 @@
+name: engine073-mistral-synthetic-live-20261114
+
+# User-approved development-only API comparison; four public synthetic cases.
+# Never reuse the independent private real24 evaluation or promote this run to GO.
+on:
+  push:
+    branches: [eval/engine073-mistral-secret-probe-20261114]
+    paths:
+      - .github/workflows/engine073-mistral-synthetic-live-20261114.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: engine073-mistral-synthetic-live-20261114
+  cancel-in-progress: false
+
+jobs:
+  paired-live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Build two exact pinned native Reason CLI binaries (no model calls)
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          git fetch --no-tags origin refs/heads/eval/engine073-608-development-base
+          git cat-file -e 7466c6f90d420a98c99713b96d6a0623e2aeef52^{commit}
+          git cat-file -e 4abee90f0501f0d8fc09b453a0b45c942fbed69e^{commit}
+          git cat-file -e 988b69f086ac4a209fe93eb10cf1fa6786977567^{commit}
+          cargo fetch --locked
+          python3 - <<'PY'
+          from pathlib import Path
+          import os
+          import sys
+          root=Path.cwd().resolve()
+          sys.path.insert(0,str(root/'evaluation/cli-repair-paired-v1/normal_v3'))
+          import build_native_pair as b
+          assert b.ARMS['candidate']=='ab3c6322921c8c738ec35bd018345917b5afa538'
+          b.ARMS['candidate']='7466c6f90d420a98c99713b96d6a0623e2aeef52'
+          b.build(root,'988b69f086ac4a209fe93eb10cf1fa6786977567',Path(os.environ['RUNNER_TEMP'])/'reason608-build')
+          PY
+      - name: Verify four public synthetic cases and 8 first request plans (0 model calls)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/synthetic_live_608.py \
+            --repo . \
+            --build "$RUNNER_TEMP/reason608-build/build.json" \
+            --output "$RUNNER_TEMP/reason608-preflight" \
+            --mode preflight
+      - name: Capped Mistral live two-arm comparison (8 jobs max, no retries)
+        shell: bash
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          REASON_DEV_LITE_FREE_CONFIRMED: '1'
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/synthetic_live_608.py \
+            --repo . \
+            --build "$RUNNER_TEMP/reason608-build/build.json" \
+            --output "$RUNNER_TEMP/reason608-live" \
+            --mode live
+      - name: Upload sanitized synthetic-only summary; never raw model output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine073-synthetic-live-608-summary
+          path: ${{ runner.temp }}/reason608-live/sanitized-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Delete ephemeral raw model outputs
+        if: always()
+        shell: bash
+        run: |
+          if test -d "$RUNNER_TEMP/reason608-live"; then
+            find "$RUNNER_TEMP/reason608-live" -name '*.stdout.json' -type f -delete
+          fi
