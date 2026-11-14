@@ -47,7 +47,7 @@ jobs:
           import build_native_pair as b
           assert b.ARMS['candidate']=='ab3c6322921c8c738ec35bd018345917b5afa538'
           b.ARMS['candidate']='7466c6f90d420a98c99713b96d6a0623e2aeef52'
-          b.build(root,'988b69f086ac4a209fe93eb10cf1fa6786977567',Path(os.environ['RUNNER_TEMP'])/'reason608-build')
+          b.build(root,'988b69f086ac4a209fe93eb10cf1fa6786977567',Path('/tmp')/'reason608-build')
           PY
       - name: Verify four public synthetic cases and 8 first request plans (0 model calls)
         shell: bash
@@ -55,8 +55,8 @@ jobs:
           set -euo pipefail
           python3 evaluation/dev-lite/synthetic_live_608.py \
             --repo . \
-            --build "$RUNNER_TEMP/reason608-build/build.json" \
-            --output "$RUNNER_TEMP/reason608-preflight" \
+            --build "/tmp/reason608-build/build.json" \
+            --output "/tmp/reason608-preflight" \
             --mode preflight
       - name: Capped Mistral live two-arm comparison (8 jobs max, no retries)
         shell: bash
@@ -67,21 +67,21 @@ jobs:
           set -euo pipefail
           python3 evaluation/dev-lite/synthetic_live_608.py \
             --repo . \
-            --build "$RUNNER_TEMP/reason608-build/build.json" \
-            --output "$RUNNER_TEMP/reason608-live" \
+            --build "/tmp/reason608-build/build.json" \
+            --output "/tmp/reason608-live" \
             --mode live
       - name: Upload sanitized synthetic-only summary; never raw model output
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: engine073-synthetic-live-608-summary
-          path: ${{ runner.temp }}/reason608-live/sanitized-summary.json
+          path: /tmp/reason608-live/sanitized-summary.json
           if-no-files-found: warn
           retention-days: 7
       - name: Delete ephemeral raw model outputs
         if: always()
         shell: bash
         run: |
-          if test -d "$RUNNER_TEMP/reason608-live"; then
-            find "$RUNNER_TEMP/reason608-live" -name '*.stdout.json' -type f -delete
+          if test -d "/tmp/reason608-live"; then
+            find "/tmp/reason608-live" -name '*.stdout.json' -type f -delete
           fi
