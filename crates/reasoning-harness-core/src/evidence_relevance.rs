@@ -7827,6 +7827,82 @@ fn launch_literal_owner_supplement_note_v17(
     false
 }
 
+// A subject-free product denial or release-date hoax invalidates an otherwise
+// credible nearby event until its ownership is independently resolved.
+fn launch_unscoped_release_invalidity_v17(statement: &str) -> bool {
+    let text = normalized(statement);
+    let words = text.split_whitespace().collect::<Vec<_>>();
+    matches!(
+        words.as_slice(),
+        [
+            "the" | "this" | "that",
+            "product" | "service" | "model",
+            "does" | "did",
+            "not",
+            "exist"
+        ] | [
+            "the",
+            "original",
+            "release" | "launch",
+            "date",
+            "was",
+            "a",
+            "hoax" | "fabrication"
+        ]
+    )
+}
+
+// Exclude only a complete, clearly foreign notice or the exact contrast that
+// withdraws a screenshot rather than the release event. This is no positive
+// authority on its own: an independent target-owned fact is still mandatory.
+fn launch_bounded_foreign_notice_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    statement: &str,
+) -> bool {
+    let text = statement.trim();
+    let folded = normalized(text);
+    if target_identity_phrases(policy)
+        .iter()
+        .any(|target| normalized_phrase_matches(&folded, target))
+    {
+        return false;
+    }
+    if folded == "the screenshot was withdrawn not the launch" {
+        return true;
+    }
+    [
+        ("The ", " announcement was a fictional example"),
+        ("The unrelated ", " launch claim was denied"),
+    ]
+    .iter()
+    .any(|(prefix, suffix)| {
+        text.strip_prefix(prefix)
+            .and_then(|body| body.strip_suffix(suffix))
+            .is_some_and(launch_named_subject_v17)
+    })
+}
+
+// Only an affirmative target-owned occurrence with an optional complete
+// temporal adjunct. Conditional/attributed/negated tails are not admitted.
+fn target_owned_nominal_launch_event_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    text: &str,
+) -> bool {
+    target_identity_phrases(policy).iter().any(|target| {
+        let prefix = format!("the launch of {target} occurred");
+        text.strip_prefix(&prefix).is_some_and(|rest| {
+            if rest.is_empty() {
+                return true;
+            }
+            let Some(rest) = rest.strip_prefix(' ') else {
+                return false;
+            };
+            let words = rest.split_whitespace().collect::<Vec<_>>();
+            !words.is_empty() && launch_temporal_prefix_len_v17(&words) == words.len()
+        })
+    })
+}
+
 fn launch_governing_context_blocks_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
@@ -7854,6 +7930,9 @@ fn launch_governing_context_blocks_v17(
         for (index, segment) in segments.iter().enumerate() {
             let text = normalized(&segment.raw);
             let words = text.split_whitespace().collect::<Vec<_>>();
+            if launch_unscoped_release_invalidity_v17(&segment.raw) {
+                return true;
+            }
             if launch_printed_declaration_v17(policy, &segment.raw)
                 || launch_complete_printed_property_correction_v17(policy, &segment.raw)
             {
@@ -8435,6 +8514,12 @@ fn launch_governing_context_blocks_v17(
             {
                 continue;
             }
+            // Preserve all hard and target-absence guards above this fallback.
+            // An unrelated title or screenshot-only notice may not suppress
+            // a separately established, genuinely target-owned launch.
+            if !owns_target && launch_bounded_foreign_notice_v17(policy, &segment.raw) {
+                continue;
+            }
             return true;
         }
     }
@@ -8588,7 +8673,8 @@ fn target_owned_launch_fact_v17(
             // Every current frame needs an owned subject or direct object.
             // Reusing the historical permissive path would let "documentation
             // for TARGET" borrow authority even with an adjacent predicate.
-            target_owned_active_launch_object_v17(policy, &raw, &segment)
+            target_owned_nominal_launch_event_v17(policy, &segment)
+                || target_owned_active_launch_object_v17(policy, &raw, &segment)
                 || target_owned_made_generally_available_v17(policy, &segment, &makers)
                 || target_owned_launch_frame_with_predicates(
                     policy,

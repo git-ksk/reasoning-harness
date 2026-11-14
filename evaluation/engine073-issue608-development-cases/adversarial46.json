@@ -1,0 +1,508 @@
+[
+  {
+    "id": "rp01",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern occurred on 12 June 2026."
+      }
+    ],
+    "expected_relevant": true
+  },
+  {
+    "id": "rp02",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern occurred."
+      }
+    ],
+    "expected_relevant": true
+  },
+  {
+    "id": "rp03",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern occurred in 2026."
+      }
+    ],
+    "expected_relevant": true
+  },
+  {
+    "id": "rp04",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The screenshot was withdrawn, not the launch."
+      }
+    ],
+    "expected_relevant": true
+  },
+  {
+    "id": "rp05",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The screenshot was withdrawn, not the launch. Quartz Lantern was launched in June 2026."
+      }
+    ],
+    "expected_relevant": true
+  },
+  {
+    "id": "rp06",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The Harbor Loom announcement was a fictional example."
+      }
+    ],
+    "expected_relevant": true
+  },
+  {
+    "id": "rp07",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The Harbor Loom announcement was a fictional example. Quartz Lantern was launched in June 2026."
+      }
+    ],
+    "expected_relevant": true
+  },
+  {
+    "id": "rp08",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The unrelated Harbor Loom launch claim was denied."
+      }
+    ],
+    "expected_relevant": true
+  },
+  {
+    "id": "rp09",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The unrelated Harbor Loom launch claim was denied. Quartz Lantern was launched in June 2026."
+      }
+    ],
+    "expected_relevant": true
+  },
+  {
+    "id": "rp10",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The unrelated Harbor Loom launch claim was denied. The screenshot was withdrawn, not the launch."
+      }
+    ],
+    "expected_relevant": true
+  },
+  {
+    "id": "rn01",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern did not occur in June 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn02",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "No launch of Quartz Lantern occurred in June 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn03",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern allegedly occurred in June 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn04",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern could have occurred in June 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn05",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern occurred in June 2026. This launch statement is false."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn06",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern occurred in June 2026. We retract that launch statement."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn07",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern occurred in June 2026. The entire report has been withdrawn."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn08",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern occurred in June 2026. The publisher denies that launch."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn09",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern occurred in June 2026. This was only a fictional example."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn10",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern occurred in June 2026. The product does not exist."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn11",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern occurred in June 2026?"
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn12",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern occurred in June 2026 according to an unverified rumour."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn13",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern occurred in June 2026. Correction: it never occurred."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn14",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The launch of Quartz Lantern occurred in June 2026. The full source has been retracted."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn15",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The screenshot was withdrawn, not the launch. We retract Quartz Lantern's launch statement."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn16",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The Harbor Loom announcement was a fictional example. We retract the Quartz Lantern launch."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn17",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The unrelated Harbor Loom launch claim was denied. The Quartz Lantern launch claim was denied too."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn18",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The screenshot was withdrawn, not the launch. The launch did not actually occur."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn19",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The screenshot was withdrawn, not the launch. That launch statement was false."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn20",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The screenshot was withdrawn, not the launch. The entire report was fictional."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn21",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The screenshot was withdrawn, not the launch. Quartz Lantern does not exist."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn22",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The screenshot was withdrawn, not the launch. Quartz Lantern was not launched in June 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn23",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The unrelated Harbor Loom launch claim was denied. No launch of Quartz Lantern occurred."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn24",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The Harbor Loom announcement was a fictional example. The Quartz Lantern launch announcement was retracted."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn25",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The screenshot was withdrawn, not the launch. The whole source was withdrawn."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn26",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The screenshot was withdrawn, not the launch, which was also withdrawn."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn27",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The Harbor Loom announcement was a fictional example. Quartz Lantern has not been launched."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn28",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The unrelated Harbor Loom launch claim was denied. Quartz Lantern was never launched."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn29",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The screenshot was withdrawn, not the launch. The launch of Quartz Lantern remains unverified."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn30",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The Harbor Loom announcement was a fictional example. The launch of Quartz Lantern was denied."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn31",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The unrelated Harbor Loom launch claim was denied. Quartz Lantern might launch next year."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn32",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The screenshot was withdrawn, not the launch. Quartz Lantern might launch in 2027."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn33",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The Harbor Loom announcement was a fictional example. There is no launch announcement for Quartz Lantern."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn34",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The unrelated Harbor Loom launch claim was denied. Quartz Lantern launch information is missing."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn35",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The screenshot was withdrawn, not the launch. No release of Quartz Lantern exists."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "rn36",
+    "entity": "Quartz Lantern",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Quartz Lantern was launched in June 2026. The screenshot was withdrawn, not the launch. The original release date was a hoax."
+      }
+    ],
+    "expected_relevant": false
+  }
+]
