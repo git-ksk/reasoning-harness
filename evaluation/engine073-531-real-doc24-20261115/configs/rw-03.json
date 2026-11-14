@@ -1,0 +1,245 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-03:0",
+        "evidence_sha256": "577dfe016f04841f864e7bbde28c92929d5d59b73d22f723e9036fe23a9e359d",
+        "proposition": {
+          "key": "curl.retry.introduced",
+          "value": "7.12.3"
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-03-a",
+        "source_version": "sha256:d164104079fbac52eefc1147bfb1eb152bfbb1d883e6c0f963df25a4e7a505e2",
+        "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-03:1",
+        "evidence_sha256": "f14b28ae11b84b438ae0907187b63a00e04f613296a725d9419970b618e52d43",
+        "proposition": {
+          "key": "curl.retry_all.introduced",
+          "value": "7.71.0"
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-03-b",
+        "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+        "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "curl"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "8.10.1"
+                ]
+              }
+            },
+            "sources": {
+              "rw-03-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              },
+              "rw-03-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "curl.retry.introduced": "7.12.3"
+              },
+              "id": "snapshot:rw-03:0",
+              "observation": "{\"context_summary\": \"curl8.10.1 --retry manual: transient errors, zero default retries, backoff and Retry-After history.\", \"document_id\": \"curl-1\", \"locator\": \"docs/cmdline-opts/retry.md normalized_UTF8_bytes[93,129)\", \"origin_group\": \"upstream:curl/curl\", \"quote\": \"Long: retry Arg: <num> Added: 7.12.3\", \"scope\": {\"product\": \"curl\", \"release\": \"8.10.1\"}, \"source_version\": \"sha256:d164104079fbac52eefc1147bfb1eb152bfbb1d883e6c0f963df25a4e7a505e2\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry.md\"}",
+              "source": "rw-03-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "curl.retry.introduced"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "curl"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "8.10.1"
+                ]
+              }
+            },
+            "sources": {
+              "rw-03-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              },
+              "rw-03-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "curl.retry_all.introduced": "7.71.0"
+              },
+              "id": "snapshot:rw-03:1",
+              "observation": "{\"context_summary\": \"curl8.10.1 --retry-all-errors manual: companion option, redirected-IO cautions and HTTP-status versus transfer-error distinction.\", \"document_id\": \"curl-2\", \"locator\": \"docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[93,167)\", \"origin_group\": \"upstream:curl/curl\", \"quote\": \"Long: retry-all-errors Help: Retry all errors (with --retry) Added: 7.71.0\", \"scope\": {\"product\": \"curl\", \"release\": \"8.10.1\"}, \"source_version\": \"sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md\"}",
+              "source": "rw-03-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "curl.retry.introduced",
+            "curl.retry_all.introduced"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

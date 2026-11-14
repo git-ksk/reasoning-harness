@@ -1,0 +1,245 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-04:0",
+        "evidence_sha256": "2481ffd3f3770cfd294d66e4bc34786e7f13b7e5e0e89b20aee021e4bb9e8244",
+        "proposition": {
+          "key": "curl.retry_all.default_warning",
+          "value": "Do not make it a default; unintended duplicate data and redirected IO are warned about."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-04-a",
+        "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+        "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-04:1",
+        "evidence_sha256": "04f3b07c7a54803935838a159d19b79f1b4dc9c9fab5e976428ed6e166660441",
+        "proposition": {
+          "key": "curl.retry_all.redirected_output",
+          "value": "Piped or redirected output is not reset across retries and can contain duplicate data."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-04-b",
+        "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+        "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "curl"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "8.10.1"
+                ]
+              }
+            },
+            "sources": {
+              "rw-04-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              },
+              "rw-04-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "curl.retry_all.default_warning": "Do not make it a default; unintended duplicate data and redirected IO are warned about."
+              },
+              "id": "snapshot:rw-04:0",
+              "observation": "{\"context_summary\": \"curl8.10.1 --retry-all-errors manual: companion option, redirected-IO cautions and HTTP-status versus transfer-error distinction.\", \"document_id\": \"curl-2\", \"locator\": \"docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[351,591)\", \"origin_group\": \"upstream:curl/curl\", \"quote\": \"This option is the \\\"sledgehammer\\\" of retrying. Do not use this option by default (for example in your **curlrc**), there may be unintended consequences such as sending or receiving duplicate data. Do not use with redirected input or output.\", \"scope\": {\"product\": \"curl\", \"release\": \"8.10.1\"}, \"source_version\": \"sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md\"}",
+              "source": "rw-04-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "curl.retry_all.default_warning",
+            "curl.retry_all.redirected_output"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "curl"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "8.10.1"
+                ]
+              }
+            },
+            "sources": {
+              "rw-04-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              },
+              "rw-04-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "curl.retry_all.redirected_output": "Piped or redirected output is not reset across retries and can contain duplicate data."
+              },
+              "id": "snapshot:rw-04:1",
+              "observation": "{\"context_summary\": \"curl8.10.1 --retry-all-errors manual: companion option, redirected-IO cautions and HTTP-status versus transfer-error distinction.\", \"document_id\": \"curl-2\", \"locator\": \"docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[1004,1230)\", \"origin_group\": \"upstream:curl/curl\", \"quote\": \"However this is not true of data redirected to a | pipe or \\\\> file, which are not reset. We strongly suggest you do not parse or record output via redirect in combination with this option, since you may receive duplicate data.\", \"scope\": {\"product\": \"curl\", \"release\": \"8.10.1\"}, \"source_version\": \"sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md\"}",
+              "source": "rw-04-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "curl.retry_all.redirected_output"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

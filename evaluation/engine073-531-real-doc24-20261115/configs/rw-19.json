@@ -1,0 +1,244 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-19:0",
+        "evidence_sha256": "4cf944b5c28fc6d494b810b81c823b6fa0ccd27432f92467aee882ca584e9645",
+        "proposition": {
+          "key": "sqlite.build.extension_before_tests",
+          "value": "Helpful but not required before tests."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-19-a",
+        "source_version": "sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+        "url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/README.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-19:1",
+        "evidence_sha256": "99f85e21825000f5e5533b8ca713cacbcb3318688d3a9823bc55e3b759ade6a8",
+        "proposition": {
+          "key": "sqlite.build.extension_before_tests",
+          "value": "Helpful but not required before tests."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-19-b",
+        "source_version": "sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+        "url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/README.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "sqlite"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.47.2"
+                ]
+              }
+            },
+            "sources": {
+              "rw-19-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "sqlite"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.47.2"
+                    ]
+                  }
+                }
+              },
+              "rw-19-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "sqlite"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.47.2"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409896,
+                "retrieved_at_unix_seconds": 1792409896,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "sqlite"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.47.2"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "sqlite.build.extension_before_tests": "Helpful but not required before tests."
+              },
+              "id": "snapshot:rw-19:0",
+              "observation": "{\"context_summary\": \"SQLite3.47.2 source README: mirror/Fossil names, Unix/Windows builds, source layout and integrity-check caveats.\", \"document_id\": \"sqlite-1\", \"locator\": \"README.md normalized_UTF8_bytes[5738,5869)\", \"origin_group\": \"upstream:sqlite/sqlite\", \"quote\": \"It is helpful, but is not required, to install the SQLite TCL extension (the \\\"tclextension-install\\\" target) prior to running tests.\", \"scope\": {\"product\": \"sqlite\", \"release\": \"3.47.2\"}, \"source_version\": \"sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/README.md\"}",
+              "source": "rw-19-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "sqlite.build.extension_before_tests"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "sqlite"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.47.2"
+                ]
+              }
+            },
+            "sources": {
+              "rw-19-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "sqlite"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.47.2"
+                    ]
+                  }
+                }
+              },
+              "rw-19-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "sqlite"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.47.2"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409896,
+                "retrieved_at_unix_seconds": 1792409896,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "sqlite"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.47.2"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "sqlite.build.extension_before_tests": "Helpful but not required before tests."
+              },
+              "id": "snapshot:rw-19:1",
+              "observation": "{\"context_summary\": \"SQLite3.47.2 source README: mirror/Fossil names, Unix/Windows builds, source layout and integrity-check caveats.\", \"document_id\": \"sqlite-1\", \"locator\": \"README.md normalized_UTF8_bytes[7326,7457)\", \"origin_group\": \"upstream:sqlite/sqlite\", \"quote\": \"It is helpful, but is not required, to install the SQLite TCL extension (the \\\"tclextension-install\\\" target) prior to running tests.\", \"scope\": {\"product\": \"sqlite\", \"release\": \"3.47.2\"}, \"source_version\": \"sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/README.md\"}",
+              "source": "rw-19-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "sqlite.build.extension_before_tests"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

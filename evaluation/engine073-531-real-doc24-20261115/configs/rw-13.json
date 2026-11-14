@@ -1,0 +1,245 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-13:0",
+        "evidence_sha256": "c35baa4fa0a55ee76d0104f6e4a9ecc20db32f7df4146bc97c975bf527690884",
+        "proposition": {
+          "key": "openssl.client.none_failure",
+          "value": "SSL_VERIFY_NONE client handshake continues regardless of verification result."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-13-a",
+        "source_version": "sha256:aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde",
+        "url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_CTX_set_verify.pod",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-13:1",
+        "evidence_sha256": "ce7fe36898207eee584a43fab2f5a0a8296af9d2e0c432299c1ac63e649f6bea",
+        "proposition": {
+          "key": "openssl.client.peer_failure",
+          "value": "SSL_VERIFY_PEER terminates handshake on verification failure; ignored for anonymous cipher."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-13-b",
+        "source_version": "sha256:aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde",
+        "url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_CTX_set_verify.pod",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "openssl"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.0.15"
+                ]
+              }
+            },
+            "sources": {
+              "rw-13-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              },
+              "rw-13-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409988,
+                "retrieved_at_unix_seconds": 1792409988,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "openssl.client.none_failure": "SSL_VERIFY_NONE client handshake continues regardless of verification result."
+              },
+              "id": "snapshot:rw-13:0",
+              "observation": "{\"context_summary\": \"OpenSSL3.0.15 verification flags and callbacks: preserve client/server and built-in/custom verification contexts.\", \"document_id\": \"openssl-2\", \"locator\": \"doc/man3/SSL_CTX_set_verify.pod normalized_UTF8_bytes[3797,4139)\", \"origin_group\": \"upstream:openssl/openssl\", \"quote\": \"B<Client mode:> if not using an anonymous cipher (by default disabled), the server will send a certificate which will be checked. The result of the certificate verification process can be checked after the TLS/SSL handshake using the L<SSL_get_verify_result(3)> function. The handshake will be continued regardless of the verification result.\", \"scope\": {\"product\": \"openssl\", \"release\": \"3.0.15\"}, \"source_version\": \"sha256:aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_CTX_set_verify.pod\"}",
+              "source": "rw-13-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "openssl.client.none_failure"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "openssl"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.0.15"
+                ]
+              }
+            },
+            "sources": {
+              "rw-13-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              },
+              "rw-13-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409988,
+                "retrieved_at_unix_seconds": 1792409988,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "openssl.client.peer_failure": "SSL_VERIFY_PEER terminates handshake on verification failure; ignored for anonymous cipher."
+              },
+              "id": "snapshot:rw-13:1",
+              "observation": "{\"context_summary\": \"OpenSSL3.0.15 verification flags and callbacks: preserve client/server and built-in/custom verification contexts.\", \"document_id\": \"openssl-2\", \"locator\": \"doc/man3/SSL_CTX_set_verify.pod normalized_UTF8_bytes[4585,4892)\", \"origin_group\": \"upstream:openssl/openssl\", \"quote\": \"B<Client mode:> the server certificate is verified. If the verification process fails, the TLS/SSL handshake is immediately terminated with an alert message containing the reason for the verification failure. If no server certificate is sent, because an anonymous cipher is used, SSL_VERIFY_PEER is ignored.\", \"scope\": {\"product\": \"openssl\", \"release\": \"3.0.15\"}, \"source_version\": \"sha256:aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_CTX_set_verify.pod\"}",
+              "source": "rw-13-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "openssl.client.none_failure",
+            "openssl.client.peer_failure"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

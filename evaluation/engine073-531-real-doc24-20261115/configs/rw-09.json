@@ -1,0 +1,244 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-09:0",
+        "evidence_sha256": "b5d69a556b8c4ab5d2eae325d3a2156bcf11ae4377672c51b528563186f751b2",
+        "proposition": {
+          "key": "cmake.break.loop_kinds",
+          "value": "foreach or while"
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-09-a",
+        "source_version": "sha256:4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114",
+        "url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/break.rst",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-09:1",
+        "evidence_sha256": "53e95580e53e3c36b7f8e92ba9c1118c83f1ed5ee4b24894db9b3807be12b725",
+        "proposition": {
+          "key": "cmake.break.loop_kinds",
+          "value": "foreach or while"
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-09-b",
+        "source_version": "sha256:4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114",
+        "url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/break.rst",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "cmake"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.31.0"
+                ]
+              }
+            },
+            "sources": {
+              "rw-09-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "cmake"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.31.0"
+                    ]
+                  }
+                }
+              },
+              "rw-09-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "cmake"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.31.0"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "cmake"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.31.0"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "cmake.break.loop_kinds": "foreach or while"
+              },
+              "id": "snapshot:rw-09:0",
+              "observation": "{\"context_summary\": \"CMake3.31.0 break command: foreach/while syntax and reference to continue.\", \"document_id\": \"cmake-2\", \"locator\": \"Help/command/break.rst normalized_UTF8_bytes[12,58)\", \"origin_group\": \"upstream:Kitware/CMake\", \"quote\": \"Break from an enclosing foreach or while loop.\", \"scope\": {\"product\": \"cmake\", \"release\": \"3.31.0\"}, \"source_version\": \"sha256:4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/break.rst\"}",
+              "source": "rw-09-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "cmake.break.loop_kinds"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "cmake"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.31.0"
+                ]
+              }
+            },
+            "sources": {
+              "rw-09-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "cmake"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.31.0"
+                    ]
+                  }
+                }
+              },
+              "rw-09-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "cmake"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.31.0"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "cmake"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.31.0"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "cmake.break.loop_kinds": "foreach or while"
+              },
+              "id": "snapshot:rw-09:1",
+              "observation": "{\"context_summary\": \"CMake3.31.0 break command: foreach/while syntax and reference to continue.\", \"document_id\": \"cmake-2\", \"locator\": \"Help/command/break.rst normalized_UTF8_bytes[89,158)\", \"origin_group\": \"upstream:Kitware/CMake\", \"quote\": \"Breaks from an enclosing :command:`foreach` or :command:`while` loop.\", \"scope\": {\"product\": \"cmake\", \"release\": \"3.31.0\"}, \"source_version\": \"sha256:4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/break.rst\"}",
+              "source": "rw-09-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "cmake.break.loop_kinds"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

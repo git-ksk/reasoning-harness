@@ -1,0 +1,107 @@
+{
+  "all_sha256_raw_matched": true,
+  "formal_independent_reviewer": false,
+  "normalization": "Whitespace folding is used to match frozen extracted quotes to raw docs; original upstream file bytes matched each pinned source_version sha256. Text is not reconstructed for evaluation.",
+  "schema_version": "reason-source-audit-dev-v1",
+  "source_count": 12,
+  "source_documents": [
+    {
+      "all_stored_quotes_found_after_whitespace_normalization": true,
+      "bytes": 208,
+      "quoted_evidence_records": 3,
+      "sha256": "sha256:4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114",
+      "sha256_upstream_raw_matched": true,
+      "url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/break.rst"
+    },
+    {
+      "all_stored_quotes_found_after_whitespace_normalization": true,
+      "bytes": 3292,
+      "quoted_evidence_records": 5,
+      "sha256": "sha256:64bf74bba3708146a4c52fc2ab7e4a5ee8fd476838df9c72760f090116a6ec77",
+      "sha256_upstream_raw_matched": true,
+      "url": "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/return.rst"
+    },
+    {
+      "all_stored_quotes_found_after_whitespace_normalization": true,
+      "bytes": 1763,
+      "quoted_evidence_records": 6,
+      "sha256": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+      "sha256_upstream_raw_matched": true,
+      "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md"
+    },
+    {
+      "all_stored_quotes_found_after_whitespace_normalization": true,
+      "bytes": 1088,
+      "quoted_evidence_records": 2,
+      "sha256": "sha256:d164104079fbac52eefc1147bfb1eb152bfbb1d883e6c0f963df25a4e7a505e2",
+      "sha256_upstream_raw_matched": true,
+      "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry.md"
+    },
+    {
+      "all_stored_quotes_found_after_whitespace_normalization": true,
+      "bytes": 3390,
+      "quoted_evidence_records": 3,
+      "sha256": "sha256:7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa",
+      "sha256_upstream_raw_matched": true,
+      "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-attr.txt"
+    },
+    {
+      "all_stored_quotes_found_after_whitespace_normalization": true,
+      "bytes": 4156,
+      "quoted_evidence_records": 5,
+      "sha256": "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+      "sha256_upstream_raw_matched": true,
+      "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt"
+    },
+    {
+      "all_stored_quotes_found_after_whitespace_normalization": true,
+      "bytes": 15181,
+      "quoted_evidence_records": 4,
+      "sha256": "sha256:aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde",
+      "sha256_upstream_raw_matched": true,
+      "url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_CTX_set_verify.pod"
+    },
+    {
+      "all_stored_quotes_found_after_whitespace_normalization": true,
+      "bytes": 2010,
+      "quoted_evidence_records": 4,
+      "sha256": "sha256:4f7c46dd3228e880870cdf8d70cf4dabd0ade3ffea98bf480e0cfc251dc05569",
+      "sha256_upstream_raw_matched": true,
+      "url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_get_verify_result.pod"
+    },
+    {
+      "all_stored_quotes_found_after_whitespace_normalization": true,
+      "bytes": 22607,
+      "quoted_evidence_records": 4,
+      "sha256": "sha256:b475ab7922c5ad2c42c8ccde2bc6f1a4f7f8b3ba999426fa3e6b00452362cf50",
+      "sha256_upstream_raw_matched": true,
+      "url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/README.md"
+    },
+    {
+      "all_stored_quotes_found_after_whitespace_normalization": true,
+      "bytes": 1695,
+      "quoted_evidence_records": 4,
+      "sha256": "sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff",
+      "sha256_upstream_raw_matched": true,
+      "url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/SECURITY.md"
+    },
+    {
+      "all_stored_quotes_found_after_whitespace_normalization": true,
+      "bytes": 21554,
+      "quoted_evidence_records": 6,
+      "sha256": "sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+      "sha256_upstream_raw_matched": true,
+      "url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/README.md"
+    },
+    {
+      "all_stored_quotes_found_after_whitespace_normalization": true,
+      "bytes": 2330,
+      "quoted_evidence_records": 2,
+      "sha256": "sha256:72376ad8eb150197a422bdbab5299f3a643f504f36de264f035ccffe5a5d9220",
+      "sha256_upstream_raw_matched": true,
+      "url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/doc/compile-for-unix.md"
+    }
+  ],
+  "status": "independent_upstream_raw_bytes_verified_locally",
+  "total_quote_occurrences": 48
+}

@@ -1,0 +1,246 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-07:0",
+        "evidence_sha256": "f10b78e63bf6830690ac127aec244e845ae758af69cbbc40d28b6e3bc23177d1",
+        "proposition": {
+          "key": "git.check_attr.role",
+          "value": "Reports per-path attribute states."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-07-a",
+        "source_version": "sha256:7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa",
+        "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-attr.txt",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-07:1",
+        "evidence_sha256": "9c844aa8a81bac8af0ed426269e4ac92a3989a5f90ca2aa2f7ef9d2117a805fa",
+        "proposition": {
+          "key": "git.check_ignore.role",
+          "value": "Reports paths excluded by ignore rules."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-07-b",
+        "source_version": "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+        "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "git"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "2.47.0"
+                ]
+              }
+            },
+            "sources": {
+              "rw-07-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "rw-07-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "git.check_attr.role": "Reports per-path attribute states."
+              },
+              "id": "snapshot:rw-07:0",
+              "observation": "{\"context_summary\": \"Git2.47.0 check-attr manual: per-path attribute states, text/NUL output and illustrative .gitattributes examples.\", \"document_id\": \"git-2\", \"locator\": \"Documentation/git-check-attr.txt normalized_UTF8_bytes[307,439)\", \"origin_group\": \"upstream:git/git\", \"quote\": \"For every pathname, this command will list if each attribute is 'unspecified', 'set', or 'unset' as a gitattribute on that pathname.\", \"scope\": {\"product\": \"git\", \"release\": \"2.47.0\"}, \"source_version\": \"sha256:7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-attr.txt\"}",
+              "source": "rw-07-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "git.check_attr.role",
+            "git.private.payroll_filter"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "git"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "2.47.0"
+                ]
+              }
+            },
+            "sources": {
+              "rw-07-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "rw-07-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "git.check_ignore.role": "Reports paths excluded by ignore rules."
+              },
+              "id": "snapshot:rw-07:1",
+              "observation": "{\"context_summary\": \"Git2.47.0 check-ignore manual: default/index options, ignore output and exit statuses.\", \"document_id\": \"git-1\", \"locator\": \"Documentation/git-check-ignore.txt normalized_UTF8_bytes[310,445)\", \"origin_group\": \"upstream:git/git\", \"quote\": \"check whether the file is excluded by .gitignore (or other input files to the exclude mechanism) and output the path if it is excluded.\", \"scope\": {\"product\": \"git\", \"release\": \"2.47.0\"}, \"source_version\": \"sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt\"}",
+              "source": "rw-07-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "git.check_ignore.role",
+            "git.private.payroll_filter"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}
