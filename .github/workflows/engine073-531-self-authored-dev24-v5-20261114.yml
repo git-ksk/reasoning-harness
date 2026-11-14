@@ -77,8 +77,16 @@ jobs:
           set -euo pipefail
           umask 077
           python3 - <<'PY'
-          import hashlib,os,pathlib
+          import hashlib,json,os,pathlib
           raw=os.environ.get('PRIVATE_DEV24','').encode()
+          # GitHub secret transport may trim the terminal newline. Reconstruct
+          # exactly the already-frozen canonical JSON and verify its SHA-256.
+          # No dataset, label or source mutation can pass this hash assertion.
+          try:
+              obj=json.loads(raw)
+          except (ValueError,UnicodeError) as exc:
+              raise RuntimeError('missing_or_invalid_private_corpus') from exc
+          raw=(json.dumps(obj,ensure_ascii=False,sort_keys=True,indent=2)+'\n').encode()
           assert hashlib.sha256(raw).hexdigest()=='63da84b7176766c2fec9becf7ad631ff03b0b7c7264f4f120ac05816abd43e1c', 'missing_or_modified_private_corpus'
           path=pathlib.Path(os.environ['RH531_ROOT'])/'private-cohort.json'
           path.write_bytes(raw);path.chmod(0o600)
