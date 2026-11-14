@@ -1,0 +1,239 @@
+name: engine073-531-self-authored-dev24-v5-20261114
+
+# The branch push is ONLY a zero-provider-call preflight. Explicit one-shot tag
+# authorizes the prospective development-only live Mistral run, not formal F1.
+on:
+  push:
+    branches: [eval/531-private24-live-20261114]
+    tags: [eval-531-dev24-live-20261114-one-shot]
+    paths:
+      - .github/workflows/engine073-531-self-authored-dev24-v5-20261114.yml
+      - evaluation/dev-lite/issue531_private24_live.py
+      - evaluation/dev-lite/synthetic_v5_timed_608.py
+      - evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: Offline request parity only (live requires dedicated one-shot tag)
+        required: false
+        type: choice
+        options: [preflight_only]
+        default: preflight_only
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reasoning-harness-mistral-live
+  cancel-in-progress: false
+
+jobs:
+  dev-private24:
+    if: github.run_attempt == 1
+    runs-on: macos-15
+    timeout-minutes: 350
+    steps:
+      - name: Initialize isolated ephemeral Mac runner root
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          root=$(mktemp -d "/private/tmp/rh531-${GITHUB_RUN_ID}.XXXXXX")
+          echo "RH531_ROOT=$root" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Build immutable native CLI pair, exact fixed Core and CLI commits
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          git fetch --no-tags origin refs/heads/eval/engine073-608-development-base
+          git cat-file -e 4abee90f0501f0d8fc09b453a0b45c942fbed69e^{commit}
+          git cat-file -e 7466c6f90d420a98c99713b96d6a0623e2aeef52^{commit}
+          git cat-file -e 988b69f086ac4a209fe93eb10cf1fa6786977567^{commit}
+          cargo fetch --locked
+          python3 - <<'PY'
+          from pathlib import Path
+          import os,sys
+          root=Path.cwd().resolve()
+          sys.path.insert(0,str(root/'evaluation/cli-repair-paired-v1/normal_v3'))
+          import build_native_pair as b
+          assert b.ARMS['baseline']=='4abee90f0501f0d8fc09b453a0b45c942fbed69e'
+          assert b.ARMS['candidate']=='ab3c6322921c8c738ec35bd018345917b5afa538'
+          b.ARMS['candidate']='7466c6f90d420a98c99713b96d6a0623e2aeef52'
+          b.build(root,'988b69f086ac4a209fe93eb10cf1fa6786977567',Path(os.environ['RH531_ROOT'])/'build')
+          PY
+      - name: Stage private frozen dev cases from Actions secret, never print raw
+        shell: bash
+        env:
+          PRIVATE_DEV24: ${{ secrets.ENGINE073_531_DEV24_20261114_JSON }}
+        run: |
+          set -euo pipefail
+          umask 077
+          python3 - <<'PY'
+          import hashlib,os,pathlib
+          raw=os.environ.get('PRIVATE_DEV24','').encode()
+          assert hashlib.sha256(raw).hexdigest()=='63da84b7176766c2fec9becf7ad631ff03b0b7c7264f4f120ac05816abd43e1c', 'missing_or_modified_private_corpus'
+          path=pathlib.Path(os.environ['RH531_ROOT'])/'private-cohort.json'
+          path.write_bytes(raw);path.chmod(0o600)
+          print('private_corpus_hash_verified=true; no private input printed')
+          PY
+      - name: Verify all 24 first request pairs BEFORE any provider calls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/issue531_private24_live.py \
+            --repo . --build "$RH531_ROOT/build/build.json" \
+            --corpus "$RH531_ROOT/private-cohort.json" \
+            --output "$RH531_ROOT/offline-preflight" --mode preflight
+      - name: Validate current credential/model and rate-limit headers (read-only)
+        if: github.ref == 'refs/tags/eval-531-dev24-live-20261114-one-shot'
+        shell: bash
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,os,urllib.request
+          key=os.environ.get('MISTRAL_API_KEY','');assert key,'missing_api_key'
+          req=urllib.request.Request('https://api.mistral.ai/v1/models',headers={'Authorization':'Bearer '+key})
+          with urllib.request.urlopen(req,timeout=30) as resp:
+              data=json.load(resp)
+              headers=resp.headers
+              assert resp.status==200
+              assert any(row.get('id')=='ministral-8b-2512' for row in data.get('data',[])),'model_not_available'
+              print('credential=accepted model=available model_completions=0')
+              for header in ('x-ratelimit-limit-req-minute','x-ratelimit-limit-tokens-minute'):
+                  v=headers.get(header)
+                  if v and v.isdecimal():print(header+'='+v)
+          print('account_current_remaining_credit_verified=false; bounded_spend_uses_user_same_day_observation')
+          PY
+      - name: Measure 6 cases x two arms — shard 01 of 04
+        if: github.ref == 'refs/tags/eval-531-dev24-live-20261114-one-shot'
+        shell: bash
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          REASON_DEV_LITE_FREE_CONFIRMED: '1'
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/issue531_private24_live.py --repo . --build "$RH531_ROOT/build/build.json" --corpus "$RH531_ROOT/private-cohort.json" --output "$RH531_ROOT/shard-01" --mode live --shard 0
+      - name: Encrypt shard 01 complete/private raw evidence (also on partial failure)
+        if: always() && github.ref == 'refs/tags/eval-531-dev24-live-20261114-one-shot'
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          if test -d "$RH531_ROOT/shard-01"; then
+            tar -czf "$RH531_ROOT/raw-01.tgz" -C "$RH531_ROOT" private-cohort.json shard-01
+            openssl cms -encrypt -binary -aes256 -in "$RH531_ROOT/raw-01.tgz" -out "$RH531_ROOT/encrypted-01.cms" -outform DER evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+            rm -f "$RH531_ROOT/raw-01.tgz"
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() && github.ref == 'refs/tags/eval-531-dev24-live-20261114-one-shot'
+        with:
+          name: dev531-encrypted-shard-01-${{ github.run_id }}
+          path: |
+            ${{ env.RH531_ROOT }}/encrypted-01.cms
+            ${{ env.RH531_ROOT }}/shard-01/sanitized-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Measure 6 cases x two arms — shard 02 of 04
+        if: success() && github.ref == 'refs/tags/eval-531-dev24-live-20261114-one-shot'
+        shell: bash
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          REASON_DEV_LITE_FREE_CONFIRMED: '1'
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/issue531_private24_live.py --repo . --build "$RH531_ROOT/build/build.json" --corpus "$RH531_ROOT/private-cohort.json" --output "$RH531_ROOT/shard-02" --mode live --shard 1
+      - name: Encrypt shard 02 full/private raw evidence
+        if: always() && github.ref == 'refs/tags/eval-531-dev24-live-20261114-one-shot'
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          if test -d "$RH531_ROOT/shard-02"; then
+            tar -czf "$RH531_ROOT/raw-02.tgz" -C "$RH531_ROOT" private-cohort.json shard-02
+            openssl cms -encrypt -binary -aes256 -in "$RH531_ROOT/raw-02.tgz" -out "$RH531_ROOT/encrypted-02.cms" -outform DER evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+            rm -f "$RH531_ROOT/raw-02.tgz"
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() && github.ref == 'refs/tags/eval-531-dev24-live-20261114-one-shot'
+        with:
+          name: dev531-encrypted-shard-02-${{ github.run_id }}
+          path: |
+            ${{ env.RH531_ROOT }}/encrypted-02.cms
+            ${{ env.RH531_ROOT }}/shard-02/sanitized-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Measure 6 cases x two arms — shard 03 of 04
+        if: success() && github.ref == 'refs/tags/eval-531-dev24-live-20261114-one-shot'
+        shell: bash
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          REASON_DEV_LITE_FREE_CONFIRMED: '1'
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/issue531_private24_live.py --repo . --build "$RH531_ROOT/build/build.json" --corpus "$RH531_ROOT/private-cohort.json" --output "$RH531_ROOT/shard-03" --mode live --shard 2
+      - name: Encrypt shard 03 full/private raw evidence
+        if: always() && github.ref == 'refs/tags/eval-531-dev24-live-20261114-one-shot'
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          if test -d "$RH531_ROOT/shard-03"; then
+            tar -czf "$RH531_ROOT/raw-03.tgz" -C "$RH531_ROOT" private-cohort.json shard-03
+            openssl cms -encrypt -binary -aes256 -in "$RH531_ROOT/raw-03.tgz" -out "$RH531_ROOT/encrypted-03.cms" -outform DER evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+            rm -f "$RH531_ROOT/raw-03.tgz"
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() && github.ref == 'refs/tags/eval-531-dev24-live-20261114-one-shot'
+        with:
+          name: dev531-encrypted-shard-03-${{ github.run_id }}
+          path: |
+            ${{ env.RH531_ROOT }}/encrypted-03.cms
+            ${{ env.RH531_ROOT }}/shard-03/sanitized-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Measure 6 cases x two arms — shard 04 of 04
+        if: success() && github.ref == 'refs/tags/eval-531-dev24-live-20261114-one-shot'
+        shell: bash
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          REASON_DEV_LITE_FREE_CONFIRMED: '1'
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/issue531_private24_live.py --repo . --build "$RH531_ROOT/build/build.json" --corpus "$RH531_ROOT/private-cohort.json" --output "$RH531_ROOT/shard-04" --mode live --shard 3
+      - name: Encrypt shard 04 full/private raw evidence
+        if: always() && github.ref == 'refs/tags/eval-531-dev24-live-20261114-one-shot'
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          if test -d "$RH531_ROOT/shard-04"; then
+            tar -czf "$RH531_ROOT/raw-04.tgz" -C "$RH531_ROOT" private-cohort.json shard-04
+            openssl cms -encrypt -binary -aes256 -in "$RH531_ROOT/raw-04.tgz" -out "$RH531_ROOT/encrypted-04.cms" -outform DER evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+            rm -f "$RH531_ROOT/raw-04.tgz"
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() && github.ref == 'refs/tags/eval-531-dev24-live-20261114-one-shot'
+        with:
+          name: dev531-encrypted-shard-04-${{ github.run_id }}
+          path: |
+            ${{ env.RH531_ROOT }}/encrypted-04.cms
+            ${{ env.RH531_ROOT }}/shard-04/sanitized-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Destroy temporary private raw and secret material
+        if: always()
+        shell: bash
+        run: |
+          if test -n "${RH531_ROOT:-}" && test -d "$RH531_ROOT"; then
+            rm -rf "$RH531_ROOT"
+          fi
