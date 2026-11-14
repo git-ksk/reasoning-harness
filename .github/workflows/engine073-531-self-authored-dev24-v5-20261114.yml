@@ -100,6 +100,14 @@ jobs:
             --repo . --build "$RH531_ROOT/build/build.json" \
             --corpus "$RH531_ROOT/private-cohort.json" \
             --output "$RH531_ROOT/offline-preflight" --mode preflight
+      - name: Require fresh human-verified no-overage Mistral billing attestation
+        if: github.ref == 'refs/tags/eval-531-dev24-live-20261114-one-shot'
+        shell: bash
+        env:
+          MISTRAL_BILLING_ATTESTATION_JSON: ${{ secrets.ENGINE073_531_CURRENT_BILLING_ATTESTATION_JSON }}
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/issue531_billing_gate.py
       - name: Validate current credential/model and rate-limit headers (read-only)
         if: github.ref == 'refs/tags/eval-531-dev24-live-20261114-one-shot'
         shell: bash
@@ -127,7 +135,7 @@ jobs:
         shell: bash
         env:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
-          REASON_DEV_LITE_FREE_CONFIRMED: '1'
+          REASON_DEV_LITE_FREE_CONFIRMED: '1' # set only after preceding billing gate verified
         run: |
           set -euo pipefail
           python3 evaluation/dev-lite/issue531_private24_live.py --repo . --build "$RH531_ROOT/build/build.json" --corpus "$RH531_ROOT/private-cohort.json" --output "$RH531_ROOT/shard-01" --mode live --shard 0
@@ -156,7 +164,7 @@ jobs:
         shell: bash
         env:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
-          REASON_DEV_LITE_FREE_CONFIRMED: '1'
+          REASON_DEV_LITE_FREE_CONFIRMED: '1' # set only after preceding billing gate verified
         run: |
           set -euo pipefail
           python3 evaluation/dev-lite/issue531_private24_live.py --repo . --build "$RH531_ROOT/build/build.json" --corpus "$RH531_ROOT/private-cohort.json" --output "$RH531_ROOT/shard-02" --mode live --shard 1
@@ -185,7 +193,7 @@ jobs:
         shell: bash
         env:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
-          REASON_DEV_LITE_FREE_CONFIRMED: '1'
+          REASON_DEV_LITE_FREE_CONFIRMED: '1' # set only after preceding billing gate verified
         run: |
           set -euo pipefail
           python3 evaluation/dev-lite/issue531_private24_live.py --repo . --build "$RH531_ROOT/build/build.json" --corpus "$RH531_ROOT/private-cohort.json" --output "$RH531_ROOT/shard-03" --mode live --shard 2
@@ -214,7 +222,7 @@ jobs:
         shell: bash
         env:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
-          REASON_DEV_LITE_FREE_CONFIRMED: '1'
+          REASON_DEV_LITE_FREE_CONFIRMED: '1' # set only after preceding billing gate verified
         run: |
           set -euo pipefail
           python3 evaluation/dev-lite/issue531_private24_live.py --repo . --build "$RH531_ROOT/build/build.json" --corpus "$RH531_ROOT/private-cohort.json" --output "$RH531_ROOT/shard-04" --mode live --shard 3
