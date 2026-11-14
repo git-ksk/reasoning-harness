@@ -1,0 +1,96 @@
+name: engine073-v5-final-two-pairs-20261114
+
+# Development-only, previously supported V5-style long pair:
+# two public fictional p15/n01 cases, two immutable native Core arms.
+# Never a replacement for independent 24-case acceptance.
+on:
+  push:
+    branches: [eval/engine073-v5-final-two-pairs-20261114]
+    paths:
+      - .github/workflows/engine073-v5-final-two-pairs-20261114.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reasoning-harness-mistral-live
+  cancel-in-progress: false
+
+jobs:
+  two-pairs:
+    runs-on: macos-15
+    timeout-minutes: 95
+    steps:
+      - name: Create private V5-style isolated Mac evaluation root
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          root=$(mktemp -d "/private/tmp/reason-v5-608-${GITHUB_RUN_ID}.XXXXXX")
+          echo "V5_608_ROOT=$root" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Build pinned native paired CLIs (provider-free)
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          git fetch --no-tags origin refs/heads/eval/engine073-608-development-base
+          git cat-file -e 4abee90f0501f0d8fc09b453a0b45c942fbed69e^{commit}
+          git cat-file -e 7466c6f90d420a98c99713b96d6a0623e2aeef52^{commit}
+          git cat-file -e 988b69f086ac4a209fe93eb10cf1fa6786977567^{commit}
+          cargo fetch --locked
+          python3 - <<'PY'
+          from pathlib import Path
+          import os
+          import sys
+          root=Path.cwd().resolve()
+          sys.path.insert(0,str(root/'evaluation/cli-repair-paired-v1/normal_v3'))
+          import build_native_pair as b
+          assert b.ARMS['baseline']=='4abee90f0501f0d8fc09b453a0b45c942fbed69e'
+          assert b.ARMS['candidate']=='ab3c6322921c8c738ec35bd018345917b5afa538'
+          b.ARMS['candidate']='7466c6f90d420a98c99713b96d6a0623e2aeef52'
+          b.build(root,'988b69f086ac4a209fe93eb10cf1fa6786977567',Path(os.environ['V5_608_ROOT'])/'build')
+          PY
+      - name: Confirm two synthetic cases x two pairs of first requests (no provider calls)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/synthetic_v5_timed_608.py \
+            --repo . \
+            --build "$V5_608_ROOT/build/build.json" \
+            --output "$V5_608_ROOT/preflight" \
+            --mode preflight
+      - name: Historical V5-style timed live pair, up to 12 calls / arm
+        shell: bash
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          REASON_DEV_LITE_FREE_CONFIRMED: '1'
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/synthetic_v5_timed_608.py \
+            --repo . \
+            --build "$V5_608_ROOT/build/build.json" \
+            --output "$V5_608_ROOT/live" \
+            --mode live
+      - name: Upload developer-synthetic-only sanitized summary
+        if: always() && env.V5_608_ROOT != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: engine073-v5-timed-synthetic-final-two-pairs-summary
+          path: ${{ env.V5_608_ROOT }}/live/sanitized-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Delete private raw CLI and model output
+        if: always() && env.V5_608_ROOT != ''
+        shell: bash
+        run: |
+          if test -d "$V5_608_ROOT/live"; then
+            find "$V5_608_ROOT/live" -name '*.stdout.json' -type f -delete
+          fi
