@@ -1,0 +1,71 @@
+name: engine073-reason-cli-minimal-mistral-diagnostic-20261114
+
+# Isolate Reason CLI transport from the synthetic evaluation settings.
+on:
+  push:
+    branches: [eval/engine073-mistral-secret-probe-20261114]
+    paths:
+      - .github/workflows/engine073-reason-cli-minimal-mistral-diagnostic-20261114.yml
+
+permissions:
+  contents: read
+
+jobs:
+  cli-single:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Build current Reason CLI with no provider requests
+        run: cargo build --locked -p reasoning-harness-cli --bin reason --jobs 2
+      - name: Run one short direct Reason CLI question, no retry
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+          args=[
+              "./target/debug/reason", "--plain", "--no-config",
+              "--provider", "mistral", "--model", "ministral-8b-2512",
+              "--max-tokens", "64", "--max-model-calls", "2",
+              "--max-output-tokens", "256", "--max-total-tokens", "2000",
+              "--format", "json", "Reply with one word: READY."
+          ]
+          env={
+              "PATH":os.environ.get("PATH",""),
+              "HOME":os.environ.get("HOME",""),
+              "MISTRAL_API_KEY":os.environ.get("MISTRAL_API_KEY",""),
+              "NO_COLOR":"1",
+          }
+          try:
+              p=subprocess.run(args,env=env,capture_output=True,timeout=90)
+          except subprocess.TimeoutExpired:
+              print("reason_cli_result=timeout_90s")
+              print("model_use_unknown=true")
+              raise SystemExit(4)
+          print("reason_cli_exit_code="+str(p.returncode))
+          try:
+              result=json.loads(p.stdout)
+              out=result.get("result",{})
+              print("reason_cli_status="+str(out.get("status","unknown")))
+              usage=out.get("usage") or out.get("partial_diagnostics",{}).get("usage",{})
+              observed=usage.get("run",{}) if isinstance(usage,dict) else {}
+              print("reason_cli_total_tokens="+str(observed.get("total_tokens","unknown")))
+              print("reason_cli_model_calls="+str(observed.get("model_calls","unknown")))
+              print("failure_class="+str((out.get("failure") or {}).get("failure_class","none")))
+              print("answer_text_redacted=true")
+          except Exception:
+              print("reason_cli_json=unparseable")
+          if p.returncode:
+              raise SystemExit(2)
+          PY
