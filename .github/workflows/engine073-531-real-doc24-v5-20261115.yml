@@ -1,0 +1,288 @@
+name: engine073-531-real-doc24-v5-20261115
+
+# Branch pushes: provider-free preflight. The explicit one-shot tag only
+# authorizes the prospective development-only live Mistral run, not formal F1.
+on:
+  push:
+    branches: [eval/531-real-doc24-live-20261115]
+    tags: [eval-531-real-doc24-live-20261115-one-shot]
+    paths:
+      - .github/workflows/engine073-531-real-doc24-v5-20261115.yml
+      - evaluation/dev-lite/issue531_real24_live.py
+      - evaluation/dev-lite/issue531_real24_billing_gate.py
+      - evaluation/dev-lite/test_issue531_real24_billing_gate.py
+      - evaluation/dev-lite/test_issue531_real24_live.py
+      - evaluation/dev-lite/synthetic_v5_timed_608.py
+      - evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: Offline request parity only (live requires dedicated one-shot tag)
+        required: false
+        type: choice
+        options: [preflight_only]
+        default: preflight_only
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reasoning-harness-mistral-live
+  cancel-in-progress: false
+
+jobs:
+  dev-real24:
+    if: github.run_attempt == 1
+    runs-on: macos-15
+    timeout-minutes: 350
+    steps:
+      - name: Initialize isolated ephemeral Mac runner root
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          root=$(mktemp -d "/private/tmp/rh531-${GITHUB_RUN_ID}.XXXXXX")
+          echo "RH531_ROOT=$root" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Run provider-free billing fail-closed tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/test_issue531_real24_billing_gate.py
+          python3 evaluation/dev-lite/test_issue531_real24_live.py
+          if MISTRAL_BILLING_ATTESTATION_JSON= python3 evaluation/dev-lite/issue531_real24_billing_gate.py; then
+            echo 'FATAL: missing billing attestation unexpectedly allowed' >&2
+            exit 1
+          fi
+          echo 'missing_billing_attestation_blocks_live=true'
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Build immutable native CLI pair, exact fixed Core and CLI commits
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          git fetch --no-tags origin refs/heads/eval/engine073-608-development-base
+          git cat-file -e 4abee90f0501f0d8fc09b453a0b45c942fbed69e^{commit}
+          git cat-file -e 7466c6f90d420a98c99713b96d6a0623e2aeef52^{commit}
+          git cat-file -e 988b69f086ac4a209fe93eb10cf1fa6786977567^{commit}
+          cargo fetch --locked
+          python3 - <<'PY'
+          from pathlib import Path
+          import os,sys
+          root=Path.cwd().resolve()
+          sys.path.insert(0,str(root/'evaluation/cli-repair-paired-v1/normal_v3'))
+          import build_native_pair as b
+          assert b.ARMS['baseline']=='4abee90f0501f0d8fc09b453a0b45c942fbed69e'
+          assert b.ARMS['candidate']=='ab3c6322921c8c738ec35bd018345917b5afa538'
+          b.ARMS['candidate']='7466c6f90d420a98c99713b96d6a0623e2aeef52'
+          b.build(root,'988b69f086ac4a209fe93eb10cf1fa6786977567',Path(os.environ['RH531_ROOT'])/'build')
+          PY
+      - name: Fail closed for live execution without frozen private real-doc corpus
+        shell: bash
+        env:
+          PRIVATE_REAL24_B64Z: ${{ secrets.ENGINE073_531_REAL24_20261115_B64Z }}
+        run: |
+          set -euo pipefail
+          if test -z "${PRIVATE_REAL24_B64Z:-}"; then
+            echo 'REAL_BUNDLE_PRESENT=false' >> "$GITHUB_ENV"
+            if test "$GITHUB_REF" = 'refs/tags/eval-531-real-doc24-live-20261115-one-shot'; then
+              echo 'missing_private_real_doc_source_bundles=HARD_STOP before model calls' >&2
+              exit 2
+            fi
+            echo 'real_source_paired_preflight=SKIPPED_CORPUS_SECRET_NOT_AVAILABLE; offline_billing_tests_only=true'
+          else
+            echo 'REAL_BUNDLE_PRESENT=true' >> "$GITHUB_ENV"
+          fi
+      - name: Stage frozen previously-consumed real-source cases from Actions secret, never print raw
+        if: env.REAL_BUNDLE_PRESENT == 'true'
+        shell: bash
+        env:
+          PRIVATE_REAL24_B64Z: ${{ secrets.ENGINE073_531_REAL24_20261115_B64Z }}
+        run: |
+          set -euo pipefail
+          umask 077
+          python3 - <<'PY'
+          import base64,hashlib,json,os,pathlib,zlib
+          raw_b64=os.environ.get('PRIVATE_REAL24_B64Z','')
+          assert 0<len(raw_b64)<48000, 'missing_or_oversized_real_docs_secret'
+          zipped=base64.b64decode(raw_b64,validate=True)
+          decompressor=zlib.decompressobj()
+          raw=decompressor.decompress(zipped,500000)
+          assert decompressor.eof and not decompressor.unconsumed_tail and not decompressor.unused_data
+          assert len(raw)<500000,'real_docs_size_bound'
+          assert hashlib.sha256(raw).hexdigest()=='02506cade31f5f0ddd82fd345350f05c08460d1dc3d96682b1a6f2c7f451a6a6', 'real_docs_bundle_changed'
+          obj=json.loads(raw)
+          assert obj['classification']=='CONSUMED_2026_10_REAL_UPSTREAM_DOCUMENTS_DEV_ONLY_NOT_INDEPENDENT_NEW_HOLDOUT'
+          assert len(obj['cases'])==24
+          path=pathlib.Path(os.environ['RH531_ROOT'])/'private-real24.json'
+          path.write_bytes(raw);path.chmod(0o600)
+          print('real_upstream_corpus_hash_verified=true cases=24 classification=consumed_dev_only')
+          PY
+      - name: Verify all 24 first request pairs BEFORE any provider calls
+        if: env.REAL_BUNDLE_PRESENT == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/issue531_real24_live.py \
+            --repo . --build "$RH531_ROOT/build/build.json" \
+            --corpus "$RH531_ROOT/private-real24.json" \
+            --output "$RH531_ROOT/offline-preflight" --mode preflight
+      - name: Require fresh human-verified no-overage Mistral billing attestation
+        if: github.ref == 'refs/tags/eval-531-real-doc24-live-20261115-one-shot'
+        shell: bash
+        env:
+          MISTRAL_BILLING_ATTESTATION_JSON: ${{ secrets.ENGINE073_531_CURRENT_REAL24_BILLING_ATTESTATION_JSON }}
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/issue531_real24_billing_gate.py
+      - name: Validate current credential/model and rate-limit headers (read-only)
+        if: github.ref == 'refs/tags/eval-531-real-doc24-live-20261115-one-shot'
+        shell: bash
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,os,urllib.request
+          key=os.environ.get('MISTRAL_API_KEY','');assert key,'missing_api_key'
+          req=urllib.request.Request('https://api.mistral.ai/v1/models',headers={'Authorization':'Bearer '+key})
+          with urllib.request.urlopen(req,timeout=30) as resp:
+              data=json.load(resp)
+              headers=resp.headers
+              assert resp.status==200
+              assert any(row.get('id')=='ministral-8b-2512' for row in data.get('data',[])),'model_not_available'
+              print('credential=accepted model=available model_completions=0')
+              for header in ('x-ratelimit-limit-req-minute','x-ratelimit-limit-tokens-minute'):
+                  v=headers.get(header)
+                  if v and v.isdecimal():print(header+'='+v)
+          print('account_current_remaining_credit_verified=false; bounded_spend_uses_user_same_day_observation')
+          PY
+      - name: Measure 6 cases x two arms — shard 01 of 04
+        if: github.ref == 'refs/tags/eval-531-real-doc24-live-20261115-one-shot'
+        shell: bash
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          REASON_DEV_LITE_FREE_CONFIRMED: '1' # set only after preceding billing gate verified
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/issue531_real24_live.py --repo . --build "$RH531_ROOT/build/build.json" --corpus "$RH531_ROOT/private-real24.json" --output "$RH531_ROOT/shard-01" --mode live --shard 0
+      - name: Encrypt shard 01 complete/private raw evidence (also on partial failure)
+        if: always() && github.ref == 'refs/tags/eval-531-real-doc24-live-20261115-one-shot'
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          if test -d "$RH531_ROOT/shard-01"; then
+            tar -czf "$RH531_ROOT/raw-01.tgz" -C "$RH531_ROOT" private-real24.json shard-01
+            openssl cms -encrypt -binary -aes256 -in "$RH531_ROOT/raw-01.tgz" -out "$RH531_ROOT/encrypted-01.cms" -outform DER evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+            rm -f "$RH531_ROOT/raw-01.tgz"
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() && github.ref == 'refs/tags/eval-531-real-doc24-live-20261115-one-shot'
+        with:
+          name: real531-encrypted-shard-01-${{ github.run_id }}
+          path: |
+            ${{ env.RH531_ROOT }}/encrypted-01.cms
+            ${{ env.RH531_ROOT }}/shard-01/sanitized-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Measure 6 cases x two arms — shard 02 of 04
+        if: success() && github.ref == 'refs/tags/eval-531-real-doc24-live-20261115-one-shot'
+        shell: bash
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          REASON_DEV_LITE_FREE_CONFIRMED: '1' # set only after preceding billing gate verified
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/issue531_real24_live.py --repo . --build "$RH531_ROOT/build/build.json" --corpus "$RH531_ROOT/private-real24.json" --output "$RH531_ROOT/shard-02" --mode live --shard 1
+      - name: Encrypt shard 02 full/private raw evidence
+        if: always() && github.ref == 'refs/tags/eval-531-real-doc24-live-20261115-one-shot'
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          if test -d "$RH531_ROOT/shard-02"; then
+            tar -czf "$RH531_ROOT/raw-02.tgz" -C "$RH531_ROOT" private-real24.json shard-02
+            openssl cms -encrypt -binary -aes256 -in "$RH531_ROOT/raw-02.tgz" -out "$RH531_ROOT/encrypted-02.cms" -outform DER evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+            rm -f "$RH531_ROOT/raw-02.tgz"
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() && github.ref == 'refs/tags/eval-531-real-doc24-live-20261115-one-shot'
+        with:
+          name: real531-encrypted-shard-02-${{ github.run_id }}
+          path: |
+            ${{ env.RH531_ROOT }}/encrypted-02.cms
+            ${{ env.RH531_ROOT }}/shard-02/sanitized-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Measure 6 cases x two arms — shard 03 of 04
+        if: success() && github.ref == 'refs/tags/eval-531-real-doc24-live-20261115-one-shot'
+        shell: bash
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          REASON_DEV_LITE_FREE_CONFIRMED: '1' # set only after preceding billing gate verified
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/issue531_real24_live.py --repo . --build "$RH531_ROOT/build/build.json" --corpus "$RH531_ROOT/private-real24.json" --output "$RH531_ROOT/shard-03" --mode live --shard 2
+      - name: Encrypt shard 03 full/private raw evidence
+        if: always() && github.ref == 'refs/tags/eval-531-real-doc24-live-20261115-one-shot'
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          if test -d "$RH531_ROOT/shard-03"; then
+            tar -czf "$RH531_ROOT/raw-03.tgz" -C "$RH531_ROOT" private-real24.json shard-03
+            openssl cms -encrypt -binary -aes256 -in "$RH531_ROOT/raw-03.tgz" -out "$RH531_ROOT/encrypted-03.cms" -outform DER evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+            rm -f "$RH531_ROOT/raw-03.tgz"
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() && github.ref == 'refs/tags/eval-531-real-doc24-live-20261115-one-shot'
+        with:
+          name: real531-encrypted-shard-03-${{ github.run_id }}
+          path: |
+            ${{ env.RH531_ROOT }}/encrypted-03.cms
+            ${{ env.RH531_ROOT }}/shard-03/sanitized-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Measure 6 cases x two arms — shard 04 of 04
+        if: success() && github.ref == 'refs/tags/eval-531-real-doc24-live-20261115-one-shot'
+        shell: bash
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          REASON_DEV_LITE_FREE_CONFIRMED: '1' # set only after preceding billing gate verified
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/issue531_real24_live.py --repo . --build "$RH531_ROOT/build/build.json" --corpus "$RH531_ROOT/private-real24.json" --output "$RH531_ROOT/shard-04" --mode live --shard 3
+      - name: Encrypt shard 04 full/private raw evidence
+        if: always() && github.ref == 'refs/tags/eval-531-real-doc24-live-20261115-one-shot'
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          if test -d "$RH531_ROOT/shard-04"; then
+            tar -czf "$RH531_ROOT/raw-04.tgz" -C "$RH531_ROOT" private-real24.json shard-04
+            openssl cms -encrypt -binary -aes256 -in "$RH531_ROOT/raw-04.tgz" -out "$RH531_ROOT/encrypted-04.cms" -outform DER evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+            rm -f "$RH531_ROOT/raw-04.tgz"
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() && github.ref == 'refs/tags/eval-531-real-doc24-live-20261115-one-shot'
+        with:
+          name: real531-encrypted-shard-04-${{ github.run_id }}
+          path: |
+            ${{ env.RH531_ROOT }}/encrypted-04.cms
+            ${{ env.RH531_ROOT }}/shard-04/sanitized-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Destroy temporary private raw and secret material
+        if: always()
+        shell: bash
+        run: |
+          if test -n "${RH531_ROOT:-}" && test -d "$RH531_ROOT"; then
+            rm -rf "$RH531_ROOT"
+          fi
