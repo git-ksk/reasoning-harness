@@ -14,7 +14,7 @@ import subprocess
 import sys
 import time
 
-IDS = ("p04",)
+IDS = ("n13",)
 ARMS = ("baseline", "candidate")
 BASELINE = "4abee90f0501f0d8fc09b453a0b45c942fbed69e"
 CANDIDATE = "7466c6f90d420a98c99713b96d6a0623e2aeef52"
