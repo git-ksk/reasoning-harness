@@ -4966,6 +4966,19 @@ async fn execute_natural_inner(
         );
     }
 
+    // A model-proposed investigation plan may omit a selector even when a
+    // separate pinned, source-versioned fact already has an exact current
+    // structured verification receipt. Keep that verified requested facet
+    // available for canonical final-render recovery; model text cannot create
+    // this authority and the normal safety/source gates still run afterwards.
+    if let Some(config) = answer_context_config.as_ref() {
+        for target in answer_context::verified_source_targets(config, &final_artifact) {
+            if !finalization_targets.contains(&target) {
+                finalization_targets.push(target);
+            }
+        }
+    }
+
     if let Some(trace) = diagnostic_trace.as_mut() {
         trace.record_grounding(
             DiagnosticPhase::new("pre_final_render_artifact", None),

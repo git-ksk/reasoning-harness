@@ -342,6 +342,38 @@ fn source_quote(source: &Source, artifact: &ReasoningArtifact) -> Result<Option<
     Ok(Some(quote.to_owned()))
 }
 
+/// A frozen source record is a task-specific answer candidate, not truth authority.
+/// Only promote it to an explicit finalization target when its complete source
+/// identity (including version/quote pointers and admitted evidence SHA) and
+/// current structured-fact claim/receipt are independently verified.  This
+/// keeps a model-generated investigation plan from silently dropping a verified
+/// facet when it omits an expected fact key (Issue #613, Redis allocator case).
+/// Conflicting or unverified records never supply recovery authority.
+pub(super) fn verified_source_targets(
+    config: &Config,
+    artifact: &ReasoningArtifact,
+) -> Vec<Proposition> {
+    if config.validate().is_err() {
+        return vec![];
+    }
+    let mut result = Vec::new();
+    for source in &config.sources {
+        let target = &source.proposition;
+        if result.contains(target)
+            || config.sources.iter().any(|other| {
+                other.proposition.key == target.key && other.proposition.value != target.value
+            })
+            || !grounded_target_authorized(artifact, target)
+        {
+            continue;
+        }
+        if matches!(source_quote(source, artifact), Ok(Some(_))) {
+            result.push(target.clone());
+        }
+    }
+    result
+}
+
 fn grounded_target_authorized(artifact: &ReasoningArtifact, target: &Proposition) -> bool {
     let matching = artifact
         .claims
@@ -725,6 +757,7 @@ pub(super) fn test_fixture() -> (
 #[cfg(test)]
 mod tests {
     use super::*;
+    use reasoning_harness_core::FinalAnswerCandidate;
 
     #[test]
     fn saved_self_consistent_accept_cannot_override_actual_reject_or_unknown() {
@@ -1032,5 +1065,290 @@ mod tests {
                 .unwrap()
                 .contains("other unresolved claims are not established")
         );
+    }
+
+    fn two_sourced_facts_with_one_unplanned_target() -> (
+        Config,
+        ReasoningArtifact,
+        crate::acquisition_coverage::Ledger,
+        FinalAnswerCandidate,
+    ) {
+        use reasoning_harness_core::{
+            EpistemicState, InvestigationTarget, InvestigationTargetOrigin,
+        };
+        let (mut config, mut artifact, selected, _) = test_fixture();
+        let missing = Proposition {
+            key: "allocator.force_libc".into(),
+            value: "make MALLOC=libc".into(),
+        };
+        let mut evidence = artifact.evidence[0].clone();
+        evidence.id = "admitted-libc".into();
+        evidence.source = "allocator-manual".into();
+        evidence.facts = BTreeMap::from([(missing.key.clone(), missing.value.clone())]);
+        evidence.observation = serde_json::json!({
+            "quote": "Linux defaults to jemalloc; make MALLOC=libc uses libc malloc.",
+            "url": "https://example.test/manual", "version": "edition-1"
+        })
+        .to_string();
+        let mut claim = artifact.claims[0].clone();
+        claim.id = "verified-libc".into();
+        claim.proposition = Some(missing.clone());
+        claim.evidence_ids = vec![evidence.id.clone()];
+        let mut receipt = artifact.verification_receipts[0].clone();
+        receipt.claim_id = Some(claim.id.clone());
+        receipt.claim_statement = Some(claim.statement.clone());
+        receipt.proposition = Some(missing.clone());
+        receipt.evidence_ids = vec![evidence.id.clone()];
+        let mut source = config.sources[0].clone();
+        source.proposition = missing.clone();
+        source.evidence_id = evidence.id.clone();
+        source.source_id = evidence.source.clone();
+        source.evidence_sha256 = evidence_hash(&evidence);
+        config.sources.push(source);
+        artifact.evidence.push(evidence);
+        artifact.claims.push(claim);
+        artifact.verification_receipts.push(receipt);
+        let mut unverified = artifact.claims[0].clone();
+        unverified.id = "unrelated-model-proposal".into();
+        unverified.state = EpistemicState::Assumed;
+        unverified.proposition = None;
+        unverified.evidence_ids.clear();
+        artifact.claims.push(unverified);
+        let mut ledger = crate::acquisition_coverage::Ledger::new(vec![
+            InvestigationTarget {
+                id: "default_allocator".into(),
+                question: "What is the default allocator?".into(),
+                expected_fact_key: Some(selected[0].proposition.key.clone()),
+                origin: InvestigationTargetOrigin::ModelProposedUntrusted,
+            },
+            InvestigationTarget {
+                id: "force_libc".into(),
+                question: "How can libc be selected?".into(),
+                expected_fact_key: None, // Observed 0.7.3 plan lost this selector.
+                origin: InvestigationTargetOrigin::ModelProposedUntrusted,
+            },
+        ])
+        .unwrap();
+        ledger.bind_existing(&artifact);
+        assert!(ledger.targets(&artifact)[1].verified_proposition.is_none());
+        let rendered = FinalAnswerCandidate {
+            text: "The default allocator is known".into(),
+            factual_claims: selected,
+        };
+        (config, artifact, ledger, rendered)
+    }
+
+    #[test]
+    fn issue613_verified_source_recovers_unplanned_answer_fact_not_just_quote() {
+        use reasoning_harness_core::{FinalizationStatus, Verdict};
+        let (config, artifact, ledger, rendered) = two_sourced_facts_with_one_unplanned_target();
+        let targets = verified_source_targets(&config, &artifact);
+        assert_eq!(targets.len(), 2);
+        let (recovered, hard) = ledger
+            .recover_rendered(&artifact, Verdict::Unknown, &rendered, &targets)
+            .expect("verified missing facet must be promoted to answer text");
+        assert_eq!(hard.status, FinalizationStatus::QualifiedPartialAnswer);
+        assert_eq!(hard.covered_claims, 2);
+        assert!(recovered.factual_claims.iter().any(|c| {
+            c.mode == FinalClaimMode::Grounded
+                && c.proposition.key == "allocator.force_libc"
+                && c.proposition.value == "make MALLOC=libc"
+        }));
+        let (display, view) = compose(&config, &artifact, &recovered.factual_claims, hard).unwrap();
+        let text = display.text.as_deref().unwrap();
+        assert!(text.contains("\"allocator.force_libc\" = \"make MALLOC=libc\""));
+        assert_eq!(view.citations.len(), 2);
+        // Answer coverage and investigation-plan coverage are independent.
+        let (display, coverage) = crate::acquisition_coverage::compose(
+            &ledger,
+            &artifact,
+            &recovered.factual_claims,
+            display,
+            None,
+        )
+        .unwrap();
+        assert!(!coverage.plan_evidence_complete);
+        assert!(!coverage.plan_answer_complete);
+        assert!(
+            display
+                .text
+                .as_deref()
+                .unwrap()
+                .contains("make MALLOC=libc")
+        );
+        assert!(
+            !display
+                .text
+                .as_deref()
+                .unwrap()
+                .contains("unrelated-model-proposal")
+        );
+    }
+
+    #[test]
+    fn issue613_tampered_source_and_same_key_conflict_never_gain_answer_authority() {
+        use reasoning_harness_core::EpistemicState;
+        let (config, artifact, _, _) = two_sourced_facts_with_one_unplanned_target();
+        let expected = verified_source_targets(&config, &artifact);
+        assert_eq!(expected.len(), 2);
+        for change in 0..5 {
+            let mut config = config.clone();
+            let mut artifact = artifact.clone();
+            match change {
+                0 => config.sources[1].source_version = "tampered-edition".into(),
+                1 => config.sources[1].evidence_sha256 = "0".repeat(64),
+                2 => artifact.verification_receipts.retain(|r| {
+                    r.proposition
+                        .as_ref()
+                        .is_none_or(|p| p.key != "allocator.force_libc")
+                }),
+                3 => {
+                    let mut conflicted = artifact.claims[1].clone();
+                    conflicted.id = "model-contradiction".into();
+                    conflicted.state = EpistemicState::Contradicted;
+                    conflicted.proposition.as_mut().unwrap().value =
+                        "not-the-supported-value".into();
+                    artifact.claims.push(conflicted);
+                }
+                _ => artifact.evidence[1].observation.push(' '),
+            }
+            assert!(
+                !verified_source_targets(&config, &artifact)
+                    .iter()
+                    .any(|p| p.key == "allocator.force_libc"),
+                "unsafe source must not be promoted: change={change}"
+            );
+        }
+    }
+
+    #[test]
+    fn issue613_check_ignore_all_exit_codes_stay_a_single_verified_answer() {
+        let (mut config, mut artifact, _, _) = test_fixture();
+        let codes = Proposition {
+            key: "git.check_ignore.exit_codes".into(),
+            value: "0: ignored; 1: not ignored; 128: fatal error".into(),
+        };
+        artifact.claims[0].proposition = Some(codes.clone());
+        artifact.verification_receipts[0].proposition = Some(codes.clone());
+        artifact.evidence[0].facts = BTreeMap::from([(codes.key.clone(), codes.value.clone())]);
+        artifact.evidence[0].observation = serde_json::json!({
+            "quote":"Exit status: 0 ignored, 1 not ignored, 128 fatal error.",
+            "url":"https://example.test/manual", "version":"edition-1"
+        })
+        .to_string();
+        config.sources[0].proposition = codes.clone();
+        config.sources[0].evidence_sha256 = evidence_hash(&artifact.evidence[0]);
+        assert_eq!(
+            verified_source_targets(&config, &artifact),
+            vec![codes.clone()]
+        );
+        let answer = reasoning_harness_core::canonical_verified_target_answer(
+            &artifact,
+            reasoning_harness_core::Verdict::Accept,
+            &[codes],
+        )
+        .unwrap();
+        let hard = reasoning_harness_core::finalize_answer(
+            &artifact,
+            reasoning_harness_core::Verdict::Accept,
+            answer.clone(),
+            reasoning_harness_core::FinalizationPolicy::default(),
+        );
+        let (display, view) = compose(&config, &artifact, &answer.factual_claims, hard).unwrap();
+        assert!(
+            display
+                .text
+                .unwrap()
+                .contains("0: ignored; 1: not ignored; 128: fatal error")
+        );
+        assert_eq!(view.citations.len(), 1);
+    }
+
+    /// The raw original remains private. Supply two *already decrypted*, local-only
+    /// paths when deliberately replaying the real issue-613 observation offline.
+    #[test]
+    #[ignore = "requires RH613_PRIVATE_OBSERVATION and RH613_PUBLIC_CONFIG, never provider calls"]
+    fn issue613_real_rw21_offline_artifact_replay() {
+        use reasoning_harness_core::Verdict;
+        let observation = std::env::var("RH613_PRIVATE_OBSERVATION").unwrap();
+        let config_path = std::env::var("RH613_PUBLIC_CONFIG").unwrap();
+        let raw: serde_json::Value =
+            serde_json::from_slice(&std::fs::read(observation).unwrap()).unwrap();
+        let raw_config: serde_json::Value =
+            serde_json::from_slice(&std::fs::read(config_path).unwrap()).unwrap();
+        let config: Config = serde_json::from_value(raw_config["answer_context"].clone()).unwrap();
+        let result = &raw["result"];
+        let artifact: ReasoningArtifact =
+            serde_json::from_value(result["final_outcome"]["artifact"].clone()).unwrap();
+        let ledger: crate::acquisition_coverage::Ledger =
+            serde_json::from_value(result["acquisition_coverage"]["ledger"].clone()).unwrap();
+        let rendered = FinalAnswerCandidate {
+            text: "simulated stochastic renderer omits build setting".into(),
+            factual_claims: serde_json::from_value(
+                result["acquisition_coverage"]["selected_claims"].clone(),
+            )
+            .unwrap(),
+        };
+        assert_eq!(result["final_outcome"]["verdict"], "unknown");
+        assert_eq!(ledger.verified_targets(&artifact).len(), 1);
+        let targets = verified_source_targets(&config, &artifact);
+        assert_eq!(targets.len(), 2);
+        let (recovered, hard) = ledger
+            .recover_rendered(&artifact, Verdict::Unknown, &rendered, &targets)
+            .expect("real rw-21 private artifact must recover both verified facts");
+        let (display, view) = compose(&config, &artifact, &recovered.factual_claims, hard).unwrap();
+        let text = display.text.unwrap();
+        assert!(text.contains("\"redis.allocator.force_libc\" = \"make MALLOC=libc\""));
+        assert!(text.contains("\"redis.allocator.linux_default\" = \"jemalloc\""));
+        assert_eq!(view.citations.len(), 3); // pinned source has two records for jemalloc.
+    }
+
+    /// Replay the three other actual observations without promoting a generated
+    /// claim, changing original archives, or making a provider request.
+    #[test]
+    #[ignore = "requires RH613_PRIVATE_OBSERVATION_DIR and RH613_PUBLIC_CONFIG_DIR"]
+    fn issue613_real_conflicts_and_check_ignore_offline_replay() {
+        let private =
+            std::path::PathBuf::from(std::env::var("RH613_PRIVATE_OBSERVATION_DIR").unwrap());
+        let public = std::path::PathBuf::from(std::env::var("RH613_PUBLIC_CONFIG_DIR").unwrap());
+        for case in ["rw-02", "rw-19", "rw-08"] {
+            let raw: serde_json::Value = serde_json::from_slice(
+                &std::fs::read(private.join(format!("{case}-candidate.stdout.json"))).unwrap(),
+            )
+            .unwrap();
+            let cfg: serde_json::Value = serde_json::from_slice(
+                &std::fs::read(public.join(format!("{case}.json"))).unwrap(),
+            )
+            .unwrap();
+            let config: Config = serde_json::from_value(cfg["answer_context"].clone()).unwrap();
+            let result = &raw["result"];
+            let artifact: ReasoningArtifact =
+                serde_json::from_value(result["final_outcome"]["artifact"].clone()).unwrap();
+            let targets = verified_source_targets(&config, &artifact);
+            match case {
+                "rw-02" | "rw-19" => {
+                    assert_eq!(result["final_outcome"]["verdict"], "reject");
+                    assert!(
+                        targets.is_empty(),
+                        "must preserve conflict withholding: {case}"
+                    );
+                    assert_eq!(result["finalization"]["status"], "abstain");
+                }
+                "rw-08" => {
+                    assert_eq!(targets.len(), 1);
+                    let answer = &result["acquisition_coverage"]["selected_claims"];
+                    assert_eq!(answer.as_array().unwrap().len(), 1);
+                    let statement = answer[0]["proposition"]["value"].as_str().unwrap();
+                    for code in ["0:", "1:", "128:"] {
+                        assert!(
+                            statement.contains(code),
+                            "missing {code} in displayed asserted fact"
+                        );
+                    }
+                    assert_eq!(result["finalization"]["status"], "qualified_partial_answer");
+                }
+                _ => unreachable!(),
+            }
+        }
     }
 }
