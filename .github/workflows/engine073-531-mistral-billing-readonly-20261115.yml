@@ -3,6 +3,9 @@ name: engine073-531-mistral-billing-readonly-20261115
 # Diagnostic only. Fetches account-linked status without generating a model response.
 # Does NOT confer permission to start live jobs or replace human billing review.
 on:
+  push:
+    branches: [eval/531-real-doc24-live-20261115]
+    paths: [.github/workflows/engine073-531-mistral-billing-readonly-20261115.yml]
   workflow_dispatch:
 
 permissions:
