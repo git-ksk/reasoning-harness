@@ -35,7 +35,7 @@ jobs:
           base='https://api.mistral.ai'
           endpoints={
               'subscription':'/v1/billing/subscription',
-              'usage':'/v1/billing/usage',
+              'budget':'/v1/billing/budget',
               'models':'/v1/models',
           }
           for name, path in endpoints.items():
@@ -50,10 +50,14 @@ jobs:
                           print('read_only_models_http=200 model_available='+str('ministral-8b-2512' in ids).lower())
                       else:
                           # Never print full account payload or financial amounts in public CI logs.
-                          keys=sorted(list(data.keys())) if isinstance(data,dict) else []
-                          safe_keys=[k for k in keys if k in ('pay_as_you_go_enabled','pay_as_you_go','plan','tier','monthly_budget','credit_balance','included_usage','remaining_usage','subscription','data','usage','billing')]
-                          print('read_only_'+name+'_http=200 exposed_field_names='+','.join(safe_keys))
-                          for field in ('pay_as_you_go_enabled','pay_as_you_go'):
+                          # Only field NAMES / value types, never credit amounts, workspace IDs, emails, or raw response.
+                          def keys(obj):
+                              return ','.join(sorted(k for k in obj if isinstance(k,str) and len(k)<40 and k.replace('_','').isalpha())[:30]) if isinstance(obj,dict) else 'non_object_'+type(obj).__name__
+                          print('read_only_'+name+'_http=200 root_schema='+keys(data))
+                          for field, obj in data.items() if isinstance(data,dict) else []:
+                              if isinstance(obj,dict) and field in ('api_budget','vibe_budget','subscription','budget','data','details','payment'):
+                                  print('read_only_'+name+'_nested_schema_'+field+'='+keys(obj))
+                          for field in ('pay_as_you_go_enabled','pay_as_you_go','is_pay_as_you_go_enabled','payg_enabled','auto_recharge_enabled'):
                               if isinstance(data,dict) and type(data.get(field)) is bool:
                                   print('read_only_'+name+'_'+field+'='+str(data[field]).lower())
               except urllib.error.HTTPError as exc:
