@@ -5,6 +5,7 @@ Historical commits and evaluator contract are immutable.  Never calls a model,
 never uses billing credentials or modifies the original one-shot experiment.
 """
 import argparse
+import base64
 import hashlib
 import json
 import os
@@ -46,11 +47,13 @@ def require_commit(repo, commit):
 def patches(repo):
     for commit in [CLI_COMMIT, *ARMS.values(), COMMON_FROM, COMMON_TO, FIX_FROM, FIX_TO]:
         require_commit(repo,commit)
-    old=original.git(repo,'diff',COMMON_FROM,COMMON_TO,'--',CORE_PATH)
-    raw=original.git(repo,'diff',FIX_FROM,FIX_TO,'--',CORE_PATH)
-    marker=b'@@ -1541,6 +1545,121 @@ mod tests {'
-    original.require(raw.count(marker)==1,'refutation_patch_has_unreviewed_hunks')
-    fix=raw.split(marker,1)[0]
+    # Reproducible across operating systems and Git releases. Git may change
+    # hunk-header context, whitespace or diff algorithms without changing the
+    # underlying commit. Bundle exact previously reviewed patch bytes instead
+    # of treating `git diff` textual output as a portable content hash.
+    files=Path(__file__).resolve().parent/'patches'
+    old=base64.b64decode(b''.join((files/'common552.patch.b64').read_bytes().split()),validate=True)
+    fix=base64.b64decode(b''.join((files/'issue613-reject-acquisition.patch.b64').read_bytes().split()),validate=True)
     original.require(sha(old)==COMMON_PATCH_SHA256,'common_core_patch_drift')
     original.require(sha(fix)==FIX_PATCH_SHA256,'issue613_core_patch_drift')
     original.require(sum(line.startswith(b'@@ ') for line in fix.splitlines())==2,
