@@ -1,0 +1,50 @@
+name: engine073-531-independent-holdout-preflight
+
+# No model calls, no secrets and no historical first-observation reruns.
+# New source pool is provisional until an *independent* reviewer authors
+# and freezes new questions and private gold after this evaluator is frozen.
+on:
+  pull_request:
+    paths:
+      - .github/workflows/engine073-531-independent-holdout-preflight.yml
+      - evaluation/engine073-531-independent24-20261116/**
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  offline-readiness:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Refuse provider credentials and validate source pool plus frozen thresholds
+        shell: bash
+        run: |
+          set -euo pipefail
+          env -u MISTRAL_API_KEY -u GROQ_API_KEY -u GEMINI_API_KEY -u OPENAI_API_KEY \
+            PYTHONDONTWRITEBYTECODE=1 \
+            python3 -m unittest discover \
+              -s evaluation/engine073-531-independent24-20261116 \
+              -p 'test_*.py' -v
+          env -u MISTRAL_API_KEY -u GROQ_API_KEY -u GEMINI_API_KEY -u OPENAI_API_KEY \
+            PYTHONDONTWRITEBYTECODE=1 \
+            python3 evaluation/engine073-531-independent24-20261116/validate_readiness.py \
+              --repo . > "$RUNNER_TEMP/independent-readiness.json"
+          python3 -c 'import json,sys; r=json.load(open(sys.argv[1])); assert r["provider_calls"]==0 and r["formal_independent_f1"] is None and r["live_execution_allowed"] is False and r["quality_go"] is False' \
+            "$RUNNER_TEMP/independent-readiness.json"
+      - name: Verify both frozen historical Core overlays with identical corrected CLI source
+        shell: bash
+        run: |
+          set -euo pipefail
+          env -u MISTRAL_API_KEY -u GROQ_API_KEY -u GEMINI_API_KEY -u OPENAI_API_KEY \
+            PYTHONDONTWRITEBYTECODE=1 \
+            python3 evaluation/engine073-531-independent24-20261116/build_corrected_pair.py \
+              --repo . --output "$RUNNER_TEMP/verified-corrected-pair-overlays" \
+              --mode validate-only > "$RUNNER_TEMP/corrected-pair-source-proof.json"
+          python3 -c 'import json,sys; r=json.load(open(sys.argv[1])); assert r["host_parity"] is True and r["provider_calls"]==0 and r["formal_independent_f1"] is None and r["built"] is False' \
+            "$RUNNER_TEMP/corrected-pair-source-proof.json"

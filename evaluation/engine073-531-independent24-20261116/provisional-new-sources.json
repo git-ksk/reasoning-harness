@@ -1,0 +1,111 @@
+{
+  "case_count": 0,
+  "classification": "PROVISIONAL_NEW_SOURCE_POOL_NOT_AUTHORITATIVE_HOLDOUT",
+  "contract": "reason-531-independent24-provisional-source-pool-v1",
+  "date_utc": "2026-11-15",
+  "first_observation_authorized": false,
+  "formal_independent_f1": null,
+  "fresh_independent_reviewer_approved": false,
+  "gold_labels_included": false,
+  "model_calls": 0,
+  "prior_consumed_dev_source_audit_sha256": "2ea4b1a693b4b7273357dd81e4bde63fbd0dea2b0644e8a81b95a3e9cb775781",
+  "source_count": 12,
+  "sources": [
+    {
+      "bytes": 8271,
+      "commit": "369d8bc4f6fe1f751de2512523a1acb95491a5eb",
+      "path": "Doc/library/tomllib.rst",
+      "repo": "python/cpython",
+      "sha256": "b5c518797fe3607b3d7f7385cf9eeda9775c9154513eee34c6dc954aea245083",
+      "url": "https://raw.githubusercontent.com/python/cpython/369d8bc4f6fe1f751de2512523a1acb95491a5eb/Doc/library/tomllib.rst"
+    },
+    {
+      "bytes": 69983,
+      "commit": "369d8bc4f6fe1f751de2512523a1acb95491a5eb",
+      "path": "Doc/library/pathlib.rst",
+      "repo": "python/cpython",
+      "sha256": "1b430c314b3e2a48116cc725f941547161586f8c80f03d069006804e5cc3d46e",
+      "url": "https://raw.githubusercontent.com/python/cpython/369d8bc4f6fe1f751de2512523a1acb95491a5eb/Doc/library/pathlib.rst"
+    },
+    {
+      "bytes": 42227,
+      "commit": "369d8bc4f6fe1f751de2512523a1acb95491a5eb",
+      "path": "Doc/library/zipfile.rst",
+      "repo": "python/cpython",
+      "sha256": "d4419b54f6e0d023f501bcf33f99cb838f15ff9cf774851e978c95e252cdc952",
+      "url": "https://raw.githubusercontent.com/python/cpython/369d8bc4f6fe1f751de2512523a1acb95491a5eb/Doc/library/zipfile.rst"
+    },
+    {
+      "bytes": 318248,
+      "commit": "d105ef77fc9e8daeeb88601ab93ba14baef40205",
+      "path": "doc/api/fs.md",
+      "repo": "nodejs/node",
+      "sha256": "fccb5ee92860bd4d317d8d3e33eb6a35463343228717973ed07761bcef6e2421",
+      "url": "https://raw.githubusercontent.com/nodejs/node/d105ef77fc9e8daeeb88601ab93ba14baef40205/doc/api/fs.md"
+    },
+    {
+      "bytes": 137214,
+      "commit": "d105ef77fc9e8daeeb88601ab93ba14baef40205",
+      "path": "doc/api/process.md",
+      "repo": "nodejs/node",
+      "sha256": "0f0c24ab955aa4f7eedfda7fe676b680783b8e49f1b13f92744003fb5bac0abb",
+      "url": "https://raw.githubusercontent.com/nodejs/node/d105ef77fc9e8daeeb88601ab93ba14baef40205/doc/api/process.md"
+    },
+    {
+      "bytes": 66295,
+      "commit": "d105ef77fc9e8daeeb88601ab93ba14baef40205",
+      "path": "doc/api/url.md",
+      "repo": "nodejs/node",
+      "sha256": "a32ebc2fe1f495e8463b857448d951e633d933f0749b3d937adbc978b0d83ef4",
+      "url": "https://raw.githubusercontent.com/nodejs/node/d105ef77fc9e8daeeb88601ab93ba14baef40205/doc/api/url.md"
+    },
+    {
+      "bytes": 25352,
+      "commit": "2771df165f092a4fbb9f46b5b2e7450f19010adb",
+      "path": "src/ch04-01-what-is-ownership.md",
+      "repo": "rust-lang/book",
+      "sha256": "873724c6862ad0cc447becf0e818eb39a324c5d4bfa26ef721286aae1941c0ba",
+      "url": "https://raw.githubusercontent.com/rust-lang/book/2771df165f092a4fbb9f46b5b2e7450f19010adb/src/ch04-01-what-is-ownership.md"
+    },
+    {
+      "bytes": 26432,
+      "commit": "2771df165f092a4fbb9f46b5b2e7450f19010adb",
+      "path": "src/ch09-02-recoverable-errors-with-result.md",
+      "repo": "rust-lang/book",
+      "sha256": "dab3e88d324cdde74cf96356c58a423747a5735ac6848d8d4592dc7c13637c62",
+      "url": "https://raw.githubusercontent.com/rust-lang/book/2771df165f092a4fbb9f46b5b2e7450f19010adb/src/ch09-02-recoverable-errors-with-result.md"
+    },
+    {
+      "bytes": 32981,
+      "commit": "d9dedeaa21c089068ae1495883477045c593913f",
+      "path": "content/en/docs/concepts/configuration/secret.md",
+      "repo": "kubernetes/website",
+      "sha256": "30bb29e4040f1464a8cb299524f51e0a1ae2279a63f45b7182b1b8faf27af194",
+      "url": "https://raw.githubusercontent.com/kubernetes/website/d9dedeaa21c089068ae1495883477045c593913f/content/en/docs/concepts/configuration/secret.md"
+    },
+    {
+      "bytes": 59790,
+      "commit": "d9dedeaa21c089068ae1495883477045c593913f",
+      "path": "content/en/docs/concepts/workloads/controllers/deployment.md",
+      "repo": "kubernetes/website",
+      "sha256": "ca4571585f3af4039292fdbbe127e296e1b86d44b4df52cec75dbf51c96da513",
+      "url": "https://raw.githubusercontent.com/kubernetes/website/d9dedeaa21c089068ae1495883477045c593913f/content/en/docs/concepts/workloads/controllers/deployment.md"
+    },
+    {
+      "bytes": 249175,
+      "commit": "81b2179b492e3af891544813b7e22a42386b34d0",
+      "path": "doc/src/sgml/ref/psql-ref.sgml",
+      "repo": "postgres/postgres",
+      "sha256": "446b349f6e08d1d5db1540e769509a0da19da72fc0abb451af8dfe8acb56a0c7",
+      "url": "https://raw.githubusercontent.com/postgres/postgres/81b2179b492e3af891544813b7e22a42386b34d0/doc/src/sgml/ref/psql-ref.sgml"
+    },
+    {
+      "bytes": 77174,
+      "commit": "81b2179b492e3af891544813b7e22a42386b34d0",
+      "path": "doc/src/sgml/backup.sgml",
+      "repo": "postgres/postgres",
+      "sha256": "c1e5ae4c074de78b1eec236c92ba3d02bf0293fb1c79c59d295dc2d677eba3dc",
+      "url": "https://raw.githubusercontent.com/postgres/postgres/81b2179b492e3af891544813b7e22a42386b34d0/doc/src/sgml/backup.sgml"
+    }
+  ]
+}
