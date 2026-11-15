@@ -1,0 +1,244 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-05:0",
+        "evidence_sha256": "3785940c29e9360c729842f34c7c79d2808567f0a3de08919c791c637b1c8fb7",
+        "proposition": {
+          "key": "git.check_attr.nul_output",
+          "value": "With -z: path NUL attribute NUL info NUL."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-05-a",
+        "source_version": "sha256:7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa",
+        "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-attr.txt",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-05:1",
+        "evidence_sha256": "725442b7ef068c0a5cb133cab69e6f99cf173d1d3f5d1408a77d48612429b00c",
+        "proposition": {
+          "key": "git.check_attr.nul_output",
+          "value": "With -z: path NUL attribute NUL info NUL."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-05-b",
+        "source_version": "sha256:7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa",
+        "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-attr.txt",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "git"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "2.47.0"
+                ]
+              }
+            },
+            "sources": {
+              "rw-05-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "rw-05-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "git.check_attr.nul_output": "With -z: path NUL attribute NUL info NUL."
+              },
+              "id": "snapshot:rw-05:0",
+              "observation": "{\"context_summary\": \"Git2.47.0 check-attr manual: per-path attribute states, text/NUL output and illustrative .gitattributes examples.\", \"document_id\": \"git-2\", \"locator\": \"Documentation/git-check-attr.txt normalized_UTF8_bytes[1392,1569)\", \"origin_group\": \"upstream:git/git\", \"quote\": \"The output is of the form: <path> COLON SP <attribute> COLON SP <info> LF unless `-z` is in effect, in which case NUL is used as delimiter: <path> NUL <attribute> NUL <info> NUL\", \"scope\": {\"product\": \"git\", \"release\": \"2.47.0\"}, \"source_version\": \"sha256:7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-attr.txt\"}",
+              "source": "rw-05-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "git.check_attr.nul_output"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "git"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "2.47.0"
+                ]
+              }
+            },
+            "sources": {
+              "rw-05-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "rw-05-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "git.check_attr.nul_output": "With -z: path NUL attribute NUL info NUL."
+              },
+              "id": "snapshot:rw-05:1",
+              "observation": "{\"context_summary\": \"Git2.47.0 check-attr manual: per-path attribute states, text/NUL output and illustrative .gitattributes examples.\", \"document_id\": \"git-2\", \"locator\": \"Documentation/git-check-attr.txt normalized_UTF8_bytes[1392,1569)\", \"origin_group\": \"upstream:git/git\", \"quote\": \"The output is of the form: <path> COLON SP <attribute> COLON SP <info> LF unless `-z` is in effect, in which case NUL is used as delimiter: <path> NUL <attribute> NUL <info> NUL\", \"scope\": {\"product\": \"git\", \"release\": \"2.47.0\"}, \"source_version\": \"sha256:7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-attr.txt\"}",
+              "source": "rw-05-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "git.check_attr.nul_output"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

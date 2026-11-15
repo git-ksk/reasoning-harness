@@ -1,0 +1,246 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-24:0",
+        "evidence_sha256": "c20d4051d1d12187a77f2ac60b8567f9cfe2fbf6e4191ace5d03ccc7d68a8819",
+        "proposition": {
+          "key": "redis.build.tls_flag",
+          "value": "BUILD_TLS=yes"
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-24-a",
+        "source_version": "sha256:b475ab7922c5ad2c42c8ccde2bc6f1a4f7f8b3ba999426fa3e6b00452362cf50",
+        "url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/README.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-24:1",
+        "evidence_sha256": "8512093ac934b180d327ca6a5ce4a2b1eeefd195badfddda5915bd0b86ab833a",
+        "proposition": {
+          "key": "redis.security.backport_policy",
+          "value": "Generally one previous major, feasibility-qualified."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-24-b",
+        "source_version": "sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff",
+        "url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/SECURITY.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "cmake"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.31.0"
+                ]
+              }
+            },
+            "sources": {
+              "rw-24-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              },
+              "rw-24-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409896,
+                "retrieved_at_unix_seconds": 1792409896,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "redis.build.tls_flag": "BUILD_TLS=yes"
+              },
+              "id": "snapshot:rw-24:0",
+              "observation": "{\"context_summary\": \"Redis7.2.5 quick-start/build README: allocator/platform options, command examples and descriptive internals.\", \"document_id\": \"redis-1\", \"locator\": \"README.md normalized_UTF8_bytes[2218,2238)\", \"origin_group\": \"upstream:redis/redis\", \"quote\": \"% make BUILD_TLS=yes\", \"scope\": {\"product\": \"redis\", \"release\": \"7.2.5\"}, \"source_version\": \"sha256:b475ab7922c5ad2c42c8ccde2bc6f1a4f7f8b3ba999426fa3e6b00452362cf50\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/README.md\"}",
+              "source": "rw-24-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "cmake.return.arguments_policy",
+            "redis.build.tls_flag"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "cmake"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.31.0"
+                ]
+              }
+            },
+            "sources": {
+              "rw-24-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              },
+              "rw-24-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409896,
+                "retrieved_at_unix_seconds": 1792409896,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "redis.security.backport_policy": "Generally one previous major, feasibility-qualified."
+              },
+              "id": "snapshot:rw-24:1",
+              "observation": "{\"context_summary\": \"Redis7.2.5 repository security-policy snapshot: version table, backport/disclosure and reporting procedures.\", \"document_id\": \"redis-2\", \"locator\": \"SECURITY.md normalized_UTF8_bytes[212,351)\", \"origin_group\": \"upstream:redis/redis\", \"quote\": \"We generally backport security issues to a single previous major version, unless this is not possible or feasible with a reasonable effort.\", \"scope\": {\"product\": \"redis\", \"release\": \"7.2.5\"}, \"source_version\": \"sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/SECURITY.md\"}",
+              "source": "rw-24-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "cmake.return.arguments_policy",
+            "redis.security.backport_policy"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

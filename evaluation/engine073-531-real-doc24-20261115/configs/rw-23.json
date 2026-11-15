@@ -1,0 +1,246 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-23:0",
+        "evidence_sha256": "b0378ae081a1a4744b032fe082c7be098dca219448c6f682626acdf4eb6ccd98",
+        "proposition": {
+          "key": "redis.example.foo_value",
+          "value": "The README example sets foo to bar and reads bar."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-23-a",
+        "source_version": "sha256:b475ab7922c5ad2c42c8ccde2bc6f1a4f7f8b3ba999426fa3e6b00452362cf50",
+        "url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/README.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-23:1",
+        "evidence_sha256": "6cec2c569b48e8a5c459bf6c93905be438d33cc2265856eb1777c36ee4887661",
+        "proposition": {
+          "key": "redis.security.backport_policy",
+          "value": "Generally backports to one previous major version, subject to feasibility."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-23-b",
+        "source_version": "sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff",
+        "url": "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/SECURITY.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "redis"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "7.2.5"
+                ]
+              }
+            },
+            "sources": {
+              "rw-23-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              },
+              "rw-23-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409896,
+                "retrieved_at_unix_seconds": 1792409896,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "redis.example.foo_value": "The README example sets foo to bar and reads bar."
+              },
+              "id": "snapshot:rw-23:0",
+              "observation": "{\"context_summary\": \"Redis7.2.5 quick-start/build README: allocator/platform options, command examples and descriptive internals.\", \"document_id\": \"redis-1\", \"locator\": \"README.md normalized_UTF8_bytes[6131,6173)\", \"origin_group\": \"upstream:redis/redis\", \"quote\": \"redis> set foo bar OK redis> get foo \\\"bar\\\"\", \"scope\": {\"product\": \"redis\", \"release\": \"7.2.5\"}, \"source_version\": \"sha256:b475ab7922c5ad2c42c8ccde2bc6f1a4f7f8b3ba999426fa3e6b00452362cf50\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/README.md\"}",
+              "source": "rw-23-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "redis.example.foo_value",
+            "redis.live.invoice_value"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "redis"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "7.2.5"
+                ]
+              }
+            },
+            "sources": {
+              "rw-23-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              },
+              "rw-23-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409896,
+                "retrieved_at_unix_seconds": 1792409896,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "redis"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "7.2.5"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "redis.security.backport_policy": "Generally backports to one previous major version, subject to feasibility."
+              },
+              "id": "snapshot:rw-23:1",
+              "observation": "{\"context_summary\": \"Redis7.2.5 repository security-policy snapshot: version table, backport/disclosure and reporting procedures.\", \"document_id\": \"redis-2\", \"locator\": \"SECURITY.md normalized_UTF8_bytes[212,351)\", \"origin_group\": \"upstream:redis/redis\", \"quote\": \"We generally backport security issues to a single previous major version, unless this is not possible or feasible with a reasonable effort.\", \"scope\": {\"product\": \"redis\", \"release\": \"7.2.5\"}, \"source_version\": \"sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/SECURITY.md\"}",
+              "source": "rw-23-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "redis.live.invoice_value",
+            "redis.security.backport_policy"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

@@ -1,0 +1,244 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-08:0",
+        "evidence_sha256": "81b63daa1a985911d96bca6b42576d197935851a1ab2d2f7a13ce11ddd4d20ba",
+        "proposition": {
+          "key": "git.check_ignore.exit_codes",
+          "value": "0: one or more paths ignored;1: none ignored;128: fatal error."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-08-a",
+        "source_version": "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+        "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-08:1",
+        "evidence_sha256": "529b45a3f011527980aea8f03be2ce0780001d74aa0d1cc78f3dd50db08ef74a",
+        "proposition": {
+          "key": "git.check_ignore.exit_codes",
+          "value": "0: one or more paths ignored;1: none ignored;128: fatal error."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-08-b",
+        "source_version": "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+        "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "git"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "2.47.0"
+                ]
+              }
+            },
+            "sources": {
+              "rw-08-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "rw-08-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "git.check_ignore.exit_codes": "0: one or more paths ignored;1: none ignored;128: fatal error."
+              },
+              "id": "snapshot:rw-08:0",
+              "observation": "{\"context_summary\": \"Git2.47.0 check-ignore manual: default/index options, ignore output and exit statuses.\", \"document_id\": \"git-1\", \"locator\": \"Documentation/git-check-ignore.txt normalized_UTF8_bytes[3837,3967)\", \"origin_group\": \"upstream:git/git\", \"quote\": \"0:: One or more of the provided paths is ignored. 1:: None of the provided paths are ignored. 128:: A fatal error was encountered.\", \"scope\": {\"product\": \"git\", \"release\": \"2.47.0\"}, \"source_version\": \"sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt\"}",
+              "source": "rw-08-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "git.check_ignore.exit_codes"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "git"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "2.47.0"
+                ]
+              }
+            },
+            "sources": {
+              "rw-08-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "rw-08-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "git.check_ignore.exit_codes": "0: one or more paths ignored;1: none ignored;128: fatal error."
+              },
+              "id": "snapshot:rw-08:1",
+              "observation": "{\"context_summary\": \"Git2.47.0 check-ignore manual: default/index options, ignore output and exit statuses.\", \"document_id\": \"git-1\", \"locator\": \"Documentation/git-check-ignore.txt normalized_UTF8_bytes[3837,3967)\", \"origin_group\": \"upstream:git/git\", \"quote\": \"0:: One or more of the provided paths is ignored. 1:: None of the provided paths are ignored. 128:: A fatal error was encountered.\", \"scope\": {\"product\": \"git\", \"release\": \"2.47.0\"}, \"source_version\": \"sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt\"}",
+              "source": "rw-08-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "git.check_ignore.exit_codes"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

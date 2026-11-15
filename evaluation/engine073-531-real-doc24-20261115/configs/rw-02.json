@@ -1,0 +1,245 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-02:0",
+        "evidence_sha256": "eb8a4540434077ff9904ce2b211836c50ce21bd4d698a0c9d5826992f8d1642e",
+        "proposition": {
+          "key": "curl.retry.transient",
+          "value": "timeout; FTP4xx; HTTP408,429,500,502,503,504"
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-02-a",
+        "source_version": "sha256:d164104079fbac52eefc1147bfb1eb152bfbb1d883e6c0f963df25a4e7a505e2",
+        "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-02:1",
+        "evidence_sha256": "0c8164528d8886f381238aa0688786e6bf035dc428e3d30085cd588ed0c99ea6",
+        "proposition": {
+          "key": "curl.retry_all.http404",
+          "value": "A fully received HTTP404 is not by itself a transfer error; --fail changes HTTP error treatment."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-02-b",
+        "source_version": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+        "url": "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "curl"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "8.10.1"
+                ]
+              }
+            },
+            "sources": {
+              "rw-02-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              },
+              "rw-02-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "curl.retry.transient": "timeout; FTP4xx; HTTP408,429,500,502,503,504"
+              },
+              "id": "snapshot:rw-02:0",
+              "observation": "{\"context_summary\": \"curl8.10.1 --retry manual: transient errors, zero default retries, backoff and Retry-After history.\", \"document_id\": \"curl-1\", \"locator\": \"docs/cmdline-opts/retry.md normalized_UTF8_bytes[471,593)\", \"origin_group\": \"upstream:curl/curl\", \"quote\": \"Transient error means either: a timeout, an FTP 4xx response code or an HTTP 408, 429, 500, 502, 503 or 504 response code.\", \"scope\": {\"product\": \"curl\", \"release\": \"8.10.1\"}, \"source_version\": \"sha256:d164104079fbac52eefc1147bfb1eb152bfbb1d883e6c0f963df25a4e7a505e2\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry.md\"}",
+              "source": "rw-02-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "curl.retry.transient"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "curl"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "8.10.1"
+                ]
+              }
+            },
+            "sources": {
+              "rw-02-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              },
+              "rw-02-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "curl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "8.10.1"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "curl.retry_all.http404": "A fully received HTTP404 is not by itself a transfer error; --fail changes HTTP error treatment."
+              },
+              "id": "snapshot:rw-02:1",
+              "observation": "{\"context_summary\": \"curl8.10.1 --retry-all-errors manual: companion option, redirected-IO cautions and HTTP-status versus transfer-error distinction.\", \"document_id\": \"curl-2\", \"locator\": \"docs/cmdline-opts/retry-all-errors.md normalized_UTF8_bytes[1231,1753)\", \"origin_group\": \"upstream:curl/curl\", \"quote\": \"By default curl does not return error for transfers with an HTTP response code that indicates an HTTP error, if the transfer was successful. For example, if a server replies 404 Not Found and the reply is fully received then that is not an error. When --retry is used then curl retries on some HTTP response codes that indicate transient HTTP errors, but that does not include most 4xx response codes such as 404. If you want to retry on all response codes that indicate HTTP errors (4xx and 5xx) then combine with --fail.\", \"scope\": {\"product\": \"curl\", \"release\": \"8.10.1\"}, \"source_version\": \"sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md\"}",
+              "source": "rw-02-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "curl.retry.transient",
+            "curl.retry_all.http404"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

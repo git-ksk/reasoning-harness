@@ -1,0 +1,245 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-17:0",
+        "evidence_sha256": "8cc8d1ad8d34f5dfa6fd28a1f38d6e042907d4f184a04ae766a692fb0040abd0",
+        "proposition": {
+          "key": "sqlite.build.tcl_general",
+          "value": "Almost all makefile targets require tclsh8.6 or later."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-17-a",
+        "source_version": "sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+        "url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/README.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-17:1",
+        "evidence_sha256": "fd1198d3e906c705980ec2681bf0a0ff60ddbd26b8ebdde97d20edb65cca7cb2",
+        "proposition": {
+          "key": "sqlite.build.recipe_tcl",
+          "value": "This Unix recipe assumes Tcl9.0."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-17-b",
+        "source_version": "sha256:72376ad8eb150197a422bdbab5299f3a643f504f36de264f035ccffe5a5d9220",
+        "url": "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/doc/compile-for-unix.md",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "sqlite"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.47.2"
+                ]
+              }
+            },
+            "sources": {
+              "rw-17-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "sqlite"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.47.2"
+                    ]
+                  }
+                }
+              },
+              "rw-17-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "sqlite"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.47.2"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409896,
+                "retrieved_at_unix_seconds": 1792409896,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "sqlite"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.47.2"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "sqlite.build.tcl_general": "Almost all makefile targets require tclsh8.6 or later."
+              },
+              "id": "snapshot:rw-17:0",
+              "observation": "{\"context_summary\": \"SQLite3.47.2 source README: mirror/Fossil names, Unix/Windows builds, source layout and integrity-check caveats.\", \"document_id\": \"sqlite-1\", \"locator\": \"README.md normalized_UTF8_bytes[5519,5602)\", \"origin_group\": \"upstream:sqlite/sqlite\", \"quote\": \"Almost all makefile targets require a \\\"tclsh\\\" TCL interpreter version 8.6 or later.\", \"scope\": {\"product\": \"sqlite\", \"release\": \"3.47.2\"}, \"source_version\": \"sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/README.md\"}",
+              "source": "rw-17-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "sqlite.build.tcl_general"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "sqlite"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.47.2"
+                ]
+              }
+            },
+            "sources": {
+              "rw-17-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "sqlite"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.47.2"
+                    ]
+                  }
+                }
+              },
+              "rw-17-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "sqlite"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.47.2"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409896,
+                "retrieved_at_unix_seconds": 1792409896,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "sqlite"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.47.2"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "sqlite.build.recipe_tcl": "This Unix recipe assumes Tcl9.0."
+              },
+              "id": "snapshot:rw-17:1",
+              "observation": "{\"context_summary\": \"SQLite3.47.2 Unix-build recipe: tested2024-10-11, assuming Tcl9.0, configure/targets and debug instructions.\", \"document_id\": \"sqlite-2\", \"locator\": \"doc/compile-for-unix.md normalized_UTF8_bytes[606,672)\", \"origin_group\": \"upstream:sqlite/sqlite\", \"quote\": \"This document assumes you are working with <b>TCL version 9.0</b>.\", \"scope\": {\"product\": \"sqlite\", \"release\": \"3.47.2\"}, \"source_version\": \"sha256:72376ad8eb150197a422bdbab5299f3a643f504f36de264f035ccffe5a5d9220\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/doc/compile-for-unix.md\"}",
+              "source": "rw-17-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "sqlite.build.recipe_tcl",
+            "sqlite.build.tcl_general"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

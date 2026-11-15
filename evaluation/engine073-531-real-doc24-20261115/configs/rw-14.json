@@ -1,0 +1,246 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-14:0",
+        "evidence_sha256": "46bd69b43e2d6048e154de5f3321988a10a6be176502cfcf20318e24feea2a26",
+        "proposition": {
+          "key": "openssl.verify_result.no_certificate",
+          "value": "No peer certificate can produce X509_V_OK; that does not indicate success."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-14-a",
+        "source_version": "sha256:4f7c46dd3228e880870cdf8d70cf4dabd0ade3ffea98bf480e0cfc251dc05569",
+        "url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_get_verify_result.pod",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-14:1",
+        "evidence_sha256": "77707468d38290bb253ffaf1a33a566a1f6f95dd41d59feaf99bb1834758b817",
+        "proposition": {
+          "key": "openssl.verify_result.ok_alternatives",
+          "value": "Verification succeeded OR no peer certificate was presented."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-14-b",
+        "source_version": "sha256:4f7c46dd3228e880870cdf8d70cf4dabd0ade3ffea98bf480e0cfc251dc05569",
+        "url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_get_verify_result.pod",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "openssl"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.0.15"
+                ]
+              }
+            },
+            "sources": {
+              "rw-14-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              },
+              "rw-14-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "openssl.verify_result.no_certificate": "No peer certificate can produce X509_V_OK; that does not indicate success."
+              },
+              "id": "snapshot:rw-14:0",
+              "observation": "{\"context_summary\": \"OpenSSL3.0.15 SSL_get_verify_result: last verification error, session reuse and absent-peer-certificate caveat.\", \"document_id\": \"openssl-1\", \"locator\": \"doc/man3/SSL_get_verify_result.pod normalized_UTF8_bytes[1059,1221)\", \"origin_group\": \"upstream:openssl/openssl\", \"quote\": \"If no peer certificate was presented, the returned result code is X509_V_OK. This is because no verification error occurred, it does however not indicate success.\", \"scope\": {\"product\": \"openssl\", \"release\": \"3.0.15\"}, \"source_version\": \"sha256:4f7c46dd3228e880870cdf8d70cf4dabd0ade3ffea98bf480e0cfc251dc05569\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_get_verify_result.pod\"}",
+              "source": "rw-14-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "openssl.connection.authenticated_peer",
+            "openssl.verify_result.no_certificate"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "openssl"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.0.15"
+                ]
+              }
+            },
+            "sources": {
+              "rw-14-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              },
+              "rw-14-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "openssl.verify_result.ok_alternatives": "Verification succeeded OR no peer certificate was presented."
+              },
+              "id": "snapshot:rw-14:1",
+              "observation": "{\"context_summary\": \"OpenSSL3.0.15 SSL_get_verify_result: last verification error, session reuse and absent-peer-certificate caveat.\", \"document_id\": \"openssl-1\", \"locator\": \"doc/man3/SSL_get_verify_result.pod normalized_UTF8_bytes[1406,1470)\", \"origin_group\": \"upstream:openssl/openssl\", \"quote\": \"The verification succeeded or no peer certificate was presented.\", \"scope\": {\"product\": \"openssl\", \"release\": \"3.0.15\"}, \"source_version\": \"sha256:4f7c46dd3228e880870cdf8d70cf4dabd0ade3ffea98bf480e0cfc251dc05569\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_get_verify_result.pod\"}",
+              "source": "rw-14-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "openssl.connection.authenticated_peer",
+            "openssl.verify_result.ok_alternatives"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

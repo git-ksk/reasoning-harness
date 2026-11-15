@@ -1,0 +1,245 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-16:0",
+        "evidence_sha256": "7b864217ba8b6ca42a012c631895c17a81e2572e428e9cfc32b56c0e665f9f58",
+        "proposition": {
+          "key": "openssl.callback.always_one",
+          "value": "An always-one callback does not terminate the handshake for verification failures."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-16-a",
+        "source_version": "sha256:aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde",
+        "url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_CTX_set_verify.pod",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-16:1",
+        "evidence_sha256": "225e2267d3505ecc1f839f07af8726cb6702da40d8bf43b1ab303ad03c893b16",
+        "proposition": {
+          "key": "openssl.callback.example_branch",
+          "value": "When always_continue is true, the example returns1; otherwise preverify_ok."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-16-b",
+        "source_version": "sha256:aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde",
+        "url": "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_CTX_set_verify.pod",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "openssl"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.0.15"
+                ]
+              }
+            },
+            "sources": {
+              "rw-16-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              },
+              "rw-16-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409988,
+                "retrieved_at_unix_seconds": 1792409988,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "openssl.callback.always_one": "An always-one callback does not terminate the handshake for verification failures."
+              },
+              "id": "snapshot:rw-16:0",
+              "observation": "{\"context_summary\": \"OpenSSL3.0.15 verification flags and callbacks: preserve client/server and built-in/custom verification contexts.\", \"document_id\": \"openssl-2\", \"locator\": \"doc/man3/SSL_CTX_set_verify.pod normalized_UTF8_bytes[8789,8951)\", \"origin_group\": \"upstream:openssl/openssl\", \"quote\": \"If B<verify_callback> always returns 1, the TLS/SSL handshake will not be terminated with respect to verification failures and the connection will be established.\", \"scope\": {\"product\": \"openssl\", \"release\": \"3.0.15\"}, \"source_version\": \"sha256:aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_CTX_set_verify.pod\"}",
+              "source": "rw-16-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "openssl.callback.always_one"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "openssl"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "3.0.15"
+                ]
+              }
+            },
+            "sources": {
+              "rw-16-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              },
+              "rw-16-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409988,
+                "retrieved_at_unix_seconds": 1792409988,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "openssl"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "3.0.15"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "openssl.callback.example_branch": "When always_continue is true, the example returns1; otherwise preverify_ok."
+              },
+              "id": "snapshot:rw-16:1",
+              "observation": "{\"context_summary\": \"OpenSSL3.0.15 verification flags and callbacks: preserve client/server and built-in/custom verification contexts.\", \"document_id\": \"openssl-2\", \"locator\": \"doc/man3/SSL_CTX_set_verify.pod normalized_UTF8_bytes[13073,13137)\", \"origin_group\": \"upstream:openssl/openssl\", \"quote\": \"if (mydata->always_continue) return 1; else return preverify_ok;\", \"scope\": {\"product\": \"openssl\", \"release\": \"3.0.15\"}, \"source_version\": \"sha256:aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_CTX_set_verify.pod\"}",
+              "source": "rw-16-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "openssl.callback.always_one",
+            "openssl.callback.example_branch"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

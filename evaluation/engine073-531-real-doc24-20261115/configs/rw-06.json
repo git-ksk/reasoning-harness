@@ -1,0 +1,245 @@
+{
+  "answer_context": {
+    "schema_version": "reason-answer-context-config-v1",
+    "sources": [
+      {
+        "evidence_id": "snapshot:rw-06:0",
+        "evidence_sha256": "c1e606b7c0d33318e864067ab92ebbc5e98649fb967f570bc774f6a9401d6f32",
+        "proposition": {
+          "key": "git.check_ignore.tracked_default",
+          "value": "Tracked files are not shown by default."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-06-a",
+        "source_version": "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+        "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      },
+      {
+        "evidence_id": "snapshot:rw-06:1",
+        "evidence_sha256": "0d40e23714585fb8850d2559066a212910bdc25c877e8bd5cd1b3d264440d216",
+        "proposition": {
+          "key": "git.check_ignore.no_index",
+          "value": "Does not look in the index; useful for debugging why a tracked path was not ignored."
+        },
+        "quote_pointer": "/quote",
+        "source_id": "rw-06-b",
+        "source_version": "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+        "url": "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt",
+        "url_pointer": "/url",
+        "version_pointer": "/source_version"
+      }
+    ],
+    "unresolved_inputs": []
+  },
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "git"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "2.47.0"
+                ]
+              }
+            },
+            "sources": {
+              "rw-06-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "rw-06-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "git.check_ignore.tracked_default": "Tracked files are not shown by default."
+              },
+              "id": "snapshot:rw-06:0",
+              "observation": "{\"context_summary\": \"Git2.47.0 check-ignore manual: default/index options, ignore output and exit statuses.\", \"document_id\": \"git-1\", \"locator\": \"Documentation/git-check-ignore.txt normalized_UTF8_bytes[446,559)\", \"origin_group\": \"upstream:git/git\", \"quote\": \"By default, tracked files are not shown at all since they are not subject to exclude rules; but see `--no-index'.\", \"scope\": {\"product\": \"git\", \"release\": \"2.47.0\"}, \"source_version\": \"sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt\"}",
+              "source": "rw-06-a"
+            }
+          ],
+          "id": "independent-v2-source-0",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "git.check_ignore.tracked_default"
+          ]
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "evaluation_time_unix_seconds": 1792409989,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "git"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "2.47.0"
+                ]
+              }
+            },
+            "sources": {
+              "rw-06-a": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "rw-06-b": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "evidence": [
+            {
+              "acquisition_metadata": {
+                "claimed_authority_class": "primary",
+                "observed_at_unix_seconds": 1792409895,
+                "retrieved_at_unix_seconds": 1792409895,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "git"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "2.47.0"
+                    ]
+                  }
+                }
+              },
+              "facts": {
+                "git.check_ignore.no_index": "Does not look in the index; useful for debugging why a tracked path was not ignored."
+              },
+              "id": "snapshot:rw-06:1",
+              "observation": "{\"context_summary\": \"Git2.47.0 check-ignore manual: default/index options, ignore output and exit statuses.\", \"document_id\": \"git-1\", \"locator\": \"Documentation/git-check-ignore.txt normalized_UTF8_bytes[1611,1904)\", \"origin_group\": \"upstream:git/git\", \"quote\": \"--no-index:: Don't look in the index when undertaking the checks. This can be used to debug why a path became tracked by e.g. `git add .` and was not ignored by the rules as expected by the user or when developing patterns including negation to match a path previously added with `git add -f`.\", \"scope\": {\"product\": \"git\", \"release\": \"2.47.0\"}, \"source_version\": \"sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3\", \"synthetic_mutation\": false, \"url\": \"https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt\"}",
+              "source": "rw-06-b"
+            }
+          ],
+          "id": "independent-v2-source-1",
+          "kind": "captured_evidence",
+          "read_only": true,
+          "supported_fact_keys": [
+            "git.check_ignore.no_index",
+            "git.check_ignore.tracked_default"
+          ]
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 512
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

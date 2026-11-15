@@ -1,0 +1,172 @@
+{
+  "cases": [
+    {
+      "case_id": "rw-01",
+      "config_path": "configs/rw-01.json",
+      "config_raw_sha256": "38d9244a8a6a861306a375846501211bdc580243c885f50094a703afd6d33251",
+      "question": "In curl8.10.1, does --retry-all-errors work by itself, or must another retry option accompany it?"
+    },
+    {
+      "case_id": "rw-02",
+      "config_path": "configs/rw-02.json",
+      "config_raw_sha256": "29eef140213699fb3e51925f35e4afb3d82f0f61fd1522b21c6579bfcaa28db8",
+      "question": "For curl8.10.1, contrast the transient errors handled by --retry with a fully received HTTP404 response under --retry-all-errors without --fail. Does every HTTP4xx automatically become a retryable transfer error?"
+    },
+    {
+      "case_id": "rw-03",
+      "config_path": "configs/rw-03.json",
+      "config_raw_sha256": "944abd57fc7b6eb38f363735bf8c1cc136150b10efb66ae0ec5623e6415a4d17",
+      "question": "Which introduction versions do the captured curl docs assign to --retry and --retry-all-errors? Report each option separately, not a current availability test."
+    },
+    {
+      "case_id": "rw-04",
+      "config_path": "configs/rw-04.json",
+      "config_raw_sha256": "9f689d883402b6ed3de0053cfb7f0e0fbf4e2766cf37e86c4eee3b5af39af20f",
+      "question": "The curl8.10.1 page warns about using --retry-all-errors with piped or redirected output. Why can duplicate data occur? Explain the warning without executing a transfer."
+    },
+    {
+      "case_id": "rw-05",
+      "config_path": "configs/rw-05.json",
+      "config_raw_sha256": "9697d9a9ac4260a09d669e1338d971d0790ccfac08b52a078c518128dc20c555",
+      "question": "In Git2.47.0, what does git check-attr -z change about the output delimiter and field layout?"
+    },
+    {
+      "case_id": "rw-06",
+      "config_path": "configs/rw-06.json",
+      "config_raw_sha256": "fd4fc8b4ede14a06d6377310b1f677564741417a66f6f1e822ec12f70b85b28c",
+      "question": "Git2.47.0 check-ignore shows nothing for a tracked path. What default rule explains this, and which read-only option helps diagnose the ignore patterns without consulting the index?"
+    },
+    {
+      "case_id": "rw-07",
+      "config_path": "configs/rw-07.json",
+      "config_raw_sha256": "b753a099668e2b69d6c823bbc11ad8adf7b402c8537cf01f23fd1a9225d59c5e",
+      "question": "Using only these Git2.47.0 manual passages, what is the actual filter attribute of payroll.csv in my private repository? No .gitattributes file or repository output is supplied."
+    },
+    {
+      "case_id": "rw-08",
+      "config_path": "configs/rw-08.json",
+      "config_raw_sha256": "8324d89e0ea5f18832624924437aeacab42cdc40837978fb04f9c7dc53a8c622",
+      "question": "Two copies of the Git2.47.0 check-ignore manual were retrieved. What do exit statuses0,1 and128 mean?"
+    },
+    {
+      "case_id": "rw-09",
+      "config_path": "configs/rw-09.json",
+      "config_raw_sha256": "e7ed3c0049626ce01250937e03cccbb1b89ff2e19398f8459a369a5c161a7a94",
+      "question": "According to CMake3.31.0 documentation, which enclosing loop forms can break() leave?"
+    },
+    {
+      "case_id": "rw-10",
+      "config_path": "configs/rw-10.json",
+      "config_raw_sha256": "ec6c15da4bcccc5604b096e3b5e0887cbfd03455c99dd5c46fa8569c680d3966",
+      "question": "For CMake3.31.0, distinguish return() inside a function from return() in an included file. Where does control resume in each case?"
+    },
+    {
+      "case_id": "rw-11",
+      "config_path": "configs/rw-11.json",
+      "config_raw_sha256": "33bbbf4eae11695736098136dbe893ac041705c471fc89bfc8e26ac990191d0c",
+      "question": "The installed CMake is3.31.0 but my project policy settings are unknown. In which version was return(PROPAGATE) added, and can I assume its arguments take effect solely from the binary version?"
+    },
+    {
+      "case_id": "rw-12",
+      "config_path": "configs/rw-12.json",
+      "config_raw_sha256": "239560b82bd4766690021eb86a177eead3a77a42e295238b8ea0127aae1e1fb4",
+      "question": "For my OpenSSL3.0.15 connection, was a valid peer certificate actually presented? No connection trace or peer certificate object is supplied; answer only if the captured material establishes it."
+    },
+    {
+      "case_id": "rw-13",
+      "config_path": "configs/rw-13.json",
+      "config_raw_sha256": "194507a7983b99e52bdb59f4e148cfef4502b99cb3eebde35fda3a819f69cb80",
+      "question": "In OpenSSL3.0.15 client mode with the built-in verifier and default callback, compare SSL_VERIFY_NONE and SSL_VERIFY_PEER when a non-anonymous server certificate fails verification. Does the handshake stop in both modes?"
+    },
+    {
+      "case_id": "rw-14",
+      "config_path": "configs/rw-14.json",
+      "config_raw_sha256": "9d416abeebbfa9ce7b66f70bb1c389b9b1062c81220e926d49da3399f9e168c2",
+      "question": "My only observation is SSL_get_verify_result()==X509_V_OK in OpenSSL3.0.15. With no peer certificate object or connection evidence supplied, can you establish that the peer actually presented a certificate that authenticated successfully?"
+    },
+    {
+      "case_id": "rw-15",
+      "config_path": "configs/rw-15.json",
+      "config_raw_sha256": "350957d8cfed5d649c873728906e08a62849907aea130f3e5c90db1157cb1a19",
+      "question": "In the captured OpenSSL3.0.15 documentation, is the verification result restored when an established session is reused?"
+    },
+    {
+      "case_id": "rw-16",
+      "config_path": "configs/rw-16.json",
+      "config_raw_sha256": "70915ccdee2d888e13ad0311c57f011a077b28d454bac7e25c592b8adeb18318",
+      "question": "Explain what the always_continue branch in the documented OpenSSL3.0.15 verification callback example does. Does continuing the handshake itself prove the certificate passed verification? Do not run or change TLS settings."
+    },
+    {
+      "case_id": "rw-17",
+      "config_path": "configs/rw-17.json",
+      "config_raw_sha256": "f16d61d5740b9f46bf7339c6b50e5ee9c3d8d8f10ef3938300c22412ae9f9cfa",
+      "question": "For SQLite3.47.2, one README discusses tclsh8.6 or later while the captured Unix recipe assumes Tcl9.0. Do those statements establish that Tcl9 is mandatory for every build target? Explain their scopes without running the build."
+    },
+    {
+      "case_id": "rw-18",
+      "config_path": "configs/rw-18.json",
+      "config_raw_sha256": "b29a24309871004e0b126614b91fe7172988d71c0b728fd65161219c9fc9af10",
+      "question": "What is the official Fossil check-in identifier corresponding to this captured SQLite3.47.2 Git mirror snapshot? Give the actual identifier only if the supplied documents contain it; a Git SHA is not a substitute."
+    },
+    {
+      "case_id": "rw-19",
+      "config_path": "configs/rw-19.json",
+      "config_raw_sha256": "46e5097a212b22a4976a8d98293469217046cde7938e563b12541d5d694e2850",
+      "question": "Before running SQLite3.47.2 tests on Unix or Windows, must the SQLite Tcl extension already have been installed? Explain what the two build paragraphs say."
+    },
+    {
+      "case_id": "rw-20",
+      "config_path": "configs/rw-20.json",
+      "config_raw_sha256": "b6d90f47adc0d3d94d7ff54b27beb65b97695d4e27a6521f91d00cef82037a49",
+      "question": "Does SQLite3.47.2 README claim that running make verify-source alone cannot be fooled by malicious source-tree changes? Explain the limitation without executing the command."
+    },
+    {
+      "case_id": "rw-21",
+      "config_path": "configs/rw-21.json",
+      "config_raw_sha256": "9ce6600ab4fa4605a86b673167097395ddc27091bbc3fe02c153e13a6d95aafb",
+      "question": "According to the Redis7.2.5 README, what allocator is the default on Linux, and what build setting forces libc malloc instead?"
+    },
+    {
+      "case_id": "rw-22",
+      "config_path": "configs/rw-22.json",
+      "config_raw_sha256": "40ba821e37e7afb3a6eb420ccbbe79d79dbde3bffb50334948b159ae092f75d7",
+      "question": "As of2026-10-19, which Redis major versions are actually receiving security support? Use only the captured7.2.5-era README/security policy, and do not present an old table as a current support announcement."
+    },
+    {
+      "case_id": "rw-23",
+      "config_path": "configs/rw-23.json",
+      "config_raw_sha256": "de6ae6a41fa5604b7401e79e4f07cb61036f9c5435483fc522f96a73d2267967",
+      "question": "What value is stored right now under invoice:2026:paid in my Redis deployment? No connection, database dump or command result from my deployment is provided."
+    },
+    {
+      "case_id": "rw-24",
+      "config_path": "configs/rw-24.json",
+      "config_raw_sha256": "e36537d74478c81123e6ae2288452bca12867a887e32e819ce766db3ae3aadd4",
+      "question": "For CMake3.31.0, which project policy must be NEW for return() arguments to take effect? Answer from the supplied material only; do not substitute a Redis build option."
+    }
+  ],
+  "classification": "CONSUMED_2026_10_REAL_UPSTREAM_DOCUMENTS_DEV_ONLY_NOT_INDEPENDENT_NEW_HOLDOUT",
+  "formal_quality_f1": null,
+  "frozen_old_private_bundle_sha256": "02506cade31f5f0ddd82fd345350f05c08460d1dc3d96682b1a6f2c7f451a6a6",
+  "gold_labels_included": false,
+  "initial_external_model_calls": 0,
+  "model": "ministral-8b-2512",
+  "original_requests_sha256": "d53410e21cf899d562d63d72d22c392a89955f79cda00990cf8bd316cf44365d",
+  "provider": "mistral",
+  "schema_version": "reason-531-real-doc24-public-v1",
+  "source_content_sha256": {
+    "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/break.rst": "sha256:4b0d4624fb31d4cf176c393ed011f752618c0f18f071ed0295560dbf78d4d114",
+    "https://raw.githubusercontent.com/Kitware/CMake/e22c8383b9ae4f27a78f7a8849693c03ca29c7bb/Help/command/return.rst": "sha256:64bf74bba3708146a4c52fc2ab7e4a5ee8fd476838df9c72760f090116a6ec77",
+    "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry-all-errors.md": "sha256:a98f60938760f9d35232b3da2f7b45da4aa239411a142a52e5e8dccf6a5fb916",
+    "https://raw.githubusercontent.com/curl/curl/7eb8c048470ed2cc14dca75be9c1cdae7ac8498b/docs/cmdline-opts/retry.md": "sha256:d164104079fbac52eefc1147bfb1eb152bfbb1d883e6c0f963df25a4e7a505e2",
+    "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-attr.txt": "sha256:7ad498f3fb7a06e1989c631727403dcc18117995112d4796fb9d81bcbc4348aa",
+    "https://raw.githubusercontent.com/git/git/777489f9e09c8d0dd6b12f9d90de6376330577a2/Documentation/git-check-ignore.txt": "sha256:ac74fe74eba0fef6a3454677687a8f112e127d1b5c038c85c50e5de0bb1677b3",
+    "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_CTX_set_verify.pod": "sha256:aa91cd752b21cc624f9c613246f0d2eb73635d8e4b6676d432147b6697be7cde",
+    "https://raw.githubusercontent.com/openssl/openssl/c523121f902fde2929909dc7f76b13ceb4961efe/doc/man3/SSL_get_verify_result.pod": "sha256:4f7c46dd3228e880870cdf8d70cf4dabd0ade3ffea98bf480e0cfc251dc05569",
+    "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/README.md": "sha256:b475ab7922c5ad2c42c8ccde2bc6f1a4f7f8b3ba999426fa3e6b00452362cf50",
+    "https://raw.githubusercontent.com/redis/redis/f60370ce28b946c1146dcea77c9c399d39601aaa/SECURITY.md": "sha256:2adba786f1ff5b120d68323be2fbf03309008513795cf4a0c9997d226b644dff",
+    "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/README.md": "sha256:589c6d01243c5b685073d3895dd2708712028ef02d90790fe8f0528f02e6f823",
+    "https://raw.githubusercontent.com/sqlite/sqlite/262de1bebb0647eb6fa6a2b0434111c7d831a14d/doc/compile-for-unix.md": "sha256:72376ad8eb150197a422bdbab5299f3a643f504f36de264f035ccffe5a5d9220"
+  },
+  "source_documents_count": 12
+}
