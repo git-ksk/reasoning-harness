@@ -4953,6 +4953,11 @@ async fn execute_natural_inner(
     // only that disproved model value, and rerun the entire grounding pipeline.
     // This does not rewrite any acquired evidence, resolver attempt or history.
     if final_verdict == Verdict::Reject
+        && investigation_config.is_some()
+        && trusted_verifier.is_none()
+        && acquisition_ledger
+            .as_ref()
+            .is_some_and(|ledger| ledger.plan_admitted)
         && let Some(config) = answer_context_config.as_ref()
     {
         let mut corrected_candidate = candidate.clone();
