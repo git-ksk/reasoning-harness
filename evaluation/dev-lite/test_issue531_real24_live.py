@@ -85,6 +85,38 @@ class TestRealDocsRunner(unittest.TestCase):
         self.assertEqual(quote_count,48)
         self.assertEqual({x['url'] for x in audit['source_documents']},origin_urls)
 
+    def test_issue613_eight_independent_shards_cover_each_frozen_case_once(self):
+        rows=[{'id':f'rw-{i:02d}'} for i in range(1,25)]
+        short=[real.selected_shard(rows,shard,8) for shard in range(8)]
+        self.assertEqual([len(chunk) for chunk in short],[3]*8)
+        self.assertEqual([r['id'] for chunk in short for r in chunk],
+                         [r['id'] for r in rows])
+        self.assertEqual([r['id'] for r in short[-1]],['rw-22','rw-23','rw-24'])
+        historical=[real.selected_shard(rows,shard,4) for shard in range(4)]
+        self.assertEqual([len(chunk) for chunk in historical],[6]*4)
+        self.assertEqual([r['id'] for r in historical[-1]],
+                         ['rw-19','rw-20','rw-21','rw-22','rw-23','rw-24'])
+
+    def test_issue613_shard_rejects_wrong_shape_duplicates_and_out_of_range(self):
+        rows=[{'id':f'rw-{i:02d}'} for i in range(1,25)]
+        for n,shard in [(8,-1),(8,8),(4,4),(9,0),(0,0)]:
+            with self.subTest(n=n,shard=shard),self.assertRaisesRegex(RuntimeError,'shard'):
+                real.selected_shard(rows,shard,n)
+        for broken in [rows[:-1],rows+[rows[-1]],rows[::-1],rows[:1]+[rows[0]]+rows[2:]]:
+            with self.assertRaisesRegex(RuntimeError,'shard'):
+                real.selected_shard(broken,0,8)
+
+    def test_issue613_offline_only_partition_checks_require_no_provider(self):
+        repo=Path(__file__).resolve().parents[2]
+        path=repo/'evaluation/engine073-531-real-doc24-20261115/cases.json'
+        corpus=real.validate_public_manifest(path,repo)
+        rows=[{'id':r['case_id']} for r in corpus['cases']]
+        with patch.dict(os.environ,{'MISTRAL_API_KEY':'', 'REASON_DEV_LITE_FREE_CONFIRMED':''}):
+            short=[real.selected_shard(rows,shard,8) for shard in range(8)]
+            self.assertEqual(sum(len(x) for x in short),24)
+            self.assertEqual(len(set(r['id'] for chunk in short for r in chunk)),24)
+            self.assertEqual(real.MAX_PRICE,48 * real.v5.TOTAL_CAP * .15 / 1_000_000)
+
     def test_price_bound(self):
         self.assertEqual(real.TOTAL_CASES,24)
         self.assertEqual(real.JOBS,48)
