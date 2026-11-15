@@ -4947,6 +4947,50 @@ async fn execute_natural_inner(
         }
     }
 
+    // A refuted, model-authored *alternative value* must not permanently
+    // veto a separate official fact verified by current structured receipts.
+    // Keep the original Reject and candidate in the diagnostic trace, unbind
+    // only that disproved model value, and rerun the entire grounding pipeline.
+    // This does not rewrite any acquired evidence, resolver attempt or history.
+    if final_verdict == Verdict::Reject
+        && investigation_config.is_some()
+        && trusted_verifier.is_none()
+        && acquisition_ledger
+            .as_ref()
+            .is_some_and(|ledger| ledger.plan_admitted)
+        && let Some(config) = answer_context_config.as_ref()
+    {
+        let mut corrected_candidate = candidate.clone();
+        let unbound = answer_context::unbind_refuted_model_fact_keys(
+            config,
+            &final_artifact,
+            &mut corrected_candidate,
+        );
+        if !unbound.is_empty() {
+            if let Some(trace) = diagnostic_trace.as_mut() {
+                trace.record_candidate(
+                    DiagnosticPhase::new("refuted_model_fact_unbinding", None),
+                    &corrected_candidate,
+                );
+            }
+            let corrected = run_standard_grounding(
+                input_from_artifact(&final_artifact),
+                corrected_candidate.clone(),
+            )?;
+            // No answer authority is carried forward from the original
+            // rejected artifact: only freshly verified current claims count.
+            if let Some(trace) = diagnostic_trace.as_mut() {
+                trace.record_grounding(
+                    DiagnosticPhase::new("source_bound_correction_reground", None),
+                    &corrected,
+                );
+            }
+            candidate = corrected_candidate;
+            final_artifact = corrected.artifact;
+            final_verdict = corrected.verdict;
+        }
+    }
+
     if let Some(ledger) = acquisition_ledger.as_mut() {
         ledger.bind_existing(&final_artifact);
         for target in ledger.verified_targets(&final_artifact) {
@@ -4964,6 +5008,19 @@ async fn execute_natural_inner(
             &failure_context,
             diagnostic_trace.as_mut(),
         );
+    }
+
+    // A model-proposed investigation plan may omit a selector even when a
+    // separate pinned, source-versioned fact already has an exact current
+    // structured verification receipt. Keep that verified requested facet
+    // available for canonical final-render recovery; model text cannot create
+    // this authority and the normal safety/source gates still run afterwards.
+    if let Some(config) = answer_context_config.as_ref() {
+        for target in answer_context::verified_source_targets(config, &final_artifact) {
+            if !finalization_targets.contains(&target) {
+                finalization_targets.push(target);
+            }
+        }
     }
 
     if let Some(trace) = diagnostic_trace.as_mut() {

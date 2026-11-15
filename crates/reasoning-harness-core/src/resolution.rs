@@ -736,10 +736,11 @@ impl<'a> GroundedResolutionRuntime<'a> {
         let mut usage = ResolutionUsage::default();
 
         loop {
-            let pending = if pending_investigation
-                && current.verdict == Verdict::Accept
-                && attempts.is_empty()
-            {
+            // A separately admitted, read-only investigation may continue to
+            // acquire evidence after a model claim has been refuted.  Evidence
+            // acquisition does not revise the claim or make Reject acceptable;
+            // the normal one-attempt budget and admission policy still apply.
+            let pending = if pending_investigation && attempts.is_empty() {
                 Some(
                     self.planner
                         .plan(&current, policy)
@@ -825,7 +826,10 @@ impl<'a> GroundedResolutionRuntime<'a> {
                 }
             }
 
-            if current.verdict == Verdict::Reject && !policy.revise_refuted {
+            if current.verdict == Verdict::Reject
+                && !policy.revise_refuted
+                && pending.as_ref().is_none_or(Vec::is_empty)
+            {
                 let finalization = self.finalize_terminal(&current, policy);
                 return Ok(outcome(
                     initial_verdict,
@@ -1540,6 +1544,121 @@ mod tests {
     use crate::{
         CandidateClaim, EpistemicState, EvidenceAuthorityPolicy, EvidenceMetadata, TemporalValidity,
     };
+
+    /// A refuted model claim must not prevent a *separately bounded* acquisition.
+    /// Ordinary resolution remains fail-closed; only the explicit investigation
+    /// entrypoint performs this one read. The contradiction remains a Reject.
+    #[test]
+    fn issue613_readonly_investigation_after_reject_acquires_without_revising() {
+        struct PendingPlan;
+        impl ResolutionPlanner for PendingPlan {
+            fn plan(
+                &self,
+                _outcome: &HarnessOutcome,
+                _policy: &GroundedResolutionPolicy,
+            ) -> Vec<ResolutionRequest> {
+                vec![ResolutionRequest {
+                    id: "new-official-record".into(),
+                    reason: ResolutionReason::Investigation,
+                    target: ResolutionTarget::InvestigationQuestion {
+                        target_id: "transient_errors".into(),
+                        question: "What does the source say?".into(),
+                        expected_fact_key: Some("retry.transient".into()),
+                    },
+                    resolver_class: ResolverClass::EvidenceAcquisition,
+                    budget: ResolutionRequestBudget {
+                        max_attempts: Some(1),
+                        ..Default::default()
+                    },
+                }]
+            }
+        }
+        let evidence = Evidence {
+            id: "e-initial".into(),
+            source: "source".into(),
+            observation: "authoritative source".into(),
+            facts: BTreeMap::from([(
+                "retry.http404".into(),
+                "fully received 404 is not a transfer error".into(),
+            )]),
+            metadata: EvidenceMetadata {
+                temporal: Some(TemporalValidity {
+                    effective_from_unix_seconds: Some(100),
+                    effective_until_unix_seconds: Some(300),
+                }),
+                scope: None,
+                provenance_class: Some("primary".into()),
+            },
+        };
+        let input = HarnessInput {
+            task: "Describe both retry conditions".into(),
+            evidence: vec![evidence],
+            ..Default::default()
+        };
+        let wrong = ReasoningCandidate {
+            claims: vec![CandidateClaim {
+                id: "model-404".into(),
+                statement: "404 is a transfer error".into(),
+                proposed_state: EpistemicState::Assumed,
+                proposition: Some(Proposition {
+                    key: "retry.http404".into(),
+                    value: "404 is a transfer error".into(),
+                }),
+                evidence_ids: vec![],
+            }],
+            ..Default::default()
+        };
+        let resolver = OneEvidenceResolver {
+            raw: AcquiredEvidence {
+                id: "e-new".into(),
+                source: "official".into(),
+                observation: "timed out transfers are transient".into(),
+                facts: BTreeMap::from([("retry.transient".into(), "timeout".into())]),
+                acquisition_metadata: Default::default(),
+            },
+        };
+        let resolvers: [&dyn ResolutionResolver; 1] = [&resolver];
+        let planner = PendingPlan;
+        let runtime = GroundedResolutionRuntime {
+            planner: &planner,
+            ..default_grounded_resolution_runtime(&PrimaryAdmission, &resolvers, &[])
+        };
+        let policy = GroundedResolutionPolicy {
+            budget: ResolutionBudget {
+                max_attempts: 1,
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        let blocked = runtime.run(input.clone(), wrong.clone(), &policy).unwrap();
+        assert_eq!(blocked.final_verdict, Verdict::Reject);
+        assert!(blocked.attempts.is_empty());
+        let continued = runtime
+            .run_with_pending_investigation(input, wrong, &policy)
+            .unwrap();
+        assert_eq!(continued.initial_verdict, Verdict::Reject);
+        assert_eq!(continued.final_verdict, Verdict::Reject);
+        assert_eq!(continued.attempts.len(), 1);
+        assert_eq!(
+            continued.attempts[0].status,
+            ResolutionAttemptStatus::AppliedEvidence
+        );
+        assert!(
+            continued
+                .final_artifact
+                .evidence
+                .iter()
+                .any(|e| e.id == "e-new")
+        );
+        assert_eq!(continued.finalization.status, FinalizationStatus::Abstain);
+        assert!(
+            continued
+                .final_artifact
+                .claims
+                .iter()
+                .any(|c| c.state == EpistemicState::Contradicted)
+        );
+    }
 
     struct OneEvidenceResolver {
         raw: AcquiredEvidence,

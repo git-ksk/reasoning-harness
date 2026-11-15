@@ -20,6 +20,9 @@ PUBLIC_MANIFEST_SHA256 = '8b910bc4ec497a4bc768cc6c68465c4d2bb8bd6886addfe985c553
 ORIGINAL_BUNDLE_SHA256 = '02506cade31f5f0ddd82fd345350f05c08460d1dc3d96682b1a6f2c7f451a6a6'
 TOTAL_CASES = 24
 JOBS = 48
+# Keep legacy four-shard layout immutable for historical audits; a new,
+# separately authorized evaluation may opt into eight independent short jobs.
+SUPPORTED_SHARD_COUNTS = {4: 6, 8: 3}
 MAX_PRICE = JOBS * v5.TOTAL_CAP * .15 / 1_000_000
 
 
@@ -137,18 +140,37 @@ def setup(repo, root, manifest_path, build):
     return rows
 
 
-def measure(repo,root,rows,build,shard):
+def selected_shard(rows, shard, shard_count):
+    """Return a disjoint bounded shard; never permit missing/repeated cases."""
+    v5.checked(shard_count in SUPPORTED_SHARD_COUNTS,
+               'unsupported_shard_count')
+    v5.checked(type(shard) is int and 0 <= shard < shard_count,
+               'shard_outside_frozen_partition')
+    v5.checked(len(rows) == TOTAL_CASES and
+               len({row['id'] for row in rows}) == TOTAL_CASES and
+               [row['id'] for row in rows] == [f'rw-{i:02d}' for i in range(1,TOTAL_CASES+1)],
+               'shard_requires_complete_ordered_frozen_corpus')
+    size = SUPPORTED_SHARD_COUNTS[shard_count]
+    selected = rows[shard * size:(shard + 1) * size]
+    v5.checked(len(selected) == size, 'short_shard_size_invalid')
+    return selected
+
+
+def measure(repo,root,rows,build,shard,shard_count=4):
     v5.checked(os.environ.get('REASON_DEV_LITE_FREE_CONFIRMED')=='1','free_budget_confirmation_missing')
     v5.checked(os.environ.get('MISTRAL_API_KEY','')!='','provider_key_missing')
     v5.checked(MAX_PRICE < .21 and MAX_PRICE < 9.98/10, 'price_bound_exceeded')
     sys.path.insert(0,str(repo/'evaluation/dev-lite'))
     import run as lite
-    start=shard*6;stop=start+6
-    subset=rows[start:stop]
-    report={'classification':'REAL_UPSTREAM_DOCUMENTS_CONSUMED_DEV_ONLY_NO_FORMAL_F1','public_manifest_sha256':PUBLIC_MANIFEST_SHA256,'shard':shard+1,'model':v5.MODEL,'cli_commit':v5.CLI,'baseline_commit':v5.BASELINE,'candidate_commit':v5.CANDIDATE,'planned_jobs':12,'completed_jobs':0,'observations':[],'run_status':'incomplete','formal_f1':None,'quality_go':False,'adoption_go':False,'maximum_usd_all_48_by_token_cap':round(MAX_PRICE,7)}
+    subset=selected_shard(rows, shard, shard_count)
+    planned_jobs = 2 * len(subset)
+    v5.checked(planned_jobs <= 12 and planned_jobs * v5.TOTAL_CAP <= 12 * v5.TOTAL_CAP,
+               'short_shard_upper_bound_exceeded')
+    report={'classification':'REAL_UPSTREAM_DOCUMENTS_CONSUMED_DEV_ONLY_NO_FORMAL_F1','public_manifest_sha256':PUBLIC_MANIFEST_SHA256,'shard':shard+1,'shard_count':shard_count,'model':v5.MODEL,'cli_commit':v5.CLI,'baseline_commit':v5.BASELINE,'candidate_commit':v5.CANDIDATE,'planned_jobs':planned_jobs,'completed_jobs':0,'observations':[],'run_status':'incomplete','formal_f1':None,'quality_go':False,'adoption_go':False,'maximum_usd_all_48_by_token_cap':round(MAX_PRICE,7)}
     rawdir=root/'raw';rawdir.mkdir(mode=0o700,exist_ok=True)
     status='complete'
     try:
+        start=shard * SUPPORTED_SHARD_COUNTS[shard_count]
         for i,row in enumerate(subset,start):
             for arm in (v5.ARMS if i%2==0 else v5.ARMS[::-1]):
                 st=time.monotonic()
@@ -194,15 +216,15 @@ def measure(repo,root,rows,build,shard):
         report['run_status']=status
         (root/'sanitized-summary.json').write_text(serialize(report))
         print('shard='+str(shard+1)+' status='+status+' completed='+str(report['completed_jobs'])+' formal_f1=null',flush=True)
-    v5.checked(status=='complete' and report['completed_jobs']==12,'shard_incomplete_or_failed')
+    v5.checked(status=='complete' and report['completed_jobs']==planned_jobs,'shard_incomplete_or_failed')
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--repo',type=Path,required=True);p.add_argument('--build',type=Path,required=True);p.add_argument('--cases',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--mode',choices=['preflight','live'],required=True);p.add_argument('--shard',type=int,choices=[0,1,2,3],default=0)
-    a=p.parse_args();repo=a.repo.resolve(strict=True);build=v5.build_checked(a.build);root=a.output.resolve();v5.checked(not root.exists(),'output_must_be_new');root.mkdir(mode=0o700,parents=True)
+    p=argparse.ArgumentParser();p.add_argument('--repo',type=Path,required=True);p.add_argument('--build',type=Path,required=True);p.add_argument('--cases',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--mode',choices=['preflight','live'],required=True);p.add_argument('--shard',type=int,choices=range(8),default=0);p.add_argument('--shard-count',type=int,choices=[4,8],default=4)
+    a=p.parse_args();v5.checked(a.shard < a.shard_count,'shard_outside_frozen_partition');repo=a.repo.resolve(strict=True);build=v5.build_checked(a.build);root=a.output.resolve();v5.checked(not root.exists(),'output_must_be_new');root.mkdir(mode=0o700,parents=True)
     rows=setup(repo,root,a.cases,build)
     print('real_docs_12_pinned=true 24/24_request_pairs_equal=true api_calls_preflight=0',flush=True)
-    if a.mode=='live':measure(repo,root,rows,build,a.shard)
+    if a.mode=='live':measure(repo,root,rows,build,a.shard,a.shard_count)
     else: print('formal_f1=null model_calls=0',flush=True)
 
 if __name__=='__main__':main()
