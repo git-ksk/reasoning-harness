@@ -50,3 +50,33 @@ No complete copyrighted source documents, answers, questions, gold labels or raw
 No API entitlement has been verified on the current turn. The prospective Mistral model is `ministral-8b-2512`. Each CLI is bounded by **≤12 model operations, ≤28,096 tokens**, yielding 48 planned CLI calls and a **worst-case envelope 576 model operations / 1,348,608 tokens**. These are bounds, **not a guarantee of no billing**. The earlier same-account Mistral read-only gate must independently recheck *organization + API budget pay-as-you-go OFF, included budget headroom and current model* before every newly authorized shard. No model execution is permitted on an unverified or failing gate. The [#613 eight-independent-job design](../../docs/issue-613-engine073-offline-20261115.md) is a **provider-free planning reference**, not a reused real24 one-shot command. Future independent model-bearing jobs must be separately reviewed, tagged and explicitly approved, with distinct job timeouts, encrypted partial raw output, no automatic retries and no reexecution of a possibly charged in-flight attempt. **No effectful new workflow, tag or model call is added here.**
 
 **Current blocking gates:** independent reviewer and private 24-question gold absent; source/question/gold not frozen; fresh 24-pair first-request parity not available; current same-account no-overage account read-only gate not checked; independent actual-model quality evidence and F1 absent. `quality_go=false`, `release_go=false`; PR #614 and Issue #613 should remain HOLD for Engine 0.7.3/main/CLI promotion.
+
+## Private independent-authoring handoff prepared (2026-11-16 JST)
+
+`reviewer_handoff.py` can download the **exact 12 already SHA-pinned official upstream documents** into an **exclusive, local, 0700 directory** and create 24 **empty, immutable** question slots (two per source). It also seals a packet index and private file inventory. Document files are 0600, URL/commit/length/SHA256 are checked before writing, no symlink or inherited allow ACL is admitted, and subsequent offline audits reject changed source bytes, modified/filled-in placeholders, a forged reviewer approval, unexpected files, unsafe permissions or replacement gold. The packet and source text stay **off GitHub**. The content is original public upstream documentation; obey each upstream document's usage/license when sharing it with an external reviewer.
+
+The packet was staged and audited on the user's Mac, with **12/12 exact-source bytes and 24/24 unchanged blank slots**. It contains 38 private files (~1.2 MB) under:
+
+```
+~/Library/Application Support/reasoning-harness/issue531-independent24-20261116/independent-author-source-packet-v1/
+```
+
+To verify without any network/provider request:
+
+```sh
+python3 evaluation/engine073-531-independent24-20261116/reviewer_handoff.py \
+  --repo . --mode audit \
+  --packet "$HOME/Library/Application Support/reasoning-harness/issue531-independent24-20261116/independent-author-source-packet-v1"
+```
+
+A new packet may be created only at a **different, previously unused private path** with `--mode stage`; that mode makes unauthenticated public GitHub GET requests but **zero model-provider requests**. It cannot overwrite existing packets. The script is a staging tool and does not change the sealed blank slots when given to the author; the author must create a **separate** set of reviewed, source-backed questions rather than editing the prepared packet in place.
+
+### Independent author and reviewer requirements (still OPEN)
+
+1. **Different principals**: appoint an independently authorized question author and an independent reviewer, distinct from the #613 implementation/execution principal. The source selector is the implementation principal and **cannot self-attest independent authorship or independent review**. The old `v3-independent-reviewer-591` is enrollment for a *different* historical cohort; do not silently reuse its key/policy as fresh holdout approval.
+2. **Author 24 real fresh questions only after evaluator/source protocol freeze**: use the 12 frozen source snapshots, with positive/negative balance 16/8 and two cases per source. Include revisions, contradiction, related-but-wrong scope, missing/unauthorized lineage, reposts, and deliberately unsupported statements. Produce questions/source versions separately from the private factual labels; do not include expected values or private gold in prompts, PRs, Actions logs or public review. Avoid copying historical Dev24 questions or prior QA model completions.
+3. **Second-person adjudication**: reviewer inspects full upstream document bytes and independently verifies each source-backed expected proposition, polarity, scope, quote, effective time, and leakage boundary. Canonical gold is frozen privately and its digest signed by an enrolled independent key **only after** actual review; the signer must attest the exact corpus, published evaluators, scoring contract, paired Core/CLI build identities, and review evidence. Signing-key possession alone does not establish semantic independence.
+4. **First-run safety gate**: before new model traffic, re-run the current same-account **authenticated** Mistral billing read-only gate (`evaluation/dev-lite/issue531_real24_api_billing_gate.py`, exact model `ministral-8b-2512`); require organizational and API pay-as-you-go OFF and verified headroom. The local shell had no `MISTRAL_API_KEY` or current billing attestation during this preparation. Never infer current free use from the old 2026-11-05 operator JSON. A successful GET is not sufficient without exact gate semantics and scope.
+5. **Separate effectful authorization**: only after **all** above gates pass, author/review the *new* eight-independent-job one-shot live workflow with no auto retry, fixed ceilings, signed reviewer monitoring for each first observation, encrypted partial artifacts, and fail-closed accounting. No such job or token-generating workflow has been created or triggered by PR #615.
+
+**Acceptance snapshot:** local handoff packet created; stage+offline audit passed; unit tests 17/17 provider-free; PR #615 remains Draft. `questions_authored=0`, `reviewer_approved=false`, `billing_gate_checked=false`, `live_allowed=false`, `formal_f1=null`, `quality_go=false`, `release_go=false`.
