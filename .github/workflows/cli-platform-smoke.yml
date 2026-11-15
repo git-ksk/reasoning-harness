@@ -66,8 +66,10 @@ jobs:
             -- --exact --nocapture
       - name: Product CLI compatibility contract
         run: cargo test --locked -p reasoning-harness-cli --test product_cli_contract
-      - name: Issue 613 source-bound final-answer recovery (provider-free)
-        run: cargo test --locked -p reasoning-harness-cli --bin reason issue613
+      - name: Issue 613 bounded acquisition and source-bound recovery (provider-free)
+        run: |
+          cargo test --locked -p reasoning-harness-core --lib issue613
+          cargo test --locked -p reasoning-harness-cli --bin reason issue613
       - name: Mac native evaluation supervision controls
         if: runner.os == 'macOS'
         shell: bash

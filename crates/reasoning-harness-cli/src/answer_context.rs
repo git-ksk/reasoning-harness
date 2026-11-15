@@ -374,6 +374,246 @@ pub(super) fn verified_source_targets(
     result
 }
 
+/// Quarantine only a self-contained, unverified model inference component rooted
+/// in one *already refuted* model value. Any independent premise, typed
+/// dependent claim, accepted receipt or protected hypothesis vetoes quarantine.
+/// The original rejected graph remains in the previously recorded diagnostic
+/// phase; this returns a new candidate for independent re-grounding only.
+fn quarantine_refuted_component(
+    candidate: &mut reasoning_harness_core::ReasoningCandidate,
+    artifact: &ReasoningArtifact,
+    root_id: &str,
+) -> bool {
+    let mut tainted = BTreeSet::from([root_id.to_owned()]);
+    loop {
+        let mut grew = false;
+        for inference in &candidate.inferences {
+            if inference
+                .premise_claim_ids
+                .iter()
+                .any(|id| tainted.contains(id))
+                && tainted.insert(inference.conclusion_claim_id.clone())
+            {
+                grew = true;
+            }
+        }
+        if !grew {
+            break;
+        }
+    }
+    for inference in &candidate.inferences {
+        if tainted.contains(&inference.conclusion_claim_id)
+            && (inference.premise_claim_ids.is_empty()
+                || inference
+                    .premise_claim_ids
+                    .iter()
+                    .any(|p| !tainted.contains(p)))
+        {
+            return false;
+        }
+    }
+    for id in &tainted {
+        let matching = artifact
+            .claims
+            .iter()
+            .filter(|c| &c.id == id)
+            .collect::<Vec<_>>();
+        let [current] = matching.as_slice() else {
+            return false;
+        };
+        if id != root_id
+            && (!matches!(
+                current.state,
+                EpistemicState::Assumed | EpistemicState::Inferred | EpistemicState::Unknown
+            ) || current.proposition.is_some()
+                || artifact
+                    .verification_receipts
+                    .iter()
+                    .any(|r| r.claim_id.as_deref() == Some(id))
+                || artifact
+                    .adversarial_findings
+                    .iter()
+                    .any(|f| f.claim_id == *id && f.strength == FindingStrength::Hard))
+        {
+            return false;
+        }
+        if candidate.claims.iter().filter(|c| &c.id == id).count() != 1 {
+            return false;
+        }
+    }
+    for claim in &mut candidate.claims {
+        if tainted.contains(&claim.id) {
+            claim.proposition = None;
+            claim.proposed_state = EpistemicState::Assumed;
+            claim.evidence_ids.clear();
+        }
+    }
+    candidate.inferences.retain(|i| {
+        !tainted.contains(&i.conclusion_claim_id)
+            && i.premise_claim_ids.iter().all(|p| !tainted.contains(p))
+    });
+    true
+}
+
+/// A model-proposed value for an already source-bound fact may be *refuted* by
+/// the exact trusted structured value. Preserve its prose as untrusted and
+/// untyped rather than letting it create a permanent same-key Reject which
+/// blocks the separately verified official answer. This is NOT a synonym rule:
+/// it requires an actual refutation receipt for the model claim, a separate
+/// current support receipt for the canonical fact, unambiguous pinned source
+/// bytes, and unanimity among admitted observations for this fact key.
+///
+/// No user-requested hypothesis, typed inference dependency, harness-owned
+/// fact or competing authoritative evidence is revised. The caller must run
+/// the entire grounding pipeline again and preserve the original trace.
+pub(super) fn unbind_refuted_model_fact_keys(
+    config: &Config,
+    artifact: &ReasoningArtifact,
+    candidate: &mut reasoning_harness_core::ReasoningCandidate,
+) -> Vec<String> {
+    if config.validate().is_err() {
+        return vec![];
+    }
+    let verifier = reasoning_harness_core::structured_fact_verifier_for_input(
+        &super::input_from_artifact(artifact),
+    );
+    let mut corrected = Vec::new();
+    for source in &config.sources {
+        let target = &source.proposition;
+        if config.sources.iter().any(|other| {
+            other.proposition.key == target.key && other.proposition.value != target.value
+        }) || artifact
+            .hypotheses
+            .iter()
+            .any(|p| p.key == target.key && p != target)
+            || artifact
+                .evidence_requirements
+                .iter()
+                .any(|r| r.proposition.key == target.key && r.proposition != *target)
+            || artifact
+                .evidence_qualification_findings
+                .iter()
+                .any(|f| f.proposition.key == target.key)
+            || artifact.evidence.iter().any(|e| {
+                e.facts
+                    .get(&target.key)
+                    .is_some_and(|value| value != &target.value)
+            })
+        {
+            continue;
+        }
+        let matching = artifact
+            .evidence
+            .iter()
+            .filter(|e| e.id == source.evidence_id)
+            .collect::<Vec<_>>();
+        let [evidence] = matching.as_slice() else {
+            continue;
+        };
+        if evidence.source != source.source_id
+            || evidence_hash(evidence) != source.evidence_sha256
+            || evidence.facts.get(&target.key) != Some(&target.value)
+            || evidence.metadata.scope.is_none()
+            || evidence.metadata.temporal.is_none()
+            || evidence
+                .metadata
+                .provenance_class
+                .as_deref()
+                .is_none_or(|p| p == "untrusted_context" || p == "untrusted")
+        {
+            continue;
+        }
+        let Ok(parsed) = serde_json::from_str::<UniqueJson>(&evidence.observation) else {
+            continue;
+        };
+        let record = &parsed.0;
+        if record.pointer(&source.url_pointer).and_then(|v| v.as_str()) != Some(&source.url)
+            || record
+                .pointer(&source.version_pointer)
+                .and_then(|v| v.as_str())
+                != Some(&source.source_version)
+            || !record
+                .pointer(&source.quote_pointer)
+                .and_then(|v| v.as_str())
+                .is_some_and(|quote| clean(quote) && quote.len() <= 32768)
+        {
+            continue;
+        }
+        let supported = artifact.claims.iter().any(|claim| {
+            claim.proposition.as_ref() == Some(target)
+                && claim.state == EpistemicState::Supported
+                && claim.evidence_ids.contains(&source.evidence_id)
+                && verifier
+                    .verify(claim, &artifact.evidence)
+                    .is_some_and(|receipt| {
+                        receipt.conclusion == VerificationConclusion::Supported
+                            && receipt.evidence_ids.contains(&source.evidence_id)
+                    })
+                && artifact.verification_receipts.iter().any(|receipt| {
+                    matches!(
+                        receipt.verifier.as_str(),
+                        "structured_fact_equality" | "qualified_structured_fact_equality"
+                    ) && receipt.conclusion == VerificationConclusion::Supported
+                        && receipt.claim_id.as_deref() == Some(claim.id.as_str())
+                        && receipt.proposition.as_ref() == Some(target)
+                        && receipt
+                            .claim_statement
+                            .as_ref()
+                            .is_none_or(|s| s == &claim.statement)
+                        && receipt.evidence_ids.contains(&source.evidence_id)
+                        && receipt
+                            .evidence_ids
+                            .iter()
+                            .all(|id| artifact.evidence.iter().filter(|e| &e.id == id).count() == 1)
+                })
+        });
+        if !supported {
+            continue;
+        }
+        // Snapshot the candidate IDs first. Mutations occur only after the
+        // complete dependency graph passes the fail-closed quarantine checks.
+        let candidate_ids = candidate
+            .claims
+            .iter()
+            .map(|c| c.id.clone())
+            .collect::<Vec<_>>();
+        for id in candidate_ids {
+            let Some(claim) = candidate.claims.iter().find(|c| c.id == id) else {
+                continue;
+            };
+            if claim.id.starts_with("harness_")
+                || !claim
+                    .proposition
+                    .as_ref()
+                    .is_some_and(|p| p.key == target.key && p.value != target.value)
+                || !artifact.claims.iter().any(|original| {
+                    original.id == claim.id
+                        && original.proposition == claim.proposition
+                        && original.state == EpistemicState::Contradicted
+                })
+                || !artifact.verification_receipts.iter().any(|receipt| {
+                    receipt.claim_id.as_deref() == Some(claim.id.as_str())
+                        && receipt.proposition.as_ref() == claim.proposition.as_ref()
+                        && receipt.conclusion == VerificationConclusion::Contradicted
+                        && matches!(
+                            receipt.verifier.as_str(),
+                            "structured_fact_equality" | "qualified_structured_fact_equality"
+                        )
+                        && receipt.evidence_ids.contains(&source.evidence_id)
+                })
+            {
+                continue;
+            }
+            if quarantine_refuted_component(candidate, artifact, &id) {
+                corrected.push(id);
+            }
+        }
+    }
+    corrected.sort();
+    corrected.dedup();
+    corrected
+}
+
 fn grounded_target_authorized(artifact: &ReasoningArtifact, target: &Proposition) -> bool {
     let matching = artifact
         .claims
@@ -1067,6 +1307,197 @@ mod tests {
         );
     }
 
+    fn refuted_model_variant_fixture() -> (
+        Config,
+        ReasoningArtifact,
+        reasoning_harness_core::ReasoningCandidate,
+    ) {
+        use reasoning_harness_core::{CandidateClaim, ReasoningCandidate};
+        let (config, original, selected, _) = test_fixture();
+        let current = selected[0].proposition.clone();
+        let input = super::super::input_from_artifact(&original);
+        let variant = Proposition {
+            key: current.key.clone(),
+            value: "model's unsupported shorter paraphrase".into(),
+        };
+        let candidate = ReasoningCandidate {
+            claims: vec![
+                CandidateClaim {
+                    id: "model-refuted-variant".into(),
+                    statement: "original untrusted model phrasing".into(),
+                    proposed_state: EpistemicState::Assumed,
+                    proposition: Some(variant),
+                    evidence_ids: vec![],
+                },
+                CandidateClaim {
+                    id: "official-source-fact".into(),
+                    statement: "canonical source fact".into(),
+                    proposed_state: EpistemicState::Assumed,
+                    proposition: Some(current),
+                    evidence_ids: vec![original.evidence[0].id.clone()],
+                },
+            ],
+            ..Default::default()
+        };
+        let outcome = super::super::run_standard_grounding(input, candidate.clone()).unwrap();
+        assert_eq!(outcome.verdict, reasoning_harness_core::Verdict::Reject);
+        (config, outcome.artifact, candidate)
+    }
+
+    #[test]
+    fn issue613_refuted_model_variant_can_be_unbound_but_verified_fact_is_asserted() {
+        use reasoning_harness_core::{
+            FinalizationStatus, Verdict, canonical_verified_target_partial_answer,
+        };
+        let (config, artifact, mut candidate) = refuted_model_variant_fixture();
+        let original_id = candidate.claims[0].id.clone();
+        assert_eq!(
+            unbind_refuted_model_fact_keys(&config, &artifact, &mut candidate),
+            vec![original_id]
+        );
+        assert!(candidate.claims[0].proposition.is_none());
+        assert_eq!(candidate.claims[0].proposed_state, EpistemicState::Assumed);
+        let replay = super::super::run_standard_grounding(
+            super::super::input_from_artifact(&artifact),
+            candidate,
+        )
+        .unwrap();
+        assert_eq!(replay.verdict, Verdict::Unknown);
+        assert!(
+            !replay
+                .artifact
+                .claims
+                .iter()
+                .any(|c| c.state == EpistemicState::Contradicted)
+        );
+        let targets = verified_source_targets(&config, &replay.artifact);
+        assert_eq!(targets.len(), 1);
+        let (answer, hard) =
+            canonical_verified_target_partial_answer(&replay.artifact, replay.verdict, &targets)
+                .expect("exact supported source truth is available; model error stays unresolved");
+        assert_eq!(hard.status, FinalizationStatus::QualifiedPartialAnswer);
+        let (display, view) =
+            compose(&config, &replay.artifact, &answer.factual_claims, hard).unwrap();
+        assert!(
+            display
+                .text
+                .as_deref()
+                .unwrap()
+                .contains("\"feature.rule\" = \"limited\"")
+        );
+        assert!(
+            !display
+                .text
+                .as_deref()
+                .unwrap()
+                .contains("unsupported shorter paraphrase")
+        );
+        assert_eq!(view.citations.len(), 1);
+    }
+
+    #[test]
+    fn issue613_refuted_model_inference_component_quarantines_only_unverified_dependents() {
+        use reasoning_harness_core::{
+            CandidateClaim, Inference, Verdict, canonical_verified_target_partial_answer,
+        };
+        let (config, original, mut candidate) = refuted_model_variant_fixture();
+        for n in 0..3 {
+            candidate.claims.push(CandidateClaim {
+                id: format!("model-dependent-{n}"),
+                statement: format!("unverified model inference {n}"),
+                proposed_state: EpistemicState::Assumed,
+                proposition: None,
+                evidence_ids: vec![],
+            });
+            candidate.inferences.push(Inference {
+                id: format!("model-inference-{n}"),
+                premise_claim_ids: vec!["model-refuted-variant".into()],
+                conclusion_claim_id: format!("model-dependent-{n}"),
+                method: "unverified_generation".into(),
+            });
+        }
+        let rejected = super::super::run_standard_grounding(
+            super::super::input_from_artifact(&original),
+            candidate.clone(),
+        )
+        .unwrap();
+        assert_eq!(rejected.verdict, Verdict::Reject);
+        let ids = unbind_refuted_model_fact_keys(&config, &rejected.artifact, &mut candidate);
+        assert_eq!(ids, vec!["model-refuted-variant"]);
+        assert!(candidate.inferences.is_empty());
+        assert!(
+            candidate
+                .claims
+                .iter()
+                .filter(|c| c.id.starts_with("model-"))
+                .all(|c| c.proposition.is_none() && c.proposed_state == EpistemicState::Assumed)
+        );
+        let revised = super::super::run_standard_grounding(
+            super::super::input_from_artifact(&rejected.artifact),
+            candidate,
+        )
+        .unwrap();
+        assert_eq!(revised.verdict, Verdict::Unknown);
+        let exact = verified_source_targets(&config, &revised.artifact);
+        let (answer, hard) =
+            canonical_verified_target_partial_answer(&revised.artifact, revised.verdict, &exact)
+                .expect(
+                    "the actual source-backed fact survives while inferred model prose does not",
+                );
+        let (display, view) =
+            compose(&config, &revised.artifact, &answer.factual_claims, hard).unwrap();
+        assert!(
+            display
+                .text
+                .unwrap()
+                .contains("\"feature.rule\" = \"limited\"")
+        );
+        assert_eq!(view.citations.len(), 1);
+    }
+
+    #[test]
+    fn issue613_refuted_model_variant_fail_closed_without_exact_current_source_authority() {
+        let (config, artifact, original) = refuted_model_variant_fixture();
+        for change in 0..7 {
+            let mut config = config.clone();
+            let mut artifact = artifact.clone();
+            let mut candidate = original.clone();
+            match change {
+                0 => config.sources[0].source_version.push_str("-tampered"),
+                1 => config.sources[0].evidence_sha256 = "0".repeat(64),
+                2 => artifact
+                    .verification_receipts
+                    .retain(|r| r.conclusion != VerificationConclusion::Supported),
+                3 => artifact
+                    .verification_receipts
+                    .retain(|r| r.conclusion != VerificationConclusion::Contradicted),
+                4 => artifact.evidence.push(Evidence {
+                    id: "counterexample".into(),
+                    source: "different".into(),
+                    observation: "other value".into(),
+                    facts: BTreeMap::from([("feature.rule".into(), "opposite".into())]),
+                    metadata: artifact.evidence[0].metadata.clone(),
+                }),
+                5 => artifact
+                    .hypotheses
+                    .push(original.claims[0].proposition.clone().unwrap()),
+                _ => candidate
+                    .inferences
+                    .push(reasoning_harness_core::Inference {
+                        id: "link".into(),
+                        premise_claim_ids: vec![original.claims[0].id.clone()],
+                        conclusion_claim_id: original.claims[1].id.clone(),
+                        method: "model".into(),
+                    }),
+            }
+            assert!(
+                unbind_refuted_model_fact_keys(&config, &artifact, &mut candidate).is_empty(),
+                "unexpected unsupported correction case {change}"
+            );
+            assert_eq!(candidate.claims[0], original.claims[0]);
+        }
+    }
+
     fn two_sourced_facts_with_one_unplanned_target() -> (
         Config,
         ReasoningArtifact,
@@ -1349,6 +1780,173 @@ mod tests {
                 }
                 _ => unreachable!(),
             }
+        }
+    }
+
+    /// Replay the exact previously captured model claims and source bindings;
+    /// never create a fresh provider observation or change the original result.
+    #[test]
+    #[ignore = "requires RH613_PRIVATE_OBSERVATION_DIR and RH613_PUBLIC_CONFIG_DIR"]
+    fn issue613_real_rw02_rw19_offline_corrected_display_replay() {
+        use reasoning_harness_core::{
+            CandidateClaim, ReasoningCandidate, Verdict, canonical_verified_target_answer,
+            canonical_verified_target_partial_answer,
+        };
+        let private =
+            std::path::PathBuf::from(std::env::var("RH613_PRIVATE_OBSERVATION_DIR").unwrap());
+        let public = std::path::PathBuf::from(std::env::var("RH613_PUBLIC_CONFIG_DIR").unwrap());
+        for case in ["rw-19", "rw-02"] {
+            let raw: serde_json::Value = serde_json::from_slice(
+                &std::fs::read(private.join(format!("{case}-candidate.stdout.json"))).unwrap(),
+            )
+            .unwrap();
+            let public_cfg: serde_json::Value = serde_json::from_slice(
+                &std::fs::read(public.join(format!("{case}.json"))).unwrap(),
+            )
+            .unwrap();
+            let cfg: Config = serde_json::from_value(public_cfg["answer_context"].clone()).unwrap();
+            let original: ReasoningArtifact =
+                serde_json::from_value(raw["result"]["final_outcome"]["artifact"].clone()).unwrap();
+            assert_eq!(raw["result"]["final_outcome"]["verdict"], "reject");
+            let mut candidate = ReasoningCandidate {
+                claims: original
+                    .claims
+                    .iter()
+                    .map(|c| CandidateClaim {
+                        id: c.id.clone(),
+                        statement: c.statement.clone(),
+                        proposed_state: EpistemicState::Assumed,
+                        proposition: c.proposition.clone(),
+                        evidence_ids: c.evidence_ids.clone(),
+                    })
+                    .collect(),
+                inferences: original.inferences.clone(),
+            };
+            let corrected = unbind_refuted_model_fact_keys(&cfg, &original, &mut candidate);
+            assert_eq!(
+                corrected.len(),
+                1,
+                "expected one verified model-value correction: {case}"
+            );
+            let mut input = super::super::input_from_artifact(&original);
+            if case == "rw-02" {
+                // This source was NOT acquired in the cancelled real attempt:
+                // the core Reject short circuit aborted the second resolution.
+                // Add the *unchanged* public host-pinned snapshot as a simulated
+                // read-only acquisition for a provider-free prospective replay.
+                let captured =
+                    &public_cfg["resolution"]["investigation"]["capabilities"][0]["evidence"][0];
+                let mut acquired = original.evidence[0].clone();
+                acquired.id = captured["id"].as_str().unwrap().into();
+                acquired.source = captured["source"].as_str().unwrap().into();
+                acquired.observation = captured["observation"].as_str().unwrap().into();
+                acquired.facts = serde_json::from_value(captured["facts"].clone()).unwrap();
+                assert_eq!(acquired.id, cfg.sources[0].evidence_id);
+                assert_eq!(evidence_hash(&acquired), cfg.sources[0].evidence_sha256);
+                candidate.claims.push(CandidateClaim {
+                    id: "harness_local_replay_only_rw02_source0".into(),
+                    statement: "typed fact from pinned source-0".into(),
+                    proposed_state: EpistemicState::Assumed,
+                    proposition: Some(cfg.sources[0].proposition.clone()),
+                    evidence_ids: vec![acquired.id.clone()],
+                });
+                input.evidence.push(acquired);
+            }
+            let regrounded = super::super::run_standard_grounding(input, candidate).unwrap();
+            assert_ne!(
+                regrounded.verdict,
+                Verdict::Reject,
+                "model-origin contradiction persists: {case}"
+            );
+            let targets = verified_source_targets(&cfg, &regrounded.artifact);
+            assert_eq!(targets.len(), if case == "rw-02" { 2 } else { 1 });
+            let (answer, hard) = canonical_verified_target_answer(
+                &regrounded.artifact,
+                regrounded.verdict,
+                &targets,
+            )
+            .map(|a| {
+                let result = reasoning_harness_core::finalize_answer(
+                    &regrounded.artifact,
+                    regrounded.verdict,
+                    a.clone(),
+                    reasoning_harness_core::FinalizationPolicy::default(),
+                );
+                (a, result)
+            })
+            .or_else(|| {
+                canonical_verified_target_partial_answer(
+                    &regrounded.artifact,
+                    regrounded.verdict,
+                    &targets,
+                )
+            })
+            .expect("both canonical facts must be re-grounded from the actual artifact");
+            let (display, view) =
+                compose(&cfg, &regrounded.artifact, &answer.factual_claims, hard).unwrap();
+            let text = display.text.as_deref().unwrap();
+            for target in targets {
+                assert!(
+                    text.contains(&format!(
+                        "{} = {}",
+                        serde_json::to_string(&target.key).unwrap(),
+                        serde_json::to_string(&target.value).unwrap(),
+                    )),
+                    "fact not asserted in final display: {}",
+                    target.key
+                );
+            }
+            assert!(view.citations.len() >= if case == "rw-02" { 2 } else { 1 });
+            assert!(!text.contains("model's unsupported shorter paraphrase"));
+        }
+    }
+
+    #[test]
+    #[ignore = "requires RH613_PRIVATE_OBSERVATION_DIR and RH613_PUBLIC_CONFIG_DIR"]
+    fn issue613_actual_five_negative_controls_never_unbind_or_assert_new_facts() {
+        use reasoning_harness_core::{CandidateClaim, ReasoningCandidate};
+        let private =
+            std::path::PathBuf::from(std::env::var("RH613_PRIVATE_OBSERVATION_DIR").unwrap());
+        let public = std::path::PathBuf::from(std::env::var("RH613_PUBLIC_CONFIG_DIR").unwrap());
+        for case in ["rw-07", "rw-12", "rw-14", "rw-18", "rw-22"] {
+            let raw: serde_json::Value = serde_json::from_slice(
+                &std::fs::read(private.join(format!("{case}-candidate.stdout.json"))).unwrap(),
+            )
+            .unwrap();
+            let public_cfg: serde_json::Value = serde_json::from_slice(
+                &std::fs::read(public.join(format!("{case}.json"))).unwrap(),
+            )
+            .unwrap();
+            let config: Config =
+                serde_json::from_value(public_cfg["answer_context"].clone()).unwrap();
+            let artifact: ReasoningArtifact =
+                serde_json::from_value(raw["result"]["final_outcome"]["artifact"].clone()).unwrap();
+            let mut candidate = ReasoningCandidate {
+                claims: artifact
+                    .claims
+                    .iter()
+                    .map(|c| CandidateClaim {
+                        id: c.id.clone(),
+                        statement: c.statement.clone(),
+                        proposed_state: EpistemicState::Assumed,
+                        proposition: c.proposition.clone(),
+                        evidence_ids: c.evidence_ids.clone(),
+                    })
+                    .collect(),
+                inferences: artifact.inferences.clone(),
+            };
+            let unchanged = candidate.clone();
+            assert!(
+                unbind_refuted_model_fact_keys(&config, &artifact, &mut candidate).is_empty(),
+                "negative control must not be corrected: {case}"
+            );
+            assert_eq!(candidate, unchanged);
+            assert_eq!(raw["result"]["finalization"]["covered_claims"], 0);
+            let status = raw["result"]["finalization"]["status"].as_str().unwrap();
+            assert!(
+                matches!(status, "abstain" | "requires_verification" | "unresolved"),
+                "negative control unexpectedly asserted an answer: {case}"
+            );
         }
     }
 }

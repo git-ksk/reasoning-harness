@@ -30,7 +30,7 @@ The observed paths were inspected as **source binding → plan/Fact Key → admi
 
 - `cargo fmt --all -- --check`: PASS.
 - `cargo clippy --workspace --all-targets -- -D warnings`: PASS.
-- `cargo test --workspace --quiet`: **1,593 passed / 0 failed / 11 ignored**, with three new provider-free #613 tests passing as part of the suite.
+- `cargo test --workspace --quiet`: **1,593 passed / 0 failed / 11 ignored** on the prior partial patch (commit `170c4fa`); the current follow-up has separately tested Core and CLI targets, with complete updated workspace CI pending.
 - Explicit original-raw-artifact replay, only when paths are provided locally:
   - `rw-21`: PASS: old selected `jemalloc` alone, revised canonical recovery asserts **both** `jemalloc` and `make MALLOC=libc`; source-context composition yields **3** exact-bound citations. No new model text is invented.
   - `rw-02` / `rw-19`: PASS: current source-target authorization remains absent in the presence of actual contradictions; neither becomes an asserted answer.
@@ -50,3 +50,37 @@ The `#[ignore]` tests require caller-created temporary files from the owner's ex
 5. Job timeout isolation for a **future** distinct evaluation requires independent review before new provider spend. **Do not rerun** `eval-531-real-doc24-live-20261115-one-shot` or `rw-23`/`rw-24` by default.
 
 **Decision:** Review and possibly merge this partial, defensive recovery change into the development evaluation stack only after CI, but keep #613 OPEN/HOLD. Do **not** release 0.7.3, merge the candidate into main, adopt it in CLI, or claim a new F1 until #531's independent acceptance gates are met.
+
+## Follow-up implementation (2026-11-15 JST): bounded acquisition and refuted model dependency quarantine
+
+This is a **prospective code fix exercised against preserved development observations**. The original cancelled attempt and 44 original stdout artifacts are immutable. No provider generation, rerun, gap fill, hidden gold disclosure, new independent F1, or release authorization occurred.
+
+### Newly identified causal failure (rw-02)
+
+The candidate's first acquired HTTP 404 record led a subsequent stochastic regeneration to create a same-key candidate proposition differing by whitespace (`HTTP 404` vs canonical `HTTP404`), then the structured equality verifier correctly **contradicted** that candidate. The model's incorrect typed proposition was also a premise of **three unverified generated inferences**. The runtime's ordinary `Reject` short-circuit then prevented **both subsequent `InvestigationQuestion` actions from calling the resolver**: their grounded-resolution attempts lists are empty, although the investigation telemetry reports `no_result`. This is a real control-flow defect, not evidence that the upstream curl retry record was absent. The second source's matching HTTP 404 record was already admitted; source 0's `curl.retry.transient` record was never acquired in the original candidate arm.
+
+### Precisely scoped remedies
+
+1. `crates/reasoning-harness-core/src/resolution.rs`: `run_with_pending_investigation` now allows *one explicitly planned* `InvestigationQuestion`/`EvidenceAcquisition` request to run **even if an unrelated model claim is already Reject**. The existing `run` behavior and `revise_refuted=false` remain fail-closed; budget remains exactly one attempt and the actual resolver and evidence-admission gates are unchanged. The new Core test confirms the source is acquired while the final verdict remains **Reject** and `finalization=Abstain`—acquisition never turns into assertion authority.
+2. `crates/reasoning-harness-cli/src/answer_context.rs`: `unbind_refuted_model_fact_keys` removes **only the typed binding**, not the provenance or original diagnostic trace, of a *specific model-generated, directly structured-verifier-refuted* alternative under an **exactly pinned, source-version/SHA/quote/URL/scope/time-checked, independently supported canonical key**. This is not heuristic synonym matching. There must be **no** divergent admitted fact for that key, no conflicting pinned-source canonical values, no user-requested opposite hypothesis, no qualification defects, and no missing/forged supported or contradicted receipt. A graph guard quarantines only the self-contained *unverified, untyped* inference dependents of the refuted model claim; a dependent with a typed proposition, independent premise, hard finding, receipt, or authoritative state stops the correction. Original model prose survives only as **Assumed/untyped**, never as an asserted fact. No source text alone supplies an assertion.
+3. `crates/reasoning-harness-cli/src/main.rs`: only when the actual final verdict is `Reject`, rerun the complete grounding/verification pipeline on the preserved admitted evidence and a narrowly corrected candidate; record the original and corrected states through diagnostic trace. The re-grounded verdict, current exact source-binding verification, canonical finalization, answer-safety and source-context citation gates remain authoritative. Do not bypass any gate or modify previously returned resolution attempts.
+4. `.github/workflows/cli-platform-smoke.yml`: execute both the bounded acquisition Core regression and CLI final-answer/provider-free tests on Linux x86_64, macOS ARM64/Intel, and Windows x86_64, without private files or model tokens.
+
+### Verified offline final-answer differences
+
+- **`rw-19`:** Reconstructed the rejected 0.7.3 candidate and admitted source data from the original encrypted private stdout. One directly refuted generated variant is isolated; regrounding on **the unchanged two acquired SQLite source records** admits the single canonical `Helpful but not required before tests.` fact as an actual displayed assertion, with exact source-bound citation. This is an offline re-evaluation of existing evidence, not a replacement for the original abstaining observation.
+- **`rw-02`:** The original source-1 HTTP 404 record and rejected 0.7.3 model graph were replayed. To simulate the **previously aborted** next acquisition, the original unchanged **public source-0 captured record** was provided locally; its admitted Evidence SHA256 was independently matched to the frozen answer-context registration. The quarantined wrong model-binding graph, its three unverified dependents, and the two source facts were re-grounded. **Both** `curl.retry.transient` and `curl.retry_all.http404` appear in the resulting **asserted** final answer with at least two exact citation bindings. This is explicitly a *prospective provider-free simulation* for the missing source-0 step: the old cancelled run did not actually acquire it, so one cannot claim that original rw-02's real answer changed.
+- **`rw-21`:** Previously verified recovery remains unchanged; assertion includes both `jemalloc` and `make MALLOC=libc`, not citation quotation alone.
+- **`rw-08`:** The correct original asserted `git check-ignore` result includes exit codes 0/1/128; the guarded reconciliation neither rewrites its trusted proposition nor manufactures a new verdict.
+- **All five observed negative controls** (`rw-07`, `rw-12`, `rw-14`, `rw-18`, `rw-22`): reconstructed original candidates, records and source config from all encrypted private archives. **5/5 fail closed**: zero model-value corrections, no generated new assertion, and original finalization `covered_claims=0` in all five (`requires_verification` is an explicit safe withholding status, not a completed answer).
+
+### Local verification and remaining gate
+
+- `cargo fmt --all -- --check`: PASS.
+- `cargo clippy --locked --workspace --all-targets -- -D warnings`: PASS.
+- `cargo test --locked -p reasoning-harness-core --lib --quiet`: **331 PASS / 0 FAIL**.
+- `cargo test --locked -p reasoning-harness-cli --bin reason --quiet`: **297 PASS / 0 FAIL / 8 ignored**, including the new provider-free correction, adversarial guard and answer-text assertions.
+- Explicit opt-in replay of original private rw-02/rw-19, rw-21, rw-08, and five negative cases: provider-free PASS. Decrypted observations were held in ephemeral mode-0600 temporary files and deleted after the tests.
+- A separate `cargo test --locked --workspace --quiet` invocation exceeded the Mac remote command's **180-second** limit after **1,322 observed PASS / 0 FAIL** across 134 suites; it was interrupted and **must not be reported as a completed suite**. Remaining project-wide integration completion and Linux/macOS/Windows CI must be established on the updated PR commit.
+
+**Acceptance remains HOLD** pending complete PR CI, general-mode provider-free end-to-end review, and new independent quality evaluation. No new F1 is calculated from these already-used development materials. The candidate's original measured development-only F1 remains 0.6400 versus baseline 0.7407; never revise those scores post hoc. No Engine/CLI release or main merge is authorized by this correction.
