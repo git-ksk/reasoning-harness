@@ -1,0 +1,61 @@
+name: engine073-531-mistral-billing-readonly-20261115
+
+# Diagnostic only. Fetches account-linked status without generating a model response.
+# Does NOT confer permission to start live jobs or replace human billing review.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  read-only-billing-status:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Read current Mistral status without generations or credentials in logs
+        shell: bash
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, urllib.request, urllib.error
+          from urllib.parse import urlparse
+          key=os.environ.get('MISTRAL_API_KEY','')
+          if not key:
+              raise RuntimeError('no_api_key_configured_no_model_calls')
+          class RefuseRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, newurl):
+                  raise RuntimeError('redirect_disallowed')
+          opener=urllib.request.build_opener(RefuseRedirect())
+          base='https://api.mistral.ai'
+          endpoints={
+              'subscription':'/v1/billing/subscription',
+              'usage':'/v1/billing/usage',
+              'models':'/v1/models',
+          }
+          for name, path in endpoints.items():
+              try:
+                  req=urllib.request.Request(base+path,headers={'Authorization':'Bearer '+key,'Accept':'application/json'},method='GET')
+                  with opener.open(req,timeout=20) as response:
+                      if urlparse(response.geturl()).hostname!='api.mistral.ai':
+                          raise RuntimeError('unexpected_origin')
+                      data=json.load(response)
+                      if name=='models':
+                          ids=[x.get('id') for x in data.get('data',[]) if isinstance(x,dict)] if isinstance(data,dict) else []
+                          print('read_only_models_http=200 model_available='+str('ministral-8b-2512' in ids).lower())
+                      else:
+                          # Never print full account payload or financial amounts in public CI logs.
+                          keys=sorted(list(data.keys())) if isinstance(data,dict) else []
+                          safe_keys=[k for k in keys if k in ('pay_as_you_go_enabled','pay_as_you_go','plan','tier','monthly_budget','credit_balance','included_usage','remaining_usage','subscription','data','usage','billing')]
+                          print('read_only_'+name+'_http=200 exposed_field_names='+','.join(safe_keys))
+                          for field in ('pay_as_you_go_enabled','pay_as_you_go'):
+                              if isinstance(data,dict) and type(data.get(field)) is bool:
+                                  print('read_only_'+name+'_'+field+'='+str(data[field]).lower())
+              except urllib.error.HTTPError as exc:
+                  print('read_only_'+name+'_http='+str(exc.code)+' no_account_payload_logged=true')
+              except Exception as exc:
+                  print('read_only_'+name+'_error='+type(exc).__name__+' no_account_payload_logged=true')
+          print('model_generation_calls=0 human_billing_review_status=UNVERIFIED')
+          PY
