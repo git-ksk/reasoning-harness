@@ -5,7 +5,10 @@ name: engine073-531-mistral-billing-readonly-20261115
 on:
   push:
     branches: [eval/531-real-doc24-live-20261115]
-    paths: [.github/workflows/engine073-531-mistral-billing-readonly-20261115.yml]
+    paths:
+      - .github/workflows/engine073-531-mistral-billing-readonly-20261115.yml
+      - evaluation/dev-lite/issue531_real24_api_billing_gate.py
+      - evaluation/dev-lite/test_issue531_real24_api_billing_gate.py
   workflow_dispatch:
 
 permissions:
@@ -16,6 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
       - name: Read current Mistral status without generations or credentials in logs
         shell: bash
         env:
@@ -66,3 +72,11 @@ jobs:
                   print('read_only_'+name+'_error='+type(exc).__name__+' no_account_payload_logged=true')
           print('model_generation_calls=0 human_billing_review_status=UNVERIFIED')
           PY
+      - name: Strict current account no-overage read-only admission proof (model generations zero)
+        shell: bash
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 evaluation/dev-lite/test_issue531_real24_api_billing_gate.py
+          python3 evaluation/dev-lite/issue531_real24_api_billing_gate.py

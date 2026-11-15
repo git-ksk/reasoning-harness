@@ -34,10 +34,12 @@ python3 evaluation/dev-lite/issue531_real24_live.py \
   --mode preflight
 
 python3 evaluation/dev-lite/test_issue531_real24_live.py
-python3 evaluation/dev-lite/test_issue531_real24_billing_gate.py
+python3 evaluation/dev-lite/test_issue531_real24_api_billing_gate.py
 ```
 
-**Live inference is not enabled by pushing to this branch.** It is only authorized via the distinct, unused one-shot tag `eval-531-real-doc24-live-20261115-one-shot`, *and only* if a fresh human-confirmed Mistral account/billing check, disabled pay-as-you-go, remaining free allowance, credential/model access and other fail-closed gates pass. The publicly committed source documents are not Secrets. **The Mistral API key must remain a GitHub Actions Secret.**
+**Live inference is not enabled by pushing to this branch.** It is only authorized via the distinct, unused one-shot tag `eval-531-real-doc24-live-20261115-one-shot`, *and only* if the same Mistral API key returns current, authoritative billing/subscription and API-budget responses proving both organization and API-budget pay-as-you-go are disabled, at least 1 unit (USD or EUR) of included budget remains, the fixed model is available, and all other fail-closed gates pass. The no-overage read-only account gate is rechecked before each of the four shards. The publicly committed source documents are not Secrets. **The Mistral API key must remain a GitHub Actions Secret.**
+
+The authenticated billing gate uses `GET /v1/billing/subscription`, `GET /v1/billing/budget` and `GET /v1/models` (0 model generations), with an explicit strict schema/unit check; it refuses missing fields, API errors, redirects and ambiguous payment configuration. This is a *technical* assurance that pay-as-you-go is off, not an external guarantee against unexpected provider behavior. No payment settings are ever modified.
 
 The prospective maximum is 24 tasks × 2 Engines = 48 CLI runs, at most 12 internal model calls and 28,096 tokens per CLI run, no retry, 4 serial shards, encrypted model raw outputs and seven-day artifact retention. The extreme per-run cap gives **1,348,608 tokens** in total; estimated at a hypothetical symmetric $0.15 per million input/output tokens this is **$0.2022912**, not verified billing or a free quota guarantee. Actual tokens and provider attempts must be measured and reported separately.
 
