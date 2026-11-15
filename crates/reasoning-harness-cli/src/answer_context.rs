@@ -1783,6 +1783,150 @@ mod tests {
         }
     }
 
+    /// End-to-end *read-only resolver/admission* replay of the actually skipped
+    /// rw-02 action. This uses frozen public captured evidence, no model call.
+    /// The original archived observation remains Reject; a new resolver attempt
+    /// is simulated in memory without reissuing any Mistral first observation.
+    #[test]
+    #[ignore = "requires RH613_PRIVATE_OBSERVATION_DIR and RH613_PUBLIC_CONFIG_DIR"]
+    fn issue613_real_rw02_skipped_acquisition_through_captured_resolver_offline() {
+        use reasoning_harness_core::{
+            CandidateClaim, ReasoningCandidate, ResolutionAttemptStatus, ResolutionReason,
+            ResolutionRequest, ResolutionRequestBudget, ResolutionTarget, ResolverClass, Verdict,
+            canonical_verified_target_partial_answer,
+        };
+        let private =
+            std::path::PathBuf::from(std::env::var("RH613_PRIVATE_OBSERVATION_DIR").unwrap());
+        let public = std::path::PathBuf::from(std::env::var("RH613_PUBLIC_CONFIG_DIR").unwrap());
+        let raw: serde_json::Value = serde_json::from_slice(
+            &std::fs::read(private.join("rw-02-candidate.stdout.json")).unwrap(),
+        )
+        .unwrap();
+        let raw_config: serde_json::Value =
+            serde_json::from_slice(&std::fs::read(public.join("rw-02.json")).unwrap()).unwrap();
+        let loaded = super::super::LoadedCliConfig {
+            config: serde_json::from_value(raw_config.clone()).unwrap(),
+            sources: vec![],
+        };
+        let config: Config = loaded.config.answer_context.clone().unwrap();
+        let investigation = super::super::resolve_investigation_config(&loaded)
+            .unwrap()
+            .unwrap();
+        assert_eq!(investigation.capabilities.len(), 2);
+        let initial: ReasoningArtifact =
+            serde_json::from_value(raw["result"]["final_outcome"]["artifact"].clone()).unwrap();
+        let mut candidate = ReasoningCandidate {
+            claims: initial
+                .claims
+                .iter()
+                .map(|c| CandidateClaim {
+                    id: c.id.clone(),
+                    statement: c.statement.clone(),
+                    proposed_state: EpistemicState::Assumed,
+                    proposition: c.proposition.clone(),
+                    evidence_ids: c.evidence_ids.clone(),
+                })
+                .collect(),
+            inferences: initial.inferences.clone(),
+        };
+        let before = super::super::run_standard_grounding(
+            super::super::input_from_artifact(&initial),
+            candidate.clone(),
+        )
+        .unwrap();
+        assert_eq!(before.verdict, Verdict::Reject);
+        assert_eq!(before.artifact.evidence.len(), 1);
+        let request = ResolutionRequest {
+            id: "replay-skipped-source-0".into(),
+            reason: ResolutionReason::Investigation,
+            target: ResolutionTarget::InvestigationQuestion {
+                target_id: "curl8_10_1_transient_error_criteria".into(),
+                question: "Which transient curl errors are retryable?".into(),
+                expected_fact_key: Some("curl.retry.transient".into()),
+            },
+            resolver_class: ResolverClass::EvidenceAcquisition,
+            budget: ResolutionRequestBudget {
+                max_attempts: Some(1),
+                ..Default::default()
+            },
+        };
+        let acquired = super::super::run_configured_investigation_capability(
+            &investigation.capabilities[0],
+            super::super::input_from_artifact(&initial),
+            candidate.clone(),
+            request,
+            &super::super::SubprocessCancellation::default(),
+        )
+        .unwrap();
+        assert_eq!(acquired.initial_verdict, Verdict::Reject);
+        assert_eq!(acquired.final_verdict, Verdict::Reject);
+        assert_eq!(acquired.attempts.len(), 1);
+        assert_eq!(
+            acquired.attempts[0].status,
+            ResolutionAttemptStatus::AppliedEvidence
+        );
+        assert_eq!(
+            acquired.attempts[0].admitted_evidence_ids,
+            vec!["snapshot:rw-02:0"]
+        );
+        assert_eq!(acquired.final_artifact.evidence.len(), 2);
+        let e0 = acquired
+            .final_artifact
+            .evidence
+            .iter()
+            .find(|e| e.id == "snapshot:rw-02:0")
+            .unwrap();
+        assert_eq!(evidence_hash(e0), config.sources[0].evidence_sha256);
+        assert_eq!(
+            e0.facts.get("curl.retry.transient"),
+            Some(&config.sources[0].proposition.value)
+        );
+        // The bounded investigation ledger is now allowed to materialize only
+        // the newly admitted source fact, not model-authored arbitrary prose.
+        super::super::materialize_harness_owned_investigation_fact(
+            &mut candidate,
+            &super::super::HarnessOwnedInvestigationFact {
+                proposition: config.sources[0].proposition.clone(),
+                evidence_ids: vec![e0.id.clone()],
+            },
+            2,
+        );
+        let with_binding = super::super::run_standard_grounding(
+            super::super::input_from_artifact(&acquired.final_artifact),
+            candidate.clone(),
+        )
+        .unwrap();
+        assert_eq!(with_binding.verdict, Verdict::Reject);
+        let corrected =
+            unbind_refuted_model_fact_keys(&config, &with_binding.artifact, &mut candidate);
+        assert_eq!(corrected.len(), 1);
+        let reverified = super::super::run_standard_grounding(
+            super::super::input_from_artifact(&with_binding.artifact),
+            candidate,
+        )
+        .unwrap();
+        assert_eq!(reverified.verdict, Verdict::Unknown);
+        let targets = verified_source_targets(&config, &reverified.artifact);
+        assert_eq!(targets.len(), 2);
+        let (answer, hard) = canonical_verified_target_partial_answer(
+            &reverified.artifact,
+            reverified.verdict,
+            &targets,
+        )
+        .expect("both real acquired source records must support a qualified answer");
+        let (display, view) =
+            compose(&config, &reverified.artifact, &answer.factual_claims, hard).unwrap();
+        let text = display.text.as_deref().unwrap();
+        for t in targets {
+            assert!(text.contains(&format!(
+                "{} = {}",
+                serde_json::to_string(&t.key).unwrap(),
+                serde_json::to_string(&t.value).unwrap()
+            )));
+        }
+        assert!(view.citations.len() >= 2);
+    }
+
     /// Replay the exact previously captured model claims and source bindings;
     /// never create a fresh provider observation or change the original result.
     #[test]
