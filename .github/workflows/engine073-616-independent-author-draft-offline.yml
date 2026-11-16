@@ -1,0 +1,27 @@
+name: Issue 616 independent holdout author-draft integrity (offline)
+on:
+  push:
+    branches:
+      - eval/616-independent-holdout24-author-20261116
+    paths:
+      - evaluation/engine073-531-independent24-20261116/**
+      - .github/workflows/engine073-616-independent-author-draft-offline.yml
+  pull_request:
+    paths:
+      - evaluation/engine073-531-independent24-20261116/**
+      - .github/workflows/engine073-616-independent-author-draft-offline.yml
+permissions:
+  contents: read
+jobs:
+  public-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Public hashes, no labels, preregistered HOLD gates
+        run: python3 evaluation/engine073-531-independent24-20261116/validate_independent24.py --repo .
+      - name: Offline fail-closed tests (private gold absent)
+        run: python3 -m unittest discover -s evaluation/engine073-531-independent24-20261116 -p 'test_*.py' -v

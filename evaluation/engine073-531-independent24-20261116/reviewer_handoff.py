@@ -58,7 +58,8 @@ def make_packet(root:Path,manifest:dict,source_raw:bytes,payloads:list[bytes]):
     # memory before creating any file. Refuse inconsistent input on entry.
     if len(manifest['sources'])!=12 or len(payloads)!=12:
         raise ValueError('not_exactly_twelve_sources')
-    for spec,payload in zip(manifest['sources'],payloads,strict=True):
+    # Python 3.9 compatible: both list sizes were validated immediately above.
+    for spec,payload in zip(manifest['sources'],payloads):
         verify_source_bytes(spec,payload)
     if root.exists():
         raise FileExistsError('packet_never_overwrite_or_reuse')
@@ -69,7 +70,7 @@ def make_packet(root:Path,manifest:dict,source_raw:bytes,payloads:list[bytes]):
     pair.original.private_new_directory(cases)
     indexed=[]
     case_ids=[]
-    for index,(record,payload) in enumerate(zip(manifest['sources'],payloads,strict=True),1):
+    for index,(record,payload) in enumerate(zip(manifest['sources'],payloads),1):
         name=f'upstream-{index:02d}.txt'
         write_unique(docs/name,payload)
         indexed.append({'source_id':f'source-{index:02d}',
