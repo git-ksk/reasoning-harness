@@ -17,11 +17,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Public hashes, no labels, preregistered HOLD gates
-        run: python3 evaluation/engine073-531-independent24-20261116/validate_independent24.py --repo .
+        run: env -u MISTRAL_API_KEY -u GROQ_API_KEY -u OPENAI_API_KEY -u GEMINI_API_KEY python3 evaluation/engine073-531-independent24-20261116/validate_independent24.py --repo .
       - name: Offline fail-closed tests (private gold absent)
-        run: python3 -m unittest discover -s evaluation/engine073-531-independent24-20261116 -p 'test_*.py' -v
+        run: env -u MISTRAL_API_KEY -u GROQ_API_KEY -u OPENAI_API_KEY -u GEMINI_API_KEY python3 -m unittest discover -s evaluation/engine073-531-independent24-20261116 -p 'test_*.py' -v
