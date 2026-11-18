@@ -1,2 +1,8 @@
 __pycache__/
 *.pyc
+gold*
+private*
+author_spec*
+*credentials*
+*secret*
+*key.pem

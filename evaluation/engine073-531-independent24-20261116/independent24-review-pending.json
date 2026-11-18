@@ -1,0 +1,22 @@
+{
+  "contract": "reason-531-independent24-review-handoff-v1",
+  "author_self_check": true,
+  "claimed_implementation_independence": false,
+  "independent_author_identity_verified": false,
+  "second_reviewer": null,
+  "reviewer_authenticated": false,
+  "reviewer_gold_verified": false,
+  "reviewer_signature": null,
+  "accepted": false,
+  "approval_state": "HOLD_INDEPENDENT_REVIEW_REQUIRED",
+  "public_questions": "independent24-public-cases.json",
+  "public_freeze": "independent24-author-freeze.json",
+  "private_gold": "Mac owner-only path external to Git (never push)",
+  "new_first_request_parity": false,
+  "account_billing_safety_checked": false,
+  "formal_independent_f1": null,
+  "model_calls": 0,
+  "live_go": false,
+  "merge_go": false,
+  "release_go": false
+}

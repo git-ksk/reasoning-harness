@@ -9,6 +9,7 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import Mock, patch
 
 from runner import OperationalRunner, digest, reserve_for
 
@@ -124,7 +125,9 @@ class RunnerIntegration(unittest.TestCase):
 
     def test_timeout_requests_sigint_and_preserves_lower_bound_trace(self):
         job = self.job(1, 'cooperative')
-        job.update(timeout_seconds=0.15, cancel_grace_seconds=0.5)
+        # Allow interpreter startup on loaded CI hosts; the production deadline
+        # still includes startup and is not modified by the test.
+        job.update(timeout_seconds=2, cancel_grace_seconds=0.5)
         result = self.run_jobs([job, self.job(2, contract='helper')])
         self.assertEqual(self.spawn_count(), 1)
         self.assertEqual(result['rows'][0]['termination'], 'sigint')
@@ -134,14 +137,38 @@ class RunnerIntegration(unittest.TestCase):
         self.assertIsNone(result['rows'][0]['outcome']['tokens'])
         self.assertTrue(result['rows'][0]['partial_diagnostics_observed']['usage_is_lower_bound'])
 
+    def test_permission_denied_probe_is_not_group_absence(self):
+        proc = Mock(pid=12345)
+        runner = OperationalRunner(self.plan([self.job(1)]), self.output, self.credentials)
+        with patch('runner.os.killpg') as send, patch.object(
+            runner, 'group_exists', side_effect=[PermissionError(), False]
+        ) as probe:
+            self.assertEqual(runner.stop_child(proc, 0.2), 'sigint')
+            self.assertEqual(probe.call_count, 2)
+            send.assert_called_once_with(proc.pid, signal.SIGINT)
+            proc.wait.assert_called_once()
+
+    def test_persistent_permission_denial_during_grace_fails_closed(self):
+        proc = Mock(pid=12345)
+        runner = OperationalRunner(self.plan([self.job(1)]), self.output, self.credentials)
+        with patch('runner.os.killpg', side_effect=[None, PermissionError()]) as send, patch.object(
+            runner, 'group_exists', side_effect=PermissionError()
+        ):
+            with self.assertRaises(PermissionError):
+                runner.stop_child(proc, 0.03)
+            self.assertEqual([call.args[1] for call in send.call_args_list], [signal.SIGINT, signal.SIGKILL])
+            proc.wait.assert_not_called()
+
     def test_hard_kill_only_after_cancel_grace_remains_incomplete(self):
         job = self.job(1, 'hard')
-        job.update(timeout_seconds=0.12, cancel_grace_seconds=0.08)
+        job.update(timeout_seconds=2, cancel_grace_seconds=0.2)
         result = self.run_jobs([job, self.job(2)])
         self.assertEqual(self.spawn_count(), 1)
         self.assertEqual(result['rows'][0]['termination'], 'sigkill_after_grace')
         self.assertEqual(result['rows'][0]['returncode'], -signal.SIGKILL)
-        self.assertGreaterEqual(result['rows'][0]['wall_ms'], 190)
+        self.assertGreaterEqual(result['rows'][0]['wall_ms'], 2190)
+        self.assertEqual(result['rows'][0]['operational_failure'], 'wall_timeout')
+        self.assertFalse(result['rows'][1]['admission']['allowed'])
         self.assertFalse(result['complete'])
 
     def test_child_crash_and_unknown_failure_stop_following_requests(self):
@@ -240,7 +267,7 @@ class RunnerIntegration(unittest.TestCase):
 
     def assert_descendant_contained(self, mode, failure):
         job = self.job(1, mode)
-        job.update(timeout_seconds=0.25, cancel_grace_seconds=0.12)
+        job.update(timeout_seconds=2, cancel_grace_seconds=0.12)
         runner = OperationalRunner(self.plan([job, self.job(2, contract='helper')]), self.output, self.credentials)
         result = None
         try:
@@ -280,12 +307,56 @@ class RunnerIntegration(unittest.TestCase):
                 time.sleep(0.01)
         self.fail('fixture child did not start')
 
+    def wait_for_fixture_ready(self, mode):
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline:
+            try:
+                if mode in self.marker.read_text().splitlines():
+                    return
+            except FileNotFoundError:
+                pass
+            time.sleep(0.01)
+        self.fail('fixture did not install its signal disposition and publish readiness')
+
+    def test_explicit_cancel_hard_child_waits_full_grace_after_readiness(self):
+        job = self.job(1, 'hard')
+        job.update(timeout_seconds=15, cancel_grace_seconds=0.2)
+        proc, _ = self.launch_runner(job)
+        child = None
+        try:
+            child = self.wait_for_spawn()
+            self.wait_for_fixture_ready('hard')
+            started = time.monotonic()
+            proc.send_signal(signal.SIGTERM)
+            proc.communicate(timeout=5)
+            elapsed = time.monotonic() - started
+            result = json.loads((self.output / 'summary.json').read_text())
+            row = result['rows'][0]
+            self.assertEqual(proc.returncode, 1)
+            self.assertEqual(self.spawn_count(), 1)
+            self.assertEqual(row['operational_failure'], 'cancelled')
+            self.assertEqual(row['termination'], 'sigkill_after_grace')
+            self.assertEqual(row['returncode'], -signal.SIGKILL)
+            self.assertGreaterEqual(elapsed, job['cancel_grace_seconds'])
+            self.assertFalse(result['complete'])
+            self.assertFalse(result['rows'][1]['admission']['allowed'])
+            child = None  # runner has reaped the isolated fixture
+        finally:
+            if proc.poll() is None:
+                proc.kill()
+                proc.communicate(timeout=2)
+            if child is not None:
+                try:
+                    os.killpg(child, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+
     def test_sigterm_parent_cancels_child_and_records_all_suppressed_rows(self):
         job = self.job(1, 'cooperative')
         job.update(timeout_seconds=5, cancel_grace_seconds=0.5)
         proc, _ = self.launch_runner(job)
         self.wait_for_spawn()
-        time.sleep(0.08)  # fixture has installed its cooperative handler
+        self.wait_for_fixture_ready('cooperative')
         proc.send_signal(signal.SIGTERM)
         proc.communicate(timeout=3)
         result = json.loads((self.output / 'summary.json').read_text())
@@ -302,6 +373,7 @@ class RunnerIntegration(unittest.TestCase):
         proc, plan_path = self.launch_runner(job)
         child = self.wait_for_spawn()
         try:
+            self.wait_for_fixture_ready('hard')
             state = json.loads((self.output / 'state.json').read_text())
             self.assertTrue(state['guard']['inflight'])
             self.assertGreater(state['current_reserve'], 0)

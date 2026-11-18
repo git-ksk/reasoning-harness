@@ -1,0 +1,226 @@
+{
+  "cases": [
+    {
+      "case_id": "ih-01",
+      "official_url": "https://raw.githubusercontent.com/python/cpython/369d8bc4f6fe1f751de2512523a1acb95491a5eb/Doc/library/tomllib.rst",
+      "question": "For the pinned Python tomllib documentation, contrast load() and loads(): what kind of input does each accept, what do they return, and what happens on invalid TOML?",
+      "question_sha256": "1d564dd18b88f150d3d50abce57ecc31dcc0cf7f1d6d6a46e6f5c5522c800eef",
+      "source_id": "source-01",
+      "source_sha256": "b5c518797fe3607b3d7f7385cf9eeda9775c9154513eee34c6dc954aea245083",
+      "upstream_commit": "369d8bc4f6fe1f751de2512523a1acb95491a5eb"
+    },
+    {
+      "case_id": "ih-02",
+      "official_url": "https://raw.githubusercontent.com/python/cpython/369d8bc4f6fe1f751de2512523a1acb95491a5eb/Doc/library/tomllib.rst",
+      "question": "A TOML decoder must preserve decimal precision. In this pinned tomllib API, what is given to parse_float, name a possible replacement numeric parser, and which two callback return types are forbidden?",
+      "question_sha256": "a8e0dcbd3847382c5aa9cc3db8b857af43246bdfa28f0adb79d1c748ab62334c",
+      "source_id": "source-01",
+      "source_sha256": "b5c518797fe3607b3d7f7385cf9eeda9775c9154513eee34c6dc954aea245083",
+      "upstream_commit": "369d8bc4f6fe1f751de2512523a1acb95491a5eb"
+    },
+    {
+      "case_id": "ih-03",
+      "official_url": "https://raw.githubusercontent.com/python/cpython/369d8bc4f6fe1f751de2512523a1acb95491a5eb/Doc/library/pathlib.rst",
+      "question": "When using pathlib.Path.walk for an orderly tree scan, how does mutating dirnames affect recursion with top_down=True versus top_down=False, and what happens to directory symlinks under the default follow_symlinks value?",
+      "question_sha256": "7f0855cd91cbd7d4b66cbd67a3aa616e87cdbcfd7e6d8f68839356d833ac5ca8",
+      "source_id": "source-02",
+      "source_sha256": "1b430c314b3e2a48116cc725f941547161586f8c80f03d069006804e5cc3d46e",
+      "upstream_commit": "369d8bc4f6fe1f751de2512523a1acb95491a5eb"
+    },
+    {
+      "case_id": "ih-04",
+      "official_url": "https://raw.githubusercontent.com/python/cpython/369d8bc4f6fe1f751de2512523a1acb95491a5eb/Doc/library/pathlib.rst",
+      "question": "A Path.walk(follow_symlinks=True) scan of /srv/data ran yesterday. Which exact symlink cycles did it encounter, and which directories were traversed more than once?",
+      "question_sha256": "25a38d9668c0bf0ff0ad8e555b00b8fdc55cd87232340dba3890c6902ec71c7d",
+      "source_id": "source-02",
+      "source_sha256": "1b430c314b3e2a48116cc725f941547161586f8c80f03d069006804e5cc3d46e",
+      "upstream_commit": "369d8bc4f6fe1f751de2512523a1acb95491a5eb"
+    },
+    {
+      "case_id": "ih-05",
+      "official_url": "https://raw.githubusercontent.com/python/cpython/369d8bc4f6fe1f751de2512523a1acb95491a5eb/Doc/library/zipfile.rst",
+      "question": "For Python zipfile.ZipFile, contrast mode='x' when the destination file already exists with mode='a' when the target exists but is not a ZIP archive?",
+      "question_sha256": "d41a546bf217c6d8a3bb2113d93cc66ad30ccb57162daed90da802bf7cea3237",
+      "source_id": "source-03",
+      "source_sha256": "d4419b54f6e0d023f501bcf33f99cb838f15ff9cf774851e978c95e252cdc952",
+      "upstream_commit": "369d8bc4f6fe1f751de2512523a1acb95491a5eb"
+    },
+    {
+      "case_id": "ih-06",
+      "official_url": "https://raw.githubusercontent.com/python/cpython/369d8bc4f6fe1f751de2512523a1acb95491a5eb/Doc/library/zipfile.rst",
+      "question": "A vendor sent jan-logs.zip encoded with ZIP_ZSTANDARD. How many MiB of RAM and how many seconds will our production server need to extract it?",
+      "question_sha256": "1935ee2c485d6a74ef7a509cf34a4ecaebe5c226bdc2fa349c6dd522e64ce314",
+      "source_id": "source-03",
+      "source_sha256": "d4419b54f6e0d023f501bcf33f99cb838f15ff9cf774851e978c95e252cdc952",
+      "upstream_commit": "369d8bc4f6fe1f751de2512523a1acb95491a5eb"
+    },
+    {
+      "case_id": "ih-07",
+      "official_url": "https://raw.githubusercontent.com/nodejs/node/d105ef77fc9e8daeeb88601ab93ba14baef40205/doc/api/fs.md",
+      "question": "In pinned Node.js fsPromises.copyFile documentation, what is the default behavior if dest exists, how does COPYFILE_EXCL change it, and is the copy guaranteed atomic?",
+      "question_sha256": "3e06f5292655cd7e93871eb0076630dcbf623e1d8d5566687a6c5a19c72c4a04",
+      "source_id": "source-04",
+      "source_sha256": "fccb5ee92860bd4d317d8d3e33eb6a35463343228717973ed07761bcef6e2421",
+      "upstream_commit": "d105ef77fc9e8daeeb88601ab93ba14baef40205"
+    },
+    {
+      "case_id": "ih-08",
+      "official_url": "https://raw.githubusercontent.com/nodejs/node/d105ef77fc9e8daeeb88601ab93ba14baef40205/doc/api/fs.md",
+      "question": "For Node fsPromises.cp, describe what happens with the default recursive and force settings, and how a filter rejection of a directory affects its children?",
+      "question_sha256": "b4d81ed22e480a381e55ac7d3a040ec5ab26bf7af7c98b51fe8854624d1ad1ae",
+      "source_id": "source-04",
+      "source_sha256": "fccb5ee92860bd4d317d8d3e33eb6a35463343228717973ed07761bcef6e2421",
+      "upstream_commit": "d105ef77fc9e8daeeb88601ab93ba14baef40205"
+    },
+    {
+      "case_id": "ih-09",
+      "official_url": "https://raw.githubusercontent.com/nodejs/node/d105ef77fc9e8daeeb88601ab93ba14baef40205/doc/api/process.md",
+      "question": "In the Node process API, distinguish when beforeExit and exit fire, whether an event handler can schedule work that keeps the process alive, and what an explicit process.exit() implies for beforeExit?",
+      "question_sha256": "f60a108e4e7ad3bc28f5b6afb3b91dae7db5abafb2e6a390319974f6c5dde063",
+      "source_id": "source-05",
+      "source_sha256": "0f0c24ab955aa4f7eedfda7fe676b680783b8e49f1b13f92744003fb5bac0abb",
+      "upstream_commit": "d105ef77fc9e8daeeb88601ab93ba14baef40205"
+    },
+    {
+      "case_id": "ih-10",
+      "official_url": "https://raw.githubusercontent.com/nodejs/node/d105ef77fc9e8daeeb88601ab93ba14baef40205/doc/api/process.md",
+      "question": "For our live Node.js api-worker service, at which UTC millisecond will its next beforeExit callback run, and which callback will run just before it?",
+      "question_sha256": "a663a70a032d3f62e8a86c7a78b31c49787faf0170eca4429526cd35c9f7c7df",
+      "source_id": "source-05",
+      "source_sha256": "0f0c24ab955aa4f7eedfda7fe676b680783b8e49f1b13f92744003fb5bac0abb",
+      "upstream_commit": "d105ef77fc9e8daeeb88601ab93ba14baef40205"
+    },
+    {
+      "case_id": "ih-11",
+      "official_url": "https://raw.githubusercontent.com/nodejs/node/d105ef77fc9e8daeeb88601ab93ba14baef40205/doc/api/url.md",
+      "question": "For the documented Node WHATWG URL API, how do URL.canParse and URL.parse differ on an invalid input, and what extra argument is needed when the input is relative?",
+      "question_sha256": "5e1b79d4fe0f9ddb11bd65229bde880c6591580f6ef05e34068728235d5fa503",
+      "source_id": "source-06",
+      "source_sha256": "a32ebc2fe1f495e8463b857448d951e633d933f0749b3d937adbc978b0d83ef4",
+      "upstream_commit": "d105ef77fc9e8daeeb88601ab93ba14baef40205"
+    },
+    {
+      "case_id": "ih-12",
+      "official_url": "https://raw.githubusercontent.com/nodejs/node/d105ef77fc9e8daeeb88601ab93ba14baef40205/doc/api/url.md",
+      "question": "For Node.js v18.17.0, what URL object does URL.parse('/health', 'https://example.org') return, including href and origin?",
+      "question_sha256": "50274c39b0822d532fd402e9a85b26cc0fd593cae45d3ca8ec3ddf54bab8c8a5",
+      "source_id": "source-06",
+      "source_sha256": "a32ebc2fe1f495e8463b857448d951e633d933f0749b3d937adbc978b0d83ef4",
+      "upstream_commit": "d105ef77fc9e8daeeb88601ab93ba14baef40205"
+    },
+    {
+      "case_id": "ih-13",
+      "official_url": "https://raw.githubusercontent.com/rust-lang/book/2771df165f092a4fbb9f46b5b2e7450f19010adb/src/ch04-01-what-is-ownership.md",
+      "question": "In the Rust Book's ownership chapter, explain why moving a String into another variable invalidates the old binding while calling clone changes that, and how a copied integer differs?",
+      "question_sha256": "49c2648cb3a41b520c2cba028f700278055c111d4d66dade3dd18200a93000df",
+      "source_id": "source-07",
+      "source_sha256": "873724c6862ad0cc447becf0e818eb39a324c5d4bfa26ef721286aae1941c0ba",
+      "upstream_commit": "2771df165f092a4fbb9f46b5b2e7450f19010adb"
+    },
+    {
+      "case_id": "ih-14",
+      "official_url": "https://raw.githubusercontent.com/rust-lang/book/2771df165f092a4fbb9f46b5b2e7450f19010adb/src/ch04-01-what-is-ownership.md",
+      "question": "In the Rust Book's ownership model, what happens to a moved String passed into takes_ownership, why can a copied integer remain usable, and can returning a value transfer ownership?",
+      "question_sha256": "d2a07ae61e4b9ef670ac1b3dda0eb8a55881e241c10d064eba049464c2993140",
+      "source_id": "source-07",
+      "source_sha256": "873724c6862ad0cc447becf0e818eb39a324c5d4bfa26ef721286aae1941c0ba",
+      "upstream_commit": "2771df165f092a4fbb9f46b5b2e7450f19010adb"
+    },
+    {
+      "case_id": "ih-15",
+      "official_url": "https://raw.githubusercontent.com/rust-lang/book/2771df165f092a4fbb9f46b5b2e7450f19010adb/src/ch09-02-recoverable-errors-with-result.md",
+      "question": "For Rust Result's ? operator, describe the Ok and Err paths and explain when From is used to convert an error for the enclosing function.",
+      "question_sha256": "45572e9b7f9aed6e09ed77553e7fc1d356ca991547ce5cbf6a498cd9b8abda0f",
+      "source_id": "source-08",
+      "source_sha256": "dab3e88d324cdde74cf96356c58a423747a5735ac6848d8d4592dc7c13637c62",
+      "upstream_commit": "2771df165f092a4fbb9f46b5b2e7450f19010adb"
+    },
+    {
+      "case_id": "ih-16",
+      "official_url": "https://raw.githubusercontent.com/rust-lang/book/2771df165f092a4fbb9f46b5b2e7450f19010adb/src/ch09-02-recoverable-errors-with-result.md",
+      "question": "A Tokio task that returns Result uses Rust's ? operator and is canceled. What exact retry backoff schedule does Tokio's scheduler apply before restarting the task?",
+      "question_sha256": "a6ae5d177d903e24be0cdf1b8c1ae837182a8c09863bbf2189655f80f035c36d",
+      "source_id": "source-08",
+      "source_sha256": "dab3e88d324cdde74cf96356c58a423747a5735ac6848d8d4592dc7c13637c62",
+      "upstream_commit": "2771df165f092a4fbb9f46b5b2e7450f19010adb"
+    },
+    {
+      "case_id": "ih-17",
+      "official_url": "https://raw.githubusercontent.com/kubernetes/website/d9dedeaa21c089068ae1495883477045c593913f/content/en/docs/concepts/configuration/secret.md",
+      "question": "In the pinned Kubernetes Secret documentation, compare a missing optional Secret, a missing required Secret, and a present required Secret that lacks a referenced key when a Pod starts?",
+      "question_sha256": "b5338648c91f7c8137a0c4245541978a7f9d1f0f19541afb7ff32b17cef8e04d",
+      "source_id": "source-09",
+      "source_sha256": "30bb29e4040f1464a8cb299524f51e0a1ae2279a63f45b7182b1b8faf27af194",
+      "upstream_commit": "d9dedeaa21c089068ae1495883477045c593913f"
+    },
+    {
+      "case_id": "ih-18",
+      "official_url": "https://raw.githubusercontent.com/kubernetes/website/d9dedeaa21c089068ae1495883477045c593913f/content/en/docs/concepts/configuration/secret.md",
+      "question": "For our real prod-green Kubernetes cluster, identify the KMS key ID used to encrypt Secret objects in etcd and confirm that encryption at rest is currently enabled in every namespace?",
+      "question_sha256": "135904a4baf1538a0bc566ec6b4cd86ff5e918af983fe2fbc603d9e352869a69",
+      "source_id": "source-09",
+      "source_sha256": "30bb29e4040f1464a8cb299524f51e0a1ae2279a63f45b7182b1b8faf27af194",
+      "upstream_commit": "d9dedeaa21c089068ae1495883477045c593913f"
+    },
+    {
+      "case_id": "ih-19",
+      "official_url": "https://raw.githubusercontent.com/kubernetes/website/d9dedeaa21c089068ae1495883477045c593913f/content/en/docs/concepts/workloads/controllers/deployment.md",
+      "question": "For Kubernetes RollingUpdate Deployment, how are percentage values rounded for maxUnavailable versus maxSurge, what are their documented defaults, and may both be zero?",
+      "question_sha256": "4b6ca6cc9e437ca8d716e034c9db4e8641c73940e9de7a82ed51c5ad80263668",
+      "source_id": "source-10",
+      "source_sha256": "ca4571585f3af4039292fdbbe127e296e1b86d44b4df52cec75dbf51c96da513",
+      "upstream_commit": "d9dedeaa21c089068ae1495883477045c593913f"
+    },
+    {
+      "case_id": "ih-20",
+      "official_url": "https://raw.githubusercontent.com/kubernetes/website/d9dedeaa21c089068ae1495883477045c593913f/content/en/docs/concepts/workloads/controllers/deployment.md",
+      "question": "A Kubernetes Deployment with 12 replicas sets rollingUpdate.maxSurge=0 and maxUnavailable=0. How many ready Pods does the controller guarantee during this rollout?",
+      "question_sha256": "235fa25a2dd2cf5aff33f278fe58032c8454dbffabc0591192747c1cde860190",
+      "source_id": "source-10",
+      "source_sha256": "ca4571585f3af4039292fdbbe127e296e1b86d44b4df52cec75dbf51c96da513",
+      "upstream_commit": "d9dedeaa21c089068ae1495883477045c593913f"
+    },
+    {
+      "case_id": "ih-21",
+      "official_url": "https://raw.githubusercontent.com/postgres/postgres/81b2179b492e3af891544813b7e22a42386b34d0/doc/src/sgml/ref/psql-ref.sgml",
+      "question": "For pinned PostgreSQL psql, can -c and -f be mixed and repeated, does -c accept SQL mixed with a psql meta-command in a single string, and what happens to stdin when -c/-f is present?",
+      "question_sha256": "c4fd354ed05e2d4d534f0ff1e6d7ef664e9549a5666573a265ebcedb6418fe0d",
+      "source_id": "source-11",
+      "source_sha256": "446b349f6e08d1d5db1540e769509a0da19da72fc0abb451af8dfe8acb56a0c7",
+      "upstream_commit": "81b2179b492e3af891544813b7e22a42386b34d0"
+    },
+    {
+      "case_id": "ih-22",
+      "official_url": "https://raw.githubusercontent.com/postgres/postgres/81b2179b492e3af891544813b7e22a42386b34d0/doc/src/sgml/ref/psql-ref.sgml",
+      "question": "With psql -1/--single-transaction across multiple -c or -f entries, what transaction wrapper does it issue, when is rollback used, and which command patterns can defeat the intended effect?",
+      "question_sha256": "27cb50ce24880350d368869e5cf6e6db9b5e28d0fc6d8ce4dcb13dbc42c94637",
+      "source_id": "source-11",
+      "source_sha256": "446b349f6e08d1d5db1540e769509a0da19da72fc0abb451af8dfe8acb56a0c7",
+      "upstream_commit": "81b2179b492e3af891544813b7e22a42386b34d0"
+    },
+    {
+      "case_id": "ih-23",
+      "official_url": "https://raw.githubusercontent.com/postgres/postgres/81b2179b492e3af891544813b7e22a42386b34d0/doc/src/sgml/backup.sgml",
+      "question": "From the pinned PostgreSQL backup chapter, does pg_dump need to run on the database host, where does its basic command send output, and what privileges matter for a complete dump?",
+      "question_sha256": "136c4b068f7faca8d0dab15c2a74280b01caf9090a33108005cf99ed960341e9",
+      "source_id": "source-12",
+      "source_sha256": "c1e5ae4c074de78b1eec236c92ba3d02bf0293fb1c79c59d295dc2d677eba3dc",
+      "upstream_commit": "81b2179b492e3af891544813b7e22a42386b34d0"
+    },
+    {
+      "case_id": "ih-24",
+      "official_url": "https://raw.githubusercontent.com/postgres/postgres/81b2179b492e3af891544813b7e22a42386b34d0/doc/src/sgml/backup.sgml",
+      "question": "After our PostgreSQL production WAL archiving configuration changed an hour ago, what precise recovery point and guaranteed RPO in seconds can we achieve if the primary fails now?",
+      "question_sha256": "4b112c0043c55ccc970529c4a5fdd86de63b67d43fd7fd280f28f7c480dbb1b1",
+      "source_id": "source-12",
+      "source_sha256": "c1e5ae4c074de78b1eec236c92ba3d02bf0293fb1c79c59d295dc2d677eba3dc",
+      "upstream_commit": "81b2179b492e3af891544813b7e22a42386b34d0"
+    }
+  ],
+  "classification": "UNREVIEWED_AUTHOR_DRAFT_NOT_EXECUTION_AUTHORITY",
+  "contract": "engine073-531-independent24-public-questions-v1",
+  "formal_f1": null,
+  "model_calls": 0,
+  "reviewer_approved": false,
+  "source_manifest_sha256": "f5b814e66d715c7c7b5e413348e7a0526c98956c03079c976254518381fdf527"
+}

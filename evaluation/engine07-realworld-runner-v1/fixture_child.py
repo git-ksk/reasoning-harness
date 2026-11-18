@@ -13,10 +13,6 @@ p.add_argument('--marker', required=True)
 p.add_argument('--provider')
 p.add_argument('--model')
 a = p.parse_args()
-with Path(a.marker).open('a') as f:
-    f.write(a.mode + '\n')
-    f.flush()
-    os.fsync(f.fileno())
 
 def usage(tokens=10):
     return {'tracked_from_session_start': True, 'total_tokens': tokens, 'provider_attempts': 1}
@@ -30,6 +26,15 @@ def cancelled(signum, frame):
     print(json.dumps(failure('cancelled', True)), flush=True)
     Path('partial-trace.json').write_text(json.dumps({'cancelled': True}))
     raise SystemExit(1)
+
+# Publish readiness only after the hard/cooperative signal disposition is set.
+if a.mode in ('cooperative', 'hard'):
+    signal.signal(signal.SIGINT, cancelled if a.mode == 'cooperative' else signal.SIG_IGN)
+
+with Path(a.marker).open('a') as f:
+    f.write(a.mode + '\n')
+    f.flush()
+    os.fsync(f.fileno())
 
 if a.mode in ('descendant-on-cancel', 'descendant-on-exit'):
     # A real descendant in the leader's new session, with no sockets/providers.
@@ -50,7 +55,6 @@ if a.mode in ('descendant-on-cancel', 'descendant-on-exit'):
         while True:
             time.sleep(0.02)
 if a.mode in ('cooperative', 'hard'):
-    signal.signal(signal.SIGINT, cancelled if a.mode == 'cooperative' else signal.SIG_IGN)
     while True:
         time.sleep(0.02)
 if a.mode == 'crash':
