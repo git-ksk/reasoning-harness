@@ -173,7 +173,15 @@ class OperationalRunner:
         deadline = time.monotonic() + grace
         while time.monotonic() < deadline:
             proc.poll()
-            if not self.group_exists(proc):
+            try:
+                group_present = self.group_exists(proc)
+            except PermissionError:
+                # macOS can report EPERM during the exit transition after a
+                # successful SIGINT. This is NOT evidence of group absence.
+                # Keep probing within the original grace; persistent denial
+                # of the final SIGKILL still propagates/fails closed.
+                group_present = True
+            if not group_present:
                 proc.wait()
                 return 'sigint'
             time.sleep(min(0.01, max(0, deadline - time.monotonic())))
