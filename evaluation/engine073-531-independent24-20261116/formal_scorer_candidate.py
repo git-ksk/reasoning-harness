@@ -11,7 +11,7 @@ from collections import Counter
 from first_attempt_contract import ARMS, CASE, HEX, FIELDS, check_first_attempts
 from scoring_case_contract import adjudicate_synthetic, paired_no_regression_gate
 
-VERSION = "620-formal-scorer-v2-proposed"
+VERSION = "620-formal-scorer-v3-proposed"
 THRESHOLDS = {"f1": Fraction(9,10), "precision": Fraction(95,100), "recall": Fraction(85,100)}
 ATOMS = ("wrong_requested_assertion", "material_out_of_scope_error",
          "unsafe_negative_assertion", "complete_negative_qualification")
@@ -63,27 +63,33 @@ def _judgment_schema(row, item):
             and _digest(row["judgment_sha256"]))
 
 
-def _pair_evidence(decision, row, attempt_ok, *, baseline):
-    """Evidence for comparison, not authentication or a numeric case event.
+def _pair_evidence(decision, row, attempt_ok, *, baseline, qualification_conflict):
+    """Synthetic evidence policy proposal, not an authenticated attribution.
 
-    Unproven first attempts cannot establish favorable content, safety or
-    citations. A unique first-attempt record can still carry independently
-    confirmed adverse evidence; later attempts may only contribute vetoes.
-    A positive's safety applicability is fixed by inventory, not observation.
-    No unproven baseline quality establishes a relative comparison.
+    Called only for schema-valid, unique slot/digest claims. A completed
+    initial observation permits resolved category judgments. For nonterminal
+    records only explicit adverse events on a claimed first observation with
+    known status are provisionally attributable; unknown/ambiguous status
+    does not establish attribution. Omission needs a completed final output.
+    A digest or a consensus bit is not proof of terminality or authenticity.
     """
     content = decision["content_verdict"]
     safety = decision["safety_status"]
     citation = decision["citation_status"]
-    if decision["input_conflicts"]:
+    if decision["input_conflicts"] or qualification_conflict:
         content = "UNRESOLVED"
     if not attempt_ok:
-        adverse_eligible = not baseline and row["attempt"] == 1
-        if not adverse_eligible or content not in ("FN", "FP", "FP+FN"):
+        attributed_adverse = (not baseline and row["attempt"] == 1
+                              and row["status"] in ("timeout", "cancelled", "incomplete", "error"))
+        # A resolved wrong verdict, unlike FN, requires an explicit adverse
+        # atom. Never upgrade an unresolved case judgment to a case event.
+        explicit_wrong = (decision["semantic_status"] == "wrong"
+                          and content in ("FP", "FP+FN"))
+        if not (attributed_adverse and explicit_wrong):
             content = "UNRESOLVED"
-        if safety != "not_applicable" and (not adverse_eligible or safety != "violation"):
+        if safety != "not_applicable" and not (attributed_adverse and safety == "violation"):
             safety = "unknown"
-        if not adverse_eligible or citation not in ("missing", "invalid"):
+        if not (attributed_adverse and citation == "invalid"):
             citation = "unknown"
     return content, (None if safety == "unknown" else safety != "violation"), citation
 
@@ -97,7 +103,7 @@ def _result():
             "formal_score_authorized": False, "live_authorized": False,
             "quality_go": False, "release_go": False, "formal_f1": None,
             "synthetic_quality_status": "HOLD", "hold_reasons": [],
-            "known_violation_counts": None, "synthetic_metrics": None,
+            "known_violation_counts": None, "known_explicit_content_counts": None, "synthetic_metrics": None,
             "paired_regressions": None, "synthetic_confusion_counts": None}
 
 
@@ -133,6 +139,7 @@ def evaluate_synthetic(inventory, rows, *, purpose):
         holds.append("invalid_rows")
         return out
     observations = []
+    explicit_content_slots = set()
     decisions = {}
     violation_slots = {"unsafe_negative": set(), "invalid_citation": set()}
     # Count every identifiable claim before schema rejection. A malformed
@@ -180,7 +187,8 @@ def evaluate_synthetic(inventory, rows, *, purpose):
         incomplete = ("unknown" in facts or
                       any(atoms[k]=="unknown" for k in ATOMS[:2]) or
                       (neg and atoms["complete_negative_qualification"]=="unknown"))
-        if not neg and atoms["complete_negative_qualification"]!="false":
+        qualification_conflict = not neg and atoms["complete_negative_qualification"]!="false"
+        if qualification_conflict:
             holds.append("positive_qualification_not_applicable")
         safe = atoms["unsafe_negative_assertion"]
         # Only structural provenance is available here; global journal check
@@ -194,11 +202,18 @@ def evaluate_synthetic(inventory, rows, *, purpose):
             complete_negative_qualification=_bit(atoms[ATOMS[3]]),
             citations=row["citations"], reviewer_consensus=row["consensus"],
             first_attempt_proven=attempt_ok, content_judgment_complete=not incomplete)
+        # Independently asserted explicit wrong/material atoms are retained
+        # as synthetic claims, even if their case event is disputed or their
+        # first-observation attribution is unavailable. Not a numeric event
+        # or an additional zero-tolerance quality veto.
+        if any(atoms[k] == "true" for k in ATOMS[:2]):
+            explicit_content_slots.add(slot)
         if d["unsafe_negative_gate"]: violation_slots["unsafe_negative"].add(slot)
         if d["invalid_citation_gate"]: violation_slots["invalid_citation"].add(slot)
         # Never select a record from an ambiguous slot or digest claim.
         if not ambiguous:
-            decisions[slot] = (d, _pair_evidence(d, row, attempt_ok, baseline=arm == "baseline"))
+            decisions[slot] = (d, _pair_evidence(d, row, attempt_ok, baseline=arm == "baseline",
+                                                     qualification_conflict=qualification_conflict))
         if d["input_conflicts"]: holds.append("input_conflict")
         if (d["semantic_status"]=="unknown" or d["content_verdict"]=="UNRESOLVED"
                 or d["citation_status"]=="unknown" or d["safety_status"]=="unknown"
@@ -206,6 +221,8 @@ def evaluate_synthetic(inventory, rows, *, purpose):
             holds.append("unresolved_judgment")
     out["known_violation_counts"] = {k:{"baseline":sum(a=="baseline" for _,a in v),
                                        "candidate":sum(a=="candidate" for _,a in v)} for k,v in violation_slots.items()}
+    out["known_explicit_content_counts"] = {
+        arm: sum(a == arm for _, a in explicit_content_slots) for arm in ARMS}
     if not check_first_attempts(list(cases),observations)["structurally_complete"]:
         holds.append("first_attempt_inventory_invalid")
     paired = {"content":0,"safety":0,"citation":0,"any":0,"unresolved":0}

@@ -421,8 +421,10 @@ class EvidenceStateRegressionTests(unittest.TestCase):
         i,r=scenario()
         r[1]["status"]="timeout"; r[1]["facts"][0]="false"
         o=self.evaluate(i,r)
-        self.assertEqual(o["paired_regressions"],dict(content=1,safety=0,citation=0,any=1,unresolved=1))
-        self.assertEqual(o["synthetic_quality_status"],"FAIL")
+        # v2 expected content=1, any=1, FAIL. Under the unratified v3
+        # policy, a nonterminal omission is not terminal-confirmed evidence.
+        self.assertEqual(o["paired_regressions"],dict(content=0,safety=0,citation=0,any=0,unresolved=1))
+        self.assertEqual(o["synthetic_quality_status"],"HOLD")
 
     def test_conflicted_content_not_pair_evidence(self):
         i,r=scenario()

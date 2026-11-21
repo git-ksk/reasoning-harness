@@ -1,6 +1,6 @@
 # #620 prospective formal aggregate scorer candidate — technical proposal / HOLD
 
-Version: 620-formal-scorer-v2-proposed. This is an implementation candidate,
+Version: 620-formal-scorer-v3-proposed. This is an implementation candidate,
 not an authenticated independent approval or a usable formal scoring entrypoint.
 The accepted limited synthetic contract remains unchanged. The actual ratified
 formal scorer identity remains UNSET until a distinct authorized authority
@@ -33,11 +33,46 @@ paired judgments; terminal content digests are format-checked, not required to
 be unique. Attempt numbers must be positive integers (not booleans), and status
 must be complete, timeout, cancelled, incomplete, unknown, ambiguous or error.
 The full row schema and all digest formats are checked before adjudication.
-An unproven baseline cannot establish observed comparison quality; a unique
-unproven first-attempt candidate can only supply confirmed adverse content,
-safety or citation evidence, never favorable quality. A later attempt cannot
-establish pair quality. Positive safety applicability depends on inventory.
-Unresolved categories do not erase other confirmed regressions.
+## Evidence eligibility supplement (620-evidence-eligibility-v1-proposed)
+Unratified synthetic policy; the frozen 620-scoring-v2-proposed contract is
+unchanged. Direct contract constraints: unique valid slot, no later attempt
+as pair/numeric evidence, no favorable unproven quality, no metric on HOLD,
+unknown is not non-regression, independent violation retention and separate
+category comparisons. Positive qualification must explicitly be false; true
+or unknown makes content unresolved on either arm, not safety applicability
+(inventory) or independently confirmed citation evidence.
+
+Proposed interpretation: a unique schema-valid first attempt with status
+complete supports terminal-dependent judgments only where its category is
+resolved. An unproven baseline cannot establish observed comparison quality.
+For candidate timeout/cancelled/incomplete/error, a resolved explicit wrong
+case (FP or FP+FN from true adverse atoms), independently confirmed unsafe
+assertion or invalid citation is provisionally eligible in its own category
+under the synthetic attribution convention. FN or missing citation on a
+nonterminal observation is not terminal-confirmed. Unknown/ambiguous status
+and later attempts cannot establish comparative attribution. Duplicate slot
+or digest claims cannot establish pair evidence. Independently asserted
+explicit wrong/material atoms are retained as slot-deduplicated diagnostic
+claims, not an additional quality veto or case event. Unsafe/invalid vetoes
+remain separate even when pair attribution or content is unknown. A disputed
+or incomplete content judgment remains unresolved under the frozen contract,
+even when an explicit atom survives independently. Unresolved categories do
+not erase other confirmed regressions.
+
+No additional caller fields are accepted. The existing strict enum/typed
+schema is unchanged: attempt positive integer; status exact enum; atomic
+states true/false/unknown; citation valid/missing/invalid/unknown; consensus
+exact bool, digests structural only. No caller bit proves real attribution,
+terminality or authorization. Missing/malformed fields fail closed; there is
+no way to attest a terminal-specific omission on a nonterminal observation in
+this synthetic schema. A future signed adapter must separately establish
+actual first-attempt identity, event attribution and terminal output binding.
+Alternatives: reject all nonterminal adverse comparisons (more unresolved,
+vetoes still retained); or allow separately signed terminal evidence despite
+a noncomplete status (requires a new authenticated schema). Neither is
+ratified. v2's provisional FN/missing-citation comparison is superseded only
+in this proposed implementation; technical acceptance and policy ratification
+remain distinct, formal HOLD and ratified scorer UNSET.
 Known quality FAIL survives zero denominators or other metric-withholding HOLD. Vetoes are retained for
 syntactically valid records despite unrelated uncertainty. Malformed records
 are not evidence; repair of an invalid submission is not a replacement model
