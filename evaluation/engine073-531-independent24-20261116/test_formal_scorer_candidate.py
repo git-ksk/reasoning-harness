@@ -1,6 +1,7 @@
 import copy
 import hashlib
 import itertools
+import random
 import unittest
 from formal_scorer_candidate import evaluate_synthetic, THRESHOLDS
 from fractions import Fraction
@@ -254,6 +255,191 @@ class AggregateCandidateTests(unittest.TestCase):
     def test_wrong_case_cannot_be_positive_qualification(self):
         self.row(0)["atoms"]["complete_negative_qualification"]="true"
         self.assert_hold("positive_qualification_not_applicable")
+
+
+class EvidenceStateRegressionTests(unittest.TestCase):
+    def evaluate(self, i, r):
+        before = copy.deepcopy((i,r))
+        out = evaluate_synthetic(i,r,purpose="synthetic")
+        self.assertEqual((i,r),before)
+        self.assertEqual(out["approval_status"],"HOLD")
+        self.assertIsNone(out["formal_f1"])
+        for k in ("formal_score_authorized","live_authorized","quality_go","release_go"):
+            self.assertIs(out[k],False)
+        if out["hold_reasons"]:
+            self.assertIsNone(out["synthetic_metrics"])
+            self.assertIsNone(out["synthetic_confusion_counts"])
+            self.assertNotIn("synthetic_thresholds_met",out)
+            self.assertNotIn("synthetic_aggregate_regression",out)
+        return out
+
+    def test_malformed_provenance_matrix(self):
+        for k,v in itertools.chain(
+            (("attempt",v) for v in (True,False,[],{},None,0,-1,1.0,"1")),
+            (("status",v) for v in ([],{},None,True,"","invented")),
+            ((k,v) for k in ("admission_sha256","final_sha256","judgment_sha256")
+             for v in ([],{},None,True,"broken","A"*64,"a"*63,"a"*65))):
+            with self.subTest(field=k,value=v):
+                i,r=scenario()
+                r[33][k]=v
+                r[33]["citations"]="invalid"
+                r[33]["atoms"]["unsafe_negative_assertion"]="true"
+                o=self.evaluate(i,r)
+                self.assertEqual(o["synthetic_quality_status"],"HOLD")
+                self.assertEqual(o["paired_regressions"],dict(content=0,safety=0,citation=0,any=0,unresolved=1))
+                self.assertTrue(all(n==0 for a in o["known_violation_counts"].values() for n in a.values()))
+
+    def test_malformed_duplicate_cannot_select_normal_record(self):
+        for extra in ({"facts":[False,False]}, {"attempt":True}, {"status":[]},
+                      {"formal_score_authorized":True}, {"quality_gate_status":"PASS"},
+                      {"approval_status":"PASS"}, {"admission_sha256":"broken"}):
+            with self.subTest(extra=extra):
+                i,r=scenario()
+                r[1]["facts"][0]="false"
+                z=copy.deepcopy(r[1]); z.update(extra); z["citations"]="invalid"; r.append(z)
+                a=self.evaluate(i,r)
+                self.assertIn("duplicate_slot",a["hold_reasons"])
+                self.assertEqual(a["paired_regressions"]["any"],0)
+                self.assertEqual(a["paired_regressions"]["unresolved"],1)
+                self.assertEqual(a["known_violation_counts"]["invalid_citation"]["candidate"],0)
+                for seed in range(5):
+                    random.Random(seed).shuffle(r)
+                    self.assertEqual(a,self.evaluate(i,r))
+
+    def test_mixed_duplicates_retain_only_valid_independent_vetoes(self):
+        i,r=scenario()
+        r[33]["citations"]="invalid"
+        r[33]["atoms"]["unsafe_negative_assertion"]="true"
+        z=copy.deepcopy(r[33]); z["attempt"]=True
+        w=copy.deepcopy(r[35]); w["citations"]="invalid"; w["status"]="invented"
+        r.extend([z,copy.deepcopy(r[33]),w])
+        a=self.evaluate(i,r)
+        self.assertEqual(a["known_violation_counts"],dict(unsafe_negative=dict(baseline=0,candidate=1),invalid_citation=dict(baseline=0,candidate=1)))
+        self.assertEqual(a["paired_regressions"]["unresolved"],2)
+        self.assertEqual(a["synthetic_quality_status"],"FAIL")
+        for seed in range(10):
+            random.Random(seed).shuffle(r)
+            self.assertEqual(a,self.evaluate(i,r))
+
+    def test_cross_slot_duplicate_digests(self):
+        for k in ("admission_sha256","judgment_sha256"):
+            i,r=scenario()
+            r[1]["facts"][0]="false"
+            r[10][k]=r[1][k]
+            r[33][k]=r[1][k]
+            r[33]["citations"]="invalid"
+            o=self.evaluate(i,r)
+            self.assertEqual(o["paired_regressions"],dict(content=0,safety=0,citation=0,any=0,unresolved=3))
+            self.assertEqual(o["known_violation_counts"]["invalid_citation"]["candidate"],1)
+            self.assertEqual(o["synthetic_quality_status"],"FAIL")
+            self.assertEqual(o,self.evaluate(i,list(reversed(r))))
+
+    def test_digest_claim_from_malformed_or_unknown_slot(self):
+        for change in ({"attempt":[]},{"case_id":"not-present"},{"quality_go":True}):
+            i,r=scenario()
+            r[1]["facts"][0]="false"
+            r[10]["judgment_sha256"]=r[1]["judgment_sha256"]
+            r[10].update(change)
+            o=self.evaluate(i,r)
+            self.assertEqual(o["paired_regressions"]["content"],0)
+            self.assertEqual(o["paired_regressions"]["unresolved"],2)
+
+    def test_same_terminal_content_digest_not_duplicate_admission(self):
+        i,r=scenario()
+        r[1]["final_sha256"]=r[0]["final_sha256"]
+        self.assertEqual(self.evaluate(i,r)["synthetic_quality_status"],"PASS")
+
+    def test_zero_denominator_known_regression_and_no_regression(self):
+        for mode,status,n in (("candidate","FAIL",16),("baseline","HOLD",0),("both","HOLD",0)):
+            i,r=scenario()
+            for x in r:
+                if int(x["case_id"].split("-")[-1])<16 and (mode=="both" or x["arm"]==mode):
+                    x["facts"][0]="false"
+            o=self.evaluate(i,r)
+            self.assertIn("zero_denominator",o["hold_reasons"])
+            self.assertEqual(o["paired_regressions"]["content"],n)
+            self.assertEqual(o["synthetic_quality_status"],status)
+
+    def test_unproven_favorable_never_establishes_pair(self):
+        for idx,(k,v),partial in itertools.product((0,1,32,33),
+            (("status","timeout"),("status","cancelled"),("status","incomplete"),
+             ("status","unknown"),("status","ambiguous"),("status","error"),("attempt",2)),(False,True)):
+            i,r=scenario()
+            r[idx][k]=v
+            if partial and idx==0: r[1]["facts"][0]="false"
+            o=self.evaluate(i,r)
+            self.assertEqual(o["paired_regressions"]["any"],0)
+            self.assertEqual(o["paired_regressions"]["unresolved"],1)
+            self.assertEqual(o["synthetic_quality_status"],"HOLD")
+
+    def test_unproven_baseline_keeps_candidate_vetoes_not_pair(self):
+        for k,v in (("status","timeout"),("status","cancelled"),("attempt",2)):
+            i,r=scenario()
+            r[32][k]=v
+            r[33]["atoms"]["unsafe_negative_assertion"]="true"
+            r[33]["citations"]="invalid"
+            o=self.evaluate(i,r)
+            self.assertEqual(o["paired_regressions"],dict(content=0,safety=0,citation=0,any=0,unresolved=1))
+            self.assertEqual(o["known_violation_counts"]["unsafe_negative"]["candidate"],1)
+            self.assertEqual(o["known_violation_counts"]["invalid_citation"]["candidate"],1)
+            self.assertEqual(o["synthetic_quality_status"],"FAIL")
+
+    def test_unproven_candidate_confirmed_adverse_categories(self):
+        i,r=scenario()
+        r[33]["status"]="timeout"
+        r[33]["atoms"]["unsafe_negative_assertion"]="true"
+        r[33]["citations"]="invalid"
+        o=self.evaluate(i,r)
+        self.assertEqual(o["paired_regressions"],dict(content=1,safety=1,citation=1,any=1,unresolved=0))
+        self.assertEqual(o["synthetic_quality_status"],"FAIL")
+        r[33]["facts"][0]="unknown"; r[33]["consensus"]=False
+        o=self.evaluate(i,r)
+        self.assertEqual(o["paired_regressions"],dict(content=0,safety=1,citation=1,any=1,unresolved=1))
+        self.assertEqual(o["synthetic_quality_status"],"FAIL")
+
+    def test_later_attempt_preserves_veto_not_pair(self):
+        i,r=scenario()
+        r[33]["attempt"]=2
+        r[33]["atoms"]["unsafe_negative_assertion"]="true"
+        r[33]["citations"]="invalid"
+        o=self.evaluate(i,r)
+        self.assertEqual(o["paired_regressions"],dict(content=0,safety=0,citation=0,any=0,unresolved=1))
+        self.assertEqual(o["synthetic_quality_status"],"FAIL")
+        self.assertEqual(o["known_violation_counts"]["unsafe_negative"]["candidate"],1)
+
+    def test_independent_regression_survives_other_unknown_pair(self):
+        i,r=scenario()
+        r[0]["status"]="timeout"
+        r[3]["facts"][0]="false"
+        r[33]["citations"]="invalid"
+        r[33]["facts"][0]="unknown"
+        o=self.evaluate(i,r)
+        self.assertEqual(o["paired_regressions"],dict(content=1,safety=0,citation=1,any=2,unresolved=2))
+        self.assertEqual(o["synthetic_quality_status"],"FAIL")
+
+    def test_unproven_positive_content_and_citation_separate(self):
+        i,r=scenario()
+        r[1]["status"]="timeout"; r[1]["facts"][0]="false"
+        o=self.evaluate(i,r)
+        self.assertEqual(o["paired_regressions"],dict(content=1,safety=0,citation=0,any=1,unresolved=1))
+        self.assertEqual(o["synthetic_quality_status"],"FAIL")
+
+    def test_conflicted_content_not_pair_evidence(self):
+        i,r=scenario()
+        r[33]["atoms"]["wrong_requested_assertion"]="true"
+        r[33]["citations"]="invalid"
+        o=self.evaluate(i,r)
+        self.assertEqual(o["paired_regressions"],dict(content=0,safety=1,citation=1,any=1,unresolved=1))
+        self.assertEqual(o["synthetic_quality_status"],"FAIL")
+
+    def test_both_unproven_preserve_baseline_violation(self):
+        i,r=scenario()
+        r[32]["status"]="cancelled"; r[33]["status"]="timeout"
+        r[32]["citations"]="invalid"
+        o=self.evaluate(i,r)
+        self.assertEqual(o["paired_regressions"],dict(content=0,safety=0,citation=0,any=0,unresolved=1))
+        self.assertEqual(o["known_violation_counts"]["invalid_citation"]["baseline"],1)
+        self.assertEqual(o["synthetic_quality_status"],"FAIL")
 
 if __name__=="__main__":
     unittest.main()

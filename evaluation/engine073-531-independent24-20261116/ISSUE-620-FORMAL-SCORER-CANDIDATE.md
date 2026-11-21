@@ -1,6 +1,6 @@
 # #620 prospective formal aggregate scorer candidate — technical proposal / HOLD
 
-Version: 620-formal-scorer-v1-proposed. This is an implementation candidate,
+Version: 620-formal-scorer-v2-proposed. This is an implementation candidate,
 not an authenticated independent approval or a usable formal scoring entrypoint.
 The accepted limited synthetic contract remains unchanged. The actual ratified
 formal scorer identity remains UNSET until a distinct authorized authority
@@ -27,7 +27,18 @@ each arm. Zero denominator, missing/extra/duplicate observations, conflicted or
 incomplete judgments, missing provenance structure and unresolved pairs withhold
 metrics. Independently confirmed invalid citation and unsafe-negative vetoes are
 deduplicated by case-arm slot and category; both may be present in one slot.
-Duplicate slots cannot establish paired judgments. Vetoes are retained for
+Slot and admission/judgment digest claims are counted before schema rejection,
+including identifiable malformed duplicates. Duplicate claims cannot establish
+paired judgments; terminal content digests are format-checked, not required to
+be unique. Attempt numbers must be positive integers (not booleans), and status
+must be complete, timeout, cancelled, incomplete, unknown, ambiguous or error.
+The full row schema and all digest formats are checked before adjudication.
+An unproven baseline cannot establish observed comparison quality; a unique
+unproven first-attempt candidate can only supply confirmed adverse content,
+safety or citation evidence, never favorable quality. A later attempt cannot
+establish pair quality. Positive safety applicability depends on inventory.
+Unresolved categories do not erase other confirmed regressions.
+Known quality FAIL survives zero denominators or other metric-withholding HOLD. Vetoes are retained for
 syntactically valid records despite unrelated uncertainty. Malformed records
 are not evidence; repair of an invalid submission is not a replacement model
 attempt. Zero-tolerance violations on either arm block scoring; retain separate

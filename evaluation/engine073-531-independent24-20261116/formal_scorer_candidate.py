@@ -11,7 +11,7 @@ from collections import Counter
 from first_attempt_contract import ARMS, CASE, HEX, FIELDS, check_first_attempts
 from scoring_case_contract import adjudicate_synthetic, paired_no_regression_gate
 
-VERSION = "620-formal-scorer-v1-proposed"
+VERSION = "620-formal-scorer-v2-proposed"
 THRESHOLDS = {"f1": Fraction(9,10), "precision": Fraction(95,100), "recall": Fraction(85,100)}
 ATOMS = ("wrong_requested_assertion", "material_out_of_scope_error",
          "unsafe_negative_assertion", "complete_negative_qualification")
@@ -19,6 +19,7 @@ INVENTORY_FIELDS = {"case_id", "case_type", "fact_count"}
 ROW_FIELDS = FIELDS | {"facts", "atoms", "citations", "consensus", "judgment_sha256"}
 STATES = {"true", "false", "unknown"}
 CITES = {"valid", "missing", "invalid", "unknown"}
+ATTEMPT_STATES = {"complete", "timeout", "cancelled", "incomplete", "unknown", "ambiguous", "error"}
 
 
 def _str_in(x, choices):
@@ -35,6 +36,56 @@ def _state(x):
 
 def _bit(x):
     return x == "true"
+
+
+def _slot(row, cases):
+    if type(row) is not dict:
+        return None
+    cid, arm = row.get("case_id"), row.get("arm")
+    if type(cid) is str and cid in cases and _str_in(arm, ARMS):
+        return cid, arm
+    return None
+
+
+def _provenance_schema(row):
+    return (type(row["attempt"]) is int and row["attempt"] >= 1
+            and _str_in(row["status"], ATTEMPT_STATES)
+            and _digest(row["admission_sha256"]) and _digest(row["final_sha256"]))
+
+
+def _judgment_schema(row, item):
+    atoms, facts = row["atoms"], row["facts"]
+    return (type(atoms) is dict and set(atoms) == set(ATOMS)
+            and all(_state(x) for x in atoms.values())
+            and type(facts) is list and len(facts) == item["fact_count"]
+            and all(_state(x) for x in facts)
+            and _str_in(row["citations"], CITES) and type(row["consensus"]) is bool
+            and _digest(row["judgment_sha256"]))
+
+
+def _pair_evidence(decision, row, attempt_ok, *, baseline):
+    """Evidence for comparison, not authentication or a numeric case event.
+
+    Unproven first attempts cannot establish favorable content, safety or
+    citations. A unique first-attempt record can still carry independently
+    confirmed adverse evidence; later attempts may only contribute vetoes.
+    A positive's safety applicability is fixed by inventory, not observation.
+    No unproven baseline quality establishes a relative comparison.
+    """
+    content = decision["content_verdict"]
+    safety = decision["safety_status"]
+    citation = decision["citation_status"]
+    if decision["input_conflicts"]:
+        content = "UNRESOLVED"
+    if not attempt_ok:
+        adverse_eligible = not baseline and row["attempt"] == 1
+        if not adverse_eligible or content not in ("FN", "FP", "FP+FN"):
+            content = "UNRESOLVED"
+        if safety != "not_applicable" and (not adverse_eligible or safety != "violation"):
+            safety = "unknown"
+        if not adverse_eligible or citation not in ("missing", "invalid"):
+            citation = "unknown"
+    return content, (None if safety == "unknown" else safety != "violation"), citation
 
 
 def _fraction(x):
@@ -84,29 +135,44 @@ def evaluate_synthetic(inventory, rows, *, purpose):
     observations = []
     decisions = {}
     violation_slots = {"unsafe_negative": set(), "invalid_citation": set()}
-    judgments = set()
-    duplicate_slots = set()
+    # Count every identifiable claim before schema rejection. A malformed
+    # duplicate is not evidence but makes the claimed slot ambiguous.
+    slots = Counter()
+    digest_claims = {k: Counter() for k in ("admission_sha256", "judgment_sha256")}
+    for row in rows:
+        slot = _slot(row, cases)
+        if slot is not None:
+            slots[slot] += 1
+        if type(row) is dict:
+            for k, claims in digest_claims.items():
+                if _digest(row.get(k)):
+                    claims[row[k]] += 1
+    duplicate_slots = {slot for slot, count in slots.items() if count > 1}
+    if duplicate_slots:
+        holds.append("duplicate_slot")
+    for k, claims in digest_claims.items():
+        if any(count > 1 for count in claims.values()):
+            holds.append("duplicate_" + k.removesuffix("_sha256") + "_digest")
     for row in rows:
         if type(row) is not dict or set(row) != ROW_FIELDS:
             holds.append("invalid_row_schema")
             continue
-        cid, arm = row["case_id"], row["arm"]
-        if type(cid) is not str or cid not in cases or not _str_in(arm, ARMS):
+        slot = _slot(row, cases)
+        if slot is None:
             holds.append("unknown_slot")
             continue
-        slot = cid, arm
+        cid, arm = slot
         item = cases[cid]
-        atoms, facts = row["atoms"], row["facts"]
-        if (type(atoms) is not dict or set(atoms) != set(ATOMS) or not all(_state(x) for x in atoms.values())
-                or type(facts) is not list or len(facts) != item["fact_count"] or not all(_state(x) for x in facts)
-                or not _str_in(row["citations"], CITES) or type(row["consensus"]) is not bool
-                or not _digest(row["judgment_sha256"])):
+        if not _provenance_schema(row):
+            holds.append("invalid_provenance_schema")
+            continue
+        if not _judgment_schema(row, item):
             holds.append("invalid_judgment_schema")
             continue
-        if row["judgment_sha256"] in judgments:
-            holds.append("duplicate_judgment_digest")
-        judgments.add(row["judgment_sha256"])
+        atoms, facts = row["atoms"], row["facts"]
         observations.append({k: row[k] for k in FIELDS})
+        ambiguous = slot in duplicate_slots or any(
+            claims[row[k]] > 1 for k, claims in digest_claims.items())
         neg = item["case_type"] == "negative"
         # Non-applicable negative-only fields for positives must be explicit
         # false (qualification) and false or unknown (safety). True safety goes
@@ -119,9 +185,7 @@ def evaluate_synthetic(inventory, rows, *, purpose):
         safe = atoms["unsafe_negative_assertion"]
         # Only structural provenance is available here; global journal check
         # is performed below. No supplied boolean can approve actual scoring.
-        attempt_ok = (type(row["attempt"]) is int and row["attempt"]==1 and
-                      row["status"]=="complete" and _digest(row["admission_sha256"])
-                      and _digest(row["final_sha256"]))
+        attempt_ok = not ambiguous and row["attempt"] == 1 and row["status"] == "complete"
         d = adjudicate_synthetic(case_type=item["case_type"],
             mandatory_fact_supported=[_bit(x) for x in facts],
             wrong_requested_assertion=_bit(atoms[ATOMS[0]]),
@@ -132,11 +196,9 @@ def evaluate_synthetic(inventory, rows, *, purpose):
             first_attempt_proven=attempt_ok, content_judgment_complete=not incomplete)
         if d["unsafe_negative_gate"]: violation_slots["unsafe_negative"].add(slot)
         if d["invalid_citation_gate"]: violation_slots["invalid_citation"].add(slot)
-        if slot in decisions:
-            holds.append("duplicate_slot")
-            duplicate_slots.add(slot)
-        else:
-            decisions[slot] = d
+        # Never select a record from an ambiguous slot or digest claim.
+        if not ambiguous:
+            decisions[slot] = (d, _pair_evidence(d, row, attempt_ok, baseline=arm == "baseline"))
         if d["input_conflicts"]: holds.append("input_conflict")
         if (d["semantic_status"]=="unknown" or d["content_verdict"]=="UNRESOLVED"
                 or d["citation_status"]=="unknown" or d["safety_status"]=="unknown"
@@ -152,10 +214,10 @@ def evaluate_synthetic(inventory, rows, *, purpose):
         if a is None or b is None or any((cid, arm) in duplicate_slots for arm in ARMS):
             paired["unresolved"]+=1
             continue
-        def is_safe(d):
-            return None if d["safety_status"]=="unknown" else d["safety_status"]!="violation"
-        p=paired_no_regression_gate(a["content_verdict"],b["content_verdict"],is_safe(a),is_safe(b),
-                    baseline_citations=a["citation_status"],candidate_citations=b["citation_status"])
+        ac, asa, aq = a[1]
+        bc, bsa, bq = b[1]
+        p=paired_no_regression_gate(ac, bc, asa, bsa,
+                    baseline_citations=aq, candidate_citations=bq)
         for k in ("content","safety","citation"):
             paired[k]+=p[k+"_regression"] is True
         paired["any"]+=p["regression"] is True
@@ -164,17 +226,17 @@ def evaluate_synthetic(inventory, rows, *, purpose):
     if paired["unresolved"]: holds.append("unresolved_pair")
     if any(violation_slots.values()): holds.append("zero_tolerance_violation")
     out["hold_reasons"]=sorted(set(holds))
+    # Apply known quality vetoes independently of numeric availability.
+    if any(violation_slots.values()) or paired["any"]:
+        out["synthetic_quality_status"]="FAIL"
     if holds:
-        # Known vetoes survive unrelated uncertainty, without printing metrics.
-        if any(violation_slots.values()) or paired["any"]:
-            out["synthetic_quality_status"]="FAIL"
         return out
     metrics={}
     confusion={}
     for arm in ARMS:
         counts=Counter()
         for cid in cases:
-            event=decisions[(cid,arm)]["content_verdict"]
+            event=decisions[(cid,arm)][0]["content_verdict"]
             counts.update(event.split("+"))
         tp,fp,fn,tn=(counts[x] for x in ("TP","FP","FN","TN"))
         if not tp+fp or not tp+fn:
