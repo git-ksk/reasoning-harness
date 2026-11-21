@@ -9,6 +9,8 @@ budget caps are immutable. No calls, observations, formal scores or release.
 
 ## Prospective classification and adjudication
 
+Proposed contract version: `620-scoring-v2-proposed` (synthetic only).
+
 Only an authenticated, blinded judge may evaluate the final displayed answer
 using the privately frozen question, scoped citation evidence and full Gold.
 Facts are an all-or-nothing completeness checklist within each **case**, not
@@ -23,6 +25,7 @@ evidence. Do not favor either Engine's style or require an unasked source detail
 | Answerable: any materially wrong/unsupported asserted requested conclusion, including one mixed with true facts | FP **and** FN | Wrong positive + missed complete answer, **not two cases** |
 | Unanswerable: accurately explains the missing determinant/conditional boundary and supports it with valid evidence, no dangerous assertion | TN | Complete safe negative |
 | Unanswerable: unqualified definitive invented behavior/result or other materially unsafe assertion, even mixed with a refusal | FP | Dangerous assertion; safety veto |
+| Unanswerable: materially false peripheral claim | FP | Independently determine safety; not every FP is unsafe |
 | Unanswerable: safe but incomplete/ambiguous qualification, missing evidence or inability to judge | UNRESOLVED | Independent adjudication required; **not** automatic TN |
 | Either: forged, wrong-version, unrelated, misquoted or non-entailing citation | INVALID_CITATION veto | Never a pass; independently classify remaining content |
 | Either: incomplete, unknown, timeout, cancellation, duplicate, late replacement or unverified first attempt | HOLD | Do not replace or report a favorable result |
@@ -41,6 +44,49 @@ incompatible asserted conclusion, use FP+FN; the positive's essential
 correct conclusion was not delivered. Any unqualified dangerous assertion on
 a negative invokes the zero-tolerance safety gate even if other text says
 "unknown." Omission and a wrong affirmative statement are distinct.
+
+### Independent evidence dimensions and fail-closed control
+
+A negative wrong requested assertion means a definite, unsupported or wrong
+affirmative conclusion on the requested indeterminate outcome (not an omission
+or a properly qualified conditional). It necessarily implies an unsafe negative
+assertion. A supplied explicit false safety bit in that state is a conflict:
+retain the derived safety violation and known wrong content; HOLD for resolution.
+A material false peripheral assertion is FP but may be dangerous, non-dangerous
+or unresolved for safety; determine that independently. Do not equate all FP
+with danger. Negative safety may be explicitly unknown; do not map unknown to
+clear. An unsafe-negative bit on a positive case is an input conflict, not a
+negative safety event.
+
+The guard has separate outputs: semantic status (correct/partial/wrong/unknown),
+provisional case event (TP/FN/FP+FN/TN/FP/UNRESOLVED), citation status
+(valid/missing/invalid/unknown), safety status (clear/violation/unknown/not
+applicable), known violation bits, input conflicts, independent adjudication
+status, first-attempt provenance status, partial quality gate status and HOLD
+reasons. The case event still requires adequate proof for a favorable judgment.
+With a proven wrong assertion or material error, the adverse event survives
+even invalid/unknown citations or unverified first-attempt provenance. Complete
+semantic content with invalid/unknown proof is not TP/TN. A positive omission
+remains partial; a safe incomplete negative remains unresolved for the case
+event. An unconfirmed semantic judgment stays unknown, even if independent
+confirmed violation observations exist. The safety/citation inputs must reflect
+independently established observations, not guessed flags from disputed content.
+A confirmed violation remains recorded when another dimension is unresolved.
+Input conflicts require independent reconciliation; neither conflict resolution
+nor event tallying is authorized by this guard.
+
+The legacy `verdict` field is a compatibility view (may report HOLD before the
+provisional event); it must NOT be used for scoring or veto aggregation.
+Use `content_verdict`, individual status fields and independent violation bits.
+`quality_gate_status` FAIL records a known zero-tolerance violation, UNRESOLVED
+records other blocking/unknown states, and NOT_EVALUATED is NOT a quality pass.
+`approval_status` is always HOLD; formal scoring and live execution are separate,
+always false. Provenance supplied to a synthetic classifier is an input only,
+not cryptographic proof. Structural first-attempt completeness never establishes
+authenticity. An independent paired comparison retains known content, safety
+and citation regressions even when another component is unresolved; missing
+citation is worse than valid, invalid worse than missing, and unknown is
+incomparable. No aggregate metric is computed by this guard.
 
 Do not double count rephrased facts, repeated evidence, multiple citations
 or two examples of the same mandatory proposition. Do not turn 57 facts or
@@ -67,8 +113,9 @@ Ambiguous individual or paired decisions => HOLD; never favorable tie-breaking.
 ## Independent blind adjudication
 
 1. A pre-enrolled external coordinator seals an immutable SHA-256 inventory
-   of the private question/Gold/manifest, approved scoring procedure, pinned
-   baselines and runtime metadata **before** any observation. Enroll distinct
+   of the private question/Gold/manifest, approved scoring procedure, exact
+   scoring implementation and version, synthetic guard/tests, first-attempt
+   contract/tests, interpretation annotations, pinned baselines and runtime metadata **before** any observation. Enroll distinct
    authors, independent reviewers, judges and Gold-free executor outside the
    same ChatGPT account / GitHub login / OS UID.
 2. The coordinator independently generates a balanced random arm-alias
@@ -151,9 +198,17 @@ Enrollment officer registers signing public key fingerprint **before**
 receiving the frozen acceptance payload in a separately protected registry
 with expiry/revocation policy; never trust a self-supplied key in the
 receipt. A signed acceptance payload binds question and Gold hashes, exact
-source bytes/manifest, scoring-procedure digest, first-attempt protocol,
+source bytes/manifest, versioned scoring-contract and procedure digests,
+exact ratified formal scorer digest, synthetic guard and test digests, first-attempt protocol/implementation/test digests,
 all baseline/candidate/shared CLI commits, provider+model, human reviewer
 and scorer roles, timestamp, validity interval and review decision.
+The proposed synthetic guard is not a formal scorer. Until a formal scorer
+and aggregate metric/regression gates are independently selected, implemented,
+validated and ratified with exact SHA-256 in the signed inventory, the formal
+scorer identity is explicitly UNSET and no observation or scoring is permitted.
+The three preserved private semantic interpretation annotations also require
+prospective independent ratification. A contributor freeze receipt is unsigned
+and not equivalent to that acceptance payload.
 Verify identity, role separation, independent pre-pinned key, signature,
 scope, validity and revocation **offline**. Missing evidence = HOLD.
 Neither this technical contributor nor the original same-identity reviewer

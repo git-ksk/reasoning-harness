@@ -15,6 +15,7 @@ def check_first_attempts(case_ids, rows):
     """Return a structural-only HOLD/complete result; no permission to score/live."""
     def result(ok, reason):
         return {"structurally_complete": ok, "reason": reason,
+                "authenticity_status": "UNVERIFIED", "approval_status": "HOLD",
                 "formal_score_authorized": False, "live_authorized": False}
 
     if not isinstance(case_ids, list) or len(case_ids) != 24 or any(

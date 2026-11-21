@@ -17,6 +17,8 @@ class FirstAttemptContractTests(unittest.TestCase):
     def test_complete_is_not_authority(self):
         r = check_first_attempts(self.ids, self.rows)
         self.assertTrue(r["structurally_complete"])
+        self.assertEqual(r["authenticity_status"], "UNVERIFIED")
+        self.assertEqual(r["approval_status"], "HOLD")
         self.assertFalse(r["formal_score_authorized"])
         self.assertFalse(r["live_authorized"])
 
