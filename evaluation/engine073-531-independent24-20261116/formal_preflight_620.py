@@ -172,9 +172,18 @@ class OfflineApprovalDAG:
         self._persist("offline-identity",identity_raw,identity_envelope,self.identity)
         self._persist("offline-isolation",isolation_raw,isolation_envelope,self.isolation)
 
+    def _require_witness_context(self, witness):
+        # The protected DAG and checkpoint must share the exact trust snapshot
+        # and durable cohort ledger, including at initial admission. A valid
+        # signature in a different context is not evidence for this DAG.
+        require(type(witness) is WitnessWindow
+                and witness._registry is self.registry
+                and witness._ledger is self.ledger,"checkpoint_context_mismatch")
+
     def _current(self):
         require(not self._poisoned,"approval_quarantined")
         try:
+            self._require_witness_context(self.witness)
             now=self.witness.recheck()
             self.plan.reverify(self.registry,now)
             self.plan.bind_ledger(self.ledger)
@@ -235,9 +244,10 @@ class OfflineApprovalDAG:
         substitute registry or retry is allowed. New billing is required for dispatch.
         """
         try:
-            require(not self._poisoned and type(new) is WitnessWindow
-                    and new._ledger is self.ledger and new._registry is self.registry
-                    and new._sequence==self.witness._sequence+1
+            require(not self._poisoned,"approval_quarantined")
+            self._require_witness_context(self.witness)
+            self._require_witness_context(new)
+            require(new._sequence==self.witness._sequence+1
                     and new._previous==self.witness.digest
                     and instant(new.validity[0])>=instant(self.witness.validity[0])
                     and new._last_now>=self.witness._last_now,"checkpoint_advance")

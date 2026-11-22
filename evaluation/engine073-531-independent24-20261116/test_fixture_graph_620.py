@@ -506,6 +506,73 @@ class FixtureGraphTests(unittest.TestCase):
             flow.reserve_slot(slots[0])
             with self.assertRaises(ValueError): witness.recheck()
 
+    def test_initial_checkpoint_rejects_foreign_registry_and_ledger(self):
+        from unittest.mock import patch
+        for mode in ("revoked-current-registry", "foreign-ledger"):
+            with self.subTest(mode=mode), tempfile.TemporaryDirectory() as tmp:
+                profile=initialize_local_store(Path(tmp).resolve()/"primary")
+                original,keys=fixture_registry()
+                seen={}
+                def registry_factory():
+                    data=copy.deepcopy(original)
+                    if mode=="revoked-current-registry":
+                        next(p for p in data["principals"]
+                             if p["role"]=="journal_witness")["revoked"]=True
+                    return data,keys
+                witness_type=WitnessWindow
+                def witness_factory(**kw):
+                    seen["ledger"]=kw["ledger"]
+                    if mode=="revoked-current-registry":
+                        raw=encode(original)
+                        reg=Registry(raw,pinned_sha256=sha(raw),evaluation_id=EVAL)
+                        payload=encode({"contract":"620-witness/1","evaluation_id":EVAL,
+                            "registry_digest":reg.digest,"sequence":1,"previous":None,
+                            "observed_at":START,"expires_at":END})
+                        env=sign(reg,keys,payload,kind="checkpoint",role="journal_witness",
+                            artifact_id="witness-1",parents=[])
+                        kw.update(registry=reg,expected_pin=sha(env),raw=payload,envelope=env)
+                    else:
+                        claim=kw["ledger"].claim_record()
+                        kw["ledger"]=FirstClaimLedger(
+                            initialize_local_store(Path(tmp).resolve()/"foreign"),
+                            dataset_sha256=claim["dataset_sha256"],inventory_raw=fixture_inventory(),
+                            inventory_receipt=claim["inventory_receipt"],
+                            conditions_receipt=claim["conditions_receipt"],evaluation_id=EVAL,
+                            blind_map_sha256=claim["blind_map_sha256"],lane="formal-preflight-fixture")
+                    return witness_type(**kw)
+                # Substitute only genuine, separately verified fixture inputs.
+                with patch(__name__+".fixture_registry",side_effect=registry_factory), \
+                     patch(__name__+".WitnessWindow",side_effect=witness_factory):
+                    with self.assertRaisesRegex(ValueError,"checkpoint_context_mismatch"):
+                        fixed_setup(self,profile)
+                ledger=seen["ledger"]
+                self.assertIsNone(ledger.read_fixture_stage("offline-identity"))
+                self.assertIsNone(ledger.read_fixture_stage("approval-run_permission"))
+                self.assertTrue(ledger.no_reservations())
+
+    def test_checkpoint_context_change_quarantines_before_reservation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            profile=initialize_local_store(Path(tmp).resolve()/"primary")
+            dat,keys,registry,signed,inventory,slots,salt,mapping,inv,cond,authority_pin,planned,planned_sources,legacy,plan,ledger,witness,clock,flow,consume,run=fixed_setup(self,profile)
+            self.assertTrue(flow.inspect_run()["offline_graph_verified"])
+            claim=ledger.claim_record()
+            foreign=FirstClaimLedger(initialize_local_store(Path(tmp).resolve()/"foreign"),
+                dataset_sha256=claim["dataset_sha256"],inventory_raw=inventory,
+                inventory_receipt=inv,conditions_receipt=cond,evaluation_id=EVAL,
+                blind_map_sha256=claim["blind_map_sha256"],lane="formal-preflight-fixture")
+            raw=encode({"contract":"620-witness/1","evaluation_id":EVAL,
+                "registry_digest":registry.digest,"sequence":1,"previous":None,
+                "observed_at":START,"expires_at":END})
+            env=signed(raw,"checkpoint","journal_witness","witness-1",[])
+            flow.witness=WitnessWindow(ledger=foreign,registry=registry,expected_pin=sha(env),
+                expected_sequence=1,expected_previous=None,raw=raw,envelope=env,clock=lambda:clock[0])
+            self.assertFalse(flow.inspect_run()["offline_graph_verified"])
+            flow.witness=witness
+            self.assertFalse(flow.inspect_run()["offline_graph_verified"])
+            with self.assertRaisesRegex(ValueError,"approval_quarantined"):
+                flow.reserve_slot(slots[0])
+            self.assertIsNone(ledger.read_fixture_stage("approval-score_permission"))
+
     def test_redacted_audit_never_exports_input(self):
         out=redacted_status("score_preflight","graph_invalid")
         self.assertEqual(out["reason"],"graph_invalid")
