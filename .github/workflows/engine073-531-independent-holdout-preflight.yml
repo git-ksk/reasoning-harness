@@ -22,16 +22,21 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Install existing hash-locked review verifier dependencies
+        run: python3 -m pip install --require-hashes -r evaluation/cli-repair-paired-v1/normal_v3/review-requirements.txt
       - name: Refuse provider credentials and validate source pool plus frozen thresholds
         shell: bash
         run: |
           set -euo pipefail
-          env -u MISTRAL_API_KEY -u GROQ_API_KEY -u GEMINI_API_KEY -u OPENAI_API_KEY \
+          env -u REASON_616_PRIVATE_GOLD -u MISTRAL_API_KEY -u GROQ_API_KEY -u GEMINI_API_KEY -u OPENAI_API_KEY \
             PYTHONDONTWRITEBYTECODE=1 \
             python3 -m unittest discover \
               -s evaluation/engine073-531-independent24-20261116 \
               -p 'test_*.py' -v
-          env -u MISTRAL_API_KEY -u GROQ_API_KEY -u GEMINI_API_KEY -u OPENAI_API_KEY \
+          env -u REASON_616_PRIVATE_GOLD -u MISTRAL_API_KEY -u GROQ_API_KEY -u GEMINI_API_KEY -u OPENAI_API_KEY \
             PYTHONDONTWRITEBYTECODE=1 \
             python3 evaluation/engine073-531-independent24-20261116/validate_readiness.py \
               --repo . > "$RUNNER_TEMP/independent-readiness.json"
@@ -48,7 +53,7 @@ jobs:
           private_root="$(mktemp -d /tmp/rh531-corrected-pair-XXXXXXXX)"
           chmod 700 "$private_root"
           trap 'rm -rf -- "$private_root"' EXIT
-          env -u MISTRAL_API_KEY -u GROQ_API_KEY -u GEMINI_API_KEY -u OPENAI_API_KEY \
+          env -u REASON_616_PRIVATE_GOLD -u MISTRAL_API_KEY -u GROQ_API_KEY -u GEMINI_API_KEY -u OPENAI_API_KEY \
             PYTHONDONTWRITEBYTECODE=1 \
             python3 evaluation/engine073-531-independent24-20261116/build_corrected_pair.py \
               --repo . --output "$private_root/verified-corrected-pair-overlays" \
