@@ -45,6 +45,7 @@ ARTIFACT_ROLES = {
     "identity_attestation": {"identity_authority"},
     "isolation_attestation": {"isolation_witness"},
     "checkpoint": {"journal_witness"},
+    "billing_attestation": {"billing_witness"},
 }
 ROLES = frozenset().union(*ARTIFACT_ROLES.values())
 ENVELOPE = frozenset(("schema_version", "artifact_type", "artifact_id", "evaluation_id",

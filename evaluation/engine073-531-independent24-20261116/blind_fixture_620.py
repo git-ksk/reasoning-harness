@@ -8,7 +8,7 @@ import re
 from auth620 import encode, decode, sha, require, match, fields, SHA, ID
 from first_claim_620 import inventory_slots
 from formal_scorer_candidate import ATOMS, STATES, CITES
-from observation_620 import verify_observation
+from protected_plan_620 import ProtectedPlan
 
 BLIND_ID = re.compile(r"blind-[0-9a-f]{32}\Z")
 
@@ -33,23 +33,45 @@ def validate_mapping(inventory_raw, mapping):
             and [x["blind_id"] for x in mapping] == sorted(seen), "blind_map_bijection")
 
 
+def citation_summary(decisions):
+    """Lossless conservative collapse to the existing case-level enum.
+
+    A known invalid citation survives uncertainty elsewhere. Unknown cannot
+    become valid/missing; only explicit complete coverage can establish valid.
+    This is an unratified adapter convention, not a change to scorer arithmetic.
+    """
+    vals=[v for k,v in decisions.items() if k.startswith("citation-")]
+    require(bool(vals) and all(type(x) is str and x in CITES for x in vals),"citation_manifest")
+    return next(x for x in ("invalid","unknown","missing","valid") if x in vals)
+
+
 class BlindFixtureGraph:
     """Coordinator-owned in-memory projection + immutable local fixture receipts.
 
     The class is an offline test integration boundary, not a real scorer service.
     Actual blind judge access isolation cannot be proven by this Python object.
     """
-    def __init__(self, *, ledger, registry, inventory_raw, inventory_receipt, conditions_receipt,
-                 closure_digest, observation_inputs, mapping, salt, now):
+    def __init__(self, *, ledger, registry, plan, run_receipt,
+                 closure_digest, observation_inputs, mapping, salt, now, clock):
+        require(type(plan) is ProtectedPlan,"protected_plan_required")
+        plan.reverify(registry,now)
+        plan.bind_ledger(ledger)
+        inventory_raw=plan.inventory_raw
+        inventory_receipt=plan.inventory_receipt
+        conditions_receipt=plan.conditions_receipt
         validate_mapping(inventory_raw, mapping)
         require(map_digest(mapping, salt) == ledger.blind_map_sha256, "blind_precommit_mismatch")
-        match(inventory_receipt, SHA, "inventory_receipt")
-        match(conditions_receipt, SHA, "conditions_receipt")
         records = ledger.closed_observations(closure_digest)
         require(type(observation_inputs) is list and len(observation_inputs) == 48, "graph_count")
-        # Reverify raw signed capture evidence; never accept arbitrary "verified" dicts.
-        observations = [verify_observation(**{**inputs, "registry": registry, "now": now})
-                        for inputs in observation_inputs]
+        observations = [plan.verify_capture(ledger=ledger,registry=registry,now=now,record=record,
+                        raw=raw,run_receipt=run_receipt)
+                        for record,raw in zip(records,observation_inputs,strict=True)]
+        require(callable(clock),"graph_trusted_clock")
+        self._clock=clock
+        self._poisoned=False
+        self._plan=plan
+        self._run_receipt=run_receipt
+        self._observation_inputs=tuple(dict(raw) for raw in observation_inputs)
         self._ledger, self._registry, self._now = ledger, registry, now
         self._inventory_raw = inventory_raw
         self._inventory_receipt, self._conditions_receipt = inventory_receipt, conditions_receipt
@@ -73,22 +95,38 @@ class BlindFixtureGraph:
                     and len(observation["display"].encode("utf-8")) == observation["final_length"],
                     "graph_observation_mismatch")
             bid = by_slot[slot]
-            targets = list(ATOMS) + [f"fact-{i}" for i in range(by_case[slot[1]]["fact_count"])]
-            # The fixture's citation inventory is pre-fixed to one cite per slot.
-            require(observation["citation_targets"] == ["native-0"], "fixture_citation_inventory")
-            targets += ["citation-native-0"]
+            fixed=plan.targets_for(slot[1])
+            native=observation["citation_targets"]
+            require(type(native) is list and len(native)<=256 and len(set(native))==len(native),
+                    "observed_citation_inventory")
+            # Review every required support target AND every emitted citation,
+            # including extra citations. A missing item is not silently false.
+            targets = fixed["atoms"] + fixed["facts"] + [
+                "citation-required-"+k for k in fixed["required_citations"]] + [
+                "citation-observed-"+k for k in native]
             token = sha(encode({"blind_id": bid, "terminal_receipt": rec["observation_sha256"],
                                 "admission_receipt": rec["admission_sha256"], "salt": salt}))
             self._by_id[bid] = {"observation": decode(encode(observation)),
-                                "targets": targets, "token": token}
+                                "targets": targets, "token": token,"context":plan.judge_context_for(slot[1])}
         self._ids = tuple(sorted(self._by_id))
 
     def _persist_stage(self, stage, raw, envelope, kind, role, parents, receipt):
         package = encode({"payload":decode(raw),"envelope":decode(envelope)})
-        self._ledger.append_fixture_stage(stage, package)
+        try:
+            self._ledger.append_fixture_stage(stage, package)
+        except BaseException:
+            self._poisoned=True
+            self._ledger.halt()
+            raise
         self._signed_stages[stage] = (raw,envelope,kind,role,tuple(parents),receipt)
 
     def _reverify_stages(self):
+        require(not self._poisoned,"graph_quarantined")
+        now=self._clock()
+        require(now>=self._now,"graph_clock_rollback")
+        self._now=now
+        self._plan.reverify(self._registry,self._now)
+        self._plan.bind_ledger(self._ledger)
         for stage,(raw,envelope,kind,role,parents,receipt) in self._signed_stages.items():
             require(self._ledger.read_fixture_stage(stage) ==
                     encode({"payload":decode(raw),"envelope":decode(envelope)}),
@@ -98,7 +136,12 @@ class BlindFixtureGraph:
                     "fixture_stage_signature_changed")
 
     def _unlocked(self):
-        require(self._lock_receipt is None, "blind_locked")
+        require(self._lock_receipt is None and not self._poisoned, "blind_locked")
+        now=self._clock()
+        require(now>=self._now,"graph_clock_rollback")
+        self._now=now
+        self._plan.reverify(self._registry,now)
+        self._plan.bind_ledger(self._ledger)
 
     def blind_ids(self):
         return self._ids
@@ -109,7 +152,9 @@ class BlindFixtureGraph:
         p = self._by_id[blind_id]
         return {"blind_id": blind_id, "display": p["observation"]["display"],
                 "source_texts": list(p["observation"]["source_texts"]),
-                "targets": list(p["targets"]), "evidence_token": p["token"]}
+                "targets": list(p["targets"]), "evidence_token": p["token"],
+                "judge_context":decode(encode(p["context"])),
+                "citation_details":decode(encode(p["observation"]["citation_details"]))}
 
     def _values(self, blind_id, raw, expected_targets):
         manifest = fields(decode(raw), {"blind_id", "decisions"})
@@ -128,11 +173,19 @@ class BlindFixtureGraph:
             allowed_kinds = {"explicit_adverse", "explicit_favorable", "final_output_dependent_omission",
                              "citation_entailment", "qualification", "unknown"}
             require(type(row["evidence_kind"]) is str and row["evidence_kind"] in allowed_kinds
-                    and (row["value"] != "unknown" or row["evidence_kind"] == "unknown"),
+                    and ((row["value"] == "unknown") == (row["evidence_kind"] == "unknown")),
                     "judgment_evidence_kind")
+            if target.startswith("citation-") and row["value"]!="unknown":
+                require(row["evidence_kind"]=="citation_entailment","citation_evidence_kind")
+            if target.startswith("citation-observed-"):
+                require(row["value"]!="missing","observed_citation_cannot_be_missing")
+            if target.startswith("citation-required-") and not packet["observation"]["citation_targets"]:
+                require(row["value"]!="valid","citation_support_absent")
             basis = {"target": target, "value": row["value"], "evidence_kind": row["evidence_kind"],
                      "evidence_token": packet["token"], "display": packet["observation"]["display"],
-                     "source_texts": packet["observation"]["source_texts"]}
+                     "source_texts": packet["observation"]["source_texts"],
+                     "judge_context":packet["context"],
+                     "citation_details":packet["observation"]["citation_details"]}
             require(row["basis_digest"] == sha(encode(basis)), "judgment_basis_mismatch")
             result[target] = row["value"]
         return result
@@ -194,7 +247,8 @@ class BlindFixtureGraph:
         self._unlocked()
         self._reverify_stages()
         rows, parents = self._resolved()
-        payload = {"closure": self._closure, "inventory_receipt": self._inventory_receipt,
+        payload = {"closure": self._closure, "plan_digest":self._plan.digest,
+                   "inventory_receipt": self._inventory_receipt,
                    "conditions_receipt": self._conditions_receipt,
                    "map_commitment": self._ledger.blind_map_sha256,
                    "decision_manifest_sha256": sha(encode(rows)),
@@ -235,6 +289,11 @@ class BlindFixtureGraph:
         decisions, _ = self._resolved()
         require(decisions == self._decisions, "locked_decisions_changed")
         records = self._ledger.closed_observations(self._closure)
+        for r,raw in zip(records,self._observation_inputs,strict=True):
+            o=self._plan.verify_capture(ledger=self._ledger,registry=self._registry,now=self._now,
+                record=r,raw=raw,run_receipt=self._run_receipt)
+            require(all(o[k]==r[k] for k in ("attempt_id","observation_sha256","admission_sha256","final_sha256")),
+                    "projection_capture_changed")
         by_slot = {(r["shard"], r["case_id"], r["arm"]): r for r in records}
         cases = decode(self._inventory_raw)
         by_case = {c["case_id"]: c for c in cases}
@@ -245,7 +304,7 @@ class BlindFixtureGraph:
             d = self._decisions[bid]
             projected.append({k:r[k] for k in ("case_id","arm","attempt","status","admission_sha256","final_sha256")}
                 | {"facts": [d[f"fact-{i}"] for i in range(by_case[r["case_id"]]["fact_count"])],
-                   "atoms": {k:d[k] for k in ATOMS}, "citations": d["citation-native-0"],
+                   "atoms": {k:d[k] for k in ATOMS}, "citations": citation_summary(d),
                    "consensus": True, "judgment_sha256": sha(encode({"blind_id": bid, "decision": d,
                         "lock_receipt": self._lock_receipt, "opening_receipt": self._opening_receipt}))})
         require(len(projected) == 48, "projection_count")

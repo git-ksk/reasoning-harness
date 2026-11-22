@@ -8,7 +8,13 @@ from pathlib import Path
 from auth620 import Registry, encode, decode, sha, formal_entrypoint
 from first_claim_620 import FirstClaimLedger, inventory_slots, FIXED_CONDITIONS
 from observation_620 import verify_observation
-from blind_fixture_620 import BlindFixtureGraph, map_digest
+from blind_fixture_620 import BlindFixtureGraph, map_digest, citation_summary
+from protected_plan_620 import ProtectedPlan, profile_digest, CAPTURE_FIELDS, FULL_COMMITS, QUALITY, PINS
+from formal_scorer_candidate import ATOMS
+from formal_preflight_620 import OfflineApprovalDAG, WitnessWindow, redacted_status, validate_billing_snapshot
+from partial_adverse_620 import PartialAdverseReview, ADVERSE
+from fixture_permissions_620 import fixture_billing
+from test_auth620 import START, END
 from fixture_permissions_620 import FixturePermissions
 from formal_scorer_candidate import evaluate_synthetic
 from local_store import initialize_local_store
@@ -105,6 +111,7 @@ def fixed_capture(registry, keys, slot, attempt, authority, parents, legacy_poli
              "evidence_id":"ev",**binding_ev,"quote":quote,"fact_start_byte":0,
              "fact_end_byte":len(prefix.encode()),"quote_start_byte":len(prefix.encode())+1,
              "quote_end_byte":len(final),"quote_display_encoding":"json_string","quote_sha256":sha(quote.encode())}]}}}
+    cli["result"]["answer_context"]["citations"].append(dict(cli["result"]["answer_context"]["citations"][0]))
     stdout=json.dumps(cli,ensure_ascii=False,separators=(",",":")).encode()+b"\n"
     stderr=b"synthetic diagnostic\n"
     captured=encode(capture_display(cli,catalog))
@@ -154,10 +161,121 @@ def decision_raw(bundle, values, targets=None):
               "final_output_dependent_omission" if target.startswith("fact-") and value=="false" else "explicit_favorable")
         basis={"target":target,"value":value,"evidence_kind":kind,
                "evidence_token":bundle["evidence_token"],"display":bundle["display"],
-               "source_texts":bundle["source_texts"]}
+               "source_texts":bundle["source_texts"],"judge_context":bundle["judge_context"],
+               "citation_details":bundle["citation_details"]}
         rows.append({"target":target,"value":value,"evidence_kind":kind,
                      "evidence_token":bundle["evidence_token"],"basis_digest":sha(encode(basis))})
     return encode({"blind_id":bundle["blind_id"],"decisions":rows})
+
+
+def fixed_setup(self,profile):
+    dat,keys=fixture_registry(); raw_registry=encode(dat)
+    registry=Registry(raw_registry,pinned_sha256=sha(raw_registry),evaluation_id=EVAL)
+    def signed(raw,kind,role,aid,parents,**kw):
+        return sign(registry,keys,raw,kind=kind,role=role,artifact_id=aid,parents=parents,**kw)
+    def verified(raw,kind,role,aid,parents):
+        env=signed(raw,kind,role,aid,parents)
+        return registry.verify(env,raw,artifact_type=kind,artifact_id=aid,role=role,parents=parents,now=NOW)
+    inventory=fixture_inventory()
+    slots=inventory_slots(inventory)
+    salt=h("public synthetic map salt")
+    mapping=sorted([{"blind_id":"blind-"+h(salt+str(i))[:32],
+                     "shard":s,"case_id":c,"arm":a} for i,(s,c,a) in enumerate(slots)],
+                   key=lambda x:x["blind_id"])
+    map_pin=map_digest(mapping,salt)
+    inv_env=signed(inventory,"inventory","author","inventory",[])
+    inv=registry.verify(inv_env,inventory,artifact_type="inventory",artifact_id="inventory",role="author",parents=[],now=NOW)
+    authority_pin=h("frozen synthetic legacy authority")
+    planned={slot:fixed_binding(slot,authority_pin) for slot in slots}
+    planned_sources=sha(encode(fixed_source()[3]))
+    legacy=encode({"contract":POLICY,"policy_id":"synthetic-local-only",
+            "principals":[{"subject_id":"subject-executor","aliases":["alias-executor"],
+                "role":"agent","conflict_groups":["execution"]},
+                {"subject_id":"subject-safety_reviewer","aliases":["alias-safety_reviewer"],
+                "role":"agent","conflict_groups":["review"]} ],
+            "keys":[{"key_id":"key-safety_reviewer","subject_id":"subject-safety_reviewer",
+                "public_key_hex":keys["safety_reviewer"].verify_key.encode().hex(),"revoked":False}]})
+    identity_raw=encode({"contract":"invented-identity-fixture","independence_proven":False})
+    isolation_raw=encode({"contract":"invented-isolation-fixture","isolation_proven":False})
+    contexts=[{"case_id":c["case_id"],"question":"Synthetic question "+c["case_id"],
+               "facts":[{"id":"fact-0","requirement":"Invented first fact"},
+                        {"id":"fact-1","requirement":"Invented second fact"}],
+               "citations":[{"id":"fact-0","requirement":"Support first invented fact"},
+                            {"id":"fact-1","requirement":"Support second invented fact"}]}
+              for c in decode(inventory)]
+    contexts_raw=encode(contexts)
+    plan_payload={k:h("invented plan "+k) for k in PINS}
+    plan_payload.update(identity_evidence_digest=sha(identity_raw),isolation_evidence_digest=sha(isolation_raw))
+    plan_payload.update(contract="620-protected-plan/1",evaluation_id=EVAL,
+        registry_digest=registry.digest,store_digest=profile_digest(profile),inventory_receipt=inv,
+        conditions=FIXED_CONDITIONS,full_commits=FULL_COMMITS,quality=QUALITY,
+        legacy_annotation_receipts=[h("invented annotation "+str(i)) for i in range(3)],
+        runtime_digests={k:h("invented runtime "+k) for k in ("baseline","candidate","cli","python","dependencies","scorer")},
+        blind_mapping_commitment=map_pin,legacy_policy_pin=sha(legacy),
+        billing_account_pin=h("invented billing account"),approval_start=START,approval_end=END,
+        executor_id="alias-executor",evaluator_id="alias-safety_reviewer",
+        slots=[dict(shard=slot[0],case_id=slot[1],arm=slot[2],binding_sha256=sha(planned[slot]),
+                    source_pin=planned_sources,bundle_pin=h("frozen invented native bundle"),authority_pin=authority_pin)
+               for slot in slots],
+        targets=[dict(case_id=c["case_id"],atoms=list(ATOMS),facts=["fact-0","fact-1"],
+                      required_citations=["fact-0","fact-1"],judge_context_digest=sha(encode(ctx)))
+                              for c,ctx in zip(decode(inventory),contexts,strict=True)])
+    conditions_raw=encode(plan_payload)
+    cond_env=signed(conditions_raw,"execution_conditions","coordinator","conditions",[inv])
+    plan=ProtectedPlan(profile=profile,pin=sha(conditions_raw),raw=conditions_raw,registry=registry,
+          inventory_raw=inventory,inventory_envelope=inv_env,conditions_envelope=cond_env,
+          legacy_policy_raw=legacy,judge_contexts_raw=contexts_raw,now=NOW)
+    with self.assertRaises(ValueError):
+        ProtectedPlan(profile=profile,pin=h("foreign plan"),raw=conditions_raw,registry=registry,
+                  inventory_raw=inventory,inventory_envelope=inv_env,conditions_envelope=cond_env,
+                  legacy_policy_raw=legacy,judge_contexts_raw=contexts_raw,now=NOW)
+    changed=decode(conditions_raw); changed["conditions"]["calls_per_cli"]=13
+    changed_raw=encode(changed)
+    with self.assertRaises(ValueError):
+        ProtectedPlan(profile=profile,pin=sha(changed_raw),raw=changed_raw,registry=registry,
+                  inventory_raw=inventory,inventory_envelope=inv_env,
+                  conditions_envelope=signed(changed_raw,"execution_conditions","coordinator","conditions",[inv]),
+                  legacy_policy_raw=legacy,judge_contexts_raw=contexts_raw,now=NOW)
+    cond=plan.conditions_receipt
+    ledger=FirstClaimLedger(profile,dataset_sha256=plan.dataset_digest,inventory_raw=inventory,
+           inventory_receipt=inv,conditions_receipt=cond,evaluation_id=EVAL,blind_map_sha256=map_pin,
+        lane="formal-preflight-fixture")
+    plan.bind_ledger(ledger)
+    checkpoint_raw=encode({"contract":"620-witness/1","evaluation_id":EVAL,
+        "registry_digest":registry.digest,"sequence":1,"previous":None,
+        "observed_at":START,"expires_at":END})
+    witness_env=signed(checkpoint_raw,"checkpoint","journal_witness","witness-1",[])
+    clock=[NOW]
+    witness=WitnessWindow(ledger=ledger,registry=registry,expected_pin=sha(witness_env),
+        expected_sequence=1,expected_previous=None,raw=checkpoint_raw,envelope=witness_env,clock=lambda:clock[0])
+    identity_env=signed(identity_raw,"identity_attestation","identity_authority","offline-identity",[inv])
+    isolation_env=signed(isolation_raw,"isolation_attestation","isolation_witness","offline-isolation",[sha(identity_env),inv])
+    flow=OfflineApprovalDAG(plan=plan,ledger=ledger,registry=registry,witness=witness,
+        identity_raw=identity_raw,identity_envelope=identity_env,isolation_raw=isolation_raw,isolation_envelope=isolation_env)
+    def consume(kind,role,graph=None):
+        p,parents=flow.expected(kind,graph)
+        env=signed(p,kind,role,decode(p)["nonce"],parents)
+        return flow.consume(kind,p,env,graph)
+    with self.assertRaises(ValueError): flow.expected("run_permission")
+    for kind,role in (("normative_ratification","normative_ratifier"),
+                      ("implementation_acceptance","implementation_acceptor")):
+        consume(kind,role)
+    with self.assertRaises(ValueError): flow.expected("run_permission")
+    bill=encode(dict(contract="620-billing-snapshot/1",account_pin=plan.inputs()["billing_account_pin"],
+        plan_digest=plan.digest,checked_at=START,expires_at=END,
+        subscription={"payg_enabled":False},budget={"currency":"USD","api_budget":{"payg_enabled":False,
+             "currency":"USD","initial_budget":"2.00","usage_percentage":"0"}},
+        models={"data":[{"id":FIXED_CONDITIONS["model"]}]}))
+    with self.assertRaises(ValueError):
+        validate_billing_snapshot(encode({**decode(bill),"account_pin":h("another account")}),plan,NOW)
+    flow.attach_billing_snapshot(bill,signed(bill,"billing_attestation","billing_witness","offline-billing-1",[cond,witness.digest]))
+    p,parents=flow.expected("run_permission")
+    with self.assertRaises(ValueError):
+        flow.consume("run_permission",p,signed(p,"run_permission","score_approver",decode(p)["nonce"],parents))
+    run=consume("run_permission","run_approver")
+    with self.assertRaises(ValueError): flow.consume("run_permission",p,b"{}")
+    with self.assertRaises(ValueError): flow.expected("normative_ratification")
+    return dat,keys,registry,signed,inventory,slots,salt,mapping,inv,cond,authority_pin,planned,planned_sources,legacy,plan,ledger,witness,clock,flow,consume,run
 
 
 class FixtureGraphTests(unittest.TestCase):
@@ -165,55 +283,10 @@ class FixtureGraphTests(unittest.TestCase):
         # No caller-provided fixture, paths, real IDs, evaluation questions or Gold.
         with tempfile.TemporaryDirectory() as tmp:
             profile=initialize_local_store(Path(tmp).resolve()/"synthetic-store")
-            dat,keys=fixture_registry(); raw_registry=encode(dat)
-            registry=Registry(raw_registry,pinned_sha256=sha(raw_registry),evaluation_id=EVAL)
-            def signed(raw,kind,role,aid,parents):
-                return sign(registry,keys,raw,kind=kind,role=role,artifact_id=aid,parents=parents)
-            def verified(raw,kind,role,aid,parents):
-                env=signed(raw,kind,role,aid,parents)
-                return registry.verify(env,raw,artifact_type=kind,artifact_id=aid,role=role,parents=parents,now=NOW)
-            inventory=fixture_inventory()
-            slots=inventory_slots(inventory)
-            salt=h("public synthetic map salt")
-            mapping=sorted([{"blind_id":"blind-"+h(salt+str(i))[:32],
-                             "shard":s,"case_id":c,"arm":a} for i,(s,c,a) in enumerate(slots)],
-                           key=lambda x:x["blind_id"])
-            map_pin=map_digest(mapping,salt)
-            inv=verified(inventory,"inventory","author","inventory",[])
-            authority_pin=h("frozen synthetic legacy authority")
-            planned={slot:fixed_binding(slot,authority_pin) for slot in slots}
-            planned_sources=sha(encode(fixed_source()[3]))
-            conditions_raw=encode({"conditions":FIXED_CONDITIONS,"map_commitment":map_pin,
-                                    "inventory":inv,"authority":authority_pin,
-                                    "source_pin":planned_sources,
-                                    "first_bindings":[sha(planned[slot]) for slot in slots]})
-            cond=verified(conditions_raw,"execution_conditions","coordinator","conditions",[inv])
-            ledger=FirstClaimLedger(profile,dataset_sha256=sha(inventory),inventory_raw=inventory,
-                   inventory_receipt=inv,conditions_receipt=cond,evaluation_id=EVAL,blind_map_sha256=map_pin)
-            flow=FixturePermissions(ledger,registry,inv,cond,NOW)
-            with self.assertRaises(ValueError): flow.expected_run()
-            for kind,role in (("normative_ratification","normative_ratifier"),
-                              ("implementation_acceptance","implementation_acceptor")):
-                p=flow.expected_prospective(kind)
-                flow.prospective(kind,p,signed(p,kind,role,kind,flow.parents))
-            with self.assertRaises(ValueError): flow.expected_run()
-            flow.attach_fixture_billing()
-            p,parents=flow.expected_run()
-            with self.assertRaises(ValueError):
-                flow.consume_run(p,signed(p,"run_permission","score_approver","fixture-run-once",parents))
-            run=flow.consume_run(p,signed(p,"run_permission","run_approver","fixture-run-once",parents))
-            with self.assertRaises(ValueError): flow.consume_run(p,b"{}")
-            with self.assertRaises(ValueError): flow.prospective("normative_ratification",b"{}",b"{}")
-            legacy=encode({"contract":POLICY,"policy_id":"synthetic-local-only",
-                    "principals":[{"subject_id":"subject-executor","aliases":["alias-executor"],
-                        "role":"agent","conflict_groups":["execution"]},
-                        {"subject_id":"subject-safety_reviewer","aliases":["alias-safety_reviewer"],
-                        "role":"agent","conflict_groups":["review"]} ],
-                    "keys":[{"key_id":"key-safety_reviewer","subject_id":"subject-safety_reviewer",
-                        "public_key_hex":keys["safety_reviewer"].verify_key.encode().hex(),"revoked":False}]})
+            dat,keys,registry,signed,inventory,slots,salt,mapping,inv,cond,authority_pin,planned,planned_sources,legacy,plan,ledger,witness,clock,flow,consume,run=fixed_setup(self,profile)
             observations=[]; observation_inputs=[]
             for i,slot in enumerate(slots):
-                attempt=flow.reserve_slot(*slot)
+                attempt=flow.reserve_slot(slot)
                 kw=fixed_capture(registry,keys,slot,attempt,authority_pin,[inv,cond,run],legacy)
                 kw["expected_binding_raw"]=planned[slot]
                 kw["source_pin"]=planned_sources
@@ -224,24 +297,28 @@ class FixtureGraphTests(unittest.TestCase):
                                    {"safety_envelope":b"{}"}):
                         with self.subTest(change=list(change)),self.assertRaises(ValueError):
                             verify_observation(**{**kw,**change})
-                observation=verify_observation(**kw)
-                ledger.record(attempt_id=attempt,status="complete",calls=observation["calls"],
-                  tokens=observation["tokens"],admission_sha256=observation["admission_sha256"],
-                  final_sha256=observation["final_sha256"],observation_sha256=observation["observation_sha256"])
-                observations.append(observation); observation_inputs.append(kw)
+                capture={k:kw[k] for k in CAPTURE_FIELDS}
+                record=ledger.active_reservation()
+                if i==0:
+                    with self.assertRaises(ValueError):
+                        plan.verify_capture(ledger=ledger,registry=registry,now=NOW,record=record,
+                                  raw={**capture,"source_pin":planned_sources},run_receipt=run)
+                    with self.assertRaises(ValueError):
+                        plan.verify_capture(ledger=ledger,registry=registry,now=NOW,record=record,
+                                  raw={**capture,"binding_raw":b"{}"},run_receipt=run)
+                observation=flow.capture(capture)
+                observations.append(observation); observation_inputs.append(capture)
             self.assertEqual(len({x["observation_sha256"] for x in observations}),48)
             self.assertEqual(len({x["final_sha256"] for x in observations}),2)
-            closure=ledger.close()
-            graph=BlindFixtureGraph(ledger=ledger,registry=registry,inventory_raw=inventory,
-                inventory_receipt=inv,conditions_receipt=cond,closure_digest=closure,
-                observation_inputs=observation_inputs,mapping=mapping,salt=salt,now=NOW)
+            graph=flow.build_graph(mapping,salt)
             with self.assertRaises(ValueError): graph.unblind(b"{}",b"{}")
             with self.assertRaises(ValueError): graph.lock_payload()
-            with self.assertRaises(ValueError): flow.expected_score(graph)
+            with self.assertRaises(ValueError): flow.expected("score_permission",graph)
             first=graph.blind_ids()[0]; second=graph.blind_ids()[1]
             for bid in graph.blind_ids():
                 bundle=graph.judge_bundle(bid)
-                self.assertEqual(set(bundle),{"blind_id","display","source_texts","targets","evidence_token"})
+                self.assertEqual(set(bundle),{"blind_id","display","source_texts","targets","evidence_token","judge_context","citation_details"})
+                self.assertEqual(len([t for t in bundle["targets"] if t.startswith("citation-")]),4)
                 negative=bundle["display"].startswith("Negative fixture.")
                 values={t:("valid" if t.startswith("citation-") else
                           "true" if t.startswith("fact-") or (t=="complete_negative_qualification" and negative)
@@ -282,7 +359,7 @@ class FixtureGraphTests(unittest.TestCase):
             lock=graph.lock(p,signed(p,"blind_lock","blind_lock_admin","blind-lock",parents))
             with self.assertRaises(ValueError): graph.submit(first,"judge_a",b"{}",b"{}")
             with self.assertRaises(ValueError): graph.lock_payload()
-            with self.assertRaises(ValueError): flow.expected_score(graph)
+            with self.assertRaises(ValueError): flow.expected("score_permission",graph)
             opening={"mapping":mapping,"salt":salt,"lock_receipt":lock}
             for change in ({"salt":h("wrong")},{"mapping":mapping[:-1]}):
                 p=encode({**opening,**change})
@@ -291,9 +368,14 @@ class FixtureGraphTests(unittest.TestCase):
             p=encode(opening)
             graph.unblind(p,signed(p,"unblind","unblinder","full-unblind",[lock]))
             with self.assertRaises(ValueError): graph.unblind(p,b"{}")
-            p,parents=flow.expected_score(graph)
-            flow.consume_score(graph,p,signed(p,"score_permission","score_approver","fixture-score-once",parents))
-            with self.assertRaises(ValueError): flow.consume_score(graph,p,b"{}")
+            score_receipt=consume("score_permission","score_approver",graph)
+            with self.assertRaises(ValueError): flow.consume("score_permission",b"{}",b"{}",graph)
+            report=flow.inspect_score(graph)
+            self.assertTrue(report["offline_graph_verified"])
+            self.assertEqual(report["reason"],"external_gate_hold")
+            self.assertFalse(report["formal_score_authorized"])
+            self.assertIsNone(report["formal_f1"])
+            self.assertFalse(flow.inspect_score({"verified":True})["offline_graph_verified"])
             inv_rows,score_rows=graph.projection()
             result=evaluate_synthetic(inv_rows,score_rows,purpose="synthetic")
             # Compare with the frozen scorer's pre-existing independent fixture expectation.
@@ -304,7 +386,7 @@ class FixtureGraphTests(unittest.TestCase):
             self.assertEqual(result,evaluate_synthetic(inv_rows[::-1],score_rows[::-1],purpose="synthetic"))
             for key in ("formal_score_authorized","live_authorized","quality_go","release_go"):
                 self.assertIs(result[key],False)
-                self.assertIs(formal_entrypoint(graph=graph,permission=flow.score,verified=True)[key],False)
+                self.assertIs(formal_entrypoint(graph=graph,permission=score_receipt,verified=True)[key],False)
             self.assertIsNone(result["formal_f1"])
             # A trusted new registry with revocation invalidates prior authorizations;
             # selecting/refreshing that registry externally is not self-proven here.
@@ -315,8 +397,121 @@ class FixtureGraphTests(unittest.TestCase):
             with self.assertRaises(ValueError): graph.projection()
             graph._registry=registry
             from datetime import timedelta
-            graph._now=NOW+timedelta(minutes=1)
-            with self.assertRaises(ValueError): graph.projection()
+            clock[0]=NOW-timedelta(seconds=1)
+            self.assertFalse(flow.inspect_score(graph)["offline_graph_verified"])
+            clock[0]=NOW
+            self.assertFalse(flow.inspect_score(graph)["offline_graph_verified"])
+
+    def test_incomplete_capture_preserves_only_signed_adverse_diagnostic(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            profile=initialize_local_store(Path(tmp).resolve()/"synthetic-store")
+            dat,keys,registry,signed,inventory,slots,salt,mapping,inv,cond,authority_pin,planned,planned_sources,legacy,plan,ledger,witness,clock,flow,consume,run=fixed_setup(self,profile)
+            slot=slots[0]
+            attempt=flow.reserve_slot(slot)
+            display=b"invented adverse partial statement"
+            stdout=b"prefix "+display+b" suffix"
+            sources=encode(fixed_source()[3])
+            span=[7,7+len(display)]
+            capture=dict(binding_raw=planned[slot],trace_raw=b"incomplete synthetic trace",
+                journal_raw=b"incomplete synthetic journal",stdout=stdout,stderr=b"",
+                sources_raw=sources,final_bytes=display,display_span=span,status="timeout")
+            payload={"attempt_id":attempt,"slot":list(slot),"status":"timeout",
+                "stdout_sha256":sha(stdout),"stderr_sha256":sha(b""),
+                "journal_sha256":sha(capture["journal_raw"]),"trace_sha256":sha(capture["trace_raw"]),
+                "sources_sha256":sha(sources),"binding_sha256":sha(planned[slot]),"display_span":span,
+                "partial_display_sha256":sha(display),"final_sha256":None,"calls":None,"tokens":None,
+                "formal_eligible":False}
+            capture["envelope"]=signed(encode(payload),"raw_evidence","capture","partial-"+attempt,[inv,cond,run])
+            with self.assertRaises(ValueError):
+                plan.verify_partial(ledger=ledger,registry=registry,now=NOW,
+                    record=ledger.active_reservation(),raw={**capture,"final_bytes":b"other"},run_receipt=run)
+            saved=flow.capture_partial(capture)
+            self.assertIsNone(saved["final_sha256"])
+            self.assertIsNone(saved["tokens"])
+            with self.assertRaises(ValueError): ledger.close()
+            with self.assertRaises(ValueError): flow.reserve_slot(slots[1])
+            graph=PartialAdverseReview(flow=flow,raw=capture,mapping=mapping,salt=salt)
+            bundle=graph.judge_bundle()
+            self.assertEqual(set(bundle),{"blind_id","evidence_token","partial_display","source_texts","targets","judge_context"})
+            def judgment(targets,adverse):
+                decisions=[]
+                for t in targets:
+                    true=t in adverse
+                    byte_span=[0,len(display)] if true else None
+                    basis=sha(encode({"token":bundle["evidence_token"],"target":t,
+                         "span":byte_span,"excerpt":display.decode(),"source_texts":bundle["source_texts"],
+                         "judge_context":bundle["judge_context"]})) if true else None
+                    decisions.append(dict(target=t,value="true" if true else "unknown",byte_span=byte_span,basis_digest=basis))
+                return encode(dict(blind_id=bundle["blind_id"],evidence_token=bundle["evidence_token"],decisions=decisions))
+            target=ADVERSE[0]
+            a=judgment(ADVERSE,{target})
+            b=judgment(ADVERSE,set())
+            ap=signed(a,"atomic_judgment","judge_a","partial-judge_a",[saved["observation_sha256"]])
+            bp=signed(b,"atomic_judgment","judge_b","partial-judge_b",[saved["observation_sha256"]])
+            bad=decode(a); bad["decisions"][0]["value"]="false"
+            with self.assertRaises(ValueError):
+                graph.submit("judge_a",encode(bad),ap)
+            ar=graph.submit("judge_a",a,ap)
+            br=graph.submit("judge_b",b,bp)
+            with self.assertRaises(ValueError): graph.diagnostic()
+            c=judgment([target],{target})
+            ce=signed(c,"adjudication","adjudicator","partial-adjudication",[ar,br])
+            rat=encode(dict(blind_id=bundle["blind_id"],adjudication_receipt=sha(ce),
+                 decision="diagnostic-only",formal_eligible=False))
+            re=signed(rat,"adjudication_ratification","adjudication_ratifier","partial-ratification",[ar,br,sha(ce)])
+            graph.adjudicate(c,ce,rat,re)
+            d=graph.diagnostic()
+            self.assertEqual(d["adverse_claims"],1)
+            self.assertEqual(d["unknown_claims"],3)
+            self.assertIsNone(d["final_sha256"])
+            self.assertFalse(d["formal_score_authorized"])
+            self.assertFalse(flow.inspect_score(graph)["offline_graph_verified"])
+
+    def test_citation_collapse_never_erases_invalid_or_unknown(self):
+        self.assertEqual(citation_summary({"citation-required-a":"valid","citation-observed-native-0":"invalid",
+                                          "citation-required-b":"unknown"}),"invalid")
+        self.assertEqual(citation_summary({"citation-required-a":"missing","citation-required-b":"unknown"}),"unknown")
+        self.assertEqual(citation_summary({"citation-required-a":"valid","citation-required-b":"missing"}),"missing")
+        self.assertEqual(citation_summary({"citation-required-a":"valid","citation-observed-native-0":"valid"}),"valid")
+
+    def test_checkpoint_advance_and_same_account_freshness(self):
+        from datetime import timedelta
+        with tempfile.TemporaryDirectory() as tmp:
+            profile=initialize_local_store(Path(tmp).resolve()/"synthetic-store")
+            dat,keys,registry,signed,inventory,slots,salt,mapping,inv,cond,authority_pin,planned,planned_sources,legacy,plan,ledger,witness,clock,flow,consume,run=fixed_setup(self,profile)
+            self.assertTrue(flow.inspect_run()["offline_graph_verified"])
+            self.assertFalse(flow.inspect_run()["live_authorized"])
+            clock[0]=NOW+timedelta(seconds=10)
+            observed="2026-01-01T00:00:20Z"
+            raw=encode({"contract":"620-witness/1","evaluation_id":EVAL,
+                "registry_digest":registry.digest,"sequence":2,"previous":witness.digest,
+                "observed_at":observed,"expires_at":END})
+            env=signed(raw,"checkpoint","journal_witness","witness-2",[witness.digest],issued_at=observed)
+            newer=WitnessWindow(ledger=ledger,registry=registry,expected_pin=sha(env),
+                expected_sequence=2,expected_previous=witness.digest,raw=raw,envelope=env,clock=lambda:clock[0])
+            flow.advance_witness(newer)
+            # The previous snapshot is not for the current witness.
+            self.assertNotEqual(flow._billing[4][1],newer.digest)
+            prev=decode(flow._billing[0])
+            expired=encode({**prev,"expires_at":observed})
+            with self.assertRaises(ValueError):
+                validate_billing_snapshot(expired,plan,clock[0])
+            payg=copy.deepcopy(prev);payg["subscription"]["payg_enabled"]=True
+            with self.assertRaises(Exception): validate_billing_snapshot(encode(payg),plan,clock[0])
+            refreshed=encode({**prev,"checked_at":observed})
+            parents=[cond,newer.digest,flow._billing[2]]
+            env=signed(refreshed,"billing_attestation","billing_witness","offline-billing-2",parents,issued_at=observed)
+            flow.attach_billing_snapshot(refreshed,env)
+            self.assertTrue(flow.inspect_run()["offline_graph_verified"])
+            flow.reserve_slot(slots[0])
+            with self.assertRaises(ValueError): witness.recheck()
+
+    def test_redacted_audit_never_exports_input(self):
+        out=redacted_status("score_preflight","graph_invalid")
+        self.assertEqual(out["reason"],"graph_invalid")
+        self.assertFalse(out["formal_score_authorized"])
+        with self.assertRaises(ValueError):
+            redacted_status("score_preflight","secret arbitrary input")
 
 
 if __name__=="__main__": unittest.main()

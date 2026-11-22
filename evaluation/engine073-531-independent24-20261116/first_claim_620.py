@@ -27,7 +27,7 @@ def inventory_slots(raw):
         fields(x, {"case_id", "case_type", "fact_count"})
         match(x["case_id"], CASE, "case_id")
         require(type(x["case_type"]) is str and x["case_type"] in ("positive", "negative")
-                and type(x["fact_count"]) is int and x["fact_count"] > 0, "inventory_case")
+                and type(x["fact_count"]) is int and 0 < x["fact_count"] <= 4096, "inventory_case")
     require(len({x["case_id"] for x in items}) == 24
             and Counter(x["case_type"] for x in items) == {"positive": 16, "negative": 8},
             "inventory_balance")
@@ -48,17 +48,19 @@ class FirstClaimLedger:
     evaluation IDs. External antirollback and real run approval are absent.
     """
     def __init__(self, profile, *, dataset_sha256, inventory_raw, inventory_receipt,
-                 conditions_receipt, evaluation_id, blind_map_sha256):
+                 conditions_receipt, evaluation_id, blind_map_sha256, lane="synthetic"):
         match(evaluation_id, ID, "evaluation_id")
         # These are local bindings, not authentication or approval. Formal entry
         # must be a distinct service and is deliberately disabled.
         match(inventory_receipt, SHA, "inventory_receipt")
         match(conditions_receipt, SHA, "conditions_receipt")
         match(blind_map_sha256, SHA, "blind_map_sha256")
+        require(type(lane) is str and lane in ("synthetic","formal-preflight-fixture"),"offline_lane")
+        self.lane=lane
         self.blind_map_sha256 = blind_map_sha256
         self._slots = inventory_slots(inventory_raw)
         self._store = LocalAtomicStore(profile, role="executor")
-        self._root = PREFIX + "/cohorts/issue620-synthetic/" + cohort_key(dataset_sha256)
+        self._root = PREFIX + "/cohorts/issue620-" + lane + "/" + cohort_key(dataset_sha256)
         self._mutex = threading.Lock()
         self._poisoned = False
         self._next = 0
@@ -70,6 +72,23 @@ class FirstClaimLedger:
                                "conditions_receipt": conditions_receipt, "conditions": FIXED_CONDITIONS,
                                "blind_map_sha256": blind_map_sha256,
                                "slots": [list(s) for s in self._slots]})
+
+    def claim_record(self):
+        return decode(self._store.read(self._root + "/claim.json"))
+
+    def no_reservations(self):
+        with self._mutex:
+            return (self._next==0 and self._active is None and not self._closed and not self._poisoned
+                    and self._store.read(self._root + "/slot-00-reserve.json") is None)
+
+    def active_reservation(self):
+        with self._mutex:
+            self._guard()
+            require(self._active is not None, "no_active_reservation")
+            raw=self._store.read(self._root + f"/slot-{self._next:02}-inflight.json")
+            record=decode(raw)
+            require(record==self._active, "active_reservation_changed")
+            return record
 
     def _create(self, name, data):
         self._store.create(self._root + "/" + name + ".json", encode(data))
@@ -137,6 +156,17 @@ class FirstClaimLedger:
                 self._stop()
                 raise
 
+    def stopped_observation(self):
+        with self._mutex:
+            require(self._poisoned and not self._closed and self._active is not None,
+                    "no_partial_record")
+            row=decode(self._store.read(self._root + f"/slot-{self._next:02}-observed.json"))
+            reservation=decode(self._store.read(self._root + f"/slot-{self._next:02}-inflight.json"))
+            require(reservation==self._active and all(row[k]==v for k,v in reservation.items())
+                    and row["status"]!="complete" and row["final_sha256"] is None,
+                    "partial_record_binding")
+            return row
+
     def close(self):
         with self._mutex:
             self._guard()
@@ -177,7 +207,14 @@ class FirstClaimLedger:
             records = [decode(self._store.read(self._root + f"/slot-{i:02}-observed.json"))
                        for i in range(48)]
             require(closure["observations"] == [sha(encode(x)) for x in records]
-                    and records == self._observations, "closure_records_changed")
+                    and records == self._observations
+                    and self._store.read(self._root + "/stop.json") is None,
+                    "closure_records_changed")
+            for i,observed in enumerate(records):
+                reserve=decode(self._store.read(self._root+f"/slot-{i:02}-reserve.json"))
+                inflight=decode(self._store.read(self._root+f"/slot-{i:02}-inflight.json"))
+                require(reserve==inflight and all(observed[k]==v for k,v in reserve.items()),
+                        "closed_reservation_changed")
             return records
 
     def read_fixture_stage(self, stage):

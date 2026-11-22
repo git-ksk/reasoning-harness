@@ -24,7 +24,7 @@ END = "2026-01-01T00:01:00Z"
 ROLES = ("author", "coordinator", "safety_reviewer", "capture", "judge_a", "judge_b",
          "adjudicator", "adjudication_ratifier", "blind_lock_admin", "unblinder",
          "normative_ratifier", "implementation_acceptor", "run_approver", "score_approver",
-         "executor", "journal_witness")
+         "executor", "journal_witness", "identity_authority", "isolation_witness", "billing_witness")
 
 
 def h(text):
@@ -345,6 +345,7 @@ class ApprovalWireTests(unittest.TestCase):
         p={"attempt_id":attempt,"slot":list(slot),"status":"timeout",
            "stdout_sha256":sha(stdout),"stderr_sha256":sha(b""),"journal_sha256":sha(b"partial"),
            "trace_sha256":sha(b"partial trace"),"sources_sha256":sha(source),
+           "binding_sha256":sha(b"fixture binding"),"display_span":None,
            "partial_display_sha256":None,"final_sha256":None,"calls":None,"tokens":None,
            "formal_eligible":False}
         parents=[h("fixture parent")]
@@ -352,7 +353,8 @@ class ApprovalWireTests(unittest.TestCase):
                       artifact_id="partial-"+attempt,parents=parents)
         kw=dict(registry=reg,now=NOW,attempt_id=attempt,slot=slot,status="timeout",
                 stdout=stdout,stderr=b"",journal_raw=b"partial",trace_raw=b"partial trace",
-                sources_raw=source,source_pin=sha(source),final_bytes=None,envelope=envelope,parents=parents)
+                sources_raw=source,source_pin=sha(source),final_bytes=None,binding_raw=b"fixture binding",
+                display_span=None,envelope=envelope,parents=parents)
         out=verify_partial_capture(**kw)
         self.assertIsNone(out["final_sha256"])
         self.assertIsNone(out["tokens"])

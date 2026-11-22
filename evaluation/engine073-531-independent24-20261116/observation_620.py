@@ -123,15 +123,26 @@ def verify_observation(*, registry, now, evaluation_id, attempt_id, slot, bindin
     admission = registry.verify(safety_envelope, safety_raw, artifact_type="admission",
                                 artifact_id="admission-" + attempt_id, role="safety_reviewer",
                                 parents=[obs_receipt], now=now)
+    source_order=sorted(catalog["sources"])
+    citation_details={}
+    for cite in captured["display_citations"]:
+        name,kind=cite["id"].rsplit("-",1)
+        item=citation_details.setdefault(name,{"id":name,"source_index":source_order.index(cite["source_id"])})
+        require(item["source_index"]==source_order.index(cite["source_id"])
+                and kind in ("fact","quote") and kind not in item,"citation_detail_binding")
+        item[kind]=[cite["start_byte"],cite["end_byte"]]
+    require(all(set(item)=={"id","source_index","fact","quote"} for item in citation_details.values()),
+            "citation_detail_inventory")
     return {**payload, "observation_sha256": obs_receipt, "admission_sha256": admission,
             "display": final_bytes.decode("utf-8"), "source_texts": [
                 catalog["sources"][k]["text"] for k in sorted(catalog["sources"])],
-            "citation_targets": sorted({x["id"].rsplit("-", 1)[0] for x in captured["display_citations"]})}
+            "citation_targets": sorted(citation_details),
+            "citation_details":[citation_details[k] for k in sorted(citation_details)]}
 
 
 def verify_partial_capture(*, registry, now, attempt_id, slot, status, stdout, stderr,
                            journal_raw, trace_raw, sources_raw, source_pin, final_bytes,
-                           envelope, parents):
+                           binding_raw, display_span, envelope, parents):
     """Preserve signed incomplete capture as diagnostic evidence only.
 
     Never infer an output, an omission, metered usage, a confirmed semantic
@@ -146,13 +157,25 @@ def verify_partial_capture(*, registry, now, attempt_id, slot, status, stdout, s
             "partial_slot")
     require(sha(sources_raw) == source_pin, "partial_sources")
     source_catalog(sources_raw)
+    require(type(stdout) is bytes and type(stderr) is bytes, "partial_stream")
     require(final_bytes is None or type(final_bytes) is bytes, "partial_final")
+    if final_bytes is None:
+        require(display_span is None,"partial_span_without_bytes")
+    else:
+        require(type(display_span) is list and len(display_span)==2
+                and all(type(x) is int for x in display_span),"partial_span")
+        start,end=display_span
+        require(0<=start<end<=len(stdout) and stdout[start:end]==final_bytes,
+                "partial_span_binding")
+        final_bytes.decode("utf-8","strict")
+
     # Partial bytes are evidence, not a verified final display. A missing
     # terminal stays null; no artificial digest is installed.
     payload = {"attempt_id":attempt_id,"slot":list(slot),"status":status,
                "stdout_sha256":sha(stdout),"stderr_sha256":sha(stderr),
                "journal_sha256":sha(journal_raw),"trace_sha256":sha(trace_raw),
                "sources_sha256":source_pin,
+               "binding_sha256":sha(binding_raw),"display_span":display_span,
                "partial_display_sha256":None if final_bytes is None else sha(final_bytes),
                "final_sha256":None,"calls":None,"tokens":None,
                "formal_eligible":False}
