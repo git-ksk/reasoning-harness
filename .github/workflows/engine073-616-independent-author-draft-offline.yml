@@ -23,8 +23,10 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.13'
+      - name: Install existing hash-locked review verifier dependencies
+        run: python3 -m pip install --require-hashes -r evaluation/cli-repair-paired-v1/normal_v3/review-requirements.txt
       - name: Public hashes, no labels, preregistered HOLD gates
         run: env -u MISTRAL_API_KEY -u GROQ_API_KEY -u OPENAI_API_KEY -u GEMINI_API_KEY python3 evaluation/engine073-531-independent24-20261116/validate_independent24.py --repo .
       - name: Offline fail-closed tests (private gold absent)
-        run: env -u MISTRAL_API_KEY -u GROQ_API_KEY -u OPENAI_API_KEY -u GEMINI_API_KEY python3 -m unittest discover -s evaluation/engine073-531-independent24-20261116 -p 'test_*.py' -v
+        run: env -u REASON_616_PRIVATE_GOLD -u MISTRAL_API_KEY -u GROQ_API_KEY -u OPENAI_API_KEY -u GEMINI_API_KEY python3 -m unittest discover -s evaluation/engine073-531-independent24-20261116 -p 'test_*.py' -v
