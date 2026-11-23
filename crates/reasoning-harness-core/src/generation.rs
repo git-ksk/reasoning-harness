@@ -3,6 +3,23 @@ use crate::{
     Verdict, final_answer_candidate_schema, reasoning_candidate_schema,
 };
 
+/// Keep the literal structured binding separate from advisory reasoning.
+const EXACT_FACT_BINDING: &str = "For an observed structured fact, copy BOTH key and entire value verbatim from the same evidence entry, including qualifiers, punctuation, and case. Never shorten, paraphrase, translate, split, or combine that value under its key. For a scenario-specific deduction, use an unverified claim without an invented structured proposition or receipt. Preserve harness-owned hypotheses verbatim even when evidence disagrees; never replace them with an observation.";
+
+fn candidate_system(base: &str, input: &HarnessInput) -> String {
+    if input.evidence.iter().any(|e| !e.facts.is_empty()) {
+        format!("{base} {EXACT_FACT_BINDING}")
+    } else {
+        base.to_owned()
+    }
+}
+
+const EXACT_FINAL_SELECTION: &str = "Select the relevant Known or Supported propositions needed to cover each requested part by copying each exact artifact key and complete value verbatim. Preserve source conditions. Never invent a key or paraphrase a value in factual_claims. If the scenario-specific outcome lacks an authorized proposition, retain the verified conditional boundary without guessing. Identify the missing determinant in advisory text when appropriate; advisory text cannot establish a new exposed claim.";
+
+fn final_system(base: &str) -> String {
+    format!("{base} {EXACT_FINAL_SELECTION}")
+}
+
 pub fn build_candidate_request(
     input: &HarnessInput,
     max_tokens: Option<u32>,
@@ -14,10 +31,10 @@ pub fn build_candidate_request(
     let evidence_requirements = serde_json::to_string_pretty(&input.evidence_requirements)?;
     let authority_policy = serde_json::to_string_pretty(&input.authority_policy)?;
     Ok(ModelRequest {
-        system: Some(
-            "You are a candidate generator inside a reasoning harness. Return only the requested structured candidate. Epistemic states are proposals, not verdicts. Use only evidence IDs supplied by the harness; do not invent evidence, sources, or observations. When harness evidence contains structured facts, attach a proposition only for a direct key=value claim that can be checked against those facts. If the supplied evidence cannot support a claim, propose unknown or assumed instead of fabricating support."
-                .into(),
-        ),
+        system: Some(candidate_system(
+            "You are a candidate generator inside a reasoning harness. Return only the requested structured candidate. Epistemic states are proposals, not verdicts. Use only evidence IDs supplied by the harness; do not invent evidence, sources, or observations. When harness evidence contains structured facts, attach a proposition only for a direct key=value claim that can be checked against those facts. If the supplied evidence cannot support a claim, propose unknown or assumed instead of fabricating support.",
+            input,
+        )),
         task: format!(
             "Task:\n{}\n\nHarness-owned hypotheses:\n{}\n\nHarness-owned explicit assumptions:\n{}\n\nHarness-owned evidence requirements:\n{}\n\nHarness-owned authority policy:\n{}\n\nHarness-owned evidence:\n{}\n\nGenerate candidate claims and inference edges. Evaluate supplied hypotheses when present; do not alter their key/value pair. Explicit assumptions may be used as premises, but do not treat them as verified facts. Evidence qualification metadata and authority policy are context only; never claim authority over them.",
             input.task, hypotheses, assumptions, evidence_requirements, authority_policy, evidence
@@ -44,13 +61,19 @@ pub fn build_candidate_json_fallback_request(
     let authority_policy = serde_json::to_string_pretty(&input.authority_policy)?;
     let schema = serde_json::to_string_pretty(&reasoning_candidate_schema())?;
     Ok(ModelRequest {
-        system: Some(
-            "You are a candidate generator inside a reasoning harness. Return exactly one JSON object and no prose. The object must conform to the supplied JSON Schema. Epistemic states are proposals, not verdicts. Use only evidence IDs supplied by the harness; do not invent evidence, sources, or observations. When harness evidence contains structured facts, attach a proposition only for a direct key=value claim that can be checked against those facts. If the supplied evidence cannot support a claim, propose unknown or assumed instead of fabricating support."
-                .into(),
-        ),
+        system: Some(candidate_system(
+            "You are a candidate generator inside a reasoning harness. Return exactly one JSON object and no prose. The object must conform to the supplied JSON Schema. Epistemic states are proposals, not verdicts. Use only evidence IDs supplied by the harness; do not invent evidence, sources, or observations. When harness evidence contains structured facts, attach a proposition only for a direct key=value claim that can be checked against those facts. If the supplied evidence cannot support a claim, propose unknown or assumed instead of fabricating support.",
+            input,
+        )),
         task: format!(
             "JSON Schema:\n{}\n\nTask:\n{}\n\nHarness-owned hypotheses:\n{}\n\nHarness-owned explicit assumptions:\n{}\n\nHarness-owned evidence requirements:\n{}\n\nHarness-owned authority policy:\n{}\n\nHarness-owned evidence:\n{}\n\nGenerate candidate claims and inference edges as one JSON object conforming to the schema. Evaluate supplied hypotheses when present; do not alter their key/value pair. Explicit assumptions may be used as premises, but do not treat them as verified facts. Evidence qualification metadata and authority policy are context only; never claim authority over them.",
-            schema, input.task, hypotheses, assumptions, evidence_requirements, authority_policy, evidence
+            schema,
+            input.task,
+            hypotheses,
+            assumptions,
+            evidence_requirements,
+            authority_policy,
+            evidence
         ),
         output_format: ModelOutputFormat::JsonObject,
         max_tokens,
@@ -80,10 +103,9 @@ pub fn build_final_answer_request(
 ) -> Result<ModelRequest, serde_json::Error> {
     let artifact = serde_json::to_string_pretty(artifact)?;
     Ok(ModelRequest {
-        system: Some(
-            "You are the final-answer renderer inside a reasoning harness. Return only the requested structured final-answer candidate. You may summarize verified artifact state, but you do not own truth authority. Every factual proposition you intend to communicate must be listed in factual_claims. Mark a proposition grounded only when the artifact state is known or supported; otherwise mark it uncertain. Do not invent evidence, receipts, facts, or authority. The text field is advisory renderer output and is not the correctness-guaranteed exposed answer; the Harness deterministically constructs that surface from accepted factual_claims. If the artifact cannot support a useful factual answer, say so plainly and return no unsupported grounded claim."
-                .into(),
-        ),
+        system: Some(final_system(
+            "You are the final-answer renderer inside a reasoning harness. Return only the requested structured final-answer candidate. You may summarize verified artifact state, but you do not own truth authority. Every factual proposition you intend to communicate must be listed in factual_claims. Mark a proposition grounded only when the artifact state is known or supported; otherwise mark it uncertain. Do not invent evidence, receipts, facts, or authority. The text field is advisory renderer output and is not the correctness-guaranteed exposed answer; the Harness deterministically constructs that surface from accepted factual_claims. If the artifact cannot support a useful factual answer, say so plainly and return no unsupported grounded claim.",
+        )),
         task: format!(
             "User task:\n{task}\n\nHarness verdict:\n{verdict:?}\n\nVerified reasoning artifact:\n{artifact}\n\nRender a concise natural-language answer and declare every intended factual proposition in factual_claims. The Harness will expose only its deterministic rendering of accepted factual_claims; renderer text is advisory and cannot add or strengthen exposed assertions."
         ),
@@ -107,10 +129,9 @@ pub fn build_final_answer_json_fallback_request(
     let artifact = serde_json::to_string_pretty(artifact)?;
     let schema = serde_json::to_string_pretty(&final_answer_model_schema())?;
     Ok(ModelRequest {
-        system: Some(
-            "You are the final-answer renderer inside a reasoning harness. Return exactly one JSON object and no prose. The object must conform to the supplied JSON Schema. You do not own truth authority. Every factual proposition you intend to communicate must be listed in factual_claims. Mark grounded only when the artifact state is known or supported; otherwise mark uncertain. Do not invent evidence, receipts, facts, or authority. The text field is advisory; the Harness deterministically constructs the correctness-guaranteed exposed answer from accepted factual_claims."
-                .into(),
-        ),
+        system: Some(final_system(
+            "You are the final-answer renderer inside a reasoning harness. Return exactly one JSON object and no prose. The object must conform to the supplied JSON Schema. You do not own truth authority. Every factual proposition you intend to communicate must be listed in factual_claims. Mark grounded only when the artifact state is known or supported; otherwise mark uncertain. Do not invent evidence, receipts, facts, or authority. The text field is advisory; the Harness deterministically constructs the correctness-guaranteed exposed answer from accepted factual_claims.",
+        )),
         task: format!(
             "JSON Schema:\n{schema}\n\nUser task:\n{task}\n\nHarness verdict:\n{verdict:?}\n\nVerified reasoning artifact:\n{artifact}\n\nRender one concise final-answer candidate conforming to the schema. Any new factual proposition will be blocked and sent back through verification before it can be exposed as grounded output."
         ),
@@ -129,6 +150,68 @@ pub fn parse_final_answer_candidate(text: &str) -> Result<FinalAnswerCandidate, 
 mod tests {
     use super::*;
     use crate::Evidence;
+
+    #[test]
+    fn completeness_literal_binding_in_both_provider_modes() {
+        let mut input = HarnessInput::default();
+        input.task = "Explain a synthetic conditional policy".into();
+        for request in [
+            build_candidate_request(&input, Some(512), Some(7)).unwrap(),
+            build_candidate_json_fallback_request(&input, Some(512), Some(7)).unwrap(),
+        ] {
+            assert!(!request.system.unwrap().contains(EXACT_FACT_BINDING));
+        }
+        input.evidence.push(Evidence {
+            id: "synthetic-e1".into(),
+            source: "synthetic-manual".into(),
+            observation: "fictional policy".into(),
+            facts: std::collections::BTreeMap::from([(
+                "demo.policy".into(),
+                "Enabled ONLY in mode A; never mode B.".into(),
+            )]),
+            metadata: Default::default(),
+        });
+        for request in [
+            build_candidate_request(&input, Some(512), Some(7)).unwrap(),
+            build_candidate_json_fallback_request(&input, Some(512), Some(7)).unwrap(),
+        ] {
+            assert!(request.system.unwrap().contains(EXACT_FACT_BINDING));
+            assert!(
+                request
+                    .task
+                    .contains("Enabled ONLY in mode A; never mode B.")
+            );
+            assert_eq!(request.max_tokens, Some(512));
+            assert_eq!(request.random_seed, Some(7));
+        }
+    }
+
+    #[test]
+    fn completeness_final_selection_retains_exact_authority_in_both_modes() {
+        let artifact = ReasoningArtifact::default();
+        for request in [
+            build_final_answer_request(
+                "synthetic conditional",
+                &artifact,
+                Verdict::Unknown,
+                Some(256),
+                Some(9),
+            )
+            .unwrap(),
+            build_final_answer_json_fallback_request(
+                "synthetic conditional",
+                &artifact,
+                Verdict::Unknown,
+                Some(256),
+                Some(9),
+            )
+            .unwrap(),
+        ] {
+            assert!(request.system.unwrap().contains(EXACT_FINAL_SELECTION));
+            assert_eq!(request.max_tokens, Some(256));
+            assert_eq!(request.random_seed, Some(9));
+        }
+    }
 
     #[test]
     fn json_fallback_embeds_schema_and_uses_json_object_mode() {

@@ -1123,6 +1123,20 @@ pub fn build_investigation_plan_request(
     random_seed: Option<u64>,
 ) -> Result<ModelRequest, serde_json::Error> {
     let exact_key = shared_exact_read_only_fact_key(capabilities);
+    // Captured source snapshots have a finite configured fact inventory; unlike
+    // general-purpose dynamic tools, exact distinct selectors can avoid redundant
+    // acquisitions. This changes only planning hints, not schema, routing or authority.
+    let captured_fact_families = capabilities
+        .iter()
+        .filter(|c| c.read_only && c.adapter == "investigation_captured_evidence_v1")
+        .flat_map(|c| c.supported_fact_keys.iter())
+        .collect::<BTreeSet<_>>();
+    let captured_multi_family = captured_fact_families.len() > 1
+        && capabilities.iter().all(|c| {
+            c.read_only
+                && c.adapter == "investigation_captured_evidence_v1"
+                && !c.supported_fact_keys.is_empty()
+        });
     let schema = investigation_plan_schema_for_capabilities(capabilities);
     let capabilities = serialize_model_visible_capabilities(capabilities)?;
     let (system, task) = exact_key.map_or_else(
@@ -1148,6 +1162,13 @@ pub fn build_investigation_plan_request(
             )
         },
     );
+    let system = if captured_multi_family {
+        format!(
+            "{system} expected_fact_key is only a selector hint, not authority. Inspect supported_fact_keys in the configured read-only descriptors for each requested source-dependent facet. Copy an exact supported key when it clearly matches the fact family, even if the user uses natural-language terms rather than the literal key. Combine related subparts supported by the same key in one target; avoid duplicate same-key targets and unneeded implementation details. Omit the hint when the match is ambiguous or absent; never invent a key."
+        )
+    } else {
+        system
+    };
     Ok(ModelRequest {
         system: Some(system),
         task,
@@ -1369,6 +1390,32 @@ mod tests {
                 baseline
             );
         }
+    }
+
+    #[test]
+    fn completeness_planner_uses_exact_available_fact_families() {
+        let mut capabilities = vec![
+            capability("lookup-policy", &["demo.policy"]),
+            capability("lookup-boundary", &["demo.boundary"]),
+        ];
+        for c in &mut capabilities {
+            c.adapter = "investigation_captured_evidence_v1".into();
+        }
+        let request = build_investigation_plan_request(
+            "Explain operating conditions and exceptions",
+            &capabilities,
+            Some(128),
+            Some(7),
+        )
+        .unwrap();
+        let system = request.system.unwrap();
+        assert!(system.contains("Copy an exact supported key"));
+        assert!(system.contains("avoid duplicate same-key targets"));
+        assert!(system.contains("Omit the hint when the match is ambiguous or absent"));
+        assert!(system.contains("not authority"));
+        assert!(request.task.contains("demo.policy"));
+        assert!(request.task.contains("demo.boundary"));
+        assert_eq!(request.max_tokens, Some(128));
     }
 
     #[test]
