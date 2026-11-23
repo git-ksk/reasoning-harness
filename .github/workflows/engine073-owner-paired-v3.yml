@@ -1,0 +1,141 @@
+name: engine073-owner-paired-v3
+# Only a fresh, exact dataset/payload tag can launch the owner-managed measurement.
+# The claim tag is different from the launch prefix and must never be removed.
+on:
+  push:
+    tags:
+      - 'eval-owner-paired-v3-*'
+  pull_request:
+    paths:
+      - '.github/workflows/engine073-owner-paired-v3.yml'
+      - 'evaluation/owner-paired-v3/**'
+      - 'evaluation/engine073-531-independent24-20261116/*completeness_pair.py'
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.event_name == 'push' && 'reasoning-harness-mistral-live' || format('owner-paired-offline-{0}', github.run_id) }}
+  cancel-in-progress: false
+jobs:
+  offline-controls:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - run: |
+          python3 evaluation/owner-paired-v3/test_measure.py
+          python3 evaluation/dev-lite/test_issue531_real24_api_billing_gate.py
+          python3 evaluation/engine073-531-independent24-20261116/test_build_completeness_pair.py
+  preflight:
+    if: github.event_name == 'push' && github.run_attempt == 1
+    needs: offline-controls
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - name: Verify payload and all 48 first request plans without provider
+        env:
+          OWNER_EVAL_INPUT: ${{ secrets.ENGINE073_OWNER_PAIRED_V3_INPUT }}
+        run: |
+          set -eu
+          umask 077
+          root=$(mktemp -d)
+          trap 'rm -rf "$root"' EXIT
+          python3 evaluation/owner-paired-v3/measure.py stage "$root/input" "$GITHUB_REF_NAME"
+          unset OWNER_EVAL_INPUT
+          cargo fetch --locked
+          python3 evaluation/engine073-531-independent24-20261116/build_completeness_pair.py --repo . --output "$root/build" --mode build
+          python3 evaluation/owner-paired-v3/measure.py preflight "$root/input" "$root/build/pair-preflight.json"
+  claim:
+    if: github.event_name == 'push' && github.run_attempt == 1
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Atomically burn cohort identity before any live request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$GITHUB_REF_NAME" =~ ^eval-owner-paired-v3-([a-f0-9]{64})-([a-f0-9]{64})$ ]]
+          cohort="${BASH_REMATCH[1]}"
+          gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" \
+            -f "ref=refs/tags/eval-owner-claimed-v1-$cohort" -f "sha=$GITHUB_SHA" >/dev/null 2>&1 || { echo "cohort claim refused; no live execution"; exit 1; }
+          echo 'one-shot cohort claim created'
+  live:
+    if: github.event_name == 'push' && github.run_attempt == 1
+    needs: claim
+    strategy:
+      fail-fast: true
+      max-parallel: 1
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    runs-on: macos-15
+    timeout-minutes: 155
+    steps:
+      - name: Initialize private ephemeral root
+        run: |
+          set -eu
+          umask 077
+          root=$(mktemp -d)
+          echo "OWNER_ROOT=$root" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - name: Verify input and local paired request plans
+        env:
+          OWNER_EVAL_INPUT: ${{ secrets.ENGINE073_OWNER_PAIRED_V3_INPUT }}
+        run: |
+          set -eu
+          umask 077
+          python3 evaluation/owner-paired-v3/measure.py stage "$OWNER_ROOT/input" "$GITHUB_REF_NAME"
+          unset OWNER_EVAL_INPUT
+          cargo fetch --locked
+          python3 evaluation/engine073-531-independent24-20261116/build_completeness_pair.py --repo . --output "$OWNER_ROOT/build" --mode build
+          python3 evaluation/owner-paired-v3/measure.py preflight "$OWNER_ROOT/input" "$OWNER_ROOT/build/pair-preflight.json"
+          cert=evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+          openssl x509 -in "$cert" -checkend 10800 -noout
+          test "$(openssl x509 -in "$cert" -outform DER | shasum -a 256 | cut -d' ' -f1)" = d917aeb4c55699b1ea19117c776e5f515aa40193488197a12c00082517695b43
+      - name: Fresh same-key no-overage billing check and one-shot measurement
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          SHARD: ${{ matrix.shard }}
+        run: |
+          set -eu
+          python3 evaluation/owner-paired-v3/measure.py measure "$OWNER_ROOT/input" "$OWNER_ROOT/build/pair-preflight.json" "$SHARD" "$GITHUB_REF_NAME"
+      - name: Encrypt raw evidence, including available partial evidence
+        if: always()
+        run: |
+          set -euo pipefail
+          umask 077
+          if test -n "${OWNER_ROOT:-}" && test -d "$OWNER_ROOT/input/raw"; then
+            # No plaintext intermediate archive; no raw data in the action log.
+            tar -czf - -C "$OWNER_ROOT/input" raw | openssl cms -encrypt -binary -aes256 -outform DER -out "$OWNER_ROOT/evidence.cms" evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+          fi
+        shell: bash
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() && env.OWNER_ROOT != ''
+        with:
+          name: owner-paired-v3-${{ github.run_id }}-shard-${{ matrix.shard }}
+          path: ${{ env.OWNER_ROOT }}/evidence.cms
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Remove ephemeral private material
+        if: always()
+        run: |
+          if test -n "${OWNER_ROOT:-}" && test -d "$OWNER_ROOT"; then rm -rf "$OWNER_ROOT"; fi
