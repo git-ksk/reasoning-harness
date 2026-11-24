@@ -14,9 +14,10 @@ use serde_json::Value;
 
 const DEFAULT_BASE_URL: &str = "https://api.mistral.ai/v1/";
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(180);
-const MAX_RATE_LIMIT_RETRIES: usize = 5;
-const INITIAL_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(5);
-const MAX_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(60);
+const MAX_RATE_LIMIT_RETRIES: usize = 3;
+const INITIAL_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(30);
+const MAX_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(120);
+const MAX_RATE_LIMIT_RETRY_WAIT: Duration = Duration::from_secs(210);
 const MAX_SUCCESS_PACING_DELAY: Duration = Duration::from_secs(90);
 const RATE_LIMIT_TELEMETRY_ENV: &str = "REASON_MISTRAL_RATE_LIMIT_TELEMETRY";
 
@@ -240,24 +241,42 @@ impl MistralAdapter {
                 classify_transport_error(error).with_provider_attempts(attempt_number)
             })?;
 
-            log_rate_limit_telemetry(response.status(), response.headers(), rate_limit_retries);
-
-            if response.status() != StatusCode::TOO_MANY_REQUESTS
-                || rate_limit_retries >= MAX_RATE_LIMIT_RETRIES
-                || self.single_attempt
-            {
+            if response.status() != StatusCode::TOO_MANY_REQUESTS {
+                log_rate_limit_telemetry(response.status(), response.headers(), rate_limit_retries);
                 break response;
             }
 
-            let delay = rate_limit_delay(response.headers(), rate_limit_retries);
-            rate_limit_retries += 1;
-            let delay = crate::network::bounded_wait(delay, used_wait, execution_budget).map_err(
-                |error| {
-                    error.with_provider_attempts(
-                        u32::try_from(rate_limit_retries).unwrap_or(u32::MAX),
+            let headers = response.headers().clone();
+            let body = response.text().await.unwrap_or_default();
+            let (kind, class) = classify_429(&headers, &body);
+            let decision = retry_429_decision(
+                &headers,
+                class,
+                self.single_attempt,
+                rate_limit_retries,
+                used_wait,
+            )
+            .and_then(|delay| {
+                crate::network::bounded_wait(delay, used_wait, execution_budget)
+                    .map_err(|_| "execution_wait_budget")
+            });
+            let delay = match decision {
+                Ok(delay) => {
+                    log_429_decision(&headers, attempt_number, class, "retry", delay);
+                    delay
+                }
+                Err(reason) => {
+                    log_429_decision(&headers, attempt_number, class, reason, Duration::ZERO);
+                    return Err(ModelError::new(
+                        kind,
+                        format!(
+                            "Mistral returned HTTP 429 after {rate_limit_retries} rate-limit retries; class={class}; retry_decision={reason}; usage=unknown"
+                        ),
                     )
-                },
-            )?;
+                    .with_provider_attempts(attempt_number));
+                }
+            };
+            rate_limit_retries += 1;
             tokio::time::sleep(delay).await;
             used_wait = used_wait.saturating_add(delay);
             self.execution_telemetry
@@ -265,19 +284,14 @@ impl MistralAdapter {
         };
 
         let status = response.status();
-        let limit_detail = if status == StatusCode::TOO_MANY_REQUESTS {
-            rate_limit_header_detail(response.headers())
-        } else {
-            String::new()
-        };
         if !status.is_success() {
             let body = response.text().await.unwrap_or_default();
             let kind = classify_http_error(status, &body);
-            let detail = provider_error_detail(&body);
+            let detail = provider_error_detail(&body).replace(&self.api_key, "[redacted]");
             return Err(ModelError::new(
                 kind,
                 format!(
-                    "Mistral returned HTTP {status} after {rate_limit_retries} rate-limit retries{detail}{limit_detail}"
+                    "Mistral returned HTTP {status} after {rate_limit_retries} rate-limit retries{detail}"
                 ),
             )
             .with_provider_attempts(u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX)));
@@ -599,20 +613,103 @@ fn classify_http_error(status: StatusCode, body: &str) -> ModelErrorKind {
     }
 }
 
-fn rate_limit_delay(headers: &reqwest::header::HeaderMap, retry_index: usize) -> Duration {
-    if let Some(delay) = retry_after_delay(headers) {
-        return delay;
+fn classify_429(
+    headers: &reqwest::header::HeaderMap,
+    body: &str,
+) -> (ModelErrorKind, &'static str) {
+    let kind = classify_http_error(StatusCode::TOO_MANY_REQUESTS, body);
+    if kind == ModelErrorKind::Quota
+        || header_u64_any(headers, &["x-ratelimit-remaining-tokens-month"]) == Some(0)
+    {
+        return (ModelErrorKind::Quota, "quota_or_billing");
     }
-    if let Some(delay) = rate_limit_reset_delay(headers) {
-        return delay.min(MAX_SUCCESS_PACING_DELAY);
-    }
+    let message = serde_json::from_str::<Value>(body).ok().and_then(|v| {
+        v.pointer("/error/message")
+            .or_else(|| v.get("message"))
+            .and_then(Value::as_str)
+            .map(|m| m.trim().trim_end_matches('.').to_ascii_lowercase())
+    });
+    let class = match message.as_deref() {
+        Some("not enough capacity available for this request, please retry later" | "busy") => {
+            "temporary_capacity"
+        }
+        Some("too many requests" | "rate limit exceeded" | "rate limit reached") => {
+            "temporary_rate_limit"
+        }
+        _ => "unclassified_429",
+    };
+    (kind, class)
+}
 
-    fallback_rate_limit_delay(retry_index)
+const RETRY_RESET_HEADERS: &[&str] = &[
+    "x-ratelimit-reset-tokens-minute",
+    "x-ratelimit-reset-tokens",
+    "x-ratelimit-reset-req-minute",
+    "x-ratelimit-reset-requests",
+    "ratelimit-reset",
+];
+
+fn retry_429_decision(
+    headers: &reqwest::header::HeaderMap,
+    class: &str,
+    single_attempt: bool,
+    retries: usize,
+    used_wait: Duration,
+) -> Result<Duration, &'static str> {
+    if !matches!(class, "temporary_capacity" | "temporary_rate_limit") {
+        return Err("not_confirmed_transient");
+    }
+    // A rejected HTTP request may have consumed tokens. Never retry while
+    // the existing cumulative token guard requires one HTTP attempt.
+    if single_attempt {
+        return Err("single_attempt_usage_unknown");
+    }
+    if retries >= MAX_RATE_LIMIT_RETRIES {
+        return Err("attempt_limit");
+    }
+    if (headers.contains_key(RETRY_AFTER) && retry_after_delay(headers).is_none())
+        || RETRY_RESET_HEADERS.iter().any(|name| {
+            headers.contains_key(*name)
+                && header_str(headers, name)
+                    .and_then(parse_reset_duration)
+                    .is_none()
+        })
+    {
+        return Err("invalid_retry_header");
+    }
+    let delay = rate_limit_delay(headers, retries);
+    if delay > MAX_RATE_LIMIT_BACKOFF || used_wait.saturating_add(delay) > MAX_RATE_LIMIT_RETRY_WAIT
+    {
+        return Err("retry_wait_limit");
+    }
+    Ok(delay)
+}
+
+fn rate_limit_delay(headers: &reqwest::header::HeaderMap, retry_index: usize) -> Duration {
+    retry_after_delay(headers)
+        .into_iter()
+        .chain(
+            RETRY_RESET_HEADERS
+                .iter()
+                .filter_map(|name| header_str(headers, name).and_then(parse_reset_duration)),
+        )
+        .max()
+        .unwrap_or_else(|| fallback_rate_limit_delay(retry_index))
 }
 
 fn retry_after_delay(headers: &reqwest::header::HeaderMap) -> Option<Duration> {
-    let value = headers.get(RETRY_AFTER)?.to_str().ok()?;
-    parse_reset_duration(value)
+    let value = headers.get(RETRY_AFTER)?.to_str().ok()?.trim();
+    // Retry-After delta-seconds are not Unix timestamps.
+    if let Ok(seconds) = value.parse::<u64>() {
+        return Some(Duration::from_secs(seconds.max(1)));
+    }
+    let instant = httpdate::parse_http_date(value).ok()?;
+    Some(
+        instant
+            .duration_since(SystemTime::now())
+            .unwrap_or(Duration::from_secs(1))
+            .max(Duration::from_secs(1)),
+    )
 }
 
 fn fallback_rate_limit_delay(retry_index: usize) -> Duration {
@@ -640,11 +737,17 @@ fn parse_reset_duration(value: &str) -> Option<Duration> {
     let value = value.trim();
     if let Some(milliseconds) = value.strip_suffix("ms") {
         let milliseconds = milliseconds.trim().parse::<f64>().ok()?;
-        return Some(Duration::from_secs_f64((milliseconds / 1000.0).max(0.001)));
+        if !milliseconds.is_finite() || milliseconds < 0.0 {
+            return None;
+        }
+        return Duration::try_from_secs_f64((milliseconds / 1000.0).max(0.001)).ok();
     }
     if let Some(seconds) = value.strip_suffix('s') {
         let seconds = seconds.trim().parse::<f64>().ok()?;
-        return Some(Duration::from_secs_f64(seconds.max(1.0)));
+        if !seconds.is_finite() || seconds < 0.0 {
+            return None;
+        }
+        return Duration::try_from_secs_f64(seconds.max(1.0)).ok();
     }
     if let Ok(raw) = value.parse::<u64>() {
         // Small values are conventional Retry-After/reset durations. Large values are
@@ -734,13 +837,28 @@ fn header_str<'a>(headers: &'a reqwest::header::HeaderMap, name: &str) -> Option
     headers.get(name).and_then(|value| value.to_str().ok())
 }
 
-fn rate_limit_header_detail(headers: &reqwest::header::HeaderMap) -> String {
-    let summary = rate_limit_header_summary(headers);
-    if summary.is_empty() {
-        String::new()
-    } else {
-        format!("; rate_limit_headers={summary}")
+fn log_429_decision(
+    headers: &reqwest::header::HeaderMap,
+    attempt: u32,
+    class: &str,
+    reason: &str,
+    delay: Duration,
+) {
+    if !rate_limit_telemetry_enabled() {
+        return;
     }
+    let timestamp_ms = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_millis();
+    let summary = rate_limit_header_summary(headers);
+    eprintln!(
+        "[mistral-rate-limit] status=429 timestamp_ms={timestamp_ms} attempt={attempt} retry_index={} class={class} retry_allowed={} reason={reason} wait_ms={} usage=unknown headers={}",
+        attempt.saturating_sub(1),
+        reason == "retry",
+        delay.as_millis(),
+        if summary.is_empty() { "absent" } else { &summary },
+    );
 }
 
 fn rate_limit_header_summary(headers: &reqwest::header::HeaderMap) -> String {
@@ -771,6 +889,10 @@ fn rate_limit_header_summary(headers: &reqwest::header::HeaderMap) -> String {
         .iter()
         .filter_map(|name| {
             header_str(headers, name)
+                .filter(|value| {
+                    value.len() <= 96
+                        && (value.parse::<u64>().is_ok() || parse_reset_duration(value).is_some())
+                })
                 .map(|value| format!("{name}={}", truncate_diagnostic(value, 96)))
         })
         .collect::<Vec<_>>()
@@ -1080,6 +1202,74 @@ mod tests {
     }
 
     #[test]
+    fn temporary_429_allowlist_and_monthly_quota() {
+        let mut headers = reqwest::header::HeaderMap::new();
+        let capacity =
+            r#"{"message":"Not enough capacity available for this request, please retry later."}"#;
+        assert_eq!(classify_429(&headers, capacity).1, "temporary_capacity");
+        assert_eq!(
+            classify_429(&headers, r#"{"message":"quota exhausted"}"#).1,
+            "quota_or_billing"
+        );
+        assert_eq!(
+            classify_429(&headers, r#"{"message":"unrecognized failure"}"#).1,
+            "unclassified_429"
+        );
+        headers.insert(
+            "x-ratelimit-remaining-tokens-month",
+            reqwest::header::HeaderValue::from_static("0"),
+        );
+        assert_eq!(classify_429(&headers, capacity).0, ModelErrorKind::Quota);
+    }
+
+    #[test]
+    fn retry_decision_rejects_unaccounted_attempts_and_limits() {
+        let mut headers = reqwest::header::HeaderMap::new();
+        let temporary = "temporary_capacity";
+        assert_eq!(
+            retry_429_decision(&headers, temporary, false, 0, Duration::ZERO),
+            Ok(Duration::from_secs(30))
+        );
+        for class in ["quota_or_billing", "unclassified_429"] {
+            assert_eq!(
+                retry_429_decision(&headers, class, false, 0, Duration::ZERO),
+                Err("not_confirmed_transient")
+            );
+        }
+        assert_eq!(
+            retry_429_decision(&headers, temporary, true, 0, Duration::ZERO),
+            Err("single_attempt_usage_unknown")
+        );
+        assert_eq!(
+            retry_429_decision(&headers, temporary, false, 3, Duration::ZERO),
+            Err("attempt_limit")
+        );
+        assert_eq!(
+            retry_429_decision(&headers, temporary, false, 2, Duration::from_secs(91)),
+            Err("retry_wait_limit")
+        );
+        headers.insert(RETRY_AFTER, reqwest::header::HeaderValue::from_static("121"));
+        assert_eq!(
+            retry_429_decision(&headers, temporary, false, 0, Duration::ZERO),
+            Err("retry_wait_limit")
+        );
+        headers.insert(RETRY_AFTER, reqwest::header::HeaderValue::from_static("bad"));
+        assert_eq!(
+            retry_429_decision(&headers, temporary, false, 0, Duration::ZERO),
+            Err("invalid_retry_header")
+        );
+        headers.insert(RETRY_AFTER, reqwest::header::HeaderValue::from_static("30"));
+        headers.insert(
+            "x-ratelimit-reset-req-minute",
+            reqwest::header::HeaderValue::from_static("60s"),
+        );
+        assert_eq!(
+            retry_429_decision(&headers, temporary, false, 0, Duration::ZERO),
+            Ok(Duration::from_secs(60))
+        );
+    }
+
+    #[test]
     fn rate_limit_delay_prefers_retry_after_header() {
         let mut headers = reqwest::header::HeaderMap::new();
         headers.insert(RETRY_AFTER, reqwest::header::HeaderValue::from_static("7"));
@@ -1089,9 +1279,9 @@ mod tests {
     #[test]
     fn rate_limit_delay_uses_bounded_exponential_fallback() {
         let headers = reqwest::header::HeaderMap::new();
-        assert_eq!(rate_limit_delay(&headers, 0), Duration::from_secs(5));
-        assert_eq!(rate_limit_delay(&headers, 1), Duration::from_secs(10));
-        assert_eq!(rate_limit_delay(&headers, 2), Duration::from_secs(20));
+        assert_eq!(rate_limit_delay(&headers, 0), Duration::from_secs(30));
+        assert_eq!(rate_limit_delay(&headers, 1), Duration::from_secs(60));
+        assert_eq!(rate_limit_delay(&headers, 2), Duration::from_secs(120));
     }
 
     #[test]
@@ -1112,14 +1302,13 @@ mod tests {
         assert_eq!(
             delays,
             vec![
-                Duration::from_secs(5),
-                Duration::from_secs(10),
-                Duration::from_secs(20),
-                Duration::from_secs(40),
+                Duration::from_secs(30),
                 Duration::from_secs(60),
+                Duration::from_secs(120),
             ]
         );
-        assert!(delays.iter().take(4).sum::<Duration>() > Duration::from_secs(60));
+        assert_eq!(delays.iter().sum::<Duration>(), MAX_RATE_LIMIT_RETRY_WAIT);
+        assert_eq!(MAX_RATE_LIMIT_RETRIES, 3);
     }
 
     #[test]
