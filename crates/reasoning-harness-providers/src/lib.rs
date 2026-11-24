@@ -9,6 +9,7 @@ pub mod mcp_readonly_v2;
 pub mod mcp_readonly_v3;
 mod mcp_remote;
 pub mod mistral;
+pub mod mistral_retry_budget;
 pub mod network;
 pub mod nvidia;
 mod subprocess_cancellation;

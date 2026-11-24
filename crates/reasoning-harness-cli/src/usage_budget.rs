@@ -153,6 +153,9 @@ pub(super) struct UsageReport {
     pub estimated_model_cost_usd: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pricing_source: Option<String>,
+    /// Explicit development-mode accounting includes reservations, not just actual usage.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub token_accounting: Option<String>,
 }
 
 pub(super) struct UsageTracker {
@@ -160,6 +163,7 @@ pub(super) struct UsageTracker {
     baseline: Option<UsageTotals>,
     run: UsageTotals,
     failure_context: Option<crate::run_diagnostics::SharedRunDiagnostics>,
+    accounted_retry: bool,
 }
 
 /// Remaining cumulative limits at the start of a logical model operation.
@@ -184,9 +188,14 @@ impl UsageTracker {
             baseline,
             run: UsageTotals::default(),
             failure_context: None,
+            accounted_retry: false,
         };
         tracker.check_current_limits()?;
         Ok(tracker)
+    }
+
+    pub(super) fn enable_accounted_retry(&mut self) {
+        self.accounted_retry = true;
     }
 
     pub(super) fn preserve_on_exit(
@@ -392,8 +401,15 @@ impl UsageTracker {
             run: self.run.clone(),
             session,
             budget: self.budget.clone(),
-            estimated_model_cost_usd,
+            estimated_model_cost_usd: if self.accounted_retry {
+                None
+            } else {
+                estimated_model_cost_usd
+            },
             pricing_source: self.budget.pricing_source.clone(),
+            token_accounting: self
+                .accounted_retry
+                .then(|| "reported_plus_conservative_reservations_v1".into()),
         }
     }
 }
