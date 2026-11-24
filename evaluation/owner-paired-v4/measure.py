@@ -27,10 +27,27 @@ legacy = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(legacy)
 from build import CLI
 
-need, encode, sha, save, load = legacy.need, legacy.encode, legacy.sha, legacy.save, legacy.load
+encode, sha, save, load = legacy.encode, legacy.sha, legacy.save, legacy.load
+
+class HoldError(ValueError):
+    """Fixed, non-sensitive local diagnostic code."""
+
+def need(condition, reason):
+    if not condition:
+        raise HoldError(reason)
 ARMS, MODEL = dict(legacy.ARMS), legacy.MODEL
 REPO = "git-ksk/reasoning-harness"
-PREFIX = "eval-owner-paired-v4-"
+PREFIX = "eval-owner-paired-v4-repair-"
+# Original stopped cohort remains immutable. Recovery is limited to its one
+# independently revalidated, encrypted terminal observation; no model replay.
+RECOVERY = {
+    "cohort": "b6e483914a6d79f90c8009e542ac401dc584f40eb7e0cff2c7dfa36d7e37adf3",
+    "head": "158b569f50ea923c174b6adaee45e2c2fc666130",
+    "run": 45433270563, "slot": "00-baseline", "artifact": 14943095748,
+    "cms_sha256": "45684119c109301719fa546c1c068c147fa07dbe367b50f8ee1692074ce9f4c9",
+    "zip_sha256": "0191c87981a4cb531474af85acc7490404de885ce2e66041690b4767f492bd54",
+    "observation_sha256": "84770a0a67a79f02dceab1e54496b46abc236aa309e7e3fbd0cc5d8fdbe6e1f8",
+}
 FROZEN_PAYLOAD_SHA = "6a7d305f035c57e61fb0283f63f3b06015f5f4a9d49bd0ea47c122521dbac7d5"
 CERT = HERE.parent/"engine073-531-provisional24-20261114/reviewer-cert.pem"
 CERT_SHA = "d917aeb4c55699b1ea19117c776e5f515aa40193488197a12c00082517695b43"
@@ -192,13 +209,54 @@ def exact_ref(name):
 
 
 def create_ref(name, head):
+    need(len(("refs/tags/"+name).encode("utf-8")) <= 255, "github_ref_length")
     row = api("git/refs", "--method", "POST", "-f", "ref=refs/tags/"+name, "-f", "sha="+head)
     need(row["ref"] == "refs/tags/"+name and row["object"]["sha"] == head, "ref_create_pin")
 
 
 def names(c):
-    return (f"eval-owner-v4-cohort-{c}", f"eval-owner-v4-slot-{c}-",
-            f"eval-owner-v4-seal-{c}-", f"eval-owner-v4-halt-{c}")
+    return (f"rh4r-cohort-{c}", f"rh4r-slot-{c}-",
+            f"rh4r-s-{c}-", f"rh4r-halt-{c}")
+
+def carried(c, slot):
+    return c == RECOVERY["cohort"] and slot == RECOVERY["slot"]
+
+def slot_head(c, slot, head):
+    return RECOVERY["head"] if carried(c,slot) else head
+
+def seal_name(c, slot, run, artifact, digest, zip_digest):
+    name = names(c)[2]+slot+f"-{run}-{artifact}-{digest}-{zip_digest}"
+    need(len(("refs/tags/"+name).encode("utf-8")) <= 255, "github_ref_length")
+    return name
+
+def original_recovery(c, workflow_id):
+    r=RECOVERY
+    need(c==r["cohort"], "recovery_cohort_pin")
+    old_prefix=f"eval-owner-v4-slot-{c}-"
+    need(exact_ref(f"eval-owner-v4-cohort-{c}")==r["head"]
+         and exact_ref(f"eval-owner-v4-halt-{c}")==r["head"]
+         and matching(old_prefix)=={old_prefix+r["slot"]:r["head"]}
+         and not matching(f"eval-owner-v4-seal-{c}-"), "original_inventory_pin")
+    prior=api(f"actions/runs/{r['run']}")
+    need(prior["id"]==r["run"] and prior["status"]=="completed"
+         and prior["conclusion"]=="failure" and prior["run_attempt"]==1
+         and prior["head_sha"]==r["head"] and prior["event"]=="push"
+         and prior["workflow_id"]==workflow_id
+         and prior["head_branch"]=="eval-owner-paired-v4-"+c+"-"+FROZEN_PAYLOAD_SHA,
+         "original_run_pin")
+    check_artifact(c,r["slot"],r["run"],r["artifact"],r["zip_sha256"])
+
+def seed_recovery(c, head):
+    r=RECOVERY
+    need(c==r["cohort"], "recovery_cohort_pin")
+    try:
+        create_ref(names(c)[1]+r["slot"],r["head"])
+        create_ref(seal_name(c,r["slot"],r["run"],r["artifact"],r["cms_sha256"],r["zip_sha256"]),r["head"])
+        verify_seal(c,r["slot"],head)
+    except BaseException:
+        halt_cohort(c,head)
+        raise
+    print("Recovered one verified original observation; no model replay")
 
 
 def artifact_name(c, slot, run):
@@ -228,8 +286,11 @@ def verify_seal(c, slot, head, seals=None):
     need(len(rows) == 1, "claimed_slot_not_uniquely_sealed")
     name, ref_head = next(iter(rows.items()))
     match = re.fullmatch(re.escape(slot_prefix)+rf"([1-9][0-9]*)-([1-9][0-9]*)-({HEX})-({HEX})", name)
-    need(match is not None and ref_head == head, "seal_pin")
+    need(match is not None and ref_head == slot_head(c,slot,head), "seal_pin")
     run, artifact, digest, zip_digest = match.groups()
+    if carried(c,slot):
+        r=RECOVERY
+        need((int(run),int(artifact),digest,zip_digest)==(r["run"],r["artifact"],r["cms_sha256"],r["zip_sha256"]), "recovery_seal_pin")
     check_artifact(c,slot,int(run),int(artifact),zip_digest)
     return digest
 
@@ -239,7 +300,7 @@ def verify_existing(c, head):
     need(exact_ref(halt) is None, "cohort_halted")
     claims, seals = matching(slot_prefix), matching(seal_prefix)
     slots = {name.removeprefix(slot_prefix) for name in claims}
-    need(slots <= SLOTS and all(v == head for v in claims.values()), "claim_inventory")
+    need(slots <= SLOTS and all(v == slot_head(c,k.removeprefix(slot_prefix),head) for k,v in claims.items()), "claim_inventory")
     for slot in slots:
         verify_seal(c,slot,head,seals)
     need(len(seals) == len(slots), "orphan_seal")
@@ -254,8 +315,12 @@ def admit(root, ref):
     need(exact_ref(halt) is None, "cohort_halted")
     if previous is None:
         need(exact_ref(cohort_ref) is None and not verify_existing(c,head), "existing_cohort")
+        current=api(f"actions/runs/{run}")
+        original_recovery(c,current["workflow_id"])
         create_ref(cohort_ref,head)
-        print("New cohort claimed; all 48 slots unclaimed")
+        seed_recovery(c,head)
+        need(verify_existing(c,head)=={RECOVERY["slot"]},"recovery_inventory")
+        print("Continuation admitted; 1 verified original slot, 47 unclaimed")
     else:
         need(previous != run and exact_ref(cohort_ref) == head, "resume_cohort")
         current, prior = api(f"actions/runs/{run}"), api(f"actions/runs/{previous}")
@@ -266,6 +331,7 @@ def admit(root, ref):
              and (prior_ref == tag(p) or re.fullmatch(re.escape(tag(p))+r"-resume-[1-9][0-9]*", prior_ref)),
              "prior_run_not_proven_terminal")
         slots = verify_existing(c,head)
+        need(c==RECOVERY["cohort"] and RECOVERY["slot"] in slots,"recovery_inventory")
         need(len(slots) < 48, "all_slots_already_sealed")
         print(f"Resume admitted; {len(slots)} sealed, {48-len(slots)} unclaimed; no replay")
 
@@ -307,11 +373,12 @@ def claim(root, build, ref, shard, step):
     name = prefix+slot
     existing = exact_ref(name)
     if existing is not None:
-        need(previous is not None and existing == head, "duplicate_slot")
+        need((previous is not None or carried(c,slot)) and existing == slot_head(c,slot,head), "duplicate_slot")
         verify_seal(c,slot,head)
         output("run","false")
         print("Already sealed; skipping immutable slot "+slot)
         return
+    need(not carried(c,slot),"missing_carried_claim")
     create_ref(name,head)
     path = root/"raw"/slot
     path.mkdir(mode=0o700,parents=True)
@@ -434,7 +501,7 @@ def terminal_observation(stdout, stderr, rc, obs):
     elif cls=="protocol" and (f.get("model_output_diagnostic") or {}).get("origin")=="local_model_output_decode":
         status="local_decode_failed"
     else:
-        raise ValueError("global_stop_failure")
+        raise HoldError("global_stop_failure")
     obs.update(status=status,failure_class=cls)
 
 
@@ -581,7 +648,7 @@ def seal(root,ref,shard,step,artifact,artifact_digest):
         need(ready=={"sha256":digest,"file_hashes":{f:sha((path/f).read_bytes()) for f in files}}, "encryption_proof")
         prefix=names(c)[2]+slot+"-"
         need(not matching(prefix),"duplicate_seal")
-        create_ref(prefix+f"{run}-{artifact}-{digest}-{zip_digest}",head)
+        create_ref(seal_name(c,slot,run,artifact,digest,zip_digest),head)
         print("Immutable evidence seal created for "+slot)
     except BaseException:
         halt_cohort(c,head)
@@ -619,6 +686,7 @@ if __name__=="__main__":
     try:
         main()
     except BaseException as e:
-        # Only a fixed diagnostic class, never provider contents or credentials.
-        print("HOLD ("+type(e).__name__+")",file=sys.stderr)
+        # Only fixed local diagnostic codes; never provider contents or credentials.
+        code = str(e) if isinstance(e,HoldError) else type(e).__name__
+        print("HOLD ("+code+")",file=sys.stderr)
         sys.exit(2)

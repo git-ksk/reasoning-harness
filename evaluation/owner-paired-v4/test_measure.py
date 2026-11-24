@@ -150,6 +150,67 @@ class Claims(unittest.TestCase):
                 m.claim(Path("unused"),Path("unused"),"initial",0,0)
             create.assert_not_called()
 
+    def test_ref_length_uses_full_ref_bytes(self):
+        r=m.RECOVERY
+        name=m.seal_name(r["cohort"],r["slot"],r["run"],r["artifact"],r["cms_sha256"],r["zip_sha256"])
+        self.assertLessEqual(len(("refs/tags/"+name).encode()),255)
+        with patch.object(m,"api") as api:
+            with self.assertRaisesRegex(ValueError,"github_ref_length"):
+                m.create_ref("a"*246,self.HEAD)
+            api.assert_not_called()
+
+    def test_recovery_seeds_exact_original_and_skips_even_on_first_continuation(self):
+        r=m.RECOVERY;c=r["cohort"];slot=r["slot"]
+        with patch.object(m,"create_ref") as create,patch.object(m,"verify_seal") as verify:
+            m.seed_recovery(c,self.HEAD)
+            self.assertEqual(create.call_count,2)
+            self.assertEqual(create.call_args_list[0].args,(m.names(c)[1]+slot,r["head"]))
+            self.assertEqual(create.call_args_list[1].args,(m.seal_name(c,slot,r["run"],r["artifact"],r["cms_sha256"],r["zip_sha256"]),r["head"]))
+            verify.assert_called_once_with(c,slot,self.HEAD)
+        record=({}, {}, c, None, 0, "baseline", slot, {})
+        with patch.object(m,"context",return_value=(self.HEAD,124)),patch.object(m,"pins",return_value=record),patch.object(m,"exact_ref",side_effect=[self.HEAD,None,r["head"]]),patch.object(m,"verify_seal") as verify,patch.object(m,"create_ref") as create,patch.object(m,"output") as out:
+            m.claim(Path("unused"),Path("unused"),"repair",0,0)
+            create.assert_not_called()
+            verify.assert_called_once_with(c,slot,self.HEAD)
+            out.assert_called_once_with("run","false")
+        with patch.object(m,"context",return_value=(self.HEAD,124)),patch.object(m,"pins",return_value=record),patch.object(m,"exact_ref",side_effect=[self.HEAD,None,None]),patch.object(m,"create_ref") as create:
+            with self.assertRaisesRegex(ValueError,"missing_carried_claim"):
+                m.claim(Path("unused"),Path("unused"),"repair",0,0)
+            create.assert_not_called()
+
+    def test_recovered_seal_rejects_wrong_artifact_or_head(self):
+        r=m.RECOVERY;c=r["cohort"];slot=r["slot"]
+        name=m.seal_name(c,slot,r["run"],r["artifact"],r["cms_sha256"],r["zip_sha256"])
+        with patch.object(m,"check_artifact") as check:
+            self.assertEqual(m.verify_seal(c,slot,self.HEAD,{name:r["head"]}),r["cms_sha256"])
+            check.assert_called_once_with(c,slot,r["run"],r["artifact"],r["zip_sha256"])
+            with self.assertRaisesRegex(ValueError,"seal_pin"):
+                m.verify_seal(c,slot,self.HEAD,{name:self.HEAD})
+            with self.assertRaisesRegex(ValueError,"recovery_seal_pin"):
+                m.verify_seal(c,slot,self.HEAD,{name.replace(r["cms_sha256"],"f"*64):r["head"]})
+
+    def test_seal_end_to_end_local_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);slot="00-baseline";raw=root/"raw"/slot;raw.mkdir(parents=True)
+            res={"run_id":12345678901,"head":self.HEAD,"slot":slot}
+            out=envelope(4,3);log=attempt(200,1,"reported",4,3).encode()
+            obs={**res,"exit_code":0,"stdout_sha256":m.sha(out),"stderr_sha256":m.sha(log)}
+            m.terminal_observation(out,log,0,obs)
+            for f,v in (("reservation.json",res),("stdout.json",out),("stderr.log",log),("observation.json",obs),("started.json",{}),("billing.json",{"api_payg_disabled":True,"fresh_authenticated_account_status":True,"minimum_headroom_met":True,"fixed_model_available":True,"measurement_policy":m.POLICY})):
+                m.save(raw/f,v)
+            m.encrypt(root,0,0)
+            ref=m.PREFIX+self.C+"-"+m.FROZEN_PAYLOAD_SHA
+            with patch.object(m,"context",return_value=(self.HEAD,res["run_id"])),patch.object(m,"exact_ref",return_value=self.HEAD),patch.object(m,"check_artifact") as check,patch.object(m,"matching",return_value={}),patch.object(m,"create_ref") as create,patch.object(m,"halt_cohort") as halt:
+                m.seal(root,ref,0,0,"14943095748","e"*64)
+                name=m.seal_name(self.C,slot,res["run_id"],14943095748,m.sha((root/(slot+".cms")).read_bytes()),"e"*64)
+                create.assert_called_once_with(name,self.HEAD)
+                check.assert_called_once_with(self.C,slot,res["run_id"],14943095748,"e"*64)
+                halt.assert_not_called()
+                (raw/"stderr.log").write_bytes(b"tampered")
+                with self.assertRaisesRegex(ValueError,"evidence_drift"):
+                    m.seal(root,ref,0,0,"14943095748","e"*64)
+                halt.assert_called_once_with(self.C,self.HEAD)
+
     def test_encrypt_only_evidence_no_home(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
