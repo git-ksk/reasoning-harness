@@ -391,7 +391,15 @@ impl MistralAdapter {
                 }
             };
             rate_limit_retries += 1;
+            let wait_started = Instant::now();
             tokio::time::sleep(delay).await;
+            if accounted {
+                eprintln!(
+                    "[mistral-retry-wait] attempt={attempt_number} requested_ms={} elapsed_ms={}",
+                    delay.as_millis(),
+                    wait_started.elapsed().as_millis()
+                );
+            }
             used_wait = used_wait.saturating_add(delay);
             self.execution_telemetry
                 .wait_completed(crate::network::ProviderWaitKind::Retry, delay);
@@ -500,7 +508,15 @@ impl MistralAdapter {
                     )
                 },
             )?;
+            let wait_started = Instant::now();
             tokio::time::sleep(delay).await;
+            if accounted {
+                eprintln!(
+                    "[mistral-pacing-wait] requested_ms={} elapsed_ms={}",
+                    delay.as_millis(),
+                    wait_started.elapsed().as_millis()
+                );
+            }
             self.execution_telemetry
                 .wait_completed(crate::network::ProviderWaitKind::Pacing, delay);
         }
