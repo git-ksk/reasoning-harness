@@ -281,6 +281,9 @@ struct NaturalArgs {
     /// Native evaluation: load only this explicit measured config, without user/project layers.
     #[arg(long, hide = true, requires = "config")]
     evaluation_isolated_config: bool,
+    /// Owner development only: bounded transient Mistral retries with conservative debit.
+    #[arg(long, hide = true, requires_all = ["evaluation_isolated_config", "max_output_tokens", "max_total_tokens", "max_model_calls"], conflicts_with = "evaluation_http_journal_fd")]
+    mistral_accounted_retry: bool,
     /// Native evaluation only: controller-owned private socket capability.
     #[arg(long, hide = true)]
     evaluation_lifeline_fd: Option<i32>,
@@ -4703,6 +4706,24 @@ async fn execute_natural_inner(
             }
         }
     }
+    if args.mistral_accounted_retry {
+        if evaluation_limits.is_some() || model != "ministral-8b-2512" {
+            return Err(CliError::new(
+                "configuration",
+                "accounted retry requires pinned Mistral development mode",
+            ));
+        }
+        match &mut generator {
+            LiveGenerator::Mistral(adapter) => adapter.set_accounted_retry(true),
+            LiveGenerator::Planning { .. } if provider == Provider::Mistral => {}
+            _ => {
+                return Err(CliError::new(
+                    "configuration",
+                    "accounted retry supports Mistral only",
+                ));
+            }
+        }
+    }
     generator.set_single_provider_attempt(
         evaluation_limits.is_some()
             || usage_budget.max_output_tokens.is_some()
@@ -4710,6 +4731,9 @@ async fn execute_natural_inner(
     );
     let mut usage_tracker =
         usage_budget::UsageTracker::new(usage_budget, args.session_usage_baseline.clone())?;
+    if args.mistral_accounted_retry {
+        usage_tracker.enable_accounted_retry();
+    }
     usage_tracker.preserve_on_exit(failure_context.clone());
     if investigation_config.is_some() || acquisition_ledger.is_some() {
         preserve_acquisition_progress(
@@ -6720,6 +6744,7 @@ fn continuation_args(
         evaluation_http_loopback_url: None,
         evaluation_request_plan: None,
         evaluation_isolated_config: false,
+        mistral_accounted_retry: false,
         evaluation_lifeline_fd: None,
         evaluation_no_fork: false,
         interactive_context: vec![],

@@ -4,6 +4,7 @@ use std::{
     time::{Duration, Instant, SystemTime},
 };
 
+use crate::mistral_retry_budget::{self as retry_budget, Tokens};
 use reasoning_harness_core::{
     ModelAdapter, ModelError, ModelErrorKind, ModelExecutionBudget,
     ModelExecutionTelemetrySnapshot, ModelOutputFormat, ModelRequest, ModelResponse, ModelUsage,
@@ -27,6 +28,7 @@ pub struct MistralAdapter {
     base_url: Url,
     model: String,
     single_attempt: bool,
+    accounted_retry: bool,
     http_observer: Option<Arc<dyn crate::http_observation::HttpObservationSink>>,
     execution_budget: Mutex<Option<ModelExecutionBudget>>,
     /// Native observed requests defer a successful response's rate-limit
@@ -75,6 +77,11 @@ impl MistralAdapter {
     /// Disable adapter-internal HTTP retries for cumulative token-budget enforcement.
     pub fn set_single_attempt(&mut self, enabled: bool) {
         self.single_attempt = enabled;
+    }
+
+    /// Explicit development-only opt-in; native observed calls always bypass it.
+    pub fn set_accounted_retry(&mut self, enabled: bool) {
+        self.accounted_retry = enabled;
     }
 
     pub fn from_env(model: impl Into<String>) -> Result<Self, ModelError> {
@@ -139,6 +146,7 @@ impl MistralAdapter {
             base_url,
             model,
             single_attempt: false,
+            accounted_retry: false,
             http_observer: None,
             execution_budget: Mutex::new(None),
             observed_next_allowed_start: Mutex::new(None),
@@ -147,6 +155,16 @@ impl MistralAdapter {
     }
 
     async fn generate_inner(&self, request: ModelRequest) -> Result<ModelResponse, ModelError> {
+        let accounted = self.accounted_retry && self.http_observer.is_none();
+        let logical_bytes = if accounted {
+            Some(
+                crate::http_observation::measure_model_request(&request)?
+                    .1
+                    .request_utf8_json_bytes,
+            )
+        } else {
+            None
+        };
         let evaluation_request = self
             .http_observer
             .as_ref()
@@ -191,6 +209,34 @@ impl MistralAdapter {
                 .await;
         }
 
+        let accounting_limits = if accounted {
+            let Some(limits) = retry_budget::limits() else {
+                return Err(local_retry_refusal("missing_accounted_retry_limits"));
+            };
+            if self.model != "ministral-8b-2512" {
+                return Err(local_retry_refusal("unsupported_accounted_retry_model"));
+            }
+            Some(limits)
+        } else {
+            None
+        };
+        let reservation = if accounted {
+            let Some(output) = body.max_tokens.filter(|n| (1..=1024).contains(n)) else {
+                return Err(local_retry_refusal("invalid_accounted_retry_output_cap"));
+            };
+            let wire_bytes = serde_json::to_vec(&body)
+                .map_err(|_| local_retry_refusal("invalid_accounted_retry_wire"))?
+                .len() as u64;
+            Some(Tokens {
+                input: wire_bytes
+                    .max(logical_bytes.unwrap_or_default())
+                    .saturating_add(retry_budget::INPUT_OVERHEAD),
+                output: u64::from(output),
+            })
+        } else {
+            None
+        };
+        let mut charged = Tokens::default();
         let mut rate_limit_retries = 0usize;
         let execution_budget = *self
             .execution_budget
@@ -200,6 +246,12 @@ impl MistralAdapter {
         let mut used_active = Duration::ZERO;
 
         let response = loop {
+            if let Some((limits, reserve)) = accounting_limits.zip(reservation) {
+                if !charged.add(reserve).fits(limits) {
+                    retry_budget::publish(charged.usage());
+                    return Err(local_retry_refusal("mistral_attempt_reservation_exhausted"));
+                }
+            }
             let active_remaining =
                 crate::network::remaining_active_budget(used_active, execution_budget)?;
             let attempt_number = u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX);
@@ -249,28 +301,90 @@ impl MistralAdapter {
             let headers = response.headers().clone();
             let body = response.text().await.unwrap_or_default();
             let (kind, class) = classify_429(&headers, &body);
+            let transient = matches!(class, "temporary_capacity" | "temporary_rate_limit");
+            let mut usage_state = "unknown";
+            let mut account_decision = Ok(());
+            if let Some((limits, reserve)) = accounting_limits.zip(reservation) {
+                if transient {
+                    let exact = match error_reported_tokens(&body) {
+                        Ok(value) => value,
+                        Err(()) => {
+                            log_429_decision(
+                                &headers,
+                                attempt_number,
+                                class,
+                                "invalid_usage",
+                                Duration::ZERO,
+                                "invalid",
+                            );
+                            return Err(ModelError::new(
+                                ModelErrorKind::Protocol,
+                                "Mistral rejected response reported malformed usage",
+                            )
+                            .with_provider_attempts(attempt_number));
+                        }
+                    };
+                    let debit = exact.unwrap_or(reserve);
+                    if !debit.within(reserve) || !charged.add(debit).fits(limits) {
+                        log_429_decision(
+                            &headers,
+                            attempt_number,
+                            class,
+                            "reservation_violation",
+                            Duration::ZERO,
+                            "invalid",
+                        );
+                        return Err(ModelError::new(
+                            ModelErrorKind::Protocol,
+                            "Mistral reported usage outside conservative reservation",
+                        )
+                        .with_provider_attempts(attempt_number));
+                    }
+                    charged = charged.add(debit);
+                    usage_state = if exact.is_some() {
+                        "reported"
+                    } else {
+                        "reserved"
+                    };
+                    log_accounted_attempt(attempt_number, 429, usage_state, debit);
+                    if !charged.add(reserve).fits(limits) {
+                        account_decision = Err("token_reservation_limit");
+                    }
+                }
+            }
             let decision = retry_429_decision(
                 &headers,
                 class,
-                self.single_attempt,
+                self.single_attempt && !(accounted && transient),
                 rate_limit_retries,
                 used_wait,
             )
+            .and_then(|delay| account_decision.map(|()| delay))
             .and_then(|delay| {
                 crate::network::bounded_wait(delay, used_wait, execution_budget)
                     .map_err(|_| "execution_wait_budget")
             });
             let delay = match decision {
                 Ok(delay) => {
-                    log_429_decision(&headers, attempt_number, class, "retry", delay);
+                    log_429_decision(&headers, attempt_number, class, "retry", delay, usage_state);
                     delay
                 }
                 Err(reason) => {
-                    log_429_decision(&headers, attempt_number, class, reason, Duration::ZERO);
+                    log_429_decision(
+                        &headers,
+                        attempt_number,
+                        class,
+                        reason,
+                        Duration::ZERO,
+                        usage_state,
+                    );
+                    if accounted && transient {
+                        retry_budget::publish(charged.usage());
+                    }
                     return Err(ModelError::new(
                         kind,
                         format!(
-                            "Mistral returned HTTP 429 after {rate_limit_retries} rate-limit retries; class={class}; retry_decision={reason}; usage=unknown"
+                            "Mistral returned HTTP 429 after {rate_limit_retries} rate-limit retries; class={class}; retry_decision={reason}; usage={usage_state}"
                         ),
                     )
                     .with_provider_attempts(attempt_number));
@@ -287,7 +401,11 @@ impl MistralAdapter {
         if !status.is_success() {
             let body = response.text().await.unwrap_or_default();
             let kind = classify_http_error(status, &body);
-            let detail = provider_error_detail(&body).replace(&self.api_key, "[redacted]");
+            let detail = if accounted {
+                String::new()
+            } else {
+                provider_error_detail(&body.replace(&self.api_key, "[redacted]"))
+            };
             return Err(ModelError::new(
                 kind,
                 format!(
@@ -305,6 +423,42 @@ impl MistralAdapter {
             )
             .with_provider_attempts(u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX))
         })?;
+        let response_usage = ModelUsage {
+            input_tokens: response.usage.as_ref().and_then(|u| u.prompt_tokens),
+            output_tokens: response.usage.as_ref().and_then(|u| u.completion_tokens),
+            total_tokens: response.usage.as_ref().and_then(|u| u.total_tokens),
+        };
+        if let Some((limits, reserve)) = accounting_limits.zip(reservation) {
+            let Some(exact) = Tokens::from_usage(&response_usage) else {
+                return Err(ModelError::new(
+                    ModelErrorKind::Protocol,
+                    "Mistral successful response usage unknown",
+                )
+                .with_provider_attempts(
+                    u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX),
+                ));
+            };
+            if !exact.within(reserve)
+                || !charged.add(exact).fits(limits)
+                || response.model != self.model
+            {
+                return Err(ModelError::new(
+                    ModelErrorKind::Protocol,
+                    "Mistral successful response violated reservation or model pin",
+                )
+                .with_provider_attempts(
+                    u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX),
+                ));
+            }
+            charged = charged.add(exact);
+            log_accounted_attempt(
+                u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX),
+                status.as_u16(),
+                "reported",
+                exact,
+            );
+            retry_budget::publish(charged.usage());
+        }
         let choice = response.choices.into_iter().next().ok_or_else(|| {
             ModelError::new(
                 ModelErrorKind::Protocol,
@@ -320,21 +474,12 @@ impl MistralAdapter {
                 )
             })?,
             model: response.model,
-            usage: if rate_limit_retries > 0 {
-                // Failed HTTP attempts do not expose their token usage.
+            usage: if accounted {
+                charged.usage()
+            } else if rate_limit_retries > 0 {
                 ModelUsage::default()
             } else {
-                ModelUsage {
-                    input_tokens: response
-                        .usage
-                        .as_ref()
-                        .and_then(|usage| usage.prompt_tokens),
-                    output_tokens: response
-                        .usage
-                        .as_ref()
-                        .and_then(|usage| usage.completion_tokens),
-                    total_tokens: response.usage.and_then(|usage| usage.total_tokens),
-                }
+                response_usage
             },
             provider_attempts: u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX),
             finish_reason: choice.finish_reason,
@@ -587,9 +732,20 @@ fn classify_transport_error(error: reqwest::Error) -> ModelError {
 fn classify_http_error(status: StatusCode, body: &str) -> ModelErrorKind {
     if status == StatusCode::TOO_MANY_REQUESTS {
         let normalized = body.to_ascii_lowercase();
-        if ["quota", "billing", "credit", "insufficient balance"]
-            .iter()
-            .any(|needle| normalized.contains(needle))
+        if [
+            "quota",
+            "billing",
+            "credit",
+            "insufficient balance",
+            "monthly",
+            "payment required",
+            "spending limit",
+            "insufficient funds",
+            "budget exhausted",
+            "budget exceeded",
+        ]
+        .iter()
+        .any(|needle| normalized.contains(needle))
         {
             ModelErrorKind::Quota
         } else {
@@ -843,6 +999,7 @@ fn log_429_decision(
     class: &str,
     reason: &str,
     delay: Duration,
+    usage_state: &str,
 ) {
     if !rate_limit_telemetry_enabled() {
         return;
@@ -853,7 +1010,7 @@ fn log_429_decision(
         .as_millis();
     let summary = rate_limit_header_summary(headers);
     eprintln!(
-        "[mistral-rate-limit] status=429 timestamp_ms={timestamp_ms} attempt={attempt} retry_index={} class={class} retry_allowed={} reason={reason} wait_ms={} usage=unknown headers={}",
+        "[mistral-rate-limit] status=429 timestamp_ms={timestamp_ms} attempt={attempt} retry_index={} class={class} retry_allowed={} reason={reason} wait_ms={} usage={usage_state} headers={}",
         attempt.saturating_sub(1),
         reason == "retry",
         delay.as_millis(),
@@ -929,6 +1086,43 @@ fn log_rate_limit_telemetry(
             summary
         );
     }
+}
+
+fn local_retry_refusal(reason: &'static str) -> ModelError {
+    retry_budget::refuse(reason);
+    ModelError {
+        kind: ModelErrorKind::Protocol,
+        message: reason.into(),
+        provider_attempts: 0,
+    }
+}
+
+fn error_reported_tokens(body: &str) -> Result<Option<Tokens>, ()> {
+    let value: Value = serde_json::from_str(body).map_err(|_| ())?;
+    let Some(value) = value.get("usage").filter(|v| !v.is_null()) else {
+        return Ok(None);
+    };
+    let usage: Usage = serde_json::from_value(value.clone()).map_err(|_| ())?;
+    Tokens::from_usage(&ModelUsage {
+        input_tokens: usage.prompt_tokens,
+        output_tokens: usage.completion_tokens,
+        total_tokens: usage.total_tokens,
+    })
+    .map(Some)
+    .ok_or(())
+}
+
+fn log_accounted_attempt(attempt: u32, status: u16, usage: &str, tokens: Tokens) {
+    let timestamp_ms = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_millis();
+    eprintln!(
+        "[mistral-accounted-attempt] status={status} attempt={attempt} usage={usage} timestamp_ms={timestamp_ms} charged_input={} charged_output={} charged_total={}",
+        tokens.input,
+        tokens.output,
+        tokens.total()
+    );
 }
 
 fn provider_error_detail(body: &str) -> String {
@@ -1507,6 +1701,281 @@ mod tests {
         assert_eq!(response.usage, ModelUsage::default());
         server.join().unwrap();
     }
+    fn retry_fixture_request() -> ModelRequest {
+        ModelRequest {
+            task: "fixture".into(),
+            system: None,
+            output_format: ModelOutputFormat::Text,
+            max_tokens: Some(8),
+            random_seed: Some(1),
+            reasoning_preference: None,
+        }
+    }
+
+    #[tokio::test]
+    async fn accounted_429_reserves_unknown_usage_and_retries_with_exact_accounting() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            for (status, headers, body) in [
+                (
+                    "429 Too Many Requests",
+                    "Retry-After: 1\r\n",
+                    r#"{"message":"Not enough capacity available for this request, please retry later."}"#,
+                ),
+                (
+                    "200 OK",
+                    "",
+                    r#"{"model":"ministral-8b-2512","choices":[{"finish_reason":"stop","message":{"content":"ok"}}],"usage":{"prompt_tokens":3,"completion_tokens":1,"total_tokens":4}}"#,
+                ),
+            ] {
+                let (mut stream, _) = listener.accept().unwrap();
+                let mut buffer = [0u8; 8192];
+                let _ = stream.read(&mut buffer);
+                write!(stream, "HTTP/1.1 {status}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n{headers}\r\n{body}", body.len()).unwrap();
+            }
+        });
+        let mut adapter = MistralAdapter::with_base_url(
+            "test-key",
+            "ministral-8b-2512",
+            &format!("http://{address}/v1/"),
+        )
+        .unwrap();
+        adapter.set_single_attempt(true);
+        adapter.set_accounted_retry(true);
+        let (result, account, refusal) = retry_budget::with_limits(
+            Some(32),
+            Some(4096),
+            adapter.generate(retry_fixture_request()),
+        )
+        .await;
+        let response = result.unwrap();
+        assert_eq!(response.provider_attempts, 2);
+        assert_eq!(response.usage, account.unwrap());
+        assert_eq!(response.usage.output_tokens, Some(9));
+        assert!(response.usage.input_tokens.unwrap() > 512);
+        assert_eq!(refusal, None);
+        assert_eq!(
+            adapter
+                .execution_telemetry_snapshot()
+                .unwrap()
+                .provider_attempts_started,
+            2
+        );
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn accounted_429_refuses_retry_without_remaining_output_reservation() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            let mut buffer = [0u8; 8192];
+            let _ = stream.read(&mut buffer);
+            let body = r#"{"message":"too many requests"}"#;
+            write!(stream, "HTTP/1.1 429 Too Many Requests\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\nRetry-After: 1\r\n\r\n{body}", body.len()).unwrap();
+        });
+        let mut adapter = MistralAdapter::with_base_url(
+            "test-key",
+            "ministral-8b-2512",
+            &format!("http://{address}/v1/"),
+        )
+        .unwrap();
+        adapter.set_single_attempt(true);
+        adapter.set_accounted_retry(true);
+        let (result, account, _) = retry_budget::with_limits(
+            Some(8),
+            Some(4096),
+            adapter.generate(retry_fixture_request()),
+        )
+        .await;
+        let error = result.unwrap_err();
+        assert_eq!(error.provider_attempts, 1);
+        assert!(error.message.contains("token_reservation_limit"));
+        assert_eq!(account.unwrap().output_tokens, Some(8));
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn accounted_retry_without_safe_total_reservation_never_sends() {
+        let mut adapter = MistralAdapter::with_base_url(
+            "test-key",
+            "ministral-8b-2512",
+            "http://127.0.0.1:1/v1/",
+        )
+        .unwrap();
+        adapter.set_single_attempt(true);
+        adapter.set_accounted_retry(true);
+        let (result, account, refusal) = retry_budget::with_limits(
+            Some(8),
+            Some(100),
+            adapter.generate(retry_fixture_request()),
+        )
+        .await;
+        assert_eq!(result.unwrap_err().provider_attempts, 0);
+        assert_eq!(account.unwrap().total_tokens, Some(0));
+        assert_eq!(refusal, Some("mistral_attempt_reservation_exhausted"));
+        assert_eq!(
+            adapter
+                .execution_telemetry_snapshot()
+                .unwrap()
+                .provider_attempts_started,
+            0
+        );
+        let (result, _, _) =
+            retry_budget::with_limits(Some(8), None, adapter.generate(retry_fixture_request()))
+                .await;
+        assert_eq!(result.unwrap_err().provider_attempts, 0);
+    }
+
+    #[test]
+    fn rejected_usage_is_exact_only_when_complete_and_consistent() {
+        assert_eq!(error_reported_tokens(r#"{"message":"busy"}"#), Ok(None));
+        assert_eq!(
+            error_reported_tokens(
+                r#"{"usage":{"prompt_tokens":3,"completion_tokens":1,"total_tokens":4}}"#
+            ),
+            Ok(Some(Tokens {
+                input: 3,
+                output: 1
+            }))
+        );
+        assert!(
+            error_reported_tokens(r#"{"usage":{"prompt_tokens":3,"total_tokens":4}}"#).is_err()
+        );
+        assert!(
+            error_reported_tokens(
+                r#"{"usage":{"prompt_tokens":3,"completion_tokens":1,"total_tokens":8}}"#
+            )
+            .is_err()
+        );
+    }
+
+    #[tokio::test]
+    async fn accounted_retry_does_not_retry_quota_auth_or_unknown() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+        for (status, body, kind) in [
+            (
+                "429 Too Many Requests",
+                r#"{"message":"monthly quota exhausted"}"#,
+                ModelErrorKind::Quota,
+            ),
+            (
+                "401 Unauthorized",
+                r#"{"message":"invalid key"}"#,
+                ModelErrorKind::Credentials,
+            ),
+            (
+                "402 Payment Required",
+                r#"{"message":"billing unavailable"}"#,
+                ModelErrorKind::Quota,
+            ),
+            (
+                "429 Too Many Requests",
+                r#"{"message":"unrecognized error"}"#,
+                ModelErrorKind::RateLimit,
+            ),
+            (
+                "429 Too Many Requests",
+                r#"{"message":"busy","usage":{"prompt_tokens":999999}}"#,
+                ModelErrorKind::Protocol,
+            ),
+        ] {
+            let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+            let address = listener.local_addr().unwrap();
+            let server = thread::spawn(move || {
+                let (mut stream, _) = listener.accept().unwrap();
+                let mut buffer = [0u8; 8192];
+                let _ = stream.read(&mut buffer);
+                write!(stream, "HTTP/1.1 {status}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\nRetry-After: 1\r\n\r\n{body}", body.len()).unwrap();
+            });
+            let mut adapter = MistralAdapter::with_base_url(
+                "test-key",
+                "ministral-8b-2512",
+                &format!("http://{address}/v1/"),
+            )
+            .unwrap();
+            adapter.set_single_attempt(true);
+            adapter.set_accounted_retry(true);
+            let (result, account, _) = retry_budget::with_limits(
+                Some(32),
+                Some(4096),
+                adapter.generate(retry_fixture_request()),
+            )
+            .await;
+            let error = result.unwrap_err();
+            assert_eq!(error.kind, kind);
+            assert_eq!(error.provider_attempts, 1);
+            assert!(account.is_none());
+            assert_eq!(
+                adapter
+                    .execution_telemetry_snapshot()
+                    .unwrap()
+                    .provider_attempts_started,
+                1
+            );
+            server.join().unwrap();
+        }
+    }
+
+    #[tokio::test]
+    async fn accounted_retry_exhaustion_counts_four_http_attempts() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            for _ in 0..4 {
+                let (mut stream, _) = listener.accept().unwrap();
+                let mut buffer = [0u8; 8192];
+                let _ = stream.read(&mut buffer);
+                let body = r#"{"message":"busy","usage":{"prompt_tokens":3,"completion_tokens":1,"total_tokens":4}}"#;
+                write!(stream, "HTTP/1.1 429 Too Many Requests\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\nRetry-After: 1\r\n\r\n{body}", body.len()).unwrap();
+            }
+        });
+        let mut adapter = MistralAdapter::with_base_url(
+            "test-key",
+            "ministral-8b-2512",
+            &format!("http://{address}/v1/"),
+        )
+        .unwrap();
+        adapter.set_single_attempt(true);
+        adapter.set_accounted_retry(true);
+        let (result, account, _) = retry_budget::with_limits(
+            Some(32),
+            Some(4096),
+            adapter.generate(retry_fixture_request()),
+        )
+        .await;
+        let error = result.unwrap_err();
+        assert_eq!(error.provider_attempts, 4);
+        assert!(error.message.contains("attempt_limit"));
+        assert_eq!(account.unwrap().total_tokens, Some(16));
+        let telemetry = adapter.execution_telemetry_snapshot().unwrap();
+        assert_eq!(telemetry.provider_attempts_started, 4);
+        assert_eq!(telemetry.provider_attempts_completed, 4);
+        assert_eq!(telemetry.retry_wait_ms, 3000);
+        server.join().unwrap();
+    }
+
     #[tokio::test]
     async fn token_guard_single_attempt_stops_rate_limit_retry() {
         use std::{

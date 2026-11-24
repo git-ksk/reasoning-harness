@@ -16,6 +16,7 @@ struct Observed {
 pub(super) struct RecordingAdapter<'a> {
     inner: &'a dyn ModelAdapter,
     observed: Mutex<Observed>,
+    call_lock: tokio::sync::Mutex<()>,
     limits: GenerationLimits,
 }
 
@@ -28,6 +29,7 @@ impl<'a> RecordingAdapter<'a> {
         Self {
             inner,
             limits,
+            call_lock: tokio::sync::Mutex::new(()),
             observed: Mutex::new(Observed {
                 attempts: 0,
                 denied: None,
@@ -79,6 +81,9 @@ impl ModelAdapter for RecordingAdapter<'_> {
         mut request: ModelRequest,
     ) -> Pin<Box<dyn Future<Output = Result<ModelResponse, ModelError>> + Send + 'a>> {
         Box::pin(async move {
+            // The same RecordingAdapter may service structured-output fallback
+            // requests. Do not let parallel requests reserve the same allowance.
+            let _call_guard = self.call_lock.lock().await;
             {
                 let mut observed = self.observed.lock().unwrap();
                 let mut denial = None;
@@ -110,8 +115,33 @@ impl ModelAdapter for RecordingAdapter<'_> {
                     });
                 }
             }
-            let result = self.inner.generate(request).await;
+            let (output, total) = {
+                let observed = self.observed.lock().unwrap();
+                (
+                    self.limits
+                        .output
+                        .zip(observed.usage.output_tokens)
+                        .map(|(limit, used)| limit.saturating_sub(used)),
+                    self.limits
+                        .total
+                        .zip(observed.usage.total_tokens)
+                        .map(|(limit, used)| limit.saturating_sub(used)),
+                )
+            };
+            let (result, accounted, refusal) =
+                reasoning_harness_providers::mistral_retry_budget::with_limits(
+                    output,
+                    total,
+                    self.inner.generate(request),
+                )
+                .await;
             let mut observed = self.observed.lock().unwrap();
+            if refusal == Some("mistral_attempt_reservation_exhausted") {
+                observed.denied = Some((
+                    "usage_budget_exceeded",
+                    "mistral_attempt_reservation_exhausted".to_owned(),
+                ));
+            }
             match &result {
                 Ok(response) => {
                     observed.attempts =
@@ -120,7 +150,9 @@ impl ModelAdapter for RecordingAdapter<'_> {
                     // attempt usage is not exposed. Do not claim the final
                     // response accounts for all attempts when enforcing a
                     // cumulative token limit.
-                    if response.provider_attempts > 1
+                    if let Some(accounted) = accounted.as_ref() {
+                        observed.usage = add_usage(&observed.usage, accounted);
+                    } else if response.provider_attempts > 1
                         && (self.limits.output.is_some() || self.limits.total.is_some())
                     {
                         observed.usage = ModelUsage::default();
@@ -132,7 +164,9 @@ impl ModelAdapter for RecordingAdapter<'_> {
                     observed.attempts = observed.attempts.saturating_add(error.provider_attempts);
                     // A failed HTTP attempt has no reported usage. A local
                     // zero-attempt capability refusal consumes no tokens.
-                    if error.provider_attempts > 0 {
+                    if let Some(accounted) = accounted.as_ref() {
+                        observed.usage = add_usage(&observed.usage, accounted);
+                    } else if error.provider_attempts > 0 {
                         observed.usage = ModelUsage::default();
                     }
                 }
