@@ -1,0 +1,169 @@
+name: engine073-owner-paired-v4
+# New development comparison. Existing v1/v2/v3/supplement tags are untouched.
+on:
+  push:
+    tags: ['eval-owner-paired-v4-*']
+  pull_request:
+    paths:
+      - '.github/workflows/engine073-owner-paired-v4.yml'
+      - '.github/actions/owner-paired-v4-slot/**'
+      - 'evaluation/owner-paired-v4/**'
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.event_name == 'push' && 'reasoning-harness-mistral-live' || format('owner-paired-v4-offline-{0}', github.run_id) }}
+  cancel-in-progress: false
+jobs:
+  offline-controls:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Offline measurement and historical regression controls
+        run: |
+          set -eu
+          python3 evaluation/owner-paired-v4/test_measure.py
+          python3 evaluation/owner-paired-v3/test_measure.py
+          python3 evaluation/owner-paired-supplement/test_supplement.py
+          python3 evaluation/dev-lite/test_issue531_real24_api_billing_gate.py
+          python3 evaluation/engine073-531-independent24-20261116/test_build_completeness_pair.py
+          root=$(mktemp -d)
+          trap 'rm -rf "$root"' EXIT
+          python3 evaluation/owner-paired-v4/build.py --repo . --output "$root/pair" --mode validate-only
+  admit:
+    if: github.event_name == 'push' && github.run_attempt == 1
+    needs: offline-controls
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen payload and atomically admit new or sealed-resume cohort
+        env:
+          OWNER_EVAL_INPUT: ${{ secrets.ENGINE073_OWNER_PAIRED_V3_INPUT }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          umask 077
+          root=$(mktemp -d)
+          trap 'rm -rf "$root"' EXIT
+          python3 evaluation/owner-paired-v4/measure.py stage "$root/input" "$GITHUB_REF_NAME"
+          unset OWNER_EVAL_INPUT
+          python3 evaluation/owner-paired-v4/measure.py admit "$root/input" "$GITHUB_REF_NAME"
+  live:
+    if: github.event_name == 'push' && github.run_attempt == 1
+    needs: admit
+    strategy:
+      # Expected isolated failures are terminal, successful steps; only hard
+      # stop conditions fail the job. An unassigned runner has no slot claims.
+      fail-fast: true
+      max-parallel: 1
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    runs-on: macos-15
+    timeout-minutes: 345
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Create fresh private work root
+        run: |
+          set -eu
+          umask 077
+          root=$(mktemp -d)
+          echo "OWNER_ROOT=$root" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - name: Verify pinned build, frozen input and all paired request plans before any model access
+        env:
+          OWNER_EVAL_INPUT: ${{ secrets.ENGINE073_OWNER_PAIRED_V3_INPUT }}
+        run: |
+          set -eu
+          umask 077
+          python3 evaluation/owner-paired-v4/measure.py stage "$OWNER_ROOT/input" "$GITHUB_REF_NAME"
+          unset OWNER_EVAL_INPUT
+          cargo fetch --locked
+          python3 evaluation/owner-paired-v4/build.py --repo . --output "$OWNER_ROOT/build" --mode build
+          python3 evaluation/owner-paired-v4/measure.py preflight "$OWNER_ROOT/input" "$OWNER_ROOT/build/pair-preflight.json" "$GITHUB_REF_NAME"
+          cert=evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+          openssl x509 -in "$cert" -checkend 21600 -noout
+          test "$(openssl x509 -in "$cert" -outform DER | shasum -a 256 | cut -d' ' -f1)" = d917aeb4c55699b1ea19117c776e5f515aa40193488197a12c00082517695b43
+          # Also covers a previous shard's interrupted inter-slot cooldown.
+          sleep 120
+      - name: Slot 0
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: ${{ matrix.shard }}
+          step: '0'
+          github-token: ${{ github.token }}
+          mistral-api-key: ${{ secrets.MISTRAL_API_KEY }}
+      - name: Slot 1
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: ${{ matrix.shard }}
+          step: '1'
+          github-token: ${{ github.token }}
+          mistral-api-key: ${{ secrets.MISTRAL_API_KEY }}
+      - name: Slot 2
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: ${{ matrix.shard }}
+          step: '2'
+          github-token: ${{ github.token }}
+          mistral-api-key: ${{ secrets.MISTRAL_API_KEY }}
+      - name: Slot 3
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: ${{ matrix.shard }}
+          step: '3'
+          github-token: ${{ github.token }}
+          mistral-api-key: ${{ secrets.MISTRAL_API_KEY }}
+      - name: Slot 4
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: ${{ matrix.shard }}
+          step: '4'
+          github-token: ${{ github.token }}
+          mistral-api-key: ${{ secrets.MISTRAL_API_KEY }}
+      - name: Slot 5
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: ${{ matrix.shard }}
+          step: '5'
+          github-token: ${{ github.token }}
+          mistral-api-key: ${{ secrets.MISTRAL_API_KEY }}
+      - name: Remove ephemeral private data after sealed checkpoint upload
+        if: always()
+        run: |
+          if test -n "${OWNER_ROOT:-}" && test -d "$OWNER_ROOT"; then rm -rf "$OWNER_ROOT"; fi

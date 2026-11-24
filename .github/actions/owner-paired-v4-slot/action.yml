@@ -1,0 +1,88 @@
+name: Owner paired v4 immutable observation
+description: Claim, measure once, encrypt, upload, seal and pace one slot
+inputs:
+  root:
+    required: true
+    description: Private staged input directory
+  build:
+    required: true
+    description: Frozen paired build proof
+  ref:
+    required: true
+    description: Cohort launch or resume tag
+  shard:
+    required: true
+    description: Shard index
+  step:
+    required: true
+    description: Slot index inside shard
+  github-token:
+    required: true
+    description: Create-only claim and evidence seal credential
+  mistral-api-key:
+    required: true
+    description: Same-key no-overage check and generation credential
+runs:
+  using: composite
+  steps:
+    - name: Create immutable slot claim
+      id: claim
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        OWNER_ROOT: ${{ inputs.root }}
+        OWNER_BUILD: ${{ inputs.build }}
+        OWNER_REF: ${{ inputs.ref }}
+        SHARD: ${{ inputs.shard }}
+        SLOT_STEP: ${{ inputs.step }}
+      run: python3 evaluation/owner-paired-v4/measure.py claim "$OWNER_ROOT" "$OWNER_BUILD" "$OWNER_REF" "$SHARD" "$SLOT_STEP"
+    - name: Verify fresh billing and make first observation
+      id: execute
+      if: steps.claim.outputs.run == 'true'
+      shell: bash
+      env:
+        MISTRAL_API_KEY: ${{ inputs.mistral-api-key }}
+        OWNER_ROOT: ${{ inputs.root }}
+        OWNER_BUILD: ${{ inputs.build }}
+        OWNER_REF: ${{ inputs.ref }}
+        SHARD: ${{ inputs.shard }}
+        SLOT_STEP: ${{ inputs.step }}
+      run: python3 evaluation/owner-paired-v4/measure.py execute "$OWNER_ROOT" "$OWNER_BUILD" "$OWNER_REF" "$SHARD" "$SLOT_STEP"
+    - name: Encrypt available slot evidence immediately
+      id: encrypt
+      if: always() && steps.claim.outputs.run == 'true'
+      shell: bash
+      env:
+        OWNER_ROOT: ${{ inputs.root }}
+        SHARD: ${{ inputs.shard }}
+        SLOT_STEP: ${{ inputs.step }}
+      run: python3 evaluation/owner-paired-v4/measure.py encrypt "$OWNER_ROOT" "$SHARD" "$SLOT_STEP"
+    - name: Upload encrypted slot evidence only
+      id: upload
+      if: always() && steps.claim.outputs.run == 'true' && steps.encrypt.outcome == 'success'
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: ${{ steps.claim.outputs.artifact }}
+        path: ${{ inputs.root }}/${{ steps.claim.outputs.slot }}.cms
+        if-no-files-found: error
+        retention-days: 30
+    - name: Seal accounted terminal evidence or halt cohort
+      if: always() && steps.claim.outputs.run == 'true'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        OWNER_ROOT: ${{ inputs.root }}
+        OWNER_REF: ${{ inputs.ref }}
+        SHARD: ${{ inputs.shard }}
+        SLOT_STEP: ${{ inputs.step }}
+        ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+        ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+      run: python3 evaluation/owner-paired-v4/measure.py seal "$OWNER_ROOT" "$OWNER_REF" "$SHARD" "$SLOT_STEP" "$ARTIFACT_ID" "$ARTIFACT_DIGEST"
+    - name: Pace the next distinct observation
+      if: success() && steps.claim.outputs.run == 'true'
+      shell: bash
+      env:
+        OWNER_ROOT: ${{ inputs.root }}
+        SHARD: ${{ inputs.shard }}
+        SLOT_STEP: ${{ inputs.step }}
+      run: python3 evaluation/owner-paired-v4/measure.py cooldown "$OWNER_ROOT" "$SHARD" "$SLOT_STEP"
