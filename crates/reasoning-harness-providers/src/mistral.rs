@@ -857,7 +857,11 @@ fn log_429_decision(
         attempt.saturating_sub(1),
         reason == "retry",
         delay.as_millis(),
-        if summary.is_empty() { "absent" } else { &summary },
+        if summary.is_empty() {
+            "absent"
+        } else {
+            &summary
+        },
     );
 }
 
@@ -1248,12 +1252,18 @@ mod tests {
             retry_429_decision(&headers, temporary, false, 2, Duration::from_secs(91)),
             Err("retry_wait_limit")
         );
-        headers.insert(RETRY_AFTER, reqwest::header::HeaderValue::from_static("121"));
+        headers.insert(
+            RETRY_AFTER,
+            reqwest::header::HeaderValue::from_static("121"),
+        );
         assert_eq!(
             retry_429_decision(&headers, temporary, false, 0, Duration::ZERO),
             Err("retry_wait_limit")
         );
-        headers.insert(RETRY_AFTER, reqwest::header::HeaderValue::from_static("bad"));
+        headers.insert(
+            RETRY_AFTER,
+            reqwest::header::HeaderValue::from_static("bad"),
+        );
         assert_eq!(
             retry_429_decision(&headers, temporary, false, 0, Duration::ZERO),
             Err("invalid_retry_header")
