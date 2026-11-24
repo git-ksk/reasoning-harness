@@ -243,6 +243,12 @@ def billing_for_policy(subscription, budget, models):
 
 def measure(root, build_path, shard, ref):
     need(os.environ.get("GITHUB_ACTIONS") == "true" and os.environ.get("GITHUB_RUN_ATTEMPT") == "1" and os.environ.get("GITHUB_REF") == "refs/tags/"+ref, "one_shot_context")
+    execute_admitted_shard(root, build_path, shard, ref)
+
+
+def execute_admitted_shard(root, build_path, shard, ref, *, supplement=None):
+    # Entry points must verify the original one-shot or the dedicated per-shard
+    # supplement claim before invoking this shared execution loop.
     p = validate(load(root/"payload.json")); b = build_check(build_path); pre = load(root/"preflight.json")
     need(tag(p) == pre["tag"] == ref and len(pre["hashes"]) == 24 and pre["pair_count"] == 24 and pre.get("measurement_policy") == POLICY, "preflight_pin")
     need(type(shard) is int and 0 <= shard < 8, "shard")
@@ -252,7 +258,7 @@ def measure(root, build_path, shard, ref):
     billing = billing_for_policy(*(get_json(opener,key,path) for path in ("/v1/billing/subscription","/v1/billing/budget","/v1/models")))
     result = root/"raw"; result.mkdir(mode=0o700)
     save(result/"billing.json", billing)
-    save(result/"shard.json", {"tag":ref,"shard":shard,"run_id":os.environ["GITHUB_RUN_ID"],"attempt":1})
+    save(result/"shard.json", {"tag":ref,"shard":shard,"run_id":os.environ["GITHUB_RUN_ID"],"attempt":1, **({"supplement":supplement} if supplement is not None else {})})
     completed = exhausted = 0
     for i in range(shard*3, shard*3+3):
         row = p["questions"][i]
@@ -265,6 +271,8 @@ def measure(root, build_path, shard, ref):
             slot = result/f"{i:02}-{arm}"; slot.mkdir(mode=0o700)
             reservation = {"case_id":row["case_id"], "arm":arm, "attempt":1,
                            "request_sha256":pre["hashes"][i],"binary_sha256":a["binary_sha256"],"config_sha256":pre["config_hashes"][row["source_id"]],"run_id":os.environ["GITHUB_RUN_ID"],"shard":shard,"measurement_policy":POLICY}
+            if supplement is not None:
+                reservation["supplement"] = supplement
             save(slot/"reservation.json", reservation)
             home = slot/"home"; home.mkdir(mode=0o700)
             try:

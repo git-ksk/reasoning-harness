@@ -1,0 +1,127 @@
+name: engine073-owner-paired-supplement
+on:
+  push:
+    tags: ['eval-owner-supplement-45198846318-v1']
+  pull_request:
+    paths:
+      - '.github/workflows/engine073-owner-paired-supplement.yml'
+      - 'evaluation/owner-paired-supplement/**'
+      - 'evaluation/owner-paired-v3/**'
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.event_name == 'push' && 'reasoning-harness-mistral-live' || format('owner-supplement-offline-{0}', github.run_id) }}
+  cancel-in-progress: false
+jobs:
+  offline-controls:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - run: |
+          python3 evaluation/owner-paired-supplement/test_supplement.py
+          python3 evaluation/owner-paired-v3/test_measure.py
+          python3 evaluation/dev-lite/test_issue531_real24_api_billing_gate.py
+          python3 evaluation/engine073-531-independent24-20261116/test_build_completeness_pair.py
+  live-missing-only:
+    if: github.event_name == 'push' && github.run_attempt == 1
+    needs: offline-controls
+    runs-on: macos-15
+    timeout-minutes: 300
+    permissions:
+      contents: write
+      actions: read
+    env:
+      ORIGINAL_REF: eval-owner-paired-v3-f98e8263349706f5855935e4496409197f0df017c782105248192eaa134b959e-6a7d305f035c57e61fb0283f63f3b06015f5f4a9d49bd0ea47c122521dbac7d5
+    steps:
+      - name: Private ephemeral root
+        run: |
+          set -eu
+          umask 077
+          root=$(mktemp -d)
+          echo "OWNER_ROOT=$root" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - name: Verify terminal original job inventory before any model access
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 evaluation/owner-paired-supplement/supplement.py verify
+      - name: Rebuild pinned pair and verify original 48 request plans
+        env:
+          OWNER_EVAL_INPUT: ${{ secrets.ENGINE073_OWNER_PAIRED_V3_INPUT }}
+        run: |
+          set -eu
+          umask 077
+          for shard in 0 4; do
+            python3 evaluation/owner-paired-v3/measure.py stage "$OWNER_ROOT/input-$shard" "$ORIGINAL_REF"
+          done
+          unset OWNER_EVAL_INPUT
+          cargo fetch --locked
+          python3 evaluation/engine073-531-independent24-20261116/build_completeness_pair.py --repo . --output "$OWNER_ROOT/build" --mode build
+          for shard in 0 4; do
+            python3 evaluation/owner-paired-v3/measure.py preflight "$OWNER_ROOT/input-$shard" "$OWNER_ROOT/build/pair-preflight.json"
+          done
+          cmp "$OWNER_ROOT/input-0/preflight.json" "$OWNER_ROOT/input-4/preflight.json"
+          cert=evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+          openssl x509 -in "$cert" -checkend 21600 -noout
+          test "$(openssl x509 -in "$cert" -outform DER | shasum -a 256 | cut -d' ' -f1)" = d917aeb4c55699b1ea19117c776e5f515aa40193488197a12c00082517695b43
+      - name: Atomically claim unstarted shard 0
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 evaluation/owner-paired-supplement/supplement.py claim "$OWNER_ROOT/input-0" "$OWNER_ROOT/build/pair-preflight.json" 0
+      - name: Measure only shard 0 with fresh no-overage billing check
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: python3 evaluation/owner-paired-supplement/supplement.py execute "$OWNER_ROOT/input-0" "$OWNER_ROOT/build/pair-preflight.json" 0
+      - name: Encrypt shard 0 evidence immediately
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          if test -n "${OWNER_ROOT:-}" && test -d "$OWNER_ROOT/input-0/raw"; then
+            tar -czf - -C "$OWNER_ROOT/input-0" raw | openssl cms -encrypt -binary -aes256 -outform DER -out "$OWNER_ROOT/shard-0.cms" evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() && env.OWNER_ROOT != ''
+        with:
+          name: owner-paired-supplement-${{ github.run_id }}-shard-0
+          path: ${{ env.OWNER_ROOT }}/shard-0.cms
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Atomically claim unstarted shard 4
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 evaluation/owner-paired-supplement/supplement.py claim "$OWNER_ROOT/input-4" "$OWNER_ROOT/build/pair-preflight.json" 4
+      - name: Measure only shard 4 with fresh no-overage billing check
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: python3 evaluation/owner-paired-supplement/supplement.py execute "$OWNER_ROOT/input-4" "$OWNER_ROOT/build/pair-preflight.json" 4
+      - name: Encrypt shard 4 evidence immediately
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          if test -n "${OWNER_ROOT:-}" && test -d "$OWNER_ROOT/input-4/raw"; then
+            tar -czf - -C "$OWNER_ROOT/input-4" raw | openssl cms -encrypt -binary -aes256 -outform DER -out "$OWNER_ROOT/shard-4.cms" evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() && env.OWNER_ROOT != ''
+        with:
+          name: owner-paired-supplement-${{ github.run_id }}-shard-4
+          path: ${{ env.OWNER_ROOT }}/shard-4.cms
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Remove private material
+        if: always()
+        run: |
+          if test -n "${OWNER_ROOT:-}" && test -d "$OWNER_ROOT"; then rm -rf "$OWNER_ROOT"; fi
