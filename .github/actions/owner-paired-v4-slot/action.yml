@@ -19,9 +19,12 @@ inputs:
   github-token:
     required: true
     description: Create-only claim and evidence seal credential
-  mistral-api-key:
+  gemini-api-key:
     required: true
-    description: Same-key no-overage check and generation credential
+    description: Verified billing-disabled Google project credential
+  gemini-key-sha256:
+    required: true
+    description: Credential fingerprint for billing-disabled project
 runs:
   using: composite
   steps:
@@ -41,7 +44,8 @@ runs:
       if: steps.claim.outputs.run == 'true'
       shell: bash
       env:
-        MISTRAL_API_KEY: ${{ inputs.mistral-api-key }}
+        GEMINI_API_KEY: ${{ inputs.gemini-api-key }}
+        ENGINE620_GEMINI_KEY_SHA256: ${{ inputs.gemini-key-sha256 }}
         OWNER_ROOT: ${{ inputs.root }}
         OWNER_BUILD: ${{ inputs.build }}
         OWNER_REF: ${{ inputs.ref }}

@@ -7,111 +7,70 @@ from unittest.mock import patch
 import measure as m
 
 
-def attempt(status, a, state, i, o):
-    return f"[mistral-accounted-attempt] status={status} attempt={a} usage={state} timestamp_ms=1 charged_input={i} charged_output={o} charged_total={i+o}\n"
-
-
-def decision(a, state="reserved", reason="retry", wait=30000, cls="temporary_capacity"):
-    allowed="true" if reason=="retry" else "false"
-    return f"[mistral-rate-limit] status=429 timestamp_ms=1 attempt={a} retry_index={a-1} class={cls} retry_allowed={allowed} reason={reason} wait_ms={wait} usage={state} headers=absent\n"
-
-
-def retry_wait(a, wait=30000):
-    return f"[mistral-retry-wait] attempt={a} requested_ms={wait} elapsed_ms={wait+2}\n"
-
+def attempt(call="g1-1",status=200,number=1):
+    rows=[{"event":"attempt_start"},{"event":"http_headers","status_code":status},
+          {"event":"http_response","status_code":status}]
+    return "".join(json.dumps(dict(r,schema_version="reason-google-attempt-telemetry-v1",
+                                    model=m.MODEL,call_id=call,attempt=number))+"\n" for r in rows)
 
 def envelope(i,o,a=1,calls=1,cls=None,msg="",diag=None):
     report={"run":{"tracked_from_session_start":True,"input_tokens":i,"output_tokens":o,
-                   "total_tokens":i+o,"provider_attempts":a,"model_calls":calls},
-            "budget":m.CAPS,"token_accounting":m.ACCOUNTING}
+                   "total_tokens":i+o if i is not None and o is not None else None,
+                   "provider_attempts":a,"model_calls":calls},"budget":m.CAPS}
     if cls:
         failure={"failure_class":cls,"message":msg}
-        if diag:
-            failure["model_output_diagnostic"]=diag
+        if diag: failure["model_output_diagnostic"]=diag
         result={"status":"failed","failure":failure,"partial_diagnostics":{"usage":report}}
     else:
-        result={"status":"succeeded","usage":report,"finalization":{"text":"invented answer","status":"qualified_partial_answer"}}
+        result={"status":"succeeded","usage":report,"finalization":{"text":"synthetic","status":"qualified_partial_answer"}}
     return json.dumps({"schema_version":"reason-cli-output-v1","command":"ask","result":result}).encode()
 
-
 class Measurement(unittest.TestCase):
-    def check(self, raw, log, rc, expected):
+    def check(self,raw,log,rc,expected):
         obs={"status":"incomplete"}
         m.terminal_observation(raw,log.encode(),rc,obs)
         self.assertEqual(obs["status"],expected)
         return obs
 
-    def test_success_no_retry(self):
-        obs=self.check(envelope(4,3),attempt(200,1,"reported",4,3),0,"complete")
+    def test_success_and_structured_fallback_counted(self):
+        obs=self.check(envelope(4,3,2),attempt()+attempt("g1-2"),0,"complete")
         self.assertEqual(obs["telemetry"]["actual_total_tokens"],7)
-        self.assertEqual(obs["telemetry"]["http_attempts"],1)
+        self.assertEqual(obs["telemetry"]["http_attempts"],2)
 
-    def test_recovered_429_separates_actual_and_reserved(self):
-        log=attempt(429,1,"reserved",600,8)+decision(1)+retry_wait(1)+attempt(200,2,"reported",4,3)
-        obs=self.check(envelope(604,11,2),log,0,"complete")
-        self.assertIsNone(obs["telemetry"]["actual_total_tokens"])
-        self.assertEqual(obs["telemetry"]["reported_tokens"]["total"],7)
-        self.assertEqual(obs["telemetry"]["reserved_unknown_tokens"]["total"],608)
-        self.assertEqual(obs["telemetry"]["retries"],1)
-        self.assertEqual(obs["telemetry"]["retry_wait_ms"],30002)
+    def test_unknown_usage_failed_http_missing_and_retry_stop(self):
+        for raw,log in ((envelope(None,3),attempt()),(envelope(4,3),attempt(status=429)),
+                        (envelope(4,3),""),(envelope(4,3),attempt(number=2)),
+                        (envelope(4,3),attempt()+attempt("g1-2")),
+                        (envelope(4,3),attempt().replace(m.MODEL,"wrong"))):
+            with self.assertRaises((ValueError,KeyError)):
+                self.check(raw,log,0,"complete")
 
-    def test_reported_429_recovery_exact(self):
-        log=attempt(429,1,"reported",5,0)+decision(1,"reported")+retry_wait(1)+attempt(200,2,"reported",4,3)
-        obs=self.check(envelope(9,3,2),log,0,"complete")
-        self.assertEqual(obs["telemetry"]["actual_total_tokens"],12)
-
-    def test_isolated_terminal_429_continues_but_never_scores(self):
-        log=attempt(429,1,"reserved",600,8)+decision(1,reason="token_reservation_limit",wait=0)
-        raw=envelope(600,8,cls="rate_limit",msg="Mistral returned HTTP 429; class=temporary_capacity; retry_decision=token_reservation_limit; usage=reserved")
-        obs=self.check(raw,log,1,"transient_failed")
-        self.assertNotIn("final_sha256",obs)
-        self.assertIsNone(obs["answer_status"])
-        self.assertIn(obs["status"],m.TERMINAL)
-
-    def test_exact_budget_exhaustion_and_local_preflight_refusal(self):
-        log="".join(attempt(200,1,"reported",5,1024) for _ in range(8))
+    def test_budget_exact_and_overrun(self):
+        log="".join(attempt("g1-"+str(i)) for i in range(8))
         self.check(envelope(40,8192,8,8,cls="usage_budget_exceeded",msg="output-token budget exhausted (8192/8192)"),log,1,"budget_exhausted")
-        obs=self.check(envelope(0,0,0,1,cls="usage_budget_exceeded",msg="mistral_attempt_reservation_exhausted"),"",1,"budget_reserve_exhausted")
-        self.assertNotIn("final_sha256",obs)
+        with self.assertRaises(ValueError):
+            self.check(envelope(40,8193,8,8),log,0,"complete")
 
     def test_local_decode_failure_is_terminal_only_if_accounted(self):
         raw=envelope(4,3,cls="protocol",diag={"origin":"local_model_output_decode","phase":"initial_candidate"})
-        self.check(raw,attempt(200,1,"reported",4,3),1,"local_decode_failed")
-        with self.assertRaises(ValueError):
-            self.check(raw,"",1,"local_decode_failed")
+        self.check(raw,attempt(),1,"local_decode_failed")
+        with self.assertRaises(ValueError):self.check(raw,"",1,"local_decode_failed")
 
-    def test_global_conditions_never_continue(self):
-        for cls in ("quota","credentials","transport","timeout","protocol"):
-            with self.subTest(cls=cls):
-                with self.assertRaises(ValueError):
-                    self.check(envelope(4,3,cls=cls),attempt(200,1,"reported",4,3),1,"complete")
-        log=attempt(429,1,"reserved",600,8)+decision(1,reason="retry_wait_limit",wait=0)
-        with self.assertRaises(ValueError):
-            self.check(envelope(600,8,cls="rate_limit",msg="class=temporary_capacity; retry_decision=retry_wait_limit"),log,1,"transient_failed")
+    def test_global_failures_stop(self):
+        for cls in ("quota","rate_limit","credentials","transport","timeout","protocol"):
+            with self.assertRaises(ValueError):
+                self.check(envelope(4,3,cls=cls),attempt(),1,"complete")
 
-    def test_no_guessing_usage_and_no_replacement(self):
-        valid=attempt(429,1,"reserved",600,8)+decision(1)+retry_wait(1)+attempt(200,2,"reported",4,3)
-        for log in (valid.replace("charged_total=608","charged_total=0"),
-                    valid.replace(retry_wait(1),""),
-                    valid.replace("status=200 attempt=2","status=200 attempt=1"),
-                    valid.replace("retry_allowed=true","retry_allowed=false")):
-            with self.subTest(log=log):
-                with self.assertRaises(ValueError):
-                    self.check(envelope(604,11,2),log,0,"complete")
-        no_retry=attempt(429,1,"reserved",600,8)+decision(1,reason="token_reservation_limit",wait=0)
-        with self.assertRaises(ValueError):
-            self.check(envelope(604,11,2),no_retry+attempt(200,1,"reported",4,3),0,"complete")
-        raw=json.loads(envelope(4,3))
-        del raw["result"]["usage"]["token_accounting"]
-        with self.assertRaises((ValueError,KeyError)):
-            self.check(json.dumps(raw).encode(),attempt(200,1,"reported",4,3),0,"complete")
+    def test_key_binding_refuses_wrong_key_before_network(self):
+        with patch.dict(os.environ,{"ENGINE620_GEMINI_KEY_SHA256":"a"*64}),patch.object(m.urllib.request,"build_opener") as op:
+            with self.assertRaisesRegex(ValueError,"billing_project_key_mismatch"):m.billing("wrong")
+            op.assert_not_called()
 
-    def test_all_48_slots_unique_and_arm_order_balanced(self):
+    def test_all_48_slots_unique_and_selected_scope(self):
         rows=[m.position(s,t) for s in range(8) for t in range(6)]
         self.assertEqual(len({r[2] for r in rows}),48)
         self.assertEqual({m.position(s,t)[2] for s in m.SHARDS for t in range(6)},m.SLOTS)
         self.assertEqual(sum(m.position(s,t)[1]=="baseline" for s in range(8) for t in (0,2,4)),12)
-
 
 class Claims(unittest.TestCase):
     C="a"*64

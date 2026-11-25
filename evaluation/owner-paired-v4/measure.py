@@ -8,6 +8,8 @@ import base64
 import contextlib
 import datetime
 import gzip
+import hashlib
+import hmac
 import importlib.util
 import io
 import json
@@ -33,28 +35,31 @@ class HoldError(ValueError):
 def need(condition, reason):
     if not condition:
         raise HoldError(reason)
-MODEL = legacy.MODEL
+MODEL = "gemini-3.5-flash-lite"
+PROVIDER = "google"
 REPO = "git-ksk/reasoning-harness"
-PREFIX = "eval-owner-paired-v4-quality-r2-"
+PREFIX = "eval-owner-paired-gemini-quality-r2-"
 FROZEN_PAYLOAD_SHA = "6a7d305f035c57e61fb0283f63f3b06015f5f4a9d49bd0ea47c122521dbac7d5"
 CERT = HERE.parent/"engine073-531-provisional24-20261114/reviewer-cert.pem"
 CERT_SHA = "d917aeb4c55699b1ea19117c776e5f515aa40193488197a12c00082517695b43"
 CAPS = {"max_model_calls": 12, "max_output_tokens": 8192, "max_total_tokens": 32192}
 SLOT_TIMEOUT = 2700
-ACCOUNTING = "reported_plus_conservative_reservations_v1"
+ACCOUNTING = "google_reported_single_attempt_v1"
 POLICY = {
-    "id": "owner-paired-quality-r2-diagnostic", **CAPS,
-    "max_generation_output": 1024, "max_retries_per_http_logical_request": 3,
-    "backoff_seconds": [30, 60, 120], "max_retry_wait_seconds": 210,
-    "reservation": "max(logical_json_utf8_bytes,wire_json_utf8_bytes)+512; requested_max_output",
+    "id": "owner-paired-gemini-quality-r2-diagnostic", **CAPS,
+    "provider": PROVIDER, "max_generation_output": 1024,
+    "max_retries_per_http_logical_request": 0,
+    "minimum_request_interval_ms": 10500,
+    "usage_ceiling": "existing CLI observed cumulative limits; unknown or exceeded usage halts",
+    "free_tier": "owner project billing disabled at pinned admission; exact key digest match; no billing changes",
     "token_accounting": ACCOUNTING,
     "slot_timeout_seconds": SLOT_TIMEOUT, "inter_slot_seconds": 60,
     "transient_failure_cooldown_seconds": 120,
-    "predecessor_runs": [45433270563, 45504130723],
+    "predecessor_runs": [45504130723, 45628519549, 45637587367],
     "selected_shards": [1, 2, 4],
     "classification": "post_outcome_selected_development_diagnostic_not_independent_holdout",
 }
-TERMINAL = {"complete", "budget_exhausted", "budget_reserve_exhausted", "transient_failed", "local_decode_failed"}
+TERMINAL = {"complete", "budget_exhausted", "local_decode_failed"}
 SHARDS = tuple(POLICY["selected_shards"])
 SLOTS = {f"{i:02}-{arm}" for shard in SHARDS for i in range(shard*3,shard*3+3) for arm in ARMS}
 HEX = r"[a-f0-9]{64}"
@@ -130,7 +135,10 @@ def build_check(path):
 
 
 def argv(root, b, row, arm, index, plan=None):
-    return legacy.argv(root, b, row, arm, index, plan) + ["--mistral-accounted-retry"]
+    a = legacy.argv(root, b, row, arm, index, plan)
+    a[a.index("--provider")+1] = PROVIDER
+    a[a.index("--model")+1] = MODEL
+    return a
 
 
 def preflight(root, build, ref):
@@ -151,7 +159,7 @@ def preflight(root, build, ref):
                                 capture_output=True, timeout=35)
             need(cp.returncode == 0 and not cp.stdout and not cp.stderr, "request_plan_failure")
             d = load(dest)
-            need(d["question"] == row["question"] and d["model"] == MODEL and d["provider"] == "mistral", "request_identity")
+            need(d["question"] == row["question"] and d["model"] == MODEL and d["provider"] == PROVIDER, "request_identity")
             pair.append(d)
         need(pair[0]["request"] == pair[1]["request"] and pair[0]["request_sha256"] == pair[1]["request_sha256"], "pair_mismatch")
         hashes.append(pair[0]["request_sha256"])
@@ -205,12 +213,12 @@ def create_ref(name, head):
 
 
 def names(c):
-    return (f"rhq2-cohort-{c}", f"rhq2-slot-{c}-",
-            f"rhq2-s-{c}-", f"rhq2-halt-{c}")
+    return (f"rhg2-cohort-{c}", f"rhg2-slot-{c}-",
+            f"rhg2-s-{c}-", f"rhg2-halt-{c}")
 
 
 def artifact_name(c, slot, run):
-    return f"owner-paired-v4-{c[:16]}-{run}-{slot}"
+    return f"owner-paired-gemini-r2-{c[:16]}-{run}-{slot}"
 
 
 def check_artifact(c, slot, run, artifact, zip_digest):
@@ -332,80 +340,36 @@ def claim(root, build, ref, shard, step):
     print("Claimed previously unexecuted slot "+slot)
 
 
-ATTEMPT_RE = re.compile(r"\[mistral-accounted-attempt\] status=(200|429) attempt=([1-4]) usage=(reported|reserved) timestamp_ms=([0-9]+) charged_input=([0-9]+) charged_output=([0-9]+) charged_total=([0-9]+)")
-DECISION_RE = re.compile(r"\[mistral-rate-limit\] status=429 timestamp_ms=[0-9]+ attempt=([1-4]) retry_index=([0-3]) class=([a-z_]+) retry_allowed=(true|false) reason=([a-z_]+) wait_ms=([0-9]+) usage=(reported|reserved|unknown|invalid) headers=.*")
-WAIT_RE = re.compile(r"\[mistral-retry-wait\] attempt=([1-3]) requested_ms=([0-9]+) elapsed_ms=([0-9]+)")
-PACING_RE = re.compile(r"\[mistral-pacing-wait\] requested_ms=([0-9]+) elapsed_ms=([0-9]+)")
+def accounting(raw, usage):
+    events = [json.loads(line) for line in raw.splitlines() if line.strip()]
+    calls = {}
+    for e in events:
+        need(e.get("schema_version") == "reason-google-attempt-telemetry-v1"
+             and e.get("model") == MODEL and e.get("attempt") == 1
+             and e.get("event") in ("attempt_start", "http_headers", "http_response"),
+             "unknown_or_failed_http_attempt")
+        need(isinstance(e.get("call_id"),str), "call_identity")
+        calls.setdefault(e["call_id"], []).append(e)
+    need(len(calls) == usage["provider_attempts"] and len(calls) > 0,
+         "attempt_accounting")
+    for rows in calls.values():
+        need([e["event"] for e in rows] == ["attempt_start","http_headers","http_response"]
+             and all(e.get("status_code") == 200 and not e.get("error_class") for e in rows[1:]),
+             "unaccounted_http_attempt")
+    return {"http_attempts":len(calls), "reported_tokens":{
+                "input":usage["input_tokens"],"output":usage["output_tokens"],"total":usage["total_tokens"]},
+            "actual_total_tokens":usage["total_tokens"],"unknown_usage_attempts":0,
+            "reserved_unknown_tokens":{"input":0,"output":0,"total":0},
+            "retries":0,"retry_wait_ms":0,
+            "pacing_interval_ms":POLICY["minimum_request_interval_ms"]}
 
 
-def accounting(stderr, usage):
-    attempts, decisions, waits, pacing = [], [], [], []
-    for raw in stderr.decode("utf-8",errors="strict").splitlines():
-        for prefix, regex, target in [
-            ("[mistral-accounted-attempt]",ATTEMPT_RE,attempts),
-            ("[mistral-rate-limit] status=429",DECISION_RE,decisions),
-            ("[mistral-retry-wait]",WAIT_RE,waits),
-            ("[mistral-pacing-wait]",PACING_RE,pacing),
-        ]:
-            if raw.startswith(prefix):
-                match = regex.fullmatch(raw)
-                need(match is not None, "malformed_attempt_telemetry")
-                target.append(match.groups())
-                break
-    need(len(attempts)==usage["provider_attempts"], "http_attempt_inventory")
-    reported = [0,0,0]
-    reserved = [0,0,0]
-    di = wi = 0
-    last_retry = False
-    previous_attempt = 0
-    terminal = None
-    for status, attempt, state, _, inp, out, total in attempts:
-        need(terminal is None or terminal["retry_allowed"], "request_after_terminal_429")
-        attempt, inp, out, total = map(int,(attempt,inp,out,total))
-        need(inp+out==total and out<=1024 and attempt==(previous_attempt+1 if last_retry else 1), "attempt_accounting")
-        need(state=="reported" or status=="429", "reserved_success")
-        target = reported if state=="reported" else reserved
-        for j,v in enumerate((inp,out,total)):
-            target[j] += v
-        previous_attempt = attempt
-        last_retry = False
-        terminal = None
-        if status=="429":
-            need(di<len(decisions), "missing_429_decision")
-            a, retry_index, cls, allowed, reason, wait, us = decisions[di]
-            di += 1
-            need(int(a)==attempt and int(retry_index)==attempt-1 and us==state
-                 and cls in ("temporary_capacity","temporary_rate_limit"), "429_decision_pin")
-            terminal = {"class":cls,"reason":reason,"retry_allowed":allowed=="true"}
-            if allowed=="true":
-                need(reason=="retry" and wi<len(waits), "missing_retry_wait")
-                wa, requested, elapsed = map(int,waits[wi])
-                wi += 1
-                need(wa==attempt and requested==int(wait) and 0<requested<=120000 and elapsed+1>=requested, "retry_wait_pin")
-                last_retry=True
-            else:
-                need(int(wait)==0, "terminal_wait_pin")
-    need(not last_retry and di==len(decisions) and wi==len(waits), "unclosed_attempt")
-    need([reported[j]+reserved[j] for j in range(3)] == [usage[k] for k in ("input_tokens","output_tokens","total_tokens")], "cli_accounting_mismatch")
-    for requested,elapsed in pacing:
-        need(0<int(requested)<=90000 and int(elapsed)+1>=int(requested), "pacing_wait_pin")
-    return {"reported_tokens":dict(zip(("input","output","total"),reported)),
-            "reserved_unknown_tokens":dict(zip(("input","output","total"),reserved)),
-            "actual_total_tokens":reported[2] if reserved[2]==0 else None,
-            "unknown_usage_attempts":sum(a[2]=="reserved" for a in attempts),
-            "http_attempts":len(attempts),"retries":len(waits),
-            "retry_wait_ms":sum(int(w[2]) for w in waits),
-            "retry_requested_wait_ms":sum(int(w[1]) for w in waits),
-            "pacing_wait_ms":sum(int(w[1]) for w in pacing),
-            "terminal_429":terminal}
-
-
-def terminal_observation(stdout, stderr, rc, obs):
+def terminal_observation(stdout, telemetry_raw, rc, obs):
     data = json.loads(stdout)
     need(data["schema_version"]=="reason-cli-output-v1" and data["command"]=="ask", "cli_envelope")
     result = data["result"]
     report = result.get("usage") or (result.get("partial_diagnostics") or {}).get("usage")
-    need(type(report) is dict and report["token_accounting"]==ACCOUNTING, "accounting_policy_missing")
+    need(type(report) is dict and report.get("token_accounting") is None, "unexpected_accounting_policy")
     need(all(report["budget"].get(k)==v for k,v in CAPS.items()), "cli_budget_pin")
     used = report["run"]
     need(used["tracked_from_session_start"] is True
@@ -415,7 +379,7 @@ def terminal_observation(stdout, stderr, rc, obs):
          and usage["output_tokens"]<=CAPS["max_output_tokens"]
          and usage["total_tokens"]<=CAPS["max_total_tokens"]
          and usage["input_tokens"]+usage["output_tokens"]==usage["total_tokens"], "usage_ceiling")
-    telemetry = accounting(stderr,usage)
+    telemetry = accounting(telemetry_raw,usage)
     obs.update(usage=usage,telemetry=telemetry,answer_status=None)
     final = result.get("finalization")
     if rc==0 and result.get("status")!="failed":
@@ -433,25 +397,38 @@ def terminal_observation(stdout, stderr, rc, obs):
     }
     if cls=="usage_budget_exceeded" and expected.get(message,False):
         status="budget_exhausted"
-    elif cls=="usage_budget_exceeded" and "mistral_attempt_reservation_exhausted" in message:
-        status="budget_reserve_exhausted"
-    elif cls=="rate_limit" and telemetry["terminal_429"] is not None:
-        t=telemetry["terminal_429"]
-        need(not t["retry_allowed"] and t["reason"] in ("attempt_limit","token_reservation_limit")
-             and f"class={t['class']}" in message and f"retry_decision={t['reason']}" in message, "unresolved_rate_limit")
-        status="transient_failed"
     elif cls=="protocol" and (f.get("model_output_diagnostic") or {}).get("origin")=="local_model_output_decode":
         status="local_decode_failed"
     else:
-        raise ValueError("global_stop_failure")
+        raise HoldError("global_stop_failure")
     obs.update(status=status,failure_class=cls)
 
 
+BILLING_CHECKED_UTC = '2026-11-25T14:56:11.484612+00:00'
+BILLING_EXPIRES_UTC = '2026-11-26T14:56:11.484612+00:00'
+
 def billing(key):
-    opener=urllib.request.build_opener(legacy.NoRedirect())
-    result=legacy.billing_for_policy(*(legacy.get_json(opener,key,path) for path in ("/v1/billing/subscription","/v1/billing/budget","/v1/models")))
-    result.update(measurement_policy=POLICY)
-    return result
+    expected = os.environ.pop("ENGINE620_GEMINI_KEY_SHA256","")
+    need(re.fullmatch(HEX,expected) is not None and
+         hmac.compare_digest(hashlib.sha256(key.encode()).hexdigest(),expected),
+         "billing_project_key_mismatch")
+    need(datetime.datetime.fromisoformat(BILLING_CHECKED_UTC) <= datetime.datetime.now(datetime.timezone.utc)
+         < datetime.datetime.fromisoformat(BILLING_EXPIRES_UTC), "billing_attestation_expired")
+    url = "https://generativelanguage.googleapis.com/v1beta/models/"+MODEL
+    opener = urllib.request.build_opener(legacy.NoRedirect())
+    request = urllib.request.Request(url,headers={"x-goog-api-key":key,"Accept":"application/json"})
+    try:
+        with opener.open(request,timeout=20) as response:
+            need(response.status==200 and response.geturl()==url,"metadata_origin")
+            raw=response.read(1000001)
+            need(len(raw)<=1000000,"metadata_size")
+            need(json.loads(raw).get("name")=="models/"+MODEL,"model_metadata_mismatch")
+    except urllib.error.HTTPError as exc:
+        raise HoldError("gemini_metadata_http_"+str(exc.code)) from None
+    return {"billing_gate":"PASS","project_billing_disabled_at_attestation":True,
+             "credential_bound_to_verified_project":True,"fixed_model_available":True,
+             "billing_checked_utc":BILLING_CHECKED_UTC,"billing_expires_utc":BILLING_EXPIRES_UTC,
+             "measurement_policy":POLICY}
 
 
 def interrupt(_sig,_frame):
@@ -469,7 +446,9 @@ def run_cli(args, path, key):
         try:
             child=subprocess.Popen(args,cwd=home,stdin=subprocess.DEVNULL,stdout=stdout,stderr=stderr,
                 start_new_session=True,env={"HOME":str(home),"TMPDIR":str(home),"PATH":os.environ["PATH"],
-                "MISTRAL_API_KEY":key,"NO_COLOR":"1","NO_PROXY":"127.0.0.1","REASON_MISTRAL_RATE_LIMIT_TELEMETRY":"1"})
+                "GEMINI_API_KEY":key,"NO_COLOR":"1","NO_PROXY":"127.0.0.1",
+                "REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS":str(POLICY["minimum_request_interval_ms"]),
+                "REASON_GOOGLE_ATTEMPT_TELEMETRY_PATH":str((path/"google-attempts.jsonl").resolve())})
             rc=child.wait(timeout=SLOT_TIMEOUT)
         finally:
             if child is not None and child.poll() is None:
@@ -490,23 +469,23 @@ def execute(root,build,ref,shard,step):
         "head":head,"claim":names(c)[1]+slot,"attempt":1,"shard":shard,"step":step}, "claim_receipt")
     need(not (path/"started.json").exists() and not (path/"observation.json").exists(), "duplicate_execution")
     need("GH_TOKEN" not in os.environ and "GITHUB_TOKEN" not in os.environ, "write_token_in_live_step")
-    key=os.environ.pop("MISTRAL_API_KEY","")
+    key=os.environ.pop("GEMINI_API_KEY","")
     need(bool(key),"credential")
     obs={**existing,"status":"incomplete","exit_code":None,"usage":None}
     began=time.monotonic()
     try:
         save(path/"billing.json",billing(key))
-        print("Fresh same-key billing gate PASS; API PAYG disabled; fixed model available",flush=True)
+        print("Billing-disabled project key matched; current model metadata PASS",flush=True)
         save(path/"started.json",{"state":"launch_committed","time_utc":utc_now(),"run_id":run,"slot":slot})
         rc=run_cli(argv(root,b,p["questions"][i],arm,i),path,key)
         obs["exit_code"]=rc
         stdout=(path/"stdout.json").read_bytes()
         stderr=(path/"stderr.log").read_bytes()
-        terminal_observation(stdout,stderr,rc,obs)
+        terminal_observation(stdout,(path/"google-attempts.jsonl").read_bytes(),rc,obs)
     finally:
-        for f in ("stdout.json","stderr.log"):
+        for f in ("stdout.json","stderr.log","google-attempts.jsonl"):
             if (path/f).is_file():
-                obs[f.replace(".json","").replace(".log","")+"_sha256"]=sha((path/f).read_bytes())
+                obs[{"stdout.json":"stdout_sha256","stderr.log":"stderr_sha256","google-attempts.jsonl":"google_attempts_sha256"}[f]]=sha((path/f).read_bytes())
         obs["elapsed_ms"]=round((time.monotonic()-began)*1000)
         save(path/"observation.json",obs)
     need(obs["status"] in TERMINAL,"slot_unsealed")
@@ -523,7 +502,7 @@ def encrypt(root,shard,step):
     _,_,slot=position(shard,step)
     path=root/"raw"/slot
     verify_cert()
-    files=[f for f in ("reservation.json","billing.json","started.json","stdout.json","stderr.log","observation.json") if (path/f).is_file()]
+    files=[f for f in ("reservation.json","billing.json","started.json","stdout.json","stderr.log","google-attempts.jsonl","observation.json") if (path/f).is_file()]
     need("reservation.json" in files,"missing_reservation")
     target=root/(slot+".cms")
     fd=os.open(target,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
@@ -569,15 +548,17 @@ def seal(root,ref,shard,step,artifact,artifact_digest):
              and reservation["head"]==head and reservation["slot"]==slot and obs["status"] in TERMINAL,
              "unsealed_terminal")
         need(exact_ref(names(c)[1]+slot)==head,"claim_pin")
-        for f,key in (("stdout.json","stdout_sha256"),("stderr.log","stderr_sha256")):
+        for f,key in (("stdout.json","stdout_sha256"),("stderr.log","stderr_sha256"),("google-attempts.jsonl","google_attempts_sha256")):
             need(sha((path/f).read_bytes())==obs[key],"evidence_drift")
         # Revalidate all accounting and terminal classification independently of the saved status.
         checked={}
-        terminal_observation((path/"stdout.json").read_bytes(),(path/"stderr.log").read_bytes(),obs["exit_code"],checked)
+        terminal_observation((path/"stdout.json").read_bytes(),(path/"google-attempts.jsonl").read_bytes(),obs["exit_code"],checked)
         need(all(obs.get(k)==v for k,v in checked.items()),"terminal_drift")
         gate=load(path/"billing.json")
-        need(gate.get("api_payg_disabled") is True and gate.get("fresh_authenticated_account_status") is True
-             and gate.get("minimum_headroom_met") is True and gate.get("fixed_model_available") is True
+        need(gate.get("project_billing_disabled_at_attestation") is True
+             and gate.get("credential_bound_to_verified_project") is True and gate.get("fixed_model_available") is True
+             and gate.get("billing_checked_utc")==BILLING_CHECKED_UTC
+             and gate.get("billing_expires_utc")==BILLING_EXPIRES_UTC
              and gate.get("measurement_policy")==POLICY and (path/"started.json").is_file(), "billing_evidence")
         zip_digest=artifact_digest.removeprefix("sha256:")
         need(re.fullmatch(r"[1-9][0-9]*",artifact) is not None and re.fullmatch(HEX,zip_digest) is not None,"artifact_id")
@@ -586,7 +567,7 @@ def seal(root,ref,shard,step,artifact,artifact_digest):
         need(encrypted.is_file() and encrypted.stat().st_size>0,"encrypted_evidence_missing")
         digest=sha(encrypted.read_bytes())
         ready=load(root/(slot+".encrypted.json"))
-        files=("reservation.json","billing.json","started.json","stdout.json","stderr.log","observation.json")
+        files=("reservation.json","billing.json","started.json","stdout.json","stderr.log","google-attempts.jsonl","observation.json")
         need(ready=={"sha256":digest,"file_hashes":{f:sha((path/f).read_bytes()) for f in files}}, "encryption_proof")
         prefix=names(c)[2]+slot+"-"
         need(not matching(prefix),"duplicate_seal")
@@ -601,7 +582,7 @@ def cooldown(root,shard,step):
     _,_,slot=position(shard,step)
     obs=load(root/"raw"/slot/"observation.json")
     need(obs["status"] in TERMINAL,"cooldown_terminal")
-    time.sleep(120 if obs["status"]=="transient_failed" else 60)
+    time.sleep(60)
 
 
 def main():
@@ -611,6 +592,7 @@ def main():
     parser=argparse.ArgumentParser()
     sub=parser.add_subparsers(dest="cmd",required=True)
     t=sub.add_parser("pack");t.add_argument("prepared",type=Path);t.add_argument("output",type=Path)
+    sub.add_parser("entitlement")
     for action in ("stage","admit","preflight","claim","execute","seal","encrypt","cooldown"):
         t=sub.add_parser(action);t.add_argument("root",type=Path)
         if action in ("preflight","claim","execute"):t.add_argument("build",type=Path)
@@ -621,7 +603,13 @@ def main():
             t.add_argument("artifact");t.add_argument("artifact_digest")
     a=parser.parse_args()
     kwargs=vars(a);cmd=kwargs.pop("cmd")
-    globals()[cmd](**kwargs)
+    if cmd=="entitlement":
+        key=os.environ.pop("GEMINI_API_KEY","")
+        need(bool(key),"credential")
+        billing(key)
+        print("Verified project key and model metadata; no generation")
+    else:
+        globals()[cmd](**kwargs)
 
 
 if __name__=="__main__":
