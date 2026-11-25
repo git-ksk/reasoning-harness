@@ -2805,6 +2805,8 @@ struct NaturalInvestigationObservation {
     intent_generations: Vec<GenerationObservation>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     candidate_regenerations: Vec<GenerationObservation>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    recovered_candidate_regeneration_failures: Vec<GenerationFailure>,
     #[serde(skip_serializing_if = "Option::is_none")]
     generation_failure: Option<GenerationFailure>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3847,6 +3849,7 @@ async fn run_natural_investigation(
         action_generations: vec![],
         intent_generations: vec![],
         candidate_regenerations: vec![],
+        recovered_candidate_regeneration_failures: vec![],
         generation_failure: None,
         plan_rejection: None,
         completed_target_proposals_rejected: 0,
@@ -4311,7 +4314,76 @@ async fn run_natural_investigation(
                     let failure =
                         failure.at_model_output_phase(ModelOutputPhase::CandidateRegeneration);
                     progress.failure(&failure);
-                    state.stop(InvestigationStopReason::OperationalTerminal);
+                    usage.record_failure(&failure)?;
+                    // A locally undecodable model response is not a failed
+                    // acquisition. For captured read-only facts only, retain
+                    // the previous candidate and re-ground exact admitted
+                    // proposals through the normal verifier. Do not retry the
+                    // failed generation or grant authority to its text.
+                    let accounted_decode = failure.model_output_diagnostic.is_some_and(|d| {
+                        d.origin == ModelOutputOrigin::LocalModelOutputDecode
+                            && d.phase == ModelOutputPhase::CandidateRegeneration
+                    }) && failure.provider_attempts > 0
+                        && failure.usage.as_ref().is_some_and(|u| {
+                            match (u.input_tokens, u.output_tokens, u.total_tokens) {
+                                (Some(i), Some(o), Some(t)) => i.checked_add(o) == Some(t),
+                                _ => false,
+                            }
+                        });
+                    if accounted_decode
+                        && capability.descriptor.read_only
+                        && capability.descriptor.adapter == "investigation_captured_evidence_v1"
+                        && !admitted_materializations.is_empty()
+                    {
+                        let mut recovered = current_candidate.clone();
+                        for (proposition, evidence_ids) in admitted_materializations {
+                            if !recovered.claims.iter().any(|c| {
+                                c.proposition.as_ref() == Some(&proposition)
+                                    && evidence_ids.iter().all(|id| c.evidence_ids.contains(id))
+                            }) {
+                                materialize_harness_owned_investigation_fact(
+                                    &mut recovered,
+                                    &HarnessOwnedInvestigationFact {
+                                        proposition,
+                                        evidence_ids,
+                                    },
+                                    round_index,
+                                );
+                            }
+                        }
+                        let grounded =
+                            run_standard_grounding(current_input.clone(), recovered.clone())?;
+                        let previous_targets = coverage.verified_targets(&current_outcome.artifact);
+                        let recovered_targets = coverage.verified_targets(&grounded.artifact);
+                        verification_progress = recovered_targets
+                            .iter()
+                            .any(|p| !previous_targets.contains(p))
+                            && grounded.verdict != Verdict::Reject;
+                        if verification_progress {
+                            current_candidate = recovered;
+                            current_outcome = grounded;
+                            status = InvestigationObservationStatus::VerificationProgress;
+                            if let Some(trace) = trace.as_deref_mut() {
+                                trace.record_candidate(regeneration_phase, &current_candidate);
+                                trace.record_grounding(
+                                    DiagnosticPhase::new(
+                                        "post_investigation_grounding",
+                                        Some(round_index),
+                                    ),
+                                    &current_outcome,
+                                );
+                            }
+                            observation
+                                .recovered_candidate_regeneration_failures
+                                .push(failure);
+                        } else {
+                            state.stop(InvestigationStopReason::OperationalTerminal);
+                            observation.generation_failure = Some(failure);
+                        }
+                    } else {
+                        state.stop(InvestigationStopReason::OperationalTerminal);
+                        observation.generation_failure = Some(failure);
+                    }
                     preserve_acquisition_progress(
                         &coverage,
                         Some(&current_outcome.artifact),
@@ -4319,8 +4391,6 @@ async fn run_natural_investigation(
                         failure_context,
                         trace.as_deref_mut(),
                     );
-                    usage.record_failure(&failure)?;
-                    observation.generation_failure = Some(failure);
                 }
             }
         } else {
@@ -12299,6 +12369,88 @@ mod candidate_json_tests {
                     .any(|e| e["kind"] == "acquisition_coverage")
             );
             fs::remove_file(path).unwrap();
+        }
+    }
+
+    #[tokio::test]
+    async fn captured_decode_failure_preserves_verified_fact_and_continues() {
+        for usage_known in [true, false] {
+            let (input, candidate, mut config) = coverage_fixture(false, false);
+            for cap in &mut config.capabilities {
+                cap.descriptor.adapter = "investigation_captured_evidence_v1".into();
+            }
+            let initial_outcome = run_standard_grounding(input.clone(), candidate.clone()).unwrap();
+            let response = |text: &str, finish: &str| {
+                let mut r =
+                    StructuredCapabilityFallbackAdapter::response_with_finish(text, 1, finish)
+                        .unwrap();
+                if usage_known {
+                    r.usage = ModelUsage {
+                        input_tokens: Some(10),
+                        output_tokens: Some(5),
+                        total_tokens: Some(15),
+                    };
+                }
+                Ok(r)
+            };
+            let mut responses = vec![
+                response(COVERAGE_PLAN, "stop"),
+                response(r#"{"action":"continue","target_id":"left"}"#, "stop"),
+                response(r#"{"claims":["#, "length"),
+                response(r#"{"claims":["#, "length"),
+            ];
+            if usage_known {
+                responses.push(response(r#"{"claims":[],"inferences":[]}"#, "stop"));
+            }
+            let adapter = StructuredCapabilityFallbackAdapter::with_responses(responses);
+            let requests = adapter.requests.clone();
+            let generator = LiveGenerator::Test(DiagnosticTestAdapter(Box::new(adapter)));
+            let mut usage = usage_budget::UsageTracker::new(Default::default(), None).unwrap();
+            let run = run_natural_investigation(NaturalInvestigationCall {
+                task: &input.task.clone(),
+                input,
+                candidate,
+                initial_outcome,
+                generator: &generator,
+                trace: None,
+                config: &config,
+                model: "test-model",
+                max_tokens: 512,
+                seed: None,
+                usage: &mut usage,
+                progress: &progress::ProgressReporter::new(OutputFormat::Json, false, true),
+                cancellation: &SubprocessCancellation::default(),
+                seed_coverage: None,
+                failure_context: &Arc::default(),
+            })
+            .await
+            .unwrap();
+            if usage_known {
+                assert_eq!(run.resolution_rounds.len(), 2);
+                assert!(run.coverage.complete(&run.outcome.artifact), "{run:#?}");
+                assert_eq!(run.finalization_targets.len(), 2);
+                assert_eq!(
+                    run.observation
+                        .recovered_candidate_regeneration_failures
+                        .len(),
+                    1
+                );
+                assert!(run.observation.generation_failure.is_none());
+                assert_eq!(requests.lock().unwrap().len(), 5);
+            } else {
+                assert_eq!(run.resolution_rounds.len(), 1);
+                assert_eq!(
+                    run.observation.telemetry.as_ref().unwrap().stop_reason,
+                    Some(InvestigationStopReason::OperationalTerminal)
+                );
+                assert!(
+                    run.observation
+                        .recovered_candidate_regeneration_failures
+                        .is_empty()
+                );
+                assert!(run.observation.generation_failure.is_some());
+                assert_eq!(requests.lock().unwrap().len(), 4);
+            }
         }
     }
 

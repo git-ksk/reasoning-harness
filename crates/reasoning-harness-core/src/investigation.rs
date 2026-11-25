@@ -1123,6 +1123,12 @@ pub fn build_investigation_plan_request(
     random_seed: Option<u64>,
 ) -> Result<ModelRequest, serde_json::Error> {
     let exact_key = shared_exact_read_only_fact_key(capabilities);
+    let finite_snapshot = capabilities.len() > 1
+        && capabilities.iter().all(|c| {
+            c.read_only
+                && c.adapter == "investigation_captured_evidence_v1"
+                && c.supported_fact_keys.len() == 1
+        });
     let schema = investigation_plan_schema_for_capabilities(capabilities);
     let capabilities = serialize_model_visible_capabilities(capabilities)?;
     let (system, task) = exact_key.map_or_else(
@@ -1148,6 +1154,12 @@ pub fn build_investigation_plan_request(
             )
         },
     );
+    let (system, task) = if finite_snapshot {
+        let hint = "Use the listed exact supported_fact_keys as selectors for relevant facets, even when the question uses different words. Prefer one target per distinct relevant key; group its subparts. Do not investigate unrelated keys. Leave a selector absent only if the mapping is genuinely uncertain. A selector is not evidence or answer authority.";
+        (format!("{system} {hint}"), format!("{task}\n\n{hint}"))
+    } else {
+        (system, task)
+    };
     Ok(ModelRequest {
         system: Some(system),
         task,
