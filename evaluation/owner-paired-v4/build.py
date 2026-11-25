@@ -4,6 +4,7 @@ import argparse
 import importlib.util
 import json
 import os
+import platform
 from pathlib import Path
 import shutil
 import subprocess
@@ -25,7 +26,7 @@ def build(repo, output, compile_binaries):
     for pin in [CLI,*ARMS.values()]: f.require_commit(repo,pin)
     original.private_new_directory(output)
     if compile_binaries: original.private_new_directory(output/"bin")
-    proof={"cli_commit":CLI,"built":compile_binaries,"provider_generation_authorized":False,
+    proof={"runner_os":platform.system(),"runner_arch":platform.machine(),"cli_commit":CLI,"built":compile_binaries,"provider_generation_authorized":False,
            "source_identical_except_declared_changes":False,"changed_files":sorted(CHANGED),"arms":{}}
     for arm,pin in ARMS.items():
         source=output/("source-"+arm);original.private_new_directory(source)

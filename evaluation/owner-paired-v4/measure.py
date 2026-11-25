@@ -14,6 +14,7 @@ import importlib.util
 import io
 import json
 import os
+import platform
 from pathlib import Path
 import re
 import signal
@@ -38,7 +39,7 @@ def need(condition, reason):
 MODEL = "gemini-3.5-flash-lite"
 PROVIDER = "google"
 REPO = "git-ksk/reasoning-harness"
-PREFIX = "eval-owner-paired-gemini-quality-r2-"
+PREFIX = "eval-owner-paired-gemini-quality-r2-ubuntu-"
 FROZEN_PAYLOAD_SHA = "6a7d305f035c57e61fb0283f63f3b06015f5f4a9d49bd0ea47c122521dbac7d5"
 CERT = HERE.parent/"engine073-531-provisional24-20261114/reviewer-cert.pem"
 CERT_SHA = "d917aeb4c55699b1ea19117c776e5f515aa40193488197a12c00082517695b43"
@@ -46,7 +47,8 @@ CAPS = {"max_model_calls": 12, "max_output_tokens": 8192, "max_total_tokens": 32
 SLOT_TIMEOUT = 2700
 ACCOUNTING = "google_reported_single_attempt_v1"
 POLICY = {
-    "id": "owner-paired-gemini-quality-r2-diagnostic", **CAPS,
+    "id": "owner-paired-gemini-quality-r2-ubuntu-diagnostic", **CAPS,
+    "runner_os": "Linux", "runner_arch": "x86_64", "build_strategy": "one_serial_job",
     "provider": PROVIDER, "max_generation_output": 1024,
     "max_retries_per_http_logical_request": 0,
     "minimum_request_interval_ms": 10500,
@@ -55,7 +57,7 @@ POLICY = {
     "token_accounting": ACCOUNTING,
     "slot_timeout_seconds": SLOT_TIMEOUT, "inter_slot_seconds": 60,
     "transient_failure_cooldown_seconds": 120,
-    "predecessor_runs": [45504130723, 45628519549, 45637587367],
+    "predecessor_runs": [45504130723, 45628519549, 45637587367, 45639690396],
     "selected_shards": [1, 2, 4],
     "classification": "post_outcome_selected_development_diagnostic_not_independent_holdout",
 }
@@ -126,6 +128,9 @@ def stage(root, ref):
 
 def build_check(path):
     b = load(path)
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        need(b.get("runner_os") == POLICY["runner_os"] == platform.system()
+             and b.get("runner_arch") == POLICY["runner_arch"] == platform.machine(), "runtime_platform_pin")
     need(b["built"] is True and b["source_identical_except_declared_changes"] is True and set(b["changed_files"]) == CHANGED
          and b["cli_commit"] == CLI and b["provider_generation_authorized"] is False, "build_pin")
     for arm, pin in ARMS.items():
@@ -262,6 +267,17 @@ def verify_existing(c, head):
     return slots
 
 
+def verify_unstarted_macos_predecessor():
+    prior = api("actions/runs/45639690396")
+    need(prior["status"] == "completed" and prior["conclusion"] == "cancelled"
+         and prior["head_sha"] == "b42673fd530c04b21f0391f301e4fe0dfae3d849"
+         and prior["run_attempt"] == 1, "macos_predecessor_not_cancelled")
+    old = "f72a53629dc39f4298f63d03a1cf7142bf2a17827240dccad6ed54583d8facf8"
+    need(all(not matching("rhg2-"+kind+"-"+old) for kind in ("slot","s","halt"))
+         and api("actions/runs/45639690396/artifacts")["total_count"] == 0,
+         "macos_predecessor_observations_exist")
+
+
 def admit(root, ref):
     head, run = context(ref)
     p = legacy.validate(load(root/"payload.json"))
@@ -269,6 +285,7 @@ def admit(root, ref):
     cohort_ref, _, _, halt = names(c)
     need(exact_ref(halt) is None, "cohort_halted")
     if previous is None:
+        verify_unstarted_macos_predecessor()
         need(exact_ref(cohort_ref) is None and not verify_existing(c,head), "existing_cohort")
         create_ref(cohort_ref,head)
         print(f"New diagnostic cohort claimed; all {len(SLOTS)} selected slots unclaimed")

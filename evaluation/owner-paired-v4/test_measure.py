@@ -73,6 +73,17 @@ class Measurement(unittest.TestCase):
         self.assertEqual(sum(m.position(s,t)[1]=="baseline" for s in range(8) for t in (0,2,4)),12)
 
 class Claims(unittest.TestCase):
+    def test_platform_migration_requires_cancelled_unstarted_predecessor(self):
+        prior={"status":"completed","conclusion":"cancelled","head_sha":"b42673fd530c04b21f0391f301e4fe0dfae3d849","run_attempt":1}
+        with patch.object(m,"api",side_effect=[prior,{"total_count":0}]),patch.object(m,"matching",return_value=[]):
+            m.verify_unstarted_macos_predecessor()
+        with patch.object(m,"api",return_value=prior),patch.object(m,"matching",return_value=[{"claimed":True}]):
+            with self.assertRaisesRegex(ValueError,"macos_predecessor_observations_exist"):
+                m.verify_unstarted_macos_predecessor()
+        with patch.object(m,"api",return_value=dict(prior,status="in_progress")):
+            with self.assertRaisesRegex(ValueError,"macos_predecessor_not_cancelled"):
+                m.verify_unstarted_macos_predecessor()
+
     C="a"*64
     HEAD="b"*40
 

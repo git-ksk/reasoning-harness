@@ -2,7 +2,7 @@ name: engine073-owner-paired-v4
 # New development comparison. Existing v1/v2/v3/supplement tags are untouched.
 on:
   push:
-    tags: ['eval-owner-paired-gemini-quality-r2-*']
+    tags: ['eval-owner-paired-gemini-quality-r2-ubuntu-*']
   pull_request:
     paths:
       - '.github/workflows/engine073-owner-paired-v4.yml'
@@ -61,14 +61,8 @@ jobs:
   live:
     if: github.event_name == 'push' && github.run_attempt == 1
     needs: admit
-    strategy:
-      # Expected isolated failures are terminal, successful steps; only hard
-      # stop conditions fail the job. An unassigned runner has no slot claims.
-      fail-fast: true
-      max-parallel: 1
-      matrix:
-        shard: [1, 2, 4]
-    runs-on: macos-15
+    # One Linux runner and one paired build, with all 18 observations serial.
+    runs-on: ubuntu-24.04
     timeout-minutes: 345
     permissions:
       contents: write
@@ -96,11 +90,21 @@ jobs:
           python3 evaluation/owner-paired-v4/measure.py stage "$OWNER_ROOT/input" "$GITHUB_REF_NAME"
           unset OWNER_EVAL_INPUT
           cargo fetch --locked
+          test "$(uname -s)" = Linux
+          test "$(uname -m)" = x86_64
           python3 evaluation/owner-paired-v4/build.py --repo . --output "$OWNER_ROOT/build" --mode build
+          # Actual Linux offline regression controls for the candidate runtime.
+          export CARGO_TARGET_DIR="$OWNER_ROOT/build/target"
+          export CARGO_PROFILE_DEV_DEBUG=0
+          (
+            cd "$OWNER_ROOT/build/source-candidate"
+            cargo test --locked --offline -p reasoning-harness-core --lib --quiet
+            cargo test --locked --offline -p reasoning-harness-cli --bin reason --quiet
+          )
           python3 evaluation/owner-paired-v4/measure.py preflight "$OWNER_ROOT/input" "$OWNER_ROOT/build/pair-preflight.json" "$GITHUB_REF_NAME"
           cert=evaluation/engine073-531-provisional24-20261114/reviewer-cert.pem
           openssl x509 -in "$cert" -checkend 21600 -noout
-          test "$(openssl x509 -in "$cert" -outform DER | shasum -a 256 | cut -d' ' -f1)" = d917aeb4c55699b1ea19117c776e5f515aa40193488197a12c00082517695b43
+          test "$(openssl x509 -in "$cert" -outform DER | sha256sum | cut -d' ' -f1)" = d917aeb4c55699b1ea19117c776e5f515aa40193488197a12c00082517695b43
           # Also covers a previous shard's interrupted inter-slot cooldown.
           sleep 120
       - name: Verify Gemini project identity and model access before claims
@@ -108,68 +112,200 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ENGINE620_GEMINI_KEY_SHA256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
         run: python3 evaluation/owner-paired-v4/measure.py entitlement
-      - name: Slot 0
+      - name: Shard 1 / Slot 0
         uses: ./.github/actions/owner-paired-v4-slot
         with:
           root: ${{ env.OWNER_ROOT }}/input
           build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
           ref: ${{ github.ref_name }}
-          shard: ${{ matrix.shard }}
+          shard: '1'
           step: '0'
           github-token: ${{ github.token }}
           gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
           gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
-      - name: Slot 1
+      - name: Shard 1 / Slot 1
         uses: ./.github/actions/owner-paired-v4-slot
         with:
           root: ${{ env.OWNER_ROOT }}/input
           build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
           ref: ${{ github.ref_name }}
-          shard: ${{ matrix.shard }}
+          shard: '1'
           step: '1'
           github-token: ${{ github.token }}
           gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
           gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
-      - name: Slot 2
+      - name: Shard 1 / Slot 2
         uses: ./.github/actions/owner-paired-v4-slot
         with:
           root: ${{ env.OWNER_ROOT }}/input
           build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
           ref: ${{ github.ref_name }}
-          shard: ${{ matrix.shard }}
+          shard: '1'
           step: '2'
           github-token: ${{ github.token }}
           gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
           gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
-      - name: Slot 3
+      - name: Shard 1 / Slot 3
         uses: ./.github/actions/owner-paired-v4-slot
         with:
           root: ${{ env.OWNER_ROOT }}/input
           build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
           ref: ${{ github.ref_name }}
-          shard: ${{ matrix.shard }}
+          shard: '1'
           step: '3'
           github-token: ${{ github.token }}
           gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
           gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
-      - name: Slot 4
+      - name: Shard 1 / Slot 4
         uses: ./.github/actions/owner-paired-v4-slot
         with:
           root: ${{ env.OWNER_ROOT }}/input
           build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
           ref: ${{ github.ref_name }}
-          shard: ${{ matrix.shard }}
+          shard: '1'
           step: '4'
           github-token: ${{ github.token }}
           gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
           gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
-      - name: Slot 5
+      - name: Shard 1 / Slot 5
         uses: ./.github/actions/owner-paired-v4-slot
         with:
           root: ${{ env.OWNER_ROOT }}/input
           build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
           ref: ${{ github.ref_name }}
-          shard: ${{ matrix.shard }}
+          shard: '1'
+          step: '5'
+          github-token: ${{ github.token }}
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
+      - name: Shard 2 / Slot 0
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: '2'
+          step: '0'
+          github-token: ${{ github.token }}
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
+      - name: Shard 2 / Slot 1
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: '2'
+          step: '1'
+          github-token: ${{ github.token }}
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
+      - name: Shard 2 / Slot 2
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: '2'
+          step: '2'
+          github-token: ${{ github.token }}
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
+      - name: Shard 2 / Slot 3
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: '2'
+          step: '3'
+          github-token: ${{ github.token }}
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
+      - name: Shard 2 / Slot 4
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: '2'
+          step: '4'
+          github-token: ${{ github.token }}
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
+      - name: Shard 2 / Slot 5
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: '2'
+          step: '5'
+          github-token: ${{ github.token }}
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
+      - name: Shard 4 / Slot 0
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: '4'
+          step: '0'
+          github-token: ${{ github.token }}
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
+      - name: Shard 4 / Slot 1
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: '4'
+          step: '1'
+          github-token: ${{ github.token }}
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
+      - name: Shard 4 / Slot 2
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: '4'
+          step: '2'
+          github-token: ${{ github.token }}
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
+      - name: Shard 4 / Slot 3
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: '4'
+          step: '3'
+          github-token: ${{ github.token }}
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
+      - name: Shard 4 / Slot 4
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: '4'
+          step: '4'
+          github-token: ${{ github.token }}
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          gemini-key-sha256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
+      - name: Shard 4 / Slot 5
+        uses: ./.github/actions/owner-paired-v4-slot
+        with:
+          root: ${{ env.OWNER_ROOT }}/input
+          build: ${{ env.OWNER_ROOT }}/build/pair-preflight.json
+          ref: ${{ github.ref_name }}
+          shard: '4'
           step: '5'
           github-token: ${{ github.token }}
           gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
