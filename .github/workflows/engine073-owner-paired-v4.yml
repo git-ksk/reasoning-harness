@@ -2,7 +2,7 @@ name: engine073-owner-paired-v4
 # New development comparison. Existing v1/v2/v3/supplement tags are untouched.
 on:
   push:
-    tags: ['eval-owner-paired-v4-*']
+    tags: ['eval-owner-paired-v4-quality-r2-*']
   pull_request:
     paths:
       - '.github/workflows/engine073-owner-paired-v4.yml'
@@ -67,7 +67,7 @@ jobs:
       fail-fast: true
       max-parallel: 1
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+        shard: [1, 2, 4]
     runs-on: macos-15
     timeout-minutes: 345
     permissions:

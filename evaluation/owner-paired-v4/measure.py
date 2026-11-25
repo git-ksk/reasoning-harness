@@ -25,29 +25,17 @@ REPO_ROOT = HERE.parents[1]
 SPEC = importlib.util.spec_from_file_location("frozen_v3", HERE.parent/"owner-paired-v3/measure.py")
 legacy = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(legacy)
-from build import CLI
+from build import CLI, ARMS, CHANGED
 
 encode, sha, save, load = legacy.encode, legacy.sha, legacy.save, legacy.load
-
 class HoldError(ValueError):
-    """Fixed, non-sensitive local diagnostic code."""
-
+    pass
 def need(condition, reason):
     if not condition:
         raise HoldError(reason)
-ARMS, MODEL = dict(legacy.ARMS), legacy.MODEL
+MODEL = legacy.MODEL
 REPO = "git-ksk/reasoning-harness"
-PREFIX = "eval-owner-paired-v4-repair-"
-# Original stopped cohort remains immutable. Recovery is limited to its one
-# independently revalidated, encrypted terminal observation; no model replay.
-RECOVERY = {
-    "cohort": "b6e483914a6d79f90c8009e542ac401dc584f40eb7e0cff2c7dfa36d7e37adf3",
-    "head": "158b569f50ea923c174b6adaee45e2c2fc666130",
-    "run": 45433270563, "slot": "00-baseline", "artifact": 14943095748,
-    "cms_sha256": "45684119c109301719fa546c1c068c147fa07dbe367b50f8ee1692074ce9f4c9",
-    "zip_sha256": "0191c87981a4cb531474af85acc7490404de885ce2e66041690b4767f492bd54",
-    "observation_sha256": "84770a0a67a79f02dceab1e54496b46abc236aa309e7e3fbd0cc5d8fdbe6e1f8",
-}
+PREFIX = "eval-owner-paired-v4-quality-r2-"
 FROZEN_PAYLOAD_SHA = "6a7d305f035c57e61fb0283f63f3b06015f5f4a9d49bd0ea47c122521dbac7d5"
 CERT = HERE.parent/"engine073-531-provisional24-20261114/reviewer-cert.pem"
 CERT_SHA = "d917aeb4c55699b1ea19117c776e5f515aa40193488197a12c00082517695b43"
@@ -55,18 +43,20 @@ CAPS = {"max_model_calls": 12, "max_output_tokens": 8192, "max_total_tokens": 32
 SLOT_TIMEOUT = 2700
 ACCOUNTING = "reported_plus_conservative_reservations_v1"
 POLICY = {
-    "id": "owner-paired-accounted-retry-v4", **CAPS,
+    "id": "owner-paired-quality-r2-diagnostic", **CAPS,
     "max_generation_output": 1024, "max_retries_per_http_logical_request": 3,
     "backoff_seconds": [30, 60, 120], "max_retry_wait_seconds": 210,
     "reservation": "max(logical_json_utf8_bytes,wire_json_utf8_bytes)+512; requested_max_output",
     "token_accounting": ACCOUNTING,
     "slot_timeout_seconds": SLOT_TIMEOUT, "inter_slot_seconds": 60,
     "transient_failure_cooldown_seconds": 120,
-    "predecessor_runs": [45101280387, 45198846318, 45319236239],
-    "classification": "owner_development_comparison_not_independent_holdout",
+    "predecessor_runs": [45433270563, 45504130723],
+    "selected_shards": [1, 2, 4],
+    "classification": "post_outcome_selected_development_diagnostic_not_independent_holdout",
 }
 TERMINAL = {"complete", "budget_exhausted", "budget_reserve_exhausted", "transient_failed", "local_decode_failed"}
-SLOTS = {f"{i:02}-{arm}" for i in range(24) for arm in ARMS}
+SHARDS = tuple(POLICY["selected_shards"])
+SLOTS = {f"{i:02}-{arm}" for shard in SHARDS for i in range(shard*3,shard*3+3) for arm in ARMS}
 HEX = r"[a-f0-9]{64}"
 REF_RE = re.compile(PREFIX + f"({HEX})-({HEX})(?:-resume-([1-9][0-9]*))?")
 USAGE_FIELDS = ("model_calls", "provider_attempts", "input_tokens", "output_tokens", "total_tokens")
@@ -131,7 +121,7 @@ def stage(root, ref):
 
 def build_check(path):
     b = load(path)
-    need(b["built"] is True and b["source_identical_except_core_and_lock"] is True
+    need(b["built"] is True and b["source_identical_except_declared_changes"] is True and set(b["changed_files"]) == CHANGED
          and b["cli_commit"] == CLI and b["provider_generation_authorized"] is False, "build_pin")
     for arm, pin in ARMS.items():
         a = b["arms"][arm]
@@ -215,48 +205,8 @@ def create_ref(name, head):
 
 
 def names(c):
-    return (f"rh4r-cohort-{c}", f"rh4r-slot-{c}-",
-            f"rh4r-s-{c}-", f"rh4r-halt-{c}")
-
-def carried(c, slot):
-    return c == RECOVERY["cohort"] and slot == RECOVERY["slot"]
-
-def slot_head(c, slot, head):
-    return RECOVERY["head"] if carried(c,slot) else head
-
-def seal_name(c, slot, run, artifact, digest, zip_digest):
-    name = names(c)[2]+slot+f"-{run}-{artifact}-{digest}-{zip_digest}"
-    need(len(("refs/tags/"+name).encode("utf-8")) <= 255, "github_ref_length")
-    return name
-
-def original_recovery(c, workflow_id):
-    r=RECOVERY
-    need(c==r["cohort"], "recovery_cohort_pin")
-    old_prefix=f"eval-owner-v4-slot-{c}-"
-    need(exact_ref(f"eval-owner-v4-cohort-{c}")==r["head"]
-         and exact_ref(f"eval-owner-v4-halt-{c}")==r["head"]
-         and matching(old_prefix)=={old_prefix+r["slot"]:r["head"]}
-         and not matching(f"eval-owner-v4-seal-{c}-"), "original_inventory_pin")
-    prior=api(f"actions/runs/{r['run']}")
-    need(prior["id"]==r["run"] and prior["status"]=="completed"
-         and prior["conclusion"]=="failure" and prior["run_attempt"]==1
-         and prior["head_sha"]==r["head"] and prior["event"]=="push"
-         and prior["workflow_id"]==workflow_id
-         and prior["head_branch"]=="eval-owner-paired-v4-"+c+"-"+FROZEN_PAYLOAD_SHA,
-         "original_run_pin")
-    check_artifact(c,r["slot"],r["run"],r["artifact"],r["zip_sha256"])
-
-def seed_recovery(c, head):
-    r=RECOVERY
-    need(c==r["cohort"], "recovery_cohort_pin")
-    try:
-        create_ref(names(c)[1]+r["slot"],r["head"])
-        create_ref(seal_name(c,r["slot"],r["run"],r["artifact"],r["cms_sha256"],r["zip_sha256"]),r["head"])
-        verify_seal(c,r["slot"],head)
-    except BaseException:
-        halt_cohort(c,head)
-        raise
-    print("Recovered one verified original observation; no model replay")
+    return (f"rhq2-cohort-{c}", f"rhq2-slot-{c}-",
+            f"rhq2-s-{c}-", f"rhq2-halt-{c}")
 
 
 def artifact_name(c, slot, run):
@@ -286,11 +236,8 @@ def verify_seal(c, slot, head, seals=None):
     need(len(rows) == 1, "claimed_slot_not_uniquely_sealed")
     name, ref_head = next(iter(rows.items()))
     match = re.fullmatch(re.escape(slot_prefix)+rf"([1-9][0-9]*)-([1-9][0-9]*)-({HEX})-({HEX})", name)
-    need(match is not None and ref_head == slot_head(c,slot,head), "seal_pin")
+    need(match is not None and ref_head == head, "seal_pin")
     run, artifact, digest, zip_digest = match.groups()
-    if carried(c,slot):
-        r=RECOVERY
-        need((int(run),int(artifact),digest,zip_digest)==(r["run"],r["artifact"],r["cms_sha256"],r["zip_sha256"]), "recovery_seal_pin")
     check_artifact(c,slot,int(run),int(artifact),zip_digest)
     return digest
 
@@ -300,7 +247,7 @@ def verify_existing(c, head):
     need(exact_ref(halt) is None, "cohort_halted")
     claims, seals = matching(slot_prefix), matching(seal_prefix)
     slots = {name.removeprefix(slot_prefix) for name in claims}
-    need(slots <= SLOTS and all(v == slot_head(c,k.removeprefix(slot_prefix),head) for k,v in claims.items()), "claim_inventory")
+    need(slots <= SLOTS and all(v == head for v in claims.values()), "claim_inventory")
     for slot in slots:
         verify_seal(c,slot,head,seals)
     need(len(seals) == len(slots), "orphan_seal")
@@ -315,12 +262,8 @@ def admit(root, ref):
     need(exact_ref(halt) is None, "cohort_halted")
     if previous is None:
         need(exact_ref(cohort_ref) is None and not verify_existing(c,head), "existing_cohort")
-        current=api(f"actions/runs/{run}")
-        original_recovery(c,current["workflow_id"])
         create_ref(cohort_ref,head)
-        seed_recovery(c,head)
-        need(verify_existing(c,head)=={RECOVERY["slot"]},"recovery_inventory")
-        print("Continuation admitted; 1 verified original slot, 47 unclaimed")
+        print(f"New diagnostic cohort claimed; all {len(SLOTS)} selected slots unclaimed")
     else:
         need(previous != run and exact_ref(cohort_ref) == head, "resume_cohort")
         current, prior = api(f"actions/runs/{run}"), api(f"actions/runs/{previous}")
@@ -331,9 +274,8 @@ def admit(root, ref):
              and (prior_ref == tag(p) or re.fullmatch(re.escape(tag(p))+r"-resume-[1-9][0-9]*", prior_ref)),
              "prior_run_not_proven_terminal")
         slots = verify_existing(c,head)
-        need(c==RECOVERY["cohort"] and RECOVERY["slot"] in slots,"recovery_inventory")
-        need(len(slots) < 48, "all_slots_already_sealed")
-        print(f"Resume admitted; {len(slots)} sealed, {48-len(slots)} unclaimed; no replay")
+        need(len(slots) < len(SLOTS), "all_slots_already_sealed")
+        print(f"Resume admitted; {len(slots)} sealed, {len(SLOTS)-len(slots)} unclaimed; no replay")
 
 
 def position(shard, step):
@@ -351,6 +293,7 @@ def pins(root, build_path, ref, shard, step):
     need(pre["tag"] == tag(p) and pre["pair_count"] == 24 and len(pre["hashes"]) == 24
          and pre["measurement_policy"] == POLICY, "preflight_pin")
     i, arm, slot = position(shard,step)
+    need(slot in SLOTS, "diagnostic_slot_scope")
     row, a = p["questions"][i], b["arms"][arm]
     config = root/"configs"/(row["source_id"]+".json")
     need(sha(config.read_bytes()) == pre["config_hashes"][row["source_id"]], "config_drift")
@@ -373,12 +316,11 @@ def claim(root, build, ref, shard, step):
     name = prefix+slot
     existing = exact_ref(name)
     if existing is not None:
-        need((previous is not None or carried(c,slot)) and existing == slot_head(c,slot,head), "duplicate_slot")
+        need(previous is not None and existing == head, "duplicate_slot")
         verify_seal(c,slot,head)
         output("run","false")
         print("Already sealed; skipping immutable slot "+slot)
         return
-    need(not carried(c,slot),"missing_carried_claim")
     create_ref(name,head)
     path = root/"raw"/slot
     path.mkdir(mode=0o700,parents=True)
@@ -501,7 +443,7 @@ def terminal_observation(stdout, stderr, rc, obs):
     elif cls=="protocol" and (f.get("model_output_diagnostic") or {}).get("origin")=="local_model_output_decode":
         status="local_decode_failed"
     else:
-        raise HoldError("global_stop_failure")
+        raise ValueError("global_stop_failure")
     obs.update(status=status,failure_class=cls)
 
 
@@ -648,7 +590,7 @@ def seal(root,ref,shard,step,artifact,artifact_digest):
         need(ready=={"sha256":digest,"file_hashes":{f:sha((path/f).read_bytes()) for f in files}}, "encryption_proof")
         prefix=names(c)[2]+slot+"-"
         need(not matching(prefix),"duplicate_seal")
-        create_ref(seal_name(c,slot,run,artifact,digest,zip_digest),head)
+        create_ref(prefix+f"{run}-{artifact}-{digest}-{zip_digest}",head)
         print("Immutable evidence seal created for "+slot)
     except BaseException:
         halt_cohort(c,head)
@@ -686,7 +628,6 @@ if __name__=="__main__":
     try:
         main()
     except BaseException as e:
-        # Only fixed local diagnostic codes; never provider contents or credentials.
-        code = str(e) if isinstance(e,HoldError) else type(e).__name__
-        print("HOLD ("+code+")",file=sys.stderr)
+        # Only a fixed diagnostic class, never provider contents or credentials.
+        print("HOLD ("+(str(e) if isinstance(e,HoldError) else type(e).__name__)+")",file=sys.stderr)
         sys.exit(2)
