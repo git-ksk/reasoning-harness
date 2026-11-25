@@ -1,82 +1,20 @@
-name: engine073-531-mistral-billing-readonly-20261115
-
-# Diagnostic only. Fetches account-linked status without generating a model response.
-# Does NOT confer permission to start live jobs or replace human billing review.
+name: Mistral no-PAYG bounded entitlement probe
 on:
-  push:
-    branches: [eval/531-real-doc24-live-20261115]
-    paths:
-      - .github/workflows/engine073-531-mistral-billing-readonly-20261115.yml
-      - evaluation/dev-lite/issue531_real24_api_billing_gate.py
-      - evaluation/dev-lite/test_issue531_real24_api_billing_gate.py
   workflow_dispatch:
-
 permissions:
   contents: read
-
+concurrency:
+  group: reasoning-harness-mistral-live
+  cancel-in-progress: false
 jobs:
-  read-only-billing-status:
-    runs-on: ubuntu-latest
+  entitlement-probe:
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - name: Read current Mistral status without generations or credentials in logs
-        shell: bash
+      - name: Verify account and execute at most one synthetic eight-output-token probe
         env:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          import json, os, urllib.request, urllib.error
-          from urllib.parse import urlparse
-          key=os.environ.get('MISTRAL_API_KEY','')
-          if not key:
-              raise RuntimeError('no_api_key_configured_no_model_calls')
-          class RefuseRedirect(urllib.request.HTTPRedirectHandler):
-              def redirect_request(self, req, fp, code, msg, headers, newurl):
-                  raise RuntimeError('redirect_disallowed')
-          opener=urllib.request.build_opener(RefuseRedirect())
-          base='https://api.mistral.ai'
-          endpoints={
-              'subscription':'/v1/billing/subscription',
-              'budget':'/v1/billing/budget',
-              'models':'/v1/models',
-          }
-          for name, path in endpoints.items():
-              try:
-                  req=urllib.request.Request(base+path,headers={'Authorization':'Bearer '+key,'Accept':'application/json'},method='GET')
-                  with opener.open(req,timeout=20) as response:
-                      if urlparse(response.geturl()).hostname!='api.mistral.ai':
-                          raise RuntimeError('unexpected_origin')
-                      data=json.load(response)
-                      if name=='models':
-                          ids=[x.get('id') for x in data.get('data',[]) if isinstance(x,dict)] if isinstance(data,dict) else []
-                          print('read_only_models_http=200 model_available='+str('ministral-8b-2512' in ids).lower())
-                      else:
-                          # Never print full account payload or financial amounts in public CI logs.
-                          # Only field NAMES / value types, never credit amounts, workspace IDs, emails, or raw response.
-                          def keys(obj):
-                              return ','.join(sorted(k for k in obj if isinstance(k,str) and len(k)<40 and k.replace('_','').isalpha())[:30]) if isinstance(obj,dict) else 'non_object_'+type(obj).__name__
-                          print('read_only_'+name+'_http=200 root_schema='+keys(data))
-                          for field, obj in data.items() if isinstance(data,dict) else []:
-                              if isinstance(obj,dict) and field in ('api_budget','vibe_budget','subscription','budget','data','details','payment'):
-                                  print('read_only_'+name+'_nested_schema_'+field+'='+keys(obj))
-                          for field in ('pay_as_you_go_enabled','pay_as_you_go','is_pay_as_you_go_enabled','payg_enabled','auto_recharge_enabled'):
-                              if isinstance(data,dict) and type(data.get(field)) is bool:
-                                  print('read_only_'+name+'_'+field+'='+str(data[field]).lower())
-              except urllib.error.HTTPError as exc:
-                  print('read_only_'+name+'_http='+str(exc.code)+' no_account_payload_logged=true')
-              except Exception as exc:
-                  print('read_only_'+name+'_error='+type(exc).__name__+' no_account_payload_logged=true')
-          print('model_generation_calls=0 human_billing_review_status=UNVERIFIED')
-          PY
-      - name: Strict current account no-overage read-only admission proof (model generations zero)
-        shell: bash
-        env:
-          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
-        run: |
-          set -euo pipefail
-          python3 evaluation/dev-lite/test_issue531_real24_api_billing_gate.py
-          python3 evaluation/dev-lite/issue531_real24_api_billing_gate.py
+        run: python3 evaluation/owner-paired-v4/free_tier_probe.py
