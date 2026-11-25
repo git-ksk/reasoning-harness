@@ -7,16 +7,24 @@ from unittest.mock import patch
 import measure as m
 
 
-def attempt(call="g1-1",status=200,number=1):
-    rows=[{"event":"attempt_start"},{"event":"http_headers","status_code":status},
-          {"event":"http_response","status_code":status}]
-    return "".join(json.dumps(dict(r,schema_version="reason-google-attempt-telemetry-v1",
-                                    model=m.MODEL,call_id=call,attempt=number))+"\n" for r in rows)
+def attempt(call="g1-1",status=200,number=1,i=4,o=3,ri=600,ro=8,state="reported",reason="retry",wait=30000):
+    base={"model":m.MODEL,"call_id":call,"attempt":number}
+    rows=[dict(base,schema_version="reason-google-attempt-telemetry-v1",event="attempt_start"),
+          dict(base,schema_version="reason-google-attempt-telemetry-v1",event="http_headers",status_code=status),
+          dict(base,schema_version="reason-google-attempt-telemetry-v1",event="http_response",status_code=status,
+               error_class="provider_unavailable" if status==503 else None)]
+    a=dict(base,schema_version="reason-google-accounted-v1")
+    rows.append(dict(a,event="accounted_attempt",status_code=status,usage=state,charged_input=i,charged_output=o,
+                     charged_total=i+o,reserved_input=ri,reserved_output=ro))
+    if status==503:
+        rows.append(dict(a,event="retry_decision",reason=reason,wait_ms=wait if reason=="retry" else 0,elapsed_ms=0))
+        if reason=="retry":rows.append(dict(a,event="retry_wait",reason=reason,wait_ms=wait,elapsed_ms=wait+1))
+    return "".join(json.dumps(r)+"\n" for r in rows)
 
 def envelope(i,o,a=1,calls=1,cls=None,msg="",diag=None):
     report={"run":{"tracked_from_session_start":True,"input_tokens":i,"output_tokens":o,
                    "total_tokens":i+o if i is not None and o is not None else None,
-                   "provider_attempts":a,"model_calls":calls},"budget":m.CAPS}
+                   "provider_attempts":a,"model_calls":calls},"budget":m.CAPS,"token_accounting":m.ACCOUNTING}
     if cls:
         failure={"failure_class":cls,"message":msg}
         if diag: failure["model_output_diagnostic"]=diag
@@ -33,23 +41,62 @@ class Measurement(unittest.TestCase):
         return obs
 
     def test_success_and_structured_fallback_counted(self):
-        obs=self.check(envelope(4,3,2),attempt()+attempt("g1-2"),0,"complete")
-        self.assertEqual(obs["telemetry"]["actual_total_tokens"],7)
+        obs=self.check(envelope(8,6,2),attempt()+attempt("g1-2"),0,"complete")
+        self.assertEqual(obs["telemetry"]["actual_total_tokens"],14)
         self.assertEqual(obs["telemetry"]["http_attempts"],2)
 
+    def test_503_recovery_reports_reservation_as_unknown(self):
+        log=attempt(status=503,i=600,o=8,state="reserved")+attempt(number=2)
+        obs=self.check(envelope(604,11,2),log,0,"complete")
+        self.assertIsNone(obs["telemetry"]["actual_total_tokens"])
+        self.assertEqual(obs["telemetry"]["reported_tokens"]["total"],7)
+        self.assertEqual(obs["telemetry"]["reserved_unknown_tokens"]["total"],608)
+        self.assertEqual(obs["telemetry"]["retries"],1)
+        self.assertEqual(obs["telemetry"]["retry_wait_ms"],30001)
+
+    def test_exact_reported_503_recovery(self):
+        log=attempt(status=503,i=3,o=0)+attempt(number=2)
+        obs=self.check(envelope(7,3,2),log,0,"complete")
+        self.assertEqual(obs["telemetry"]["actual_total_tokens"],10)
+
+    def test_max_three_retries_and_final_success(self):
+        log="".join(attempt(status=503,number=i,i=600,o=8,state="reserved",wait=w) for i,w in ((1,30000),(2,60000),(3,120000)))+attempt(number=4)
+        obs=self.check(envelope(1804,27,4),log,0,"complete")
+        self.assertEqual(obs["telemetry"]["retries"],3)
+        self.assertEqual(obs["telemetry"]["retry_wait_ms"],210003)
+
+    def test_terminal_503_never_scored_and_no_post_terminal_call(self):
+        log="".join(attempt(status=503,number=i,i=600,o=8,state="reserved",wait=w) for i,w in ((1,30000),(2,60000),(3,120000)))+attempt(status=503,number=4,i=600,o=8,state="reserved",reason="attempt_limit")
+        raw=envelope(2400,32,4,cls="provider_unavailable",msg="Google HTTP 503; retry_decision=attempt_limit")
+        with self.assertRaisesRegex(ValueError,"terminal_503_attempt_limit"):
+            self.check(raw,log,1,"complete")
+        with self.assertRaisesRegex(ValueError,"concealed_terminal_503"):
+            self.check(envelope(2400,32,4),log,0,"complete")
+        with self.assertRaises(ValueError):
+            self.check(envelope(2404,35,5),log+attempt("g1-2"),0,"complete")
+
     def test_unknown_usage_failed_http_missing_and_retry_stop(self):
+        valid=attempt(status=503,i=600,o=8,state="reserved")+attempt(number=2)
         for raw,log in ((envelope(None,3),attempt()),(envelope(4,3),attempt(status=429)),
                         (envelope(4,3),""),(envelope(4,3),attempt(number=2)),
                         (envelope(4,3),attempt()+attempt("g1-2")),
-                        (envelope(4,3),attempt().replace(m.MODEL,"wrong"))):
+                        (envelope(4,3),attempt().replace(m.MODEL,"wrong")),
+                        (envelope(604,11,2),valid.replace('"charged_total": 608','"charged_total": 0')),
+                        (envelope(604,11,2),valid.replace('"wait_ms": 30000','"wait_ms": 0')),
+                        (envelope(604,11,2),valid.replace('"event": "retry_wait"','"event": "invalid"')),
+                        (envelope(604,11,2),valid.replace('"reserved_input": 600','"reserved_input": 599',1)),
+                        (envelope(604,11,2),valid.replace('"usage": "reserved"','"usage": "unknown"'))):
             with self.assertRaises((ValueError,KeyError)):
                 self.check(raw,log,0,"complete")
 
     def test_budget_exact_and_overrun(self):
-        log="".join(attempt("g1-"+str(i)) for i in range(8))
+        log="".join(attempt("g1-"+str(i),i=5,o=1024,ro=1024) for i in range(8))
         self.check(envelope(40,8192,8,8,cls="usage_budget_exceeded",msg="output-token budget exhausted (8192/8192)"),log,1,"budget_exhausted")
         with self.assertRaises(ValueError):
             self.check(envelope(40,8193,8,8),log,0,"complete")
+        self.check(envelope(0,0,0,1,cls="usage_budget_exceeded",msg="google_attempt_reservation_exhausted"),"",1,"budget_reserve_exhausted")
+        with self.assertRaises(ValueError):
+            self.check(envelope(4,3,1),attempt(ri=32000,ro=1024),0,"complete")
 
     def test_local_decode_failure_is_terminal_only_if_accounted(self):
         raw=envelope(4,3,cls="protocol",diag={"origin":"local_model_output_decode","phase":"initial_candidate"})
@@ -73,6 +120,19 @@ class Measurement(unittest.TestCase):
         self.assertEqual(sum(m.position(s,t)[1]=="baseline" for s in range(8) for t in (0,2,4)),12)
 
 class Claims(unittest.TestCase):
+    def test_failed_ubuntu_predecessor_requires_terminal_and_preserved_evidence(self):
+        head="87395e1e32d92f8c851eed16aa32a802f6a1da1c"
+        old="53c3403a7a527fc62c8a82195150d2cc101337bae1b4d1be6f4708516d74e6f1"
+        prior={"status":"completed","conclusion":"failure","head_sha":head,"run_attempt":1}
+        artifact={"id":15035198762,"workflow_run":{"id":45640828200},"digest":"sha256:419c739392cd9fcf19902e7670cf328889ea56294da5983947a8d8181bbb23d2","expired":False}
+        refs=[{"rhg2-slot-"+old+"-03-candidate":head},{},{"rhg2-halt-"+old:head}]
+        with patch.object(m,"api",side_effect=[prior,artifact]),patch.object(m,"matching",side_effect=refs):
+            m.verify_failed_ubuntu_predecessor()
+        with patch.object(m,"api",side_effect=[prior,dict(artifact,expired=True)]),patch.object(m,"matching",side_effect=refs):
+            with self.assertRaisesRegex(ValueError,"ubuntu_predecessor_artifact"):m.verify_failed_ubuntu_predecessor()
+        with patch.object(m,"api",return_value=prior),patch.object(m,"matching",return_value={}):
+            with self.assertRaisesRegex(ValueError,"ubuntu_predecessor_inventory"):m.verify_failed_ubuntu_predecessor()
+
     def test_platform_migration_requires_cancelled_unstarted_predecessor(self):
         prior={"status":"completed","conclusion":"cancelled","head_sha":"b42673fd530c04b21f0391f301e4fe0dfae3d849","run_attempt":1}
         with patch.object(m,"api",side_effect=[prior,{"total_count":0}]),patch.object(m,"matching",return_value=[]):

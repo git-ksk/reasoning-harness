@@ -10,6 +10,7 @@ use std::{
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 
+use crate::mistral_retry_budget::{self as retry_budget, Tokens};
 use reasoning_harness_core::{
     ModelAdapter, ModelError, ModelErrorKind, ModelExecutionBudget,
     ModelExecutionTelemetrySnapshot, ModelOutputFormat, ModelRequest, ModelResponse, ModelUsage,
@@ -48,6 +49,7 @@ pub struct GoogleAdapter {
     base_url: Url,
     model: String,
     single_attempt: bool,
+    accounted_retry: bool,
     request_pacer: Option<Arc<RequestPacer>>,
     attempt_telemetry_path: Option<PathBuf>,
     execution_budget: Mutex<Option<ModelExecutionBudget>>,
@@ -259,6 +261,11 @@ impl GoogleAdapter {
         self.single_attempt = enabled;
     }
 
+    /// Opt-in owner development mode; normal and formal paths are unchanged.
+    pub fn set_accounted_retry(&mut self, enabled: bool) {
+        self.accounted_retry = enabled;
+    }
+
     pub fn from_env(model: impl Into<String>) -> Result<Self, ModelError> {
         let api_key = env::var("GEMINI_API_KEY").map_err(|_| {
             ModelError::new(ModelErrorKind::Credentials, "GEMINI_API_KEY is not set")
@@ -333,11 +340,61 @@ impl GoogleAdapter {
             base_url,
             model,
             single_attempt: false,
+            accounted_retry: false,
             request_pacer: None,
             attempt_telemetry_path: None,
             execution_budget: Mutex::new(None),
             execution_telemetry: crate::network::ExecutionTelemetryCounters::default(),
         })
+    }
+
+    fn write_accounting_event(&self, value: Value, attempts: u32) -> Result<(), ModelError> {
+        let fail = || {
+            ModelError::new(
+                ModelErrorKind::Protocol,
+                "Google accounted telemetry write failed",
+            )
+            .with_provider_attempts(attempts)
+        };
+        let path = self.attempt_telemetry_path.as_ref().ok_or_else(fail)?;
+        let mut file = OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(path)
+            .map_err(|_| fail())?;
+        writeln!(file, "{value}").map_err(|_| fail())
+    }
+
+    fn log_accounted(
+        &self,
+        call: &str,
+        attempt: u32,
+        status: u16,
+        usage: &str,
+        debit: Tokens,
+        reserve: Tokens,
+    ) -> Result<(), ModelError> {
+        self.write_accounting_event(json!({"schema_version":"reason-google-accounted-v1",
+            "event":"accounted_attempt","model":self.model,"call_id":call,"attempt":attempt,
+            "status_code":status,"usage":usage,"charged_input":debit.input,"charged_output":debit.output,
+            "charged_total":debit.total(),"reserved_input":reserve.input,"reserved_output":reserve.output}), attempt)
+    }
+
+    fn log_retry_event(
+        &self,
+        call: &str,
+        attempt: u32,
+        event: &str,
+        reason: &str,
+        delay: Duration,
+        elapsed: Duration,
+    ) -> Result<(), ModelError> {
+        self.write_accounting_event(
+            json!({"schema_version":"reason-google-accounted-v1",
+            "event":event,"model":self.model,"call_id":call,"attempt":attempt,
+            "reason":reason,"wait_ms":delay.as_millis(),"elapsed_ms":elapsed.as_millis()}),
+            attempt,
+        )
     }
 
     async fn generate_inner(&self, request: ModelRequest) -> Result<ModelResponse, ModelError> {
@@ -348,6 +405,15 @@ impl GoogleAdapter {
             )
         })?;
 
+        let logical_bytes = if self.accounted_retry {
+            Some(
+                crate::http_observation::measure_model_request(&request)?
+                    .1
+                    .request_utf8_json_bytes,
+            )
+        } else {
+            None
+        };
         let body = InteractionRequest {
             model: &self.model,
             input: request.task,
@@ -361,6 +427,51 @@ impl GoogleAdapter {
             store: false,
         };
 
+        let accounting = if self.accounted_retry {
+            let limits = retry_budget::limits().ok_or_else(|| {
+                ModelError::new(
+                    ModelErrorKind::Protocol,
+                    "missing Google accounted retry limits",
+                )
+            })?;
+            if self.model != "gemini-3.5-flash-lite"
+                || !self.single_attempt
+                || self.attempt_telemetry_path.is_none()
+            {
+                return Err(ModelError::new(
+                    ModelErrorKind::Protocol,
+                    "invalid Google accounted retry mode",
+                ));
+            }
+            let output = body
+                .generation_config
+                .max_output_tokens
+                .filter(|n| (1..=1024).contains(n))
+                .ok_or_else(|| {
+                    ModelError::new(
+                        ModelErrorKind::Protocol,
+                        "invalid Google accounted output cap",
+                    )
+                })?;
+            let wire = serde_json::to_vec(&body)
+                .map_err(|_| {
+                    ModelError::new(ModelErrorKind::Protocol, "invalid Google accounted wire")
+                })?
+                .len() as u64;
+            Some((
+                limits,
+                Tokens {
+                    input: wire
+                        .max(logical_bytes.unwrap_or_default())
+                        .saturating_add(retry_budget::INPUT_OVERHEAD),
+                    output: u64::from(output),
+                },
+            ))
+        } else {
+            None
+        };
+        let mut charged = Tokens::default();
+        let mut retry_wait = Duration::ZERO;
         let call_sequence = GOOGLE_ATTEMPT_TELEMETRY_CALL_SEQUENCE.fetch_add(1, Ordering::Relaxed);
         let call_id = format!("g{}-{call_sequence}", std::process::id());
         let mut provider_attempts = 0u32;
@@ -380,16 +491,32 @@ impl GoogleAdapter {
         let mut used_active = Duration::ZERO;
 
         loop {
+            if let Some((limits, reserve)) = accounting {
+                if !charged.add(reserve).fits(limits) {
+                    retry_budget::publish(charged.usage());
+                    retry_budget::refuse("google_attempt_reservation_exhausted");
+                    return Err(ModelError {
+                        kind: ModelErrorKind::Protocol,
+                        message: "google_attempt_reservation_exhausted".into(),
+                        provider_attempts,
+                    });
+                }
+            }
             if let Some(pacer) = &self.request_pacer {
-                let waited = pacer.wait(execution_budget, used_wait).await?;
-                crate::network::bounded_wait(waited, used_wait, execution_budget)?;
+                let waited = pacer
+                    .wait(execution_budget, used_wait)
+                    .await
+                    .map_err(|e| e.with_provider_attempts(provider_attempts))?;
+                crate::network::bounded_wait(waited, used_wait, execution_budget)
+                    .map_err(|e| e.with_provider_attempts(provider_attempts))?;
                 used_wait = used_wait.saturating_add(waited);
                 self.execution_telemetry
                     .wait_completed(crate::network::ProviderWaitKind::Pacing, waited);
             }
 
             let active_remaining =
-                crate::network::remaining_active_budget(used_active, execution_budget)?;
+                crate::network::remaining_active_budget(used_active, execution_budget)
+                    .map_err(|e| e.with_provider_attempts(provider_attempts))?;
             provider_attempts = provider_attempts.saturating_add(1);
             self.execution_telemetry.attempt_started();
             let mut attempt_telemetry = GoogleAttemptTelemetryGuard::start(
@@ -468,6 +595,13 @@ impl GoogleAdapter {
             };
 
             let status = response.status();
+            if self.accounted_retry && status.is_success() && status != StatusCode::OK {
+                return Err(ModelError::new(
+                    ModelErrorKind::Protocol,
+                    "unexpected Google success status",
+                )
+                .with_provider_attempts(provider_attempts));
+            }
             let rate_limit_headers = google_rate_limit_header_summary(response.headers());
             log_google_attempt_telemetry(
                 self.attempt_telemetry_path.as_deref(),
@@ -488,8 +622,17 @@ impl GoogleAdapter {
                 },
             );
             if !status.is_success() {
-                let rate_limit_delay = rate_limit_delay(response.headers(), rate_limit_retries);
-                let body = response.text().await.unwrap_or_default();
+                let headers = response.headers().clone();
+                let rate_limit_delay = rate_limit_delay(&headers, rate_limit_retries);
+                let error_body = response.text().await;
+                if self.accounted_retry && error_body.is_err() {
+                    return Err(ModelError::new(
+                        ModelErrorKind::Transport,
+                        "Google error response body unreadable",
+                    )
+                    .with_provider_attempts(provider_attempts));
+                }
+                let body = error_body.unwrap_or_default();
                 let kind = classify_http_error(status, &body);
                 let quota_window = structured_google_quota_window(&body).map(quota_window_name);
                 let provider_status = google_provider_status(&body);
@@ -513,6 +656,100 @@ impl GoogleAdapter {
                     },
                 );
                 attempt_telemetry.complete();
+
+                if let Some((limits, reserve)) = accounting {
+                    // Only a directly observed 503 is eligible. Unknown usage on a rejected
+                    // attempt is charged the entire reservation, never zero.
+                    if status == StatusCode::SERVICE_UNAVAILABLE {
+                        let decision =
+                            accounted_503_delay(&headers, &body, provider_attempts, retry_wait);
+                        if decision.is_ok()
+                            || matches!(
+                                decision,
+                                Err("attempt_limit" | "retry_wait_limit" | "retry_hint_invalid")
+                            )
+                        {
+                            let debit = google_error_debit(&body, reserve)
+                                .map_err(|e| e.with_provider_attempts(provider_attempts))?;
+                            if !debit.0.within(reserve) || !charged.add(debit.0).fits(limits) {
+                                return Err(ModelError::new(
+                                    ModelErrorKind::Protocol,
+                                    "Google error usage outside reservation",
+                                )
+                                .with_provider_attempts(provider_attempts));
+                            }
+                            charged = charged.add(debit.0);
+                            self.log_accounted(
+                                &call_id,
+                                provider_attempts,
+                                503,
+                                debit.1,
+                                debit.0,
+                                reserve,
+                            )?;
+                            let decision = decision.and_then(|delay| {
+                                if !charged.add(reserve).fits(limits) {
+                                    return Err("token_reservation_limit");
+                                }
+                                crate::network::bounded_wait(delay, used_wait, execution_budget)
+                                    .map_err(|_| "execution_wait_budget")
+                            });
+                            match decision {
+                                Ok(delay) => {
+                                    self.log_retry_event(
+                                        &call_id,
+                                        provider_attempts,
+                                        "retry_decision",
+                                        "retry",
+                                        delay,
+                                        Duration::ZERO,
+                                    )?;
+                                    let started = Instant::now();
+                                    tokio::time::sleep(delay).await;
+                                    let elapsed = started.elapsed();
+                                    self.log_retry_event(
+                                        &call_id,
+                                        provider_attempts,
+                                        "retry_wait",
+                                        "retry",
+                                        delay,
+                                        elapsed,
+                                    )?;
+                                    retry_wait = retry_wait.saturating_add(delay);
+                                    used_wait = used_wait.saturating_add(delay);
+                                    self.execution_telemetry.wait_completed(
+                                        crate::network::ProviderWaitKind::Retry,
+                                        delay,
+                                    );
+                                    continue;
+                                }
+                                Err(reason) => {
+                                    self.log_retry_event(
+                                        &call_id,
+                                        provider_attempts,
+                                        "retry_decision",
+                                        reason,
+                                        Duration::ZERO,
+                                        Duration::ZERO,
+                                    )?;
+                                    retry_budget::publish(charged.usage());
+                                    return Err(ModelError::new(
+                                        ModelErrorKind::ProviderUnavailable,
+                                        format!("Google HTTP 503; retry_decision={reason}"),
+                                    )
+                                    .with_provider_attempts(provider_attempts));
+                                }
+                            }
+                        }
+                    }
+                    // No replays for quota/auth/billing, 429, timeouts, other 5xx, or
+                    // conflicting/malformed error evidence.
+                    return Err(ModelError::new(
+                        kind,
+                        format!("Google HTTP {status}; non-retryable accounted failure"),
+                    )
+                    .with_provider_attempts(provider_attempts));
+                }
 
                 if status == StatusCode::TOO_MANY_REQUESTS
                     && kind == ModelErrorKind::RateLimit
@@ -610,6 +847,33 @@ impl GoogleAdapter {
                 cumulative_usage.total_tokens,
                 usage.and_then(|usage| usage.total_tokens),
             );
+            if let Some((limits, reserve)) = accounting {
+                let exact = Tokens::from_usage(&cumulative_usage).ok_or_else(|| {
+                    ModelError::new(
+                        ModelErrorKind::Protocol,
+                        "Google successful response usage unknown",
+                    )
+                    .with_provider_attempts(provider_attempts)
+                })?;
+                if !exact.within(reserve)
+                    || !charged.add(exact).fits(limits)
+                    || response.model.as_deref() != Some(self.model.as_str())
+                {
+                    return Err(ModelError::new(
+                        ModelErrorKind::Protocol,
+                        "Google response violated model pin or reservation",
+                    )
+                    .with_provider_attempts(provider_attempts));
+                }
+                charged = charged.add(exact);
+                self.log_accounted(&call_id, provider_attempts, 200, "reported", exact, reserve)?;
+                retry_budget::publish(charged.usage());
+                // The task-local debit includes reservations. Adapter usage remains
+                // actual only when every attempt is reported.
+                if provider_attempts > 1 {
+                    cumulative_usage = ModelUsage::default();
+                }
+            }
             let text = match response.text() {
                 Ok(text) => text,
                 Err(error)
@@ -642,6 +906,107 @@ impl GoogleAdapter {
             });
         }
     }
+}
+
+fn google_error_debit(body: &str, reserve: Tokens) -> Result<(Tokens, &'static str), ModelError> {
+    let parsed = serde_json::from_str::<Value>(body).ok();
+    if parsed.is_none() && (body.trim_start().starts_with('{') || body.contains("\"usage\"")) {
+        return Err(ModelError::new(
+            ModelErrorKind::Protocol,
+            "Google malformed error envelope",
+        ));
+    }
+    if let Some(u) = parsed.as_ref().and_then(|v| v.get("usage")) {
+        let invalid = || ModelError::new(ModelErrorKind::Protocol, "Google malformed error usage");
+        let usage: Usage = serde_json::from_value(u.clone()).map_err(|_| invalid())?;
+        let exact = Tokens::from_usage(&ModelUsage {
+            input_tokens: usage.total_input_tokens,
+            output_tokens: usage.total_output_tokens,
+            total_tokens: usage.total_tokens,
+        })
+        .ok_or_else(invalid)?;
+        Ok((exact, "reported"))
+    } else {
+        Ok((reserve, "reserved"))
+    }
+}
+
+fn accounted_503_delay(
+    headers: &reqwest::header::HeaderMap,
+    body: &str,
+    attempt: u32,
+    spent: Duration,
+) -> Result<Duration, &'static str> {
+    let lower = body.to_ascii_lowercase();
+    if [
+        "quota",
+        "billing",
+        "credit",
+        "resource_exhausted",
+        "permission_denied",
+        "unauthenticated",
+        "api_key_invalid",
+        "invalid api key",
+        "payment",
+        "daily limit",
+        "forbidden",
+    ]
+    .iter()
+    .any(|x| lower.contains(x))
+    {
+        return Err("conflicting_error");
+    }
+    let parsed = serde_json::from_str::<Value>(body).ok();
+    if let Some(error) = parsed.as_ref().and_then(|v| v.get("error")) {
+        if error
+            .get("status")
+            .is_some_and(|v| v.as_str() != Some("UNAVAILABLE"))
+            || error.get("code").is_some_and(|v| v.as_u64() != Some(503))
+        {
+            return Err("conflicting_error");
+        }
+    }
+    if !(1..=3).contains(&attempt) {
+        return Err("attempt_limit");
+    }
+    let mut delay = Duration::from_secs([30, 60, 120][attempt as usize - 1]);
+    for value in headers.get_all(RETRY_AFTER) {
+        let value = value.to_str().map_err(|_| "retry_hint_invalid")?;
+        let hint = if let Ok(secs) = value.parse::<u64>() {
+            Duration::from_secs(secs)
+        } else {
+            httpdate::parse_http_date(value)
+                .map_err(|_| "retry_hint_invalid")?
+                .duration_since(SystemTime::now())
+                .unwrap_or_default()
+        };
+        delay = delay.max(hint);
+    }
+    if let Some(details) = parsed
+        .as_ref()
+        .and_then(|v| v.pointer("/error/details"))
+        .and_then(Value::as_array)
+    {
+        for item in details {
+            if item
+                .get("@type")
+                .and_then(Value::as_str)
+                .is_some_and(|s| s.ends_with("google.rpc.RetryInfo"))
+            {
+                let hint = item
+                    .get("retryDelay")
+                    .or_else(|| item.get("retry_delay"))
+                    .and_then(Value::as_str)
+                    .and_then(parse_google_duration)
+                    .ok_or("retry_hint_invalid")?;
+                delay = delay.max(hint);
+            }
+        }
+    }
+    if delay > Duration::from_secs(120) || spent.saturating_add(delay) > Duration::from_secs(210) {
+        return Err("retry_wait_limit");
+    }
+    Ok(delay)
 }
 
 fn add_reported_usage(total: Option<u64>, next: Option<u64>) -> Option<u64> {
@@ -801,7 +1166,7 @@ fn parse_google_duration(value: &str) -> Option<Duration> {
     if !seconds.is_finite() || seconds < 0.0 {
         return None;
     }
-    Some(Duration::from_secs_f64(seconds))
+    Duration::try_from_secs_f64(seconds).ok()
 }
 
 fn structured_google_quota_window(body: &str) -> Option<GoogleQuotaWindow> {
@@ -1529,6 +1894,207 @@ mod tests {
             }
         });
         (format!("http://{address}/v1beta/"), server)
+    }
+
+    fn accounted_adapter(base: &str, path: PathBuf) -> GoogleAdapter {
+        let mut adapter =
+            GoogleAdapter::with_base_url("test-key", "gemini-3.5-flash-lite", base).unwrap();
+        adapter.set_single_attempt(true);
+        adapter.set_accounted_retry(true);
+        adapter.attempt_telemetry_path = Some(path);
+        adapter
+    }
+
+    fn accounted_test_path() -> PathBuf {
+        env::temp_dir().join(format!(
+            "rh-google-accounted-{}-{}.jsonl",
+            std::process::id(),
+            GOOGLE_ATTEMPT_TELEMETRY_CALL_SEQUENCE.fetch_add(1, Ordering::Relaxed)
+        ))
+    }
+
+    #[test]
+    fn accounted_503_delay_and_usage_controls() {
+        let mut h = reqwest::header::HeaderMap::new();
+        for (attempt, sec) in [(1, 30), (2, 60), (3, 120)] {
+            assert_eq!(
+                accounted_503_delay(&h, "", attempt, Duration::ZERO),
+                Ok(Duration::from_secs(sec))
+            );
+        }
+        assert_eq!(
+            accounted_503_delay(&h, "", 4, Duration::ZERO),
+            Err("attempt_limit")
+        );
+        assert_eq!(
+            accounted_503_delay(&h, "", 3, Duration::from_secs(91)),
+            Err("retry_wait_limit")
+        );
+        h.insert(RETRY_AFTER, "45".parse().unwrap());
+        assert_eq!(
+            accounted_503_delay(&h, "", 1, Duration::ZERO),
+            Ok(Duration::from_secs(45))
+        );
+        h.append(RETRY_AFTER, "121".parse().unwrap());
+        assert_eq!(
+            accounted_503_delay(&h, "", 1, Duration::ZERO),
+            Err("retry_wait_limit")
+        );
+        h.clear();
+        h.insert(RETRY_AFTER, "invalid".parse().unwrap());
+        assert_eq!(
+            accounted_503_delay(&h, "", 1, Duration::ZERO),
+            Err("retry_hint_invalid")
+        );
+        h.clear();
+        for body in [
+            "billing disabled",
+            "quota exceeded",
+            r#"{"error":{"code":429}}"#,
+            r#"{"error":{"status":"PERMISSION_DENIED"}}"#,
+        ] {
+            assert_eq!(
+                accounted_503_delay(&h, body, 1, Duration::ZERO),
+                Err("conflicting_error")
+            );
+        }
+        let body = r#"{"error":{"status":"UNAVAILABLE","details":[{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"55s"}]}}"#;
+        assert_eq!(
+            accounted_503_delay(&h, body, 1, Duration::ZERO),
+            Ok(Duration::from_secs(55))
+        );
+        for invalid in ["1e300s", "NaNs", "-1s", "not-a-duration"] {
+            assert!(parse_google_duration(invalid).is_none());
+        }
+        let reserve = Tokens {
+            input: 1000,
+            output: 8,
+        };
+        assert_eq!(
+            google_error_debit("", reserve).unwrap(),
+            (reserve, "reserved")
+        );
+        assert_eq!(
+            google_error_debit(
+                r#"{"usage":{"total_input_tokens":2,"total_output_tokens":1,"total_tokens":3}}"#,
+                reserve
+            )
+            .unwrap(),
+            (
+                Tokens {
+                    input: 2,
+                    output: 1
+                },
+                "reported"
+            )
+        );
+        for bad in [
+            r#"{"usage":null}"#,
+            r#"{"usage":{"total_tokens":4}}"#,
+            r#"{"usage":{"total_input_tokens":2,"total_output_tokens":1,"total_tokens":9}}"#,
+            r#"{"usage":"#,
+        ] {
+            assert!(google_error_debit(bad, reserve).is_err());
+        }
+    }
+
+    #[tokio::test]
+    async fn accounted_503_recovers_and_debits_reservation() {
+        let (base, server) = spawn_sequence_server(vec![
+            ("503 Service Unavailable", String::new(), ""),
+            (
+                "200 OK",
+                success_body("ok").replace("test-model", "gemini-3.5-flash-lite"),
+                "",
+            ),
+        ]);
+        let path = accounted_test_path();
+        let adapter = accounted_adapter(&base, path.clone());
+        let (result, account, refusal) =
+            retry_budget::with_limits(Some(32), Some(8192), adapter.generate(test_request())).await;
+        let response = result.unwrap();
+        assert_eq!(response.provider_attempts, 2);
+        assert_eq!(response.usage.total_tokens, None);
+        let debit = account.unwrap();
+        assert_eq!(debit.output_tokens, Some(9));
+        assert!(debit.input_tokens.unwrap() > 512);
+        assert_eq!(refusal, None);
+        let rows = fs::read_to_string(&path).unwrap();
+        assert!(
+            rows.contains("accounted_attempt")
+                && rows.contains("retry_wait")
+                && rows.contains("reserved")
+        );
+        fs::remove_file(path).unwrap();
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn accounted_503_stops_at_reservation_or_invalid_hint() {
+        for (output, header, reason) in [
+            (8, "", "token_reservation_limit"),
+            (32, "Retry-After: 121\r\n", "retry_wait_limit"),
+        ] {
+            let (base, server) =
+                spawn_sequence_server(vec![("503 Service Unavailable", String::new(), header)]);
+            let path = accounted_test_path();
+            let adapter = accounted_adapter(&base, path.clone());
+            let (result, account, _) = retry_budget::with_limits(
+                Some(output),
+                Some(8192),
+                adapter.generate(test_request()),
+            )
+            .await;
+            let e = result.unwrap_err();
+            assert_eq!(e.provider_attempts, 1);
+            assert!(e.message.contains(reason));
+            assert_eq!(account.unwrap().output_tokens, Some(8));
+            fs::remove_file(path).unwrap();
+            server.join().unwrap();
+        }
+    }
+
+    #[tokio::test]
+    async fn accounted_google_nonretryable_and_unmeasurable_fail_closed() {
+        for (status, body) in [
+            ("429 Too Many Requests", "quota".into()),
+            ("401 Unauthorized", String::new()),
+            ("402 Payment Required", String::new()),
+            ("500 Internal Server Error", String::new()),
+            ("503 Service Unavailable", "billing disabled".into()),
+            (
+                "503 Service Unavailable",
+                r#"{"usage":{"total_tokens":1}}"#.into(),
+            ),
+            ("200 OK", success_body("ok")),
+            (
+                "200 OK",
+                r#"{"model":"gemini-3.5-flash-lite","steps":[]}"#.into(),
+            ),
+        ] {
+            let (base, server) = spawn_sequence_server(vec![(status, body, "")]);
+            let path = accounted_test_path();
+            let adapter = accounted_adapter(&base, path.clone());
+            let (result, account, _) =
+                retry_budget::with_limits(Some(32), Some(8192), adapter.generate(test_request()))
+                    .await;
+            assert_eq!(result.unwrap_err().provider_attempts, 1);
+            assert!(account.is_none());
+            fs::remove_file(path).unwrap();
+            server.join().unwrap();
+        }
+    }
+
+    #[tokio::test]
+    async fn accounted_google_initial_reservation_refusal_sends_nothing() {
+        let path = accounted_test_path();
+        let adapter = accounted_adapter("http://127.0.0.1:1/v1beta/", path.clone());
+        let (result, account, refusal) =
+            retry_budget::with_limits(Some(32), Some(1), adapter.generate(test_request())).await;
+        assert_eq!(result.unwrap_err().provider_attempts, 0);
+        assert_eq!(account.unwrap().total_tokens, Some(0));
+        assert_eq!(refusal, Some("google_attempt_reservation_exhausted"));
+        assert!(!path.exists());
     }
 
     #[tokio::test]

@@ -284,6 +284,9 @@ struct NaturalArgs {
     /// Owner development only: bounded transient Mistral retries with conservative debit.
     #[arg(long, hide = true, requires_all = ["evaluation_isolated_config", "max_output_tokens", "max_total_tokens", "max_model_calls"], conflicts_with = "evaluation_http_journal_fd")]
     mistral_accounted_retry: bool,
+    /// Owner development only: bounded Gemini 503 retry with conservative debit.
+    #[arg(long, hide = true, requires_all = ["evaluation_isolated_config", "max_output_tokens", "max_total_tokens", "max_model_calls"], conflicts_with_all = ["evaluation_http_journal_fd", "mistral_accounted_retry"])]
+    google_accounted_retry: bool,
     /// Native evaluation only: controller-owned private socket capability.
     #[arg(long, hide = true)]
     evaluation_lifeline_fd: Option<i32>,
@@ -4794,6 +4797,26 @@ async fn execute_natural_inner(
             }
         }
     }
+    if args.google_accounted_retry {
+        if evaluation_limits.is_some() || model != "gemini-3.5-flash-lite" {
+            return Err(CliError::new(
+                "configuration",
+                "accounted retry requires pinned Google development mode",
+            ));
+        }
+        match &mut generator {
+            LiveGenerator::Google(adapter) if provider == Provider::Google => {
+                adapter.set_accounted_retry(true)
+            }
+            LiveGenerator::Planning { .. } if provider == Provider::Google => {}
+            _ => {
+                return Err(CliError::new(
+                    "configuration",
+                    "Google accounted retry requires Google provider",
+                ));
+            }
+        }
+    }
     generator.set_single_provider_attempt(
         evaluation_limits.is_some()
             || usage_budget.max_output_tokens.is_some()
@@ -4801,7 +4824,7 @@ async fn execute_natural_inner(
     );
     let mut usage_tracker =
         usage_budget::UsageTracker::new(usage_budget, args.session_usage_baseline.clone())?;
-    if args.mistral_accounted_retry {
+    if args.mistral_accounted_retry || args.google_accounted_retry {
         usage_tracker.enable_accounted_retry();
     }
     usage_tracker.preserve_on_exit(failure_context.clone());
@@ -6815,6 +6838,7 @@ fn continuation_args(
         evaluation_request_plan: None,
         evaluation_isolated_config: false,
         mistral_accounted_retry: false,
+        google_accounted_retry: false,
         evaluation_lifeline_fd: None,
         evaluation_no_fork: false,
         interactive_context: vec![],

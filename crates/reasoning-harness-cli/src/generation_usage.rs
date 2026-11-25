@@ -136,11 +136,12 @@ impl ModelAdapter for RecordingAdapter<'_> {
                 )
                 .await;
             let mut observed = self.observed.lock().unwrap();
-            if refusal == Some("mistral_attempt_reservation_exhausted") {
-                observed.denied = Some((
-                    "usage_budget_exceeded",
-                    "mistral_attempt_reservation_exhausted".to_owned(),
-                ));
+            if let Some(
+                reason @ ("mistral_attempt_reservation_exhausted"
+                | "google_attempt_reservation_exhausted"),
+            ) = refusal
+            {
+                observed.denied = Some(("usage_budget_exceeded", reason.to_owned()));
             }
             match &result {
                 Ok(response) => {

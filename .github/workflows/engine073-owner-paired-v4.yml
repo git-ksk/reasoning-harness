@@ -2,7 +2,7 @@ name: engine073-owner-paired-v4
 # New development comparison. Existing v1/v2/v3/supplement tags are untouched.
 on:
   push:
-    tags: ['eval-owner-paired-gemini-quality-r2-ubuntu-*']
+    tags: ['eval-owner-paired-gemini-r2-503-*']
   pull_request:
     paths:
       - '.github/workflows/engine073-owner-paired-v4.yml'
@@ -98,6 +98,7 @@ jobs:
           export CARGO_PROFILE_DEV_DEBUG=0
           (
             cd "$OWNER_ROOT/build/source-candidate"
+            cargo test --locked --offline -p reasoning-harness-providers --lib gemma::tests --quiet
             cargo test --locked --offline -p reasoning-harness-core --lib --quiet
             cargo test --locked --offline -p reasoning-harness-cli --bin reason --quiet
           )

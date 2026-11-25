@@ -2,6 +2,7 @@
 No model access; old runs and artifacts remain immutable."""
 import argparse
 import importlib.util
+import hashlib
 import json
 import os
 import platform
@@ -16,6 +17,8 @@ CHANGED = {"crates/reasoning-harness-cli/src/main.rs",
            "crates/reasoning-harness-core/src/generation.rs",
            "crates/reasoning-harness-core/src/investigation.rs"}
 HERE = Path(__file__).resolve().parent
+COMMON_PATCH_SHA = '75a0ec0e6823c62c1d2cc659bfb89d5d1e941b1bc8dfbf32b98f634a9201a870'
+COMMON_PATCH = HERE/"google-accounted-503.patch"
 
 def build(repo, output, compile_binaries):
     repo, output = Path(repo).resolve(), Path(output).resolve()
@@ -24,13 +27,16 @@ def build(repo, output, compile_binaries):
     f=importlib.util.module_from_spec(spec);spec.loader.exec_module(f)
     original=f.original
     for pin in [CLI,*ARMS.values()]: f.require_commit(repo,pin)
+    original.require(hashlib.sha256(COMMON_PATCH.read_bytes()).hexdigest()==COMMON_PATCH_SHA,"common_patch_pin")
     original.private_new_directory(output)
     if compile_binaries: original.private_new_directory(output/"bin")
     proof={"runner_os":platform.system(),"runner_arch":platform.machine(),"cli_commit":CLI,"built":compile_binaries,"provider_generation_authorized":False,
-           "source_identical_except_declared_changes":False,"changed_files":sorted(CHANGED),"arms":{}}
+           "source_identical_except_declared_changes":False,"changed_files":sorted(CHANGED),"common_patch_sha256":COMMON_PATCH_SHA,"arms":{}}
     for arm,pin in ARMS.items():
         source=output/("source-"+arm);original.private_new_directory(source)
         original.export(repo,pin,(*original.SOURCE_FILES,*original.SOURCE_DIRS),source)
+        subprocess.run(["git","apply","--check",str(COMMON_PATCH)],cwd=source,check=True)
+        subprocess.run(["git","apply",str(COMMON_PATCH)],cwd=source,check=True)
         inventory={n:f.sha((source/n).read_bytes()) for n in original.source_inventory(source)}
         if compile_binaries:
             env={k:v for k,v in os.environ.items() if not k.endswith("_API_KEY")}

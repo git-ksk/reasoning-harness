@@ -28,7 +28,7 @@ REPO_ROOT = HERE.parents[1]
 SPEC = importlib.util.spec_from_file_location("frozen_v3", HERE.parent/"owner-paired-v3/measure.py")
 legacy = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(legacy)
-from build import CLI, ARMS, CHANGED
+from build import CLI, ARMS, CHANGED, COMMON_PATCH_SHA
 
 encode, sha, save, load = legacy.encode, legacy.sha, legacy.save, legacy.load
 class HoldError(ValueError):
@@ -39,29 +39,31 @@ def need(condition, reason):
 MODEL = "gemini-3.5-flash-lite"
 PROVIDER = "google"
 REPO = "git-ksk/reasoning-harness"
-PREFIX = "eval-owner-paired-gemini-quality-r2-ubuntu-"
+PREFIX = "eval-owner-paired-gemini-r2-503-"
 FROZEN_PAYLOAD_SHA = "6a7d305f035c57e61fb0283f63f3b06015f5f4a9d49bd0ea47c122521dbac7d5"
 CERT = HERE.parent/"engine073-531-provisional24-20261114/reviewer-cert.pem"
 CERT_SHA = "d917aeb4c55699b1ea19117c776e5f515aa40193488197a12c00082517695b43"
 CAPS = {"max_model_calls": 12, "max_output_tokens": 8192, "max_total_tokens": 32192}
 SLOT_TIMEOUT = 2700
-ACCOUNTING = "google_reported_single_attempt_v1"
+ACCOUNTING = "reported_plus_conservative_reservations_v1"
 POLICY = {
-    "id": "owner-paired-gemini-quality-r2-ubuntu-diagnostic", **CAPS,
+    "id": "owner-paired-gemini-r2-accounted-503", **CAPS,
+    "common_patch_sha256": COMMON_PATCH_SHA,
     "runner_os": "Linux", "runner_arch": "x86_64", "build_strategy": "one_serial_job",
     "provider": PROVIDER, "max_generation_output": 1024,
-    "max_retries_per_http_logical_request": 0,
+    "max_retries_per_http_logical_request": 3, "retry_status": 503,
+    "backoff_seconds": [30,60,120], "max_retry_wait_seconds": 210,
     "minimum_request_interval_ms": 10500,
-    "usage_ceiling": "existing CLI observed cumulative limits; unknown or exceeded usage halts",
+    "usage_ceiling": "each attempt reserves max(logical JSON UTF8 bytes,wire JSON UTF8 bytes)+512 input and requested output <=1024; unknown 503 debited full reservation; other unknown usage halts",
     "free_tier": "owner project billing disabled at pinned admission; exact key digest match; no billing changes",
     "token_accounting": ACCOUNTING,
     "slot_timeout_seconds": SLOT_TIMEOUT, "inter_slot_seconds": 60,
     "transient_failure_cooldown_seconds": 120,
-    "predecessor_runs": [45504130723, 45628519549, 45637587367, 45639690396],
+    "predecessor_runs": [45504130723, 45628519549, 45637587367, 45639690396, 45640828200],
     "selected_shards": [1, 2, 4],
     "classification": "post_outcome_selected_development_diagnostic_not_independent_holdout",
 }
-TERMINAL = {"complete", "budget_exhausted", "local_decode_failed"}
+TERMINAL = {"complete", "budget_exhausted", "budget_reserve_exhausted", "local_decode_failed"}
 SHARDS = tuple(POLICY["selected_shards"])
 SLOTS = {f"{i:02}-{arm}" for shard in SHARDS for i in range(shard*3,shard*3+3) for arm in ARMS}
 HEX = r"[a-f0-9]{64}"
@@ -132,7 +134,7 @@ def build_check(path):
         need(b.get("runner_os") == POLICY["runner_os"] == platform.system()
              and b.get("runner_arch") == POLICY["runner_arch"] == platform.machine(), "runtime_platform_pin")
     need(b["built"] is True and b["source_identical_except_declared_changes"] is True and set(b["changed_files"]) == CHANGED
-         and b["cli_commit"] == CLI and b["provider_generation_authorized"] is False, "build_pin")
+         and b["cli_commit"] == CLI and b.get("common_patch_sha256")==COMMON_PATCH_SHA and b["provider_generation_authorized"] is False, "build_pin")
     for arm, pin in ARMS.items():
         a = b["arms"][arm]
         need(a["engine_commit"] == pin and sha(Path(a["binary"]).read_bytes()) == a["binary_sha256"], "binary_pin")
@@ -143,7 +145,7 @@ def argv(root, b, row, arm, index, plan=None):
     a = legacy.argv(root, b, row, arm, index, plan)
     a[a.index("--provider")+1] = PROVIDER
     a[a.index("--model")+1] = MODEL
-    return a
+    return a+["--google-accounted-retry"]
 
 
 def preflight(root, build, ref):
@@ -278,6 +280,22 @@ def verify_unstarted_macos_predecessor():
          "macos_predecessor_observations_exist")
 
 
+def verify_failed_ubuntu_predecessor():
+    prior=api("actions/runs/45640828200")
+    need(prior["status"]=="completed" and prior["conclusion"]=="failure"
+         and prior["head_sha"]=="87395e1e32d92f8c851eed16aa32a802f6a1da1c"
+         and prior["run_attempt"]==1,"ubuntu_predecessor_not_terminal")
+    old="53c3403a7a527fc62c8a82195150d2cc101337bae1b4d1be6f4708516d74e6f1"
+    need(matching("rhg2-slot-"+old)=={"rhg2-slot-"+old+"-03-candidate":prior["head_sha"]}
+         and not matching("rhg2-s-"+old)
+         and matching("rhg2-halt-"+old)=={"rhg2-halt-"+old:prior["head_sha"]},
+         "ubuntu_predecessor_inventory")
+    artifact=api("actions/artifacts/15035198762")
+    need(artifact["id"]==15035198762 and artifact["workflow_run"]["id"]==45640828200
+         and artifact.get("digest")=="sha256:419c739392cd9fcf19902e7670cf328889ea56294da5983947a8d8181bbb23d2"
+         and artifact["expired"] is False,"ubuntu_predecessor_artifact")
+
+
 def admit(root, ref):
     head, run = context(ref)
     p = legacy.validate(load(root/"payload.json"))
@@ -286,6 +304,7 @@ def admit(root, ref):
     need(exact_ref(halt) is None, "cohort_halted")
     if previous is None:
         verify_unstarted_macos_predecessor()
+        verify_failed_ubuntu_predecessor()
         need(exact_ref(cohort_ref) is None and not verify_existing(c,head), "existing_cohort")
         create_ref(cohort_ref,head)
         print(f"New diagnostic cohort claimed; all {len(SLOTS)} selected slots unclaimed")
@@ -358,26 +377,76 @@ def claim(root, build, ref, shard, step):
 
 
 def accounting(raw, usage):
-    events = [json.loads(line) for line in raw.splitlines() if line.strip()]
-    calls = {}
-    for e in events:
-        need(e.get("schema_version") == "reason-google-attempt-telemetry-v1"
-             and e.get("model") == MODEL and e.get("attempt") == 1
-             and e.get("event") in ("attempt_start", "http_headers", "http_response"),
-             "unknown_or_failed_http_attempt")
-        need(isinstance(e.get("call_id"),str), "call_identity")
-        calls.setdefault(e["call_id"], []).append(e)
-    need(len(calls) == usage["provider_attempts"] and len(calls) > 0,
-         "attempt_accounting")
-    for rows in calls.values():
-        need([e["event"] for e in rows] == ["attempt_start","http_headers","http_response"]
-             and all(e.get("status_code") == 200 and not e.get("error_class") for e in rows[1:]),
-             "unaccounted_http_attempt")
-    return {"http_attempts":len(calls), "reported_tokens":{
-                "input":usage["input_tokens"],"output":usage["output_tokens"],"total":usage["total_tokens"]},
-            "actual_total_tokens":usage["total_tokens"],"unknown_usage_attempts":0,
-            "reserved_unknown_tokens":{"input":0,"output":0,"total":0},
-            "retries":0,"retry_wait_ms":0,
+    events=[json.loads(line) for line in raw.splitlines() if line.strip()]
+    reported=[0,0];reserved=[0,0];debit=[0,0]
+    closed=set();attempt_count=0;retries=0;unknown=0;wait_total=0
+    terminal_503=None;pos=0
+    def take(call,attempt,event,schema):
+        nonlocal pos
+        need(pos<len(events),"attempt_event_missing")
+        e=events[pos];pos+=1
+        need(e.get("schema_version")==schema and e.get("model")==MODEL
+             and e.get("call_id")==call and type(e.get("attempt")) is int
+             and e["attempt"]==attempt and e.get("event")==event,"attempt_event_identity")
+        return e
+    ordinary="reason-google-attempt-telemetry-v1";accounted="reason-google-accounted-v1"
+    while pos<len(events):
+        call=events[pos].get("call_id")
+        need(isinstance(call,str) and call not in closed and terminal_503 is None,"duplicate_or_post_terminal_call")
+        closed.add(call)
+        retry_sum=0;first_reserve=None
+        for a in range(1,5):
+            take(call,a,"attempt_start",ordinary)
+            h=take(call,a,"http_headers",ordinary)
+            r=take(call,a,"http_response",ordinary)
+            status=r.get("status_code")
+            need(status in (200,503) and h.get("status_code")==status
+                 and not h.get("error_class")
+                 and (not r.get("error_class") if status==200 else r.get("error_class")=="provider_unavailable"),
+                 "nonretryable_or_unaccounted_http")
+            d=take(call,a,"accounted_attempt",accounted)
+            vals=[d.get(k) for k in ("charged_input","charged_output","charged_total","reserved_input","reserved_output")]
+            need(all(type(v) is int and v>=0 for v in vals),"invalid_debit")
+            i,o,t,ri,ro=vals
+            need(d.get("status_code")==status and i+o==t and i<=ri and o<=ro and ri>=512 and 1<=ro<=1024,"reservation_violation")
+            need(first_reserve is None or first_reserve==(ri,ro),"retry_reservation_drift")
+            first_reserve=(ri,ro)
+            need(debit[1]+ro<=CAPS["max_output_tokens"] and sum(debit)+ri+ro<=CAPS["max_total_tokens"],"pre_attempt_reservation_ceiling")
+            state=d.get("usage")
+            if state=="reserved":
+                need(status==503 and (i,o)==(ri,ro),"invalid_unknown_reservation")
+                reserved[0]+=i;reserved[1]+=o;unknown+=1
+            else:
+                need(state=="reported","unknown_debit")
+                reported[0]+=i;reported[1]+=o
+            debit[0]+=i;debit[1]+=o;attempt_count+=1
+            if status==200:break
+            decision=take(call,a,"retry_decision",accounted)
+            reason=decision.get("reason");delay=decision.get("wait_ms")
+            need(type(delay) is int and decision.get("elapsed_ms")==0,"invalid_retry_decision")
+            if reason!="retry":
+                need(reason in ("attempt_limit","token_reservation_limit","retry_wait_limit","retry_hint_invalid","execution_wait_budget")
+                     and delay==0,"invalid_terminal_503")
+                if reason=="attempt_limit":need(a==4,"premature_attempt_limit")
+                if reason=="token_reservation_limit":
+                    need(debit[1]+ro>CAPS["max_output_tokens"] or sum(debit)+ri+ro>CAPS["max_total_tokens"],"false_reservation_limit")
+                terminal_503=reason;break
+            need(a<=3 and (30000,60000,120000)[a-1]<=delay<=120000
+                 and retry_sum+delay<=210000
+                 and debit[1]+ro<=CAPS["max_output_tokens"] and sum(debit)+ri+ro<=CAPS["max_total_tokens"],"retry_bound")
+            w=take(call,a,"retry_wait",accounted)
+            elapsed=w.get("elapsed_ms")
+            need(w.get("reason")=="retry" and w.get("wait_ms")==delay and type(elapsed) is int and elapsed>=delay,"retry_wait_missing")
+            retries+=1;wait_total+=elapsed;retry_sum+=delay
+        else:
+            raise HoldError("attempt_limit")
+    need(attempt_count==usage["provider_attempts"] and debit==[usage["input_tokens"],usage["output_tokens"]]
+         and sum(debit)==usage["total_tokens"],"attempt_accounting")
+    need(attempt_count<=4*len(closed) and len(closed)<=2*CAPS["max_model_calls"],"attempt_count_ceiling")
+    return {"http_attempts":attempt_count,"reported_tokens":{"input":reported[0],"output":reported[1],"total":sum(reported)},
+            "actual_total_tokens":None if unknown else sum(reported),"unknown_usage_attempts":unknown,
+            "reserved_unknown_tokens":{"input":reserved[0],"output":reserved[1],"total":sum(reserved)},
+            "retries":retries,"retry_wait_ms":wait_total,"terminal_503":terminal_503,
             "pacing_interval_ms":POLICY["minimum_request_interval_ms"]}
 
 
@@ -386,7 +455,7 @@ def terminal_observation(stdout, telemetry_raw, rc, obs):
     need(data["schema_version"]=="reason-cli-output-v1" and data["command"]=="ask", "cli_envelope")
     result = data["result"]
     report = result.get("usage") or (result.get("partial_diagnostics") or {}).get("usage")
-    need(type(report) is dict and report.get("token_accounting") is None, "unexpected_accounting_policy")
+    need(type(report) is dict and report.get("token_accounting") == ACCOUNTING, "unexpected_accounting_policy")
     need(all(report["budget"].get(k)==v for k,v in CAPS.items()), "cli_budget_pin")
     used = report["run"]
     need(used["tracked_from_session_start"] is True
@@ -400,6 +469,7 @@ def terminal_observation(stdout, telemetry_raw, rc, obs):
     obs.update(usage=usage,telemetry=telemetry,answer_status=None)
     final = result.get("finalization")
     if rc==0 and result.get("status")!="failed":
+        need(telemetry["terminal_503"] is None,"concealed_terminal_503")
         need(type(final) is dict and type(final.get("text")) is str and type(final.get("status")) is str
              and usage["model_calls"]>0 and usage["provider_attempts"]>0, "display_missing")
         obs.update(status="complete",final_sha256=sha(final["text"].encode()),answer_status=final["status"])
@@ -412,7 +482,11 @@ def terminal_observation(stdout, telemetry_raw, rc, obs):
         f"total-token budget exhausted ({CAPS['max_total_tokens']}/{CAPS['max_total_tokens']})":usage["total_tokens"]==CAPS["max_total_tokens"],
         f"model call budget exhausted ({CAPS['max_model_calls']}/{CAPS['max_model_calls']})":usage["model_calls"]==CAPS["max_model_calls"],
     }
-    if cls=="usage_budget_exceeded" and expected.get(message,False):
+    if telemetry["terminal_503"] is not None:
+        raise HoldError("terminal_503_"+telemetry["terminal_503"])
+    if cls=="usage_budget_exceeded" and "google_attempt_reservation_exhausted" in message:
+        status="budget_reserve_exhausted"
+    elif cls=="usage_budget_exceeded" and expected.get(message,False):
         status="budget_exhausted"
     elif cls=="protocol" and (f.get("model_output_diagnostic") or {}).get("origin")=="local_model_output_decode":
         status="local_decode_failed"
@@ -494,6 +568,7 @@ def execute(root,build,ref,shard,step):
         save(path/"billing.json",billing(key))
         print("Billing-disabled project key matched; current model metadata PASS",flush=True)
         save(path/"started.json",{"state":"launch_committed","time_utc":utc_now(),"run_id":run,"slot":slot})
+        (path/"google-attempts.jsonl").touch(exist_ok=False)
         rc=run_cli(argv(root,b,p["questions"][i],arm,i),path,key)
         obs["exit_code"]=rc
         stdout=(path/"stdout.json").read_bytes()
