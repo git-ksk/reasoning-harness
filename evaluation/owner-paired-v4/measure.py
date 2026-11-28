@@ -39,7 +39,7 @@ def need(condition, reason):
 MODEL = "gemini-3.5-flash-lite"
 PROVIDER = "google"
 REPO = "git-ksk/reasoning-harness"
-PREFIX = "eval-owner-paired-gemini-ci-remainder-"
+PREFIX = "eval-owner-paired-gemini-ci-unclaimed-"
 FROZEN_PAYLOAD_SHA = "6a7d305f035c57e61fb0283f63f3b06015f5f4a9d49bd0ea47c122521dbac7d5"
 CERT = HERE.parent/"engine073-531-provisional24-20261114/reviewer-cert.pem"
 CERT_SHA = "d917aeb4c55699b1ea19117c776e5f515aa40193488197a12c00082517695b43"
@@ -47,7 +47,7 @@ CAPS = {"max_model_calls": 12, "max_output_tokens": 8192, "max_total_tokens": 32
 SLOT_TIMEOUT = 2700
 ACCOUNTING = "reported_plus_conservative_reservations_v1"
 POLICY = {
-    "id": "owner-paired-gemini-ci-remainder-20261129", **CAPS,
+    "id": "owner-paired-gemini-ci-unclaimed-20261129", **CAPS,
     "common_patch_sha256": COMMON_PATCH_SHA,
     "runner_os": "Linux", "runner_arch": "x86_64", "build_strategy": "one_serial_job",
     "provider": PROVIDER, "max_generation_output": 1024,
@@ -59,8 +59,8 @@ POLICY = {
     "token_accounting": ACCOUNTING,
     "slot_timeout_seconds": SLOT_TIMEOUT, "inter_slot_seconds": 60,
     "transient_failure_cooldown_seconds": 120,
-    "predecessor_runs": [45504130723, 45628519549, 45637587367, 45639690396, 45640828200, 45643273890, 46148253145, 46148450513, 46150509517],
-    "selected_questions": [0, 1, 2, 9, 10, 11, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+    "predecessor_runs": [45504130723, 45628519549, 45637587367, 45639690396, 45640828200, 45643273890, 46148253145, 46148450513, 46150509517, 46158239794],
+    "selected_questions": [11, 15, 16, 17, 18, 19, 20, 21, 22, 23],
     "classification": "post_outcome_selected_development_diagnostic_not_independent_holdout",
 }
 TERMINAL = {"complete", "budget_exhausted", "budget_reserve_exhausted", "local_decode_failed"}
@@ -340,14 +340,35 @@ def verify_completed_focus():
     cohort_ref, cp, sp, halt = names(c)
     slots = {f"{i:02}-{arm}" for i in (3,6,7,8,12,13,14) for arm in ("baseline","candidate")}
     pilot = {f"{i:02}-{arm}" for i in (4,5) for arm in ("baseline","candidate")}
-    need(not (slots & pilot or slots & SLOTS or pilot & SLOTS)
-         and len(slots | pilot | SLOTS) == 48, "disjoint_full_cohort")
+    need(not (slots & pilot or slots & SLOTS or pilot & SLOTS), "disjoint_full_cohort")
     need(exact_ref(cohort_ref) == head and exact_ref(halt) is None, "focus_cohort_pin")
     need(matching(cp) == {cp+slot:head for slot in slots}, "focus_claim_inventory")
     seals = matching(sp)
     need(len(seals) == len(slots), "focus_seal_inventory")
     for slot in sorted(slots):
         verify_seal(c,slot,head,seals)
+
+
+def verify_halted_remainder():
+    c = "917c06eadf99c899863cb2932639de1d18ca3219877e24e3eabee373c41d4aa5"
+    head = "93048cceacada5932da82dc4db69bc94ee80efe8"
+    run = api("actions/runs/46158239794")
+    need(run["status"] == "completed" and run["conclusion"] == "failure"
+         and run["head_sha"] == head and run["run_attempt"] == 1, "remainder_run_not_halted")
+    cohort_ref, cp, sp, halt = names(c)
+    sealed = {f"{i:02}-{arm}" for i in (0,1,2,9) for arm in ("baseline","candidate")} | {"10-baseline"}
+    failed = {"10-candidate"}
+    previous = {f"{i:02}-{arm}" for i in (3,4,5,6,7,8,12,13,14) for arm in ("baseline","candidate")}
+    need(not ((sealed | failed | previous) & SLOTS)
+         and len(sealed | failed | previous | SLOTS) == 48, "unclaimed_scope")
+    need(exact_ref(cohort_ref) == head and exact_ref(halt) == head, "remainder_halt_pin")
+    need(matching(cp) == {cp+slot:head for slot in sealed | failed}, "remainder_claim_inventory")
+    seals = matching(sp)
+    need(len(seals) == len(sealed), "remainder_seal_inventory")
+    for slot in sorted(sealed):
+        verify_seal(c,slot,head,seals)
+    check_artifact(c,"10-candidate",46158239794,15270040707,
+                   "c6ce5b0ec502ad0890072ad63cf7b82b998a01fe6efeec6a332faac190b0bf27")
 
 
 def admit(root, ref):
@@ -362,6 +383,7 @@ def admit(root, ref):
         verify_ci_pilot_predecessors()
         verify_completed_pilot()
         verify_completed_focus()
+        verify_halted_remainder()
         need(exact_ref(cohort_ref) is None and not verify_existing(c,head), "existing_cohort")
         create_ref(cohort_ref,head)
         print(f"New diagnostic cohort claimed; all {len(SLOTS)} selected slots unclaimed")

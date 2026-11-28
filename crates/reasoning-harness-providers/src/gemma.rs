@@ -635,7 +635,11 @@ impl GoogleAdapter {
                 let body = error_body.unwrap_or_default();
                 let kind = classify_http_error(status, &body);
                 let quota_window = structured_google_quota_window(&body).map(quota_window_name);
-                let provider_status = google_provider_status(&body);
+                let provider_status = if self.accounted_retry && status == StatusCode::BAD_REQUEST {
+                    None // Only the allowlisted status is recorded in http_400_diagnostic.
+                } else {
+                    google_provider_status(&body)
+                };
                 let detail = google_error_detail(&body);
                 log_google_attempt_telemetry(
                     self.attempt_telemetry_path.as_deref(),
@@ -658,6 +662,15 @@ impl GoogleAdapter {
                 attempt_telemetry.complete();
 
                 if let Some((limits, reserve)) = accounting {
+                    if status == StatusCode::BAD_REQUEST {
+                        let mut diagnostic = google_bad_request_diagnostic(&body);
+                        diagnostic["schema_version"] = json!("reason-google-accounted-v1");
+                        diagnostic["event"] = json!("http_400_diagnostic");
+                        diagnostic["model"] = json!(self.model);
+                        diagnostic["call_id"] = json!(call_id);
+                        diagnostic["attempt"] = json!(provider_attempts);
+                        self.write_accounting_event(diagnostic, provider_attempts)?;
+                    }
                     // Only a directly observed 503 is eligible. Unknown usage on a rejected
                     // attempt is charged the entire reservation, never zero.
                     if status == StatusCode::SERVICE_UNAVAILABLE {
@@ -1402,6 +1415,106 @@ fn transient_retry_delay(retry_index: usize) -> Duration {
     retry_delay_with_equal_jitter(transient_retry_base_delay(retry_index))
 }
 
+// Diagnostic labels only; never emit provider-supplied free text, headers,
+// request content, API credentials, or arbitrary JSON fields.
+fn google_bad_request_diagnostic(body: &str) -> Value {
+    let parsed = serde_json::from_str::<Value>(body).ok();
+    let error = parsed.as_ref().and_then(|v| v.get("error"));
+    let lower = body.to_ascii_lowercase();
+    let shape = if body.trim().is_empty() {
+        "empty"
+    } else if error.is_some_and(Value::is_object) {
+        "json_error"
+    } else if parsed.is_some() {
+        "json_other"
+    } else if lower.trim_start().starts_with("<!doctype html")
+        || lower.trim_start().starts_with("<html")
+    {
+        "html"
+    } else {
+        "non_json"
+    };
+    let rpc_status = match error.and_then(|e| e.get("status")).and_then(Value::as_str) {
+        Some("INVALID_ARGUMENT") => "invalid_argument",
+        Some("FAILED_PRECONDITION") => "failed_precondition",
+        Some("OUT_OF_RANGE") => "out_of_range",
+        Some("RESOURCE_EXHAUSTED") => "resource_exhausted",
+        Some("PERMISSION_DENIED") => "permission_denied",
+        Some("UNAUTHENTICATED") => "unauthenticated",
+        Some("UNAVAILABLE") => "unavailable",
+        Some(_) => "other",
+        None => "absent",
+    };
+    let classes = [
+        (
+            "schema",
+            &[
+                "response_schema",
+                "response schema",
+                "response_format",
+                "json schema",
+            ][..],
+        ),
+        (
+            "context_length",
+            &[
+                "context length",
+                "input token",
+                "input length",
+                "too many tokens",
+            ][..],
+        ),
+        (
+            "output_limit",
+            &[
+                "max_output_tokens",
+                "max output tokens",
+                "output token limit",
+            ][..],
+        ),
+        (
+            "malformed_request",
+            &[
+                "invalid json",
+                "malformed",
+                "invalid argument",
+                "unknown field",
+                "invalid field",
+            ][..],
+        ),
+        (
+            "quota_or_billing",
+            &["quota", "billing", "resource_exhausted", "payment"][..],
+        ),
+        (
+            "credentials",
+            &["api key", "unauthenticated", "permission denied"][..],
+        ),
+        (
+            "model_or_feature",
+            &[
+                "unsupported",
+                "not supported",
+                "model not found",
+                "not available",
+            ][..],
+        ),
+        ("safety", &["safety", "blocked", "prohibited content"][..]),
+        ("gateway", &["bad request", "proxy", "gateway"][..]),
+    ]
+    .into_iter()
+    .filter_map(|(label, needles)| {
+        needles
+            .iter()
+            .any(|needle| lower.contains(needle))
+            .then_some(label)
+    })
+    .collect::<Vec<_>>();
+    json!({"body_shape":shape,"body_bytes":body.len(),"rpc_status":rpc_status,
+        "rpc_code_matches_400":error.and_then(|e| e.get("code")).and_then(Value::as_u64)==Some(400),
+        "diagnostic_classes":classes})
+}
+
 fn google_provider_status(body: &str) -> Option<String> {
     serde_json::from_str::<Value>(body)
         .ok()?
@@ -2077,10 +2190,32 @@ mod tests {
         }
     }
 
+    #[test]
+    fn bad_request_diagnostic_uses_fixed_labels_without_echoing_text() {
+        let v = google_bad_request_diagnostic(
+            r#"{"error":{"code":400,"status":"INVALID_ARGUMENT","message":"Invalid response schema secret-canary"}}"#,
+        );
+        assert_eq!(v["body_shape"], "json_error");
+        assert_eq!(v["rpc_status"], "invalid_argument");
+        assert_eq!(v["rpc_code_matches_400"], true);
+        assert_eq!(v["diagnostic_classes"], json!(["schema"]));
+        assert!(!v.to_string().contains("secret-canary"));
+        assert_eq!(
+            google_bad_request_diagnostic("<html>Bad Request</html>")["body_shape"],
+            "html"
+        );
+        assert_eq!(google_bad_request_diagnostic("")["body_shape"], "empty");
+        assert_eq!(
+            google_bad_request_diagnostic("unstructured secret-canary")["body_shape"],
+            "non_json"
+        );
+    }
+
     #[tokio::test]
     async fn accounted_google_nonretryable_and_unmeasurable_fail_closed() {
         for (status, body) in [
             ("429 Too Many Requests", "quota".into()),
+            ("400 Bad Request", r#"{"error":{"code":400,"status":"INVALID_ARGUMENT","message":"Invalid response schema secret-canary"}}"#.into()),
             ("401 Unauthorized", String::new()),
             ("402 Payment Required", String::new()),
             ("500 Internal Server Error", String::new()),
@@ -2104,6 +2239,13 @@ mod tests {
             assert_eq!(result.unwrap_err().provider_attempts, 1);
             assert!(account.is_none());
             let rows = fs::read_to_string(&path).unwrap();
+            if status == "400 Bad Request" {
+                assert!(rows.contains("http_400_diagnostic"));
+                assert!(rows.contains("schema"));
+                assert!(!rows.contains("secret-canary"));
+                assert!(!rows.contains("retry_decision"));
+                assert!(!rows.contains("accounted_attempt"));
+            }
             if status == "503 Service Unavailable" {
                 assert!(rows.contains("retry_decision"));
                 assert!(rows.contains("conflicting_error") || rows.contains("invalid_error_usage"));
@@ -2430,11 +2572,9 @@ mod tests {
         assert!(events.iter().any(|event| {
             event["event"] == "retry_scheduled" && event["error_class"] == "provider_unavailable"
         }));
-        assert!(
-            events
-                .iter()
-                .any(|event| { event["event"] == "http_response" && event["status_code"] == 200 })
-        );
+        assert!(events
+            .iter()
+            .any(|event| { event["event"] == "http_response" && event["status_code"] == 200 }));
         let _ = fs::remove_file(path);
     }
 
