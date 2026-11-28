@@ -147,6 +147,22 @@ class Claims(unittest.TestCase):
         with patch.object(m,"api",side_effect=[prior,dict(artifact,expired=True),smoke]),patch.object(m,"matching",side_effect=refs):
             with self.assertRaisesRegex(ValueError,"prior_accounted_artifact"):m.verify_ci_pilot_predecessors()
 
+    def test_focus_requires_complete_pilot_with_all_four_seals(self):
+        c="d621641381b3fc4d1510ad83e7ac8b48c9746f50ef9068e1a633bd846e7d9c25"
+        h="f9e202c7f36b7c01db0b245d41a60244bda755f2"
+        cohort,cp,sp,halt=m.names(c)
+        slots={"04-baseline","04-candidate","05-baseline","05-candidate"}
+        run={"status":"completed","conclusion":"success","head_sha":h,"run_attempt":1}
+        claims={cp+slot:h for slot in slots}
+        seals={sp+slot+"-test":h for slot in slots}
+        with patch.object(m,"api",return_value=run),patch.object(m,"exact_ref",side_effect=[h,None]),patch.object(m,"matching",side_effect=[claims,seals]),patch.object(m,"verify_seal") as verify:
+            m.verify_completed_pilot()
+            self.assertEqual(verify.call_count,4)
+        with patch.object(m,"api",return_value=run),patch.object(m,"exact_ref",side_effect=[h,None]),patch.object(m,"matching",side_effect=[claims,{}]):
+            with self.assertRaisesRegex(ValueError,"pilot_seal_inventory"):m.verify_completed_pilot()
+        with patch.object(m,"api",return_value=dict(run,conclusion="failure")):
+            with self.assertRaisesRegex(ValueError,"pilot_run_not_complete"):m.verify_completed_pilot()
+
     def test_platform_migration_requires_cancelled_unstarted_predecessor(self):
         prior={"status":"completed","conclusion":"cancelled","head_sha":"b42673fd530c04b21f0391f301e4fe0dfae3d849","run_attempt":1}
         with patch.object(m,"api",side_effect=[prior,{"total_count":0}]),patch.object(m,"matching",return_value=[]):
@@ -163,7 +179,7 @@ class Claims(unittest.TestCase):
 
     def test_no_unsealed_claim_may_resume(self):
         _,prefix,seals,halt=m.names(self.C)
-        with patch.object(m,"exact_ref",return_value=None),patch.object(m,"matching",side_effect=lambda p:{prefix+"04-baseline":self.HEAD} if p==prefix else {}):
+        with patch.object(m,"exact_ref",return_value=None),patch.object(m,"matching",side_effect=lambda p:{prefix+"06-baseline":self.HEAD} if p==prefix else {}):
             with self.assertRaisesRegex(ValueError,"claimed_slot_not_uniquely_sealed"):
                 m.verify_existing(self.C,self.HEAD)
 
@@ -174,14 +190,14 @@ class Claims(unittest.TestCase):
 
     def test_sealed_slot_excluded_and_unclaimed_slots_available(self):
         _,prefix,seals,_=m.names(self.C)
-        name=seals+"04-baseline-123-456-"+"d"*64+"-"+"e"*64
-        with patch.object(m,"exact_ref",return_value=None),patch.object(m,"matching",side_effect=lambda p:{prefix+"04-baseline":self.HEAD} if p==prefix else {name:self.HEAD}),patch.object(m,"check_artifact") as check:
-            self.assertEqual(m.verify_existing(self.C,self.HEAD),{"04-baseline"})
-            self.assertEqual(len(m.SLOTS-{"04-baseline"}),3)
-            check.assert_called_once_with(self.C,"04-baseline",123,456,"e"*64)
+        name=seals+"06-baseline-123-456-"+"d"*64+"-"+"e"*64
+        with patch.object(m,"exact_ref",return_value=None),patch.object(m,"matching",side_effect=lambda p:{prefix+"06-baseline":self.HEAD} if p==prefix else {name:self.HEAD}),patch.object(m,"check_artifact") as check:
+            self.assertEqual(m.verify_existing(self.C,self.HEAD),{"06-baseline"})
+            self.assertEqual(len(m.SLOTS-{"06-baseline"}),13)
+            check.assert_called_once_with(self.C,"06-baseline",123,456,"e"*64)
 
     def test_claim_duplicate_is_not_reexecuted(self):
-        record=({}, {}, self.C, 123, 0, "baseline", "04-baseline", {})
+        record=({}, {}, self.C, 123, 0, "baseline", "06-baseline", {})
         with patch.object(m,"context",return_value=(self.HEAD,124)),patch.object(m,"pins",return_value=record),patch.object(m,"exact_ref",side_effect=[self.HEAD,None,self.HEAD]),patch.object(m,"verify_seal") as verify,patch.object(m,"create_ref") as create,patch.object(m,"output") as out:
             m.claim(Path("unused"),Path("unused"),"resume",0,0)
             create.assert_not_called()
@@ -189,24 +205,25 @@ class Claims(unittest.TestCase):
             out.assert_called_once_with("run","false")
 
     def test_initial_claim_duplicate_fails_closed(self):
-        record=({}, {}, self.C, None, 0, "baseline", "04-baseline", {})
+        record=({}, {}, self.C, None, 0, "baseline", "06-baseline", {})
         with patch.object(m,"context",return_value=(self.HEAD,124)),patch.object(m,"pins",return_value=record),patch.object(m,"exact_ref",side_effect=[self.HEAD,None,self.HEAD]),patch.object(m,"create_ref") as create:
             with self.assertRaisesRegex(ValueError,"duplicate_slot"):
                 m.claim(Path("unused"),Path("unused"),"initial",0,0)
             create.assert_not_called()
 
     def test_full_ref_length_guard_and_selected_scope(self):
-        name=m.names(self.C)[2]+"04-baseline-12345678901-14943095748-"+"d"*64+"-"+"e"*64
+        name=m.names(self.C)[2]+"06-baseline-12345678901-14943095748-"+"d"*64+"-"+"e"*64
         self.assertLessEqual(len(("refs/tags/"+name).encode("utf-8")),255)
         with patch.object(m,"api") as api:
             with self.assertRaisesRegex(ValueError,"github_ref_length"):
                 m.create_ref("a"*246,self.HEAD)
             api.assert_not_called()
-        self.assertEqual(len(m.SLOTS),4)
-        self.assertEqual(m.SHARDS,(1,))
+        self.assertEqual(len(m.SLOTS),14)
+        self.assertEqual(m.SHARDS,(1,2,4))
         self.assertNotIn("00-baseline",m.SLOTS)
-        self.assertNotIn("03-candidate",m.SLOTS)
-        self.assertEqual(m.SLOTS,{"04-baseline","04-candidate","05-baseline","05-candidate"})
+        self.assertNotIn("04-candidate",m.SLOTS)
+        self.assertNotIn("05-baseline",m.SLOTS)
+        self.assertEqual(m.SLOTS,{f"{i:02}-{a}" for i in (3,6,7,8,12,13,14) for a in ("baseline","candidate")})
 
     def test_encrypt_only_evidence_no_home(self):
         with tempfile.TemporaryDirectory() as tmp:
