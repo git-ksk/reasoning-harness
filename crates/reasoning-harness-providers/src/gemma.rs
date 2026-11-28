@@ -669,8 +669,20 @@ impl GoogleAdapter {
                                 Err("attempt_limit" | "retry_wait_limit" | "retry_hint_invalid")
                             )
                         {
-                            let debit = google_error_debit(&body, reserve)
-                                .map_err(|e| e.with_provider_attempts(provider_attempts))?;
+                            let debit = match google_error_debit(&body, reserve) {
+                                Ok(debit) => debit,
+                                Err(error) => {
+                                    self.log_retry_event(
+                                        &call_id,
+                                        provider_attempts,
+                                        "retry_decision",
+                                        "invalid_error_usage",
+                                        Duration::ZERO,
+                                        Duration::ZERO,
+                                    )?;
+                                    return Err(error.with_provider_attempts(provider_attempts));
+                                }
+                            };
                             if !debit.0.within(reserve) || !charged.add(debit.0).fits(limits) {
                                 return Err(ModelError::new(
                                     ModelErrorKind::Protocol,
@@ -740,6 +752,17 @@ impl GoogleAdapter {
                                     .with_provider_attempts(provider_attempts));
                                 }
                             }
+                        } else if let Err(reason) = decision {
+                            // Preserve a fixed diagnostic reason without exposing provider text
+                            // or converting ambiguous/conflicting error evidence into a retry.
+                            self.log_retry_event(
+                                &call_id,
+                                provider_attempts,
+                                "retry_decision",
+                                reason,
+                                Duration::ZERO,
+                                Duration::ZERO,
+                            )?;
                         }
                     }
                     // No replays for quota/auth/billing, 429, timeouts, other 5xx, or
@@ -2080,6 +2103,11 @@ mod tests {
                     .await;
             assert_eq!(result.unwrap_err().provider_attempts, 1);
             assert!(account.is_none());
+            let rows = fs::read_to_string(&path).unwrap();
+            if status == "503 Service Unavailable" {
+                assert!(rows.contains("retry_decision"));
+                assert!(rows.contains("conflicting_error") || rows.contains("invalid_error_usage"));
+            }
             fs::remove_file(path).unwrap();
             server.join().unwrap();
         }

@@ -79,7 +79,7 @@ index 4c5a221..621b5a7 100644
          evaluation_no_fork: false,
          interactive_context: vec![],
 diff --git a/crates/reasoning-harness-providers/src/gemma.rs b/crates/reasoning-harness-providers/src/gemma.rs
-index 43fa6ae..56f354e 100644
+index 43fa6ae..b0b3dba 100644
 --- a/crates/reasoning-harness-providers/src/gemma.rs
 +++ b/crates/reasoning-harness-providers/src/gemma.rs
 @@ -10,6 +10,7 @@ use std::{
@@ -312,7 +312,7 @@ index 43fa6ae..56f354e 100644
                  let kind = classify_http_error(status, &body);
                  let quota_window = structured_google_quota_window(&body).map(quota_window_name);
                  let provider_status = google_provider_status(&body);
-@@ -514,6 +657,100 @@ impl GoogleAdapter {
+@@ -514,6 +657,123 @@ impl GoogleAdapter {
                  );
                  attempt_telemetry.complete();
  
@@ -328,8 +328,20 @@ index 43fa6ae..56f354e 100644
 +                                Err("attempt_limit" | "retry_wait_limit" | "retry_hint_invalid")
 +                            )
 +                        {
-+                            let debit = google_error_debit(&body, reserve)
-+                                .map_err(|e| e.with_provider_attempts(provider_attempts))?;
++                            let debit = match google_error_debit(&body, reserve) {
++                                Ok(debit) => debit,
++                                Err(error) => {
++                                    self.log_retry_event(
++                                        &call_id,
++                                        provider_attempts,
++                                        "retry_decision",
++                                        "invalid_error_usage",
++                                        Duration::ZERO,
++                                        Duration::ZERO,
++                                    )?;
++                                    return Err(error.with_provider_attempts(provider_attempts));
++                                }
++                            };
 +                            if !debit.0.within(reserve) || !charged.add(debit.0).fits(limits) {
 +                                return Err(ModelError::new(
 +                                    ModelErrorKind::Protocol,
@@ -399,6 +411,17 @@ index 43fa6ae..56f354e 100644
 +                                    .with_provider_attempts(provider_attempts));
 +                                }
 +                            }
++                        } else if let Err(reason) = decision {
++                            // Preserve a fixed diagnostic reason without exposing provider text
++                            // or converting ambiguous/conflicting error evidence into a retry.
++                            self.log_retry_event(
++                                &call_id,
++                                provider_attempts,
++                                "retry_decision",
++                                reason,
++                                Duration::ZERO,
++                                Duration::ZERO,
++                            )?;
 +                        }
 +                    }
 +                    // No replays for quota/auth/billing, 429, timeouts, other 5xx, or
@@ -413,7 +436,7 @@ index 43fa6ae..56f354e 100644
                  if status == StatusCode::TOO_MANY_REQUESTS
                      && kind == ModelErrorKind::RateLimit
                      && !self.single_attempt
-@@ -610,6 +847,33 @@ impl GoogleAdapter {
+@@ -610,6 +870,33 @@ impl GoogleAdapter {
                  cumulative_usage.total_tokens,
                  usage.and_then(|usage| usage.total_tokens),
              );
@@ -447,7 +470,7 @@ index 43fa6ae..56f354e 100644
              let text = match response.text() {
                  Ok(text) => text,
                  Err(error)
-@@ -644,6 +908,107 @@ impl GoogleAdapter {
+@@ -644,6 +931,107 @@ impl GoogleAdapter {
      }
  }
  
@@ -555,7 +578,7 @@ index 43fa6ae..56f354e 100644
  fn add_reported_usage(total: Option<u64>, next: Option<u64>) -> Option<u64> {
      total
          .zip(next)
-@@ -801,7 +1166,7 @@ fn parse_google_duration(value: &str) -> Option<Duration> {
+@@ -801,7 +1189,7 @@ fn parse_google_duration(value: &str) -> Option<Duration> {
      if !seconds.is_finite() || seconds < 0.0 {
          return None;
      }
@@ -564,7 +587,7 @@ index 43fa6ae..56f354e 100644
  }
  
  fn structured_google_quota_window(body: &str) -> Option<GoogleQuotaWindow> {
-@@ -1531,6 +1896,207 @@ mod tests {
+@@ -1531,6 +1919,212 @@ mod tests {
          (format!("http://{address}/v1beta/"), server)
      }
  
@@ -752,6 +775,11 @@ index 43fa6ae..56f354e 100644
 +                    .await;
 +            assert_eq!(result.unwrap_err().provider_attempts, 1);
 +            assert!(account.is_none());
++            let rows = fs::read_to_string(&path).unwrap();
++            if status == "503 Service Unavailable" {
++                assert!(rows.contains("retry_decision"));
++                assert!(rows.contains("conflicting_error") || rows.contains("invalid_error_usage"));
++            }
 +            fs::remove_file(path).unwrap();
 +            server.join().unwrap();
 +        }

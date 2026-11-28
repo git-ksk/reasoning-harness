@@ -17,7 +17,7 @@ CHANGED = {"crates/reasoning-harness-cli/src/main.rs",
            "crates/reasoning-harness-core/src/generation.rs",
            "crates/reasoning-harness-core/src/investigation.rs"}
 HERE = Path(__file__).resolve().parent
-COMMON_PATCH_SHA = '75a0ec0e6823c62c1d2cc659bfb89d5d1e941b1bc8dfbf32b98f634a9201a870'
+COMMON_PATCH_SHA = 'f9a7317252671828fc2c95e80404cac9f2f8b7d8a396e649c4c544ab1d1b39d4'
 COMMON_PATCH = HERE/"google-accounted-503.patch"
 
 def build(repo, output, compile_binaries):

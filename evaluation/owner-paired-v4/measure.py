@@ -39,7 +39,7 @@ def need(condition, reason):
 MODEL = "gemini-3.5-flash-lite"
 PROVIDER = "google"
 REPO = "git-ksk/reasoning-harness"
-PREFIX = "eval-owner-paired-gemini-r2-503-"
+PREFIX = "eval-owner-paired-gemini-ci-pilot-"
 FROZEN_PAYLOAD_SHA = "6a7d305f035c57e61fb0283f63f3b06015f5f4a9d49bd0ea47c122521dbac7d5"
 CERT = HERE.parent/"engine073-531-provisional24-20261114/reviewer-cert.pem"
 CERT_SHA = "d917aeb4c55699b1ea19117c776e5f515aa40193488197a12c00082517695b43"
@@ -47,25 +47,25 @@ CAPS = {"max_model_calls": 12, "max_output_tokens": 8192, "max_total_tokens": 32
 SLOT_TIMEOUT = 2700
 ACCOUNTING = "reported_plus_conservative_reservations_v1"
 POLICY = {
-    "id": "owner-paired-gemini-r2-accounted-503", **CAPS,
+    "id": "owner-paired-gemini-ci-pilot-20261128", **CAPS,
     "common_patch_sha256": COMMON_PATCH_SHA,
     "runner_os": "Linux", "runner_arch": "x86_64", "build_strategy": "one_serial_job",
     "provider": PROVIDER, "max_generation_output": 1024,
     "max_retries_per_http_logical_request": 3, "retry_status": 503,
     "backoff_seconds": [30,60,120], "max_retry_wait_seconds": 210,
-    "minimum_request_interval_ms": 10500,
+    "minimum_request_interval_ms": 30000,
     "usage_ceiling": "each attempt reserves max(logical JSON UTF8 bytes,wire JSON UTF8 bytes)+512 input and requested output <=1024; unknown 503 debited full reservation; other unknown usage halts",
     "free_tier": "owner project billing disabled at pinned admission; exact key digest match; no billing changes",
     "token_accounting": ACCOUNTING,
     "slot_timeout_seconds": SLOT_TIMEOUT, "inter_slot_seconds": 60,
     "transient_failure_cooldown_seconds": 120,
-    "predecessor_runs": [45504130723, 45628519549, 45637587367, 45639690396, 45640828200],
-    "selected_shards": [1, 2, 4],
+    "predecessor_runs": [45504130723, 45628519549, 45637587367, 45639690396, 45640828200, 45643273890, 46148253145],
+    "selected_questions": [4, 5],
     "classification": "post_outcome_selected_development_diagnostic_not_independent_holdout",
 }
 TERMINAL = {"complete", "budget_exhausted", "budget_reserve_exhausted", "local_decode_failed"}
-SHARDS = tuple(POLICY["selected_shards"])
-SLOTS = {f"{i:02}-{arm}" for shard in SHARDS for i in range(shard*3,shard*3+3) for arm in ARMS}
+SHARDS = tuple(sorted({i//3 for i in POLICY["selected_questions"]}))
+SLOTS = {f"{i:02}-{arm}" for i in POLICY["selected_questions"] for arm in ARMS}
 HEX = r"[a-f0-9]{64}"
 REF_RE = re.compile(PREFIX + f"({HEX})-({HEX})(?:-resume-([1-9][0-9]*))?")
 USAGE_FIELDS = ("model_calls", "provider_attempts", "input_tokens", "output_tokens", "total_tokens")
@@ -296,6 +296,25 @@ def verify_failed_ubuntu_predecessor():
          and artifact["expired"] is False,"ubuntu_predecessor_artifact")
 
 
+def verify_ci_pilot_predecessors():
+    prior = api("actions/runs/45643273890")
+    head = "1b4027c727992cac8713db3347eee174caafb1d1"
+    old = "e186e248a996b227bf00ad390323ac1f5433f8b28ad8461000ece99dfbce3b5d"
+    need(prior["status"] == "completed" and prior["conclusion"] == "failure"
+         and prior["head_sha"] == head and prior["run_attempt"] == 1, "prior_accounted_run")
+    need(matching("rhg2-slot-"+old) == {"rhg2-slot-"+old+"-03-candidate":head}
+         and not matching("rhg2-s-"+old)
+         and matching("rhg2-halt-"+old) == {"rhg2-halt-"+old:head}, "prior_accounted_inventory")
+    artifact = api("actions/artifacts/15037681156")
+    need(artifact["workflow_run"]["id"] == 45643273890 and artifact.get("digest") ==
+         "sha256:db46502d152f97812b06e25662f9dc427d63fb6b77430f4530ae35d5f7a62707"
+         and not artifact["expired"], "prior_accounted_artifact")
+    smoke = api("actions/runs/46148253145")
+    need(smoke["status"] == "completed" and smoke["conclusion"] == "success"
+         and smoke["head_sha"] == "2395298a0d343b40160dd1d1fa07979652cb9ce2"
+         and smoke["run_attempt"] == 1, "ci_smoke_not_verified")
+
+
 def admit(root, ref):
     head, run = context(ref)
     p = legacy.validate(load(root/"payload.json"))
@@ -305,6 +324,7 @@ def admit(root, ref):
     if previous is None:
         verify_unstarted_macos_predecessor()
         verify_failed_ubuntu_predecessor()
+        verify_ci_pilot_predecessors()
         need(exact_ref(cohort_ref) is None and not verify_existing(c,head), "existing_cohort")
         create_ref(cohort_ref,head)
         print(f"New diagnostic cohort claimed; all {len(SLOTS)} selected slots unclaimed")
@@ -495,8 +515,7 @@ def terminal_observation(stdout, telemetry_raw, rc, obs):
     obs.update(status=status,failure_class=cls)
 
 
-BILLING_CHECKED_UTC = '2026-11-25T14:56:11.484612+00:00'
-BILLING_EXPIRES_UTC = '2026-11-26T14:56:11.484612+00:00'
+from ci_probe import CHECKED as BILLING_CHECKED_UTC, EXPIRES as BILLING_EXPIRES_UTC
 
 def billing(key):
     expected = os.environ.pop("ENGINE620_GEMINI_KEY_SHA256","")

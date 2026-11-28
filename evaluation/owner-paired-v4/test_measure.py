@@ -116,7 +116,7 @@ class Measurement(unittest.TestCase):
     def test_all_48_slots_unique_and_selected_scope(self):
         rows=[m.position(s,t) for s in range(8) for t in range(6)]
         self.assertEqual(len({r[2] for r in rows}),48)
-        self.assertEqual({m.position(s,t)[2] for s in m.SHARDS for t in range(6)},m.SLOTS)
+        self.assertEqual({m.position(s,t)[2] for s in m.SHARDS for t in range(6) if m.position(s,t)[0] in m.POLICY["selected_questions"]},m.SLOTS)
         self.assertEqual(sum(m.position(s,t)[1]=="baseline" for s in range(8) for t in (0,2,4)),12)
 
 class Claims(unittest.TestCase):
@@ -132,6 +132,20 @@ class Claims(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,"ubuntu_predecessor_artifact"):m.verify_failed_ubuntu_predecessor()
         with patch.object(m,"api",return_value=prior),patch.object(m,"matching",return_value={}):
             with self.assertRaisesRegex(ValueError,"ubuntu_predecessor_inventory"):m.verify_failed_ubuntu_predecessor()
+
+    def test_pilot_requires_previous_failure_evidence_and_ci_smoke(self):
+        old="e186e248a996b227bf00ad390323ac1f5433f8b28ad8461000ece99dfbce3b5d"
+        head="1b4027c727992cac8713db3347eee174caafb1d1"
+        prior={"status":"completed","conclusion":"failure","head_sha":head,"run_attempt":1}
+        artifact={"workflow_run":{"id":45643273890},"digest":"sha256:db46502d152f97812b06e25662f9dc427d63fb6b77430f4530ae35d5f7a62707","expired":False}
+        smoke={"status":"completed","conclusion":"success","head_sha":"2395298a0d343b40160dd1d1fa07979652cb9ce2","run_attempt":1}
+        refs=[{"rhg2-slot-"+old+"-03-candidate":head},{},{"rhg2-halt-"+old:head}]
+        with patch.object(m,"api",side_effect=[prior,artifact,smoke]),patch.object(m,"matching",side_effect=refs):
+            m.verify_ci_pilot_predecessors()
+        with patch.object(m,"api",side_effect=[prior,artifact,dict(smoke,conclusion="failure")]),patch.object(m,"matching",side_effect=refs):
+            with self.assertRaisesRegex(ValueError,"ci_smoke_not_verified"):m.verify_ci_pilot_predecessors()
+        with patch.object(m,"api",side_effect=[prior,dict(artifact,expired=True),smoke]),patch.object(m,"matching",side_effect=refs):
+            with self.assertRaisesRegex(ValueError,"prior_accounted_artifact"):m.verify_ci_pilot_predecessors()
 
     def test_platform_migration_requires_cancelled_unstarted_predecessor(self):
         prior={"status":"completed","conclusion":"cancelled","head_sha":"b42673fd530c04b21f0391f301e4fe0dfae3d849","run_attempt":1}
@@ -149,7 +163,7 @@ class Claims(unittest.TestCase):
 
     def test_no_unsealed_claim_may_resume(self):
         _,prefix,seals,halt=m.names(self.C)
-        with patch.object(m,"exact_ref",return_value=None),patch.object(m,"matching",side_effect=lambda p:{prefix+"03-baseline":self.HEAD} if p==prefix else {}):
+        with patch.object(m,"exact_ref",return_value=None),patch.object(m,"matching",side_effect=lambda p:{prefix+"04-baseline":self.HEAD} if p==prefix else {}):
             with self.assertRaisesRegex(ValueError,"claimed_slot_not_uniquely_sealed"):
                 m.verify_existing(self.C,self.HEAD)
 
@@ -160,14 +174,14 @@ class Claims(unittest.TestCase):
 
     def test_sealed_slot_excluded_and_unclaimed_slots_available(self):
         _,prefix,seals,_=m.names(self.C)
-        name=seals+"03-baseline-123-456-"+"d"*64+"-"+"e"*64
-        with patch.object(m,"exact_ref",return_value=None),patch.object(m,"matching",side_effect=lambda p:{prefix+"03-baseline":self.HEAD} if p==prefix else {name:self.HEAD}),patch.object(m,"check_artifact") as check:
-            self.assertEqual(m.verify_existing(self.C,self.HEAD),{"03-baseline"})
-            self.assertEqual(len(m.SLOTS-{"03-baseline"}),17)
-            check.assert_called_once_with(self.C,"03-baseline",123,456,"e"*64)
+        name=seals+"04-baseline-123-456-"+"d"*64+"-"+"e"*64
+        with patch.object(m,"exact_ref",return_value=None),patch.object(m,"matching",side_effect=lambda p:{prefix+"04-baseline":self.HEAD} if p==prefix else {name:self.HEAD}),patch.object(m,"check_artifact") as check:
+            self.assertEqual(m.verify_existing(self.C,self.HEAD),{"04-baseline"})
+            self.assertEqual(len(m.SLOTS-{"04-baseline"}),3)
+            check.assert_called_once_with(self.C,"04-baseline",123,456,"e"*64)
 
     def test_claim_duplicate_is_not_reexecuted(self):
-        record=({}, {}, self.C, 123, 0, "baseline", "03-baseline", {})
+        record=({}, {}, self.C, 123, 0, "baseline", "04-baseline", {})
         with patch.object(m,"context",return_value=(self.HEAD,124)),patch.object(m,"pins",return_value=record),patch.object(m,"exact_ref",side_effect=[self.HEAD,None,self.HEAD]),patch.object(m,"verify_seal") as verify,patch.object(m,"create_ref") as create,patch.object(m,"output") as out:
             m.claim(Path("unused"),Path("unused"),"resume",0,0)
             create.assert_not_called()
@@ -175,22 +189,24 @@ class Claims(unittest.TestCase):
             out.assert_called_once_with("run","false")
 
     def test_initial_claim_duplicate_fails_closed(self):
-        record=({}, {}, self.C, None, 0, "baseline", "03-baseline", {})
+        record=({}, {}, self.C, None, 0, "baseline", "04-baseline", {})
         with patch.object(m,"context",return_value=(self.HEAD,124)),patch.object(m,"pins",return_value=record),patch.object(m,"exact_ref",side_effect=[self.HEAD,None,self.HEAD]),patch.object(m,"create_ref") as create:
             with self.assertRaisesRegex(ValueError,"duplicate_slot"):
                 m.claim(Path("unused"),Path("unused"),"initial",0,0)
             create.assert_not_called()
 
     def test_full_ref_length_guard_and_selected_scope(self):
-        name=m.names(self.C)[2]+"03-baseline-12345678901-14943095748-"+"d"*64+"-"+"e"*64
+        name=m.names(self.C)[2]+"04-baseline-12345678901-14943095748-"+"d"*64+"-"+"e"*64
         self.assertLessEqual(len(("refs/tags/"+name).encode("utf-8")),255)
         with patch.object(m,"api") as api:
             with self.assertRaisesRegex(ValueError,"github_ref_length"):
                 m.create_ref("a"*246,self.HEAD)
             api.assert_not_called()
-        self.assertEqual(len(m.SLOTS),18)
-        self.assertEqual(m.SHARDS,(1,2,4))
+        self.assertEqual(len(m.SLOTS),4)
+        self.assertEqual(m.SHARDS,(1,))
         self.assertNotIn("00-baseline",m.SLOTS)
+        self.assertNotIn("03-candidate",m.SLOTS)
+        self.assertEqual(m.SLOTS,{"04-baseline","04-candidate","05-baseline","05-candidate"})
 
     def test_encrypt_only_evidence_no_home(self):
         with tempfile.TemporaryDirectory() as tmp:
