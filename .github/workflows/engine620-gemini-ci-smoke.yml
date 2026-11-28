@@ -1,0 +1,23 @@
+name: engine620-gemini-ci-smoke
+on:
+  push:
+    tags: ['rh-620-gemini-ci-smoke-20261128-v1']
+permissions:
+  contents: read
+concurrency:
+  group: reasoning-harness-google-live
+  cancel-in-progress: false
+jobs:
+  smoke:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Verify existing free-project credential and run two bounded synthetic Interactions
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ENGINE620_GEMINI_KEY_SHA256: ${{ secrets.ENGINE620_GEMINI_KEY_SHA256 }}
+        run: python3 evaluation/owner-paired-v4/ci_probe.py
